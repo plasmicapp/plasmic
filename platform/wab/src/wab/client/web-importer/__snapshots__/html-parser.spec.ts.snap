@@ -59,28 +59,29 @@ exports[`snapshot tests parse landing page html properly 1`] = `
   ],
   "wiTree": {
     "attrs": {
-      "__name": "",
       "style": "width: 100%;",
     },
     "children": [
       {
-        "attrs": {
-          "__name": "",
-        },
+        "attrs": {},
         "children": [
           {
             "attrs": {
-              "__name": "",
               "class": "container",
             },
             "children": [
               {
                 "attrs": {
-                  "__name": "",
                   "style": "font-size: 1.8rem; font-weight: bold; color: #fff5cc; transform: rotate(45deg);",
                 },
                 "children": [
                   {
+                    "attrs": {
+                      "fill": "currentColor",
+                      "height": "32",
+                      "viewBox": "0 0 24 24",
+                      "width": "32",
+                    },
                     "height": "32px",
                     "outerHtml": "<svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"></path>
@@ -115,6 +116,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "width": "32px",
                   },
                   {
+                    "attrs": {},
                     "tag": "span",
                     "text": "StyleHub",
                     "type": "text",
@@ -159,22 +161,19 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {
-                  "__name": "",
                   "class": "nav-links",
                 },
                 "children": [
                   {
-                    "attrs": {
-                      "__name": "",
-                    },
+                    "attrs": {},
                     "children": [
                       {
                         "attrs": {
-                          "__name": "",
                           "href": "#home",
                         },
                         "children": [
                           {
+                            "attrs": {},
                             "tag": "span",
                             "text": "Home",
                             "type": "text",
@@ -259,17 +258,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                   {
-                    "attrs": {
-                      "__name": "",
-                    },
+                    "attrs": {},
                     "children": [
                       {
                         "attrs": {
-                          "__name": "",
                           "href": "#features",
                         },
                         "children": [
                           {
+                            "attrs": {},
                             "tag": "span",
                             "text": "Features",
                             "type": "text",
@@ -354,17 +351,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                   {
-                    "attrs": {
-                      "__name": "",
-                    },
+                    "attrs": {},
                     "children": [
                       {
                         "attrs": {
-                          "__name": "",
                           "href": "#about",
                         },
                         "children": [
                           {
+                            "attrs": {},
                             "tag": "span",
                             "text": "About",
                             "type": "text",
@@ -449,17 +444,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                   {
-                    "attrs": {
-                      "__name": "",
-                    },
+                    "attrs": {},
                     "children": [
                       {
                         "attrs": {
-                          "__name": "",
                           "href": "#contact",
                         },
                         "children": [
                           {
+                            "attrs": {},
                             "tag": "span",
                             "text": "Contact",
                             "type": "text",
@@ -597,18 +590,17 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {
-                  "__name": "",
                   "class": "nav-actions",
                 },
                 "children": [
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "contact-button",
                       "href": "#contact",
                     },
                     "children": [
                       {
+                        "attrs": {},
                         "tag": "span",
                         "text": "Contact Us",
                         "type": "text",
@@ -822,17 +814,17 @@ exports[`snapshot tests parse landing page html properly 1`] = `
       },
       {
         "attrs": {
-          "__name": "",
           "class": "hero",
+          "data-plasmic-name": "Hero",
         },
         "children": [
           {
             "attrs": {
-              "__name": "",
               "class": "container",
             },
             "children": [
               {
+                "attrs": {},
                 "tag": "h1",
                 "text": "Discover Your Style",
                 "type": "text",
@@ -919,6 +911,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
               {
+                "attrs": {},
                 "tag": "p",
                 "text": "Premium fashion and lifestyle products curated just for you",
                 "type": "text",
@@ -955,12 +948,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {
-                  "__name": "",
                   "class": "cta-button",
                   "href": "#features",
                 },
                 "children": [
                   {
+                    "attrs": {},
                     "tag": "span",
                     "text": "Shop Now",
                     "type": "text",
@@ -1106,17 +1099,17 @@ exports[`snapshot tests parse landing page html properly 1`] = `
       },
       {
         "attrs": {
-          "__name": "",
           "class": "features",
+          "data-plasmic-name": "Features",
         },
         "children": [
           {
             "attrs": {
-              "__name": "",
               "class": "container",
             },
             "children": [
               {
+                "attrs": {},
                 "tag": "h2",
                 "text": "Why Choose StyleHub?",
                 "type": "text",
@@ -1155,17 +1148,21 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {
-                  "__name": "",
                   "class": "features-container",
                 },
                 "children": [
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "feature-card",
                     },
                     "children": [
                       {
+                        "attrs": {
+                          "fill": "#667eea",
+                          "height": "64",
+                          "viewBox": "0 0 24 24",
+                          "width": "64",
+                        },
                         "height": "64px",
                         "outerHtml": "<svg width="64" height="64" viewBox="0 0 24 24" fill="#667eea">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
@@ -1200,6 +1197,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "width": "64px",
                       },
                       {
+                        "attrs": {},
                         "tag": "h3",
                         "text": "Free Shipping",
                         "type": "text",
@@ -1235,6 +1233,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                       {
+                        "attrs": {},
                         "tag": "p",
                         "text": "Free shipping on orders over $50. Fast and reliable delivery to your doorstep.",
                         "type": "text",
@@ -1314,11 +1313,16 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "feature-card",
                     },
                     "children": [
                       {
+                        "attrs": {
+                          "fill": "#667eea",
+                          "height": "64",
+                          "viewBox": "0 0 24 24",
+                          "width": "64",
+                        },
                         "height": "64px",
                         "outerHtml": "<svg width="64" height="64" viewBox="0 0 24 24" fill="#667eea">
           <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"></path>
@@ -1353,6 +1357,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "width": "64px",
                       },
                       {
+                        "attrs": {},
                         "tag": "h3",
                         "text": "Secure Payment",
                         "type": "text",
@@ -1388,6 +1393,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                       {
+                        "attrs": {},
                         "tag": "p",
                         "text": "Your payment information is protected with industry-leading security measures.",
                         "type": "text",
@@ -1467,11 +1473,16 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "feature-card",
                     },
                     "children": [
                       {
+                        "attrs": {
+                          "fill": "#667eea",
+                          "height": "64",
+                          "viewBox": "0 0 24 24",
+                          "width": "64",
+                        },
                         "height": "64px",
                         "outerHtml": "<svg width="64" height="64" viewBox="0 0 24 24" fill="#667eea">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
@@ -1506,6 +1517,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "width": "64px",
                       },
                       {
+                        "attrs": {},
                         "tag": "h3",
                         "text": "Premium Quality",
                         "type": "text",
@@ -1541,6 +1553,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                       {
+                        "attrs": {},
                         "tag": "p",
                         "text": "Carefully selected products that meet our high standards for quality and style.",
                         "type": "text",
@@ -1724,17 +1737,17 @@ exports[`snapshot tests parse landing page html properly 1`] = `
       },
       {
         "attrs": {
-          "__name": "",
           "class": "newsletter",
+          "data-plasmic-name": "Newsletter",
         },
         "children": [
           {
             "attrs": {
-              "__name": "",
               "class": "container",
             },
             "children": [
               {
+                "attrs": {},
                 "tag": "h2",
                 "text": "Stay Updated",
                 "type": "text",
@@ -1768,6 +1781,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
               {
+                "attrs": {},
                 "tag": "p",
                 "text": "Subscribe to our newsletter for exclusive offers and new arrivals",
                 "type": "text",
@@ -1802,13 +1816,11 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {
-                  "__name": "",
                   "class": "newsletter-form",
                 },
                 "children": [
                   {
                     "attrs": {
-                      "__name": "",
                       "placeholder": "Enter your email",
                       "required": "",
                       "type": "email",
@@ -1858,11 +1870,11 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {
-                      "__name": "",
                       "type": "submit",
                     },
                     "children": [
                       {
+                        "attrs": {},
                         "tag": "span",
                         "text": "Subscribe",
                         "type": "text",
@@ -2061,29 +2073,25 @@ exports[`snapshot tests parse landing page html properly 1`] = `
         ],
       },
       {
-        "attrs": {
-          "__name": "",
-        },
+        "attrs": {},
         "children": [
           {
             "attrs": {
-              "__name": "",
               "class": "container",
             },
             "children": [
               {
                 "attrs": {
-                  "__name": "",
                   "class": "footer-content",
                 },
                 "children": [
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "footer-section",
                     },
                     "children": [
                       {
+                        "attrs": {},
                         "tag": "h3",
                         "text": "Quick Links",
                         "type": "text",
@@ -2117,22 +2125,18 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                       {
-                        "attrs": {
-                          "__name": "",
-                        },
+                        "attrs": {},
                         "children": [
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#home",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Home",
                                     "type": "text",
@@ -2218,17 +2222,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#features",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Features",
                                     "type": "text",
@@ -2314,17 +2316,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#about",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "About Us",
                                     "type": "text",
@@ -2410,17 +2410,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#contact",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Contact",
                                     "type": "text",
@@ -2572,11 +2570,11 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "footer-section",
                     },
                     "children": [
                       {
+                        "attrs": {},
                         "tag": "h3",
                         "text": "Customer Service",
                         "type": "text",
@@ -2610,22 +2608,18 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                       {
-                        "attrs": {
-                          "__name": "",
-                        },
+                        "attrs": {},
                         "children": [
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Shipping Info",
                                     "type": "text",
@@ -2711,17 +2705,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Returns",
                                     "type": "text",
@@ -2807,17 +2799,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Size Guide",
                                     "type": "text",
@@ -2903,17 +2893,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "FAQ",
                                     "type": "text",
@@ -3065,11 +3053,11 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {
-                      "__name": "",
                       "class": "footer-section",
                     },
                     "children": [
                       {
+                        "attrs": {},
                         "tag": "h3",
                         "text": "Connect",
                         "type": "text",
@@ -3103,22 +3091,18 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                       {
-                        "attrs": {
-                          "__name": "",
-                        },
+                        "attrs": {},
                         "children": [
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Facebook",
                                     "type": "text",
@@ -3204,17 +3188,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Instagram",
                                     "type": "text",
@@ -3300,17 +3282,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Twitter",
                                     "type": "text",
@@ -3396,17 +3376,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "attrs": {
-                              "__name": "",
-                            },
+                            "attrs": {},
                             "children": [
                               {
                                 "attrs": {
-                                  "__name": "",
                                   "href": "#",
                                 },
                                 "children": [
                                   {
+                                    "attrs": {},
                                     "tag": "span",
                                     "text": "Pinterest",
                                     "type": "text",
@@ -3708,23 +3686,24 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
   "fontDefinitions": [],
   "wiTree": {
     "attrs": {
-      "__name": "",
       "style": "width: 100%;",
     },
     "children": [
       {
         "attrs": {
-          "__name": "",
           "class": "dashboard",
         },
         "children": [
           {
             "attrs": {
-              "__name": "",
               "class": "notifications",
             },
             "children": [
               {
+                "attrs": {
+                  "data-plasmic-component": "Alert",
+                  "data-props": "{"message":"Success!","type":"success"}",
+                },
                 "component": "Alert",
                 "props": {
                   "message": "Success!",
@@ -3742,17 +3721,21 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
           },
           {
             "attrs": {
-              "__name": "",
               "class": "hero-section",
             },
             "children": [
               {
+                "attrs": {},
                 "tag": "h1",
                 "text": "Welcome",
                 "type": "text",
                 "variantSettings": [],
               },
               {
+                "attrs": {
+                  "data-plasmic-component": "Button",
+                  "data-props": "{"label":"Submit Form","variant":"primary","disabled":false}",
+                },
                 "component": "Button",
                 "props": {
                   "disabled": false,
@@ -3771,16 +3754,14 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
           },
           {
             "attrs": {
-              "__name": "",
               "class": "contact-form",
             },
             "children": [
               {
-                "attrs": {
-                  "__name": "",
-                },
+                "attrs": {},
                 "children": [
                   {
+                    "attrs": {},
                     "tag": "span",
                     "text": "Full Name:",
                     "type": "text",
@@ -3792,6 +3773,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "variantSettings": [],
               },
               {
+                "attrs": {
+                  "data-plasmic-component": "TextField",
+                  "data-props": "{"value":"John Doe","placeholder":"Enter name","required":true}",
+                },
                 "component": "TextField",
                 "props": {
                   "placeholder": "Enter name",
@@ -3809,6 +3794,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "Slider",
+              "data-props": "{"min":0,"max":100,"value":50}",
+            },
             "component": "Slider",
             "props": {
               "max": 100,
@@ -3821,6 +3810,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "Badge",
+              "data-props": "{"count":5,"color":"red"}",
+            },
             "component": "Badge",
             "props": {
               "color": "red",
@@ -3833,11 +3826,14 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
           },
           {
             "attrs": {
-              "__name": "",
               "class": "profile-section",
             },
             "children": [
               {
+                "attrs": {
+                  "data-plasmic-component": "UserCard",
+                  "data-props": "{"userData":{"name":"Alice Smith","age":30,"active":true,"metadata":null,"contact":{"email":"alice@example.com","phone":"+1234567890"},"preferences":{"theme":"dark","notifications":true}},"snake_case":"snake value","kebab-case":"kebab value"}",
+                },
                 "component": "UserCard",
                 "props": {
                   "kebabCase": "kebab value",
@@ -3868,6 +3864,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "List",
+              "data-props": "{"items":[{"id":1,"name":"Product A","price":29.99},{"id":2,"name":"Product B","price":49.99}],"config":{"sortable":true,"filterable":true}}",
+            },
             "component": "List",
             "props": {
               "config": {
@@ -3890,6 +3890,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "slots": {
               "header": [
                 {
+                  "attrs": {},
                   "tag": "h2",
                   "text": "Task List",
                   "type": "text",
@@ -3902,6 +3903,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "Card",
+              "data-props": "{"title":"User Stats"}",
+            },
             "component": "Card",
             "props": {
               "title": "User Stats",
@@ -3909,6 +3914,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "slots": {
               "actions": [
                 {
+                  "attrs": {
+                    "data-plasmic-component": "Button",
+                    "data-props": "{"label":"Add to Cart","variant":"primary","disabled":false}",
+                  },
                   "component": "Button",
                   "props": {
                     "disabled": false,
@@ -3921,6 +3930,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "variantSettings": [],
                 },
                 {
+                  "attrs": {
+                    "data-plasmic-component": "Button",
+                    "data-props": "{"label":"Buy Now","variant":"secondary","disabled":false}",
+                  },
                   "component": "Button",
                   "props": {
                     "disabled": false,
@@ -3935,12 +3948,14 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               ],
               "children": [
                 {
+                  "attrs": {},
                   "tag": "p",
                   "text": "Total Users: 1,234",
                   "type": "text",
                   "variantSettings": [],
                 },
                 {
+                  "attrs": {},
                   "tag": "p",
                   "text": "Active: 567",
                   "type": "text",
@@ -3953,6 +3968,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "Modal",
+              "data-props": "{"title":"Confirm Action","size":"large"}",
+            },
             "component": "Modal",
             "props": {
               "size": "large",
@@ -3961,6 +3980,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "slots": {
               "body": [
                 {
+                  "attrs": {},
                   "tag": "p",
                   "text": "Are you sure you want to proceed?",
                   "type": "text",
@@ -3969,12 +3989,17 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               ],
               "footer": [
                 {
+                  "attrs": {},
                   "tag": "span",
                   "text": "Choose an action:",
                   "type": "text",
                   "variantSettings": [],
                 },
                 {
+                  "attrs": {
+                    "data-plasmic-component": "Button",
+                    "data-props": "{"label":"Cancel","variant":"secondary","disabled":false}",
+                  },
                   "component": "Button",
                   "props": {
                     "disabled": false,
@@ -3987,6 +4012,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "variantSettings": [],
                 },
                 {
+                  "attrs": {
+                    "data-plasmic-component": "Button",
+                    "data-props": "{"label":"Confirm","variant":"primary","disabled":false}",
+                  },
                   "component": "Button",
                   "props": {
                     "disabled": false,
@@ -4001,6 +4030,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               ],
               "header": [
                 {
+                  "attrs": {},
                   "tag": "h2",
                   "text": "Confirm Action",
                   "type": "text",
@@ -4013,6 +4043,9 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "Container",
+            },
             "component": "Container",
             "props": {},
             "slots": {
@@ -4023,6 +4056,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "UserCard",
+              "data-props": "{"userData":{"name":"Conan O'Brien","age":99}}",
+            },
             "component": "UserCard",
             "props": {
               "userData": {
@@ -4036,6 +4073,10 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "variantSettings": [],
           },
           {
+            "attrs": {
+              "data-plasmic-component": "Alert",
+              "data-props": "{"message":"Conan O'Brien says hi"}",
+            },
             "component": "Alert",
             "props": {
               "message": "Conan O'Brien says hi",
@@ -4047,11 +4088,14 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
           },
           {
             "attrs": {
-              "__name": "",
               "class": "input-wrapper",
             },
             "children": [
               {
+                "attrs": {
+                  "data-plasmic-component": "Text Field",
+                  "data-props": "{"value":"spaced name"}",
+                },
                 "component": "Text Field",
                 "props": {
                   "value": "spaced name",

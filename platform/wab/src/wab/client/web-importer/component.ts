@@ -8,7 +8,7 @@ import { fixJson } from "@/wab/shared/copilot/fix-json";
  *
  * The plasmic-component format:
  * <plasmic-component
- *   data-plasmic-name="ComponentName"
+ *   data-plasmic-component="ComponentName"
  *   data-props='{"label":"Click me","disabled":false}'
  *
  *   <div slot="slotName">
@@ -16,7 +16,8 @@ import { fixJson } from "@/wab/shared/copilot/fix-json";
  *   </div>
  * </plasmic-component>
  *
- * - data-plasmic-name: identifies which component to instantiate (case-sensitive, must exactly match component name)
+ * - data-plasmic-component: identifies which component to instantiate (case-sensitive, must exactly match component name)
+ * - data-plasmic-name: optional, names the TplComponent instance in the element tree
  * - data-props: JSON-stringified object of all component props. Using a single attribute
  *   preserves camelCase prop names (individual data-prop-* attributes get lowercased by DOMParser).
  * - slot attribute on children: identifies which slot the child fills
@@ -30,22 +31,23 @@ import { fixJson } from "@/wab/shared/copilot/fix-json";
 export function parseComponent(
   elt: HTMLElement,
   variantSettings: WIVariantSettings[],
+  attrs: Record<string, string>,
   rec: (node: Node) => WIElement | null
 ): WIElement | null {
   const tag = elt.tagName.toLowerCase();
 
-  // Extract component name from data-plasmic-name attribute
+  // Extract component name from data-plasmic-component attribute
   // Returns the value as-is, preserving the original casing for exact matching
-  // e.g., data-plasmic-name="Button" -> "Button"
-  // e.g., data-plasmic-name="Text Field" -> "Text Field"
-  const componentName = elt.getAttribute("data-plasmic-name");
+  // e.g., data-plasmic-component="Button" -> "Button"
+  // e.g., data-plasmic-component="Text Field" -> "Text Field"
+  const componentName = attrs["data-plasmic-component"];
   if (!componentName) {
     return null;
   }
 
   const slots: Record<string, WIElement[]> = {};
 
-  const dataProps = elt.getAttribute("data-props");
+  const dataProps = attrs["data-props"];
   let props: Record<string, any> = {};
 
   if (dataProps) {
@@ -84,6 +86,7 @@ export function parseComponent(
     component: componentName,
     props,
     slots,
+    attrs,
     variantSettings,
   };
 }

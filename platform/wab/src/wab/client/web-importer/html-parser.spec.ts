@@ -36,6 +36,7 @@ describe("parseHtmlToWebImporterTree", () => {
           type: "text",
           tag: "span",
           text: "plasmic",
+          attrs: {},
           variantSettings: [],
         },
       ],
@@ -61,6 +62,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "h1",
               text: "Blue Heading 1",
+              attrs: {},
               variantSettings: [],
             },
           ],
@@ -121,6 +123,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "h1",
               text: "Blue Heading 1",
+              attrs: {},
               variantSettings: [
                 {
                   unsanitizedStyles: {
@@ -188,6 +191,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "svg",
               tag: "svg",
               outerHtml: svgElement,
+              attrs: {},
               variantSettings: [],
               width: "32px",
               height: "32px",
@@ -218,6 +222,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "span",
               text: "Content",
+              attrs: {},
               variantSettings: [],
             },
           ],
@@ -260,6 +265,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "span",
               text: "Content",
+              attrs: {},
               variantSettings: [],
             },
           ],
@@ -343,6 +349,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "h1",
               text: "Responsive Heading",
+              attrs: {},
               variantSettings: [
                 {
                   unsanitizedStyles: {
@@ -377,10 +384,10 @@ describe("parseHtmlToWebImporterTree", () => {
               ],
             },
           ],
-          attrs: { __name: "" },
+          attrs: {},
         },
       ],
-      attrs: { style: "width: 100%;", __name: "" },
+      attrs: { style: "width: 100%;" },
     });
   });
 
@@ -444,6 +451,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "h1",
               text: "Responsive Heading",
+              attrs: {},
               variantSettings: [
                 {
                   unsanitizedStyles: {
@@ -478,10 +486,10 @@ describe("parseHtmlToWebImporterTree", () => {
               ],
             },
           ],
-          attrs: { __name: "" },
+          attrs: {},
         },
       ],
-      attrs: { style: "width: 100%;", __name: "" },
+      attrs: { style: "width: 100%;" },
     });
   });
 
@@ -553,6 +561,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "span",
               text: "Click me",
+              attrs: {},
               variantSettings: [],
             },
           ],
@@ -599,7 +608,7 @@ describe("parseHtmlToWebImporterTree", () => {
           ],
         },
       ],
-      attrs: { style: "width: 100%;", __name: "" },
+      attrs: { style: "width: 100%;" },
     });
   });
 
@@ -715,7 +724,7 @@ describe("parseHtmlToWebImporterTree", () => {
           ],
         },
       ],
-      attrs: { style: "width: 100%;", __name: "" },
+      attrs: { style: "width: 100%;" },
     });
   });
 
@@ -776,6 +785,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "span",
               text: "Responsive Button",
+              attrs: {},
               variantSettings: [],
             },
           ],
@@ -842,7 +852,7 @@ describe("parseHtmlToWebImporterTree", () => {
           ],
         },
       ],
-      attrs: { style: "width: 100%;", __name: "" },
+      attrs: { style: "width: 100%;" },
     });
   });
   it("Parses border mixed properties", async () => {
@@ -918,16 +928,17 @@ describe("parseHtmlToWebImporterTree", () => {
                   type: "text",
                   text: "Mixed Properties",
                   tag: "span",
+                  attrs: {},
                   variantSettings: [],
                 },
               ],
-              attrs: { class: "mixed-properties", __name: "" },
+              attrs: { class: "mixed-properties" },
             },
           ],
-          attrs: { __name: "" },
+          attrs: {},
         },
       ],
-      attrs: { style: "width: 100%;", __name: "" },
+      attrs: { style: "width: 100%;" },
     });
   });
 });
@@ -1368,6 +1379,7 @@ describe("keyframes and animations parsing", () => {
               type: "text",
               tag: "span",
               text: "Test",
+              attrs: {},
               variantSettings: [],
             },
           ],

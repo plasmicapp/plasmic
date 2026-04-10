@@ -645,8 +645,9 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
         // it's text styles from the parent element such as div, button etc
         // <div>Hello</div>, <button>Click</button>
         // In above examples, "Hello" or "Click" cannot be styled, the styles will only
-        // exists on div or button elements, hence variantSettings will always be empty.
+        // exists on div or button elements, hence variantSettings and attrs will always be empty.
         variantSettings: [],
+        attrs: {},
       };
     }
 
@@ -666,19 +667,25 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
 
     const allVariantSettings = getVariantSettingsForNode(elt, defaultStyles);
 
+    const attrs = [...elt.attributes].reduce((acc, attr) => {
+      acc[attr.name] = attr.value;
+      return acc;
+    }, {} as Record<string, string>);
+
     if ((elt as any).__wi_component) {
       return {
         type: "component",
         tag,
         component: (elt as any).__wi_component,
         variantSettings: allVariantSettings,
+        attrs,
         props: {},
         slots: {},
       };
     }
 
     if (elt instanceof HTMLElement && tag === "plasmic-component") {
-      return parseComponent(elt, allVariantSettings, rec);
+      return parseComponent(elt, allVariantSettings, attrs, rec);
     }
 
     if (tag === "svg") {
@@ -700,6 +707,7 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
         outerHtml: elt.outerHTML,
         width: `${width.num}${width.units || "px"}`,
         height: `${height.num}${height.units || "px"}`,
+        attrs,
         variantSettings: allVariantSettings,
       };
     }
@@ -717,24 +725,17 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
         type: "text",
         tag,
         text,
+        attrs,
         variantSettings: allVariantSettings,
       };
     }
-
-    const attrs = [...elt.attributes].reduce((acc, attr) => {
-      acc[attr.name] = attr.value;
-      return acc;
-    }, {} as Record<string, string>);
 
     const containerNode: WIContainer = {
       type: "container",
       tag: [...ALL_CONTAINER_TAGS, "img"].includes(tag) ? tag : "div",
       variantSettings: allVariantSettings,
       children: withoutNils([...elt.childNodes].map((e) => rec(e))),
-      attrs: {
-        ...attrs,
-        __name: "",
-      },
+      attrs,
     };
 
     if (isLikelyEmptyContainer(containerNode)) {

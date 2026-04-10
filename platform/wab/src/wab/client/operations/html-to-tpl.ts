@@ -364,8 +364,17 @@ async function wiTreeToTpl(
   }
 
   async function rec(node: WIElement): Promise<TplNode[]> {
+    // Fragment expands its children in place
+    if (node.type === "fragment") {
+      return (
+        await Promise.all(node.children.map((child) => rec(child)))
+      ).flat();
+    }
+
+    const tplName = node.attrs["data-plasmic-name"];
     if (node.type === "text") {
       const tpl = vtm.mkTplTagX(node.tag, {
+        name: tplName,
         type: TplTagType.Text,
       });
       const vs = vtm.ensureBaseVariantSetting(tpl);
@@ -397,6 +406,7 @@ async function wiTreeToTpl(
         const tpl = vtm.mkTplImage({
           type: imageOpts.type,
           iconColor: imageOpts.iconColor,
+          name: tplName,
         });
         collectWIVariantData(node, tpl);
 
@@ -460,17 +470,11 @@ async function wiTreeToTpl(
 
       const tplComponent = vtm.mkTplComponentX({
         component,
+        name: tplName,
         args,
       });
       collectWIVariantData(node, tplComponent);
       return [tplComponent];
-    }
-
-    // Fragment expands its children in place
-    if (node.type === "fragment") {
-      return (
-        await Promise.all(node.children.map((child) => rec(child)))
-      ).flat();
     }
 
     if (node.tag === "img") {
@@ -488,6 +492,7 @@ async function wiTreeToTpl(
           src: code(JSON.stringify(getSrc())),
         },
         type: ImageAssetType.Picture,
+        name: tplName,
       });
       collectWIVariantData(node, tpl);
       return [tpl];
@@ -497,7 +502,7 @@ async function wiTreeToTpl(
       const tpl = vtm.mkTplTagX(
         node.tag,
         {
-          name: node.attrs["__name"],
+          name: tplName,
           type: TplTagType.Other,
         },
         (

@@ -822,6 +822,7 @@ export class VariantTplMgr {
     type?: ImageAssetType;
     iconColor?: string;
     attrs?: AttrsSpec;
+    name?: string;
   }) => {
     const type = ensure(
       opts.asset ? opts.asset.type : opts.type,
@@ -840,6 +841,7 @@ export class VariantTplMgr {
     );
     const node = this.mkTplTagX(type === ImageAssetType.Icon ? "svg" : "img", {
       type: TplTagType.Image,
+      name: opts.name,
       attrs: finalAttrs,
     });
 

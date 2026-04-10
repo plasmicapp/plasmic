@@ -40,13 +40,13 @@ export interface WIVariantSettings {
 export interface WIBase {
   type: "container" | "text" | "svg" | "component";
   tag: string;
+  attrs: Record<string, string>;
   variantSettings: WIVariantSettings[];
 }
 
 export interface WIContainer extends WIBase {
   type: "container";
   children: WIElement[];
-  attrs: Record<string, string>;
 }
 
 export interface WIText extends WIBase {
