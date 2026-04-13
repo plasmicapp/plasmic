@@ -5,19 +5,22 @@ import registerGlobalContext, {
   GlobalContextMeta,
 } from "@plasmicapp/host/registerGlobalContext";
 import React, { useEffect, useRef } from "react";
-import { ParallaxProvider, useController } from "react-scroll-parallax";
-import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/ParallaxProvider/types";
+import {
+  ParallaxProvider,
+  ParallaxProviderProps,
+  useParallaxController,
+} from "react-scroll-parallax";
 import ResizeObserver from "resize-observer-polyfill";
 
 /**
  * A safe wrapper around `useController()` to prevent errors when
  * `ParallaxProvider` is missing. If the context is unavailable,
- * `useController()` will throw an error, which we catch and handle
+ * `useParallaxController()` will throw an error, which we catch and handle
  * gracefully by returning `null` instead of crashing the component.
  */
 function useSafeController() {
   try {
-    return useController();
+    return useParallaxController();
   } catch {
     return null; // Return null instead of throwing an error
   }

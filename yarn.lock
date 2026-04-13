@@ -22984,10 +22984,10 @@ pako@^1.0.11:
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
-parallax-controller@^0.1.30:
-  version "0.1.36"
-  resolved "https://registry.yarnpkg.com/parallax-controller/-/parallax-controller-0.1.36.tgz#6dfe8448b40bfa6f1740a329a9a36c6fe6b88157"
-  integrity sha512-pWOh+fQtF405vDTHJPVzddMu5NdUUHYb6xbVok/X+tgUSIFs05QfRPZ6alMcx6iSG+9U/jk+xqTjmsee3q0Sxg==
+parallax-controller@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/parallax-controller/-/parallax-controller-1.7.1.tgz#86d94ddb97007788f6d7fb2272e5b523e59c3e7f"
+  integrity sha512-facVMEBnUynzMN7hCSqyNpF6uyCpVIl4XAUyTR9D8q2JlhgyPY6bZtj/OkFk3+Cpka1TnYCppQb8BzDWHtSaZg==
   dependencies:
     bezier-easing "^2.1.0"
 
@@ -25274,12 +25274,12 @@ react-remove-scroll@^2.5.6:
     use-callback-ref "^1.3.0"
     use-sidecar "^1.1.2"
 
-react-scroll-parallax@3.0.0-alpha.14:
-  version "3.0.0-alpha.14"
-  resolved "https://registry.yarnpkg.com/react-scroll-parallax/-/react-scroll-parallax-3.0.0-alpha.14.tgz#3a8290ad6da30b43cce90842e63170ff91096afa"
-  integrity sha512-OW7CMylSM70zhv7viOfrPR1ZDgUVWWNHqHrGcgQxtaTA2US+j0JX3u/QSJDe3dxbuYsL0NVRPO63h6gG3LOkyw==
+react-scroll-parallax@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/react-scroll-parallax/-/react-scroll-parallax-3.5.0.tgz#a55110cc3de9db5c3a7d94eed7519f1899a36470"
+  integrity sha512-cUyBTFfTMA/4jweZB4j06LQnUQdZlGgVKX2hmZ5a/BuHZsnp85MEo6ygD2otCQH734VJ9xXPVZ3WfiAiF2TesQ==
   dependencies:
-    parallax-controller "^0.1.30"
+    parallax-controller "^1.7.1"
 
 react-server-dom-webpack@0.0.0-experimental-c8b778b7f-20220825:
   version "0.0.0-experimental-c8b778b7f-20220825"

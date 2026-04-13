@@ -35,7 +35,7 @@
     "tslib": "^2.2.0"
   },
   "dependencies": {
-    "react-scroll-parallax": "3.0.0-alpha.14",
+    "react-scroll-parallax": "^3.5.0",
     "resize-observer-polyfill": "^1.5.1"
   },
   "peerDependencies": {
