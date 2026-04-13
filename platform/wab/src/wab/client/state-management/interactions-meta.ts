@@ -7,7 +7,12 @@ import {
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { assert, ensure, ensureInstance } from "@/wab/shared/common";
+import {
+  assert,
+  ensure,
+  ensureInstance,
+  filterFalsy,
+} from "@/wab/shared/common";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   codeLit,
@@ -403,7 +408,9 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         return `Use ${DATA_SOURCE_LOWER}`;
       }
       const dataOpExpr = ensureKnownDataSourceOpExpr(dataOp);
-      return startCase(`${ctx?.sourceMeta?.source} ${dataOpExpr.opName}`);
+      return startCase(
+        filterFalsy([ctx?.sourceMeta?.source, dataOpExpr.opName]).join(" ")
+      );
     },
     getDefaultArgs: () => ({}),
   },
@@ -431,9 +438,10 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       }
       const expr = ensureKnownCustomFunctionExpr(customFunctionOp);
       return startCase(
-        `${expr.func.namespace} ${
-          expr.func.displayName ?? expr.func.importName
-        }`
+        filterFalsy([
+          expr.func.namespace,
+          expr.func.displayName ?? expr.func.importName,
+        ]).join(" ")
       );
     },
     getDefaultArgs: () => ({}),
