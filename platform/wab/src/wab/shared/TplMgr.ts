@@ -2208,16 +2208,24 @@ export class TplMgr {
     }
   }
 
+  /**
+   * Renames tpl to provided name and fixes up any Exprs that reference it.
+   * Returns the new name.
+   *
+   * Note: if provided name is null or empty, it's still technically
+   * renamed, but renamed to nothing (i.e. name is cleared to null).
+   */
   renameTpl(
     component: Component,
     tpl: TplNamable,
     name: string | null,
     tplTreeToFixExprs?: TplNode
-  ) {
-    const newName = !name?.trim()
-      ? null
-      : this.getUniqueTplName(component, name, tpl);
+  ): string | null {
+    const newName = name?.trim()
+      ? this.getUniqueTplName(component, name, tpl)
+      : null;
     renameTplAndFixExprs(this.site(), tpl, newName, tplTreeToFixExprs);
+    return newName;
   }
 
   /**

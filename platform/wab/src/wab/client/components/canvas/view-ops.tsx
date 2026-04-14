@@ -42,6 +42,7 @@ import {
   trackInsertItem,
 } from "@/wab/client/observability/events/insert-item";
 import { DeleteTplResult, deleteTpl } from "@/wab/client/operations/delete-tpl";
+import { renameTpl } from "@/wab/client/operations/rename-tpl";
 import { promptComponentName, promptPageName } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
@@ -146,7 +147,6 @@ import {
   findImplicitStatesOfNodesInTree,
   findImplicitUsages,
   getStateDisplayName,
-  isPrivateState,
   isStateUsedInExpr,
 } from "@/wab/shared/core/states";
 import {
@@ -1093,18 +1093,14 @@ export class ViewOps {
   }
 
   renameTpl(name: string, tpl: TplTag | TplComponent, component?: Component) {
-    if (
-      isKnownTplComponent(tpl) &&
-      tpl.component.states.some((s) => !isPrivateState(s)) &&
-      !name
-    ) {
-      notification.error({
-        message: "Instances of components with public states must be named.",
-      });
-      return;
-    }
     component = component || $$$(tpl).owningComponent();
-    this.tplMgr().renameTpl(component, tpl, name);
+    const result = renameTpl(tpl, name, {
+      component,
+      tplMgr: this.tplMgr(),
+    });
+    if (result.result === "error") {
+      notification.error({ message: result.message });
+    }
   }
 
   renameToken(name: string, token: StyleToken) {

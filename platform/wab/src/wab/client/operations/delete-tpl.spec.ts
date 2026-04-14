@@ -1,38 +1,21 @@
 import { deleteTpl } from "@/wab/client/operations/delete-tpl";
-import { TplMgr } from "@/wab/shared/TplMgr";
+import { setupComponentWithTplTree } from "@/wab/client/operations/tests/utils";
 import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { customCode } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
-import { createSite } from "@/wab/shared/core/sites";
 import {
   addComponentState,
   mkValueStateForTextInput,
 } from "@/wab/shared/core/states";
 import * as Tpls from "@/wab/shared/core/tpls";
-import { TplRef, TplTag } from "@/wab/shared/model/classes";
+import { TplRef } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import { createVariantTplMgr } from "@/wab/shared/tests/site-tests-utils";
-
-function setup(tplTree: TplTag) {
-  const component = mkComponent({
-    tplTree,
-    type: ComponentType.Plain,
-  });
-  const site = createSite();
-  site.components.push(component);
-  Tpls.trackComponentSite(component, site);
-  Tpls.trackComponentRoot(component);
-  const tplMgr = new TplMgr({ site });
-  const vtm = createVariantTplMgr(site, tplMgr);
-  return { component, site, tplMgr, vtm };
-}
 
 describe("deleteTpl", () => {
   it("deletes a child element from the tree", () => {
     const child = Tpls.mkTplTagX("span", {});
     const root = Tpls.mkTplTagX("div", {}, child);
-    const { component, site, vtm } = setup(root);
+    const { component, site, vtm } = setupComponentWithTplTree(root);
 
     const result = deleteTpl([child], { component, site, vtm });
 
@@ -45,7 +28,7 @@ describe("deleteTpl", () => {
     const child2 = Tpls.mkTplTagX("span", {});
     const child3 = Tpls.mkTplTagX("span", {});
     const root = Tpls.mkTplTagX("div", {}, child1, child2, child3);
-    const { component, site, vtm } = setup(root);
+    const { component, site, vtm } = setupComponentWithTplTree(root);
 
     const result = deleteTpl([child1, child3], { component, site, vtm });
 
@@ -56,7 +39,7 @@ describe("deleteTpl", () => {
 
   it("returns error when deleting the root element", () => {
     const root = Tpls.mkTplTagX("div", {});
-    const { component, site, vtm } = setup(root);
+    const { component, site, vtm } = setupComponentWithTplTree(root);
 
     const result = deleteTpl([root], { component, site, vtm });
 
@@ -69,7 +52,7 @@ describe("deleteTpl", () => {
   it("returns error when element is referenced by a TplRef", () => {
     const target = Tpls.mkTplTagX("input", {});
     const root = Tpls.mkTplTagX("div", {}, target);
-    const { component, site, vtm } = setup(root);
+    const { component, site, vtm } = setupComponentWithTplTree(root);
 
     // Add a param with a TplRef pointing to target
     const param = mkParam({
@@ -89,7 +72,7 @@ describe("deleteTpl", () => {
     const child = Tpls.mkTplTagX("input", { name: "myInput" });
     const sibling = Tpls.mkTplTagX("div", {});
     const root = Tpls.mkTplTagX("div", {}, child, sibling);
-    const { component, site, tplMgr, vtm } = setup(root);
+    const { component, site, tplMgr, vtm } = setupComponentWithTplTree(root);
 
     // Create a named state attached to the child element
     const state = mkValueStateForTextInput(child, component, tplMgr);
@@ -113,7 +96,7 @@ describe("deleteTpl", () => {
     const listItem = Tpls.mkTplTagX("li", {});
     const listContainer = Tpls.mkTplTag("ul", [listItem]);
     const root = Tpls.mkTplTagX("div", {}, listContainer);
-    const { component, site, vtm } = setup(root);
+    const { component, site, vtm } = setupComponentWithTplTree(root);
 
     const result = deleteTpl([listItem], { component, site, vtm });
 
