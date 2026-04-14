@@ -1,5 +1,6 @@
 import { isSlot } from "@/wab/shared/SlotUtils";
 import {
+  isPrivateStyleVariant,
   isStandaloneVariantGroup,
   tryGetBaseVariantSetting,
   tryGetVariantSetting,
@@ -7,6 +8,7 @@ import {
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assert, switchType } from "@/wab/shared/common";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
+import { generateAnimationPropValue } from "@/wab/shared/core/styles";
 import {
   flattenTpls,
   isTplTextBlock,
@@ -115,6 +117,11 @@ function getStylesFromVariantSetting(
         styles[normProp(prop)] = String(value);
       }
     }
+  }
+
+  if (vs.rs.animations) {
+    const animationValue = generateAnimationPropValue(vs.rs.animations);
+    styles["animation"] = animationValue ?? "none";
   }
 
   return styles;
@@ -331,8 +338,8 @@ function getTplOverrides(
 
 function buildTplOverride(o: TplOverride): XmlElement {
   return {
-    Tpl: [
-      { _attr: { id: o.tplUuid } },
+    element: [
+      { _attr: { uuid: o.tplUuid } },
       {
         VariantSetting: [
           { _attr: { id: String(o.vsUid) } },
@@ -386,27 +393,57 @@ function buildComponentProps(component: Component): XmlElement[] {
     });
 }
 
+interface SerializableVariant {
+  variant: Variant;
+  attrs: XmlAttrs;
+}
+
 /**
- * Builds component variant definitions as <variant> XmlElements.
- * Each variant gets its own entry with the variant's UUID.
+ * Collects all serializable variants (component variant groups + element state variants)
+ * with their shared attributes.
  */
-function buildComponentVariantDefs(component: Component): XmlElement[] {
-  const elements: XmlElement[] = [];
+function getComponentVariants(component: Component): SerializableVariant[] {
+  const result: SerializableVariant[] = [];
+
   for (const variantGroup of component.variantGroups) {
     const groupName = paramToVarName(component, variantGroup.param);
     const isStandalone = isStandaloneVariantGroup(variantGroup);
-
     for (const variant of variantGroup.variants) {
-      const attrs: XmlAttrs = {
-        name: variant.name,
-        uuid: variant.uuid,
-        group: groupName,
-        type: isStandalone ? "boolean" : "enum",
-      };
-      elements.push({ variant: { _attr: attrs } });
+      result.push({
+        variant,
+        attrs: {
+          name: toVarName(variant.name),
+          uuid: variant.uuid,
+          kind: "componentVariant",
+          type: isStandalone ? "boolean" : "enum",
+          group: groupName,
+        },
+      });
     }
   }
-  return elements;
+
+  for (const variant of component.variants.filter(isPrivateStyleVariant)) {
+    result.push({
+      variant,
+      attrs: {
+        name: variant.selectors.join(", "),
+        uuid: variant.uuid,
+        kind: "elementVariant",
+        elementUuid: variant.forTpl.uuid,
+      },
+    });
+  }
+
+  return result;
+}
+
+/**
+ * Builds component variant definitions as <variant> XmlElements.
+ */
+function buildComponentVariantDefs(component: Component): XmlElement[] {
+  return getComponentVariants(component).map(({ attrs }) => ({
+    variant: { _attr: { ...attrs } },
+  }));
 }
 
 /**
@@ -415,17 +452,15 @@ function buildComponentVariantDefs(component: Component): XmlElement[] {
 function buildComponentVariants(component: Component): XmlElement | null {
   const variantElements: XmlElement[] = [];
 
-  for (const variantGroup of component.variantGroups) {
-    for (const variant of variantGroup.variants) {
-      const overrides = getTplOverrides(component, variant);
-      if (overrides.length > 0) {
-        variantElements.push({
-          variant: [
-            { _attr: { name: toVarName(variant.name), id: variant.uuid } },
-            ...overrides.map((o) => buildTplOverride(o)),
-          ],
-        });
-      }
+  for (const { variant, attrs } of getComponentVariants(component)) {
+    const overrides = getTplOverrides(component, variant);
+    if (overrides.length > 0) {
+      variantElements.push({
+        variant: [
+          { _attr: { name: attrs.name, uuid: attrs.uuid } },
+          ...overrides.map((o) => buildTplOverride(o)),
+        ],
+      });
     }
   }
 
@@ -445,20 +480,21 @@ function buildComponentVariants(component: Component): XmlElement | null {
  *     <prop name="color" uuid="..." type="text" />
  *   </props>
  *   <variants>
- *     <variant name="large" uuid="..." group="size" type="enum" />
+ *     <variant name="large" uuid="..." kind="componentVariant" type="enum" group="size" />
+ *     <variant name=":hover" uuid="..." kind="elementVariant" elementUuid="..." />
  *   </variants>
  *   <base-variant-tpl-tree>
  *     ... html-parser-representation ...
  *   </base-variant-tpl-tree>
  *   <VariantSettings>
- *     <variant name="neutral" id="sy5AokJJ7g7H">
- *       <Tpl id="P4urRFgjF3wU">
+ *     <variant name="neutral" uuid="sy5AokJJ7g7H">
+ *       <element uuid="P4urRFgjF3wU">
  *         <VariantSetting id="3008807">
  *           <RuleSet id="3008806">
  *             {"background":"..."}
  *           </RuleSet>
  *         </VariantSetting>
- *       </Tpl>
+ *       </element>
  *     </variant>
  *   </VariantSettings>
  * </component>

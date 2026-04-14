@@ -13,24 +13,24 @@ exports[`Component Serialization serialize all components into text representati
     <prop name="openLinkInNewTab" uuid="yy2_KKU6W4Gr" type="boolean" default="&quot;false&quot;"/>
   </props>
   <variants>
-    <variant name="Neutral" uuid="sy5AokJJ7g7H" group="color" type="enum"/>
-    <variant name="Muted" uuid="gdLWnA57ufpt" group="color" type="enum"/>
-    <variant name="Success" uuid="4EM17LBKD7cA" group="color" type="enum"/>
-    <variant name="Warning" uuid="rS75iYmeFNPU" group="color" type="enum"/>
-    <variant name="Error/Destructive" uuid="UZpDGjtFbbo-" group="color" type="enum"/>
-    <variant name="Soft" uuid="NzLhyUcNJ56l" group="type" type="enum"/>
-    <variant name="Bordered" uuid="CFlf6CAr5PRq" group="type" type="enum"/>
-    <variant name="Extra small" uuid="RDlJE6wlLaV0" group="size" type="enum"/>
-    <variant name="Small" uuid="1Wus14yXOz6z" group="size" type="enum"/>
-    <variant name="Large" uuid="f0h7JomxhfMB" group="size" type="enum"/>
-    <variant name="Extra large" uuid="IL042y6ZmTqU" group="size" type="enum"/>
-    <variant name="Icon start" uuid="sHwmv6VTmYIE" group="iconStart" type="boolean"/>
-    <variant name="Icon end" uuid="WG_MUEe-AF5Z" group="iconEnd" type="boolean"/>
-    <variant name="Rounded full" uuid="rnbD-4X93Vp0" group="roundedFull" type="boolean"/>
-    <variant name="Top" uuid="LAvN7TnRtX1E" group="flatSide" type="enum"/>
-    <variant name="Right" uuid="F877AcVY27WU" group="flatSide" type="enum"/>
-    <variant name="Bottom" uuid="JG2Gsxo917WB" group="flatSide" type="enum"/>
-    <variant name="Left" uuid="ZDz-CWXMxtWT" group="flatSide" type="enum"/>
+    <variant name="neutral" uuid="sy5AokJJ7g7H" kind="componentVariant" type="enum" group="color"/>
+    <variant name="muted" uuid="gdLWnA57ufpt" kind="componentVariant" type="enum" group="color"/>
+    <variant name="success" uuid="4EM17LBKD7cA" kind="componentVariant" type="enum" group="color"/>
+    <variant name="warning" uuid="rS75iYmeFNPU" kind="componentVariant" type="enum" group="color"/>
+    <variant name="errorDestructive" uuid="UZpDGjtFbbo-" kind="componentVariant" type="enum" group="color"/>
+    <variant name="soft" uuid="NzLhyUcNJ56l" kind="componentVariant" type="enum" group="type"/>
+    <variant name="bordered" uuid="CFlf6CAr5PRq" kind="componentVariant" type="enum" group="type"/>
+    <variant name="extraSmall" uuid="RDlJE6wlLaV0" kind="componentVariant" type="enum" group="size"/>
+    <variant name="small" uuid="1Wus14yXOz6z" kind="componentVariant" type="enum" group="size"/>
+    <variant name="large" uuid="f0h7JomxhfMB" kind="componentVariant" type="enum" group="size"/>
+    <variant name="extraLarge" uuid="IL042y6ZmTqU" kind="componentVariant" type="enum" group="size"/>
+    <variant name="iconStart" uuid="sHwmv6VTmYIE" kind="componentVariant" type="boolean" group="iconStart"/>
+    <variant name="iconEnd" uuid="WG_MUEe-AF5Z" kind="componentVariant" type="boolean" group="iconEnd"/>
+    <variant name="roundedFull" uuid="rnbD-4X93Vp0" kind="componentVariant" type="boolean" group="roundedFull"/>
+    <variant name="top" uuid="LAvN7TnRtX1E" kind="componentVariant" type="enum" group="flatSide"/>
+    <variant name="right" uuid="F877AcVY27WU" kind="componentVariant" type="enum" group="flatSide"/>
+    <variant name="bottom" uuid="JG2Gsxo917WB" kind="componentVariant" type="enum" group="flatSide"/>
+    <variant name="left" uuid="ZDz-CWXMxtWT" kind="componentVariant" type="enum" group="flatSide"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="P4urRFgjF3wU" data-plasmic-name="plasmicReactAriaButton" data-props="{&quot;onPress&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;submitsForm&quot;:&quot;&quot;,&quot;resetsForm&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;,&quot;href&quot;:&quot;&quot;,&quot;target&quot;:&quot;&quot;}" style="position: relative; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); display: flex; cursor: pointer; box-sizing: border-box; min-width: var(--token-J8bgk1cLaZ5G); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; outline-style: none; padding-bottom: 0rem; padding-top: 0rem; padding-right: 0rem; padding-left: 0rem; text-decoration-line: none; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)">
@@ -62,406 +62,406 @@ exports[`Component Serialization serialize all components into text representati
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="neutral" id="sy5AokJJ7g7H">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="neutral" uuid="sy5AokJJ7g7H">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008806">
           <RuleSet id="3008805">{&quot;background&quot;:&quot;linear-gradient(var(--token-W06EMLry-Nfs), var(--token-W06EMLry-Nfs))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008471">
           <RuleSet id="3008470">{&quot;background&quot;:&quot;linear-gradient(var(--token-iwAtTzjIrY52), var(--token-iwAtTzjIrY52))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008506">
           <RuleSet id="3008505">{&quot;border-top-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;,&quot;border-right-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;,&quot;border-left-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008576">
           <RuleSet id="3008575">{&quot;color&quot;:&quot;var(--token-jDYABwPNRgB6)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008646">
           <RuleSet id="3008645">{&quot;color&quot;:&quot;var(--token-jDYABwPNRgB6)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008706">
           <RuleSet id="3008705">{&quot;color&quot;:&quot;var(--token-jDYABwPNRgB6)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="muted" id="gdLWnA57ufpt">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="muted" uuid="gdLWnA57ufpt">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008810">
           <RuleSet id="3008809">{&quot;background&quot;:&quot;linear-gradient(var(--token-c3a_UW9vDP9I), var(--token-c3a_UW9vDP9I))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008473">
           <RuleSet id="3008472">{&quot;background&quot;:&quot;linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008508">
           <RuleSet id="3008507">{&quot;border-top-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;,&quot;border-right-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;,&quot;border-left-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008578">
           <RuleSet id="3008577">{&quot;color&quot;:&quot;var(--token-Le_d7m1UzXV7)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008648">
           <RuleSet id="3008647">{&quot;color&quot;:&quot;var(--token-Le_d7m1UzXV7)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008708">
           <RuleSet id="3008707">{&quot;color&quot;:&quot;var(--token-Le_d7m1UzXV7)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="success" id="4EM17LBKD7cA">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="success" uuid="4EM17LBKD7cA">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008834">
           <RuleSet id="3008833">{&quot;background&quot;:&quot;linear-gradient(var(--token-KIKkVE5HITTq), var(--token-KIKkVE5HITTq))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008475">
           <RuleSet id="3008474">{&quot;background&quot;:&quot;linear-gradient(var(--token-iJ_NxhLUkdWo), var(--token-iJ_NxhLUkdWo))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008510">
           <RuleSet id="3008509">{&quot;border-top-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;,&quot;border-right-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;,&quot;border-left-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008592">
           <RuleSet id="3008591">{&quot;color&quot;:&quot;var(--token-T19iHLx7o2j3)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008666">
           <RuleSet id="3008665">{&quot;color&quot;:&quot;var(--token-T19iHLx7o2j3)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008722">
           <RuleSet id="3008721">{&quot;color&quot;:&quot;var(--token-T19iHLx7o2j3)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="warning" id="rS75iYmeFNPU">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="warning" uuid="rS75iYmeFNPU">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008838">
           <RuleSet id="3008837">{&quot;background&quot;:&quot;linear-gradient(var(--token-cpEXg673w3LE), var(--token-cpEXg673w3LE))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008477">
           <RuleSet id="3008476">{&quot;background&quot;:&quot;linear-gradient(var(--token-996B2a7W81uk), var(--token-996B2a7W81uk))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008512">
           <RuleSet id="3008511">{&quot;border-top-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;,&quot;border-right-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;,&quot;border-left-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008590">
           <RuleSet id="3008589">{&quot;color&quot;:&quot;var(--token-gUYL2yuOGlk5)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008664">
           <RuleSet id="3008663">{&quot;color&quot;:&quot;var(--token-gUYL2yuOGlk5)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008720">
           <RuleSet id="3008719">{&quot;color&quot;:&quot;var(--token-gUYL2yuOGlk5)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="errorDestructive" id="UZpDGjtFbbo-">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="errorDestructive" uuid="UZpDGjtFbbo-">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008808">
           <RuleSet id="3008807">{&quot;background&quot;:&quot;linear-gradient(var(--token-HFP4U80F-qYK), var(--token-HFP4U80F-qYK))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008479">
           <RuleSet id="3008478">{&quot;background&quot;:&quot;linear-gradient(var(--token-YMdR_Biy5WbG), var(--token-YMdR_Biy5WbG))&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008514">
           <RuleSet id="3008513">{&quot;border-top-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;,&quot;border-right-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;,&quot;border-left-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008594">
           <RuleSet id="3008593">{&quot;color&quot;:&quot;var(--token-KY151bWozx0p)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008668">
           <RuleSet id="3008667">{&quot;color&quot;:&quot;var(--token-KY151bWozx0p)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008724">
           <RuleSet id="3008723">{&quot;color&quot;:&quot;var(--token-KY151bWozx0p)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="soft" id="NzLhyUcNJ56l">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="soft" uuid="NzLhyUcNJ56l">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008836">
           <RuleSet id="3008835">{&quot;background&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008465">
           <RuleSet id="3008464">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008582">
           <RuleSet id="3008581">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008660">
           <RuleSet id="3008659">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008712">
           <RuleSet id="3008711">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="bordered" id="CFlf6CAr5PRq">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="bordered" uuid="CFlf6CAr5PRq">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008848">
           <RuleSet id="3008847">{&quot;background&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008504">
           <RuleSet id="3008503">{&quot;border-top-width&quot;:&quot;1px&quot;,&quot;border-right-width&quot;:&quot;1px&quot;,&quot;border-bottom-width&quot;:&quot;1px&quot;,&quot;border-left-width&quot;:&quot;1px&quot;,&quot;plasmic-display-none&quot;:&quot;false&quot;,&quot;background&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008596">
           <RuleSet id="3008595">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="PgB8XX97acqo">
+      </element>
+      <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008672">
           <RuleSet id="3008671">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008726">
           <RuleSet id="3008725">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="extraSmall" id="RDlJE6wlLaV0">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="extraSmall" uuid="RDlJE6wlLaV0">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008816">
           <RuleSet id="3008815">{&quot;border-top-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-top-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;line-height&quot;:&quot;var(--token-TeiPG4bVS8s9)&quot;,&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;,&quot;column-gap&quot;:&quot;var(--token-aR8bR72wtSYZ)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="LcbjVN0--45d">
+      </element>
+      <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008772">
           <RuleSet id="3008771">{&quot;padding-top&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;padding-bottom&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;padding-right&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;,&quot;padding-left&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008584">
           <RuleSet id="3008583">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008714">
           <RuleSet id="3008713">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="small" id="1Wus14yXOz6z">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="small" uuid="1Wus14yXOz6z">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008812">
           <RuleSet id="3008811">{&quot;border-top-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-top-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;,&quot;line-height&quot;:&quot;var(--token-TeiPG4bVS8s9)&quot;,&quot;column-gap&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="LcbjVN0--45d">
+      </element>
+      <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008774">
           <RuleSet id="3008773">{&quot;padding-top&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;,&quot;padding-bottom&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;,&quot;padding-right&quot;:&quot;var(--token-J8bgk1cLaZ5G)&quot;,&quot;padding-left&quot;:&quot;var(--token-J8bgk1cLaZ5G)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008586">
           <RuleSet id="3008585">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008716">
           <RuleSet id="3008715">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="large" id="f0h7JomxhfMB">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="large" uuid="f0h7JomxhfMB">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008814">
           <RuleSet id="3008813">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;,&quot;line-height&quot;:&quot;var(--token-nnknQsSF9X4M)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="LcbjVN0--45d">
+      </element>
+      <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008776">
           <RuleSet id="3008775">{&quot;padding-top&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;padding-bottom&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008580">
           <RuleSet id="3008579">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008710">
           <RuleSet id="3008709">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="extraLarge" id="IL042y6ZmTqU">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="extraLarge" uuid="IL042y6ZmTqU">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008818">
           <RuleSet id="3008817">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;,&quot;line-height&quot;:&quot;var(--token-nnknQsSF9X4M)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="LcbjVN0--45d">
+      </element>
+      <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008778">
           <RuleSet id="3008777">{&quot;padding-left&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;,&quot;padding-right&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008588">
           <RuleSet id="3008587">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008718">
           <RuleSet id="3008717">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="iconStart" id="sHwmv6VTmYIE">
-      <Tpl id="4-zlvdO1CNcE">
+    <variant name="iconStart" uuid="sHwmv6VTmYIE">
+      <element uuid="4-zlvdO1CNcE">
         <VariantSetting id="3008623">
           <RuleSet id="3008622">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="omi74nYXXVka">
+      </element>
+      <element uuid="omi74nYXXVka">
         <VariantSetting id="3008574">
           <RuleSet id="3008573">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="iconEnd" id="WG_MUEe-AF5Z">
-      <Tpl id="sjXkLSA3nurb">
+    <variant name="iconEnd" uuid="WG_MUEe-AF5Z">
+      <element uuid="sjXkLSA3nurb">
         <VariantSetting id="3008753">
           <RuleSet id="3008752">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="6sD-taUBGCX5">
+      </element>
+      <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008704">
           <RuleSet id="3008703">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="roundedFull" id="rnbD-4X93Vp0">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="roundedFull" uuid="rnbD-4X93Vp0">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008828">
           <RuleSet id="3008827">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="zhn6dj3FeLUL">
+      </element>
+      <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008487">
           <RuleSet id="3008486">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008520">
           <RuleSet id="3008519">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="7ftEZY6-lBPq">
+      </element>
+      <element uuid="7ftEZY6-lBPq">
         <VariantSetting id="3008562">
           <RuleSet id="3008561">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="LcbjVN0--45d">
+      </element>
+      <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008780">
           <RuleSet id="3008779">{&quot;padding-right&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;,&quot;padding-left&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="top" id="LAvN7TnRtX1E">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="top" uuid="LAvN7TnRtX1E">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008844">
           <RuleSet id="3008843">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-top-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008522">
           <RuleSet id="3008521">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-top-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="right" id="F877AcVY27WU">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="right" uuid="F877AcVY27WU">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008840">
           <RuleSet id="3008839">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008524">
           <RuleSet id="3008523">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="bottom" id="JG2Gsxo917WB">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="bottom" uuid="JG2Gsxo917WB">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008846">
           <RuleSet id="3008845">{&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008526">
           <RuleSet id="3008525">{&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="left" id="ZDz-CWXMxtWT">
-      <Tpl id="P4urRFgjF3wU">
+    <variant name="left" uuid="ZDz-CWXMxtWT">
+      <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008842">
           <RuleSet id="3008841">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
-      <Tpl id="MpYlNqLG4pwf">
+      </element>
+      <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008528">
           <RuleSet id="3008527">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>
@@ -555,8 +555,8 @@ exports[`Component Serialization serialize all components into text representati
     <prop name="readOnly" uuid="cf0G1VdfjZ0R" type="boolean"/>
   </props>
   <variants>
-    <variant name="Soft" uuid="tPGQI9ximkgA" group="type" type="enum"/>
-    <variant name="Plain" uuid="gcKc5e0uirg6" group="type" type="enum"/>
+    <variant name="soft" uuid="tPGQI9ximkgA" kind="componentVariant" type="enum" group="type"/>
+    <variant name="plain" uuid="gcKc5e0uirg6" kind="componentVariant" type="enum" group="type"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="6toPxJJ_4YJU" data-plasmic-name="plasmicReactAriaCombobox" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;}" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
@@ -642,7 +642,7 @@ exports[`Component Serialization serialize all components into text representati
     <prop name="isKeyboardDismissDisabled" uuid="r4xxnbDzdJgo" type="boolean"/>
   </props>
   <variants>
-    <variant name="No trigger" uuid="XcAK-UZkDgAi" group="noTrigger" type="boolean"/>
+    <variant name="noTrigger" uuid="XcAK-UZkDgAi" kind="componentVariant" type="boolean" group="noTrigger"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="WAQLbjkAZ5OA" data-plasmic-name="plasmicReactAriaDialogTrigger" style="position: relative">
@@ -712,12 +712,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="noTrigger" id="XcAK-UZkDgAi">
-      <Tpl id="EgoIzR721aP7">
+    <variant name="noTrigger" uuid="XcAK-UZkDgAi">
+      <element uuid="EgoIzR721aP7">
         <VariantSetting id="3011416">
           <RuleSet id="3011415">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>
@@ -726,6 +726,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <props>
   </props>
   <variants>
+    <variant name=":focus" uuid="nXTFjlmK5XoA" kind="elementVariant" elementUuid="Sya0jp-3z04Q"/>
+    <variant name=":focus" uuid="o0aQD1uD0PE7" kind="elementVariant" elementUuid="dmoXeGSEu9FR"/>
+    <variant name=":focus" uuid="PSb4MDAD-yZ3" kind="elementVariant" elementUuid="Y2BCutCiq0ay"/>
   </variants>
   <base-variant-tpl-tree>
     <div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
@@ -733,7 +736,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px; color: red">Welcome to your first page.</h1>
         <plasmic-component id="o4LGC6aDPoZr" data-plasmic-name="testComponent" style="max-width: 100%">
         </plasmic-component>
-        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
+        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
 
 It&apos;s always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
 
@@ -752,49 +755,72 @@ Join our Slack community (icon in bottom left) for help any time.</div>
           </li>
         </ul>
         <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
-        <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
-          <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px">
+        <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center; animation: none">
+          <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px; animation: none">
           </plasmic-component>
-          <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
-            <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative">
+          <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; animation: none">
+            <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
             </plasmic-component>
           </div>
-          <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px">
+          <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px; animation: none">
           </plasmic-component>
-          <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px">
+          <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px; animation: none">
           </plasmic-component>
-          <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false">
-            <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%">
+          <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false; animation: none">
+            <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%; animation: none">
             </plasmic-component>
           </div>
-          <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px">
+          <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px; animation: none">
           </plasmic-component>
         </div>
         <div id="NcrzEUE3a4S3" style="position: relative; width: stretch; height: wrap; max-width: 100%">While in preview mode, click the labels to trigger animation examples:</div>
         <div id="97FRf3FdU4Xb" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: center; width: stretch; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
-          <div id="lff_bY1tQVo_" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-            <span id="Sya0jp-3z04Q" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Bounce</span>
+          <div id="lff_bY1tQVo_" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+            <span id="Sya0jp-3z04Q" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; animation: none">Bounce</span>
           </div>
-          <div id="ffXO-uitG62-" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-            <span id="dmoXeGSEu9FR" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; padding-bottom: 20px">Zoom In</span>
+          <div id="ffXO-uitG62-" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+            <span id="dmoXeGSEu9FR" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; padding-bottom: 20px; animation: none">Zoom In</span>
           </div>
-          <div id="kfBIDbO7ypT1" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-            <span id="Y2BCutCiq0ay" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Slide In Left</span>
+          <div id="kfBIDbO7ypT1" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+            <span id="Y2BCutCiq0ay" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; animation: none">Slide In Left</span>
           </div>
         </div>
       </section>
     </div>
   </base-variant-tpl-tree>
+  <VariantSettings>
+    <variant name=":focus" uuid="nXTFjlmK5XoA">
+      <element uuid="Sya0jp-3z04Q">
+        <VariantSetting id="3008241">
+          <RuleSet id="3008240">{&quot;animation&quot;:&quot;bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+        </VariantSetting>
+      </element>
+    </variant>
+    <variant name=":focus" uuid="o0aQD1uD0PE7">
+      <element uuid="dmoXeGSEu9FR">
+        <VariantSetting id="3008252">
+          <RuleSet id="3008251">{&quot;animation&quot;:&quot;zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+        </VariantSetting>
+      </element>
+    </variant>
+    <variant name=":focus" uuid="PSb4MDAD-yZ3">
+      <element uuid="Y2BCutCiq0ay">
+        <VariantSetting id="3008263">
+          <RuleSet id="3008262">{&quot;animation&quot;:&quot;slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+        </VariantSetting>
+      </element>
+    </variant>
+  </VariantSettings>
 </component>
 ",
   "Label": "<component name="Label">
   <props>
   </props>
   <variants>
-    <variant name="SM" uuid="Mc-Oh4udbRX7" group="size" type="enum"/>
-    <variant name="LG" uuid="VHb-pUA8lidW" group="size" type="enum"/>
-    <variant name="Optional" uuid="-6wdZI4H74qM" group="requirementIndicator" type="enum"/>
-    <variant name="Required" uuid="Kfk1fRQ40Hgx" group="requirementIndicator" type="enum"/>
+    <variant name="sm" uuid="Mc-Oh4udbRX7" kind="componentVariant" type="enum" group="size"/>
+    <variant name="lg" uuid="VHb-pUA8lidW" kind="componentVariant" type="enum" group="size"/>
+    <variant name="optional" uuid="-6wdZI4H74qM" kind="componentVariant" type="enum" group="requirementIndicator"/>
+    <variant name="required" uuid="Kfk1fRQ40Hgx" kind="componentVariant" type="enum" group="requirementIndicator"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="ZRhv_StjR968" data-plasmic-name="plasmicReactAriaLabel" style="position: relative; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn)">
@@ -809,33 +835,33 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="sm" id="Mc-Oh4udbRX7">
-      <Tpl id="ck67sECnXw-2">
+    <variant name="sm" uuid="Mc-Oh4udbRX7">
+      <element uuid="ck67sECnXw-2">
         <VariantSetting id="3008911">
           <RuleSet id="3008910">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;,&quot;line-height&quot;:&quot;var(--token-TeiPG4bVS8s9)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="lg" id="VHb-pUA8lidW">
-      <Tpl id="ck67sECnXw-2">
+    <variant name="lg" uuid="VHb-pUA8lidW">
+      <element uuid="ck67sECnXw-2">
         <VariantSetting id="3008913">
           <RuleSet id="3008912">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;,&quot;line-height&quot;:&quot;var(--token-nnknQsSF9X4M)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="optional" id="-6wdZI4H74qM">
-      <Tpl id="O3UhwtNeECFd">
+    <variant name="optional" uuid="-6wdZI4H74qM">
+      <element uuid="O3UhwtNeECFd">
         <VariantSetting id="3008925">
           <RuleSet id="3008924">{&quot;plasmic-display-none&quot;:&quot;false&quot;,&quot;color&quot;:&quot;var(--token-O7HlhsyUcTLk)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="required" id="Kfk1fRQ40Hgx">
-      <Tpl id="O3UhwtNeECFd">
+    <variant name="required" uuid="Kfk1fRQ40Hgx">
+      <element uuid="O3UhwtNeECFd">
         <VariantSetting id="3008929">
           <RuleSet id="3008928">{&quot;plasmic-display-none&quot;:&quot;false&quot;,&quot;color&quot;:&quot;var(--token-HFP4U80F-qYK)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>
@@ -948,7 +974,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <prop name="isKeyboardDismissDisabled" uuid="wSBJUtL_n4l2" type="boolean"/>
   </props>
   <variants>
-    <variant name="No trigger" uuid="phcL-adiLQWW" group="noTrigger" type="boolean"/>
+    <variant name="noTrigger" uuid="phcL-adiLQWW" kind="componentVariant" type="boolean" group="noTrigger"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="6A5IRex_ZR1p" data-plasmic-name="plasmicReactAriaDialogTrigger" style="position: relative">
@@ -1019,7 +1045,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <props>
   </props>
   <variants>
-    <variant name="Dark" uuid="8X2l3Su5Ev8K" group="dark" type="boolean"/>
+    <variant name="dark" uuid="8X2l3Su5Ev8K" kind="componentVariant" type="boolean" group="dark"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="4e5blTBKaGaB" data-plasmic-name="plasmicReactAriaOverlayArrow" style="max-width: 100%; object-fit: cover; position: relative">
@@ -1030,12 +1056,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="dark" id="8X2l3Su5Ev8K">
-      <Tpl id="-2SFIm9VX_6T">
+    <variant name="dark" uuid="8X2l3Su5Ev8K">
+      <element uuid="-2SFIm9VX_6T">
         <VariantSetting id="3011128">
           <RuleSet id="3011127">{&quot;color&quot;:&quot;var(--token-X4GQ8bRemoGX)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>
@@ -1233,8 +1259,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <prop name="ariaLabel" uuid="lbgAs4SojKA2" type="text"/>
   </props>
   <variants>
-    <variant name="Soft" uuid="0bSTNkoe1NSD" group="type" type="enum"/>
-    <variant name="Plain" uuid="AUJGtdMM0Zz4" group="type" type="enum"/>
+    <variant name="soft" uuid="0bSTNkoe1NSD" kind="componentVariant" type="enum" group="type"/>
+    <variant name="plain" uuid="AUJGtdMM0Zz4" kind="componentVariant" type="enum" group="type"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="P6ldrdX5EJky" data-plasmic-name="plasmicReactAriaSelect" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;}" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
@@ -1431,9 +1457,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <prop name="ariaLabel" uuid="1xESXiUetCDz" type="text"/>
   </props>
   <variants>
-    <variant name="Multi-line" uuid="ujPUz5-pNQo3" group="multiLine" type="boolean"/>
-    <variant name="Icon start" uuid="Y1wfrLkCK3tp" group="iconStart" type="boolean"/>
-    <variant name="Icon end" uuid="lZuHYDu-P997" group="iconEnd" type="boolean"/>
+    <variant name="multiLine" uuid="ujPUz5-pNQo3" kind="componentVariant" type="boolean" group="multiLine"/>
+    <variant name="iconStart" uuid="Y1wfrLkCK3tp" kind="componentVariant" type="boolean" group="iconStart"/>
+    <variant name="iconEnd" uuid="lZuHYDu-P997" kind="componentVariant" type="boolean" group="iconEnd"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="NESDFXPGRUxY" data-plasmic-name="plasmicReactAriaTextField" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;isReadOnly&quot;:&quot;&quot;,&quot;inputMode&quot;:&quot;&quot;,&quot;type&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;autoComplete&quot;:&quot;&quot;}" style="display: flex; flex-direction: column; box-sizing: border-box; width: stretch; position: relative; row-gap: var(--token-iV97hAoHAnKd)">
@@ -1474,26 +1500,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="multiLine" id="ujPUz5-pNQo3">
-      <Tpl id="owbUg8BLCrEo">
+    <variant name="multiLine" uuid="ujPUz5-pNQo3">
+      <element uuid="owbUg8BLCrEo">
         <VariantSetting id="3010531">
           <RuleSet id="3010530">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="iconStart" id="Y1wfrLkCK3tp">
-      <Tpl id="EiP28sViJ6pF">
+    <variant name="iconStart" uuid="Y1wfrLkCK3tp">
+      <element uuid="EiP28sViJ6pF">
         <VariantSetting id="3010501">
           <RuleSet id="3010500">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="iconEnd" id="lZuHYDu-P997">
-      <Tpl id="sy4BAFLD5x2S">
+    <variant name="iconEnd" uuid="lZuHYDu-P997">
+      <element uuid="sy4BAFLD5x2S">
         <VariantSetting id="3010555">
           <RuleSet id="3010554">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>
@@ -1510,75 +1536,75 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <prop name="ariaLabel" uuid="J4K4kt4q2EaE" type="text"/>
   </props>
   <variants>
-    <variant name="Soft" uuid="0cXa8u_Fd6-c" group="type" type="enum"/>
-    <variant name="Plain" uuid="9cJ3z_ZYGZvt" group="type" type="enum"/>
-    <variant name="Top" uuid="pUxG-pkjbXcJ" group="flat" type="enum"/>
-    <variant name="Right" uuid="jFOHHIE_LIsW" group="flat" type="enum"/>
-    <variant name="Bottom" uuid="oRa7KNUAvba6" group="flat" type="enum"/>
-    <variant name="Left" uuid="f-jiC3pxjmB0" group="flat" type="enum"/>
-    <variant name="Left" uuid="aIRXAYdM6pXb" group="padded" type="enum"/>
-    <variant name="Right" uuid="t5DeV--6wj_c" group="padded" type="enum"/>
+    <variant name="soft" uuid="0cXa8u_Fd6-c" kind="componentVariant" type="enum" group="type"/>
+    <variant name="plain" uuid="9cJ3z_ZYGZvt" kind="componentVariant" type="enum" group="type"/>
+    <variant name="top" uuid="pUxG-pkjbXcJ" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="right" uuid="jFOHHIE_LIsW" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="bottom" uuid="oRa7KNUAvba6" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="left" uuid="f-jiC3pxjmB0" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="left" uuid="aIRXAYdM6pXb" kind="componentVariant" type="enum" group="padded"/>
+    <variant name="right" uuid="t5DeV--6wj_c" kind="componentVariant" type="enum" group="padded"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="PzECf6Nfa4vE" data-plasmic-name="plasmicReactAriaInput" data-props="{&quot;placeholder&quot;:&quot;&quot;,&quot;disabled&quot;:&quot;&quot;,&quot;inputMode&quot;:&quot;&quot;,&quot;readOnly&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;autoComplete&quot;:&quot;&quot;,&quot;type&quot;:&quot;&quot;}" style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); box-sizing: border-box; border-bottom-left-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-top-left-radius: var(--token--0yvAvGYfFhX); box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); border-left-style: none; border-bottom-style: none; border-right-style: none; border-top-style: none; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; position: relative; outline-style: none">
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="soft" id="0cXa8u_Fd6-c">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="soft" uuid="0cXa8u_Fd6-c">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010222">
           <RuleSet id="3010221">{&quot;background&quot;:&quot;linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))&quot;,&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="plain" id="9cJ3z_ZYGZvt">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="plain" uuid="9cJ3z_ZYGZvt">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010226">
           <RuleSet id="3010225">{&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="top" id="pUxG-pkjbXcJ">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="top" uuid="pUxG-pkjbXcJ">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010236">
           <RuleSet id="3010235">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-top-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="right" id="jFOHHIE_LIsW">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="right" uuid="jFOHHIE_LIsW">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010232">
           <RuleSet id="3010231">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="bottom" id="oRa7KNUAvba6">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="bottom" uuid="oRa7KNUAvba6">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010238">
           <RuleSet id="3010237">{&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="left" id="f-jiC3pxjmB0">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="left" uuid="f-jiC3pxjmB0">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010234">
           <RuleSet id="3010233">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="left" id="aIRXAYdM6pXb">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="left" uuid="aIRXAYdM6pXb">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010240">
           <RuleSet id="3010239">{&quot;padding-left&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="right" id="t5DeV--6wj_c">
-      <Tpl id="PzECf6Nfa4vE">
+    <variant name="right" uuid="t5DeV--6wj_c">
+      <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010242">
           <RuleSet id="3010241">{&quot;padding-right&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>
@@ -1593,75 +1619,75 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <prop name="ariaLabel" uuid="6Go6pans-5xS" type="text"/>
   </props>
   <variants>
-    <variant name="Soft" uuid="BYaTSYRbp5k-" group="type" type="enum"/>
-    <variant name="Plain" uuid="RVfUSn_4OlZE" group="type" type="enum"/>
-    <variant name="Top" uuid="uub7dYD9Ahd9" group="flat" type="enum"/>
-    <variant name="Right" uuid="YEvyTqML8ybV" group="flat" type="enum"/>
-    <variant name="Bottom" uuid="DoKOv7moJkW2" group="flat" type="enum"/>
-    <variant name="Left" uuid="EDke_10m8Cz5" group="flat" type="enum"/>
-    <variant name="Left" uuid="PscEmlQHZllk" group="padded" type="enum"/>
-    <variant name="Right" uuid="tbJOPfM389OI" group="padded" type="enum"/>
+    <variant name="soft" uuid="BYaTSYRbp5k-" kind="componentVariant" type="enum" group="type"/>
+    <variant name="plain" uuid="RVfUSn_4OlZE" kind="componentVariant" type="enum" group="type"/>
+    <variant name="top" uuid="uub7dYD9Ahd9" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="right" uuid="YEvyTqML8ybV" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="bottom" uuid="DoKOv7moJkW2" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="left" uuid="EDke_10m8Cz5" kind="componentVariant" type="enum" group="flat"/>
+    <variant name="left" uuid="PscEmlQHZllk" kind="componentVariant" type="enum" group="padded"/>
+    <variant name="right" uuid="tbJOPfM389OI" kind="componentVariant" type="enum" group="padded"/>
   </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="yx_4PVCh-WFR" data-plasmic-name="plasmicReactAriaTextarea" data-props="{&quot;placeholder&quot;:&quot;&quot;,&quot;disabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;readOnly&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;inputMode&quot;:&quot;&quot;}" style="box-sizing: border-box; object-fit: cover; position: relative; box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none">
     </plasmic-component>
   </base-variant-tpl-tree>
   <VariantSettings>
-    <variant name="soft" id="BYaTSYRbp5k-">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="soft" uuid="BYaTSYRbp5k-">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010336">
           <RuleSet id="3010335">{&quot;background&quot;:&quot;linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))&quot;,&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="plain" id="RVfUSn_4OlZE">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="plain" uuid="RVfUSn_4OlZE">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010338">
           <RuleSet id="3010337">{&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="top" id="uub7dYD9Ahd9">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="top" uuid="uub7dYD9Ahd9">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010340">
           <RuleSet id="3010339">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-top-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="right" id="YEvyTqML8ybV">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="right" uuid="YEvyTqML8ybV">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010342">
           <RuleSet id="3010341">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="bottom" id="DoKOv7moJkW2">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="bottom" uuid="DoKOv7moJkW2">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010344">
           <RuleSet id="3010343">{&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="left" id="EDke_10m8Cz5">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="left" uuid="EDke_10m8Cz5">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010346">
           <RuleSet id="3010345">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="left" id="PscEmlQHZllk">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="left" uuid="PscEmlQHZllk">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010352">
           <RuleSet id="3010351">{&quot;padding-left&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
-    <variant name="right" id="tbJOPfM389OI">
-      <Tpl id="yx_4PVCh-WFR">
+    <variant name="right" uuid="tbJOPfM389OI">
+      <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010354">
           <RuleSet id="3010353">{&quot;padding-right&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
         </VariantSetting>
-      </Tpl>
+      </element>
     </variant>
   </VariantSettings>
 </component>

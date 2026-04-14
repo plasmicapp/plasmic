@@ -7,12 +7,15 @@ exports[`read copilot tool reads a specific resources by UUID 1`] = `
   <props>
   </props>
   <variants>
+    <variant name=":focus" uuid="nXTFjlmK5XoA" kind="elementVariant" elementUuid="Sya0jp-3z04Q"/>
+    <variant name=":focus" uuid="o0aQD1uD0PE7" kind="elementVariant" elementUuid="dmoXeGSEu9FR"/>
+    <variant name=":focus" uuid="PSb4MDAD-yZ3" kind="elementVariant" elementUuid="Y2BCutCiq0ay"/>
   </variants>
   <base-variant-tpl-tree>
     <div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
       <section id="7weorkEjgQjD" style="display: plasmic-content-layout; position: relative; width: plasmic-layout-full-bleed; height: wrap; padding-left: 0px; padding-right: 0px; padding-bottom: 96px; padding-top: 96px; grid-row-gap: 16px; align-content: flex-start; justify-items: center">
         <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px">Welcome to your first page.</h1>
-        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
+        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
 
 It&apos;s always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
 
@@ -31,39 +34,62 @@ Join our Slack community (icon in bottom left) for help any time.</div>
           </li>
         </ul>
         <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
-        <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
-          <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px">
+        <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center; animation: none">
+          <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px; animation: none">
           </plasmic-component>
-          <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
-            <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative">
+          <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; animation: none">
+            <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
             </plasmic-component>
           </div>
-          <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px">
+          <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px; animation: none">
           </plasmic-component>
-          <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px">
+          <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px; animation: none">
           </plasmic-component>
-          <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false">
-            <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%">
+          <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false; animation: none">
+            <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%; animation: none">
             </plasmic-component>
           </div>
-          <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px">
+          <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px; animation: none">
           </plasmic-component>
         </div>
         <div id="NcrzEUE3a4S3" style="position: relative; width: stretch; height: wrap; max-width: 100%">While in preview mode, click the labels to trigger animation examples:</div>
         <div id="97FRf3FdU4Xb" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: center; width: stretch; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
-          <div id="lff_bY1tQVo_" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-            <span id="Sya0jp-3z04Q" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Bounce</span>
+          <div id="lff_bY1tQVo_" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+            <span id="Sya0jp-3z04Q" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; animation: none">Bounce</span>
           </div>
-          <div id="ffXO-uitG62-" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-            <span id="dmoXeGSEu9FR" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; padding-bottom: 20px">Zoom In</span>
+          <div id="ffXO-uitG62-" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+            <span id="dmoXeGSEu9FR" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; padding-bottom: 20px; animation: none">Zoom In</span>
           </div>
-          <div id="kfBIDbO7ypT1" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-            <span id="Y2BCutCiq0ay" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Slide In Left</span>
+          <div id="kfBIDbO7ypT1" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+            <span id="Y2BCutCiq0ay" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; animation: none">Slide In Left</span>
           </div>
         </div>
       </section>
     </div>
   </base-variant-tpl-tree>
+  <VariantSettings>
+    <variant name=":focus" uuid="nXTFjlmK5XoA">
+      <element uuid="Sya0jp-3z04Q">
+        <VariantSetting id="3008241">
+          <RuleSet id="3008240">{&quot;animation&quot;:&quot;bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+        </VariantSetting>
+      </element>
+    </variant>
+    <variant name=":focus" uuid="o0aQD1uD0PE7">
+      <element uuid="dmoXeGSEu9FR">
+        <VariantSetting id="3008252">
+          <RuleSet id="3008251">{&quot;animation&quot;:&quot;zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+        </VariantSetting>
+      </element>
+    </variant>
+    <variant name=":focus" uuid="PSb4MDAD-yZ3">
+      <element uuid="Y2BCutCiq0ay">
+        <VariantSetting id="3008263">
+          <RuleSet id="3008262">{&quot;animation&quot;:&quot;slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+        </VariantSetting>
+      </element>
+    </variant>
+  </VariantSettings>
 </component>
 
 <component name="hostless-plasmic-head">
@@ -84,7 +110,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 <div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
   <section id="7weorkEjgQjD" style="display: plasmic-content-layout; position: relative; width: plasmic-layout-full-bleed; height: wrap; padding-left: 0px; padding-right: 0px; padding-bottom: 96px; padding-top: 96px; grid-row-gap: 16px; align-content: flex-start; justify-items: center">
     <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px">Welcome to your first page.</h1>
-    <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
+    <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
 
 It&apos;s always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
 
@@ -103,34 +129,34 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </li>
     </ul>
     <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
-    <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
-      <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px">
+    <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center; animation: none">
+      <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px; animation: none">
       </plasmic-component>
-      <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
-        <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative">
+      <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; animation: none">
+        <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
         </plasmic-component>
       </div>
-      <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px">
+      <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px; animation: none">
       </plasmic-component>
-      <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px">
+      <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px; animation: none">
       </plasmic-component>
-      <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false">
-        <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%">
+      <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false; animation: none">
+        <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%; animation: none">
         </plasmic-component>
       </div>
-      <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px">
+      <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px; animation: none">
       </plasmic-component>
     </div>
     <div id="NcrzEUE3a4S3" style="position: relative; width: stretch; height: wrap; max-width: 100%">While in preview mode, click the labels to trigger animation examples:</div>
     <div id="97FRf3FdU4Xb" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: center; width: stretch; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
-      <div id="lff_bY1tQVo_" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-        <span id="Sya0jp-3z04Q" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Bounce</span>
+      <div id="lff_bY1tQVo_" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+        <span id="Sya0jp-3z04Q" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; animation: none">Bounce</span>
       </div>
-      <div id="ffXO-uitG62-" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-        <span id="dmoXeGSEu9FR" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; padding-bottom: 20px">Zoom In</span>
+      <div id="ffXO-uitG62-" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+        <span id="dmoXeGSEu9FR" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; padding-bottom: 20px; animation: none">Zoom In</span>
       </div>
-      <div id="kfBIDbO7ypT1" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px">
-        <span id="Y2BCutCiq0ay" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Slide In Left</span>
+      <div id="kfBIDbO7ypT1" style="display: flex; flex-direction: row; width: 200px; height: 200px; background: linear-gradient(#f0f0f0, #f0f0f0); box-shadow: 0 0 10px 0 rgba(0,0,0,0.1); justify-content: center; align-items: center; overflow: hidden; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; animation: none">
+        <span id="Y2BCutCiq0ay" style="font-size: 24px; font-weight: bold; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; cursor: pointer; font-family: Inter; font-style: normal; color: #535353; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; animation: none">Slide In Left</span>
       </div>
     </div>
   </section>
