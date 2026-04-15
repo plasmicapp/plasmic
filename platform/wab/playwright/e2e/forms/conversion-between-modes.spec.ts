@@ -27,15 +27,7 @@ test.describe("conversion-between-modes", () => {
       },
     });
 
-    await page.addInitScript(() => {
-      const w = window as any;
-      if (!w.DEVFLAGS) {
-        w.DEVFLAGS = {};
-      }
-      w.DEVFLAGS.schemaDrivenForms = true;
-    });
-
-    await goToProject(page, `/projects/${projectId}?schemaDrivenForms=true`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

@@ -14,9 +14,6 @@ describe("schema", function () {
           npmPkg: ["@plasmicpkgs/antd5"],
         },
       ],
-      devFlags: {
-        schemaDrivenForms: true,
-      },
     });
   });
 

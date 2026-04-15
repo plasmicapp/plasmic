@@ -19,12 +19,9 @@ test.describe("schema", () => {
           npmPkg: ["@plasmicpkgs/antd5"],
         },
       ],
-      devFlags: {
-        schemaDrivenForms: true,
-      },
     });
 
-    await goToProject(page, `/projects/${projectId}?schemaDrivenForms=true`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

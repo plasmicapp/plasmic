@@ -169,12 +169,6 @@ export const ComponentPropsSection = observer(
     }
 
     const actions = getComponentActions(viewCtx, component).filter((action) => {
-      if (
-        hackyCast(action).type === "form-schema" &&
-        !viewCtx.studioCtx.appCtx.appConfig.schemaDrivenForms
-      ) {
-        return false;
-      }
       return !hackyCast(action).hidden?.(componentPropValues, ccContextData);
     });
     if (params.length === 0 && actions.length === 0) {

@@ -24,7 +24,6 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
     // state-management-dependent.spec.ts, dynamic-initial-value.spec.ts
     plexus: false,
 
-    schemaDrivenForms: true,
     branching: true,
 
     // tutorial.spec.ts

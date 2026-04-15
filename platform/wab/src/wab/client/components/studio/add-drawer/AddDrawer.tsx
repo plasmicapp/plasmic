@@ -601,12 +601,7 @@ export function createAddHostLessComponent(
           const args = meta.args
             ? mapValues(meta.args, (v) => codeLit(v))
             : undefined;
-          if (
-            opts?.isDragging ||
-            !ccMeta ||
-            !hackyCast(ccMeta).preInsertion ||
-            !sc.appCtx.appConfig.schemaDrivenForms
-          ) {
+          if (opts?.isDragging || !ccMeta || !hackyCast(ccMeta).preInsertion) {
             return { dep: deps, component, args };
           }
           const argsPre = await getPreInsertionProps(sc, component);

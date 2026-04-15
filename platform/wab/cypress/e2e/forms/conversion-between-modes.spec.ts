@@ -11,9 +11,6 @@ describe("conversion-between-modes", function () {
         dataSourceReplacement: {
           fakeSourceId: Cypress.env("dataSourceId"),
         },
-        devFlags: {
-          schemaDrivenForms: true,
-        },
       });
     });
   });
