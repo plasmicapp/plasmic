@@ -889,10 +889,6 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
     logger().info("Etag mechanism is disabled");
     return false;
   }
-  if (req.headers["x-plasmic-uptime-check"]) {
-    // Never skip uptime checks
-    return false;
-  }
 
   // Always set the same ETag, even for 304 Not Modified, so that it'll be used
   // next time as well.
@@ -904,6 +900,11 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   // disable request collapsing that cloudfront does for simultaneous
   // requests.
   res.setHeader("Cache-Control", "max-age=5");
+
+  if (req.headers["x-plasmic-uptime-check"]) {
+    // Never skip uptime checks, but still set cache headers above
+    return false;
+  }
 
   if (req.headers["if-none-match"] === etag) {
     // We got a match!  We can skip codegen.
