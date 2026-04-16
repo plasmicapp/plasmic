@@ -18,6 +18,7 @@ import { normProp } from "@/wab/shared/css";
 import {
   Component,
   Expr,
+  RuleSet,
   TplComponent,
   TplNode,
   TplSlot,
@@ -93,19 +94,26 @@ function extractExprValue(expr: Expr): string {
   return "";
 }
 
-function getStylesFromVariantSetting(
-  vs: VariantSetting
-): Record<string, string> {
+export function getStylesFromRuleSet(rs: RuleSet): Record<string, string> {
   const styles: Record<string, string> = {};
-
-  // Collect safe styles from RuleSet
-  if (vs.rs.values) {
-    for (const [prop, value] of Object.entries(vs.rs.values)) {
+  if (rs.values) {
+    for (const [prop, value] of Object.entries(rs.values)) {
       if (value) {
-        styles[prop] = value as string;
+        styles[prop] = value;
       }
     }
   }
+  if (rs.animations && rs.animations.length > 0) {
+    const animationValue = generateAnimationPropValue(rs.animations);
+    styles["animation"] = animationValue ?? "none";
+  }
+  return styles;
+}
+
+function getStylesFromVariantSetting(
+  vs: VariantSetting
+): Record<string, string> {
+  const styles: Record<string, string> = getStylesFromRuleSet(vs.rs);
 
   // The style attr could be a dynamic expression (e.g. a code expression
   // or data binding) instead of a plain JSON object. In that case

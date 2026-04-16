@@ -65,401 +65,401 @@ exports[`Component Serialization serialize all components into text representati
     <variant name="neutral" uuid="sy5AokJJ7g7H">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008806">
-          <RuleSet id="3008805">{&quot;background&quot;:&quot;linear-gradient(var(--token-W06EMLry-Nfs), var(--token-W06EMLry-Nfs))&quot;}</RuleSet>
+          <RuleSet id="3008805">{"background":"linear-gradient(var(--token-W06EMLry-Nfs), var(--token-W06EMLry-Nfs))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008471">
-          <RuleSet id="3008470">{&quot;background&quot;:&quot;linear-gradient(var(--token-iwAtTzjIrY52), var(--token-iwAtTzjIrY52))&quot;}</RuleSet>
+          <RuleSet id="3008470">{"background":"linear-gradient(var(--token-iwAtTzjIrY52), var(--token-iwAtTzjIrY52))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008506">
-          <RuleSet id="3008505">{&quot;border-top-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;,&quot;border-right-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;,&quot;border-left-color&quot;:&quot;var(--token-XYb5IRzNoqX7)&quot;}</RuleSet>
+          <RuleSet id="3008505">{"border-top-color":"var(--token-XYb5IRzNoqX7)","border-right-color":"var(--token-XYb5IRzNoqX7)","border-bottom-color":"var(--token-XYb5IRzNoqX7)","border-left-color":"var(--token-XYb5IRzNoqX7)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008576">
-          <RuleSet id="3008575">{&quot;color&quot;:&quot;var(--token-jDYABwPNRgB6)&quot;}</RuleSet>
+          <RuleSet id="3008575">{"color":"var(--token-jDYABwPNRgB6)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008646">
-          <RuleSet id="3008645">{&quot;color&quot;:&quot;var(--token-jDYABwPNRgB6)&quot;}</RuleSet>
+          <RuleSet id="3008645">{"color":"var(--token-jDYABwPNRgB6)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008706">
-          <RuleSet id="3008705">{&quot;color&quot;:&quot;var(--token-jDYABwPNRgB6)&quot;}</RuleSet>
+          <RuleSet id="3008705">{"color":"var(--token-jDYABwPNRgB6)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="muted" uuid="gdLWnA57ufpt">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008810">
-          <RuleSet id="3008809">{&quot;background&quot;:&quot;linear-gradient(var(--token-c3a_UW9vDP9I), var(--token-c3a_UW9vDP9I))&quot;}</RuleSet>
+          <RuleSet id="3008809">{"background":"linear-gradient(var(--token-c3a_UW9vDP9I), var(--token-c3a_UW9vDP9I))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008473">
-          <RuleSet id="3008472">{&quot;background&quot;:&quot;linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))&quot;}</RuleSet>
+          <RuleSet id="3008472">{"background":"linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008508">
-          <RuleSet id="3008507">{&quot;border-top-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;,&quot;border-right-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;,&quot;border-left-color&quot;:&quot;var(--token-lQAqvQ-ZHuDc)&quot;}</RuleSet>
+          <RuleSet id="3008507">{"border-top-color":"var(--token-lQAqvQ-ZHuDc)","border-right-color":"var(--token-lQAqvQ-ZHuDc)","border-bottom-color":"var(--token-lQAqvQ-ZHuDc)","border-left-color":"var(--token-lQAqvQ-ZHuDc)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008578">
-          <RuleSet id="3008577">{&quot;color&quot;:&quot;var(--token-Le_d7m1UzXV7)&quot;}</RuleSet>
+          <RuleSet id="3008577">{"color":"var(--token-Le_d7m1UzXV7)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008648">
-          <RuleSet id="3008647">{&quot;color&quot;:&quot;var(--token-Le_d7m1UzXV7)&quot;}</RuleSet>
+          <RuleSet id="3008647">{"color":"var(--token-Le_d7m1UzXV7)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008708">
-          <RuleSet id="3008707">{&quot;color&quot;:&quot;var(--token-Le_d7m1UzXV7)&quot;}</RuleSet>
+          <RuleSet id="3008707">{"color":"var(--token-Le_d7m1UzXV7)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="success" uuid="4EM17LBKD7cA">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008834">
-          <RuleSet id="3008833">{&quot;background&quot;:&quot;linear-gradient(var(--token-KIKkVE5HITTq), var(--token-KIKkVE5HITTq))&quot;}</RuleSet>
+          <RuleSet id="3008833">{"background":"linear-gradient(var(--token-KIKkVE5HITTq), var(--token-KIKkVE5HITTq))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008475">
-          <RuleSet id="3008474">{&quot;background&quot;:&quot;linear-gradient(var(--token-iJ_NxhLUkdWo), var(--token-iJ_NxhLUkdWo))&quot;}</RuleSet>
+          <RuleSet id="3008474">{"background":"linear-gradient(var(--token-iJ_NxhLUkdWo), var(--token-iJ_NxhLUkdWo))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008510">
-          <RuleSet id="3008509">{&quot;border-top-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;,&quot;border-right-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;,&quot;border-left-color&quot;:&quot;var(--token--HhbTi7UcSzz)&quot;}</RuleSet>
+          <RuleSet id="3008509">{"border-top-color":"var(--token--HhbTi7UcSzz)","border-right-color":"var(--token--HhbTi7UcSzz)","border-bottom-color":"var(--token--HhbTi7UcSzz)","border-left-color":"var(--token--HhbTi7UcSzz)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008592">
-          <RuleSet id="3008591">{&quot;color&quot;:&quot;var(--token-T19iHLx7o2j3)&quot;}</RuleSet>
+          <RuleSet id="3008591">{"color":"var(--token-T19iHLx7o2j3)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008666">
-          <RuleSet id="3008665">{&quot;color&quot;:&quot;var(--token-T19iHLx7o2j3)&quot;}</RuleSet>
+          <RuleSet id="3008665">{"color":"var(--token-T19iHLx7o2j3)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008722">
-          <RuleSet id="3008721">{&quot;color&quot;:&quot;var(--token-T19iHLx7o2j3)&quot;}</RuleSet>
+          <RuleSet id="3008721">{"color":"var(--token-T19iHLx7o2j3)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="warning" uuid="rS75iYmeFNPU">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008838">
-          <RuleSet id="3008837">{&quot;background&quot;:&quot;linear-gradient(var(--token-cpEXg673w3LE), var(--token-cpEXg673w3LE))&quot;}</RuleSet>
+          <RuleSet id="3008837">{"background":"linear-gradient(var(--token-cpEXg673w3LE), var(--token-cpEXg673w3LE))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008477">
-          <RuleSet id="3008476">{&quot;background&quot;:&quot;linear-gradient(var(--token-996B2a7W81uk), var(--token-996B2a7W81uk))&quot;}</RuleSet>
+          <RuleSet id="3008476">{"background":"linear-gradient(var(--token-996B2a7W81uk), var(--token-996B2a7W81uk))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008512">
-          <RuleSet id="3008511">{&quot;border-top-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;,&quot;border-right-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;,&quot;border-left-color&quot;:&quot;var(--token-geOMiPEkmrjm)&quot;}</RuleSet>
+          <RuleSet id="3008511">{"border-top-color":"var(--token-geOMiPEkmrjm)","border-right-color":"var(--token-geOMiPEkmrjm)","border-bottom-color":"var(--token-geOMiPEkmrjm)","border-left-color":"var(--token-geOMiPEkmrjm)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008590">
-          <RuleSet id="3008589">{&quot;color&quot;:&quot;var(--token-gUYL2yuOGlk5)&quot;}</RuleSet>
+          <RuleSet id="3008589">{"color":"var(--token-gUYL2yuOGlk5)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008664">
-          <RuleSet id="3008663">{&quot;color&quot;:&quot;var(--token-gUYL2yuOGlk5)&quot;}</RuleSet>
+          <RuleSet id="3008663">{"color":"var(--token-gUYL2yuOGlk5)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008720">
-          <RuleSet id="3008719">{&quot;color&quot;:&quot;var(--token-gUYL2yuOGlk5)&quot;}</RuleSet>
+          <RuleSet id="3008719">{"color":"var(--token-gUYL2yuOGlk5)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="errorDestructive" uuid="UZpDGjtFbbo-">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008808">
-          <RuleSet id="3008807">{&quot;background&quot;:&quot;linear-gradient(var(--token-HFP4U80F-qYK), var(--token-HFP4U80F-qYK))&quot;}</RuleSet>
+          <RuleSet id="3008807">{"background":"linear-gradient(var(--token-HFP4U80F-qYK), var(--token-HFP4U80F-qYK))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008479">
-          <RuleSet id="3008478">{&quot;background&quot;:&quot;linear-gradient(var(--token-YMdR_Biy5WbG), var(--token-YMdR_Biy5WbG))&quot;}</RuleSet>
+          <RuleSet id="3008478">{"background":"linear-gradient(var(--token-YMdR_Biy5WbG), var(--token-YMdR_Biy5WbG))"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008514">
-          <RuleSet id="3008513">{&quot;border-top-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;,&quot;border-right-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;,&quot;border-bottom-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;,&quot;border-left-color&quot;:&quot;var(--token-jYEUNEWo82iM)&quot;}</RuleSet>
+          <RuleSet id="3008513">{"border-top-color":"var(--token-jYEUNEWo82iM)","border-right-color":"var(--token-jYEUNEWo82iM)","border-bottom-color":"var(--token-jYEUNEWo82iM)","border-left-color":"var(--token-jYEUNEWo82iM)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008594">
-          <RuleSet id="3008593">{&quot;color&quot;:&quot;var(--token-KY151bWozx0p)&quot;}</RuleSet>
+          <RuleSet id="3008593">{"color":"var(--token-KY151bWozx0p)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008668">
-          <RuleSet id="3008667">{&quot;color&quot;:&quot;var(--token-KY151bWozx0p)&quot;}</RuleSet>
+          <RuleSet id="3008667">{"color":"var(--token-KY151bWozx0p)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008724">
-          <RuleSet id="3008723">{&quot;color&quot;:&quot;var(--token-KY151bWozx0p)&quot;}</RuleSet>
+          <RuleSet id="3008723">{"color":"var(--token-KY151bWozx0p)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="soft" uuid="NzLhyUcNJ56l">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008836">
-          <RuleSet id="3008835">{&quot;background&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3008835">{"background":"none"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008465">
-          <RuleSet id="3008464">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3008464">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008582">
-          <RuleSet id="3008581">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
+          <RuleSet id="3008581">{"color":"var(--token-_RWFFiNKNXVv)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008660">
-          <RuleSet id="3008659">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
+          <RuleSet id="3008659">{"color":"var(--token-_RWFFiNKNXVv)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008712">
-          <RuleSet id="3008711">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
+          <RuleSet id="3008711">{"color":"var(--token-_RWFFiNKNXVv)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="bordered" uuid="CFlf6CAr5PRq">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008848">
-          <RuleSet id="3008847">{&quot;background&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3008847">{"background":"none"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008504">
-          <RuleSet id="3008503">{&quot;border-top-width&quot;:&quot;1px&quot;,&quot;border-right-width&quot;:&quot;1px&quot;,&quot;border-bottom-width&quot;:&quot;1px&quot;,&quot;border-left-width&quot;:&quot;1px&quot;,&quot;plasmic-display-none&quot;:&quot;false&quot;,&quot;background&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3008503">{"border-top-width":"1px","border-right-width":"1px","border-bottom-width":"1px","border-left-width":"1px","plasmic-display-none":"false","background":"none"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008596">
-          <RuleSet id="3008595">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
+          <RuleSet id="3008595">{"color":"var(--token-_RWFFiNKNXVv)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="PgB8XX97acqo">
         <VariantSetting id="3008672">
-          <RuleSet id="3008671">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
+          <RuleSet id="3008671">{"color":"var(--token-_RWFFiNKNXVv)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008726">
-          <RuleSet id="3008725">{&quot;color&quot;:&quot;var(--token-_RWFFiNKNXVv)&quot;}</RuleSet>
+          <RuleSet id="3008725">{"color":"var(--token-_RWFFiNKNXVv)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="extraSmall" uuid="RDlJE6wlLaV0">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008816">
-          <RuleSet id="3008815">{&quot;border-top-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-top-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;line-height&quot;:&quot;var(--token-TeiPG4bVS8s9)&quot;,&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;,&quot;column-gap&quot;:&quot;var(--token-aR8bR72wtSYZ)&quot;}</RuleSet>
+          <RuleSet id="3008815">{"border-top-left-radius":"var(--token-iV97hAoHAnKd)","border-top-right-radius":"var(--token-iV97hAoHAnKd)","border-bottom-right-radius":"var(--token-iV97hAoHAnKd)","border-bottom-left-radius":"var(--token-iV97hAoHAnKd)","line-height":"var(--token-TeiPG4bVS8s9)","font-size":"var(--token-lD1RduCNRWBr)","column-gap":"var(--token-aR8bR72wtSYZ)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008772">
-          <RuleSet id="3008771">{&quot;padding-top&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;padding-bottom&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;padding-right&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;,&quot;padding-left&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;}</RuleSet>
+          <RuleSet id="3008771">{"padding-top":"var(--token-iV97hAoHAnKd)","padding-bottom":"var(--token-iV97hAoHAnKd)","padding-right":"var(--token--0yvAvGYfFhX)","padding-left":"var(--token--0yvAvGYfFhX)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008584">
-          <RuleSet id="3008583">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
+          <RuleSet id="3008583">{"font-size":"var(--token-lD1RduCNRWBr)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008714">
-          <RuleSet id="3008713">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
+          <RuleSet id="3008713">{"font-size":"var(--token-lD1RduCNRWBr)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="small" uuid="1Wus14yXOz6z">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008812">
-          <RuleSet id="3008811">{&quot;border-top-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-top-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-right-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;border-bottom-left-radius&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;,&quot;line-height&quot;:&quot;var(--token-TeiPG4bVS8s9)&quot;,&quot;column-gap&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;}</RuleSet>
+          <RuleSet id="3008811">{"border-top-left-radius":"var(--token-iV97hAoHAnKd)","border-top-right-radius":"var(--token-iV97hAoHAnKd)","border-bottom-right-radius":"var(--token-iV97hAoHAnKd)","border-bottom-left-radius":"var(--token-iV97hAoHAnKd)","font-size":"var(--token-lD1RduCNRWBr)","line-height":"var(--token-TeiPG4bVS8s9)","column-gap":"var(--token-iV97hAoHAnKd)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008774">
-          <RuleSet id="3008773">{&quot;padding-top&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;,&quot;padding-bottom&quot;:&quot;var(--token--0yvAvGYfFhX)&quot;,&quot;padding-right&quot;:&quot;var(--token-J8bgk1cLaZ5G)&quot;,&quot;padding-left&quot;:&quot;var(--token-J8bgk1cLaZ5G)&quot;}</RuleSet>
+          <RuleSet id="3008773">{"padding-top":"var(--token--0yvAvGYfFhX)","padding-bottom":"var(--token--0yvAvGYfFhX)","padding-right":"var(--token-J8bgk1cLaZ5G)","padding-left":"var(--token-J8bgk1cLaZ5G)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008586">
-          <RuleSet id="3008585">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
+          <RuleSet id="3008585">{"font-size":"var(--token-lD1RduCNRWBr)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008716">
-          <RuleSet id="3008715">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;}</RuleSet>
+          <RuleSet id="3008715">{"font-size":"var(--token-lD1RduCNRWBr)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="large" uuid="f0h7JomxhfMB">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008814">
-          <RuleSet id="3008813">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;,&quot;line-height&quot;:&quot;var(--token-nnknQsSF9X4M)&quot;}</RuleSet>
+          <RuleSet id="3008813">{"font-size":"var(--token-QkMNDbZUI9zH)","line-height":"var(--token-nnknQsSF9X4M)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008776">
-          <RuleSet id="3008775">{&quot;padding-top&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;,&quot;padding-bottom&quot;:&quot;var(--token-iV97hAoHAnKd)&quot;}</RuleSet>
+          <RuleSet id="3008775">{"padding-top":"var(--token-iV97hAoHAnKd)","padding-bottom":"var(--token-iV97hAoHAnKd)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008580">
-          <RuleSet id="3008579">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
+          <RuleSet id="3008579">{"font-size":"var(--token-QkMNDbZUI9zH)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008710">
-          <RuleSet id="3008709">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
+          <RuleSet id="3008709">{"font-size":"var(--token-QkMNDbZUI9zH)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="extraLarge" uuid="IL042y6ZmTqU">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008818">
-          <RuleSet id="3008817">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;,&quot;line-height&quot;:&quot;var(--token-nnknQsSF9X4M)&quot;}</RuleSet>
+          <RuleSet id="3008817">{"font-size":"var(--token-QkMNDbZUI9zH)","line-height":"var(--token-nnknQsSF9X4M)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008778">
-          <RuleSet id="3008777">{&quot;padding-left&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;,&quot;padding-right&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;}</RuleSet>
+          <RuleSet id="3008777">{"padding-left":"var(--token-50jqnrkhPFjk)","padding-right":"var(--token-50jqnrkhPFjk)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008588">
-          <RuleSet id="3008587">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
+          <RuleSet id="3008587">{"font-size":"var(--token-QkMNDbZUI9zH)"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008718">
-          <RuleSet id="3008717">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;}</RuleSet>
+          <RuleSet id="3008717">{"font-size":"var(--token-QkMNDbZUI9zH)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="iconStart" uuid="sHwmv6VTmYIE">
       <element uuid="4-zlvdO1CNcE">
         <VariantSetting id="3008623">
-          <RuleSet id="3008622">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3008622">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="omi74nYXXVka">
         <VariantSetting id="3008574">
-          <RuleSet id="3008573">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3008573">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="iconEnd" uuid="WG_MUEe-AF5Z">
       <element uuid="sjXkLSA3nurb">
         <VariantSetting id="3008753">
-          <RuleSet id="3008752">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3008752">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="6sD-taUBGCX5">
         <VariantSetting id="3008704">
-          <RuleSet id="3008703">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3008703">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="roundedFull" uuid="rnbD-4X93Vp0">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008828">
-          <RuleSet id="3008827">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
+          <RuleSet id="3008827">{"border-top-left-radius":"99px","border-top-right-radius":"99px","border-bottom-right-radius":"99px","border-bottom-left-radius":"99px"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="zhn6dj3FeLUL">
         <VariantSetting id="3008487">
-          <RuleSet id="3008486">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
+          <RuleSet id="3008486">{"border-top-left-radius":"99px","border-top-right-radius":"99px","border-bottom-right-radius":"99px","border-bottom-left-radius":"99px"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008520">
-          <RuleSet id="3008519">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
+          <RuleSet id="3008519">{"border-top-left-radius":"99px","border-top-right-radius":"99px","border-bottom-right-radius":"99px","border-bottom-left-radius":"99px"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="7ftEZY6-lBPq">
         <VariantSetting id="3008562">
-          <RuleSet id="3008561">{&quot;border-top-left-radius&quot;:&quot;99px&quot;,&quot;border-top-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-right-radius&quot;:&quot;99px&quot;,&quot;border-bottom-left-radius&quot;:&quot;99px&quot;}</RuleSet>
+          <RuleSet id="3008561">{"border-top-left-radius":"99px","border-top-right-radius":"99px","border-bottom-right-radius":"99px","border-bottom-left-radius":"99px"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="LcbjVN0--45d">
         <VariantSetting id="3008780">
-          <RuleSet id="3008779">{&quot;padding-right&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;,&quot;padding-left&quot;:&quot;var(--token-50jqnrkhPFjk)&quot;}</RuleSet>
+          <RuleSet id="3008779">{"padding-right":"var(--token-50jqnrkhPFjk)","padding-left":"var(--token-50jqnrkhPFjk)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="top" uuid="LAvN7TnRtX1E">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008844">
-          <RuleSet id="3008843">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-top-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008843">{"border-top-right-radius":"0rem","border-top-left-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008522">
-          <RuleSet id="3008521">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-top-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008521">{"border-top-left-radius":"0rem","border-top-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="right" uuid="F877AcVY27WU">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008840">
-          <RuleSet id="3008839">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008839">{"border-top-right-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008524">
-          <RuleSet id="3008523">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008523">{"border-top-right-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="bottom" uuid="JG2Gsxo917WB">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008846">
-          <RuleSet id="3008845">{&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008845">{"border-bottom-right-radius":"0rem","border-bottom-left-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008526">
-          <RuleSet id="3008525">{&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008525">{"border-bottom-left-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="left" uuid="ZDz-CWXMxtWT">
       <element uuid="P4urRFgjF3wU">
         <VariantSetting id="3008842">
-          <RuleSet id="3008841">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008841">{"border-top-left-radius":"0rem","border-bottom-left-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
       <element uuid="MpYlNqLG4pwf">
         <VariantSetting id="3008528">
-          <RuleSet id="3008527">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3008527">{"border-top-left-radius":"0rem","border-bottom-left-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -715,7 +715,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <variant name="noTrigger" uuid="XcAK-UZkDgAi">
       <element uuid="EgoIzR721aP7">
         <VariantSetting id="3011416">
-          <RuleSet id="3011415">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3011415">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -736,9 +736,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px; color: red">Welcome to your first page.</h1>
         <plasmic-component id="o4LGC6aDPoZr" data-plasmic-name="testComponent" style="max-width: 100%">
         </plasmic-component>
-        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
+        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
 
-It&apos;s always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
+It's always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
 
 Or press the big blue + button to start inserting items into this page.
 
@@ -792,21 +792,21 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <variant name=":focus" uuid="nXTFjlmK5XoA">
       <element uuid="Sya0jp-3z04Q">
         <VariantSetting id="3008241">
-          <RuleSet id="3008240">{&quot;animation&quot;:&quot;bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+          <RuleSet id="3008240">{"animation":"bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name=":focus" uuid="o0aQD1uD0PE7">
       <element uuid="dmoXeGSEu9FR">
         <VariantSetting id="3008252">
-          <RuleSet id="3008251">{&quot;animation&quot;:&quot;zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+          <RuleSet id="3008251">{"animation":"zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name=":focus" uuid="PSb4MDAD-yZ3">
       <element uuid="Y2BCutCiq0ay">
         <VariantSetting id="3008263">
-          <RuleSet id="3008262">{&quot;animation&quot;:&quot;slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+          <RuleSet id="3008262">{"animation":"slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -838,28 +838,28 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <variant name="sm" uuid="Mc-Oh4udbRX7">
       <element uuid="ck67sECnXw-2">
         <VariantSetting id="3008911">
-          <RuleSet id="3008910">{&quot;font-size&quot;:&quot;var(--token-lD1RduCNRWBr)&quot;,&quot;line-height&quot;:&quot;var(--token-TeiPG4bVS8s9)&quot;}</RuleSet>
+          <RuleSet id="3008910">{"font-size":"var(--token-lD1RduCNRWBr)","line-height":"var(--token-TeiPG4bVS8s9)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="lg" uuid="VHb-pUA8lidW">
       <element uuid="ck67sECnXw-2">
         <VariantSetting id="3008913">
-          <RuleSet id="3008912">{&quot;font-size&quot;:&quot;var(--token-QkMNDbZUI9zH)&quot;,&quot;line-height&quot;:&quot;var(--token-nnknQsSF9X4M)&quot;}</RuleSet>
+          <RuleSet id="3008912">{"font-size":"var(--token-QkMNDbZUI9zH)","line-height":"var(--token-nnknQsSF9X4M)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="optional" uuid="-6wdZI4H74qM">
       <element uuid="O3UhwtNeECFd">
         <VariantSetting id="3008925">
-          <RuleSet id="3008924">{&quot;plasmic-display-none&quot;:&quot;false&quot;,&quot;color&quot;:&quot;var(--token-O7HlhsyUcTLk)&quot;}</RuleSet>
+          <RuleSet id="3008924">{"plasmic-display-none":"false","color":"var(--token-O7HlhsyUcTLk)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="required" uuid="Kfk1fRQ40Hgx">
       <element uuid="O3UhwtNeECFd">
         <VariantSetting id="3008929">
-          <RuleSet id="3008928">{&quot;plasmic-display-none&quot;:&quot;false&quot;,&quot;color&quot;:&quot;var(--token-HFP4U80F-qYK)&quot;}</RuleSet>
+          <RuleSet id="3008928">{"plasmic-display-none":"false","color":"var(--token-HFP4U80F-qYK)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -1059,7 +1059,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <variant name="dark" uuid="8X2l3Su5Ev8K">
       <element uuid="-2SFIm9VX_6T">
         <VariantSetting id="3011128">
-          <RuleSet id="3011127">{&quot;color&quot;:&quot;var(--token-X4GQ8bRemoGX)&quot;}</RuleSet>
+          <RuleSet id="3011127">{"color":"var(--token-X4GQ8bRemoGX)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -1503,21 +1503,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <variant name="multiLine" uuid="ujPUz5-pNQo3">
       <element uuid="owbUg8BLCrEo">
         <VariantSetting id="3010531">
-          <RuleSet id="3010530">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3010530">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="iconStart" uuid="Y1wfrLkCK3tp">
       <element uuid="EiP28sViJ6pF">
         <VariantSetting id="3010501">
-          <RuleSet id="3010500">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3010500">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="iconEnd" uuid="lZuHYDu-P997">
       <element uuid="sy4BAFLD5x2S">
         <VariantSetting id="3010555">
-          <RuleSet id="3010554">{&quot;plasmic-display-none&quot;:&quot;false&quot;}</RuleSet>
+          <RuleSet id="3010554">{"plasmic-display-none":"false"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -1553,56 +1553,56 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <variant name="soft" uuid="0cXa8u_Fd6-c">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010222">
-          <RuleSet id="3010221">{&quot;background&quot;:&quot;linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))&quot;,&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3010221">{"background":"linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))","box-shadow":"none"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="plain" uuid="9cJ3z_ZYGZvt">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010226">
-          <RuleSet id="3010225">{&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3010225">{"box-shadow":"none"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="top" uuid="pUxG-pkjbXcJ">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010236">
-          <RuleSet id="3010235">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-top-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010235">{"border-top-left-radius":"0rem","border-top-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="right" uuid="jFOHHIE_LIsW">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010232">
-          <RuleSet id="3010231">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010231">{"border-top-right-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="bottom" uuid="oRa7KNUAvba6">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010238">
-          <RuleSet id="3010237">{&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010237">{"border-bottom-left-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="left" uuid="f-jiC3pxjmB0">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010234">
-          <RuleSet id="3010233">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010233">{"border-top-left-radius":"0rem","border-bottom-left-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="left" uuid="aIRXAYdM6pXb">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010240">
-          <RuleSet id="3010239">{&quot;padding-left&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
+          <RuleSet id="3010239">{"padding-left":"var(--token-_gnxKR8NG8ND)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="right" uuid="t5DeV--6wj_c">
       <element uuid="PzECf6Nfa4vE">
         <VariantSetting id="3010242">
-          <RuleSet id="3010241">{&quot;padding-right&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
+          <RuleSet id="3010241">{"padding-right":"var(--token-_gnxKR8NG8ND)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -1636,56 +1636,56 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <variant name="soft" uuid="BYaTSYRbp5k-">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010336">
-          <RuleSet id="3010335">{&quot;background&quot;:&quot;linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))&quot;,&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3010335">{"background":"linear-gradient(var(--token-_Zhqc4oeimE_), var(--token-_Zhqc4oeimE_))","box-shadow":"none"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="plain" uuid="RVfUSn_4OlZE">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010338">
-          <RuleSet id="3010337">{&quot;box-shadow&quot;:&quot;none&quot;}</RuleSet>
+          <RuleSet id="3010337">{"box-shadow":"none"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="top" uuid="uub7dYD9Ahd9">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010340">
-          <RuleSet id="3010339">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-top-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010339">{"border-top-left-radius":"0rem","border-top-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="right" uuid="YEvyTqML8ybV">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010342">
-          <RuleSet id="3010341">{&quot;border-top-right-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010341">{"border-top-right-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="bottom" uuid="DoKOv7moJkW2">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010344">
-          <RuleSet id="3010343">{&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-right-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010343">{"border-bottom-left-radius":"0rem","border-bottom-right-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="left" uuid="EDke_10m8Cz5">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010346">
-          <RuleSet id="3010345">{&quot;border-top-left-radius&quot;:&quot;0rem&quot;,&quot;border-bottom-left-radius&quot;:&quot;0rem&quot;}</RuleSet>
+          <RuleSet id="3010345">{"border-top-left-radius":"0rem","border-bottom-left-radius":"0rem"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="left" uuid="PscEmlQHZllk">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010352">
-          <RuleSet id="3010351">{&quot;padding-left&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
+          <RuleSet id="3010351">{"padding-left":"var(--token-_gnxKR8NG8ND)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name="right" uuid="tbJOPfM389OI">
       <element uuid="yx_4PVCh-WFR">
         <VariantSetting id="3010354">
-          <RuleSet id="3010353">{&quot;padding-right&quot;:&quot;var(--token-_gnxKR8NG8ND)&quot;}</RuleSet>
+          <RuleSet id="3010353">{"padding-right":"var(--token-_gnxKR8NG8ND)"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>

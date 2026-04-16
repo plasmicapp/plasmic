@@ -12,6 +12,7 @@ describe("Project Serialization", () => {
       screenBreakpoints: true,
       globalVariants: true,
       tokens: true,
+      animations: true,
     });
     expect(output).toMatchSnapshot();
   });

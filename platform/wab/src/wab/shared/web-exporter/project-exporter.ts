@@ -1,11 +1,18 @@
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { allAnimationSequences } from "@/wab/shared/core/sites";
+import { generateKeyframesRule } from "@/wab/shared/core/styles";
 import { parseScreenSpec } from "@/wab/shared/css-size";
-import { Site, StyleToken } from "@/wab/shared/model/classes";
+import {
+  AnimationSequence,
+  Site,
+  StyleToken,
+} from "@/wab/shared/model/classes";
 import {
   XmlAttrs,
   XmlObject,
+  indentXmlTextBlock,
   toXml,
 } from "@/wab/shared/web-exporter/xml-utils";
 
@@ -22,6 +29,7 @@ export function serializeProject(
     screenBreakpoints?: boolean;
     globalVariants?: boolean;
     tokens?: boolean;
+    animations?: boolean;
   }
 ): string {
   const projectChildren: XmlObject[] = [];
@@ -96,6 +104,14 @@ export function serializeProject(
     projectChildren.push({ tokens: tokenElements });
   }
 
+  if (opts.animations) {
+    const sequences = allAnimationSequences(site, { includeDeps: "direct" });
+    const animationElements = sequences.map((sequence) => ({
+      animation: { _attr: { name: sequence.name, uuid: sequence.uuid } },
+    }));
+    projectChildren.push({ animations: animationElements });
+  }
+
   return toXml({ project: projectChildren });
 }
 
@@ -121,11 +137,26 @@ export function serializeToken(
 }
 
 /**
+ * Serialize a single animation sequence to XML with its full @keyframes
+ * rule as text content.
+ */
+export function serializeAnimationSequence(
+  sequence: AnimationSequence
+): string {
+  return toXml({
+    animation: [
+      { _attr: { name: sequence.name, uuid: sequence.uuid } },
+      indentXmlTextBlock(generateKeyframesRule(sequence), 0),
+    ],
+  });
+}
+
+/**
  * Serialize an invalid/missing resource reference to XML.
  */
 export function serializeInvalidResource(
   uuid: string,
-  type: "component" | "token" | "tpl" | "globalVariant",
+  type: "component" | "token" | "tpl" | "globalVariant" | "animation",
   message: string
 ): string {
   return toXml({ "invalid-resource": [{ _attr: { uuid, type } }, message] });

@@ -15,9 +15,9 @@ exports[`read copilot tool reads a specific resources by UUID 1`] = `
     <div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
       <section id="7weorkEjgQjD" style="display: plasmic-content-layout; position: relative; width: plasmic-layout-full-bleed; height: wrap; padding-left: 0px; padding-right: 0px; padding-bottom: 96px; padding-top: 96px; grid-row-gap: 16px; align-content: flex-start; justify-items: center">
         <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px">Welcome to your first page.</h1>
-        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
+        <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
 
-It&apos;s always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
+It's always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
 
 Or press the big blue + button to start inserting items into this page.
 
@@ -71,21 +71,21 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <variant name=":focus" uuid="nXTFjlmK5XoA">
       <element uuid="Sya0jp-3z04Q">
         <VariantSetting id="3008241">
-          <RuleSet id="3008240">{&quot;animation&quot;:&quot;bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+          <RuleSet id="3008240">{"animation":"bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name=":focus" uuid="o0aQD1uD0PE7">
       <element uuid="dmoXeGSEu9FR">
         <VariantSetting id="3008252">
-          <RuleSet id="3008251">{&quot;animation&quot;:&quot;zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+          <RuleSet id="3008251">{"animation":"zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name=":focus" uuid="PSb4MDAD-yZ3">
       <element uuid="Y2BCutCiq0ay">
         <VariantSetting id="3008263">
-          <RuleSet id="3008262">{&quot;animation&quot;:&quot;slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running&quot;}</RuleSet>
+          <RuleSet id="3008262">{"animation":"slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -110,9 +110,9 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 <div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
   <section id="7weorkEjgQjD" style="display: plasmic-content-layout; position: relative; width: plasmic-layout-full-bleed; height: wrap; padding-left: 0px; padding-right: 0px; padding-bottom: 96px; padding-top: 96px; grid-row-gap: 16px; align-content: flex-start; justify-items: center">
     <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px">Welcome to your first page.</h1>
-    <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven&apos;t already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
+    <div id="-iuHCTiyShFt" style="position: relative; width: stretch; height: wrap; font-family: Inter; font-size: 16px; font-weight: 400; font-style: normal; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip; color: #000000; animation: none">If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.
 
-It&apos;s always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
+It's always easier to start from examples! Add a new page using a template—do this from the list of pages in the top toolbar.
 
 Or press the big blue + button to start inserting items into this page.
 
@@ -163,10 +163,105 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 </div>"
 `;
 
+exports[`read copilot tool reads specific animations by UUID with full @keyframes 1`] = `
+"<animation name="Bounce" uuid="mz8pGamSoahc">
+  @keyframes bouncemz8PGamSoahc {
+    0% {
+    transform: translate3d(0px, 0px, 0);  
+    }
+    20% {
+    transform: translate3d(0px, 0px, 0);  
+    }
+    40% {
+    transform: translate3d(0, -30px, 0) scale3d(1, 1.1, 1);  
+    }
+    43% {
+    transform: translate3d(0, -30px, 0) scale3d(1, 1.1, 1);  
+    }
+    53% {
+    transform: translate3d(0px, 0px, 0);  
+    }
+    70% {
+    transform: translate3d(0, -15px, 0) scale3d(1, 1.05, 1);  
+    }
+    80% {
+    transform: translate3d(0px, 0px, 0) scale3d(1, 0.95, 1);  
+    }
+    90% {
+    transform: translate3d(0, -4px, 0) scale3d(1, 1.02, 1);  
+    }
+    100% {
+    transform: translate3d(0px, 0px, 0);  
+    }
+  }
+</animation>
+<animation name="Flash" uuid="gywO1jkB0c0b">
+  @keyframes flashgywO1JkB0C0B {
+    0% {
+    opacity: 1;  
+    }
+    25% {
+    opacity: 0;  
+    }
+    50% {
+    opacity: 1;  
+    }
+    75% {
+    opacity: 0;  
+    }
+    100% {
+    opacity: 1;  
+    }
+  }
+</animation>"
+`;
+
 exports[`read copilot tool returns invalid-resource for non-existent invalid uuids 1`] = `
-"<invalid-resource uuid="non-existent-uuid" type="token">Token with UUID &quot;non-existent-uuid&quot; not found.</invalid-resource>
-<invalid-resource uuid="non-existent-uuid" type="component">Component with UUID &quot;non-existent-uuid&quot; not found.</invalid-resource>
-<invalid-resource uuid="non-existent-comp" type="component">Component with UUID &quot;non-existent-comp&quot; not found.</invalid-resource>"
+"<invalid-resource uuid="non-existent-uuid" type="token">Token with UUID "non-existent-uuid" not found.</invalid-resource>
+<invalid-resource uuid="non-existent-uuid" type="component">Component with UUID "non-existent-uuid" not found.</invalid-resource>
+<invalid-resource uuid="non-existent-comp" type="component">Component with UUID "non-existent-comp" not found.</invalid-resource>"
+`;
+
+exports[`read copilot tool serializes project level data and specific uuids reads project animations as a minimal list 1`] = `
+"<project>
+  <animations>
+    <animation name="Bounce" uuid="mz8pGamSoahc"/>
+    <animation name="Flash" uuid="gywO1jkB0c0b"/>
+    <animation name="Pulse" uuid="0DlLE3ZmR0lr"/>
+    <animation name="Shake X" uuid="I3e22tKHL0k5"/>
+    <animation name="Shake Y" uuid="L0kBo9LJTzBS"/>
+    <animation name="Bounce In" uuid="3hoXU1WP6GS8"/>
+    <animation name="Bounce In Down" uuid="hp0hXEW9IovK"/>
+    <animation name="Bounce In Up" uuid="OUEx47B0gs0N"/>
+    <animation name="Bounce Out" uuid="DI9YSao-ElcP"/>
+    <animation name="Bounce Out Down" uuid="hEnFj0ViWREN"/>
+    <animation name="Bounce Out Up" uuid="xZzUZYpv_BEF"/>
+    <animation name="Fade In" uuid="K8aS4cD8LxJC"/>
+    <animation name="Fade In Down" uuid="3wejw0KdhvkT"/>
+    <animation name="Fade In Left" uuid="4b8z_yZskL8t"/>
+    <animation name="Fade In Right" uuid="Kdx1r1C3T-k5"/>
+    <animation name="Fade In Up" uuid="CV8t_94hMZOJ"/>
+    <animation name="Fade Out" uuid="WsmEXWsKHehM"/>
+    <animation name="Fade Out Down" uuid="xkwpUUXKXaKh"/>
+    <animation name="Fade Out Left" uuid="4I7FFZXpTQqw"/>
+    <animation name="Fade Out Right" uuid="v7VeJyZF8OiV"/>
+    <animation name="Fade Out Up" uuid="WCNCocbUJlyZ"/>
+    <animation name="Zoom In" uuid="8_EsQyUE1f6D"/>
+    <animation name="Zoom In Down" uuid="nKgmo_Ih8ecU"/>
+    <animation name="Zoom In Up" uuid="wDQdAk9BrYhY"/>
+    <animation name="Zoom Out" uuid="-8XcUEhc_tFz"/>
+    <animation name="Zoom Out Down" uuid="T1UpFUnBqbit"/>
+    <animation name="Zoom Out Up" uuid="Mk_d1Et3X2KO"/>
+    <animation name="Slide In Down" uuid="H_u23sDnaGBJ"/>
+    <animation name="Slide In Left" uuid="amPxFRYy2Bqz"/>
+    <animation name="Slide In Right" uuid="tlJWuYi8yUnT"/>
+    <animation name="Slide In Up" uuid="l416FyqrLiVP"/>
+    <animation name="Slide Out Down" uuid="IQTsEFKh0RaO"/>
+    <animation name="Slide Out Left" uuid="yGtWsF8QCRpo"/>
+    <animation name="Slide Out Right" uuid="JR7y0rUT-Qox"/>
+    <animation name="Slide Out Up" uuid="x_snDqhPUPUr"/>
+  </animations>
+</project>"
 `;
 
 exports[`read copilot tool serializes project level data and specific uuids reads project components 1`] = `
@@ -382,5 +477,42 @@ exports[`read copilot tool serializes project level data and specific uuids read
     <token name="Basic/Overlay-Background" uuid="ghoU2mpMJmil" type="Color" value="#0A0A0A80"/>
     <token name="Basic/Container-Background-Dark" uuid="X4GQ8bRemoGX" type="Color" value="var(--token-c-y4Lbl8pLuG)" resolvedValue="#171717"/>
   </tokens>
+  <animations>
+    <animation name="Bounce" uuid="mz8pGamSoahc"/>
+    <animation name="Flash" uuid="gywO1jkB0c0b"/>
+    <animation name="Pulse" uuid="0DlLE3ZmR0lr"/>
+    <animation name="Shake X" uuid="I3e22tKHL0k5"/>
+    <animation name="Shake Y" uuid="L0kBo9LJTzBS"/>
+    <animation name="Bounce In" uuid="3hoXU1WP6GS8"/>
+    <animation name="Bounce In Down" uuid="hp0hXEW9IovK"/>
+    <animation name="Bounce In Up" uuid="OUEx47B0gs0N"/>
+    <animation name="Bounce Out" uuid="DI9YSao-ElcP"/>
+    <animation name="Bounce Out Down" uuid="hEnFj0ViWREN"/>
+    <animation name="Bounce Out Up" uuid="xZzUZYpv_BEF"/>
+    <animation name="Fade In" uuid="K8aS4cD8LxJC"/>
+    <animation name="Fade In Down" uuid="3wejw0KdhvkT"/>
+    <animation name="Fade In Left" uuid="4b8z_yZskL8t"/>
+    <animation name="Fade In Right" uuid="Kdx1r1C3T-k5"/>
+    <animation name="Fade In Up" uuid="CV8t_94hMZOJ"/>
+    <animation name="Fade Out" uuid="WsmEXWsKHehM"/>
+    <animation name="Fade Out Down" uuid="xkwpUUXKXaKh"/>
+    <animation name="Fade Out Left" uuid="4I7FFZXpTQqw"/>
+    <animation name="Fade Out Right" uuid="v7VeJyZF8OiV"/>
+    <animation name="Fade Out Up" uuid="WCNCocbUJlyZ"/>
+    <animation name="Zoom In" uuid="8_EsQyUE1f6D"/>
+    <animation name="Zoom In Down" uuid="nKgmo_Ih8ecU"/>
+    <animation name="Zoom In Up" uuid="wDQdAk9BrYhY"/>
+    <animation name="Zoom Out" uuid="-8XcUEhc_tFz"/>
+    <animation name="Zoom Out Down" uuid="T1UpFUnBqbit"/>
+    <animation name="Zoom Out Up" uuid="Mk_d1Et3X2KO"/>
+    <animation name="Slide In Down" uuid="H_u23sDnaGBJ"/>
+    <animation name="Slide In Left" uuid="amPxFRYy2Bqz"/>
+    <animation name="Slide In Right" uuid="tlJWuYi8yUnT"/>
+    <animation name="Slide In Up" uuid="l416FyqrLiVP"/>
+    <animation name="Slide Out Down" uuid="IQTsEFKh0RaO"/>
+    <animation name="Slide Out Left" uuid="yGtWsF8QCRpo"/>
+    <animation name="Slide Out Right" uuid="JR7y0rUT-Qox"/>
+    <animation name="Slide Out Up" uuid="x_snDqhPUPUr"/>
+  </animations>
 </project>"
 `;

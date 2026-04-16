@@ -2,12 +2,14 @@ import {
   COPILOT_TOOL_DEFS,
   defineCopilotTool,
 } from "@/wab/shared/copilot/enterprise/copilot-tools";
+import { allAnimationSequences } from "@/wab/shared/core/sites";
 import { flattenTpls } from "@/wab/shared/core/tpls";
 import {
   serializeComponent,
   serializeTpl,
 } from "@/wab/shared/web-exporter/component-exporter";
 import {
+  serializeAnimationSequence,
   serializeInvalidResource,
   serializeProject,
   serializeToken,
@@ -15,7 +17,7 @@ import {
 
 export const readTool = defineCopilotTool(
   COPILOT_TOOL_DEFS.read,
-  async (studioCtx, { project, components, elements, tokens }) => {
+  async (studioCtx, { project, components, elements, tokens, animations }) => {
     const site = studioCtx.site;
     const output: string[] = [];
     const invalidData: string[] = [];
@@ -40,6 +42,25 @@ export const readTool = defineCopilotTool(
           continue;
         }
         output.push(serializeToken(token, { site }));
+      }
+    }
+
+    // Specific animation sequences by UUID
+    if (animations?.length) {
+      const allAnims = allAnimationSequences(site, { includeDeps: "direct" });
+      for (const uuid of animations) {
+        const anim = allAnims.find((a) => a.uuid === uuid);
+        if (!anim) {
+          invalidData.push(
+            serializeInvalidResource(
+              uuid,
+              "animation",
+              `Animation sequence with UUID "${uuid}" not found.`
+            )
+          );
+          continue;
+        }
+        output.push(serializeAnimationSequence(anim));
       }
     }
 

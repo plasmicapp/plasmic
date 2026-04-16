@@ -101,5 +101,42 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <token name="Basic/Overlay-Background" uuid="ghoU2mpMJmil" type="Color" value="#0A0A0A80"/>
     <token name="Basic/Container-Background-Dark" uuid="X4GQ8bRemoGX" type="Color" value="var(--token-c-y4Lbl8pLuG)" resolvedValue="#171717"/>
   </tokens>
+  <animations>
+    <animation name="Bounce" uuid="mz8pGamSoahc"/>
+    <animation name="Flash" uuid="gywO1jkB0c0b"/>
+    <animation name="Pulse" uuid="0DlLE3ZmR0lr"/>
+    <animation name="Shake X" uuid="I3e22tKHL0k5"/>
+    <animation name="Shake Y" uuid="L0kBo9LJTzBS"/>
+    <animation name="Bounce In" uuid="3hoXU1WP6GS8"/>
+    <animation name="Bounce In Down" uuid="hp0hXEW9IovK"/>
+    <animation name="Bounce In Up" uuid="OUEx47B0gs0N"/>
+    <animation name="Bounce Out" uuid="DI9YSao-ElcP"/>
+    <animation name="Bounce Out Down" uuid="hEnFj0ViWREN"/>
+    <animation name="Bounce Out Up" uuid="xZzUZYpv_BEF"/>
+    <animation name="Fade In" uuid="K8aS4cD8LxJC"/>
+    <animation name="Fade In Down" uuid="3wejw0KdhvkT"/>
+    <animation name="Fade In Left" uuid="4b8z_yZskL8t"/>
+    <animation name="Fade In Right" uuid="Kdx1r1C3T-k5"/>
+    <animation name="Fade In Up" uuid="CV8t_94hMZOJ"/>
+    <animation name="Fade Out" uuid="WsmEXWsKHehM"/>
+    <animation name="Fade Out Down" uuid="xkwpUUXKXaKh"/>
+    <animation name="Fade Out Left" uuid="4I7FFZXpTQqw"/>
+    <animation name="Fade Out Right" uuid="v7VeJyZF8OiV"/>
+    <animation name="Fade Out Up" uuid="WCNCocbUJlyZ"/>
+    <animation name="Zoom In" uuid="8_EsQyUE1f6D"/>
+    <animation name="Zoom In Down" uuid="nKgmo_Ih8ecU"/>
+    <animation name="Zoom In Up" uuid="wDQdAk9BrYhY"/>
+    <animation name="Zoom Out" uuid="-8XcUEhc_tFz"/>
+    <animation name="Zoom Out Down" uuid="T1UpFUnBqbit"/>
+    <animation name="Zoom Out Up" uuid="Mk_d1Et3X2KO"/>
+    <animation name="Slide In Down" uuid="H_u23sDnaGBJ"/>
+    <animation name="Slide In Left" uuid="amPxFRYy2Bqz"/>
+    <animation name="Slide In Right" uuid="tlJWuYi8yUnT"/>
+    <animation name="Slide In Up" uuid="l416FyqrLiVP"/>
+    <animation name="Slide Out Down" uuid="IQTsEFKh0RaO"/>
+    <animation name="Slide Out Left" uuid="yGtWsF8QCRpo"/>
+    <animation name="Slide Out Right" uuid="JR7y0rUT-Qox"/>
+    <animation name="Slide Out Up" uuid="x_snDqhPUPUr"/>
+  </animations>
 </project>"
 `;
