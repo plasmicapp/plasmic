@@ -256,7 +256,13 @@ export const ServerQueryOpDraftForm = observer(
       if (!value.fnExpr || !value.fnExpr.func || !value.fnExpr.args) {
         return [];
       }
-      return getCustomFunctionParams(value.fnExpr, data, exprCtx);
+      try {
+        return getCustomFunctionParams(value.fnExpr, data, exprCtx);
+      } catch {
+        // getCustomFunctionParams throws to surface code errors, but we only use it here for
+        // prop visibility/context data, so they can be safely ignored.
+        return [];
+      }
     }, [value]);
 
     const getRegistrationMeta = (fn: CustomFunction) => {

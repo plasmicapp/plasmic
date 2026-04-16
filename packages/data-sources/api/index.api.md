@@ -7,7 +7,6 @@
 import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import { default as React_2 } from 'react';
-import { SWRResponse } from '@plasmicapp/query';
 import { usePlasmicDataConfig } from '@plasmicapp/query';
 
 // @public @deprecated (undocumented)
@@ -131,6 +130,18 @@ export interface PlasmicQueryResult<T = unknown> {
     key: string | null;
 }
 
+// @internal (undocumented)
+export interface QueryComponentNode {
+    // (undocumented)
+    children: QueryNode[];
+    // (undocumented)
+    propsContext: Record<string, ContextFn<unknown>>;
+    // (undocumented)
+    queries: Record<string, SerializedServerQuery>;
+    // (undocumented)
+    type: "component";
+}
+
 // @public @deprecated (undocumented)
 export type QueryResult = Partial<ManyRowsResult<any>> & {
     error?: any;
@@ -227,16 +238,11 @@ export interface TableSchema {
     schema?: string;
 }
 
-// @internal
-export function unstable_createDollarQueries<QueryName extends string>(queryNames: QueryName[]): Record<QueryName, PlasmicQueryResult>;
+// @public
+export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, options: QueryExecutionInitialContext): Promise<ExecutePlasmicQueriesResult>;
 
 // @internal
-export function unstable_executePlasmicQueries<QueryName extends string>($queries: Record<QueryName, PlasmicQueryResult>, queries: Record<QueryName, PlasmicQuery>): Promise<{
-    [cacheKey: string]: unknown;
-}>;
-
-// @internal
-export function unstable_usePlasmicQueries<QueryName extends string>($queries: Record<QueryName, PlasmicQueryResult>, queries: Record<QueryName, PlasmicQuery>): Record<QueryName, ReturnType<typeof usePlasmicQuery>>;
+export function unstable_usePlasmicQueries(tree: QueryComponentNode, $props: Record<string, unknown>, $ctx: Record<string, unknown>, $state?: Record<string, unknown>): Record<string, PlasmicQueryResult>;
 
 // @internal
 export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;

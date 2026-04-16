@@ -4,6 +4,7 @@ import {
   createDollarQueries,
   resolveParams,
   safeExec,
+  shallowEqualRecords,
   wrapDollarQueriesForMetadata,
   wrapDollarQueriesWithFallbacks,
 } from "./common";
@@ -218,6 +219,39 @@ describe("wrapDollarQueriesWithFallbacks, wrapDollarQueriesForMetadata", () => {
     expect($fallback.rejected.data.a[0].b).toEqual({});
     // @ts-expect-error testing proxy
     expect(String($fallback.rejected.data.a[0].b)).toEqual("ERROR");
+  });
+});
+
+describe("shallowEqualRecords", () => {
+  it("returns true for same reference", () => {
+    const a = { x: 1 };
+    expect(shallowEqualRecords(a, a)).toBe(true);
+  });
+
+  it("returns true for equal records", () => {
+    expect(shallowEqualRecords({ x: 1, y: "a" }, { x: 1, y: "a" })).toBe(true);
+  });
+
+  it("returns false for different values", () => {
+    expect(shallowEqualRecords({ x: 1 }, { x: 2 })).toBe(false);
+  });
+
+  it("returns false for different keys", () => {
+    expect(shallowEqualRecords({ x: 1 }, { y: 1 })).toBe(false);
+  });
+
+  it("returns false for different key counts", () => {
+    expect(shallowEqualRecords({ x: 1 }, { x: 1, y: 2 })).toBe(false);
+  });
+
+  it("uses reference equality for values", () => {
+    const obj = {};
+    expect(shallowEqualRecords({ x: obj }, { x: obj })).toBe(true);
+    expect(shallowEqualRecords({ x: obj }, { x: {} })).toBe(false);
+  });
+
+  it("returns true for two empty records", () => {
+    expect(shallowEqualRecords({}, {})).toBe(true);
   });
 });
 

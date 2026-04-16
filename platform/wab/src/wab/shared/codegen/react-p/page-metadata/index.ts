@@ -1,12 +1,7 @@
 import {
-  generateDataTokenImports,
-  getDataTokenIdentifiersFromPageMeta,
-} from "@/wab/shared/codegen/react-p/data-tokens/imports";
-import {
   makePlasmicComponentName,
   makeTanStackHeadOptionsExportName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
-import { getDataTokensFromServerQueries } from "@/wab/shared/codegen/react-p/server-queries";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { isPlatformNextJs } from "@/wab/shared/codegen/react-p/utils";
 import { PageMetadata } from "@/wab/shared/codegen/types";
@@ -291,32 +286,6 @@ function flattenMetadataValueToString(
     return flattenTemplatedStringToString(value);
   }
   return "";
-}
-
-/**
- * Gets data token imports needed for metadata generation from PageMeta.
- * excludeQueries is use in the app router server page skeleton. We import
- * server queries there, so only page meta token references are needed
- */
-export function getDataTokenImportsForPageMeta(
-  ctx: SerializerBaseContext,
-  pageMeta: PageMeta | null | undefined,
-  opts?: { excludeQueries?: boolean }
-): string {
-  const tokenIdentifiers = pageMeta
-    ? getDataTokenIdentifiersFromPageMeta(pageMeta)
-    : new Set<string>();
-  if (!opts?.excludeQueries) {
-    getDataTokensFromServerQueries(ctx.component.serverQueries).forEach(
-      (identifier) => tokenIdentifiers.add(identifier)
-    );
-  }
-  return generateDataTokenImports(
-    tokenIdentifiers,
-    ctx.site,
-    ctx.projectConfig.projectId,
-    ctx.exportOpts
-  );
 }
 
 function getOgImageValue(

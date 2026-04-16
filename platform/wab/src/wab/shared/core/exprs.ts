@@ -768,7 +768,9 @@ const _asCode = maybeComputedFn(
       ([path, subexpr]) =>
         `__composite${toPath(path)
           .map((key) => `[${jsLiteral(key)}]`)
-          .join("")} = (${asCode(subexpr, exprCtx).code});`
+          .join("")} = (${stripParensAndMaybeConvertToIife(
+          asCode(subexpr, exprCtx).code
+        )});`
     )
     .join("\n")}
   return __composite;

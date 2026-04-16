@@ -244,6 +244,7 @@ import {
 
 
 
+
 import { generateDynamicMetadata, PageCtx } from "./PlasmicSeoServer"; // plasmic-import: yjEpnuKb4eHY/rscServer
 
 
@@ -276,7 +277,6 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     },
   });
 }
-
 
 
 
@@ -313,6 +313,8 @@ export type PlasmicSeo__OverridesType = {
 
 
 const $$ = {};
+
+
 
 
 
@@ -655,13 +657,50 @@ import { DefaultSeoProps } from "./PlasmicSeo"; // plasmic-import: yjEpnuKb4eHY/
 
 import { ClientSeo } from "./ClientSeo.tsx"; // plasmic-import: yjEpnuKb4eHY/rscClient
 
+import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
+  
+} from "@plasmicapp/react-web";
+
 
 
 
 const $$ = {};
 
 import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
-
 
 
 export type PageCtx = {
@@ -689,7 +728,6 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
     alternates: { canonical: String($dataTokens_3UYiE_pageCanonical.url) },
   };
 }
-
 
 
 
@@ -847,7 +885,7 @@ export function generateDynamicMetadata($q, $ctx) {
         alternates: { canonical: String($dataTokens_3UYiE_pageCanonical.url) },
     };
 }
-export function executeServerQueries(ctx) {
+export function executeServerQueries(ctx, props) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, {}];
@@ -929,7 +967,6 @@ const $$ = {};
 import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
 
 
-
 export type PageCtx = {
   pageRoute: string;
   pagePath: string;
@@ -956,8 +993,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   };
 }
 
-
-export async function executeServerQueries(ctx: any) {
+export async function executeServerQueries(ctx: any, props?: any) {
   return {};
 }
 
@@ -1661,13 +1697,13 @@ export default Seo;
     
     
     import { PlasmicSeoServer, makeAppRouterPageCtx, generateDynamicMetadata, SeoServerSkeletonProps } from "./PlasmicSeoServer"; // plasmic-import: yjEpnuKb4eHY/rscServer
-    
-
-import type { Metadata, ResolvingMetadata } from "next";
+    import type { Metadata, ResolvingMetadata } from "next";
 
     
 
     
+
+
 export async function generateMetadata(
   { params, searchParams }: SeoServerSkeletonProps,
   parent: ResolvingMetadata
@@ -2078,6 +2114,7 @@ import {
 
 
 
+
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
 import { myText as $dataTokens_1T8AH_myText } from "./plasmic-data-tokens"; // plasmic-import: 1T8AHUHZeUyK1iDkHxrRw6/dataTokens
@@ -2137,7 +2174,6 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   };
 }
 
-
 createPlasmicElementProxy
 
 
@@ -2175,6 +2211,8 @@ override?: Flex__<"div">;
 
 
 const $$ = {};
+
+
 
 
 

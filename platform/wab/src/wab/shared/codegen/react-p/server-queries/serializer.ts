@@ -69,8 +69,12 @@ export function makeDataSourcesQueryTypeImports() {
   return `import type { PlasmicQuery, PlasmicQueryResult } from "${getDataSourcesPackageName()}";`;
 }
 
+export function makeServerQueryTreeTypeImport() {
+  return `import type { QueryComponentNode } from "${getDataSourcesPackageName()}";`;
+}
+
 export function makeDataSourcesServerQueryImports() {
-  return `import { unstable_createDollarQueries, unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";`;
+  return `import { unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";`;
 }
 
 export function serializeServerQueryCustomFunctionArgs(
@@ -155,7 +159,7 @@ export function makeServerQueryImports(
 
   const importNames = ["makeAppRouterPageCtx", "generateDynamicMetadata"];
   if (ctx.hasServerQueries) {
-    importNames.push("create$Queries", "createQueries");
+    importNames.push("serverQueryTree");
   }
   const imports = makeTaggedPlasmicImport(
     importNames,

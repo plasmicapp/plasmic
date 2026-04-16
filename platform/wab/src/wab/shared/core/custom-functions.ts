@@ -1,6 +1,6 @@
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
-import { swallow, withoutNils } from "@/wab/shared/common";
+import { withoutNils } from "@/wab/shared/common";
 import {
   ExprCtx,
   clone,
@@ -21,21 +21,25 @@ import {
   isKnownEventHandler,
 } from "@/wab/shared/model/classes";
 import { convertToFunction } from "@/wab/shared/parser-utils";
-import type { PlasmicQueryResult } from "@plasmicapp/data-sources";
-import { SWRResponse } from "@plasmicapp/query";
+import type {
+  PlasmicQueryResult,
+  QueryComponentNode,
+} from "@plasmicapp/data-sources";
 import {
   _StatefulQueryResult as StatefulQueryResult,
   _StatefulQueryState as StatefulQueryState,
-  unstable_createDollarQueries as createDollarQueries,
+  makeQueryCacheKey,
   unstable_usePlasmicQueries as usePlasmicQueries,
-} from "@plasmicapp/react-web/lib/data-sources";
+} from "@plasmicapp/data-sources";
+import type { SWRResponse } from "@plasmicapp/query";
+import { usePlasmicDataConfig } from "@plasmicapp/query";
 import { groupBy, pickBy } from "lodash";
 import React from "react";
 
 export {
   _StatefulQueryResult as StatefulQueryResult,
   type _StatefulQueryState as StatefulQueryState,
-} from "@plasmicapp/react-web/lib/data-sources";
+} from "@plasmicapp/data-sources";
 
 interface CustomFunctionOpArgs {
   fnId: string;
@@ -56,7 +60,7 @@ export type ServerQueryOpArgs = CustomFunctionOpArgs | CustomCodeOpArgs;
 
 export interface ServerQueryOpResult<T> {
   queryState: StatefulQueryState<T>;
-  swrResponse: SWRResponse<T>;
+  swrResponse: Pick<SWRResponse<T>, "mutate">;
 }
 
 function isCustomCodeOpArgs(args: ServerQueryOpArgs): args is CustomCodeOpArgs {
@@ -116,53 +120,90 @@ export function useServerQueryOp(
   args: ServerQueryOpArgs | undefined
 ): ServerQueryOpResult<unknown> | undefined {
   const fnId = args?.fnId ?? NOOP_ID;
-  const queries = React.useMemo(() => {
-    if (args) {
-      if (isCustomCodeOpArgs(args)) {
-        const code = args.code.code;
-        const codeId = `${fnId}:${code}`;
-        const fn = buildCustomCodeFn(code, args.env);
-        return {
-          [fnId]: {
-            id: codeId,
-            fn,
-            execParams: () => [],
-          },
-        };
-      } else {
-        const { fn, expr, env, exprCtx, currGlobalThis } = args;
-        return {
-          [fnId]: {
-            id: fnId,
-            fn,
-            execParams: () =>
-              getCustomFunctionParams(expr, env, exprCtx, currGlobalThis),
-          },
-        };
-      }
-    } else {
-      return {
-        [fnId]: {
-          id: fnId,
-          fn: noopFn,
-          execParams: () => [],
-        },
-      };
-    }
-  }, [
-    fnId,
-    args && isCustomCodeOpArgs(args) ? args.code.code : undefined,
-    args && !isCustomCodeOpArgs(args) ? args.fn : undefined,
-    args && !isCustomCodeOpArgs(args) ? args.expr : undefined,
-    args?.env,
-    args && !isCustomCodeOpArgs(args) ? args.exprCtx : undefined,
-    args && !isCustomCodeOpArgs(args) ? args.currGlobalThis : undefined,
-  ]);
+  const fn = args && !isCustomCodeOpArgs(args) ? args.fn : noopFn;
+  const expr = args && !isCustomCodeOpArgs(args) ? args.expr : undefined;
+  const env = args?.env;
+  const exprCtx = args && !isCustomCodeOpArgs(args) ? args.exprCtx : undefined;
+  const currGlobalThis =
+    args && !isCustomCodeOpArgs(args) ? args.currGlobalThis : undefined;
+  const code = args && isCustomCodeOpArgs(args) ? args.code : undefined;
 
+  const { mutate } = usePlasmicDataConfig();
+  const rootProps = env?.$props ?? {};
+  const rootCtx = env?.$ctx ?? {};
+  const rootState = env?.$state as Record<string, unknown> | undefined;
+  const envRef = React.useRef(env);
+  envRef.current = env;
+
+  const queryTree = React.useMemo(
+    (): QueryComponentNode =>
+      code
+        ? {
+            type: "component",
+            queries: {
+              [fnId]: {
+                id: `${fnId}:${code.code}`,
+                // Rebuild with current env on each invocation so env changes are reflected
+                fn: () => buildCustomCodeFn(code.code, envRef.current)(),
+                args: () => [],
+              },
+            },
+            propsContext: {},
+            children: [],
+          }
+        : {
+            type: "component",
+            queries: {
+              [fnId]: {
+                id: fnId,
+                fn,
+                args: ({ $q, $props, $ctx, $state }) =>
+                  expr
+                    ? getCustomFunctionParams(
+                        expr,
+                        {
+                          ...(envRef.current ?? {}),
+                          $q: { ...(envRef.current?.$q ?? {}), ...$q },
+                          $props,
+                          $ctx,
+                          $state,
+                        },
+                        exprCtx!,
+                        currGlobalThis
+                      )
+                    : [],
+              },
+            },
+            propsContext: {},
+            children: [],
+          },
+    [fnId, fn, expr, exprCtx, currGlobalThis, code]
+  );
   // Even if no args are present, we still need to run the hooks to obey
   // React hook rules, but we will ignore the results and return undefined.
-  const $queries = React.useMemo(() => createDollarQueries([fnId]), [fnId]);
-  const swrResponses = usePlasmicQueries($queries, queries);
+  const $queries = usePlasmicQueries(queryTree, rootProps, rootCtx, rootState);
+  const swrResponse = React.useMemo(
+    () => ({
+      mutate: async () => {
+        const params = expr
+          ? getCustomFunctionParams(
+              expr,
+              {
+                ...(envRef.current ?? {}),
+                $q: { ...(envRef.current?.$q ?? {}), ...$queries },
+                $props: rootProps,
+                $ctx: rootCtx,
+              },
+              exprCtx!,
+              currGlobalThis
+            )
+          : [];
+        return mutate(makeQueryCacheKey(fnId, params));
+      },
+    }),
+    [rootProps, rootCtx, expr, exprCtx, fnId, mutate, $queries, currGlobalThis]
+  );
+
   if (fnId === NOOP_ID) {
     return undefined;
   }
@@ -174,7 +215,7 @@ export function useServerQueryOp(
     .current as StatefulQueryState;
   return {
     queryState,
-    swrResponse: swrResponses[fnId],
+    swrResponse,
   };
 }
 
@@ -193,16 +234,25 @@ export function getCustomFunctionParams(
         if (isFallbackSet(clonedExpr)) {
           clonedExpr.fallback = undefined;
         }
-        return (
-          swallow(
-            () =>
-              tryEvalExpr(
-                getRawCode(clonedExpr, exprCtx),
-                env ?? {},
-                currGlobalThis
-              )?.val
-          ) ?? undefined
+        const result = tryEvalExpr(
+          getRawCode(clonedExpr, exprCtx),
+          env ?? {},
+          currGlobalThis
         );
+        if (result.err) {
+          // Surface the error to indicate prop eval error instead of downstream error
+          if (
+            (result.err as any)?.plasmicType !== "PlasmicUndefinedDataError"
+          ) {
+            throw new Error(
+              `Failed to evaluate query parameter "${param.argName}": ${
+                (result.err as Error).message ?? String(result.err)
+              }`
+            );
+          }
+          return undefined;
+        }
+        return result.val;
       }
       return undefined;
     }) ?? []

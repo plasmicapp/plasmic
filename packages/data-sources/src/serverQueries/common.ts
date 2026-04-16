@@ -209,15 +209,40 @@ export function safeExec<T>(
   ifUndefined: (promise: PlasmicUndefinedDataErrorPromise) => T,
   ifError: (err: unknown) => T
 ): T {
+  const result = safeExecResult(tryData);
+  if ("promise" in result) {
+    return ifUndefined(result.promise);
+  } else if ("error" in result) {
+    return ifError(result.error);
+  } else {
+    return result.data;
+  }
+}
+
+/** Execute a function, returning a result-like type. */
+export function safeExecResult<T>(tryData: () => T):
+  | {
+      data: T;
+    }
+  | {
+      promise: PlasmicUndefinedDataErrorPromise;
+    }
+  | {
+      error: unknown;
+    } {
   try {
-    return tryData();
+    return { data: tryData() };
   } catch (err) {
     if (isPlasmicUndefinedDataErrorPromise(err)) {
-      return ifUndefined(err);
+      return { promise: err };
     } else {
-      return ifError(err);
+      return { error: err };
     }
   }
+}
+
+export function assertUnexpectedNodeType(x: never): never {
+  throw new Error(`Unexpected node type: ${x}`);
 }
 
 export type ResolveParamsResult<Params extends unknown[] = unknown[]> =
@@ -364,6 +389,24 @@ export class SyncPromise<T> {
  * Wraps a Promise so that it can be easily resolved/rejected
  * outside the executor param of the Promise constructor.
  */
+export function shallowEqualRecords(
+  a: Record<string, unknown>,
+  b: Record<string, unknown>
+) {
+  if (Object.is(a, b)) {
+    return true;
+  }
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) {
+    return false;
+  }
+  return aKeys.every(
+    (key) =>
+      Object.prototype.hasOwnProperty.call(b, key) && Object.is(a[key], b[key])
+  );
+}
+
 class SettablePromise<T> {
   readonly promise: Promise<T>;
   private _resolve!: (value: T) => void;

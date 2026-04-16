@@ -4,6 +4,7 @@ import S from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab.mo
 import VariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
 import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
 import { LegacyComponentParamsSection } from "@/wab/client/components/sidebar-tabs/legacy-component-params-section";
+import { ServerQueriesSection } from "@/wab/client/components/sidebar-tabs/server-queries-section";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
@@ -135,11 +136,19 @@ export const ComponentTab = observer(function ComponentTab(props: {
                       {canEdit(PublicStyleSection.DataQueries) &&
                         (!appConfig.rscRelease ||
                           appConfig.enableDataQueries) && (
-                          <ComponentDataQueriesSection
-                            component={component}
-                            viewCtx={viewCtx}
-                            isDeprecated={appConfig.serverQueries}
-                          />
+                          <>
+                            <ComponentDataQueriesSection
+                              component={component}
+                              viewCtx={viewCtx}
+                              isDeprecated={appConfig.serverQueries}
+                            />
+                            {studioCtx.appCtx.appConfig.serverQueries && (
+                              <ServerQueriesSection
+                                component={component}
+                                viewCtx={viewCtx}
+                              />
+                            )}
+                          </>
                         )}
                       {canEdit(PublicStyleSection.States) && (
                         <VariablesSection

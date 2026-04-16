@@ -708,6 +708,13 @@ export function transformDataTokens(
   if (!code.includes("$dataTokens_")) {
     return undefined;
   }
+  // CustomCode.code is always stored as "(userCode)" by createExprForDataPickerValue.
+  // Strip the outer parens before parsing so that multi-statement code (e.g.,
+  // "let x = 1; x + 1") is not wrapped as "(let ...)" which acorn cannot parse.
+  const hadOuterParens = isCodeWrappedWithParens(code);
+  if (hadOuterParens) {
+    code = code.slice(1, -1);
+  }
   code = wrapJavaScriptCodeInParens(code);
 
   const ast = traverseCode(code, {
@@ -731,8 +738,12 @@ export function transformDataTokens(
     },
   });
   const newCode = generateCode(ast);
-  // Re-wrap if original code was wrapped in parens
-  return isCodeWrappedWithParens(code) ? `(${newCode})` : newCode;
+  // Re-wrap if original code was wrapped in parens (preserving the invariant
+  // that CustomCode.code is stored as "(userCode)"), or if wrapJavaScriptCodeInParens
+  // added parens for expression validity (e.g., object literals "{a: 1}" → "({a: 1})").
+  return hadOuterParens || isCodeWrappedWithParens(code)
+    ? `(${newCode})`
+    : newCode;
 }
 
 export function extractDataTokenIdentifiers(expr: DataTokenExpr): string[] {
@@ -751,6 +762,12 @@ export function extractDataTokenIdentifiersFromCode(code: string): string[] {
     return [];
   }
   const identifiers = new Set<string>();
+  // Strip outer parens before parsing (CustomCode.code is stored as "(userCode)"
+  // by createExprForDataPickerValue; multi-statement code like "let x = 1; x + 1"
+  // is not valid inside parenthesized expressions in acorn).
+  if (isCodeWrappedWithParens(code)) {
+    code = code.slice(1, -1);
+  }
   code = wrapJavaScriptCodeInParens(code);
 
   traverseCode(code, {

@@ -1,7 +1,7 @@
 import { serializeArgsType } from "@/wab/shared/codegen/react-p/params";
 import {
   getDataTokensFromServerQueries,
-  serializeCreateDollarQueries,
+  serializeRootServerQueryTree,
 } from "@/wab/shared/codegen/react-p/server-queries/index";
 import {
   makePlasmicClientRscComponentName,
@@ -137,7 +137,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
     });
   });
 
-  describe("serializeCreateDollarQueries", () => {
+  describe("serializeRootServerQueryTree", () => {
     function makeCtx(
       component: ReturnType<typeof mkComponent>,
       hasServerQueries = true
@@ -168,8 +168,8 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         )
       );
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
-      expect(result).toContain('"myQuery"');
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      expect(result).toContain("myQuery");
       expect(result).toContain('id: "fetchData"');
       expect(result).toContain("fn: $$.fetchData");
       expect(result).toContain("$ctx.apiUrl");
@@ -180,12 +180,14 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       const query = mkServerQuery("myQuery", mkCustomCodeOp("1 + 2"));
       const component = mkComponentWithQueries(query);
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
-      expect(result).toContain('"myQuery"');
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      expect(result).toContain("myQuery");
       expect(result).toContain('id: "custom:' + query.uuid);
-      expect(result).toContain("fn: () => {"); // no async
+      expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {"); // no async
       expect(result).toContain("return 1 + 2;");
-      expect(result).toContain("execParams: () => []");
+      expect(result).toContain(
+        "args: ({ $q, $props, $ctx, $state }) => [{ $q: {}, $props, $ctx, $state }]"
+      );
     });
 
     it("serializes a custom code server query (with await)", () => {
@@ -195,12 +197,14 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       );
       const component = mkComponentWithQueries(query);
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
-      expect(result).toContain('"myQuery"');
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      expect(result).toContain("myQuery");
       expect(result).toContain('id: "custom:' + query.uuid);
-      expect(result).toContain("fn: async () => {"); // has async
+      expect(result).toContain("fn: async ({ $q, $props, $ctx, $state }) => {"); // has async
       expect(result).toContain("return await new Promise(r => r(3000))");
-      expect(result).toContain("execParams: () => []");
+      expect(result).toContain(
+        "args: ({ $q, $props, $ctx, $state }) => [{ $q: {}, $props, $ctx, $state }]"
+      );
     });
 
     it("adds implicit return for multi-statement code", () => {
@@ -211,7 +215,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         )
       );
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
+      const result = serializeRootServerQueryTree(makeCtx(component));
       expect(result).toContain("const x = 1;");
       expect(result).toContain("const y = 2;");
       expect(result).toContain("return x + y;");
@@ -223,9 +227,9 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         mkServerQuery("unconfigured", null)
       );
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
-      expect(result).toContain('"configured"');
-      expect(result).not.toContain('"unconfigured"');
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      expect(result).toContain("configured");
+      expect(result).not.toContain("unconfigured");
     });
 
     it("serializes custom code query with multiple $q dependencies", () => {
@@ -238,9 +242,30 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         )
       );
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      // fn accepts context with $q/$props/$ctx/$state destructured
+      expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {");
+      // args resolves each dep and packages a snapshot for fn + cache key
       expect(result).toContain(
-        "execParams: () => [$q.queryA.data, $q.queryB.data]"
+        'args: ({ $q, $props, $ctx, $state }) => [{ $q: { "queryA": { data: $q["queryA"].data, isLoading: false, key: null }, "queryB": { data: $q["queryB"].data, isLoading: false, key: null } }, $props, $ctx, $state }]'
+      );
+    });
+
+    it("serializes custom code query with single $q dependency", () => {
+      const component = mkComponentWithQueries(
+        mkServerQuery("greeting", mkCustomCodeOp(`"Welcome to Mars"`)),
+        mkServerQuery(
+          "fullGreeting",
+          mkCustomCodeOp(`$q.greeting.data + ", enjoy your stay!"`)
+        )
+      );
+
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      // fn accepts context — $q, $props, $ctx, $state available directly
+      expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {");
+      // args resolves the dep and passes a resolved context snapshot
+      expect(result).toContain(
+        'args: ({ $q, $props, $ctx, $state }) => [{ $q: { "greeting": { data: $q["greeting"].data, isLoading: false, key: null } }, $props, $ctx, $state }]'
       );
     });
 
@@ -249,13 +274,34 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         mkServerQuery("myQuery", mkCustomCodeOp("$q.myQuery"))
       );
 
-      const result = serializeCreateDollarQueries(makeCtx(component));
-      expect(result).toContain("execParams: () => []");
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      // self-reference is excluded from the resolved $q snapshot
+      expect(result).toContain(
+        "args: ({ $q, $props, $ctx, $state }) => [{ $q: {}, $props, $ctx, $state }]"
+      );
+    });
+
+    it("uses varNames (not display names) as query tree keys", () => {
+      // Query names with spaces get converted to camelCase so that $q.fullGreeting
+      // works in args functions, not $q["Full Greeting"]
+      const component = mkComponentWithQueries(
+        mkServerQuery("Greeting", mkCustomCodeOp(`"hello"`)),
+        mkServerQuery("Full Greeting", mkCustomCodeOp(`$q.greeting.data + "!"`))
+      );
+
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      // Keys should be varNames, not display names
+      expect(result).toContain('"greeting"'); // appears in args dep snapshot
+      expect(result).toContain("fullGreeting"); // unquoted key in queries object
+      expect(result).not.toContain('"Greeting"');
+      expect(result).not.toContain('"Full Greeting"');
+      // deps should reference the varName key in the resolved snapshot
+      expect(result).toContain('"greeting": { data: $q["greeting"].data');
     });
 
     it("returns empty string when ctx.hasServerQueries is false", () => {
       const { component } = basicComponentsWithServerQueries();
-      expect(serializeCreateDollarQueries(makeCtx(component, false))).toBe("");
+      expect(serializeRootServerQueryTree(makeCtx(component, false))).toBe("");
     });
   });
 

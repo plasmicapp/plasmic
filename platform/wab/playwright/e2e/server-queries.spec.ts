@@ -1,5 +1,6 @@
 import { expect, Page } from "@playwright/test";
 import { PageModels, test } from "../fixtures/test";
+import { setDynamicVisibility } from "../utils/auto-open-utils";
 import { goToProject } from "../utils/studio-utils";
 
 const MOCK_API_URL = "https://mock-api-for-server-queries.test";
@@ -16,6 +17,18 @@ async function createServerQuery(
     const previewResult = serverQueryModal.locator(".code-preview-inner");
 
     await models.studio.rightPanel.addServerQueryButton.click();
+    // When other components already have configured queries the add button becomes
+    // a dropdown (New / Copy from…). Wait briefly for the "New" item and click it
+    // if the dropdown appeared; otherwise the button already added the query directly.
+    const newMenuItem = models.studio.frame
+      .locator(".ant-dropdown-menu-item")
+      .getByText("New", { exact: true });
+    try {
+      await newMenuItem.waitFor({ state: "visible", timeout: 1000 });
+      await newMenuItem.click();
+    } catch {
+      // No dropdown – query was created directly by the button click.
+    }
     // This is the server query created in the previous line
     await models.studio.rightPanel.serverQueriesSection
       .locator(`[data-plasmic-role="labeled-item"]`)
@@ -406,9 +419,7 @@ test.describe("server queries", () => {
     await createServerQuery(models, {
       name: "Todo",
       urlExpression: `"${MOCK_API_URL}/todos/" + $q.todos.data.body[0].id`,
-      // TODO -- expand the body or adjust the display to only show response body again
-      //  expectedResult: "Buy milk",
-      expectedResult: "statusCode: 200",
+      expectedResult: "Buy milk",
     });
     await expect(queryRows).toHaveCount(2);
 
@@ -489,6 +500,214 @@ test.describe("server queries", () => {
         "Copied query: Todos 2",
         "References component state (extra), props (filter), context (suffix) that may not exist or differ"
       );
+    });
+  });
+});
+
+const ADVANCED_MOCK_URL = "https://mock-api-advanced-sq.test";
+
+const mockItems = [
+  { id: 1, name: "Alpha" },
+  { id: 2, name: "Beta" },
+];
+
+async function generateAdvancedMocks(page: Page) {
+  await page.route(`${ADVANCED_MOCK_URL}/items`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(mockItems),
+    });
+  });
+  await page.route(`${ADVANCED_MOCK_URL}/items/1`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ id: 1, name: "Alpha", detail: "Alpha detail" }),
+    });
+  });
+}
+
+/**
+ * Set selected element's text to an expr.
+ */
+async function bindTextContent(models: PageModels, expression: string) {
+  await models.studio.rightPanel.frame
+    .locator('[data-test-id="text-content"] label')
+    .click({ button: "right" });
+  await models.studio.useDynamicValueButton.click();
+  // Insert code and save data picker
+  await models.studio.rightPanel.insertMonacoCode(expression);
+}
+
+test.describe("server queries – advanced", () => {
+  let projectId: string;
+
+  test.afterEach(async ({ apiClient }) => {
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
+  });
+
+  test("component server queries within data-repeat", async ({
+    apiClient,
+    page,
+    models,
+  }) => {
+    projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "server-queries-component",
+      hostLessPackagesInfo: {
+        name: "fetch",
+        npmPkg: ["@plasmicpkgs/fetch"],
+      },
+    });
+    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await generateAdvancedMocks(page);
+
+    // Mock for the dependent query in ItemCard
+    await page.route(`${ADVANCED_MOCK_URL}/items/1/extra`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ note: "Alpha extra" }),
+      });
+    });
+
+    // Create page and items query first ItemCard has queries, otherwise
+    // the add button becomes a dropdown and we need to click "New".
+    await models.studio.leftPanel.createNewPage("Card Page");
+    await models.studio.rightPanel.clickPageData();
+
+    await createServerQuery(models, {
+      name: "items",
+      url: `${ADVANCED_MOCK_URL}/items`,
+      expectedResult: "Array(2)",
+    });
+
+    // Create ItemCard component with two dependent queries
+    await models.studio.leftPanel.addComponent("ItemCard");
+    await models.studio.rightPanel.switchToComponentDataTab();
+
+    // Query 1 fetches an specific item
+    await createServerQuery(models, {
+      name: "cardBase",
+      url: `${ADVANCED_MOCK_URL}/items/1`,
+      expectedResult: "statusCode: 200",
+    });
+
+    // Query 2 depends on cardBase id in a url expression
+    await createServerQuery(models, {
+      name: "cardExtra",
+      urlExpression: `"${ADVANCED_MOCK_URL}/items/" + $q.cardBase.data.body.id + "/extra"`,
+      expectedResult: "statusCode: 200",
+    });
+
+    // Add text in ItemCard to show query results
+    await models.studio.leftPanel.switchToTreeTab();
+    await models.studio.leftPanel.insertNode("Text");
+    await bindTextContent(models, "$q.cardBase.data.body.name");
+
+    await models.studio.leftPanel.switchToTreeTab();
+    await models.studio.leftPanel.insertNode("Text");
+    await bindTextContent(models, "$q.cardExtra.data.body.note");
+    await models.studio.leftPanel.switchToTreeTab();
+
+    await models.studio.switchArena("Card Page");
+
+    // Insert ItemCard in Card Page and add repetition
+    await models.studio.leftPanel.insertNode("ItemCard");
+    await models.studio.rightPanel.repeatOnCustomCodeFast("$q.items.data.body");
+
+    // Verify queries resolve in preview
+    await models.studio.withinLiveMode(async (liveFrame) => {
+      // cardBase resolves the item name (2 repeated instances → use first())
+      const baseText = liveFrame.getByText("Alpha", { exact: true });
+      await expect(baseText).toHaveCount(2);
+      await expect(baseText.first()).toBeVisible();
+      // cardExtra (dependent on cardBase) resolves the extra note
+      await expect(
+        liveFrame.getByText("Alpha extra", { exact: true }).first()
+      ).toBeVisible();
+    });
+  });
+
+  test("dependent query, data-repeat, and state-driven visibility", async ({
+    apiClient,
+    page,
+    models,
+  }) => {
+    projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "server-queries-advanced",
+      hostLessPackagesInfo: {
+        name: "fetch",
+        npmPkg: ["@plasmicpkgs/fetch"],
+      },
+    });
+    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await generateAdvancedMocks(page);
+
+    await models.studio.leftPanel.createNewPage("Advanced Page");
+    await models.studio.rightPanel.clickPageData();
+
+    // Add a boolean state for the visibility condition
+    await models.studio.rightPanel.addState({
+      name: "showExtra",
+      variableType: "boolean",
+      accessType: "private",
+    });
+
+    // Create base query (fetches list of items)
+    await createServerQuery(models, {
+      name: "items",
+      url: `${ADVANCED_MOCK_URL}/items`,
+      expectedResult: "Array(2)",
+    });
+
+    // Dependent query (URL uses the first item's id from `items`)
+    await createServerQuery(models, {
+      name: "firstItem",
+      urlExpression: `"${ADVANCED_MOCK_URL}/items/" + $q.items.data.body[0].id`,
+      expectedResult: "statusCode: 200",
+    });
+
+    // Text element that repeats the items query result and renders the item name
+    await models.studio.leftPanel.insertNode("Text");
+    await models.studio.rightPanel.repeatOnCustomCodeFast("$q.items.data.body");
+    await bindTextContent(models, "currentItem.name");
+
+    // Switch to tree tab to insert in page root
+    await models.studio.leftPanel.switchToTreeTab();
+
+    // Button that toggles the showExtra state
+    await models.studio.leftPanel.insertNode("Button");
+    await models.studio.rightPanel.addComplexInteraction("onClick", [
+      {
+        actionName: "updateVariable",
+        args: { variable: ["showExtra"], operation: "toggle" },
+      },
+    ]);
+
+    // Insert visibility-gated text.
+    await models.studio.leftPanel.switchToTreeTab();
+    await models.studio.leftPanel.insertNode("Text");
+    await bindTextContent(models, "$q.firstItem.data.body.detail");
+    await setDynamicVisibility(models, "$state.showExtra");
+
+    await models.studio.withinLiveMode(async (liveFrame) => {
+      // Both item names should be rendered from the `items` query
+      await expect(liveFrame.getByText("Alpha")).toBeVisible();
+      await expect(liveFrame.getByText("Beta")).toBeVisible();
+
+      // Visibility condition: dependent-query result is hidden before toggle
+      await expect(liveFrame.getByText("Alpha detail")).not.toBeVisible();
+
+      // Click the button to set showExtra=true
+      await liveFrame.getByRole("button").click();
+
+      // The dependent query result is now visible
+      await expect(liveFrame.getByText("Alpha detail")).toBeVisible();
     });
   });
 });

@@ -148,6 +148,7 @@ import {
   makeVariantsArgTypeName,
   makeWabHtmlTextClassName,
   maybeCondExpr,
+  pagePathConflictsWithAppRouter,
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
@@ -158,14 +159,16 @@ import {
   getPageRouterSkeletonImports,
   getRscMetadata,
   serializeAppRouterGenerateMetadata,
-  serializeCreateDollarQueries,
+  serializePageQueryTree,
   serializePagesRouterGetStaticPaths,
   serializePagesRouterGetStaticProps,
+  serializeRootServerQueryTree,
 } from "@/wab/shared/codegen/react-p/server-queries";
 import {
   makeDataSourcesQueryTypeImports,
   makePlasmicQueryImports,
   makePlasmicServerRscComponentName,
+  makeServerQueryTreeTypeImport,
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { makeSplitsProviderBundle } from "@/wab/shared/codegen/react-p/splits";
@@ -714,10 +717,11 @@ export function exportReactPresentational(
   ) {
     referencedComponents.push(fetcherComponent);
   }
+  const isPage = isPageComponent(component);
 
   const unauthorizedComp = site.defaultComponents.unauthorized;
   if (
-    isPageComponent(component) &&
+    isPage &&
     appAuthProvider &&
     unauthorizedComp &&
     !referencedComponents.includes(unauthorizedComp)
@@ -807,7 +811,6 @@ export function exportReactPresentational(
     opts.idFileNames ? makeComponentCssIdFileName(component) : componentName,
     opts
   );
-  const isPage = isPageComponent(component);
   const plumeType = component.plumeInfo?.type as PlumeType | undefined;
   const plumePlugin = getPlumeCodegenPlugin(component);
 
@@ -839,9 +842,6 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
   const useRscServerWrapper = ctx.useRSC && opts.targetEnv !== "loader";
 
   const rscServerImportIdentifiers = ["generateDynamicMetadata", "PageCtx"];
-  if (ctx.hasServerQueries) {
-    rscServerImportIdentifiers.push("create$Queries", "createQueries");
-  }
   const rscServerImports =
     useRscServerWrapper && isPage
       ? makeTaggedPlasmicImport(
@@ -910,12 +910,11 @@ ${
 }
 ${
   ctx.hasServerQueries
-    ? `import { ${
-        !useRscServerWrapper ? "unstable_createDollarQueries, " : ""
-      }unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
+    ? `import { unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
     : ""
 }
 ${ctx.hasServerQueries && !ctx.useRSC ? makeDataSourcesQueryTypeImports() : ""}
+${ctx.hasServerQueries ? makeServerQueryTreeTypeImport() : ""}
 ${rscServerImports}
 ${
   plumeType
@@ -945,13 +944,16 @@ ${iconImports}
 ${makePictureImports(site, component, ctx.exportOpts, "managed")}
 ${makeSuperCompImports(component, ctx.exportOpts)}
 ${customFunctionsAndLibsImport}
-${isPage ? serializeDynamicMetadataProxies() : ""}
+${
+  isPage || (!ctx.useRSC && ctx.hasServerQueries)
+    ? serializeDynamicMetadataProxies()
+    : ""
+}
 ${
   isPage && !useRscServerWrapper
     ? serializeGenerateDynamicMetadataFunction(ctx)
     : ""
 }
-${!useRscServerWrapper ? serializeCreateDollarQueries(ctx) : ""}
 
 ${
   // We make a reference to createPlasmicElementProxy, as in some setups,
@@ -979,7 +981,13 @@ ${initUserCodeWrappers}
 ${serializedCustomFunctionsAndLibs}
 
 ${
-  isPageComponent(component) && ctx.exportOpts.platform === "gatsby"
+  useRscServerWrapper && isPage
+    ? serializePageQueryTree(ctx)
+    : serializeRootServerQueryTree(ctx)
+}
+
+${
+  isPage && ctx.exportOpts.platform === "gatsby"
     ? `export function Head() {
       return (
         <>
@@ -1268,6 +1276,7 @@ function serializeRenderFunc(
   referencedComponents: Component[]
 ) {
   const { component } = ctx;
+  const isPage = isPageComponent(component);
 
   const root = component.tplTree;
   const componentSubstitutionCalls = ctx.exportOpts.useComponentSubstitutionApi
@@ -1286,7 +1295,7 @@ function serializeRenderFunc(
     : [];
 
   let renderBody = ctx.serializeTplNode(ctx, root);
-  if (isPageComponent(component)) {
+  if (isPage) {
     renderBody = renderPage(ctx, component, renderBody);
   }
   if (component.subComps.length > 0) {
@@ -1355,6 +1364,9 @@ function serializeRenderFunc(
  */
 export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   const { component, projectConfig } = ctx;
+  const useRscServerWrapper =
+    ctx.useRSC && ctx.exportOpts.targetEnv !== "loader";
+  const isPage = isPageComponent(component);
 
   const treeTriggers = serializeLocalStyleTriggers(ctx);
   const ccVariantTriggers = serializeCodeComponentVariantsTriggers(
@@ -1380,11 +1392,20 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${
       // Initialize server queries early so state init funcs can access $q.
+      // $stateRef is used to pass $state to the hook without creating a
+      // circular dependency (useDollarState needs $q, $q hook needs $state).
+      // The ref captures the previous render's $state; it is updated after
+      // useDollarState runs so execParams (called lazily) sees the latest value.
       ctx.hasServerQueries
         ? `
-      const $q = React.useMemo(create$Queries, []);
-      const qs = React.useMemo(() => createQueries($q, $ctx), [$q, $ctx]);
-      unstable_usePlasmicQueries($q, qs);
+      ${
+        component.states.length
+          ? "const $stateRef = React.useRef<Record<string, unknown>>({});"
+          : ""
+      }
+      const $q = unstable_usePlasmicQueries(${
+        useRscServerWrapper && isPage ? "pageQueryTree" : "serverQueryTree"
+      }, $props, $ctx${component.states.length ? ", $stateRef.current" : ""});
       `
         : ""
     }
@@ -1416,7 +1437,12 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
         , [$props, $ctx, $refs]);
         const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: ${
           ctx.usesComponentLevelQueries ? "$queries" : "{}"
-        }, $q: ${ctx.hasServerQueries ? "$q" : "{}"}, $refs});`
+        }, $q: ${ctx.hasServerQueries ? "$q" : "{}"}, $refs});${
+            ctx.hasServerQueries
+              ? `
+        $stateRef.current = $state;`
+              : ""
+          }`
         : ""
     }
     ${
@@ -1463,7 +1489,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${
-      isPageComponent(component) && isPlatformNextJs(ctx)
+      isPage && isPlatformNextJs(ctx)
         ? `const pageMetadata = generateDynamicMetadata(
       wrapQueriesWithLoadingProxy(${ctx.hasServerQueries ? "$q" : "{}"}),
       $ctx as PageCtx
@@ -2590,7 +2616,6 @@ function serializePageAwareSkeletonWrapperTs(
   componentSubstitutionApi: string
 ) {
   const component = ctx.component;
-  const isNextjsAppDir = opts.platformOptions?.nextjs?.appDir || false;
 
   const globalGroups = ctx.site.globalVariantGroups.filter((g) => {
     // If we do have splits provider bundle we skip all the global groups associated with splits
@@ -2624,7 +2649,9 @@ function serializePageAwareSkeletonWrapperTs(
   const isDynamicRoute = /\[.+\]/.test(component.pageMeta?.path ?? "");
 
   const pagesRouterGetStaticProps =
-    isNextJsPage && (ctx.hasServerQueries || ctx.usesComponentLevelQueries)
+    isNextJsPage &&
+    !pagePathConflictsWithAppRouter(component.pageMeta?.path) &&
+    (ctx.hasServerQueries || ctx.usesComponentLevelQueries)
       ? serializePagesRouterGetStaticProps(
           nodeComponentName,
           component.pageMeta?.path ?? ""
@@ -2639,10 +2666,9 @@ function serializePageAwareSkeletonWrapperTs(
   const serverQueryComponentParams = ctx.hasServerQueries
     ? "params={params} searchParams={searchParams} "
     : "";
-  let content =
-      ctx.useRSC && isNextjsAppDir
-        ? `<${rscNodeComponentName} ${serverQueryComponentParams}/>`
-        : `<${nodeComponentName} />`,
+  let content = ctx.useRSC
+      ? `<${rscNodeComponentName} ${serverQueryComponentParams}/>`
+      : `<${nodeComponentName} />`,
     serverExports = "",
     componentPropsSig = "",
     tanstackRouteInfo = "";
@@ -2651,7 +2677,7 @@ function serializePageAwareSkeletonWrapperTs(
     content = wrapStyleTokensProvider(content);
   }
   if (isNextJs) {
-    if (isNextjsAppDir) {
+    if (ctx.useRSC) {
       const skeletonPropsName = makeServerPageSkeletonPropsName(component);
       componentPropsSig = `{ params, searchParams }: ${skeletonPropsName}`;
       serverExports = serializeAppRouterGenerateMetadata(ctx);
@@ -2668,7 +2694,7 @@ function serializePageAwareSkeletonWrapperTs(
         skeletonPropsName
       );
       if (ctx.hasServerQueries) {
-        plasmicModuleImports.push("create$Queries", "createQueries");
+        plasmicModuleImports.push("serverQueryTree");
       }
     } else {
       let prefetchedCache = "";
@@ -2788,7 +2814,7 @@ function serializePageAwareSkeletonWrapperTs(
     ${nodeImport}
     ${
       isNextJsPage
-        ? isNextjsAppDir
+        ? ctx.useRSC
           ? getAppRouterSkeletonImports(ctx)
           : getPageRouterSkeletonImports(ctx, isDynamicRoute)
         : isPageComponent(component) && opts.platform === "gatsby"
@@ -2806,7 +2832,7 @@ function serializePageAwareSkeletonWrapperTs(
     ${tanstackRouteInfo}
 
     ${
-      isNextjsAppDir && isPageComponent(component) ? "async " : ""
+      ctx.useRSC && isPageComponent(component) ? "async " : ""
     }function ${componentName}(${componentPropsSig}) {
       // Use ${nodeComponentName} to render this component as it was
       // designed in Plasmic, by activating the appropriate variants,

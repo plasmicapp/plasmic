@@ -55,7 +55,6 @@ export type SubDeps = {
     | "usePlasmicDataConfig"
     | "usePlasmicInvalidate"
     | "unstable_usePlasmicQueries"
-    | "unstable_createDollarQueries"
   >;
   dataSourcesContext: typeof PlasmicDataSourcesContext;
   useGlobalActions?: typeof useGlobalActions;

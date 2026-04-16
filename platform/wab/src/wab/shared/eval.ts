@@ -111,6 +111,13 @@ const _compileCodeExpr = maybeComputedFn(function _compileCodeExpr(
     try {
       return code.bind(thisObj ?? {})(sandboxProxy);
     } catch (err) {
+      // PlasmicUndefinedDataError is a pending-query sentinel (a tagged Promise
+      // used for Suspense). Re-throw it silently so callers can handle it — but
+      // don't log it, because this is expected during query loading and would
+      // otherwise spam the console and trigger the canvas error-boundary loop.
+      if ((err as any)?.plasmicType === "PlasmicUndefinedDataError") {
+        throw err;
+      }
       console.error(`Error evaluating custom code \`${src}\`:`, err);
       throw err;
     }

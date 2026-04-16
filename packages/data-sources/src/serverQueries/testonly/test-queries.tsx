@@ -2,8 +2,7 @@ import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import * as React from "react";
 import { expect, vi } from "vitest";
 import { usePlasmicQueries } from "../client";
-import { createDollarQueries } from "../common";
-import { PlasmicQueryResult } from "../types";
+import { PlasmicQueryResult, QueryComponentNode } from "../types";
 import {
   asyncFunc,
   asyncFuncCalls,
@@ -23,67 +22,57 @@ export interface TestQueriesProps {
   resultArgs?: unknown[];
 }
 
-export function create$Queries() {
-  return createDollarQueries(["dep1", "dep2", "dep3", "result"]);
-}
-
-export type $Queries = ReturnType<typeof create$Queries>;
-
-type QueryName = keyof ReturnType<typeof create$Queries>;
-
-export function createQueries(
-  $props: TestQueriesProps,
-  $queries: Record<QueryName, PlasmicQueryResult>
-) {
+export function createTestTree(): QueryComponentNode {
   return {
-    result: {
-      id: "resultFn",
-      fn: asyncFunc,
-      execParams: () =>
-        $props?.resultArgs ?? ["result-param", $queries.dep3.data],
+    type: "component",
+    queries: {
+      result: {
+        id: "resultFn",
+        fn: asyncFunc,
+        args: ({ $q, $props }) => {
+          const props = $props as TestQueriesProps;
+          return props?.resultArgs ?? ["result-param", $q.dep3.data];
+        },
+      },
+      dep3: {
+        id: "depFn",
+        fn: asyncFunc,
+        args: ({ $q, $props }) => {
+          const props = $props as TestQueriesProps;
+          return props?.dep3Args ?? ["dep3-param", $q.dep1.data, $q.dep2.data];
+        },
+      },
+      dep2: {
+        id: "depFn",
+        fn: asyncFunc,
+        args: ({ $props }) => {
+          const props = $props as TestQueriesProps;
+          return props?.dep2Args ?? ["dep2-param"];
+        },
+      },
+      dep1: {
+        id: "depFn",
+        fn: asyncFunc,
+        args: ({ $props }) => {
+          const props = $props as TestQueriesProps;
+          return props?.dep1Args ?? ["dep1-param"];
+        },
+      },
     },
-    dep3: {
-      id: "depFn",
-      fn: asyncFunc,
-      execParams: () =>
-        $props?.dep3Args ?? [
-          "dep3-param",
-          $queries.dep1.data,
-          $queries.dep2.data,
-        ],
-    },
-    dep2: {
-      id: "depFn",
-      fn: asyncFunc,
-      execParams: () => $props?.dep2Args ?? ["dep2-param"],
-    },
-    dep1: {
-      id: "depFn",
-      fn: asyncFunc,
-      execParams: () => $props?.dep1Args ?? ["dep1-param"],
-    },
-  } as const;
+    propsContext: {},
+    children: [],
+  };
 }
 
 export function TestComponent({
-  create$Queries: create$QueriesFn,
-  createQueries: createQueriesFn,
+  tree,
   $props,
 }: {
-  create$Queries: () => $Queries;
-  createQueries: (
-    props: TestQueriesProps,
-    $queries: $Queries
-  ) => ReturnType<typeof createQueries>;
+  tree: QueryComponentNode;
   $props?: TestQueriesProps;
 }) {
-  const $queries = React.useMemo(create$QueriesFn, [create$QueriesFn]);
-  const queries = React.useMemo(
-    () => createQueriesFn($props ?? {}, $queries),
-    [createQueriesFn, $props, $queries]
-  );
-  usePlasmicQueries($queries, queries);
-  return JSON.stringify($queries.result.data);
+  const $q = usePlasmicQueries(tree, $props ?? {}, {});
+  return JSON.stringify($q.result.data);
 }
 
 export function TestProvider({
@@ -157,11 +146,10 @@ export const testPermutations = Object.entries({
   mixed: ["dep2", "result", "dep1", "dep3"],
 }).map(([name, perm]) => ({
   name: `${name} ${perm.join(", ")}`,
-  create$Queries: () => reorderKeys(create$Queries(), perm),
-  createQueries: (
-    props: TestQueriesProps,
-    $queries: Parameters<typeof createQueries>[1]
-  ) => reorderKeys(createQueries(props, $queries), perm),
+  tree: {
+    ...createTestTree(),
+    queries: reorderKeys(createTestTree().queries, perm),
+  },
 }));
 
 function reorderKeys<T extends Record<string, unknown>>(
@@ -178,7 +166,7 @@ function reorderKeys<T extends Record<string, unknown>>(
 // Functions for validating behavior specific to queries in this file
 
 export interface TestState {
-  current: ReturnType<typeof create$Queries>;
+  current: Record<string, PlasmicQueryResult>;
 }
 
 export async function expectInitialState(result: TestState) {

@@ -300,6 +300,7 @@ import {
 import type {
   ClientQueryResult,
   PlasmicQueryResult,
+  QueryComponentNode,
   usePlasmicInvalidate,
 } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
@@ -2763,20 +2764,26 @@ function evalDataCondExpr(
   effectiveVs: EffectiveVariantSetting
 ) {
   const dataCondExpr = effectiveVs.dataCond;
+  if (dataCondExpr == null) {
+    return true;
+  }
   const exprCtx: ExprCtx = {
     component: ctx.ownerComponent ?? null,
     projectFlags: ctx.projectFlags,
     inStudio: true,
   };
-  const dataCondResult =
-    dataCondExpr == null
-      ? true
-      : evalCodeWithEnv(
-          getCodeExpressionWithFallback(dataCondExpr, exprCtx),
-          ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        );
-  return !!dataCondResult;
+  // Visibility expressions may reference server queries ($q.myQ.data) which throws
+  // a promise while loading, or error on fail. Treat any throw as "not visible" to
+  // not crash canvas rendering. Once queries settle, re-render will re-evaluate this correctly.
+  try {
+    return !!evalCodeWithEnv(
+      getCodeExpressionWithFallback(dataCondExpr, exprCtx),
+      ctx.env,
+      ctx.viewCtx.canvasCtx.win()
+    );
+  } catch {
+    return false;
+  }
 }
 
 function determineAutoOpenState(
@@ -3694,11 +3701,15 @@ const mkComponentLevelQueryFetcher = computedFn(
         ]);
 
         // Memoize queries similar to codegen output code.
-        // We only depend on ctx because it changes on env/observable changes.
-        const newQ = sub.React.useMemo(
-          () =>
-            Object.fromEntries([
-              ...component.serverQueries
+        // Keep the tree identity stable and read the latest render context via ref
+        // so query state isn't recreated on every canvas render.
+        // const queryCtxRef = sub.React.useRef(ctx);
+        // queryCtxRef.current = ctx;
+        const serverQueryTree = sub.React.useMemo(
+          (): QueryComponentNode => ({
+            type: "component",
+            queries: Object.fromEntries(
+              component.serverQueries
                 .filter(isServerQueryWithOperation)
                 .map((query) => {
                   if (isKnownCustomCode(query.op)) {
@@ -3711,7 +3722,7 @@ const mkComponentLevelQueryFetcher = computedFn(
                       {
                         id: `custom:${query.uuid}:${query.op.code}`,
                         fn: buildCustomCodeFn(query.op.code, ctx.env),
-                        execParams: () =>
+                        args: () =>
                           depQueryNames.map((n) => ctx.env.$q[n]?.data),
                       },
                     ] as const;
@@ -3729,32 +3740,45 @@ const mkComponentLevelQueryFetcher = computedFn(
                     {
                       id: funcId,
                       fn: funcReg.function,
-                      execParams: () =>
-                        getCustomFunctionParams(
+                      args: ({
+                        $q,
+                        $props,
+                        $ctx,
+                        $state,
+                      }: {
+                        $q: Record<string, PlasmicQueryResult>;
+                        $props: Record<string, unknown>;
+                        $ctx: Record<string, unknown>;
+                        $state: Record<string, unknown>;
+                      }) => {
+                        return getCustomFunctionParams(
                           op,
-                          ctx.env,
+                          { ...ctx.env, $q, $props, $ctx, $state },
                           {
                             component,
                             projectFlags: ctx.projectFlags,
                             inStudio: true,
                           },
                           ctx.viewCtx.canvasCtx.win()
-                        ),
+                        );
+                      },
                     },
                   ] as const;
                 })
-                .filter(notNil),
-            ]),
-          [ctx]
+                .filter(notNil)
+            ),
+            propsContext: {},
+            children: [],
+          }),
+          [component, ctx.viewCtx.canvasCtx]
         );
-        const new$Q = sub.React.useMemo(
-          (): Record<string, PlasmicQueryResult<unknown>> =>
-            sub.dataSources?.unstable_createDollarQueries?.(
-              Object.keys(newQ)
-            ) ?? {},
-          [Object.keys(newQ).join(",")]
-        );
-        sub.dataSources?.unstable_usePlasmicQueries?.(new$Q, newQ);
+        const new$Q =
+          sub.dataSources?.unstable_usePlasmicQueries?.(
+            serverQueryTree,
+            ctx.env.$props ?? {},
+            ctx.env.$ctx ?? {},
+            (ctx.env.$state as Record<string, unknown> | undefined) ?? {}
+          ) ?? {};
         const triggerQueryLoad = (queries: DataOrServerQueries) => {
           Object.keys(queries).forEach((k) => {
             try {
@@ -3846,6 +3870,7 @@ function wrapInComponentDataQueries(ctx: RenderingCtx, component: Component) {
         component.serverQueries.filter(isServerQueryWithOperation).length
     ),
     {
+      key: component.uuid,
       ctx,
       component,
     }

@@ -418,6 +418,35 @@ export function isPageAwarePlatform(platform: string) {
   );
 }
 
+/**
+ * Next.js App Router file conventions that get special RSC treatment, even in the
+ * pages/ directory. Files with these names cannot export `getStaticProps`.
+ */
+const NEXT_RSC_RESERVED_PAGE_NAMES = new Set([
+  "page",
+  "layout",
+  "template",
+  "loading",
+  "error",
+  "not-found",
+  "route",
+  "default",
+]);
+
+/**
+ * Returns true if the page's path produces a skeleton filename that conflicts
+ * with Next.js App Router reserved names (e.g. `page.tsx`, `layout.tsx`).
+ */
+export function pagePathConflictsWithAppRouter(
+  pagePath: string | undefined
+): boolean {
+  if (!pagePath) {
+    return false;
+  }
+  const lastSegment = pagePath.split("/").filter(Boolean).pop() ?? "";
+  return NEXT_RSC_RESERVED_PAGE_NAMES.has(lastSegment);
+}
+
 export function getSkeletonModuleFileName(
   component: Component,
   opts: ExportOpts
