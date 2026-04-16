@@ -1785,9 +1785,19 @@ function showPseudoClassSelector(
         `Expected VariantSettings in tpl ${root.uuid} for combo ` +
         baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
     );
-    return `${baseRuleName}${ruleNamer(root, baseRuleVs)}${makeSelectorString(
+    const interactionSelector = makeSelectorString(
       styleOrCodeComponentVariants
-    )}`;
+    );
+    // Repeat the interaction selector to boost specificity: .cls:hover:hover is
+    // (0,3,0), which beats TplComponent instance selectors .cls.__wab_instance at
+    // (0,2,0). Without this, both are (0,2,0) and CSS source order determines the
+    // winner, causing instance-level styles (e.g. transform) to override
+    // component-internal pseudo-class styles (e.g. :hover transform)
+    // non-deterministically.
+    return `${baseRuleName}${ruleNamer(
+      root,
+      baseRuleVs
+    )}${interactionSelector}${interactionSelector}`;
   }
 
   const parts: string[] = [baseRuleName];
