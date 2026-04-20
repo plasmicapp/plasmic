@@ -1,5 +1,5 @@
 {
-  "version": "0.0.84",
+  "version": "0.0.85",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -58,7 +58,7 @@
     "tslib": "^2.3.1"
   },
   "dependencies": {
-    "@plasmicapp/host": "2.0.0",
+    "@plasmicapp/host": "2.0.1",
     "constate": "^3.3.2"
   }
 }
