@@ -80,7 +80,8 @@
           "displayName": "Fetch Plasmic CMS Tables",
           "params": [{ "__ref": "ZPs_dwvFX5_p" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "WRs-ftgeOUbc": {
           "importPath": "@plasmicpkgs/cms",
@@ -90,7 +91,8 @@
           "displayName": "Fetch Plasmic CMS Content",
           "params": [{ "__ref": "S4LIBX3WBzAo" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "VbEN0G6pVr6C": {
           "importPath": "@plasmicpkgs/cms",
@@ -100,7 +102,8 @@
           "displayName": "Fetch Plasmic CMS Count",
           "params": [{ "__ref": "A1R6GFP9IBGW" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "yvnVEOyfMmiL": {
           "name": "cms",
@@ -146,7 +149,7 @@
         }
       },
       "deps": [],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ],
   [
@@ -2116,7 +2119,7 @@
         }
       },
       "deps": ["fab02607-a7c5-462d-a6f7-735890794fea"],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ]
 ]
