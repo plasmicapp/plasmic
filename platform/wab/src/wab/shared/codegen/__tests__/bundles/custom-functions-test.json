@@ -1412,7 +1412,8 @@
           "params": [],
           "isQuery": false,
           "__type": "CustomFunction",
-          "displayName": null
+          "displayName": null,
+          "isMutation": false
         },
         "-hD0qzX8Rbv7": {
           "importPath": "./functions",
@@ -1422,7 +1423,8 @@
           "params": [],
           "isQuery": false,
           "__type": "CustomFunction",
-          "displayName": null
+          "displayName": null,
+          "isMutation": false
         },
         "1wavIcOhMzR6": {
           "importPath": "./functions",
@@ -1432,7 +1434,8 @@
           "params": [],
           "isQuery": false,
           "__type": "CustomFunction",
-          "displayName": null
+          "displayName": null,
+          "isMutation": false
         },
         "SOeWExDqMzIL": {
           "expr": { "__ref": "Q2V4gWoP0oq8" },
@@ -1529,7 +1532,7 @@
         }
       },
       "deps": [],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ]
 ]

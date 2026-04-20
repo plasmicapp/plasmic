@@ -203,6 +203,7 @@ export const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
   name: "queryWordpress",
   displayName: "Query WordPress",
   importPath: "@plasmicpkgs/wordpress",
+  isQuery: true,
   params: [
     {
       name: "opts",

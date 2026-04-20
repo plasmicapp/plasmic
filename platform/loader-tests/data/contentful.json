@@ -86,7 +86,8 @@
           "displayName": "Query Contentful",
           "params": [{ "__ref": "4WiJOpYTPDl3" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "fP8xIKhElS0i": {
           "name": "contentful",
@@ -116,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ],
   [
@@ -2280,7 +2281,7 @@
         }
       },
       "deps": ["e44dffc5-685f-4e8f-89c1-ff00982efc3c"],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ]
 ]

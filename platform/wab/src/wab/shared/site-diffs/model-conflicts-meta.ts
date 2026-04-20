@@ -520,6 +520,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
         ]),
     },
     isQuery: "generic",
+    isMutation: "generic",
   },
   CodeLibrary: {
     importType: "generic",

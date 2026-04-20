@@ -61,6 +61,7 @@ function createMockCustomFunction(
     importPath: "@my-package/functions",
     defaultExport: false,
     isQuery: true,
+    isMutation: false,
   };
 }
 

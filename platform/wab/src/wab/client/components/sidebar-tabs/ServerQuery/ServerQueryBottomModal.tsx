@@ -50,6 +50,7 @@ interface ServerQueryOpExprBottomModalContentProps {
   tpl?: TplNode;
   schema?: DataPickerTypesSchema;
   eventHandlerKey?: EventHandlerKeyType;
+  filterMode: "query" | "mutation";
 }
 
 /** For managing a single query modal with a known query key. */
@@ -108,6 +109,7 @@ const ServerQueryOpExprBottomModalContent = observer(
     viewCtx,
     tpl,
     eventHandlerKey,
+    filterMode,
   }: ServerQueryOpExprBottomModalContentProps) {
     const parentQuery = isKnownComponentServerQuery(value) ? value : undefined;
     const wrappedOnSave = React.useCallback(
@@ -152,6 +154,7 @@ const ServerQueryOpExprBottomModalContent = observer(
             allowedOps={allowedOps}
             exprCtx={exprCtx}
             interaction={interaction}
+            filterMode={filterMode}
           />
         </PlasmicQueryDataProvider>
       </PopoverFrameProvider>

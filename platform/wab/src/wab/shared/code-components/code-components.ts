@@ -2689,6 +2689,7 @@ export function createCustomFunctionFromRegistration(
         return typeFactory.arg(name, argType, undefined);
       }) ?? [],
     isQuery: functionReg.meta.isQuery ?? false,
+    isMutation: functionReg.meta.isMutation ?? false,
   });
 }
 
@@ -4894,7 +4895,7 @@ async function upsertRegisteredFunctions(
             "importName" | "namespace" | "typeTag" | "uid"
           > = pick(
             createCustomFunctionFromRegistration(functionReg, existing),
-            ["defaultExport", "importPath", "params", "isQuery", "displayName"]
+            ["defaultExport", "importPath", "params", "isQuery", "isMutation", "displayName"]
           );
           if (
             Object.entries(updateableFields).some(
@@ -4998,6 +4999,7 @@ async function upsertRegisteredFunctions(
                   "importPath",
                   "params",
                   "isQuery",
+                  "isMutation",
                   "displayName",
                 ]
               );

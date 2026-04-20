@@ -17,6 +17,7 @@ export const queryStrapiMeta: CustomFunctionMeta<typeof queryStrapi> = {
   displayName: "Query Strapi",
   description: "Query a Strapi collection",
   importPath: "@plasmicpkgs/strapi",
+  isQuery: true,
   params: [
     {
       name: "opts",

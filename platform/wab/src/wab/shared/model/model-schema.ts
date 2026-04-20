@@ -237,6 +237,7 @@ CustomFunction
   displayName: String?
   params: [ArgType]
   isQuery: Bool
+  isMutation: Bool
 
 CodeLibrary
   name: String

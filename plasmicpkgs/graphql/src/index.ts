@@ -56,6 +56,7 @@ const registerGraphqlFetchParams: CustomFunctionMeta<typeof fetchGraphQL> = {
   name: "fetchGraphQL",
   importPath: "@plasmicpkgs/graphql",
   displayName: "GraphQL",
+  isQuery: true,
   params: [
     {
       name: "opts",

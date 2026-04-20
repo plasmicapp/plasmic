@@ -333,6 +333,7 @@ describe("replaceNestedExprInExpr", () => {
       displayName: null,
       params: [],
       isQuery: false,
+      isMutation: false,
     });
     const funcArg = new FunctionArg({
       uuid: mkShortId(),
@@ -612,6 +613,7 @@ describe("replaceExprInComponent", () => {
       displayName: null,
       params: [],
       isQuery: true,
+      isMutation: false,
     });
     const funcArg = new FunctionArg({
       uuid: mkShortId(),

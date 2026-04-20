@@ -105,6 +105,7 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
   name: "fetch",
   importPath: "@plasmicpkgs/fetch",
   displayName: "HTTP Fetch",
+  isQuery: true,
   params: [
     {
       name: "opts",

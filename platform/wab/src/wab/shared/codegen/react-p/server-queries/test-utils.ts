@@ -38,6 +38,7 @@ export function mkCustomFunctionExpr(
       defaultExport: false,
       params: params.map((p) => typeFactory.arg(p, typeFactory.text())),
       isQuery: true,
+      isMutation: false,
     }),
     args: args.map(
       (arg) =>

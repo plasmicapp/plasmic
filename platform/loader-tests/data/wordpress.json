@@ -86,7 +86,8 @@
           "displayName": "Query WordPress",
           "params": [{ "__ref": "qZDYgAk39tGn" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "IUGM0tNmTJmB": {
           "name": "wordpress",
@@ -116,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ],
   [
@@ -2691,7 +2692,7 @@
         }
       },
       "deps": ["e3ce0173-4a2b-49d7-94de-203f89ff7556"],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ]
 ]

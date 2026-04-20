@@ -301,6 +301,7 @@ export const queryContentfulMeta: CustomFunctionMeta<typeof queryContentful> = {
   displayName: "Query Contentful",
   description: "Query Contentful entries with filtering and ordering",
   importPath: modulePath,
+  isQuery: true,
   params: [
     {
       name: "opts",

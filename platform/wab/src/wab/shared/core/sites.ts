@@ -467,6 +467,7 @@ export function cloneCustomFunction(
     namespace: customFunction.namespace,
     params: [],
     isQuery: customFunction.isQuery,
+    isMutation: customFunction.isMutation,
   });
 }
 

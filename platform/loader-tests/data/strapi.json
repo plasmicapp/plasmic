@@ -86,7 +86,8 @@
           "displayName": "Query Strapi",
           "params": [{ "__ref": "-mGUaBLmT_uw" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "-mGUaBLmT_uw": {
           "name": "arg",
@@ -116,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ],
   [
@@ -2248,7 +2249,7 @@
         }
       },
       "deps": ["f63b0b63-47ac-4cf5-8ca3-329a60321d4f"],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ]
 ]

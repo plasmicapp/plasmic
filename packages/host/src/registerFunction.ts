@@ -49,9 +49,14 @@ export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
   typescriptDeclaration?: string;
 
   /**
-   * Whether this function can be used as a query in the editor.
+   * Whether this function can be used as a data query in the editor.
    */
   isQuery?: boolean;
+  /**
+   * Whether this function can be used as a mutation in element interactions
+   * (e.g. onClick handlers).
+   */
+  isMutation?: boolean;
   /**
    * The path to be used when importing the function in the generated code.
    * It can be the name of the package that contains the function, or the path

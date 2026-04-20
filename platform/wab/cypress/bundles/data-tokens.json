@@ -89,7 +89,8 @@
           "displayName": "HTTP Fetch",
           "params": [{ "__ref": "Mj0SWHxeXQ7v" }],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "isMutation": false
         },
         "6Tf0ntklRfKn": {
           "uuid": "qnPPq1CNkagC",
@@ -599,7 +600,7 @@
         }
       },
       "deps": [],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ],
   [
@@ -3140,7 +3141,7 @@
         }
       },
       "deps": ["3f6783bc-83da-4ce7-98cc-69413a54d3b3"],
-      "version": "255-wrap-page-meta-og-image-in-ref"
+      "version": "256-add-custom-function-is-mutation"
     }
   ]
 ]
