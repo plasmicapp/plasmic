@@ -4,6 +4,7 @@ import {
 } from "@/wab/client/cli-routes";
 import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import { PublicLink } from "@/wab/client/components/PublicLink";
+import { TopFrameCopilotToolsBridge } from "@/wab/client/components/studio/TopFrameCopilotToolsBridge";
 import { HostLoadTimeoutPrompt } from "@/wab/client/components/TopFrame/HostLoadTimeoutPrompt";
 import {
   TopFrameChrome,
@@ -308,6 +309,7 @@ export function StudioFrame({
         refreshBranchData={refreshBranchData}
         {...topFrameChromeProps}
       />
+      <TopFrameCopilotToolsBridge />
       <iframe
         className={"studio-frame"}
         src={src.toString()}
