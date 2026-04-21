@@ -1,7 +1,5 @@
 const { merge } = require("webpack-merge");
-const webpack = require("webpack");
 const baseConfig = require("./webpack.base.config");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = merge(baseConfig, {
   name: "prod",
   mode: "production",
