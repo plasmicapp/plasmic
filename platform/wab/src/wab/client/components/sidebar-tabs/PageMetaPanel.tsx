@@ -30,9 +30,8 @@ import React from "react";
 const PageMetaPanel = observer(function PageMetaPanel(props: {
   viewCtx: ViewCtx;
   page: PageComponent;
-  env: Record<string, any> | undefined;
 }) {
-  const { page, viewCtx, env } = props;
+  const { page, viewCtx } = props;
   const sc = useStudioCtx();
   const disableDynamicValue = !sc.appCtx.appConfig.serverQueries
     ? true
@@ -66,7 +65,6 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
         tpl={page.tplTree as TplTag}
         disableLinkToProp={true}
         disableDynamicValue={disableDynamicValue}
-        env={env}
       />
     </SidebarSection>
   );

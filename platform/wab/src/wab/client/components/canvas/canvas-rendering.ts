@@ -3655,6 +3655,78 @@ type DataOrServerQueries = Record<
   ClientQueryResult | PlasmicQueryResult | undefined
 >;
 
+// `PlasmicQueryResult` returned by `unstable_usePlasmicQueries` mutate internal state
+// when the query settles, which isn't observable by mobx. Code outside the canvas reading
+// `$q.foo.data` via `viewCtx.getCanvasEnvForTpl`) wouldn't re-run when a query finishes
+// loading. We bridge into mobx by wrapping each query with getters that subscribe to a
+// per-query version box, and bump when the query ref or its loading flag change.
+type ReactiveQueryEntry = {
+  version: IObservableValue<number>;
+  // Snapshot `lastIsLoading` to detect isLoading transitions
+  state: {
+    query: PlasmicQueryResult | undefined;
+    lastIsLoading: boolean | undefined;
+  };
+  wrapper: PlasmicQueryResult;
+};
+
+function makeReactiveQueryEntry(
+  query: PlasmicQueryResult | undefined
+): ReactiveQueryEntry {
+  const version = observable.box(0);
+  const state = { query, lastIsLoading: query?.isLoading };
+  const wrapper = {
+    get key() {
+      version.get();
+      return state.query?.key ?? null;
+    },
+    get data() {
+      version.get();
+      return state.query?.data;
+    },
+    get isLoading() {
+      version.get();
+      return state.query?.isLoading ?? false;
+    },
+  } as PlasmicQueryResult;
+  return { version, state, wrapper };
+}
+
+function useReactiveDataQueries(
+  sub: SubDeps,
+  queries: Record<string, PlasmicQueryResult | undefined>
+): Record<string, PlasmicQueryResult | undefined> {
+  const entriesRef = sub.React.useRef<Map<string, ReactiveQueryEntry>>(
+    new Map()
+  );
+  const entries = entriesRef.current;
+
+  for (const key of [...entries.keys()]) {
+    if (!(key in queries)) {
+      entries.delete(key);
+    }
+  }
+
+  for (const [key, query] of Object.entries(queries)) {
+    let entry = entries.get(key);
+    if (!entry) {
+      entry = makeReactiveQueryEntry(query);
+      entries.set(key, entry);
+    } else if (
+      entry.state.query !== query ||
+      entry.state.lastIsLoading !== query?.isLoading
+    ) {
+      entry.state.query = query;
+      entry.state.lastIsLoading = query?.isLoading;
+      entry.version.set(entry.version.get() + 1);
+    }
+  }
+
+  return Object.fromEntries(
+    [...entries].map(([key, entry]) => [key, entry.wrapper])
+  );
+}
+
 /**
  * We need to create a wrapper for component-level queries because the number
  * of React hooks to be used depend on the number of queries to be made, but
@@ -3779,10 +3851,10 @@ const mkComponentLevelQueryFetcher = computedFn(
             ctx.env.$ctx ?? {},
             (ctx.env.$state as Record<string, unknown> | undefined) ?? {}
           ) ?? {};
+        const reactive$Q = useReactiveDataQueries(sub, new$Q);
         const triggerQueryLoad = (queries: DataOrServerQueries) => {
-          Object.keys(queries).forEach((k) => {
+          Object.values(queries).forEach((query) => {
             try {
-              const query = queries[k] as any;
               if (query?.isLoading) {
                 // Force kickoff all fetches
                 const data = query.data;
@@ -3833,7 +3905,7 @@ const mkComponentLevelQueryFetcher = computedFn(
           ctx.env.$queries,
           new$Queries
         );
-        const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
+        const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, reactive$Q);
 
         ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
 
@@ -3842,14 +3914,14 @@ const mkComponentLevelQueryFetcher = computedFn(
             ctx.setDollarQueries(new$Queries);
           }
           if (shouldUpdate$Q) {
-            ctx.setDollarQ(new$Q);
+            ctx.setDollarQ(reactive$Q);
           }
         }, [
           shouldUpdate$Queries,
           new$Queries,
           ctx.env.$queries,
           shouldUpdate$Q,
-          new$Q,
+          reactive$Q,
           ctx.env.$q,
         ]);
 

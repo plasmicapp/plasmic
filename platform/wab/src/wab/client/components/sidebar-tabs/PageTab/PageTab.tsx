@@ -50,8 +50,6 @@ export const PageTab = observer(function PageTab(props: {
 
   const uiConfig = studioCtx.getCurrentUiConfig();
 
-  const env = viewCtx.getCanvasEnvForTpl(page.tplTree);
-
   const canEdit = (section: PublicStyleSection) => {
     return canEditStyleSection(uiConfig, section, {
       isContentCreator: studioCtx.contentEditorMode,
@@ -123,11 +121,7 @@ export const PageTab = observer(function PageTab(props: {
                       </SidebarSection>
                       {canEdit(PublicStyleSection.PageMeta) && (
                         <>
-                          <PageMetaPanel
-                            page={page}
-                            viewCtx={viewCtx}
-                            env={env}
-                          />
+                          <PageMetaPanel page={page} viewCtx={viewCtx} />
                           <PageURLParametersSection page={page} />
                           <PageMinRoleSection page={page} />
                         </>
