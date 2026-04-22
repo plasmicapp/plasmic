@@ -242,15 +242,15 @@ export function getCustomFunctionParams(
         if (result.err) {
           // Surface the error to indicate prop eval error instead of downstream error
           if (
-            (result.err as any)?.plasmicType !== "PlasmicUndefinedDataError"
+            (result.err as any)?.plasmicType === "PlasmicUndefinedDataError"
           ) {
-            throw new Error(
-              `Failed to evaluate query parameter "${param.argName}": ${
-                (result.err as Error).message ?? String(result.err)
-              }`
-            );
+            throw result.err;
           }
-          return undefined;
+          throw new Error(
+            `Failed to evaluate query parameter "${param.argName}": ${
+              (result.err as Error).message ?? String(result.err)
+            }`
+          );
         }
         return result.val;
       }

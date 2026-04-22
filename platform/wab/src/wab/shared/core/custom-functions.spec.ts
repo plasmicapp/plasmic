@@ -1,7 +1,10 @@
+import { mkCustomFunctionExpr } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import {
-  StatefulQueryResult,
+  getCustomFunctionParams,
   unwrapStatefulQueryResult,
 } from "@/wab/shared/core/custom-functions";
+import { ExprCtx } from "@/wab/shared/core/exprs";
+import { _StatefulQueryResult as StatefulQueryResult } from "@plasmicapp/data-sources";
 
 describe("unwrapStatefulQueryResult", () => {
   it("returns loading true in initial state", () => {
@@ -42,5 +45,31 @@ describe("unwrapStatefulQueryResult", () => {
       data: undefined,
       error: err,
     });
+  });
+});
+
+describe("getCustomFunctionParams", () => {
+  const exprCtx: ExprCtx = {
+    component: null,
+    projectFlags: {} as ExprCtx["projectFlags"],
+    inStudio: true,
+  };
+
+  it("rethrows unresolved query params", () => {
+    const expr = mkCustomFunctionExpr(
+      "testFunc",
+      ["value"],
+      [{ name: "value", code: "$q.dep.data" }]
+    );
+    const $query = new StatefulQueryResult();
+
+    let thrown: unknown;
+    try {
+      getCustomFunctionParams(expr, { $q: { dep: $query } }, exprCtx);
+    } catch (err) {
+      thrown = err;
+    }
+
+    expect((thrown as any)?.plasmicType).toBe("PlasmicUndefinedDataError");
   });
 });
