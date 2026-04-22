@@ -11,7 +11,10 @@ import {
   loaderCodegenCacheCounter,
 } from "@/wab/server/promstats";
 import { withSpan } from "@/wab/server/util/apm-util";
-import { upsertS3CacheEntry } from "@/wab/server/util/s3-util";
+import {
+  tryGetS3CacheEntry,
+  upsertS3CacheEntry,
+} from "@/wab/server/util/s3-util";
 import {
   CachedCodegenOutputBundle,
   ComponentReference,
@@ -77,6 +80,11 @@ export async function genPublishedLoaderCodeBundle(
   }
 ) {
   const { projectVersions } = opts;
+
+  const cachedBundle = await tryGetCachedPublishedBundle(projectVersions, opts);
+  if (cachedBundle !== null) {
+    return cachedBundle;
+  }
 
   const allProjectVersions = await withSpan(
     "loader-resolve-deps",
@@ -175,22 +183,7 @@ async function genLoaderCodeBundleForProjectVersions(
     skipHead?: boolean;
   }
 ) {
-  const exportOpts: ExportOpts = {
-    ...LOADER_CODEGEN_OPTS_DEFAULTS,
-    platform: (opts.platform ??
-      LOADER_CODEGEN_OPTS_DEFAULTS.platform) as ExportOpts["platform"],
-    platformOptions: opts.platformOptions,
-    useComponentSubstitutionApi: true,
-    useGlobalVariantsSubstitutionApi: true,
-    useCodeComponentHelpersRegistry: opts.loaderVersion >= 10 ? true : false,
-    ...(opts.i18nKeyScheme && {
-      localization: {
-        keyScheme: opts.i18nKeyScheme ?? "content",
-        tagPrefix: opts.i18nTagPrefix,
-      },
-    }),
-    skipHead: opts.skipHead,
-  };
+  const exportOpts = makeExportOpts(opts);
 
   const codegenProject = async (
     projectId: string,
@@ -416,6 +409,65 @@ function makeExportOptsKey(opts: ExportOpts) {
   return createHash("sha256").update(str).digest("hex");
 }
 
+function makeExportOpts(opts: {
+  platform?: string;
+  platformOptions: ExportPlatformOptions;
+  loaderVersion: number;
+  i18nKeyScheme?: LocalizationKeyScheme;
+  i18nTagPrefix: string | undefined;
+  skipHead?: boolean;
+}): ExportOpts {
+  return {
+    ...LOADER_CODEGEN_OPTS_DEFAULTS,
+    platform: (opts.platform ??
+      LOADER_CODEGEN_OPTS_DEFAULTS.platform) as ExportOpts["platform"],
+    platformOptions: opts.platformOptions,
+    useComponentSubstitutionApi: true,
+    useGlobalVariantsSubstitutionApi: true,
+    useCodeComponentHelpersRegistry: opts.loaderVersion >= 10 ? true : false,
+    ...(opts.i18nKeyScheme && {
+      localization: {
+        keyScheme: opts.i18nKeyScheme ?? "content",
+        tagPrefix: opts.i18nTagPrefix,
+      },
+    }),
+    skipHead: opts.skipHead,
+  };
+}
+
+async function tryGetCachedPublishedBundle(
+  projectVersions: Record<string, VersionToSync>,
+  opts: {
+    platform?: string;
+    platformOptions: ExportPlatformOptions;
+    loaderVersion: number;
+    browserOnly: boolean;
+    i18nKeyScheme?: LocalizationKeyScheme;
+    i18nTagPrefix: string | undefined;
+    skipHead?: boolean;
+  }
+): Promise<Awaited<ReturnType<typeof genLoaderCodeBundleForProjectVersions>> | null> {
+  const exportOpts = makeExportOpts(opts);
+  const bundleKey = makeBundleBucketPath({
+    projectVersions,
+    platform: exportOpts.platform,
+    loaderVersion: opts.loaderVersion,
+    browserOnly: opts.browserOnly,
+    exportOpts,
+  });
+  const cached = await tryGetS3CacheEntry({
+    bucket: LOADER_ASSETS_BUCKET,
+    key: bundleKey,
+    deserialize: (str) => JSON.parse(str),
+  });
+  if (cached !== null) {
+    cached.bundleKey = bundleKey;
+    return cached;
+  }
+  return null;
+}
+
 export const _testonly = {
   makeBundleBucketPath,
+  makeExportOpts,
 };
