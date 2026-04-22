@@ -3655,76 +3655,47 @@ type DataOrServerQueries = Record<
   ClientQueryResult | PlasmicQueryResult | undefined
 >;
 
-// `PlasmicQueryResult` returned by `unstable_usePlasmicQueries` mutate internal state
-// when the query settles, which isn't observable by mobx. Code outside the canvas reading
-// `$q.foo.data` via `viewCtx.getCanvasEnvForTpl`) wouldn't re-run when a query finishes
-// loading. We bridge into mobx by wrapping each query with getters that subscribe to a
-// per-query version box, and bump when the query ref or its loading flag change.
-type ReactiveQueryEntry = {
-  version: IObservableValue<number>;
-  // Snapshot `lastIsLoading` to detect isLoading transitions
-  state: {
-    query: PlasmicQueryResult | undefined;
-    lastIsLoading: boolean | undefined;
-  };
-  wrapper: PlasmicQueryResult;
+type StatefulPlasmicQueryResult = PlasmicQueryResult & {
+  addListener: (listener: (...args: any[]) => void) => void;
+  removeListener: (listener: (...args: any[]) => void) => void;
 };
 
-function makeReactiveQueryEntry(
-  query: PlasmicQueryResult | undefined
-): ReactiveQueryEntry {
-  const version = observable.box(0);
-  const state = { query, lastIsLoading: query?.isLoading };
-  const wrapper = {
-    get key() {
-      version.get();
-      return state.query?.key ?? null;
-    },
-    get data() {
-      version.get();
-      return state.query?.data;
-    },
-    get isLoading() {
-      version.get();
-      return state.query?.isLoading ?? false;
-    },
-  } as PlasmicQueryResult;
-  return { version, state, wrapper };
-}
-
-function useReactiveDataQueries(
+function usePublishedDataQueries(
   sub: SubDeps,
   queries: Record<string, PlasmicQueryResult | undefined>
 ): Record<string, PlasmicQueryResult | undefined> {
-  const entriesRef = sub.React.useRef<Map<string, ReactiveQueryEntry>>(
-    new Map()
-  );
-  const entries = entriesRef.current;
+  const [version, setVersion] = sub.React.useState(0);
 
-  for (const key of [...entries.keys()]) {
-    if (!(key in queries)) {
-      entries.delete(key);
-    }
-  }
+  sub.React.useEffect(() => {
+    let cleanup = false;
+    const listener = () => {
+      if (cleanup) {
+        return;
+      }
+      // unstable_usePlasmicQueries listeners may fire during render, so defer the update
+      queueMicrotask(() => {
+        if (!cleanup) {
+          setVersion((v) => v + 1);
+        }
+      });
+    };
+    Object.values(queries).forEach((query) => {
+      (query as StatefulPlasmicQueryResult | undefined)?.addListener(listener);
+    });
 
-  for (const [key, query] of Object.entries(queries)) {
-    let entry = entries.get(key);
-    if (!entry) {
-      entry = makeReactiveQueryEntry(query);
-      entries.set(key, entry);
-    } else if (
-      entry.state.query !== query ||
-      entry.state.lastIsLoading !== query?.isLoading
-    ) {
-      entry.state.query = query;
-      entry.state.lastIsLoading = query?.isLoading;
-      entry.version.set(entry.version.get() + 1);
-    }
-  }
+    return () => {
+      cleanup = true;
+      Object.values(queries).forEach((query) => {
+        (query as StatefulPlasmicQueryResult | undefined)?.removeListener(
+          listener
+        );
+      });
+    };
+  }, [queries]);
 
-  return Object.fromEntries(
-    [...entries].map(([key, entry]) => [key, entry.wrapper])
-  );
+  // Publish a new queries object when query state changes so canvas env gets a new identity
+  // and downstream mobx observers rerun.
+  return sub.React.useMemo(() => ({ ...queries }), [queries, version]);
 }
 
 /**
@@ -3851,7 +3822,7 @@ const mkComponentLevelQueryFetcher = computedFn(
             ctx.env.$ctx ?? {},
             (ctx.env.$state as Record<string, unknown> | undefined) ?? {}
           ) ?? {};
-        const reactive$Q = useReactiveDataQueries(sub, new$Q);
+        const published$Q = usePublishedDataQueries(sub, new$Q);
         const triggerQueryLoad = (queries: DataOrServerQueries) => {
           Object.values(queries).forEach((query) => {
             try {
@@ -3905,7 +3876,7 @@ const mkComponentLevelQueryFetcher = computedFn(
           ctx.env.$queries,
           new$Queries
         );
-        const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, reactive$Q);
+        const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
 
         ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
 
@@ -3913,15 +3884,15 @@ const mkComponentLevelQueryFetcher = computedFn(
           if (shouldUpdate$Queries) {
             ctx.setDollarQueries(new$Queries);
           }
-          if (shouldUpdate$Q) {
-            ctx.setDollarQ(reactive$Q);
+          if (shouldUpdate$Q || ctx.env.$q !== published$Q) {
+            ctx.setDollarQ(published$Q);
           }
         }, [
           shouldUpdate$Queries,
           new$Queries,
           ctx.env.$queries,
           shouldUpdate$Q,
-          reactive$Q,
+          published$Q,
           ctx.env.$q,
         ]);
 
