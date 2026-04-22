@@ -781,13 +781,12 @@ const _asCode = maybeComputedFn(
       .when(CustomFunctionExpr, (expr) => {
         const { func, args } = expr;
         const argsMap = groupBy(args, (arg) => arg.argType.argName);
-        const orderedArgs =
-          func.params.map((param) => {
-            if (argsMap[param.argName]) {
-              return getRawCode(argsMap[param.argName][0].expr, exprCtx);
-            }
-            return undefined;
-          }) ?? [];
+        const orderedArgs = func.params.map((param) => {
+          if (argsMap[param.argName]) {
+            return getRawCode(argsMap[param.argName][0].expr, exprCtx);
+          }
+          return "undefined";
+        });
         return code(
           `$$${expr.func.namespace ? `.${expr.func.namespace}` : ""}.${
             expr.func.importName

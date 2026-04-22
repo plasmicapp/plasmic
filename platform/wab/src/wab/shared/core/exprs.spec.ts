@@ -1,3 +1,4 @@
+import { mkCustomFunctionExpr } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import {
   ExprCtx,
   asCode,
@@ -124,6 +125,20 @@ describe("asCode", () => {
     const legacyEval = eval(legacyCode);
     expect(legacyCode).toEqual(currentCode);
     expect(legacyEval).toEqual(currentEval);
+  });
+
+  it("returns stringified undefined for missing CustomFunctionExpr args", () => {
+    const expr = mkCustomFunctionExpr(
+      "testFunc",
+      ["presentArg", "missing1", "missing2"],
+      [{ name: "presentArg", code: "1 + 1" }]
+    );
+
+    const { code: generatedCode } = asCode(expr, exprCtxFixture);
+
+    expect(generatedCode).toEqual(`$$.testFunc((
+      1 + 1
+    ),undefined,undefined)`);
   });
 });
 
