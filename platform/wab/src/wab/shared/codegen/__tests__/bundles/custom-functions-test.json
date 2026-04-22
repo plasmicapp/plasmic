@@ -1410,7 +1410,7 @@
           "defaultExport": false,
           "namespace": "math",
           "params": [],
-          "isQuery": false,
+          "isQuery": true,
           "__type": "CustomFunction",
           "displayName": null,
           "isMutation": false
@@ -1421,7 +1421,7 @@
           "defaultExport": true,
           "namespace": "math",
           "params": [],
-          "isQuery": false,
+          "isQuery": true,
           "__type": "CustomFunction",
           "displayName": null,
           "isMutation": false
@@ -1432,7 +1432,7 @@
           "defaultExport": false,
           "namespace": null,
           "params": [],
-          "isQuery": false,
+          "isQuery": true,
           "__type": "CustomFunction",
           "displayName": null,
           "isMutation": false

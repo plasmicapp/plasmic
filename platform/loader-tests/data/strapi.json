@@ -85,7 +85,7 @@
           "namespace": null,
           "displayName": "Query Strapi",
           "params": [{ "__ref": "-mGUaBLmT_uw" }],
-          "isQuery": false,
+          "isQuery": true,
           "__type": "CustomFunction",
           "isMutation": false
         },

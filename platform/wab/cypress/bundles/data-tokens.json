@@ -88,7 +88,7 @@
           "namespace": null,
           "displayName": "HTTP Fetch",
           "params": [{ "__ref": "Mj0SWHxeXQ7v" }],
-          "isQuery": false,
+          "isQuery": true,
           "__type": "CustomFunction",
           "isMutation": false
         },

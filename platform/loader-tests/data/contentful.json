@@ -85,7 +85,7 @@
           "namespace": null,
           "displayName": "Query Contentful",
           "params": [{ "__ref": "4WiJOpYTPDl3" }],
-          "isQuery": false,
+          "isQuery": true,
           "__type": "CustomFunction",
           "isMutation": false
         },
