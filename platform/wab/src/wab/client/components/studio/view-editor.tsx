@@ -718,8 +718,11 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           this.props.studioCtx.changeUnsafe(() => this.viewOps().duplicate())
         ),
       EXTRACT_COMPONENT: (e) =>
-        this.handleHotkey(e, async () =>
-          this.props.studioCtx.changeUnsafe(() => {
+        this.handleHotkey(e, async () => {
+          if (this.props.studioCtx.contentEditorMode) {
+            return;
+          }
+          await this.props.studioCtx.changeUnsafe(() => {
             const vc = this.viewCtx();
             if (vc) {
               const tpl = vc.focusedTpl();
@@ -740,8 +743,8 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                 spawn(this.viewOps().convertFrameToComponent());
               }
             }
-          })
-        ),
+          });
+        }),
       CONVERT_SLOT: (e) =>
         this.handleHotkey(e, async () =>
           this.props.studioCtx.changeUnsafe(() => {

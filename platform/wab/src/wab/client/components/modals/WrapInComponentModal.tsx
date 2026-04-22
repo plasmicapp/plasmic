@@ -7,8 +7,10 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
+import {
+  getAllowedWrapperComponents,
+  getComponentDisplayName,
+} from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import * as React from "react";
@@ -34,14 +36,9 @@ export async function promptWrapInComponent(props: {
       </p>
       <div className="flex flex-col">
         {naturalSort(
-          studioCtx.site.components
-            .filter(
-              (c) =>
-                c !== component &&
-                !isBuiltinCodeComponent(c) &&
-                c.params.some((param) => param.variable.name === "children")
-            )
-            .map((c) => [c, getComponentDisplayName(c)] as const),
+          getAllowedWrapperComponents(studioCtx, component).map(
+            (c) => [c, getComponentDisplayName(c)] as const
+          ),
           ([_, displayName]) => displayName
         ).map(([c, displayName]) => (
           <ListItem

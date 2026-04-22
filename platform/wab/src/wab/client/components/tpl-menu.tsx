@@ -35,6 +35,7 @@ import {
   filterMapTruthy,
 } from "@/wab/shared/common";
 import {
+  getAllowedWrapperComponents,
   isCodeComponent,
   isFrameComponent,
 } from "@/wab/shared/core/components";
@@ -76,6 +77,7 @@ import {
   isTplDefaultSized,
   resetTplSize,
 } from "@/wab/shared/sizingutils";
+import { canInsertAlias } from "@/wab/shared/ui-config-utils";
 import {
   clearTplVisibility,
   getVisibilityLabel,
@@ -252,13 +254,14 @@ export function makeTplMenu(
     ? viewCtx.getViewOps().getPositionType(tpl)
     : undefined;
   const contentEditorMode = studioCtx.contentEditorMode;
+  const uiConfig = studioCtx.getCurrentUiConfig();
+  const canInsertContext = { isContentCreator: contentEditorMode };
 
   if (
     hasSiblings &&
     positionType !== PositionLayoutType.fixed &&
     !isMarkerTpl &&
-    !forMultipleTpls &&
-    !contentEditorMode
+    !forMultipleTpls
   ) {
     builder.genSection("Ordering", (push) => {
       push(
@@ -312,55 +315,70 @@ export function makeTplMenu(
       areSiblings(tpls as TplNode[]) &&
       !isInsideRichText
     ) {
-      if (!contentEditorMode) {
+      const canWrapHStack = canInsertAlias(
+        uiConfig,
+        "hstack",
+        canInsertContext
+      );
+      const canWrapVStack = canInsertAlias(
+        uiConfig,
+        "vstack",
+        canInsertContext
+      );
+      if (canWrapHStack || canWrapVStack) {
         builder.genSub("Wrap in container...", (push3) => {
-          push3(
-            <Menu.Item
-              key="wrap-hstack"
-              onClick={async () =>
-                await viewCtx.getViewOps().wrapInContainer("flex-row", tpls)
-              }
-            >
-              <MenuItemContent shortcut={getComboForAction("WRAP_HSTACK")}>
-                {HORIZ_CONTAINER_CAP}
-              </MenuItemContent>
-            </Menu.Item>
-          );
-          push3(
-            <Menu.Item
-              key="wrap-vstack"
-              onClick={async () =>
-                await viewCtx.getViewOps().wrapInContainer("flex-column", tpls)
-              }
-            >
-              <MenuItemContent shortcut={getComboForAction("WRAP_VSTACK")}>
-                {VERT_CONTAINER_CAP}
-              </MenuItemContent>
-            </Menu.Item>
-          );
+          if (canWrapHStack) {
+            push3(
+              <Menu.Item
+                key="wrap-hstack"
+                onClick={async () =>
+                  await viewCtx.getViewOps().wrapInContainer("flex-row", tpls)
+                }
+              >
+                <MenuItemContent shortcut={getComboForAction("WRAP_HSTACK")}>
+                  {HORIZ_CONTAINER_CAP}
+                </MenuItemContent>
+              </Menu.Item>
+            );
+          }
+          if (canWrapVStack) {
+            push3(
+              <Menu.Item
+                key="wrap-vstack"
+                onClick={async () =>
+                  await viewCtx
+                    .getViewOps()
+                    .wrapInContainer("flex-column", tpls)
+                }
+              >
+                <MenuItemContent shortcut={getComboForAction("WRAP_VSTACK")}>
+                  {VERT_CONTAINER_CAP}
+                </MenuItemContent>
+              </Menu.Item>
+            );
+          }
         });
       }
     }
 
+    const hasWrappableComponents =
+      getAllowedWrapperComponents(studioCtx, component).length > 0;
     if (
+      hasWrappableComponents &&
       tpls.every(
         (_tpl) => isTplTag(_tpl) || isTplComponent(_tpl) || isTplSlot(tpl)
       ) &&
       areSiblings(tpls as TplNode[]) &&
       !isInsideRichText
     ) {
-      if (!contentEditorMode) {
-        pushEdit(
-          <Menu.Item
-            key="wrap-component"
-            onClick={async () =>
-              await viewCtx.getViewOps().wrapInComponent(tpls)
-            }
-          >
-            <MenuItemContent>Wrap in component</MenuItemContent>
-          </Menu.Item>
-        );
-      }
+      pushEdit(
+        <Menu.Item
+          key="wrap-component"
+          onClick={async () => await viewCtx.getViewOps().wrapInComponent(tpls)}
+        >
+          <MenuItemContent>Wrap in component</MenuItemContent>
+        </Menu.Item>
+      );
     }
 
     // "Ungroup" may only be performed on a TplTag or TplComponent with children.
@@ -371,8 +389,7 @@ export function makeTplMenu(
       children.length > 0 &&
       !isTplColumns(tpl) &&
       !isTplColumn(tpl) &&
-      !isInsideRichText &&
-      !contentEditorMode
+      !isInsideRichText
     ) {
       // Ungroup is disabled if the tpl is the root and has more than 1 child.
       // If the only child is a known slot, it is also disabled, because slots can't
@@ -763,7 +780,7 @@ export function makeTplMenu(
             </MenuItemContent>
           </Menu.Item>
         );
-        if (tpl.parent && !contentEditorMode) {
+        if (tpl.parent) {
           push2(
             <Menu.Item
               key="cut"
@@ -805,22 +822,18 @@ export function makeTplMenu(
             </MenuItemContent>
           </Menu.Item>
         );
-        if (!contentEditorMode) {
-          push2(
-            <Menu.Item
-              key="copy-style"
-              onClick={() =>
-                viewCtx.change(() => viewCtx.getViewOps().copyStyle(tpl))
-              }
-            >
-              <MenuItemContent
-                shortcut={getComboForAction("COPY_ELEMENT_STYLE")}
-              >
-                Copy style
-              </MenuItemContent>
-            </Menu.Item>
-          );
-        }
+        push2(
+          <Menu.Item
+            key="copy-style"
+            onClick={() =>
+              viewCtx.change(() => viewCtx.getViewOps().copyStyle(tpl))
+            }
+          >
+            <MenuItemContent shortcut={getComboForAction("COPY_ELEMENT_STYLE")}>
+              Copy style
+            </MenuItemContent>
+          </Menu.Item>
+        );
       });
       builder.genSub("Paste...", (push2) => {
         const clip = viewCtx.getViewOps().clipboard().contents();
@@ -846,27 +859,25 @@ export function makeTplMenu(
               </Menu.Item>
             );
           }
-          if (!contentEditorMode) {
-            push2(
-              <Menu.Item
-                key="paste-style"
-                onClick={async () => {
-                  const styleProps = await viewCtx
-                    .getViewOps()
-                    .getPasteStylePropsFromClipboard(tpl);
-                  viewCtx.change(() =>
-                    viewCtx.getViewOps().pasteStyleClip(styleProps)
-                  );
-                }}
+          push2(
+            <Menu.Item
+              key="paste-style"
+              onClick={async () => {
+                const styleProps = await viewCtx
+                  .getViewOps()
+                  .getPasteStylePropsFromClipboard(tpl);
+                viewCtx.change(() =>
+                  viewCtx.getViewOps().pasteStyleClip(styleProps)
+                );
+              }}
+            >
+              <MenuItemContent
+                shortcut={getComboForAction("PASTE_ELEMENT_STYLE")}
               >
-                <MenuItemContent
-                  shortcut={getComboForAction("PASTE_ELEMENT_STYLE")}
-                >
-                  Paste style
-                </MenuItemContent>
-              </Menu.Item>
-            );
-          }
+                Paste style
+              </MenuItemContent>
+            </Menu.Item>
+          );
         }
       });
     }
@@ -920,7 +931,7 @@ export function makeTplMenu(
   });
 
   // "Delete" may only be performed on a non-root element.
-  if (tpl.parent && !contentEditorMode) {
+  if (tpl.parent) {
     builder.genSection(undefined, (push) => {
       push(
         <Menu.Item

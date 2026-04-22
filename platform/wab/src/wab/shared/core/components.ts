@@ -2385,6 +2385,19 @@ export function isComponentHiddenFromContentEditor(
   );
 }
 
+export function getAllowedWrapperComponents(
+  sc: StudioCtx,
+  currentComponent: Component
+) {
+  return sc.site.components.filter(
+    (c) =>
+      c !== currentComponent &&
+      !isBuiltinCodeComponent(c) &&
+      c.params.some((p) => p.variable.name === "children") &&
+      !(sc.contentEditorMode && isComponentHiddenFromContentEditor(c, sc))
+  );
+}
+
 export function getComponentDisplayName(component: Component) {
   if (isCodeComponent(component) && component.codeComponentMeta.displayName) {
     return component.codeComponentMeta.displayName;
