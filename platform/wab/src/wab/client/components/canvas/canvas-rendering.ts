@@ -3760,11 +3760,24 @@ const mkComponentLevelQueryFetcher = computedFn(
             ),
         ]);
 
-        // Memoize queries similar to codegen output code.
-        // Keep the tree identity stable and read the latest render context via ref
-        // so query state isn't recreated on every canvas render.
+        // Memoize queries similar to codegen output. Keep the tree identity stable and
+        // read the latest ctx via ref so query state isn't recreated every render.
         // const queryCtxRef = sub.React.useRef(ctx);
         // queryCtxRef.current = ctx;
+
+        // Rebuild the tree when any query's identity, name, or op changes
+        // (e.g. when a query is renamed) or `usePlasmicQueries` can
+        // return results keyed by the stale names.
+        const serverQueryTreeKey = component.serverQueries
+          .filter(isServerQueryWithOperation)
+          .map((q) =>
+            isKnownCustomCode(q.op)
+              ? `custom:${q.uuid}:${toVarName(q.name)}:${q.op.code}`
+              : `func:${q.uuid}:${toVarName(q.name)}:${customFunctionId(
+                  q.op.func
+                )}`
+          )
+          .join("|");
         const serverQueryTree = sub.React.useMemo(
           (): QueryComponentNode => ({
             type: "component",
@@ -3830,7 +3843,7 @@ const mkComponentLevelQueryFetcher = computedFn(
             propsContext: {},
             children: [],
           }),
-          [component, ctx.viewCtx.canvasCtx]
+          [component, ctx.viewCtx.canvasCtx, serverQueryTreeKey]
         );
         const new$Q =
           sub.dataSources?.unstable_usePlasmicQueries?.(
