@@ -99,7 +99,7 @@ function PlasmicSectionCollapseButton__RenderFunc(props: {
         path: "isExpanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded,
       },
     ],
     [$props, $ctx, $refs]
@@ -108,6 +108,7 @@ function PlasmicSectionCollapseButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -122,6 +123,7 @@ function PlasmicSectionCollapseButton__RenderFunc(props: {
       className={classNames(
         projectcss.all,
         projectcss.button,
+        projectcss.button__gYEVv,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,

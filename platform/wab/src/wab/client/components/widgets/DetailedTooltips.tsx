@@ -149,17 +149,14 @@ export function MetadataTooltip() {
 export function PropsTooltip() {
   return (
     <div>
-      <p className={"tooltip-title"}>Prop</p>
+      <p className={"tooltip-title"}>Props</p>
       <p>
-        When you add a prop to a component, then on any instance of the
-        component, you can pass in a different value for that prop. And you can
-        use that prop value within the component.
+        Props enable you to customize individual instances of a component.
+        Reference props anywhere inside the component with dynamic values.
       </p>
       <p>
-        For instance, if on a Product Card component you add a prop for Product
-        ID, then each instance can specify a different Product ID. And
-        internally, the Product Card could use that Product ID in a query to
-        some data source.
+        Use <code>/</code> in a prop name to organize props into folders, e.g.{" "}
+        <code>Header / title</code>.
       </p>
       <p>
         <a target={"_blank"} href={"https://docs.plasmic.app/learn/props"}>

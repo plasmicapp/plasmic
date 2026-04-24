@@ -23,14 +23,14 @@
 .rooterror {
   box-shadow: inset 0px 0px 0px 2px var(--token-iDpByWoW0eF);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
   outline: none;
 }
-.rootstyleType_white:hover {
+.rootstyleType_white:hover:hover {
   background: var(--token-p-rw5DRJTx);
 }
 .existingTokensContainer {

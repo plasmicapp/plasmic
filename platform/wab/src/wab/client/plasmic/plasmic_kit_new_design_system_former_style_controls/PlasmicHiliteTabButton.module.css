@@ -18,7 +18,7 @@
 .rootisSelected {
   border-bottom-color: var(--token-qKhMu66CwSx);
 }
-.root:hover {
+.root:hover:hover {
   border-bottom-color: var(--token-qKhMu66CwSx);
 }
 .slotTargetChildren {

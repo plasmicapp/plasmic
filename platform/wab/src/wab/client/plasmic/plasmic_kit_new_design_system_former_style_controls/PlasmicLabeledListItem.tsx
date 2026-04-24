@@ -48,6 +48,7 @@ createPlasmicElementProxy;
 export type PlasmicLabeledListItem__VariantMembers = {
   valueSetState: "isSet" | "isInherited" | "isUnset";
   noLabel: "noLabel";
+  noContent: "noContent";
   draggable: "draggable";
   deletable: "deletable";
   clickable: "clickable";
@@ -68,6 +69,7 @@ export type PlasmicLabeledListItem__VariantMembers = {
 export type PlasmicLabeledListItem__VariantsArgs = {
   valueSetState?: SingleChoiceArg<"isSet" | "isInherited" | "isUnset">;
   noLabel?: SingleBooleanChoiceArg<"noLabel">;
+  noContent?: SingleBooleanChoiceArg<"noContent">;
   draggable?: SingleBooleanChoiceArg<"draggable">;
   deletable?: SingleBooleanChoiceArg<"deletable">;
   clickable?: SingleBooleanChoiceArg<"clickable">;
@@ -89,6 +91,7 @@ type VariantPropType = keyof PlasmicLabeledListItem__VariantsArgs;
 export const PlasmicLabeledListItem__VariantProps = new Array<VariantPropType>(
   "valueSetState",
   "noLabel",
+  "noContent",
   "draggable",
   "deletable",
   "clickable",
@@ -108,25 +111,25 @@ export const PlasmicLabeledListItem__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicLabeledListItem__ArgsType = {
-  label?: React.ReactNode;
   styleProp?: string;
   onDeletionRequest?: () => void;
   onClick?: () => void;
-  moreActionButtons?: React.ReactNode;
-  children?: React.ReactNode;
-  subtitle?: React.ReactNode;
   icon?: React.ReactNode;
+  label?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  children?: React.ReactNode;
+  moreActionButtons?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicLabeledListItem__ArgsType;
 export const PlasmicLabeledListItem__ArgProps = new Array<ArgPropType>(
-  "label",
   "styleProp",
   "onDeletionRequest",
   "onClick",
-  "moreActionButtons",
-  "children",
+  "icon",
+  "label",
   "subtitle",
-  "icon"
+  "children",
+  "moreActionButtons"
 );
 
 export type PlasmicLabeledListItem__OverridesType = {
@@ -148,16 +151,17 @@ export type PlasmicLabeledListItem__OverridesType = {
 };
 
 export interface DefaultLabeledListItemProps {
-  label?: React.ReactNode;
   styleProp?: string;
   onDeletionRequest?: () => void;
   onClick?: () => void;
-  moreActionButtons?: React.ReactNode;
-  children?: React.ReactNode;
-  subtitle?: React.ReactNode;
   icon?: React.ReactNode;
+  label?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  children?: React.ReactNode;
+  moreActionButtons?: React.ReactNode;
   valueSetState?: SingleChoiceArg<"isSet" | "isInherited" | "isUnset">;
   noLabel?: SingleBooleanChoiceArg<"noLabel">;
+  noContent?: SingleBooleanChoiceArg<"noContent">;
   draggable?: SingleBooleanChoiceArg<"draggable">;
   deletable?: SingleBooleanChoiceArg<"deletable">;
   clickable?: SingleBooleanChoiceArg<"clickable">;
@@ -215,117 +219,127 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         path: "valueSetState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.valueSetState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.valueSetState,
       },
       {
         path: "noLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLabel,
       },
       {
         path: "deletable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.deletable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.deletable,
       },
       {
         path: "draggable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.draggable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.draggable,
       },
       {
         path: "clickable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.clickable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.clickable,
       },
       {
         path: "withMenu",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withMenu,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.withMenu,
       },
       {
         path: "nesting",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.nesting,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.nesting,
       },
       {
         path: "variable",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "",
       },
       {
         path: "alignment",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.alignment,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.alignment,
       },
       {
         path: "padding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.padding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.padding,
       },
       {
         path: "truncateLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.truncateLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.truncateLabel,
       },
       {
         path: "withSubtitle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withSubtitle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withSubtitle,
       },
       {
         path: "showMoreActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showMoreActions,
       },
       {
         path: "withIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.withIcon,
       },
       {
         path: "layout",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.layout,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.layout,
       },
       {
         path: "labelSize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.labelSize,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.labelSize,
       },
       {
         path: "withIndicator",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withIndicator,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withIndicator,
       },
       {
         path: "autoWidth",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.autoWidth,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.autoWidth,
       },
       {
         path: "contentAlignment",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.contentAlignment,
+      },
+      {
+        path: "noContent",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noContent,
       },
     ],
     [$props, $ctx, $refs]
@@ -334,6 +348,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -420,6 +435,11 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             "draggable",
             "draggable"
           ),
+          [sty.dragHandlenoContent]: hasVariant(
+            $state,
+            "noContent",
+            "noContent"
+          ),
         })}
       >
         <GripSvgIcon
@@ -486,6 +506,11 @@ function PlasmicLabeledListItem__RenderFunc(props: {
               $state,
               "nesting",
               "simple"
+            ),
+            [sty.labelContainernoContent]: hasVariant(
+              $state,
+              "noContent",
+              "noContent"
             ),
             [sty.labelContainernoLabel]: hasVariant(
               $state,
@@ -590,7 +615,23 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             <div
               data-plasmic-name={"labelTextContainer"}
               data-plasmic-override={overrides.labelTextContainer}
-              className={classNames(projectcss.all, sty.labelTextContainer)}
+              className={classNames(projectcss.all, sty.labelTextContainer, {
+                [sty.labelTextContainerlabelSize_auto]: hasVariant(
+                  $state,
+                  "labelSize",
+                  "auto"
+                ),
+                [sty.labelTextContainerlabelSize_half]: hasVariant(
+                  $state,
+                  "labelSize",
+                  "half"
+                ),
+                [sty.labelTextContainerlabelSize_small]: hasVariant(
+                  $state,
+                  "labelSize",
+                  "small"
+                ),
+              })}
             >
               {renderPlasmicSlot({
                 defaultContents: "Label",
@@ -605,6 +646,16 @@ function PlasmicLabeledListItem__RenderFunc(props: {
                     $state,
                     "draggable",
                     "draggable"
+                  ),
+                  [sty.slotTargetLabellabelSize_auto]: hasVariant(
+                    $state,
+                    "labelSize",
+                    "auto"
+                  ),
+                  [sty.slotTargetLabellabelSize_small]: hasVariant(
+                    $state,
+                    "labelSize",
+                    "small"
                   ),
                   [sty.slotTargetLabellayout_vertical]: hasVariant(
                     $state,
@@ -685,6 +736,11 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             data-plasmic-name={"spacer2"}
             data-plasmic-override={overrides.spacer2}
             className={classNames(projectcss.all, sty.spacer2, {
+              [sty.spacer2labelSize_half]: hasVariant(
+                $state,
+                "labelSize",
+                "half"
+              ),
               [sty.spacer2layout_vertical]: hasVariant(
                 $state,
                 "layout",
@@ -694,72 +750,89 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           />
         </div>
       ) : null}
-      <div
-        data-plasmic-name={"contentContainer"}
-        data-plasmic-override={overrides.contentContainer}
-        className={classNames(projectcss.all, sty.contentContainer, {
-          [sty.contentContaineralignment_top]: hasVariant(
-            $state,
-            "alignment",
-            "top"
-          ),
-          [sty.contentContainerautoWidth]: hasVariant(
-            $state,
-            "autoWidth",
-            "autoWidth"
-          ),
-          [sty.contentContainercontentAlignment_right]: hasVariant(
-            $state,
-            "contentAlignment",
-            "right"
-          ),
-          [sty.contentContainerdeletable]: hasVariant(
-            $state,
-            "deletable",
-            "deletable"
-          ),
-          [sty.contentContainerdraggable]: hasVariant(
-            $state,
-            "draggable",
-            "draggable"
-          ),
-          [sty.contentContainerlabelSize_half]: hasVariant(
-            $state,
-            "labelSize",
-            "half"
-          ),
-          [sty.contentContainerlayout_vertical]: hasVariant(
-            $state,
-            "layout",
-            "vertical"
-          ),
-          [sty.contentContainerpadding_noContent]: hasVariant(
-            $state,
-            "padding",
-            "noContent"
-          ),
-          [sty.contentContainerwithMenu]: hasVariant(
-            $state,
-            "withMenu",
-            "withMenu"
-          ),
-        })}
-      >
-        {renderPlasmicSlot({
-          defaultContents: (
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__xVFjy
-              )}
-            >
-              {"One line"}
-            </div>
-          ),
-          value: args.children,
-        })}
-      </div>
+      {(hasVariant($state, "noContent", "noContent") ? false : true) ? (
+        <div
+          data-plasmic-name={"contentContainer"}
+          data-plasmic-override={overrides.contentContainer}
+          className={classNames(projectcss.all, sty.contentContainer, {
+            [sty.contentContaineralignment_top]: hasVariant(
+              $state,
+              "alignment",
+              "top"
+            ),
+            [sty.contentContainerautoWidth]: hasVariant(
+              $state,
+              "autoWidth",
+              "autoWidth"
+            ),
+            [sty.contentContainercontentAlignment_right]: hasVariant(
+              $state,
+              "contentAlignment",
+              "right"
+            ),
+            [sty.contentContainerdeletable]: hasVariant(
+              $state,
+              "deletable",
+              "deletable"
+            ),
+            [sty.contentContainerdraggable]: hasVariant(
+              $state,
+              "draggable",
+              "draggable"
+            ),
+            [sty.contentContainerlabelSize_auto]: hasVariant(
+              $state,
+              "labelSize",
+              "auto"
+            ),
+            [sty.contentContainerlabelSize_half]: hasVariant(
+              $state,
+              "labelSize",
+              "half"
+            ),
+            [sty.contentContainerlayout_vertical]: hasVariant(
+              $state,
+              "layout",
+              "vertical"
+            ),
+            [sty.contentContainernoContent]: hasVariant(
+              $state,
+              "noContent",
+              "noContent"
+            ),
+            [sty.contentContainernoLabel]: hasVariant(
+              $state,
+              "noLabel",
+              "noLabel"
+            ),
+            [sty.contentContainerpadding_noContent]: hasVariant(
+              $state,
+              "padding",
+              "noContent"
+            ),
+            [sty.contentContainerwithMenu]: hasVariant(
+              $state,
+              "withMenu",
+              "withMenu"
+            ),
+          })}
+        >
+          {renderPlasmicSlot({
+            defaultContents: (
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__xVFjy
+                )}
+              >
+                {"One line"}
+              </div>
+            ),
+            value: args.children,
+          })}
+        </div>
+      ) : null}
       <div
         data-plasmic-name={"actionsContainer"}
         data-plasmic-override={overrides.actionsContainer}

@@ -14,10 +14,36 @@
   -webkit-transition-duration: 0.3s;
   padding: 8px 12px;
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
   justify-content: flex-start;
   align-items: center;
+}
+.dragHandle {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  align-items: stretch;
+  justify-content: flex-start;
+  top: 12px;
+  left: 0;
+  align-self: center;
+}
+.dragHandledraggable {
+  display: flex;
+}
+.grip {
+  animation: none;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 16px;
+  height: var(--token-dA6NVsnIp);
+  cursor: grabbing;
+  transition-property: opacity;
+  transition-duration: 250ms;
+  flex-shrink: 0;
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 250ms;
 }
 .iconContainer {
   display: flex;

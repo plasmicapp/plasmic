@@ -21,6 +21,14 @@ import React, {
   useState,
 } from "react";
 
+export const SidebarSectionContext = React.createContext<{
+  isExpanded: boolean;
+}>({
+  isExpanded: false,
+});
+
+export const useSidebarSection = () => React.useContext(SidebarSectionContext);
+
 export type MaybeCollapsibleRow = { collapsible: boolean; content: ReactNode };
 
 type CollapsingOptions = {
@@ -31,6 +39,38 @@ export type MaybeCollapsibleRowsRenderer = (
   rows: (MaybeCollapsibleRow | undefined | null | false)[],
   options?: CollapsingOptions
 ) => React.ReactNode[];
+
+function ChevronToggle(props: {
+  expanded: boolean;
+  onClick: () => void;
+  sticky?: boolean;
+  noBorder?: boolean;
+  fullyCollapsedBody?: boolean;
+}) {
+  const { expanded, onClick, sticky, noBorder, fullyCollapsedBody } = props;
+  return (
+    <div
+      data-show-extra-content={String(expanded)}
+      data-test-id="show-extra-content"
+      className={cn({
+        [styles.collapsingToggle]: true,
+        [styles.collapsingToggle_sticky]: sticky,
+        [styles.fullyCollapsedBody]: fullyCollapsedBody,
+      })}
+      style={!noBorder ? { borderBottom: "1px solid #eee" } : {}}
+    >
+      <button
+        className={cn(styles.collapsingToggleLabel, {
+          [styles.collapsingToggleLabel_expanded]: expanded,
+        })}
+        onClick={onClick}
+        data-test-id="collapse"
+      >
+        <Icon icon={expanded ? ChevronUpsvgIcon : ChevronDownsvgIcon} />
+      </button>
+    </div>
+  );
+}
 
 export function useMaybeCollapsibleRows({
   fullyCollapsibleBody = false,
@@ -49,6 +89,16 @@ export function useMaybeCollapsibleRows({
 } = {}) {
   const [showMore, setShowMore] = useState(defaultExpanded);
   const isFullyCollapsed = useRef(false);
+
+  const handleToggle = useCallback(() => {
+    const next = !showMore;
+    setShowMore(next);
+    if (next) {
+      onExpanded?.();
+    } else {
+      onCollapsed?.();
+    }
+  }, [showMore, onExpanded, onCollapsed]);
 
   const renderMaybeCollapsibleRows = useCallback<MaybeCollapsibleRowsRenderer>(
     (
@@ -77,42 +127,21 @@ export function useMaybeCollapsibleRows({
           React.cloneElement(it.content as ReactElement, { key: i })
         ),
         showExpansionHandle && (
-          <div
-            key="showMore"
-            data-show-extra-content={String(showMore)}
-            data-test-id="show-extra-content"
-            className={cn({
-              [styles.collapsingToggle]: true,
-              [styles.collapsingToggle_sticky]: sticky,
-              [styles.fullyCollapsedBody]:
-                isFullyCollapsed.current && fullyCollapsibleBody,
-              [styles.collapsingToggleAlwaysVisible]: opts?.alwaysVisible,
-            })}
-            style={!noBorder ? { borderBottom: "1px solid #eee" } : {}}
-          >
-            <button
-              className={cn(styles.collapsingToggleLabel, {
-                [styles.collapsingToggleLabel_expanded]: showMore,
-              })}
-              onClick={() => {
-                const nextShowMore = !showMore;
-                setShowMore(nextShowMore);
-
-                if (nextShowMore) {
-                  onExpanded?.();
-                } else {
-                  onCollapsed?.();
-                }
-              }}
-              data-test-id="collapse"
-            >
-              <Icon icon={showMore ? ChevronUpsvgIcon : ChevronDownsvgIcon} />
-            </button>
-          </div>
+          <React.Fragment key="showMore">
+            <ChevronToggle
+              expanded={showMore}
+              onClick={handleToggle}
+              sticky={sticky}
+              noBorder={noBorder}
+              fullyCollapsedBody={
+                isFullyCollapsed.current && fullyCollapsibleBody
+              }
+            />
+          </React.Fragment>
         ),
       ];
     },
-    [showMore, fullyCollapsibleBody]
+    [showMore, fullyCollapsibleBody, handleToggle, sticky, noBorder]
   );
 
   return {
@@ -120,6 +149,7 @@ export function useMaybeCollapsibleRows({
     toggleExpansion: () => setShowMore(!showMore),
     expand: () => setShowMore(true),
     collapse: () => setShowMore(false),
+    handleToggle,
     isFullyCollapsed,
     renderMaybeCollapsibleRows,
   };
@@ -145,6 +175,7 @@ interface SidebarSectionProps
   scrollable?: boolean;
   defaultExpanded?: boolean;
   fullyCollapsible?: boolean;
+  hasCollapsibleContent?: boolean;
   definedIndicator?: ReactNode;
   onHeaderClick?: MouseEventHandler;
   onExtraContentExpanded?: () => void;
@@ -189,6 +220,7 @@ export function SidebarSection_(
     isHeaderActive,
     makeHeaderMenu,
     hasExtraContent,
+    hasCollapsibleContent,
     oneLiner,
     fullyCollapsible,
     onHeaderClick,
@@ -211,6 +243,8 @@ export function SidebarSection_(
     isFullyCollapsed,
     toggleExpansion,
     renderMaybeCollapsibleRows,
+    showMore,
+    handleToggle,
     ...maybeCollapsibleRows
   } = useMaybeCollapsibleRows({
     defaultExpanded: defaultExtraContentExpanded,
@@ -317,7 +351,17 @@ export function SidebarSection_(
             overflowY: maxHeight === undefined ? undefined : "auto",
           }}
         >
-          <Observer>{() => <>{renderableChildren}</>}</Observer>
+          <SidebarSectionContext.Provider value={{ isExpanded: showMore }}>
+            <Observer>{() => <>{renderableChildren}</>}</Observer>
+            {hasCollapsibleContent && (
+              <ChevronToggle
+                expanded={showMore}
+                onClick={handleToggle}
+                sticky={scrollable}
+                noBorder={noBorder}
+              />
+            )}
+          </SidebarSectionContext.Provider>
         </div>
       )}
     </div>

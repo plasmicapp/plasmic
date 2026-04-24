@@ -106,7 +106,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
     ],
     [$props, $ctx, $refs]
@@ -115,6 +115,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -132,6 +133,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
       className={classNames(
         projectcss.all,
         projectcss.button,
+        projectcss.button__gYEVv,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,

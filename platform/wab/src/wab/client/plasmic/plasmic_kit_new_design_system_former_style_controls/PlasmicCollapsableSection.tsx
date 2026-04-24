@@ -105,7 +105,7 @@ function PlasmicCollapsableSection__RenderFunc(props: {
         path: "isExpanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded,
       },
     ],
     [$props, $ctx, $refs]
@@ -114,6 +114,7 @@ function PlasmicCollapsableSection__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

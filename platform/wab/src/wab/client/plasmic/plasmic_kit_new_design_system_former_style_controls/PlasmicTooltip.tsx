@@ -103,13 +103,13 @@ function PlasmicTooltip__RenderFunc(props: {
         path: "isOpen",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => true,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => true,
       },
       {
         path: "placement",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.placement,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.placement,
       },
     ],
     [$props, $ctx, $refs]
@@ -118,6 +118,7 @@ function PlasmicTooltip__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

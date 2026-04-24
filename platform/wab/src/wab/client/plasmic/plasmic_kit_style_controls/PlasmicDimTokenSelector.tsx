@@ -139,39 +139,40 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
       {
         path: "styleType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.styleType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.styleType,
       },
       {
         path: "error",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.error,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.error,
       },
       {
         path: "showDropdownArrow",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showDropdownArrow,
       },
       {
         path: "showCurrentTokens",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showCurrentTokens,
       },
       {
         path: "valueSetState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.valueSetState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.valueSetState,
       },
     ],
     [$props, $ctx, $refs]
@@ -180,6 +181,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -287,45 +289,51 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
       <input
         data-plasmic-name={"textbox"}
         data-plasmic-override={overrides.textbox}
-        className={classNames(projectcss.all, projectcss.input, sty.textbox, {
-          [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
-          [sty.textboxerror]: hasVariant($state, "error", "error"),
-          [sty.textboxshowCurrentTokens]: hasVariant(
-            $state,
-            "showCurrentTokens",
-            "showCurrentTokens"
-          ),
-          [sty.textboxshowDropdownArrow]: hasVariant(
-            $state,
-            "showDropdownArrow",
-            "showDropdownArrow"
-          ),
-          [sty.textboxstyleType_bordered]: hasVariant(
-            $state,
-            "styleType",
-            "bordered"
-          ),
-          [sty.textboxstyleType_white]: hasVariant(
-            $state,
-            "styleType",
-            "white"
-          ),
-          [sty.textboxvalueSetState_isInherited]: hasVariant(
-            $state,
-            "valueSetState",
-            "isInherited"
-          ),
-          [sty.textboxvalueSetState_isSet]: hasVariant(
-            $state,
-            "valueSetState",
-            "isSet"
-          ),
-          [sty.textboxvalueSetState_isUnset]: hasVariant(
-            $state,
-            "valueSetState",
-            "isUnset"
-          ),
-        })}
+        className={classNames(
+          projectcss.all,
+          projectcss.input,
+          projectcss.input__gYEVv,
+          sty.textbox,
+          {
+            [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
+            [sty.textboxerror]: hasVariant($state, "error", "error"),
+            [sty.textboxshowCurrentTokens]: hasVariant(
+              $state,
+              "showCurrentTokens",
+              "showCurrentTokens"
+            ),
+            [sty.textboxshowDropdownArrow]: hasVariant(
+              $state,
+              "showDropdownArrow",
+              "showDropdownArrow"
+            ),
+            [sty.textboxstyleType_bordered]: hasVariant(
+              $state,
+              "styleType",
+              "bordered"
+            ),
+            [sty.textboxstyleType_white]: hasVariant(
+              $state,
+              "styleType",
+              "white"
+            ),
+            [sty.textboxvalueSetState_isInherited]: hasVariant(
+              $state,
+              "valueSetState",
+              "isInherited"
+            ),
+            [sty.textboxvalueSetState_isSet]: hasVariant(
+              $state,
+              "valueSetState",
+              "isSet"
+            ),
+            [sty.textboxvalueSetState_isUnset]: hasVariant(
+              $state,
+              "valueSetState",
+              "isUnset"
+            ),
+          }
+        )}
         placeholder={args.placeholder}
         ref={(ref) => {
           $refs["textbox"] = ref;

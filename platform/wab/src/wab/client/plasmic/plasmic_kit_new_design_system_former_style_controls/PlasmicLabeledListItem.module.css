@@ -33,7 +33,7 @@
   width: auto;
   display: inline-flex;
 }
-.rootclickable:hover {
+.rootclickable:hover:hover {
   background: var(--token-p-rw5DRJTx);
 }
 .dragHandle {
@@ -82,6 +82,10 @@
   padding-right: 0px;
   padding-left: 0px;
   align-self: stretch;
+}
+.labelContainernoContent {
+  width: 100%;
+  min-width: 0;
 }
 .labelContainernesting_simple {
   margin-left: 16px;

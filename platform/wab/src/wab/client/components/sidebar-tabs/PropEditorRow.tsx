@@ -117,6 +117,7 @@ import {
 } from "@/wab/shared/defined-indicator";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
+import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import { RESET_CAP } from "@/wab/shared/Labels";
 import {
@@ -500,7 +501,8 @@ function PropEditorRowWrapper_(props: {
       attr={param.variable.name}
       enumValues={param.enumValues}
       expr={origExpr}
-      label={getParamDisplayName(tpl.component, param)}
+      label={getFolderDisplayName(getParamDisplayName(tpl.component, param))}
+      fullDisplayName={getParamDisplayName(tpl.component, param)}
       definedIndicator={defined}
       onDelete={defined.source === "set" ? onDeleteArg : undefined}
       propType={propType}
@@ -509,7 +511,9 @@ function PropEditorRowWrapper_(props: {
       tooltip={
         isDisabled && (
           <InvariantablePropTooltip
-            propName={getParamDisplayName(tpl.component, param)}
+            propName={getFolderDisplayName(
+              getParamDisplayName(tpl.component, param)
+            )}
           />
         )
       }
@@ -579,6 +583,7 @@ const isMenuEmpty = (menu: React.ReactElement) => {
 interface PropEditorRowProps {
   expr: DeepReadonly<Expr> | undefined;
   label: string;
+  fullDisplayName?: string;
   subtitle?: React.ReactNode;
   definedIndicator?: DefinedIndicatorType;
   valueSetState?: ValueSetState;
@@ -660,6 +665,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const {
     about = maybePropTypeToAbout(props.propType),
     label,
+    fullDisplayName = props.label,
     subtitle,
     attr,
     enumValues,
@@ -1210,7 +1216,11 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             {newParamModalVisible && ownerComponent && viewCtx && (
               <ComponentPropModal
                 studioCtx={studioCtx}
-                suggestedName={label}
+                suggestedName={
+                  tpl?.name
+                    ? `${tpl.name} / ${fullDisplayName}`
+                    : fullDisplayName
+                }
                 component={ownerComponent}
                 visible={newParamModalVisible}
                 type={wabType}

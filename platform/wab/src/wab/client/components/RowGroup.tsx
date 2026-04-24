@@ -7,26 +7,46 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowGroup";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
+import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 export interface RowGroupProps extends Omit<DefaultRowGroupProps, "hasMenu"> {
   style?: React.CSSProperties;
   menu?: MenuType;
   onClick?: () => void;
+  dragHandleProps?: DraggableProvidedDragHandleProps;
 }
 
 function RowGroup_(props: RowGroupProps, ref: HTMLElementRefOf<"div">) {
-  const { style, menu, onClick, groupSize, ...rest } = props;
+  const {
+    style,
+    menu,
+    onClick,
+    groupSize,
+    draggable,
+    dragHandleProps,
+    ...rest
+  } = props;
   const contextMenuProps = useContextMenu({ menu });
+  const [hover, setHover] = React.useState(false);
 
   return (
     <PlasmicRowGroup
       {...rest}
-      root={{ ref, style, onClick, ...contextMenuProps }}
+      root={{
+        ref,
+        style,
+        onClick,
+        ...contextMenuProps,
+        onMouseEnter: () => setHover(true),
+        onMouseLeave: () => setHover(false),
+      }}
+      draggable={draggable && hover ? "draggable" : undefined}
       hasMenu={!!menu}
       menuButton={{ props: { ...contextMenuProps } }}
       groupSize={
         typeof groupSize === "number" ? groupSize.toString() : groupSize
       }
+      dragHandle={dragHandleProps ? { props: dragHandleProps } : undefined}
     />
   );
 }

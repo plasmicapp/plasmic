@@ -10,6 +10,16 @@ export interface Folder<T> {
 }
 
 /**
+ * Splits a slash-separated name into its trimmed, non-empty segments.
+ */
+export function parseFolderSegments(name: string): string[] {
+  return name
+    .split("/")
+    .map((str) => str.trim())
+    .filter((str) => !!str);
+}
+
+/**
  * Create a tree structure from a given array by splitting the `name` in "/".
  * @param items - The array of items to create the folder tree structure from.
  * @param pathPrefix - The prefix to use for the path of the folders. Must not include underscore.
@@ -33,10 +43,7 @@ export function createFolderTreeStructure<T, K>(
   const tree: (T | Folder<T>)[] = [];
 
   items.forEach((item) => {
-    const folders = getName(item)
-      .split("/")
-      .map((str) => str.trim())
-      .filter((str) => !!str);
+    const folders = parseFolderSegments(getName(item));
     insertIntoTree(item, tree, folders, 0, prefix);
   });
 
@@ -123,17 +130,34 @@ export function replaceFolderName(
 }
 
 export function getFolderTrimmed(name: string) {
-  return name
-    .split("/")
-    .map((str) => str.trim())
-    .filter((str) => !!str)
-    .join("/");
+  return parseFolderSegments(name).join("/");
 }
 
 export function getFolderDisplayName(name: string) {
-  const path = name
-    .split("/")
-    .map((str) => str.trim())
-    .filter((str) => !!str);
+  const path = parseFolderSegments(name);
   return path.length > 0 ? last(path) : name;
+}
+
+/**
+ * Returns the ancestor folder paths of a slash-separated name, excluding the
+ * leaf. e.g. "A / B / C / leaf" → ["A", "A/B", "A/B/C"].
+ */
+export function getAncestorFolderPaths(name: string): string[] {
+  const segments = parseFolderSegments(name);
+  const paths: string[] = [];
+  let path = "";
+  segments.slice(0, -1).forEach((segment) => {
+    path = path ? `${path}/${segment}` : segment;
+    paths.push(path);
+  });
+  return paths;
+}
+
+/**
+ * Replaces only the last segment of a slash-separated name.
+ */
+export function renameFolderLeaf(name: string, newLeaf: string): string {
+  const segments = parseFolderSegments(name);
+  const nonLeafSegments = segments.slice(0, -1);
+  return [...nonLeafSegments, newLeaf].join(" / ");
 }

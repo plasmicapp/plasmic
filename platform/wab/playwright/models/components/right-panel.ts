@@ -189,6 +189,10 @@ export class RightPanel extends BaseModel {
     .locator('div[data-test-id="preview-value"]')
     .locator('input[data-plasmic-prop="preview-value"]');
 
+  readonly advancedToggleInput: Locator = this.frame.locator(
+    '[data-plasmic-prop="advanced-toggle"]'
+  );
+
   readonly previewValueMenuButton: Locator = this.frame.locator(
     '[data-test-id="preview-value-menu-btn"]'
   );
@@ -438,7 +442,8 @@ export class RightPanel extends BaseModel {
     propName: string,
     propType: string,
     defaultValue?: string,
-    previewValue?: string
+    previewValue?: string,
+    advanced?: boolean
   ) {
     await this.addPropButton.click();
     await this.selectPropType(propType);
@@ -450,6 +455,10 @@ export class RightPanel extends BaseModel {
 
     if (previewValue) {
       await this.previewValueInput.fill(previewValue);
+    }
+
+    if (advanced) {
+      await this.advancedToggleInput.click();
     }
 
     await this.propSubmitButton.click();
@@ -1318,13 +1327,12 @@ export class RightPanel extends BaseModel {
     await prop.click();
   }
 
-  async renameTreeNode(name: string, options?: { programatically?: boolean }) {
-    if (options?.programatically) {
-      const nameInput = this.frame.locator(
-        '[data-test-id="tree-node-name-input"]'
-      );
-      await nameInput.fill(name);
-      await nameInput.press("Enter");
+  async renameTreeNode(name: string, options?: { fromRightPanel?: boolean }) {
+    if (options?.fromRightPanel) {
+      await this.frame
+        .locator('[data-test-class="simple-text-box"]')
+        .first()
+        .fill(name);
     } else {
       await this.page.keyboard.type(name);
       await this.page.keyboard.press("Enter");

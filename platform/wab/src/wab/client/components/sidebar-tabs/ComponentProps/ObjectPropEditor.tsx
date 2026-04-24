@@ -8,6 +8,7 @@ import {
 import { PopoverFrame } from "@/wab/client/components/sidebar/PopoverFrame";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import Button from "@/wab/client/components/widgets/Button";
+import { ConnectorLine } from "@/wab/client/components/widgets/ConnectorLine";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   getPropTypeDefaultValue,
@@ -184,14 +185,6 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
         propType={fieldPropType}
         attr={fieldName}
         label={label}
-        icon={
-          opts.showConnectors ? (
-            <div
-              className="property-connector-line-icon"
-              style={{ left: "-16px", position: "absolute" }}
-            />
-          ) : undefined
-        }
         onChange={onChangeItem}
         onDelete={onDeleteItem}
         expr={fieldValueExpr}
@@ -209,12 +202,9 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
         }}
       >
         {opts.showConnectors ? (
-          <div className="mb-m rel">
+          <ConnectorLine className="mb-m" isLast={opts.isLastItem}>
             {innerRow}
-            {!opts.isLastItem && (
-              <div className="property-connector-vertical-line" />
-            )}
-          </div>
+          </ConnectorLine>
         ) : (
           innerRow
         )}
@@ -299,14 +289,14 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     case "inline": {
       const fieldEntries = Object.entries(fields);
       return (
-        <div className="pl-xxlg">
+        <>
           {fieldEntries.map(([fieldName, fieldPropType], index) =>
             renderItem(fieldName, fieldPropType, {
               showConnectors: true,
               isLastItem: index === fieldEntries.length - 1,
             })
           )}
-        </div>
+        </>
       );
     }
     case "flatten":

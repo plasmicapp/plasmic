@@ -18,7 +18,10 @@ import HandlerSection from "@/wab/client/components/sidebar-tabs/StateManagement
 import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  SidebarSection,
+  useSidebarSection,
+} from "@/wab/client/components/sidebar/SidebarSection";
 import {
   LabeledItem,
   NamedPanelHeader,
@@ -28,7 +31,9 @@ import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleCom
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import Button from "@/wab/client/components/widgets/Button";
+import { ConnectorLine } from "@/wab/client/components/widgets/ConnectorLine";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import {
   useDataSource,
   useTopFrameApi,
@@ -84,6 +89,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import { PropTreeNode, buildPropTree } from "@/wab/shared/folders/prop-tree";
 import {
   Component,
   CustomCode,
@@ -92,6 +98,7 @@ import {
   FunctionExpr,
   Interaction,
   ObjectPath,
+  Param,
   State,
   TplComponent,
   TplRef,
@@ -110,6 +117,105 @@ import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
+export type TplComponentPropCtx = {
+  tpl: TplComponent;
+  viewCtx: ViewCtx;
+  expsProvider: TplExpsProvider;
+};
+
+function isParamAdvanced(param: Param, ctx: TplComponentPropCtx): boolean {
+  const { tpl, viewCtx, expsProvider } = ctx;
+  const propType = viewCtx.canvasCtx
+    .getRegisteredCodeComponentsMap()
+    .get(tpl.component.name)?.meta.props[param.variable.name];
+  const isSet = !!expsProvider
+    .effectiveVs()
+    .args.find((_arg) => _arg.param === param);
+  return !!isAdvancedProp(propType, param) && !isSet;
+}
+
+function hasAdvancedProps(
+  node: PropTreeNode,
+  ctx: TplComponentPropCtx
+): boolean {
+  if (node.kind === "param") {
+    return isParamAdvanced(node.param, ctx);
+  }
+  return node.children.some((child) => hasAdvancedProps(child, ctx));
+}
+
+function hasNonAdvancedProps(
+  node: PropTreeNode,
+  ctx: TplComponentPropCtx
+): boolean {
+  if (node.kind === "param") {
+    return !isParamAdvanced(node.param, ctx);
+  }
+  return node.children.some((child) => hasNonAdvancedProps(child, ctx));
+}
+
+function getPropNodeKey(node: PropTreeNode): string | number {
+  return node.kind === "param" ? node.param.uid : node.path;
+}
+
+const PropNode = observer(function PropNode(props: {
+  node: PropTreeNode;
+  ctx: TplComponentPropCtx;
+}): React.ReactNode {
+  const { node, ctx } = props;
+  const { tpl, viewCtx, expsProvider } = ctx;
+
+  const { isExpanded } = useSidebarSection();
+  if (node.kind === "param") {
+    if (isExpanded || !isParamAdvanced(node.param, ctx)) {
+      return (
+        <PropEditorRowWrapper
+          key={node.param.uid}
+          tpl={tpl}
+          expsProvider={expsProvider}
+          param={node.param}
+          viewCtx={viewCtx}
+        />
+      );
+    }
+    return null;
+  }
+
+  if (isExpanded || hasNonAdvancedProps(node, ctx)) {
+    return <PropFolder node={node} ctx={ctx} />;
+  }
+
+  return null;
+});
+
+const PropFolder = observer(function PropFolder(props: {
+  node: PropTreeNode & { kind: "folder" };
+  ctx: TplComponentPropCtx;
+}) {
+  const { node, ctx } = props;
+  const { name, children } = node;
+  const { isExpanded } = useSidebarSection();
+  const visibleChildren = children.filter(
+    (c) => isExpanded || hasNonAdvancedProps(c, ctx)
+  );
+  return (
+    <div className="mv-m">
+      <LabeledListItem noContent label={name} padding="noHorizontal" />
+      {visibleChildren.map((child, idx) => {
+        return (
+          <ConnectorLine
+            key={getPropNodeKey(child)}
+            className="mb-m"
+            isLast={idx === visibleChildren.length - 1}
+          >
+            <PropNode node={child} ctx={ctx} />
+          </ConnectorLine>
+        );
+      })}
+    </div>
+  );
+});
+
 export const ComponentPropsSection = observer(
   function ComponentPropsSection(props: {
     viewCtx: ViewCtx;
@@ -120,6 +226,7 @@ export const ComponentPropsSection = observer(
     tab: "settings" | "style";
   }) {
     const { viewCtx, tpl, expsProvider, tab, includeVariants } = props;
+    const tplCtx = { tpl, viewCtx, expsProvider };
     const component = tpl.component;
     // For foreign components, we list all slot parameters too so that they can
     // type in raw string nodes.
@@ -178,9 +285,11 @@ export const ComponentPropsSection = observer(
       (param) => !isKnownFunctionType(param.type)
     );
 
+    const tree = buildPropTree(tpl.component, mainProps);
+
     return (
       <>
-        {(mainProps.length > 0 || actions.length > 0) && (
+        {(tree.length > 0 || actions.length > 0) && (
           <SidebarSection
             id="component-props-section"
             title={
@@ -189,49 +298,24 @@ export const ComponentPropsSection = observer(
                 tab === "settings" ? "props" : "nested styles"
               }`
             }
+            hasCollapsibleContent={tree.some((node) =>
+              hasAdvancedProps(node, tplCtx)
+            )}
             key={`main.${tpl.uid}`}
           >
-            {(renderMaybeCollapsibleRows) => (
-              <>
-                {tab === "settings" && actions.length > 0 && (
-                  <ComponentActionsSection
-                    viewCtx={viewCtx}
-                    tpl={tpl as TplComponent}
-                    expsProvider={expsProvider}
-                    actions={actions}
-                    componentPropValues={componentPropValues}
-                    ccContextData={ccContextData}
-                  />
-                )}
-                {mainProps.length > 0 &&
-                  renderMaybeCollapsibleRows(
-                    mainProps.map((param) => {
-                      const propType = viewCtx.canvasCtx
-                        .getRegisteredCodeComponentsMap()
-                        .get(tpl.component.name)?.meta.props[
-                        param.variable.name
-                      ];
-                      const isSet = !!expsProvider
-                        .effectiveVs()
-                        .args.find((_arg) => _arg.param === param);
-
-                      return {
-                        collapsible:
-                          !!isAdvancedProp(propType, param) && !isSet,
-                        content: (
-                          <PropEditorRowWrapper
-                            key={param.uid}
-                            tpl={tpl}
-                            expsProvider={expsProvider}
-                            param={param}
-                            viewCtx={viewCtx}
-                          />
-                        ),
-                      };
-                    })
-                  )}
-              </>
+            {tab === "settings" && actions.length > 0 && (
+              <ComponentActionsSection
+                viewCtx={viewCtx}
+                tpl={tpl as TplComponent}
+                expsProvider={expsProvider}
+                actions={actions}
+                componentPropValues={componentPropValues}
+                ccContextData={ccContextData}
+              />
             )}
+            {tree.map((node) => (
+              <PropNode key={getPropNodeKey(node)} node={node} ctx={tplCtx} />
+            ))}
           </SidebarSection>
         )}
       </>

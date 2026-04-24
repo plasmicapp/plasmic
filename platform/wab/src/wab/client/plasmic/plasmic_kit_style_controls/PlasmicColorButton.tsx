@@ -105,13 +105,14 @@ function PlasmicColorButton__RenderFunc(props: {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
       },
       {
         path: "valueSetState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.valueSetState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.valueSetState,
       },
     ],
     [$props, $ctx, $refs]
@@ -120,6 +121,7 @@ function PlasmicColorButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -134,6 +136,7 @@ function PlasmicColorButton__RenderFunc(props: {
       className={classNames(
         projectcss.all,
         projectcss.button,
+        projectcss.button__gYEVv,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,

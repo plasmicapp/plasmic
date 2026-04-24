@@ -13,7 +13,7 @@
   padding: 0px;
   border-width: 0px;
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-G18pc1ITl);
 }
 .svg {

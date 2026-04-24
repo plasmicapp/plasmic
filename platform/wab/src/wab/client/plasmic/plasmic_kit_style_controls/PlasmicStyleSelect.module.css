@@ -6,7 +6,7 @@
   justify-content: center;
   min-width: 0;
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   outline: none;
 }
 .trigger {

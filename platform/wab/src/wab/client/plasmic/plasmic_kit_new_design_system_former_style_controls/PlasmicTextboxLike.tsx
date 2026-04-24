@@ -96,7 +96,7 @@ function PlasmicTextboxLike__RenderFunc(props: {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
       },
     ],
     [$props, $ctx, $refs]
@@ -105,6 +105,7 @@ function PlasmicTextboxLike__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

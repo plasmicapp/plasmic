@@ -107,13 +107,13 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
         path: "styleType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.styleType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.styleType,
       },
       {
         path: "autoWidth",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.autoWidth,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.autoWidth,
       },
     ],
     [$props, $ctx, $refs]
@@ -122,6 +122,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

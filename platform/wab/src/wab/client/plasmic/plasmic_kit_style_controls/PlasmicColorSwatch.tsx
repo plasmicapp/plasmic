@@ -99,7 +99,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
     ],
     [$props, $ctx, $refs]
@@ -108,6 +108,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

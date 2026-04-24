@@ -116,6 +116,7 @@ function PlasmicHiliteTabs__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

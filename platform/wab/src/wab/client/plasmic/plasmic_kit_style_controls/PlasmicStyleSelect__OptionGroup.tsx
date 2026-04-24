@@ -110,13 +110,13 @@ function PlasmicStyleSelect__OptionGroup__RenderFunc(props: {
         path: "noTitle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noTitle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noTitle,
       },
       {
         path: "isFirst",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirst,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFirst,
       },
     ],
     [$props, $ctx, $refs]
@@ -125,6 +125,7 @@ function PlasmicStyleSelect__OptionGroup__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

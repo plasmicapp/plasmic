@@ -575,13 +575,15 @@ export class StudioModel extends BaseModel {
     propType: string;
     defaultValue?: string;
     previewValue?: string;
+    advanced?: boolean;
   }) {
     await this.rightPanel.switchToComponentDataTab();
     await this.rightPanel.addComponentProp(
       opts.propName,
       opts.propType,
       opts.defaultValue,
-      opts.previewValue
+      opts.previewValue,
+      opts.advanced
     );
   }
 

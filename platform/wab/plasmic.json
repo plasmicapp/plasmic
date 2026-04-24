@@ -3938,7 +3938,8 @@
       "splitsProviderFilePath": "",
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_style_controls/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_style_controls/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -11371,7 +11372,8 @@
       "splitsProviderFilePath": "",
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_embed_css/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_embed_css/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_embed_css/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "ehckhYnyDHgCBbV47m9bkf",

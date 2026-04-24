@@ -173,4 +173,217 @@ test.describe("component-props", () => {
     await expect(pageBody.getByText("numberProp = undefined")).toBeVisible();
     await expect(pageBody.getByText("numberProp * 10 = NaN")).toBeVisible();
   });
+
+  test("prop grouping with slash syntax", async ({ models, page }) => {
+    const { studio } = models;
+    const rightPanel = studio.rightPanel.frame;
+
+    await studio.leftPanel.addComponent("Card");
+    await studio.rightPanel.switchToComponentDataTab();
+
+    await test.step("Create prop tree in definition view", async () => {
+      // A slash in the name creates a group.
+      await studio.createComponentProp({
+        propName: "Header / title",
+        propType: "text",
+      });
+      await expect(
+        rightPanel.getByText("Header", { exact: true })
+      ).toBeVisible();
+
+      // The group is expanded on creation — its leaf must be visible.
+      await expect(
+        rightPanel.getByText("title", { exact: true })
+      ).toBeVisible();
+
+      await rightPanel.getByText("title", { exact: true }).dblclick();
+      await page.keyboard.type("Subsection / tagline");
+      await page.keyboard.press("Enter");
+
+      // The further-nested group is expanded on creation.
+      await expect(
+        rightPanel.getByText("Subsection", { exact: true })
+      ).toBeVisible();
+      await expect(
+        rightPanel.getByText("tagline", { exact: true })
+      ).toBeVisible();
+
+      // Clicking "+" on a group opens the modal with "<group> / " prefilled.
+      const headerRow = rightPanel
+        .locator('[data-rbd-draggable-id="folder-Header"]')
+        .locator("> :first-child");
+      await headerRow
+        .locator('[data-test-id="add-prop-to-folder-btn"]')
+        .click();
+      await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
+        "Header / "
+      );
+      await studio.rightPanel.closeSidebarButton.click();
+      const subRow = rightPanel
+        .locator('[data-rbd-draggable-id="folder-Header/Subsection"]')
+        .locator("> :first-child");
+      await subRow.locator('[data-test-id="add-prop-to-folder-btn"]').click();
+      await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
+        "Header / Subsection / "
+      );
+      await studio.rightPanel.closeSidebarButton.click();
+
+      // Build out the full Card prop tree covering every shape:
+      //     • root normal + advanced props
+      //     • normal-only group (Header)
+      //     • advanced-only group (Analytics)
+      //     • mixed group
+      //
+      await studio.createComponentProp({ propName: "title", propType: "text" });
+      await studio.createComponentProp({
+        propName: "isDisabled",
+        propType: "bool",
+        advanced: true,
+      });
+      await studio.createComponentProp({
+        propName: "Header / subtitle",
+        propType: "text",
+      });
+      await studio.createComponentProp({
+        propName: "Analytics / trackingId",
+        propType: "text",
+        advanced: true,
+      });
+      await studio.createComponentProp({
+        propName: "Analytics / userId",
+        propType: "text",
+        advanced: true,
+      });
+      await studio.createComponentProp({
+        propName: "Body / heading",
+        propType: "text",
+      });
+      await studio.createComponentProp({
+        propName: "Body / maxWidth",
+        propType: "num",
+        advanced: true,
+      });
+      await studio.createComponentProp({
+        propName: "Body / Accessibility / ariaLabel",
+        propType: "text",
+        advanced: true,
+      });
+    });
+
+    await studio.leftPanel.createNewPage("Card demo");
+    await studio.leftPanel.insertNode("Card");
+    const instanceSection = rightPanel.locator("#component-props-section");
+
+    await test.step("Instance view - advanced props collapsed", async () => {
+      // Normal props/leaves at root are shown
+      await expect(
+        instanceSection.getByText("title", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("Header", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("Subsection", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("tagline", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("subtitle", { exact: true })
+      ).toBeVisible();
+
+      await expect(
+        instanceSection.getByText("Body", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("heading", { exact: true })
+      ).toBeVisible();
+
+      // Advanced leaves and advanced-only groups are hidden.
+      await expect(
+        instanceSection.getByText("Analytics", { exact: true })
+      ).toBeHidden();
+      // advanced-only nested group hidden (even though parent Body is shown)
+      await expect(
+        instanceSection.getByText("Accessibility", { exact: true })
+      ).toBeHidden();
+      // root advanced
+      await expect(
+        instanceSection.getByText("isDisabled", { exact: true })
+      ).toBeHidden();
+      // advanced leaf inside mixed group
+      await expect(
+        instanceSection.getByText("maxWidth", { exact: true })
+      ).toBeHidden();
+    });
+
+    await test.step("Instance view - Advanced props expanded", async () => {
+      // Toggle advanced on — everything shows.
+      await instanceSection
+        .locator('[data-test-id="show-extra-content"]')
+        .first()
+        .click();
+      await expect(
+        instanceSection.getByText("Analytics", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("Accessibility", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("isDisabled", { exact: true })
+      ).toBeVisible();
+      await expect(
+        instanceSection.getByText("maxWidth", { exact: true })
+      ).toBeVisible();
+    });
+
+    // Toggle advanced back off — hidden state returns.
+    await instanceSection
+      .locator('[data-test-id="show-extra-content"]')
+      .first()
+      .click();
+    await expect(
+      instanceSection.getByText("Analytics", { exact: true })
+    ).toBeHidden();
+  });
+
+  test("allow external access auto-groups the linked prop under the tpl name", async ({
+    models,
+  }) => {
+    const { studio } = models;
+    const rightPanel = studio.rightPanel.frame;
+
+    await studio.leftPanel.addComponent("Inner");
+    await studio.createComponentProp({
+      propName: "someProp",
+      propType: "text",
+    });
+
+    await studio.leftPanel.addComponent("Parent");
+    await studio.leftPanel.insertNode("Inner");
+    await studio.rightPanel.renameTreeNode("myCard", { fromRightPanel: true });
+
+    // Right-click Inner's `someProp` on the instance → Allow external access → Create new prop.
+    await studio.rightPanel.switchToSettingsTab();
+    const someProp = studio.frame
+      .locator('[data-plasmic-prop="someProp"]')
+      .first();
+    await someProp.click({ button: "right" });
+    await studio.allowExternalAccess();
+    await studio.createNewProp();
+
+    // The new-prop modal should be prefilled with `<tplName> / <propName>`,
+    await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
+      "myCard / someProp"
+    );
+    await studio.rightPanel.propSubmitButton.click();
+
+    await studio.rightPanel.switchToComponentDataTab();
+    await expect(rightPanel.getByText("myCard", { exact: true })).toBeVisible();
+    // Groups are collapsed by default. Click to expand
+    rightPanel.getByText("myCard", { exact: true }).click();
+    await expect(
+      rightPanel.getByText("someProp", { exact: true })
+    ).toBeVisible();
+  });
 });

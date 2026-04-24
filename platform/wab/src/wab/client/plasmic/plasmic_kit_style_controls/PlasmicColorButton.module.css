@@ -16,10 +16,10 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.root:focus {
+.root:focus:focus {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
   outline: none;
 }

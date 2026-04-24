@@ -137,31 +137,33 @@ function PlasmicRowItem__RenderFunc(props: {
         path: "showAddendum",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAddendum,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showAddendum,
       },
       {
         path: "hideIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideIcon,
       },
       {
         path: "menuSize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.menuSize,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.menuSize,
       },
       {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
       {
         path: "showActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showActions,
       },
     ],
     [$props, $ctx, $refs]
@@ -170,6 +172,7 @@ function PlasmicRowItem__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

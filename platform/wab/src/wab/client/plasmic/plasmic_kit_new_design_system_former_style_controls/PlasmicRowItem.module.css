@@ -17,13 +17,13 @@
 .rootisSelected {
   background: var(--token-dqEx_KxIoYV);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
   justify-content: flex-start;
   align-items: center;
   padding-right: 6px;
 }
-.root:active {
+.root:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
 .iconContainer {
