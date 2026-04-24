@@ -12,7 +12,7 @@ type ParseDataUrlResult = {
   charset: string; // 'utf-8'
   base64: boolean;
   data: string;
-  toBuffer: () => Buffer;
+  toBuffer: () => Buffer<ArrayBuffer>;
 };
 
 export const parseDataUrl: (dataUrl: string) => ParseDataUrlResult =
@@ -62,5 +62,7 @@ export function parseDataUrlToSvgXml(dataUrl: string) {
 export function imageDataUriToBlob(dataUri: string) {
   const parsed = parseDataUrl(dataUri);
   const buffer = parsed.toBuffer();
-  return new Blob([buffer], { type: parsed.contentType });
+  return new Blob([buffer], {
+    type: parsed.contentType,
+  });
 }

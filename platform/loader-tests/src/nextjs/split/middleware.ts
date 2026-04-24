@@ -1,4 +1,6 @@
-import { getMiddlewareResponse } from "@plasmicapp/loader-nextjs/edge";
+// Import directly from loader-edge to avoid TS6 incompatibility with older
+// loader-nextjs versions that use `export type *` in their edge.d.ts
+import { getMiddlewareResponse } from "@plasmicapp/loader-edge";
 import { NextRequest, NextResponse } from "next/server";
 
 const excludePaths = [

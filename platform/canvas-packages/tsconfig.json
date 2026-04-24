@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "lib": ["es7", "dom", "esnext", "esnext.asynciterable", "esnext.array"],
     "skipLibCheck": true,
     "noEmit": true,

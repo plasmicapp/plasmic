@@ -4,7 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "target": "es2019",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "allowSyntheticDefaultImports": true,
     "types": ["cypress", "@types/cypress-image-snapshot", "node"]
   }

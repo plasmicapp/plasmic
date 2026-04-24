@@ -14,6 +14,6 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   }
 }

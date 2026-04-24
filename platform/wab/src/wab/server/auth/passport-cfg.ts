@@ -71,7 +71,7 @@ export async function setupPassport(
     new LocalStrategy(
       { usernameField: "email", passReqToCallback: true },
       (req, email, password, done) => {
-        asyncToCallback(done, async () => {
+        asyncToCallback(done, async (): Promise<User | false> => {
           const mgr = superDbMgr(req);
           const user = await mgr.tryGetUserByEmail(email);
 
@@ -290,7 +290,7 @@ export async function upsertOauthUser(
     requireRefreshToken?: boolean;
     ssoConfigId?: SsoConfigId;
   }
-) {
+): Promise<User> {
   const mgr = superDbMgr(req);
 
   const userFields = deriveOAuthUserFields(profile);

@@ -347,7 +347,7 @@ class ModelSwitcher<RemainingInput, Result = never> {
     return this._matched ? this._result : fn();
   }
 
-  private result() {
+  result() {
     if (this._matched) {
       return this._result;
     } else {

@@ -23,6 +23,8 @@ export interface NextJsEnv {
   reactVersion?: string;
   removeComponentsPage?: boolean;
   template?: string;
+  /** Merged into compilerOptions after copying the template, before pnpm install */
+  tsConfigOverrides?: Record<string, unknown>;
 }
 export interface GatsbyEnv {
   type: "gatsby";

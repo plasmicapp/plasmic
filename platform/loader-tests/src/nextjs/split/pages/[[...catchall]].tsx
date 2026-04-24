@@ -3,11 +3,13 @@ import {
   PlasmicComponent,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
+// Import directly from loader-edge to avoid TS6 incompatibility with older
+// loader-nextjs versions that use `export type *` in their edge.d.ts
 import {
   generateAllPaths,
   getActiveVariation,
   rewriteWithoutTraits,
-} from "@plasmicapp/loader-nextjs/edge";
+} from "@plasmicapp/loader-edge";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Error from "next/error";
 import { PLASMIC } from "../init";

@@ -33,6 +33,7 @@ export async function prepareTemplate(opts: {
   projectToken: string;
   authRedirectUri?: string;
   isAppRouter?: boolean;
+  tsConfigOverrides?: Record<string, unknown>;
 }) {
   const {
     templateDir,
@@ -45,6 +46,7 @@ export async function prepareTemplate(opts: {
     projectToken,
     authRedirectUri,
     isAppRouter,
+    tsConfigOverrides,
   } = opts;
 
   const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
@@ -52,6 +54,16 @@ export async function prepareTemplate(opts: {
   const pnpmStoreDir = "/tmp/.nextjs-loader-pnpm-store";
 
   copySync(templateDir, tmpdir, { recursive: true });
+
+  if (tsConfigOverrides) {
+    const tsconfigPath = path.join(tmpdir, "tsconfig.json");
+    const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, "utf8"));
+    tsconfig.compilerOptions = {
+      ...tsconfig.compilerOptions,
+      ...tsConfigOverrides,
+    };
+    fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig, null, 2));
+  }
 
   if (removeComponentsPage && !isAppRouter) {
     fs.unlinkSync(path.join(tmpdir, "pages/components.tsx"));
@@ -140,6 +152,7 @@ export async function setupNextJs(opts: {
   loaderVersion?: string;
   nextVersion?: string;
   reactVersion?: string;
+  tsConfigOverrides?: Record<string, unknown>;
   dataSourceReplacement?: {
     type: string;
   };
@@ -153,6 +166,7 @@ export async function setupNextJs(opts: {
     loaderVersion = "latest",
     nextVersion = "14",
     reactVersion,
+    tsConfigOverrides,
     dataSourceReplacement,
     env,
   } = opts;
@@ -176,6 +190,7 @@ export async function setupNextJs(opts: {
       reactVersion,
       removeComponentsPage,
       template: opts.template,
+      tsConfigOverrides,
     },
     tmpdir,
     env
@@ -255,6 +270,7 @@ export async function setupNextjsServer(
     projectId: project.projectId,
     projectToken: project.projectToken,
     isAppRouter,
+    tsConfigOverrides: env.tsConfigOverrides,
   });
 
   await runCommand(`pnpm run build`, {

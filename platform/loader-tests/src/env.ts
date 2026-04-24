@@ -21,7 +21,14 @@ export function getEnvVar(variable: keyof typeof DEFAULT_ENV): string {
 export const LOADER_NEXTJS_TEMPLATES = [
   // latest (v2) loader has a peer dependency on Next >= 14
   { loaderVersion: "latest", template: "template-pages", nextVersion: "^14" },
-  { loaderVersion: "^1", template: "template-pages", nextVersion: "^12" },
+  // Next.js 12 forces moduleResolution:"node" in tsconfig during build, which
+  // is deprecated in TS6. ignoreDeprecations silences it for this old combo.
+  {
+    loaderVersion: "^1",
+    template: "template-pages",
+    nextVersion: "^12",
+    tsConfigOverrides: { ignoreDeprecations: "6.0" },
+  },
   {
     loaderVersion: "latest",
     template: "template-app",
@@ -33,8 +40,15 @@ export const LOADER_NEXTJS_TEMPLATES = [
 export const LOADER_NEXTJS_VERSIONS = [
   { loaderVersion: "latest", reactVersion: "latest", nextVersion: "latest" },
   { loaderVersion: "^1", reactVersion: "latest", nextVersion: "latest" },
-  // Before PlasmicLinkProvider / usePlasmicLink is added
-  { loaderVersion: "1.0.287", reactVersion: "^18", nextVersion: "^12" },
+  // Before PlasmicLinkProvider / usePlasmicLink is added.
+  // Next.js 12 forces moduleResolution:"node" in tsconfig during build, which
+  // is deprecated in TS6. ignoreDeprecations silences it for this old combo.
+  {
+    loaderVersion: "1.0.287",
+    reactVersion: "^18",
+    nextVersion: "^12",
+    tsConfigOverrides: { ignoreDeprecations: "6.0" },
+  },
 ];
 
 export const LOADER_REACT_VERSIONS = [

@@ -15,8 +15,15 @@ const SLICE_1_ID = "6z5_V8jUij";
 
 const SPLIT_VERSIONS = [
   ...LOADER_NEXTJS_VERSIONS,
-  // React 17 compatibility check (Next 12 is the last version supporting React 17)
-  { loaderVersion: "1", nextVersion: "12", reactVersion: "17" },
+  // React 17 compatibility check (Next 12 is the last version supporting React 17).
+  // Next.js 12 forces moduleResolution:"node" in tsconfig during build, which
+  // is deprecated in TS6. ignoreDeprecations silences it for this old combo.
+  {
+    loaderVersion: "1",
+    nextVersion: "12",
+    reactVersion: "17",
+    tsConfigOverrides: { ignoreDeprecations: "6.0" },
+  },
 ];
 
 for (const versions of SPLIT_VERSIONS) {

@@ -22,7 +22,7 @@ import yargs from "yargs";
 
 export async function main() {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  yargs
+  yargs(process.argv.slice(2))
     .option("dburi", {
       alias: "db",
       describe: "Database URI to use",

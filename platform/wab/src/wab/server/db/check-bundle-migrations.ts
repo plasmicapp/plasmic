@@ -81,7 +81,7 @@ async function checkBundleFiles({ files }: CheckArgs) {
 
 export async function main() {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  yargs
+  yargs(process.argv.slice(2))
     .usage("Usage: $0 check <files...>")
     .command<CheckArgs>(
       "check <files...>",

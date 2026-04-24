@@ -181,11 +181,11 @@ export async function codegen(
   // Also create a tsconfig.json
   const tsConfig = {
     compilerOptions: {
-      target: "es5",
+      target: "ES2015",
       lib: ["dom", "dom.iterable", "esnext"],
       jsx: "react",
       module: "esnext",
-      moduleResolution: "node",
+      moduleResolution: "bundler",
       skipLibCheck: true,
       allowSyntheticDefaultImports: true,
       strict: true,
@@ -200,7 +200,11 @@ export async function codegen(
   // https://github.com/vercel/next.js/blob/canary/packages/next/types/global.d.ts
   fs.writeFileSync(
     path.join(dir, "global.d.ts"),
-    `declare module '*.module.css' {
+    `declare module '*.css' {
+  const classes: { readonly [key: string]: string }
+  export default classes
+}
+declare module '*.module.css' {
   const classes: { readonly [key: string]: string }
   export default classes
 }`
@@ -247,8 +251,13 @@ export async function codegen(
 export function collectSnapshotForDir(dir: string): string {
   const files = fs.readdirSync(dir).sort();
   let allFileContents = "";
-  // Append the contents of each file to a string
+  // Append the contents of each file to a string.
+  // Skip compiled .js files — they are derived artifacts whose content varies
+  // with the TypeScript target, making snapshots brittle across tsc upgrades.
   for (const file of files) {
+    if (file.endsWith(".js")) {
+      continue;
+    }
     const filePath = path.join(dir, file);
     if (fs.statSync(filePath).isFile()) {
       const fileContents = fs.readFileSync(filePath, "utf8");

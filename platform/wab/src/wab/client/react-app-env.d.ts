@@ -69,3 +69,15 @@ declare module "*.module.sass" {
   const classes: { readonly [key: string]: string };
   export default classes;
 }
+
+// Side-effect CSS/SCSS/SASS/LESS imports (TS2882 in TypeScript 6)
+declare module "*.css" {}
+declare module "*.scss" {}
+declare module "*.sass" {}
+declare module "*.less" {}
+
+// Chrome extension API on window (used in screenshot-util.ts)
+interface Window {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  chrome?: any;
+}

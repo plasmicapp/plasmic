@@ -138,7 +138,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "sha256": "^0.2.0",
     "size-limit": "^12.0.0",
-    "typescript": "5.7.3"
+    "typescript": "6.0.3"
   },
   "resolutions": {
     "@plasmicpkgs/antd/antd": "4.19.5",

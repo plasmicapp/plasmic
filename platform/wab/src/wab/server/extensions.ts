@@ -50,7 +50,7 @@ declare global {
     }
   }
 }
-declare module "socket.io/dist/socket" {
+declare module "socket.io/dist/socket-types" {
   export interface Handshake {
     user?: SocketUser;
   }

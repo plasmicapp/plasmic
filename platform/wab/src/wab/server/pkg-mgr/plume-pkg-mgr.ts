@@ -50,7 +50,7 @@ async function checkPlumeVersion() {
 }
 
 export async function main() {
-  await yargs
+  await yargs(process.argv.slice(2))
     .usage("Usage: $0 <command> [options]")
     .command<{ sysname: string }>(
       "update",
