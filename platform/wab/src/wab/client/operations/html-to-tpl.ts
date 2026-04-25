@@ -9,6 +9,7 @@ import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parse
 import {
   isWIBaseVariantSettings,
   WIAnimationSequence,
+  WIBase,
   WIElement,
   WIFragment,
   WIScreenVariant,
@@ -16,13 +17,14 @@ import {
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
+import { filterObject } from "@/wab/shared/collections";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import { code, customCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { getResponsiveStrategy } from "@/wab/shared/core/sites";
 import { mkRuleSet } from "@/wab/shared/core/styles";
-import { TplTagType } from "@/wab/shared/core/tpls";
+import { AttrsSpec, TplTagType } from "@/wab/shared/core/tpls";
 import { camelCssPropsToKebab } from "@/wab/shared/css";
 import {
   AnimationProperty,
@@ -363,6 +365,19 @@ async function wiTreeToTpl(
     tplVariantSettingsData.set(tpl, tplVariantSettings);
   }
 
+  const htmlAttrsIgnoredByTpl = new Set([
+    "class",
+    "className",
+    "style",
+    "data-plasmic-name",
+    "src",
+    "srcset",
+  ]);
+
+  function htmlAttrsToTplAttrs(node: WIBase): AttrsSpec {
+    return filterObject(node.attrs, ([key]) => !htmlAttrsIgnoredByTpl.has(key));
+  }
+
   async function rec(node: WIElement): Promise<TplNode[]> {
     // Fragment expands its children in place
     if (node.type === "fragment") {
@@ -374,6 +389,7 @@ async function wiTreeToTpl(
     const tplName = node.attrs["data-plasmic-name"];
     if (node.type === "text") {
       const tpl = vtm.mkTplTagX(node.tag, {
+        attrs: htmlAttrsToTplAttrs(node),
         name: tplName,
         type: TplTagType.Text,
       });
@@ -502,6 +518,7 @@ async function wiTreeToTpl(
       const tpl = vtm.mkTplTagX(
         node.tag,
         {
+          attrs: htmlAttrsToTplAttrs(node),
           name: tplName,
           type: TplTagType.Other,
         },

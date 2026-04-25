@@ -162,6 +162,17 @@ function buildTplTag(tpl: TplTag): XmlElement {
     attrs.style = style;
   }
 
+  // Include static HTML attributes
+  for (const [key, expr] of Object.entries(vs.attrs)) {
+    if (["style", "children"].includes(key)) {
+      continue;
+    }
+    const value = extractExprValue(expr);
+    if (value !== "") {
+      attrs[key] = value;
+    }
+  }
+
   // For text blocks, render inline with text content
   if (isTplTextBlock(tpl)) {
     // Try to get text from vsettings.text (RawText)

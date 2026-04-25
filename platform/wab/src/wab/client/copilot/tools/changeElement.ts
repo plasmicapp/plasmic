@@ -140,6 +140,22 @@ export const changeElementTool = defineCopilotTool(
               `Element "${change.tplUuid}" styles changed successfully.`
             );
           }
+
+          if (change.attrs) {
+            const vs = vtm.ensureVariantSetting(tpl, variantCombo);
+
+            for (const [key, value] of Object.entries(change.attrs)) {
+              if (value === null) {
+                delete vs.attrs[key];
+              } else {
+                vs.attrs[key] = codeLit(value);
+              }
+            }
+
+            response.push(
+              `Element "${change.tplUuid}" attrs changed successfully.`
+            );
+          }
         }
 
         return success(response.join("\n"));
