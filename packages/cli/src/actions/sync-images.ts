@@ -1,16 +1,16 @@
 import { PromisePool } from "@supercharge/promise-pool";
+import axios from "axios";
 import cliProgress from "cli-progress";
 import L from "lodash";
-import fetch from "node-fetch";
 import path from "upath";
 import { ChecksumBundle, ImageBundle } from "../api";
 import { logger } from "../deps";
 import { FixImportContext } from "../utils/code-utils";
 import {
-  getOrAddProjectConfig,
-  getOrAddProjectLock,
   ImageConfig,
   PlasmicContext,
+  getOrAddProjectConfig,
+  getOrAddProjectLock,
 } from "../utils/config-utils";
 import {
   defaultPublicResourcePath,
@@ -151,14 +151,15 @@ export async function ensureImageAssetContents(bundles: ImageBundle[]) {
     .for(needsFetching)
     .process(async (bundle) => {
       try {
-        const res = await fetch(bundle.blob);
+        const res = await axios.get<ArrayBuffer>(bundle.blob, {
+          responseType: "arraybuffer",
+        });
         if (res.status !== 200) {
           throw new Error(
             `Fetching ${bundle.blob} failed with status ${res.status}`
           );
         }
-        const arrayBuffer = await res.arrayBuffer();
-        bundle.blob = Buffer.from(arrayBuffer).toString("base64");
+        bundle.blob = Buffer.from(res.data).toString("base64");
         bar.increment();
       } catch (err) {
         logger.error(`Failed to fetch image ${bundle.fileName}: ${err}`);
@@ -176,7 +177,7 @@ function getImagePublicUrl(context: PlasmicContext, asset: ImageConfig) {
   );
 }
 
-const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;
+const RE_ASSETCSSREF_ALL = /var\(--image-([^)]+)\)/g;
 export async function fixComponentCssReferences(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
@@ -206,7 +207,7 @@ export async function fixComponentCssReferences(
   }
 }
 
-const RE_ASSETTSXREF_ALL = /Plasmic_Image_([^\)\s]+)__Ref/g;
+const RE_ASSETTSXREF_ALL = /Plasmic_Image_([^)\s]+)__Ref/g;
 export async function fixComponentImagesReferences(
   context: PlasmicContext,
   fixImportContext: FixImportContext,

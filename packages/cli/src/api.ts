@@ -441,7 +441,7 @@ export class PlasmicApi {
         }
       );
     } catch (e) {
-      const error = e as AxiosError;
+      const error = e as AxiosError<any>;
       const errorMsg = this.makeErrorMessage(error);
 
       if (rethrowAppError) {
@@ -463,7 +463,7 @@ export class PlasmicApi {
         headers: { ...this.makeHeaders(), ...(extraHeaders ?? {}) },
       });
     } catch (e) {
-      const error = e as AxiosError;
+      const error = e as AxiosError<any>;
       const errorMsg = this.makeErrorMessage(error);
 
       if (rethrowAppError) {
@@ -478,7 +478,7 @@ export class PlasmicApi {
     }
   }
 
-  private makeErrorMessage(error: AxiosError) {
+  private makeErrorMessage(error: AxiosError<any>) {
     const response = error.response;
     if (!response) {
       return undefined;
