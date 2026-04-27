@@ -81,6 +81,11 @@ function getLoaderVersion(req: Request) {
 }
 
 function getLoaderOptions(req: Request) {
+  const projectIdSpecs = ensureArray(req.query.projectId) as string[];
+  if (projectIdSpecs.length === 0) {
+    throw new BadRequestError("At least one projectId must be specified");
+  }
+
   return {
     platform:
       req.query.platform === "nextjs" || req.query.platform === "gatsby"
@@ -88,7 +93,7 @@ function getLoaderOptions(req: Request) {
         : "react",
     nextjsAppDir: req.query.nextjsAppDir === "true",
     browserOnly: req.query.browserOnly === "true",
-    projectIdSpecs: ensureArray(req.query.projectId) as string[],
+    projectIdSpecs,
     loaderVersion: getLoaderVersion(req),
     i18nKeyScheme: req.query.i18nKeyScheme as LocalizationKeyScheme | undefined,
     i18nTagPrefix: req.query.i18nTagPrefix as string | undefined,

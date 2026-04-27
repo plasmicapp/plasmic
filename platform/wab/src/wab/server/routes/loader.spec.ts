@@ -102,6 +102,17 @@ describe("loader", () => {
     await cleanup();
   });
 
+  it("fails code loader requests with no projectId", async () => {
+    const publishedRes = await publicApi.getPublishedLoaderAssets([], {});
+    expect(publishedRes.status()).toEqual(400);
+
+    const versionedRes = await publicApi.rawReq(
+      "get",
+      "/api/v1/loader/code/versioned?cb=20&platform=nextjs&loaderVersion=0"
+    );
+    expect(versionedRes.status()).toEqual(400);
+  });
+
   it("resolves polyfill project", async () => {
     const res = await publicApi.getPublishedLoaderAssets([polyfillProject], {});
     expect(res.status()).toEqual(200);
