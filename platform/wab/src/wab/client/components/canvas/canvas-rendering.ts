@@ -818,6 +818,8 @@ function useTriggers(
   return { triggers, triggerProps };
 }
 
+const dataPickerHiddenMeta = { hidden: true };
+
 // Returns a RenderingCtx, but it's still missing `triggerProps` because they
 // need a non-stable number of hooks. The complete `RenderingCtx` should be
 // built inside `mkTriggers`.
@@ -919,7 +921,7 @@ function useCtxFromInternalComponentProps(
     ...Object.fromEntries(
       component.states.map((s) => [
         mkMetaName(getStateValuePropName(s)),
-        { hidden: true },
+        dataPickerHiddenMeta,
       ])
     ),
     // we need to use the canvas constructors
@@ -927,7 +929,7 @@ function useCtxFromInternalComponentProps(
     // Hide $props.on<propName>Change from data picker.
     ...Object.fromEntries(
       withoutNils(component.states.map((s) => getStateOnChangePropName(s))).map(
-        (s) => [mkMetaName(s), { hidden: true }]
+        (s) => [mkMetaName(s), dataPickerHiddenMeta]
       )
     ),
   };
@@ -1117,7 +1119,7 @@ function variantsToProps(
   if (opts?.hideFromDataPicker) {
     const keys = Object.keys(props);
     for (const key of keys) {
-      props[mkMetaName(key)] = { hidden: true };
+      props[mkMetaName(key)] = dataPickerHiddenMeta;
     }
   }
   return props;
