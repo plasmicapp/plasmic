@@ -151,6 +151,7 @@ import {
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
 import {
+  StatefulQueryResult,
   buildCustomCodeFn,
   getCustomFunctionParams,
 } from "@/wab/shared/core/custom-functions";
@@ -3655,47 +3656,61 @@ type DataOrServerQueries = Record<
   ClientQueryResult | PlasmicQueryResult | undefined
 >;
 
-type StatefulPlasmicQueryResult = PlasmicQueryResult & {
-  addListener: (listener: (...args: any[]) => void) => void;
-  removeListener: (listener: (...args: any[]) => void) => void;
-};
+function updateCtxQueries(
+  oldQueries: DataOrServerQueries,
+  newQueries: DataOrServerQueries
+) {
+  let shouldUpdate = false;
+  Object.keys(newQueries).forEach((k) => {
+    if (!(k in oldQueries)) {
+      oldQueries[k] = newQueries[k];
+      shouldUpdate = true;
+    }
+  });
+  [...Object.keys(oldQueries)].forEach((k) => {
+    if (!(k in newQueries)) {
+      delete oldQueries[k];
+      shouldUpdate = true;
+    }
+  });
+  Object.keys(newQueries).forEach((k) => {
+    if (newQueries[k] !== oldQueries[k]) {
+      oldQueries[k] = newQueries[k];
+      shouldUpdate = true;
+    }
+  });
+  return shouldUpdate;
+}
 
-function usePublishedDataQueries(
+// Subscribe directly to each query and republish a fresh { ...new$Q }
+// from a microtask whenever its state transitions.
+function useReactiveDollarQ(
   sub: SubDeps,
-  queries: Record<string, PlasmicQueryResult | undefined>
-): Record<string, PlasmicQueryResult | undefined> {
-  const [version, setVersion] = sub.React.useState(0);
-
+  new$Q: Record<string, PlasmicQueryResult | undefined>,
+  setDollarQ: (q: Record<string, PlasmicQueryResult | undefined>) => void
+) {
   sub.React.useEffect(() => {
     let cleanup = false;
     const listener = () => {
       if (cleanup) {
         return;
       }
-      // unstable_usePlasmicQueries listeners may fire during render, so defer the update
       queueMicrotask(() => {
         if (!cleanup) {
-          setVersion((v) => v + 1);
+          setDollarQ({ ...new$Q });
         }
       });
     };
-    Object.values(queries).forEach((query) => {
-      (query as StatefulPlasmicQueryResult | undefined)?.addListener(listener);
+    Object.values(new$Q).forEach((q) => {
+      (q as StatefulQueryResult | undefined)?.addListener?.(listener);
     });
-
     return () => {
       cleanup = true;
-      Object.values(queries).forEach((query) => {
-        (query as StatefulPlasmicQueryResult | undefined)?.removeListener(
-          listener
-        );
+      Object.values(new$Q).forEach((q) => {
+        (q as StatefulQueryResult | undefined)?.removeListener?.(listener);
       });
     };
-  }, [queries]);
-
-  // Publish a new queries object when query state changes so canvas env gets a new identity
-  // and downstream mobx observers rerun.
-  return sub.React.useMemo(() => ({ ...queries }), [queries, version]);
+  }, [new$Q, setDollarQ]);
 }
 
 /**
@@ -3822,7 +3837,7 @@ const mkComponentLevelQueryFetcher = computedFn(
             ctx.env.$ctx ?? {},
             (ctx.env.$state as Record<string, unknown> | undefined) ?? {}
           ) ?? {};
-        const published$Q = usePublishedDataQueries(sub, new$Q);
+
         const triggerQueryLoad = (queries: DataOrServerQueries) => {
           Object.values(queries).forEach((query) => {
             try {
@@ -3844,39 +3859,15 @@ const mkComponentLevelQueryFetcher = computedFn(
           triggerQueryLoad(new$Queries);
           triggerQueryLoad(new$Q);
         });
-        // In codegen we update $queries in the render function, but we can't
-        // do it here as this is not the `Component` render function, so we
-        // update the object itself to delete old queries and add the new ones.
-        const updateCtxQueries = (
-          oldQueries: DataOrServerQueries,
-          newQueries: DataOrServerQueries
-        ) => {
-          let shouldUpdate = false;
-          Object.keys(newQueries).forEach((k) => {
-            if (!(k in oldQueries)) {
-              oldQueries[k] = newQueries[k];
-              shouldUpdate = true;
-            }
-          });
-          [...Object.keys(oldQueries)].forEach((k) => {
-            if (!(k in newQueries)) {
-              delete oldQueries[k];
-              shouldUpdate = true;
-            }
-          });
-          Object.keys(newQueries).forEach((k) => {
-            if (newQueries[k] !== oldQueries[k]) {
-              oldQueries[k] = newQueries[k];
-              shouldUpdate = true;
-            }
-          });
-          return shouldUpdate;
-        };
+        // In codegen $queries is updated in the render function. We can't do it here
+        // as this is not the `Component` render function, so we update the object manually
         const shouldUpdate$Queries = updateCtxQueries(
           ctx.env.$queries,
           new$Queries
         );
         const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
+
+        useReactiveDollarQ(sub, new$Q, ctx.setDollarQ);
 
         ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
 
@@ -3884,15 +3875,15 @@ const mkComponentLevelQueryFetcher = computedFn(
           if (shouldUpdate$Queries) {
             ctx.setDollarQueries(new$Queries);
           }
-          if (shouldUpdate$Q || ctx.env.$q !== published$Q) {
-            ctx.setDollarQ(published$Q);
+          if (shouldUpdate$Q) {
+            ctx.setDollarQ(new$Q);
           }
         }, [
           shouldUpdate$Queries,
           new$Queries,
           ctx.env.$queries,
           shouldUpdate$Q,
-          published$Q,
+          new$Q,
           ctx.env.$q,
         ]);
 
