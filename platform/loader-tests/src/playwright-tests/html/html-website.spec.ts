@@ -5,14 +5,14 @@ import { testWebsiteDesktop, testWebsiteMobile } from "../helpers/website";
 test.describe(`HTML Website`, async () => {
   let ctx: HtmlContext;
 
-  test.beforeEach(async () => {
+  test.beforeAll(async () => {
     ctx = await setupHtml({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
     });
   });
 
-  test.afterEach(async () => {
+  test.afterAll(async () => {
     await teardownHtml(ctx);
   });
 

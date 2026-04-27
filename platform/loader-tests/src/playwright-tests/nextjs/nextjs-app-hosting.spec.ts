@@ -6,6 +6,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { matchScreenshot } from "../playwright-utils";
 import { makeEnvName } from "../setup-utils";
 
 for (const versions of LOADER_NEXTJS_VERSIONS) {
@@ -49,6 +50,7 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
       await expect(page.getByText("You clicked 2 times").first()).toBeVisible();
       await expect(page.getByText("super-secret").first()).toBeVisible();
       await expect(page.getByText("I'm in the fetcher!").first()).toBeVisible();
+      await matchScreenshot(page, "plasmic-app-hosting-example.png");
     });
   });
 }

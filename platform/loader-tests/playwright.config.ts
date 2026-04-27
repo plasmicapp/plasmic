@@ -14,6 +14,9 @@ const headless = process.env["PLAYWRIGHT_HEADFUL"] !== "true";
  */
 export default defineConfig({
   testDir: "./src/playwright-tests",
+  snapshotDir: "./snapshots",
+  snapshotPathTemplate:
+    "{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}{-projectName}{ext}",
   /* Run tests in files in parallel */
   // fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -47,7 +50,6 @@ export default defineConfig({
   timeout: 900000, // 10 minutes, to saturate CI server parallelism - there are a lot of yarn mutexes
   expect: {
     timeout: 60000, // 1 minute,
-    toHaveScreenshot: {},
   },
   /* Configure projects for major browsers */
   projects: [

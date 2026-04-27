@@ -7,6 +7,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { matchScreenshot } from "../playwright-utils";
 import { makeEnvName } from "../setup-utils";
 
 const SPLIT_ID = "j7cCxfS-Vu";
@@ -67,6 +68,7 @@ for (const versions of SPLIT_VERSIONS) {
       await expect(page.locator("body")).toContainText("active experiment");
       await expect(page.locator("body")).toContainText("inactive segment");
       await expect(page.locator("body")).toContainText("active schedule");
+      await matchScreenshot(page, "plasmic-splits-home.png");
     });
 
     test(`should render root page from plasmic with inactive experiment`, async ({
@@ -90,6 +92,7 @@ for (const versions of SPLIT_VERSIONS) {
       await expect(page.locator("body")).toContainText("inactive experiment");
       await expect(page.locator("body")).toContainText("inactive segment");
       await expect(page.locator("body")).toContainText("active schedule");
+      await matchScreenshot(page, "plasmic-splits-home-inactive.png");
     });
 
     test(`should render segment page`, async ({ page, browserName }) => {
@@ -112,6 +115,7 @@ for (const versions of SPLIT_VERSIONS) {
       await expect(page.locator("body")).toContainText("active experiment");
       await expect(page.locator("body")).toContainText("active segment");
       await expect(page.locator("body")).toContainText("active schedule");
+      await matchScreenshot(page, "plasmic-splits-home-segment.png");
     });
 
     test(`should render schedule page`, async ({ page, browserName }) => {
@@ -133,6 +137,7 @@ for (const versions of SPLIT_VERSIONS) {
       });
       await expect(page.locator("body")).toContainText("active experiment");
       await expect(page.locator("body")).toContainText("inactive schedule");
+      await matchScreenshot(page, "plasmic-splits-home-schedule.png");
     });
 
     test(`should render custom page with custom trait`, async ({
@@ -154,6 +159,7 @@ for (const versions of SPLIT_VERSIONS) {
       await expect(page.locator("body")).toContainText(
         "You are seeing a campaign segment"
       );
+      await matchScreenshot(page, "plasmic-nextjs-splits-custom-active.png");
     });
 
     test(`should render custom page with custom trait (inactive)`, async ({
@@ -173,6 +179,7 @@ for (const versions of SPLIT_VERSIONS) {
         }
       );
       await expect(page.locator("body")).toContainText("NO CAMPAIGN HERE");
+      await matchScreenshot(page, "plasmic-nextjs-splits-custom-inactive.png");
     });
 
     test(`should get external ids and render it`, async ({
@@ -200,6 +207,10 @@ for (const versions of SPLIT_VERSIONS) {
       await expect(page.locator("body")).toContainText(
         "ext-utm-campaign: ext-utm-campaign-a"
       );
+      await matchScreenshot(
+        page,
+        "plasmic-nextjs-splits-external-nocampaign.png"
+      );
     });
 
     test(`should get external ids and render it (campaign)`, async ({
@@ -226,6 +237,10 @@ for (const versions of SPLIT_VERSIONS) {
       );
       await expect(page.locator("body")).toContainText(
         "ext-utm-campaign: ext-utm-campaign-b"
+      );
+      await matchScreenshot(
+        page,
+        "plasmic-nextjs-splits-external-campaign.png"
       );
     });
   });

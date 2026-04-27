@@ -54,6 +54,12 @@ yarn test-playwright src/playwright-tests/nextjs/antd5/tabs.spec.ts
 # Specific folder
 yarn test-playwright src/playwright-tests/nextjs/antd5/
 
+# Refresh snapshots for a specific spec
+PLAYWRIGHT_REPORTER_OPEN=never yarn test-playwright src/playwright-tests/nextjs/nextjs-wordpress.spec.ts --update-snapshots
+
+# Refresh all Playwright snapshots
+yarn update-snapshots
+
 # Interactive UI mode
 yarn playwright-ui
 
@@ -63,3 +69,13 @@ yarn run local:playwright-ui
 ```
 
 On failure, traces and videos are saved to `test-results/`. The HTML report opens automatically, or run `npx playwright show-report`. Each test logs its temp directory path (`tmpdir /tmp/...`) which you can inspect to debug build issues (comment out teardown to keep it around).
+
+## Updating snapshots
+
+Playwright image baselines live in `snapshots/`.
+
+1. Run the target spec with `PLAYWRIGHT_REPORTER_OPEN=never` and `--update-snapshots`, for example `PLAYWRIGHT_REPORTER_OPEN=never yarn test-playwright src/playwright-tests/nextjs/nextjs-wordpress.spec.ts --update-snapshots`.
+2. Review the changed PNGs under `snapshots/`.
+3. Re-run the same spec without `--update-snapshots` to confirm the new baselines pass.
+
+Use `yarn update-snapshots` only when you intend to refresh all Playwright baselines.

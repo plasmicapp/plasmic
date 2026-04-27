@@ -1,5 +1,6 @@
 import { expect, Page } from "@playwright/test";
 import {
+  matchScreenshot,
   trackClientFetches,
   waitForPlasmicDynamic,
 } from "../../playwright-utils";
@@ -28,6 +29,7 @@ export async function testStrapiLoader(
     "src",
     /Cafe_Coffee_Day/
   );
+  await matchScreenshot(page, `nextjs-strapi-v${strapiVersion}.png`);
 
   // Verify all data was server-rendered
   fetches.assertNone();

@@ -1,5 +1,6 @@
 import { expect, Page } from "@playwright/test";
 import {
+  matchScreenshot,
   trackClientFetches,
   waitForPlasmicDynamic,
 } from "../../playwright-utils";
@@ -25,6 +26,7 @@ export async function testWordpressLoader(page: Page, host: string) {
   ).toBeVisible();
   await expect(page.getByText("Getting Started with WordPress")).toBeVisible();
   await expect(page.getByText("Hello World").first()).toBeVisible();
+  await matchScreenshot(page, "nextjs-wordpress-home.png");
 
   // Navigate to page
   await page.getByText("Sample Page").click();

@@ -202,10 +202,21 @@ function patchLoaderHost(
       ? path.join(projectDir, `plasmic-init.${ext}`)
       : path.join(projectDir, `gatsby-config.${ext}`);
   const content = fs.readFileSync(filePath, "utf-8");
-  fs.writeFileSync(
-    filePath,
-    content.replace("projects: [", `host: "${host}",\n    projects: [`)
+  let patchedContent = content.replace(
+    "projects: [",
+    `host: "${host}",\n    projects: [`
   );
+
+  if (platform === "nextjs") {
+    patchedContent = patchedContent
+      .replace('import * as NextNavigation from "next/navigation";\n\n', "")
+      .replace(
+        /\/\/ Needed for Next\.js app router support\.\n\s*nextNavigation: NextNavigation,\n/,
+        "platformOptions: {\n    nextjs: {\n      appDir: true,\n    },\n  },\n"
+      );
+  }
+
+  fs.writeFileSync(filePath, patchedContent);
   console.log(`[codegen-setup] Patched loader host in ${filePath}`);
 }
 

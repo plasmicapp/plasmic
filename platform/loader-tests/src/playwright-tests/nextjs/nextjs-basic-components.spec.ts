@@ -6,6 +6,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { matchScreenshot } from "../playwright-utils";
 import { makeEnvName } from "../setup-utils";
 
 for (const versions of LOADER_NEXTJS_VERSIONS) {
@@ -38,6 +39,7 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
       );
       await expect(page.locator("div.video-wrapper > video")).toBeVisible();
       await expect(page.locator("div.iframe-wrapper > iframe")).toBeVisible();
+      await matchScreenshot(page, "plasmic-basic-components-example.png");
     });
   });
 }

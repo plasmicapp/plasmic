@@ -8,7 +8,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
-import { waitForPlasmicDynamic } from "../playwright-utils";
+import { matchScreenshot, waitForPlasmicDynamic } from "../playwright-utils";
 
 test.describe(`NextJS Sanity.io`, () => {
   let ctx: NextJsContext;
@@ -102,5 +102,6 @@ test.describe(`NextJS Sanity.io`, () => {
       timeout: 30000,
     });
     await expect(page.locator("img").first()).toHaveAttribute("src", /.+/);
+    await matchScreenshot(page, "plasmic-sanity-io.png");
   });
 });

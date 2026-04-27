@@ -6,6 +6,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { matchScreenshot } from "../playwright-utils";
 
 test.describe(`NextJS Dynamic Pages`, async () => {
   let ctx: NextJsContext;
@@ -26,6 +27,7 @@ test.describe(`NextJS Dynamic Pages`, async () => {
     await page.goto(ctx.host);
 
     await expect(page.locator("text=Donald Knuth")).toBeVisible();
+    await matchScreenshot(page, "dynamic-pages.png");
 
     await page.locator("text=Donald Knuth").click();
     await expect(page).toHaveTitle("Donald Knuth");

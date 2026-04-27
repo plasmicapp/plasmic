@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-import { trackClientFetches } from "../../playwright-utils";
+import { matchScreenshot, trackClientFetches } from "../../playwright-utils";
 interface TestOpts {
   checkTitle: boolean;
   checkSSR: boolean;
@@ -27,6 +27,7 @@ export async function testCms(page: Page, host: string, opts: TestOpts) {
   const fetches = trackClientFetches(page);
 
   await testHomeRoute(page, host, opts);
+  await matchScreenshot(page, "nextjs-cms-home.png");
 
   // Navigate to a blog post
   await page.getByText("First blog post").first().click();
