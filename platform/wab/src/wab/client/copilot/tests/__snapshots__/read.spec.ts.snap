@@ -3,7 +3,7 @@
 exports[`read copilot tool reads a specific resources by UUID 1`] = `
 "<token name="Size-32" uuid="_gnxKR8NG8ND" type="Spacing" value="var(--token-OJSN3W0Myvht)" resolvedValue="2rem"/>
 
-<component name="Homepage">
+<component name="Homepage" uuid="ypvAo6PBDTFP">
   <props>
   </props>
   <variants>
@@ -35,21 +35,21 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </ul>
         <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
         <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center; animation: none">
-          <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px; animation: none">
+          <plasmic-component id="Mph6D763rJVw" data-plasmic-component="button" style="max-width: 100%; width: 100px; animation: none">
           </plasmic-component>
           <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; animation: none">
-            <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
+            <plasmic-component id="nDAyQ6rOezVl" data-plasmic-component="_switch" data-plasmic-name="Switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
             </plasmic-component>
           </div>
-          <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px; animation: none">
+          <plasmic-component id="ECPnnoz-UM9u" data-plasmic-component="checkboxGroup" data-plasmic-name="Checkbox Group" style="max-width: 100%; width: 150px; animation: none">
           </plasmic-component>
-          <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px; animation: none">
+          <plasmic-component id="hq7D0qhcWq23" data-plasmic-component="slider" data-plasmic-name="Slider" style="max-width: 100%; width: 200px; animation: none">
           </plasmic-component>
           <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false; animation: none">
-            <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%; animation: none">
+            <plasmic-component id="yVNoh5O3v0cb" data-plasmic-component="select" data-plasmic-name="Select" style="max-width: 100%; animation: none">
             </plasmic-component>
           </div>
-          <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px; animation: none">
+          <plasmic-component id="uQEzkCsn4RFC" data-plasmic-component="textField" data-plasmic-name="Text Field" style="max-width: 100%; width: 200px; animation: none">
           </plasmic-component>
         </div>
         <div id="NcrzEUE3a4S3" style="position: relative; width: stretch; height: wrap; max-width: 100%">While in preview mode, click the labels to trigger animation examples:</div>
@@ -92,7 +92,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   </VariantSettings>
 </component>
 
-<component name="hostless-plasmic-head">
+<component name="hostless-plasmic-head" uuid="3Q5tZgoUcjgc">
   <props>
     <prop name="title" uuid="p5kQHDlpFEfj" type="text"/>
     <prop name="description" uuid="8dv_Ql-lp9kh" type="text"/>
@@ -130,21 +130,21 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     </ul>
     <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
     <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center; animation: none">
-      <plasmic-component id="Mph6D763rJVw" data-plasmic-name="button" style="max-width: 100%; width: 100px; animation: none">
+      <plasmic-component id="Mph6D763rJVw" data-plasmic-component="button" style="max-width: 100%; width: 100px; animation: none">
       </plasmic-component>
       <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; animation: none">
-        <plasmic-component id="nDAyQ6rOezVl" data-plasmic-name="_switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
+        <plasmic-component id="nDAyQ6rOezVl" data-plasmic-component="_switch" data-plasmic-name="Switch" style="max-width: 100%; width: 100px; position: relative; animation: none">
         </plasmic-component>
       </div>
-      <plasmic-component id="ECPnnoz-UM9u" data-plasmic-name="checkboxGroup" style="max-width: 100%; width: 150px; animation: none">
+      <plasmic-component id="ECPnnoz-UM9u" data-plasmic-component="checkboxGroup" data-plasmic-name="Checkbox Group" style="max-width: 100%; width: 150px; animation: none">
       </plasmic-component>
-      <plasmic-component id="hq7D0qhcWq23" data-plasmic-name="slider" style="max-width: 100%; width: 200px; animation: none">
+      <plasmic-component id="hq7D0qhcWq23" data-plasmic-component="slider" data-plasmic-name="Slider" style="max-width: 100%; width: 200px; animation: none">
       </plasmic-component>
       <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false; animation: none">
-        <plasmic-component id="yVNoh5O3v0cb" data-plasmic-name="select" style="max-width: 100%; animation: none">
+        <plasmic-component id="yVNoh5O3v0cb" data-plasmic-component="select" data-plasmic-name="Select" style="max-width: 100%; animation: none">
         </plasmic-component>
       </div>
-      <plasmic-component id="uQEzkCsn4RFC" data-plasmic-name="textField" style="max-width: 100%; width: 200px; animation: none">
+      <plasmic-component id="uQEzkCsn4RFC" data-plasmic-component="textField" data-plasmic-name="Text Field" style="max-width: 100%; width: 200px; animation: none">
       </plasmic-component>
     </div>
     <div id="NcrzEUE3a4S3" style="position: relative; width: stretch; height: wrap; max-width: 100%">While in preview mode, click the labels to trigger animation examples:</div>

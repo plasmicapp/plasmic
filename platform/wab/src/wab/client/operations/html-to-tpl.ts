@@ -672,6 +672,20 @@ function getComponentArgFromHtmlProp(
         param.variable.name,
         new VariantsRef({ variants: [variantGroup.variants[0]] }),
       ];
+    } else if (variantGroup.multi) {
+      const values = isArray(value) ? value : [value];
+      const variants = values.map((v) => {
+        const variant = variantGroup.variants.find(
+          (vv) => toVarName(vv.name) === toVarName(`${v}`)
+        );
+        if (!variant) {
+          throw new Error(
+            `Component "${componentName}" prop "${propName}" has no variant matching "${v}"`
+          );
+        }
+        return variant;
+      });
+      return [param.variable.name, new VariantsRef({ variants })];
     } else {
       const variant = variantGroup.variants.find(
         (v) => toVarName(v.name) === toVarName(`${value}`)

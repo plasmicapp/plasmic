@@ -7,6 +7,7 @@ import {
 } from "@/wab/shared/Variants";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assert, switchType } from "@/wab/shared/common";
+import { tryGetVariantGroupValueFromArg } from "@/wab/shared/core/components";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { generateAnimationPropValue } from "@/wab/shared/core/styles";
 import {
@@ -187,41 +188,45 @@ function buildTplComponent(tpl: TplComponent): XmlElement {
 
   const attrs: XmlAttrs = {
     id: tpl.uuid,
-    "data-plasmic-name": toVarName(component.name),
+    "data-plasmic-component": toVarName(component.name),
   };
 
-  // Collect props into a JSON object
-  const propsObj: Record<string, any> = {};
+  if (tpl.name) {
+    attrs["data-plasmic-name"] = tpl.name;
+  }
 
-  // Add regular props
+  // Collect regular props and variant-group activations into a JSON object.
+  // Variant-group activations are stored on vs.args as Args whose expr is a
+  // VariantsRef
+  const propsObj: Record<string, any> = {};
   if (vs.args) {
     for (const arg of vs.args) {
       const param = arg.param;
-      if (!isSlot(param)) {
-        const propName = paramToVarName(component, param);
-        const jsonValue = tryExtractJson(arg.expr);
-        if (jsonValue !== undefined) {
-          propsObj[propName] = jsonValue;
-        } else {
-          propsObj[propName] = extractExprValue(arg.expr);
-        }
+      if (isSlot(param)) {
+        continue;
       }
-    }
-  }
+      const propName = paramToVarName(component, param);
 
-  // Add active variants as props
-  if (vs.variants) {
-    for (const variant of vs.variants) {
-      const variantGroup = component.variantGroups.find((group) =>
-        group.variants.includes(variant)
-      );
-      if (variantGroup && variantGroup.param) {
-        const propName = paramToVarName(component, variantGroup.param);
-        if (isStandaloneVariantGroup(variantGroup)) {
-          propsObj[propName] = true;
-        } else {
-          propsObj[propName] = variant.name;
+      const vgArg = tryGetVariantGroupValueFromArg(component, arg);
+      if (vgArg) {
+        if (vgArg.variants.length === 0) {
+          continue;
         }
+        if (isStandaloneVariantGroup(vgArg.vg)) {
+          propsObj[propName] = true;
+        } else if (vgArg.vg.multi) {
+          propsObj[propName] = vgArg.variants.map((v) => v.name);
+        } else {
+          propsObj[propName] = vgArg.variants[0].name;
+        }
+        continue;
+      }
+
+      const jsonValue = tryExtractJson(arg.expr);
+      if (jsonValue !== undefined) {
+        propsObj[propName] = jsonValue;
+      } else {
+        propsObj[propName] = extractExprValue(arg.expr);
       }
     }
   }
@@ -483,7 +488,7 @@ function buildComponentVariants(component: Component): XmlElement | null {
  * Generates a prompt representation describing a Plasmic component in XML tags format.
  * Returns a formatted XML string with component metadata, props, slots, tree, and variant settings overrides.
  *
- * <component name="">
+ * <component name="" uuid="">
  *   <props>
  *     <prop name="color" uuid="..." type="text" />
  *   </props>
@@ -509,7 +514,7 @@ function buildComponentVariants(component: Component): XmlElement | null {
  */
 export function serializeComponent(component: Component): string {
   const children: XmlElement[] = [
-    { _attr: { name: component.name } },
+    { _attr: { name: component.name, uuid: component.uuid } },
     { props: buildComponentProps(component) },
     { variants: buildComponentVariantDefs(component) },
   ];
