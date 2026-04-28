@@ -1,5 +1,6 @@
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { insertHtmlTool } from "@/wab/client/copilot/tools/insertHtml";
+import { readTool } from "@/wab/client/copilot/tools/read";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import {
@@ -43,6 +44,25 @@ function addChild(tag: string, opts: Tpls.MkTplTagOpts = {}): TplTag {
 }
 
 describe("insertHtml copilot tool", () => {
+  it("preserves static HTML attrs and read serializes them", async () => {
+    await insertHtmlTool.execute(studioCtx, {
+      html: '<a href="/order" target="_blank" aria-label="">Order</a>',
+      componentUuid: page.uuid,
+      tplUuid: rootDiv().uuid,
+      insertRelLoc: "append",
+    });
+
+    const link = Tpls.tplChildren(rootDiv())[0] as TplTag;
+    const output = await readTool.execute(studioCtx, {
+      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
+    });
+
+    expect(output).toContain(`<a id="${link.uuid}"`);
+    expect(output).toContain(`href="/order"`);
+    expect(output).toContain(`target="_blank"`);
+    expect(output).toContain(`aria-label=""`);
+  });
+
   describe("insertRelLoc: replace", () => {
     it("replaces a target element with new HTML", async () => {
       const sibling = addChild("span");

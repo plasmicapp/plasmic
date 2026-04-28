@@ -4,6 +4,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { ensureVariantSetting, getBaseVariant } from "@/wab/shared/Variants";
 import { ComponentType } from "@/wab/shared/core/components";
+import { customCode } from "@/wab/shared/core/exprs";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { Component, TplTag } from "@/wab/shared/model/classes";
 
@@ -39,6 +40,7 @@ describe("changeElement copilot tool", () => {
           attrs: {
             href: "/checkout",
             "aria-label": "Checkout link",
+            title: "",
             tabIndex: 3,
             download: true,
           },
@@ -55,6 +57,7 @@ describe("changeElement copilot tool", () => {
     expect(output).toContain(`<a id="${link.uuid}"`);
     expect(output).toContain(`href="/checkout"`);
     expect(output).toContain(`aria-label="Checkout link"`);
+    expect(output).toContain(`title=""`);
     expect(output).toContain(`tabIndex="3"`);
     expect(output).toContain(`download="true"`);
   });
@@ -91,5 +94,33 @@ describe("changeElement copilot tool", () => {
     });
     expect(afterRemoval).not.toContain(`href="/checkout"`);
     expect(afterRemoval).toContain(`title="Checkout"`);
+  });
+
+  it("changes attrs even when a dynamic style expression blocks styles", async () => {
+    const link = addChild("a");
+    const vs = ensureVariantSetting(link, [getBaseVariant(page)]);
+    vs.attrs.style = customCode("$props.style");
+
+    const result = await changeElementTool.execute(studioCtx, {
+      componentUuid: page.uuid,
+      changes: [
+        {
+          tplUuid: link.uuid,
+          styles: { color: "red" },
+          attrs: { href: "/order" },
+        },
+      ],
+    });
+
+    expect(result).toContain("dynamic style expression");
+    expect(result).toContain(
+      `Element "${link.uuid}" attrs changed successfully.`
+    );
+
+    const output = await readTool.execute(studioCtx, {
+      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
+    });
+    expect(output).toContain(`href="/order"`);
+    expect(output).not.toContain(`color: red`);
   });
 });

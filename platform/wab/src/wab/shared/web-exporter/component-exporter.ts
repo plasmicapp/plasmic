@@ -68,10 +68,10 @@ function buildTplNode(tpl: TplNode): XmlElement {
  * - ImageAssetRef: Asset dataUri
  * - StyleTokenRef: Token UUID
  *
- * Returns empty string for dynamic expressions (ObjectPath, VarRef, EventHandler, etc.)
+ * Returns undefined for dynamic expressions (ObjectPath, VarRef, EventHandler, etc.)
  * that can't be serialized to static HTML.
  */
-function extractExprValue(expr: Expr): string {
+function extractStaticExprValue(expr: Expr): string | undefined {
   // First try to extract as JSON (handles CustomCode, TemplatedString, CompositeExpr)
   const jsonValue = tryExtractJson(expr);
   if (jsonValue !== undefined) {
@@ -91,8 +91,12 @@ function extractExprValue(expr: Expr): string {
   }
 
   // For dynamic expressions (ObjectPath, VarRef, EventHandler, RenderExpr, etc.),
-  // we can't serialize them to static HTML, so return empty string
-  return "";
+  // we can't serialize them to static HTML.
+  return undefined;
+}
+
+function extractExprValue(expr: Expr): string {
+  return extractStaticExprValue(expr) ?? "";
 }
 
 export function getStylesFromRuleSet(rs: RuleSet): Record<string, string> {
@@ -167,8 +171,8 @@ function buildTplTag(tpl: TplTag): XmlElement {
     if (["style", "children"].includes(key)) {
       continue;
     }
-    const value = extractExprValue(expr);
-    if (value !== "") {
+    const value = extractStaticExprValue(expr);
+    if (value !== undefined) {
       attrs[key] = value;
     }
   }

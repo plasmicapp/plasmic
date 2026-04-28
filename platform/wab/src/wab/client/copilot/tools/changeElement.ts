@@ -88,57 +88,57 @@ export const changeElementTool = defineCopilotTool(
               response.push(
                 `Element "${change.tplUuid}" has a dynamic style expression that cannot be modified by copilot.`
               );
-              continue;
-            }
+            } else {
+              const existingUnsafeStyles =
+                (parsedJsonStyles as JsonObject) ?? {};
 
-            const existingUnsafeStyles = (parsedJsonStyles as JsonObject) ?? {};
-
-            // Separate styles into add/update (non-null) and remove (null)
-            const stylesToAdd: Record<string, string> = {};
-            const stylesToRemove: string[] = [];
-            for (const [key, value] of Object.entries(change.styles)) {
-              if (value === null) {
-                stylesToRemove.push(key);
-              } else {
-                stylesToAdd[key] = value;
-              }
-            }
-
-            // Add/update styles (non-null values)
-            if (Object.keys(stylesToAdd).length > 0) {
-              const { safe, unsafe } = processUnsanitizedStyles(stylesToAdd);
-              rsh.merge(safe);
-
-              if (Object.keys(unsafe).length > 0) {
-                vs.attrs["style"] = codeLit({
-                  ...existingUnsafeStyles,
-                  ...unsafe,
-                });
-              }
-            }
-
-            // Remove styles (null values).
-            if (stylesToRemove.length > 0) {
-              for (const key of stylesToRemove) {
-                // The removal keys should always match since copilot has access to the
-                // serialized component i.e the style keys it sees are the ones already
-                // in the bundle (sanitized and valid). So copilot would provide the exact
-                // key name to be removed. The removed style could be a safe or unsafe style
-                // property. We try removing it from both places.
-                rsh.clear(key);
-                delete existingUnsafeStyles[key];
+              // Separate styles into add/update (non-null) and remove (null)
+              const stylesToAdd: Record<string, string> = {};
+              const stylesToRemove: string[] = [];
+              for (const [key, value] of Object.entries(change.styles)) {
+                if (value === null) {
+                  stylesToRemove.push(key);
+                } else {
+                  stylesToAdd[key] = value;
+                }
               }
 
-              if (Object.keys(existingUnsafeStyles).length > 0) {
-                vs.attrs["style"] = codeLit(existingUnsafeStyles);
-              } else {
-                delete vs.attrs["style"];
-              }
-            }
+              // Add/update styles (non-null values)
+              if (Object.keys(stylesToAdd).length > 0) {
+                const { safe, unsafe } = processUnsanitizedStyles(stylesToAdd);
+                rsh.merge(safe);
 
-            response.push(
-              `Element "${change.tplUuid}" styles changed successfully.`
-            );
+                if (Object.keys(unsafe).length > 0) {
+                  vs.attrs["style"] = codeLit({
+                    ...existingUnsafeStyles,
+                    ...unsafe,
+                  });
+                }
+              }
+
+              // Remove styles (null values).
+              if (stylesToRemove.length > 0) {
+                for (const key of stylesToRemove) {
+                  // Removal keys should always match since copilot has access to the
+                  // serialized component i.e the style keys it sees are the ones already
+                  // in the bundle (sanitized and valid). So copilot provides the exact
+                  // key name to be removed. The removed style could be a safe or unsafe style
+                  // property. We try removing it from both places.
+                  rsh.clear(key);
+                  delete existingUnsafeStyles[key];
+                }
+
+                if (Object.keys(existingUnsafeStyles).length > 0) {
+                  vs.attrs["style"] = codeLit(existingUnsafeStyles);
+                } else {
+                  delete vs.attrs["style"];
+                }
+              }
+
+              response.push(
+                `Element "${change.tplUuid}" styles changed successfully.`
+              );
+            }
           }
 
           if (change.attrs) {
