@@ -12,8 +12,8 @@
     "execa": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.12.16",
-    "@babel/preset-typescript": "^7.12.16",
+    "@babel/preset-env": "^7.29.2",
+    "@babel/preset-typescript": "^7.28.5",
     "@types/jest": "^27.0.1",
     "@types/node": "^14.14.28",
     "@types/tmp": "^0.2.0",

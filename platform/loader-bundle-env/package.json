@@ -12,9 +12,9 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@ant-design/pro-components": "2.6.4",
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "@faker-js/faker": "^8.2.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@faker-js/faker": "^8.4.1",
     "@plasmicapp/auth-react": "^0.0.27",
     "@plasmicapp/data-sources-context": "^0.1.23",
     "@plasmicapp/host": "^2.0.1",
@@ -68,32 +68,32 @@
     "ant-design-pro-form-stub": "link:./internal_pkgs/ant-design-pro-form-stub",
     "antd": "^5.7.3",
     "axios": "^1.15.0",
-    "chart.js": "^4.2.1",
+    "chart.js": "^4.5.1",
     "copy-to-clipboard": "^3.3.3",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.20",
     "enquire-js": "link:./internal_pkgs/enquire-js",
     "fast-stringify": "^2.0.0",
     "framer-motion": "^7.6.1",
-    "immer": "^10.0.3",
+    "immer": "^10.2.0",
     "isomorphic-fetch": "^3.0.0",
     "jquery": "^3.7.1",
     "lodash": "^4.18.1",
     "marked": "^9.1.1",
     "md5": "^2.3.0",
-    "nanoid": "^5.0.2",
-    "papaparse": "^5.4.1",
+    "nanoid": "^5.1.7",
+    "papaparse": "^5.5.3",
     "plasmic-internal-noop-func": "link:./internal_pkgs/noop-func",
     "pluralize": "^8.0.0",
     "random": "^4.1.0",
     "rc-util": "^5.44.4",
-    "react-chartjs-2": "^5.2.0",
-    "semver": "^7.5.4",
+    "react-chartjs-2": "^5.3.1",
+    "semver": "^7.7.4",
     "slick-carousel": "^1.8.1",
     "slick-carousel-theme": "link:./internal_pkgs/slick-carousel-theme",
     "tinycolor2": "^1.6.0",
     "uuid": "^9.0.1",
     "vanilla-cookieconsent": "^3.1.0",
-    "zod": "^3.22.4"
+    "zod": "^3.25.76"
   },
   "resolutions": {
     "@plasmicpkgs/antd/antd": "4.19.3",
@@ -106,7 +106,7 @@
     "lottie-web": ">=5.13.0"
   },
   "devDependencies": {
-    "patch-package": "^8.0.0",
+    "patch-package": "^8.0.1",
     "postinstall-postinstall": "^2.1.0"
   }
 }
