@@ -3765,33 +3765,34 @@ const mkComponentLevelQueryFetcher = computedFn(
         // const queryCtxRef = sub.React.useRef(ctx);
         // queryCtxRef.current = ctx;
 
-        // Rebuild the tree when any query's identity, name, or op changes
-        // (e.g. when a query is renamed) or `usePlasmicQueries` can
-        // return results keyed by the stale names.
-        const serverQueryTreeKey = component.serverQueries
+        // Rebuild the tree when any query's id, name, or op changes (e.g. on rename)
+        // otherwise `usePlasmicQueries` returns results keyed by stale names.
+        const serverQueriesByKey = component.serverQueries
           .filter(isServerQueryWithOperation)
-          .map((q) =>
-            isKnownCustomCode(q.op)
-              ? `custom:${q.uuid}:${toVarName(q.name)}:${q.op.code}`
-              : `func:${q.uuid}:${toVarName(q.name)}:${customFunctionId(
-                  q.op.func
-                )}`
-          )
-          .join("|");
+          .map((query) => {
+            const varName = toVarName(query.name);
+            const uuidName = `${query.uuid}:${varName}`;
+            return {
+              query,
+              varName,
+              key: isKnownCustomCode(query.op)
+                ? `custom:${uuidName}:${query.op.code}`
+                : `func::${uuidName}${customFunctionId(query.op.func)}`,
+            };
+          });
         const serverQueryTree = sub.React.useMemo(
           (): QueryComponentNode => ({
             type: "component",
             queries: Object.fromEntries(
-              component.serverQueries
-                .filter(isServerQueryWithOperation)
-                .map((query) => {
+              serverQueriesByKey
+                .map(({ query, varName }) => {
                   if (isKnownCustomCode(query.op)) {
                     const depQueryNames = getReferencedQueryNamesInCustomCode(
                       query,
                       component
                     );
                     return [
-                      toVarName(query.name),
+                      varName,
                       {
                         id: `custom:${query.uuid}:${query.op.code}`,
                         fn: buildCustomCodeFn(query.op.code, ctx.env),
@@ -3809,7 +3810,7 @@ const mkComponentLevelQueryFetcher = computedFn(
                     return null;
                   }
                   return [
-                    toVarName(query.name),
+                    varName,
                     {
                       id: funcId,
                       fn: funcReg.function,
@@ -3843,7 +3844,11 @@ const mkComponentLevelQueryFetcher = computedFn(
             propsContext: {},
             children: [],
           }),
-          [component, ctx.viewCtx.canvasCtx, serverQueryTreeKey]
+          [
+            component,
+            ctx.viewCtx.canvasCtx,
+            serverQueriesByKey.map((q) => q.key).join("|"),
+          ]
         );
         const new$Q =
           sub.dataSources?.unstable_usePlasmicQueries?.(
