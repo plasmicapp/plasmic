@@ -48,6 +48,7 @@ import {
   ensurePropTypeToWabType,
   getPropTypeLayout,
   getPropTypeType,
+  isAdvancedProp,
   isAllowedDefaultExprForPropType,
   isDynamicValueDisabledInPropType,
   isExprValuePropType,
@@ -485,7 +486,7 @@ function PropEditorRowWrapper_(props: {
     return null;
   }
 
-  const shouldHighlight =
+  const isNavHighlight =
     viewCtx.highlightParam &&
     viewCtx.highlightParam.tpl === tpl &&
     viewCtx.highlightParam.param === param;
@@ -494,6 +495,16 @@ function PropEditorRowWrapper_(props: {
     isPlainObjectPropType(propType) &&
     hackyCast(propType).invariantable &&
     !isBaseVariant(expsProvider.targetIndicatorCombo);
+
+  const isAdvancedPropHighlight = !!isAdvancedProp(propType, param) && !arg;
+  const highlight: boolean | HighlightOptions = isNavHighlight
+    ? {
+        focusAndScroll: true,
+        onFinish: () => {
+          viewCtx.highlightParam = undefined;
+        },
+      }
+    : isAdvancedPropHighlight;
 
   return (
     <PropEditorRow
@@ -506,7 +517,7 @@ function PropEditorRowWrapper_(props: {
       definedIndicator={defined}
       onDelete={defined.source === "set" ? onDeleteArg : undefined}
       propType={propType}
-      shouldHighlight={shouldHighlight}
+      highlight={highlight}
       disabled={isDisabled}
       tooltip={
         isDisabled && (
@@ -580,6 +591,11 @@ const isMenuEmpty = (menu: React.ReactElement) => {
   return filterFalsy(menu.props.children).length === 0;
 };
 
+export type HighlightOptions = {
+  focusAndScroll?: boolean;
+  onFinish?: () => void;
+};
+
 interface PropEditorRowProps {
   expr: DeepReadonly<Expr> | undefined;
   label: string;
@@ -601,7 +617,7 @@ interface PropEditorRowProps {
   controlExtras?: ControlExtras;
   isNested?: boolean;
   icon?: React.ReactNode;
-  shouldHighlight?: boolean;
+  highlight?: boolean | HighlightOptions;
   tooltip?: React.ReactNode;
 }
 
@@ -679,10 +695,12 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     isNested = false,
     controlExtras = { path: [props.attr] },
     icon,
-    shouldHighlight,
+    highlight,
     onChange,
     onDelete,
   } = props;
+  const highlightOptions =
+    typeof highlight === "object" ? highlight : undefined;
 
   const currValueEditorCtx = usePropValueEditorContext();
   const {
@@ -997,10 +1015,10 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     </Menu>
   );
   React.useEffect(() => {
-    if (ref.current && shouldHighlight) {
+    if (ref.current && highlightOptions?.focusAndScroll) {
       ref.current.focus();
     }
-  }, [shouldHighlight, ref, viewCtx]);
+  }, [highlightOptions?.focusAndScroll, ref, viewCtx]);
 
   const renderEditorForReferencedParam = () => {
     assert(
@@ -1322,14 +1340,10 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 );
               })()}
           </PropValueEditorContext.Provider>
-          {shouldHighlight && (
+          {highlight && (
             <HighlightBlinker
-              doScroll
-              onFinish={() => {
-                if (viewCtx) {
-                  viewCtx.highlightParam = undefined;
-                }
-              }}
+              doScroll={highlightOptions?.focusAndScroll}
+              onFinish={highlightOptions?.onFinish}
             />
           )}
         </div>
