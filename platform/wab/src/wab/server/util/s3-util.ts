@@ -36,43 +36,31 @@ export async function upsertS3CacheEntry<T>(opts: {
   deserialize: (str: string) => T;
 }): Promise<{ data: T; cacheHit: boolean }> {
   const { bucket, key, compute: f, serialize, deserialize } = opts;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
 
+  const cached = await tryGetS3CacheEntry({ bucket, key, deserialize });
+  if (cached !== null) {
+    return { data: cached, cacheHit: true };
+  }
+
+  logger().info(`S3 cache miss for ${bucket} ${key}; computing`);
+  const content = await withSpan("s3-cache-compute", async () => await f());
+  const serialized = serialize(content);
+  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
   try {
-    const obj = await s3
-      .getObject({
+    await s3
+      .putObject({
         Bucket: bucket,
         Key: key,
+        Body: serialized,
       })
       .promise();
-    const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
-    logger().info(`S3 cache hit for ${bucket} ${key}`);
-    return { data: deserialize(serialized), cacheHit: true };
-  } catch (err) {
-    if (err.code === "TimeoutError") {
-      throw err;
+  } catch (e) {
+    if (process.env.NODE_ENV === "production") {
+      throw e;
     }
-    logger().info(`S3 cache miss for ${bucket} ${key}; computing`);
-    const content = await withSpan("s3-cache-compute", async () => {
-      return await f();
-    });
-    const serialized = serialize(content);
-    try {
-      await s3
-        .putObject({
-          Bucket: bucket,
-          Key: key,
-          Body: serialized,
-        })
-        .promise();
-    } catch (e) {
-      if (process.env.NODE_ENV === "production") {
-        throw e;
-      }
-      logger().error("Unable to add content to S3", e as any);
-    }
-    return { data: content, cacheHit: false };
+    logger().error("Unable to add content to S3", e as any);
   }
+  return { data: content, cacheHit: false };
 }
 
 export async function uploadFilesToS3(opts: {
