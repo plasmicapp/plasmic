@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "@types/node": "^22",
-    "@types/pascalcase": "^1.0.0",
+    "@types/pascalcase": "^1.0.3",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "react": "18.3.1",

@@ -16,7 +16,7 @@
     "@rollup/plugin-replace": "^5.0.4",
     "@types/react": "^18",
     "react": "18.3.1",
-    "rollup": "^4.1.4",
+    "rollup": "^4.60.2",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.36.0"
   },

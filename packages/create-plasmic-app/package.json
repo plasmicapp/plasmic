@@ -24,13 +24,13 @@
     "@types/glob": "^7.1.3",
     "@types/inquirer": "^8.2.5",
     "@types/jest": "^26.0.20",
-    "@types/lodash": "^4.14.168",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^14.14.33",
-    "@types/semver": "^7.3.5",
+    "@types/semver": "^7.7.1",
     "@types/update-notifier": "^5.0.0",
     "@types/validate-npm-package-name": "^3.0.2",
     "@types/yargs": "^16.0.0",
-    "tsx": "^4.20.6"
+    "tsx": "^4.21.0"
   },
   "dependencies": {
     "@plasmicapp/cli": "0.1.360",
