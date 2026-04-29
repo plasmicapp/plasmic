@@ -29,7 +29,6 @@ export function DataInspector({
 }) {
   return (
     <div
-      className="overflow-scroll elastic"
       onContextMenu={(e) => {
         const target = e.target as HTMLElement;
         const nodeEl = target.closest(
