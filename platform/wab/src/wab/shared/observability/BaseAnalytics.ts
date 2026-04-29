@@ -45,6 +45,7 @@ export abstract class BaseAnalytics {
       this.doTrack(
         eventName,
         mergeProperties(
+          this.baseEventProperties,
           eventProperties,
           sampleThreshold
             ? {
