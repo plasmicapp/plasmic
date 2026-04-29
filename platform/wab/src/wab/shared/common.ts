@@ -1592,7 +1592,7 @@ export function spawnWrapper<T extends (...args: any[]) => Promise<any>>(
   };
 }
 
-export function spawn(_promise: PromiseLike<any>) {}
+export function spawn(_promise: PromiseLike<any> | void) {}
 
 export function spawnPromise(_promise: Promise<any>) {}
 

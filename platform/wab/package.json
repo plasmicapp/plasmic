@@ -173,9 +173,9 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.0",
-    "@ai-sdk/google-vertex": "^3.0.97",
+    "@ai-sdk/google-vertex": "^4.0.0",
     "@ai-sdk/openai": "^3.0.0",
-    "@ai-sdk/react": "^3.0.55",
+    "@ai-sdk/react": "^3.0.0",
     "@amplitude/analytics-browser": "2.11.1",
     "@amplitude/analytics-node": "1.3.6",
     "@apidevtools/swagger-parser": "^10.0.2",
