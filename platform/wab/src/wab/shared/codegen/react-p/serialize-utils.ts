@@ -1,5 +1,6 @@
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { VariantGroupType } from "@/wab/shared/Variants";
+import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import { CodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import { PlasmicImportType } from "@/wab/shared/codegen/react-p/types";
 import { makeChildrenStr } from "@/wab/shared/codegen/react-p/utils";
@@ -31,6 +32,8 @@ import {
   isPageComponent,
 } from "@/wab/shared/core/components";
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
+import { findExprsInComponent, flattenExprs } from "@/wab/shared/core/tpls";
+import { parseExpr } from "@/wab/shared/eval/expression-parser";
 import {
   Component,
   ImageAsset,
@@ -445,6 +448,33 @@ export function pagePathConflictsWithAppRouter(
   }
   const lastSegment = pagePath.split("/").filter(Boolean).pop() ?? "";
   return NEXT_RSC_RESERVED_PAGE_NAMES.has(lastSegment);
+}
+
+/**
+ * Returns true if the page, including referenced components, uses `$ctx.query`
+ */
+export function pageReferencesSearchParams(component: Component): boolean {
+  if (!isPageComponent(component)) {
+    return false;
+  }
+  for (const comp of componentToDeepReferenced(component)) {
+    for (const { expr } of findExprsInComponent(comp)) {
+      for (const subExpr of flattenExprs(expr)) {
+        const info = parseExpr(subExpr);
+        if (
+          info.usedDollarVarKeys.$ctx?.has("query") ||
+          info.usesUnknownDollarVarKeys.$ctx
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+export function isDynamicPagePath(pagePath: string | undefined): boolean {
+  return /\[.+\]/.test(pagePath ?? "");
 }
 
 export function getSkeletonModuleFileName(

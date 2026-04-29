@@ -126,12 +126,17 @@ export function serializeMetadataPropType(propTypeName: string) {
 
 export function serializeMakeAppRouterPageCtx(
   ctx: SerializerBaseContext,
-  propTypeName: string
+  propTypeName: string,
+  opts?: { usesSearchParams?: boolean }
 ) {
   const pageMeta = ctx.component.pageMeta;
   if (!pageMeta) {
     return serializeMetadataPropType(propTypeName);
   }
+  // Only await searchParams if $ctx.query is used so the page can be statically generated.
+  const queryExpr = opts?.usesSearchParams
+    ? "(await searchParams) ?? {}"
+    : "{}";
   return `${MK_PATH_FROM_ROUTE_AND_PARAMS_SER}
 
 ${serializeMetadataPropType(propTypeName)}
@@ -145,7 +150,7 @@ export async function makeAppRouterPageCtx({ params, searchParams }: ${propTypeN
     pageRoute,
     pagePath,
     params: pageParams,
-    query: (await searchParams) ?? {},
+    query: ${queryExpr},
   };
   return ctx;
 }`;

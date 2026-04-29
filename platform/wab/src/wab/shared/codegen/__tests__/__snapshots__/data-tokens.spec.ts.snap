@@ -498,7 +498,7 @@ export async function makeAppRouterPageCtx({ params, searchParams }: SeoServerSk
     pageRoute,
     pagePath,
     params: pageParams,
-    query: (await searchParams) ?? {},
+    query: {},
   };
   return ctx;
 }
@@ -642,7 +642,7 @@ export async function makeAppRouterPageCtx({ params, searchParams }: GenerateMet
     pageRoute,
     pagePath,
     params: pageParams,
-    query: (await searchParams) ?? {},
+    query: {},
   };
   return ctx;
 }
@@ -1170,6 +1170,10 @@ export async function generateMetadata(
 
     
 
+    // To read search params (e.g. \`?q=hello\`) in this skeleton, forward to PageParamsProvider::
+    //   <PageParamsProvider__ ... query={await searchParams}>
+    // Note: awaiting \`searchParams\` opts this page out of static rendering.
+    // See https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional
     async function Seo({ params, searchParams }: SeoServerSkeletonProps) {
       // Use PlasmicSeo to render this component as it was
       // designed in Plasmic, by activating the appropriate variants,
@@ -1187,7 +1191,7 @@ export async function generateMetadata(
       return (<PageParamsProvider__
         route="/seo"
         params={await params}
-        query={await searchParams}
+        
       >
         <PlasmicSeoServer />
       </PageParamsProvider__>);

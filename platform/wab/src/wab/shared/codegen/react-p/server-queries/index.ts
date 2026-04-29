@@ -20,6 +20,7 @@ import {
   makeServerPageSkeletonPropsName,
   makeTaggedPlasmicImport,
   pagePathConflictsWithAppRouter,
+  pageReferencesSearchParams,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { collectComponentServerQueries } from "@/wab/shared/codegen/react-p/server-queries/collect";
 import {
@@ -109,6 +110,7 @@ function serializeServerQueriesServerWrapper(
   const componentBody = !ctx.hasServerQueries
     ? ""
     : serializeServerComponentBody();
+  const usesSearchParams = pageReferencesSearchParams(component);
 
   return `
 /* eslint-disable */
@@ -137,7 +139,7 @@ import {
 
 ${serializeServerPageQueries(ctx)}
 
-${serializeMakeAppRouterPageCtx(ctx, skeletonPropsName)}
+${serializeMakeAppRouterPageCtx(ctx, skeletonPropsName, { usesSearchParams })}
 
 export type ${componentPropsName} = ${genPropsName} & ${skeletonPropsName};
 
@@ -317,6 +319,7 @@ function serializeLoaderGenerateMetadataSection(
     return "";
   }
   const propTypeName = "GenerateMetadataProps";
+  const usesSearchParams = pageReferencesSearchParams(component);
 
   const metadataQueryTreeDecl = hasServerQueries
     ? `\nconst metadataQueryTree = { ...serverQueryTree, children: [] };\n`
@@ -325,7 +328,7 @@ function serializeLoaderGenerateMetadataSection(
   return `
 ${getMetadataTypeDefinition()}
 
-${serializeMakeAppRouterPageCtx(ctx, propTypeName)}
+${serializeMakeAppRouterPageCtx(ctx, propTypeName, { usesSearchParams })}
 ${metadataQueryTreeDecl}
 export async function generateMetadata(props: ${propTypeName}): Promise<PlasmicPageMetadata> {
   const { params, searchParams } = props;
@@ -540,5 +543,17 @@ export async function generateMetadata(
 
   return { ...(await parent), ...metadata } as unknown as Metadata;
 }
+`;
+}
+
+export function serializeAppRouterGenerateStaticParamsSkeleton(): string {
+  return `
+// Uncomment and populate to statically pre-render this route at build time.
+// Each entry should be an object whose keys match the dynamic segments in the route path.
+// See https://nextjs.org/docs/app/api-reference/functions/generate-static-params
+//
+// export async function generateStaticParams() {
+//   return [];
+// }
 `;
 }

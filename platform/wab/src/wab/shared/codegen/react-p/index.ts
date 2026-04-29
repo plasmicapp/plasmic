@@ -110,6 +110,7 @@ import {
   getPlatformImportComponents,
   getReactWebNamedImportsForRender,
   getSkeletonModuleFileName,
+  isDynamicPagePath,
   isPageAwarePlatform,
   makeArgPropsName,
   makeArgsTypeName,
@@ -149,6 +150,7 @@ import {
   makeWabHtmlTextClassName,
   maybeCondExpr,
   pagePathConflictsWithAppRouter,
+  pageReferencesSearchParams,
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
@@ -159,6 +161,7 @@ import {
   getPageRouterSkeletonImports,
   getRscMetadata,
   serializeAppRouterGenerateMetadata,
+  serializeAppRouterGenerateStaticParamsSkeleton,
   serializePageQueryTree,
   serializePagesRouterGetStaticPaths,
   serializePagesRouterGetStaticProps,
@@ -2646,7 +2649,7 @@ function serializePageAwareSkeletonWrapperTs(
   const isNextJs = isPlatformNextJs(ctx);
   const isNextJsPage = isPageComponent(component) && isNextJs;
 
-  const isDynamicRoute = /\[.+\]/.test(component.pageMeta?.path ?? "");
+  const isDynamicRoute = isDynamicPagePath(component.pageMeta?.path);
 
   const pagesRouterGetStaticProps =
     isNextJsPage &&
@@ -2663,6 +2666,8 @@ function serializePageAwareSkeletonWrapperTs(
       ? serializePagesRouterGetStaticPaths()
       : undefined;
 
+  const usesSearchParams = ctx.useRSC && pageReferencesSearchParams(component);
+
   const serverQueryComponentParams = ctx.hasServerQueries
     ? "params={params} searchParams={searchParams} "
     : "";
@@ -2676,15 +2681,25 @@ function serializePageAwareSkeletonWrapperTs(
   if (ctx.projectConfig.hasStyleTokenOverrides) {
     content = wrapStyleTokensProvider(content);
   }
+  let appRouterPageComment = "";
   if (isNextJs) {
     if (ctx.useRSC) {
       const skeletonPropsName = makeServerPageSkeletonPropsName(component);
       componentPropsSig = `{ params, searchParams }: ${skeletonPropsName}`;
       serverExports = serializeAppRouterGenerateMetadata(ctx);
+      if (isDynamicRoute) {
+        serverExports = `${serializeAppRouterGenerateStaticParamsSkeleton()}\n${serverExports}`;
+      }
+      if (!usesSearchParams) {
+        appRouterPageComment = `// To read search params (e.g. \`?q=hello\`) in this skeleton, forward to PageParamsProvider::
+    //   <PageParamsProvider__ ... query={await searchParams}>
+    // Note: awaiting \`searchParams\` opts this page out of static rendering.
+    // See https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional`;
+      }
       content = `<PageParamsProvider__
         route="${component.pageMeta?.path ?? ""}"
         params={await params}
-        query={await searchParams}
+        ${usesSearchParams ? "query={await searchParams}" : ""}
       >
         ${content}
       </PageParamsProvider__>`;
@@ -2831,6 +2846,7 @@ function serializePageAwareSkeletonWrapperTs(
 
     ${tanstackRouteInfo}
 
+    ${appRouterPageComment}
     ${
       ctx.useRSC && isPageComponent(component) ? "async " : ""
     }function ${componentName}(${componentPropsSig}) {
