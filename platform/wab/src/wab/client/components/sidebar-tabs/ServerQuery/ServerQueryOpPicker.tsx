@@ -23,6 +23,8 @@ import {
   StudioPropType,
   customFunctionId,
   getPropTypeDefaultValue,
+  getPropTypeType,
+  isPlainObjectPropType,
 } from "@/wab/shared/code-components/code-components";
 import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
@@ -60,9 +62,14 @@ import {
 } from "@/wab/shared/model/classes";
 import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
 import { smartHumanize } from "@/wab/shared/strs";
-import { CustomFunctionMeta } from "@plasmicapp/host";
+import {
+  ChoiceObject,
+  ChoiceOptions,
+  ChoiceValue,
+  CustomFunctionMeta,
+} from "@plasmicapp/host";
 import { notification } from "antd";
-import { groupBy } from "lodash";
+import { groupBy, isObject } from "lodash";
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -165,10 +172,14 @@ function getAvailableCustomFunctions(
 /**
  * Create FunctionArgs for a new CustomFunction, with default values
  * for parameters that have defaultValue defined in registration metadata.
+ *
+ * When filterMode is "mutation", any `method` field defaults to "POST" if it's an
+ * available option.
  */
 function mkCustomFunctionArgs(
   customFunction: CustomFunction,
-  registrationMeta: CustomFunctionMeta<any> | undefined
+  registrationMeta: CustomFunctionMeta<any> | undefined,
+  filterMode: "query" | "mutation"
 ): FunctionArg[] {
   if (!registrationMeta?.params) {
     return [];
@@ -183,9 +194,11 @@ function mkCustomFunctionArgs(
       continue;
     }
 
-    const defaultValue = getPropTypeDefaultValue(
-      registeredParam as StudioPropType<any>
-    );
+    const propType = registeredParam as StudioPropType<any>;
+    let defaultValue = getPropTypeDefaultValue(propType);
+    if (filterMode === "mutation") {
+      defaultValue = withMethodPostDefaults(propType, defaultValue);
+    }
     if (defaultValue != null) {
       args.push(
         new FunctionArg({
@@ -197,6 +210,34 @@ function mkCustomFunctionArgs(
     }
   }
   return args;
+}
+
+/**
+ * Default `method` to "POST" on a propType when it's an allowed choice option.
+ */
+function withMethodPostDefaults(
+  propType: StudioPropType<any>,
+  currentDefault: any
+) {
+  if (
+    !isPlainObjectPropType(propType) ||
+    propType.type !== "object" ||
+    currentDefault?.method != null
+  ) {
+    return currentDefault;
+  }
+  const methodField = propType.fields?.method;
+  if (getPropTypeType(methodField) !== "choice") {
+    return currentDefault;
+  }
+  const options = (methodField as { options?: ChoiceOptions }).options;
+  if (!Array.isArray(options)) {
+    return currentDefault;
+  }
+  const allowsPost = options.some((o: ChoiceValue | ChoiceObject) =>
+    isObject(o) ? o.value === "POST" : o === "POST"
+  );
+  return allowsPost ? { ...currentDefault, method: "POST" } : currentDefault;
 }
 
 export const ServerQueryOpDraftForm = observer(
@@ -355,7 +396,7 @@ export const ServerQueryOpDraftForm = observer(
       const firstFunc = availableFunctions[0];
       const meta = getRegistrationMeta(firstFunc);
       if (!value?.fnExpr) {
-        const args = mkCustomFunctionArgs(firstFunc, meta);
+        const args = mkCustomFunctionArgs(firstFunc, meta, filterMode);
         onChange({
           ...value,
           fnExpr: new CustomFunctionExpr({
@@ -373,7 +414,7 @@ export const ServerQueryOpDraftForm = observer(
             ...value,
             fnExpr: new CustomFunctionExpr({
               func: firstFunc,
-              args: mkCustomFunctionArgs(firstFunc, meta),
+              args: mkCustomFunctionArgs(firstFunc, meta, filterMode),
             }),
           });
         }
@@ -444,7 +485,11 @@ export const ServerQueryOpDraftForm = observer(
             codeExpr: undefined,
             fnExpr: new CustomFunctionExpr({
               func: newFunc,
-              args: mkCustomFunctionArgs(newFunc, getRegistrationMeta(newFunc)),
+              args: mkCustomFunctionArgs(
+                newFunc,
+                getRegistrationMeta(newFunc),
+                filterMode
+              ),
             }),
           });
         }
@@ -535,7 +580,8 @@ export const ServerQueryOpDraftForm = observer(
                       func,
                       args: mkCustomFunctionArgs(
                         func,
-                        getRegistrationMeta(func)
+                        getRegistrationMeta(func),
+                        filterMode
                       ),
                     })
                   : undefined,
