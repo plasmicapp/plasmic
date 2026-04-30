@@ -18,7 +18,16 @@ class HttpError extends Error {
 }
 
 // Some functions were extracted from platform/wab/src/wab/server/data-sources/http-fetcher.ts
-type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
+type HTTPMethod =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "DELETE"
+  | "HEAD"
+  | "OPTIONS";
+
+const METHODS_WITHOUT_BODY: ReadonlySet<HTTPMethod> = new Set(["GET", "HEAD"]);
 
 function base64StringToBuffer(bstr: string) {
   try {
@@ -117,14 +126,15 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
         },
         method: {
           type: "choice",
-          options: ["GET", "POST", "PUT", "DELETE"],
+          options: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
         },
         headers: {
           type: "object",
         },
         body: {
           type: "object",
-          hidden: ([opts]) => opts?.method === "GET",
+          hidden: ([opts]) =>
+            !!opts?.method && METHODS_WITHOUT_BODY.has(opts.method),
         },
       },
     },
