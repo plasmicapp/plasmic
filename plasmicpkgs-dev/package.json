@@ -1,6 +1,6 @@
 {
   "name": "plasmicpkgs-dev",
-  "version": "0.0.62",
+  "version": "0.0.63",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,8 +12,8 @@
     "@plasmicpkgs/commerce": "0.0.243",
     "@plasmicpkgs/commerce-shopify": "0.0.251",
     "@plasmicpkgs/contentful": "0.0.17",
-    "@plasmicpkgs/fetch": "0.0.35",
-    "@plasmicpkgs/graphql": "0.0.29",
+    "@plasmicpkgs/fetch": "0.0.36",
+    "@plasmicpkgs/graphql": "0.0.30",
     "@plasmicpkgs/plasmic-basic-components": "0.0.274",
     "@plasmicpkgs/plasmic-cms": "0.0.313",
     "@plasmicpkgs/plasmic-strapi": "0.1.201",
