@@ -78,6 +78,7 @@ export async function prefillCloudfront(
               mgr,
               pool,
               makeGenPublishedLoaderCodeBundleOpts({
+                source: "prefill",
                 projectVersions: Object.fromEntries(
                   resolvedProjectIdSpecs.map((spec) => {
                     const [pid, version] = spec.split("@");

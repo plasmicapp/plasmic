@@ -94,6 +94,18 @@ const taskDuration = new Histogram({
   buckets: DEFAULT_HISTOGRAM_BUCKETS,
 });
 
+export const loaderBundleCacheCounter = new Counter({
+  name: "loader_bundle_cache_total",
+  help: "Final bundle S3 cache hits and misses by source (prefill vs live)",
+  labelNames: ["result", "source"],
+});
+
+export const loaderCodegenCacheCounter = new Counter({
+  name: "loader_codegen_cache_total",
+  help: "Per-project codegen S3 cache hits and misses by source (prefill vs live)",
+  labelNames: ["result", "source"],
+});
+
 export class WabPromTimer {
   private timer: () => number;
   constructor(task: string) {

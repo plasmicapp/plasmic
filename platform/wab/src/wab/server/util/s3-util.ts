@@ -9,7 +9,7 @@ export async function upsertS3CacheEntry<T>(opts: {
   compute: () => Promise<T>;
   serialize: (obj: T) => string;
   deserialize: (str: string) => T;
-}) {
+}): Promise<{ data: T; cacheHit: boolean }> {
   const { bucket, key, compute: f, serialize, deserialize } = opts;
   const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
 
@@ -22,8 +22,7 @@ export async function upsertS3CacheEntry<T>(opts: {
       .promise();
     const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
     logger().info(`S3 cache hit for ${bucket} ${key}`);
-    const data = deserialize(serialized);
-    return data;
+    return { data: deserialize(serialized), cacheHit: true };
   } catch (err) {
     if (err.code === "TimeoutError") {
       throw err;
@@ -45,7 +44,7 @@ export async function upsertS3CacheEntry<T>(opts: {
       }
       logger().error("Unable to add content to S3", e as any);
     }
-    return content;
+    return { data: content, cacheHit: false };
   }
 }
 

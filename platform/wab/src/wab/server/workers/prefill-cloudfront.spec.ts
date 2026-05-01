@@ -174,6 +174,7 @@ describe("Prefill cloudfront", () => {
               p3: { version: "0.0.3", indirect: false },
             },
             browserOnly: false,
+            source: "prefill",
           }
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
@@ -196,6 +197,7 @@ describe("Prefill cloudfront", () => {
             browserOnly: false,
             i18nKeyScheme: "hash",
             i18nTagPrefix: "n",
+            source: "prefill",
           }
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
@@ -214,6 +216,7 @@ describe("Prefill cloudfront", () => {
               p1: { version: "0.0.1", indirect: false },
             },
             browserOnly: true,
+            source: "prefill",
           }
         );
 

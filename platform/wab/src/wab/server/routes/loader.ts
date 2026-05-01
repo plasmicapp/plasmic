@@ -245,6 +245,7 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
     mgr,
     req.workerpool,
     makeGenPublishedLoaderCodeBundleOpts({
+      source: "live",
       platform,
       appDir: nextjsAppDir,
       projectVersions: Object.fromEntries(
@@ -286,6 +287,7 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
  * same opts
  */
 export function makeGenPublishedLoaderCodeBundleOpts(opts: {
+  source: "prefill" | "live";
   projectVersions: Record<string, VersionToSync>;
   platform: string | undefined;
   appDir: boolean | undefined;
@@ -298,6 +300,7 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
   skipHead?: boolean;
 }): Parameters<typeof genPublishedLoaderCodeBundle>[2] {
   const {
+    source,
     platform,
     appDir,
     projectVersions,
@@ -307,6 +310,7 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     skipHead,
   } = opts;
   return {
+    source,
     platform,
     platformOptions: {
       nextjs: {
@@ -398,6 +402,7 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
   });
 
   const result = await genLatestLoaderCodeBundle(mgr, req.workerpool, {
+    source: "live",
     platform,
     platformOptions: {
       nextjs: {
