@@ -150,7 +150,6 @@ import {
   makeWabHtmlTextClassName,
   maybeCondExpr,
   pagePathConflictsWithAppRouter,
-  pageReferencesSearchParams,
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
@@ -2666,8 +2665,6 @@ function serializePageAwareSkeletonWrapperTs(
       ? serializePagesRouterGetStaticPaths()
       : undefined;
 
-  const usesSearchParams = ctx.useRSC && pageReferencesSearchParams(component);
-
   const serverQueryComponentParams = ctx.hasServerQueries
     ? "params={params} searchParams={searchParams} "
     : "";
@@ -2676,30 +2673,25 @@ function serializePageAwareSkeletonWrapperTs(
       : `<${nodeComponentName} />`,
     serverExports = "",
     componentPropsSig = "",
+    componentBodyPrefix = "",
     tanstackRouteInfo = "";
 
   if (ctx.projectConfig.hasStyleTokenOverrides) {
     content = wrapStyleTokensProvider(content);
   }
-  let appRouterPageComment = "";
   if (isNextJs) {
     if (ctx.useRSC) {
       const skeletonPropsName = makeServerPageSkeletonPropsName(component);
       componentPropsSig = `{ params, searchParams }: ${skeletonPropsName}`;
+      componentBodyPrefix = `const ctx = await makeAppRouterPageCtx({ params, searchParams });`;
       serverExports = serializeAppRouterGenerateMetadata(ctx);
       if (isDynamicRoute) {
         serverExports = `${serializeAppRouterGenerateStaticParamsSkeleton()}\n${serverExports}`;
       }
-      if (!usesSearchParams) {
-        appRouterPageComment = `// To read search params (e.g. \`?q=hello\`) in this skeleton, forward to PageParamsProvider::
-    //   <PageParamsProvider__ ... query={await searchParams}>
-    // Note: awaiting \`searchParams\` opts this page out of static rendering.
-    // See https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional`;
-      }
       content = `<PageParamsProvider__
-        route="${component.pageMeta?.path ?? ""}"
-        params={await params}
-        ${usesSearchParams ? "query={await searchParams}" : ""}
+        route={ctx.pageRoute}
+        params={ctx.params}
+        query={ctx.query}
       >
         ${content}
       </PageParamsProvider__>`;
@@ -2846,7 +2838,6 @@ function serializePageAwareSkeletonWrapperTs(
 
     ${tanstackRouteInfo}
 
-    ${appRouterPageComment}
     ${
       ctx.useRSC && isPageComponent(component) ? "async " : ""
     }function ${componentName}(${componentPropsSig}) {
@@ -2863,6 +2854,7 @@ function serializePageAwareSkeletonWrapperTs(
       // 4. Props to set on the root node.
       ${globalGroupsComment}
 
+      ${componentBodyPrefix}
       return (${content});
     }
 

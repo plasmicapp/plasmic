@@ -1170,10 +1170,6 @@ export async function generateMetadata(
 
     
 
-    // To read search params (e.g. \`?q=hello\`) in this skeleton, forward to PageParamsProvider::
-    //   <PageParamsProvider__ ... query={await searchParams}>
-    // Note: awaiting \`searchParams\` opts this page out of static rendering.
-    // See https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional
     async function Seo({ params, searchParams }: SeoServerSkeletonProps) {
       // Use PlasmicSeo to render this component as it was
       // designed in Plasmic, by activating the appropriate variants,
@@ -1188,10 +1184,11 @@ export async function generateMetadata(
       // 4. Props to set on the root node.
       
 
+      const ctx = await makeAppRouterPageCtx({ params, searchParams });
       return (<PageParamsProvider__
-        route="/seo"
-        params={await params}
-        
+        route={ctx.pageRoute}
+        params={ctx.params}
+        query={ctx.query}
       >
         <PlasmicSeoServer />
       </PageParamsProvider__>);
