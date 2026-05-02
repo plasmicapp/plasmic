@@ -1,4 +1,10 @@
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  ensureBaseVariantSetting,
+  getBaseVariant,
+} from "@/wab/shared/Variants";
 import { serializeArgsType } from "@/wab/shared/codegen/react-p/params";
+import { pageReferencesSearchParams } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
   getDataTokensFromServerQueries,
   serializeRootServerQueryTree,
@@ -6,6 +12,7 @@ import {
 import {
   makePlasmicClientRscComponentName,
   makePlasmicServerRscComponentName,
+  serializeMakeAppRouterPageCtx,
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import {
   mkComponentWithQueries,
@@ -14,10 +21,16 @@ import {
   mkServerQuery,
 } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import {
+  ComponentType,
+  mkComponent,
+  mkPageMeta,
+} from "@/wab/shared/core/components";
+import { customCode } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { mkTplInlinedText, mkTplTagX } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ExprText } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 
 function basicComponentsWithServerQueries() {
@@ -81,7 +94,71 @@ function basicComponentsWithServerQueries() {
   return { component, componentWithoutQueries };
 }
 
+function makePageWithDynamicText(code: string) {
+  const component = mkComponent({
+    name: "AdvancedPage",
+    type: ComponentType.Page,
+    tplTree: mkTplTagX("div"),
+  });
+  component.pageMeta = mkPageMeta({ path: "/advanced" });
+
+  const baseVariant = getBaseVariant(component);
+  const textTpl = mkTplInlinedText("", [baseVariant], "div");
+  ensureBaseVariantSetting(textTpl).text = new ExprText({
+    expr: customCode(code),
+    html: false,
+  });
+  $$$(component.tplTree).append(textTpl);
+
+  return component;
+}
+
 describe("Code generation of server queries", () => {
+  describe("serializeMakeAppRouterPageCtx", () => {
+    function serializePageCtx(component: ReturnType<typeof mkComponent>) {
+      return serializeMakeAppRouterPageCtx(
+        { component } as SerializerBaseContext,
+        "PageProps",
+        { usesSearchParams: pageReferencesSearchParams(component) }
+      );
+    }
+
+    it("awaits searchParams when page render expressions reference $ctx.query", () => {
+      const component = makePageWithDynamicText("$ctx.query.myquery");
+
+      expect(pageReferencesSearchParams(component)).toBe(true);
+      expect(serializePageCtx(component)).toContain(
+        "query: (await searchParams) ?? {},"
+      );
+    });
+
+    it("keeps query static when page render expressions do not reference $ctx.query", () => {
+      const component = makePageWithDynamicText("$ctx.params.slug");
+
+      expect(pageReferencesSearchParams(component)).toBe(false);
+      expect(serializePageCtx(component)).toContain("query: {},");
+    });
+
+    it("awaits searchParams when server query args reference $ctx.query", () => {
+      const component = mkComponentWithQueries(
+        mkServerQuery(
+          "query",
+          mkCustomFunctionExpr(
+            "func",
+            ["param"],
+            [{ name: "param", code: "$ctx.query.myquery" }]
+          )
+        )
+      );
+      component.pageMeta = mkPageMeta({ path: "/advanced" });
+
+      expect(pageReferencesSearchParams(component)).toBe(true);
+      expect(serializePageCtx(component)).toContain(
+        "query: (await searchParams) ?? {},"
+      );
+    });
+  });
+
   describe("makePlasmicServerRscComponentName", () => {
     it("should return the expected server component name", () => {
       const { component, componentWithoutQueries } =
