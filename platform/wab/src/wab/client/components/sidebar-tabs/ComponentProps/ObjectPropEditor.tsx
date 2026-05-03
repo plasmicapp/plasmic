@@ -9,7 +9,6 @@ import { PopoverFrame } from "@/wab/client/components/sidebar/PopoverFrame";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import Button from "@/wab/client/components/widgets/Button";
 import { ConnectorLine } from "@/wab/client/components/widgets/ConnectorLine";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   getPropTypeDefaultValue,
   getPropTypeType,
@@ -72,8 +71,6 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     disabled,
     display = "popup",
   } = props;
-  const sc = useStudioCtx();
-
   const valueEditorCtx = usePropValueEditorContext();
   const exprCtx = valueEditorCtx.exprCtx;
   assert(exprCtx, "missing exprCtx in ObjectPropEditor");
