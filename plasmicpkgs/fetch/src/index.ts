@@ -123,6 +123,8 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
       name: "opts",
       type: "object",
       display: "flatten",
+      defaultValue: (_args, _data, extras) =>
+        extras.mode === "mutation" ? { method: "POST" } : undefined,
       fields: {
         url: {
           type: "string",

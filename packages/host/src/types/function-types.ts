@@ -23,9 +23,16 @@ export type PartialParams<P extends any[]> = {
   [K in keyof P]: P[K] | undefined;
 };
 
+export interface FunctionControlExtras {
+  path: (string | number)[];
+  item?: any;
+  mode?: "query" | "mutation";
+}
+
 export type FunctionControlContext<P extends any[]> = GenericContext<
   PartialParams<P>, // Function params, each may be undefined
-  any // Data from fnContext
+  any, // Data from fnContext
+  FunctionControlExtras
 >;
 
 export type FunctionContextConfig<P extends any[], R> = ContextDependentConfig<

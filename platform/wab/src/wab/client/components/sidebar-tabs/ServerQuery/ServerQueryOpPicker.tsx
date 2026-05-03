@@ -23,8 +23,6 @@ import {
   StudioPropType,
   customFunctionId,
   getPropTypeDefaultValue,
-  getPropTypeType,
-  isPlainObjectPropType,
 } from "@/wab/shared/code-components/code-components";
 import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
@@ -62,14 +60,9 @@ import {
 } from "@/wab/shared/model/classes";
 import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
 import { smartHumanize } from "@/wab/shared/strs";
-import {
-  ChoiceObject,
-  ChoiceOptions,
-  ChoiceValue,
-  CustomFunctionMeta,
-} from "@plasmicapp/host";
+import { CustomFunctionMeta } from "@plasmicapp/host";
 import { notification } from "antd";
-import { groupBy, isObject } from "lodash";
+import { groupBy } from "lodash";
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -172,9 +165,6 @@ function getAvailableCustomFunctions(
 /**
  * Create FunctionArgs for a new CustomFunction, with default values
  * for parameters that have defaultValue defined in registration metadata.
- *
- * When filterMode is "mutation", any `method` field defaults to "POST" if it's an
- * available option.
  */
 function mkCustomFunctionArgs(
   customFunction: CustomFunction,
@@ -186,7 +176,8 @@ function mkCustomFunctionArgs(
   }
 
   const args: FunctionArg[] = [];
-  for (const param of customFunction.params) {
+  const defaultParamValues = customFunction.params.map(() => undefined as any);
+  for (const [paramIndex, param] of customFunction.params.entries()) {
     const registeredParam = registrationMeta.params?.find(
       (p) => p.name === param.argName
     );
@@ -195,11 +186,13 @@ function mkCustomFunctionArgs(
     }
 
     const propType = registeredParam as StudioPropType<any>;
-    let defaultValue = getPropTypeDefaultValue(propType);
-    if (filterMode === "mutation") {
-      defaultValue = withMethodPostDefaults(propType, defaultValue);
-    }
+    const defaultValue = getPropTypeDefaultValue(propType, {
+      componentPropValues: defaultParamValues,
+      ccContextData: undefined,
+      controlExtras: { path: [param.argName], mode: filterMode },
+    });
     if (defaultValue != null) {
+      defaultParamValues[paramIndex] = defaultValue;
       args.push(
         new FunctionArg({
           uuid: mkShortId(),
@@ -210,34 +203,6 @@ function mkCustomFunctionArgs(
     }
   }
   return args;
-}
-
-/**
- * Default `method` to "POST" on a propType when it's an allowed choice option.
- */
-function withMethodPostDefaults(
-  propType: StudioPropType<any>,
-  currentDefault: any
-) {
-  if (
-    !isPlainObjectPropType(propType) ||
-    propType.type !== "object" ||
-    currentDefault?.method != null
-  ) {
-    return currentDefault;
-  }
-  const methodField = propType.fields?.method;
-  if (getPropTypeType(methodField) !== "choice") {
-    return currentDefault;
-  }
-  const options = (methodField as { options?: ChoiceOptions }).options;
-  if (!Array.isArray(options)) {
-    return currentDefault;
-  }
-  const allowsPost = options.some((o: ChoiceValue | ChoiceObject) =>
-    isObject(o) ? o.value === "POST" : o === "POST"
-  );
-  return allowsPost ? { ...currentDefault, method: "POST" } : currentDefault;
 }
 
 export const ServerQueryOpDraftForm = observer(
@@ -377,8 +342,9 @@ export const ServerQueryOpDraftForm = observer(
           exprCtx,
           schema,
           env: data,
+          functionMode: filterMode,
         };
-      }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
+      }, [schema, data, funcParamsValues, exprCtx, ccContextData, filterMode]);
 
     React.useEffect(() => {
       // Don't auto-select a function when in custom code mode

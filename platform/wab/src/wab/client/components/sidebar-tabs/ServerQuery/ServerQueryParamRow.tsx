@@ -1,4 +1,5 @@
 import {
+  ControlExtras,
   InnerPropEditorRow,
   PropValueEditorContext,
   PropValueEditorContextData,
@@ -80,6 +81,7 @@ interface ServerQueryParamRowProps {
   valueSetState: "isSet" | undefined;
   onChange: (newVal: any) => void;
   propValueEditorContext: PropValueEditorContextData;
+  controlExtras: ControlExtras;
 }
 
 export const ServerQueryParamRow = observer(function ServerQueryParamRow(
@@ -93,6 +95,7 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
     valueSetState,
     onChange,
     propValueEditorContext,
+    controlExtras,
   } = props;
   return (
     <PropValueEditorContext.Provider value={propValueEditorContext}>
@@ -103,6 +106,7 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
         label={label}
         valueSetState={valueSetState}
         onChange={onChange}
+        controlExtras={controlExtras}
       />
     </PropValueEditorContext.Provider>
   );
@@ -121,6 +125,10 @@ export function getServerQueryParamRowItems(opts: {
 }): MaybeCollapsibleRow[] {
   const { param, argsMap, propType, propValueEditorContext, onParamChange } =
     opts;
+  const mkControlExtras = (path: (string | number)[]): ControlExtras => ({
+    path,
+    mode: propValueEditorContext.functionMode,
+  });
 
   // Check if the top-level param should be hidden
   if (
@@ -128,7 +136,7 @@ export function getServerQueryParamRowItems(opts: {
       propType,
       propValueEditorContext.componentPropValues,
       propValueEditorContext.ccContextData,
-      { path: [param.argName] }
+      mkControlExtras([param.argName])
     )
   ) {
     return [];
@@ -150,10 +158,11 @@ export function getServerQueryParamRowItems(opts: {
           fieldPropType,
           propValueEditorContext.componentPropValues,
           propValueEditorContext.ccContextData,
-          { path: [param.argName, fieldName] }
+          mkControlExtras([param.argName, fieldName])
         )
       )
       .map(([fieldName, fieldPropType]) => {
+        const controlExtras = mkControlExtras([param.argName, fieldName]);
         const fieldLabel =
           maybePropTypeToDisplayName(fieldPropType) ?? smartHumanize(fieldName);
         const fieldValue = curObj[fieldName];
@@ -174,6 +183,7 @@ export function getServerQueryParamRowItems(opts: {
               label={fieldLabel}
               valueSetState={fieldValue !== undefined ? "isSet" : undefined}
               propValueEditorContext={propValueEditorContext}
+              controlExtras={controlExtras}
               onChange={(newFieldVal) => {
                 // Re-read the current arg to avoid stale closures
                 const existingArg =
@@ -200,6 +210,7 @@ export function getServerQueryParamRowItems(opts: {
   const curArg =
     param.argName in argsMap ? argsMap[param.argName][0] : undefined;
   const curExpr = curArg?.expr;
+  const controlExtras = mkControlExtras([param.argName]);
 
   return [
     {
@@ -212,6 +223,7 @@ export function getServerQueryParamRowItems(opts: {
           label={argLabel}
           valueSetState={curExpr ? "isSet" : undefined}
           propValueEditorContext={propValueEditorContext}
+          controlExtras={controlExtras}
           onChange={(expr) => {
             if (expr == null) {
               return;

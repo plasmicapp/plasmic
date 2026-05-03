@@ -53,7 +53,7 @@ export interface Defaultable<Ctx extends any[], T> {
   /**
    * Default value to set for this prop when the component is instantiated
    */
-  defaultValue?: T;
+  defaultValue?: T | ContextDependentConfig<Ctx, T | undefined>;
 
   /**
    * Specify that default when no prop/param is provided,

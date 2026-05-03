@@ -37,6 +37,7 @@ import {
   mkShortId,
   objsEq,
   removeWhere,
+  swallow,
   switchType,
   tuple,
   uncheckedCast,
@@ -3937,12 +3938,28 @@ function maybeStateMetaToDefaultExpr(
   );
 }
 
-export const getPropTypeDefaultValue = (propType: StudioPropType<any>) => {
+export const getPropTypeDefaultValue = (
+  propType: StudioPropType<any>,
+  context?: {
+    componentPropValues: any;
+    ccContextData: any;
+    controlExtras: any;
+  }
+) => {
   if (!isPlainObjectPropType(propType)) {
     return undefined;
   }
   let defaultValue =
     "defaultValue" in propType ? propType.defaultValue : undefined;
+  if (typeof defaultValue === "function" && context) {
+    defaultValue = swallow(() =>
+      defaultValue(
+        context.componentPropValues ?? {},
+        context.ccContextData,
+        context.controlExtras
+      )
+    );
+  }
   if (propType.type !== "object" || propType.fields === undefined) {
     return defaultValue;
   }
@@ -3952,7 +3969,7 @@ export const getPropTypeDefaultValue = (propType: StudioPropType<any>) => {
       // parent default value has higher priority
       continue;
     }
-    const fieldDefaultValue = getPropTypeDefaultValue(fieldPropType);
+    const fieldDefaultValue = getPropTypeDefaultValue(fieldPropType, context);
     if (fieldDefaultValue != null) {
       if (!defaultValue) {
         defaultValue = {};
@@ -4895,7 +4912,14 @@ async function upsertRegisteredFunctions(
             "importName" | "namespace" | "typeTag" | "uid"
           > = pick(
             createCustomFunctionFromRegistration(functionReg, existing),
-            ["defaultExport", "importPath", "params", "isQuery", "isMutation", "displayName"]
+            [
+              "defaultExport",
+              "importPath",
+              "params",
+              "isQuery",
+              "isMutation",
+              "displayName",
+            ]
           );
           if (
             Object.entries(updateableFields).some(

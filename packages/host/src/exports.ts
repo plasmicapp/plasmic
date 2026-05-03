@@ -39,6 +39,7 @@ export {
   CustomFunctionRegistration,
   FunctionContextConfig,
   FunctionControlContext,
+  FunctionControlExtras,
   ParamType,
   default as registerFunction,
 } from "./registerFunction";

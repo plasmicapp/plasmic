@@ -7,6 +7,7 @@ import type {
   ChoiceType,
   CustomFunctionMeta,
   FunctionControlContext,
+  FunctionControlExtras,
   GenericType,
   MultiChoiceType,
   NumberType,
@@ -385,8 +386,8 @@ describe("custom-function param type regression tests", () => {
 
   it("GraphQL ContextDependentConfig receives function context as 3-tuple", () => {
     // Test that GraphQL context dependency functions for custom functions receive:
-    // [Partial<FunctionParams>, Data, unknown] (3-element tuple)
-    // Unlike component contexts which have typed data and ControlExtras
+    // [Partial<FunctionParams>, Data, FunctionControlExtras] (3-element tuple)
+    // Unlike component contexts which have typed data and component ControlExtras
 
     type FunctionParams = [string, boolean, number?];
 
@@ -394,11 +395,11 @@ describe("custom-function param type regression tests", () => {
     const testContext: FunctionControlContext<FunctionParams> = [
       ["test", true, 5],
       { someData: "value" },
-      undefined,
+      { path: [], mode: "mutation" },
     ];
     expect(testContext).type.toBe<FunctionControlContext<FunctionParams>>();
     expect(testContext).type.toBe<
-      [PartialParams<FunctionParams>, any, unknown]
+      [PartialParams<FunctionParams>, any, FunctionControlExtras]
     >();
 
     const [params, _d, _e] = testContext;
@@ -723,6 +724,30 @@ describe("custom-function param defaultValue support", () => {
     };
 
     expect<CustomFunctionMeta<typeof greet>>().type.toBeAssignableWith(meta);
+  });
+
+  it("CustomFunctionMeta with context-dependent defaultValue on params", () => {
+    function fetchData(opts: { method?: "GET" | "POST" }): Promise<any> {
+      return Promise.resolve(opts);
+    }
+    type FetchData = CustomFunctionMeta<typeof fetchData>;
+
+    const meta: FetchData = {
+      name: "fetchData",
+      importPath: "./fetchData",
+      params: [
+        {
+          name: "opts",
+          type: "object",
+          defaultValue: (_params, _data, extras) =>
+            extras.mode === "mutation" ? { method: "POST" } : undefined,
+          fields: {
+            method: { type: "choice", options: ["GET", "POST"] },
+          },
+        },
+      ],
+    };
+    expect<FetchData>().type.toBeAssignableWith(meta);
   });
 
   it("CustomFunctionMeta with mixed defaultValues", () => {
