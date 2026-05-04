@@ -11,6 +11,7 @@ export type {
   PlasmicQuery,
   PlasmicQueryResult,
   QueryComponentNode,
+  QueryExecutionContext,
 } from "./serverQueries/types";
 
 // exports below are deprecated and will be removed in major version bump

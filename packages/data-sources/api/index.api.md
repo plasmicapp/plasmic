@@ -142,6 +142,20 @@ export interface QueryComponentNode {
     type: "component";
 }
 
+// @public (undocumented)
+export interface QueryExecutionContext {
+    // (undocumented)
+    $ctx: Record<string, unknown>;
+    // (undocumented)
+    $props: Record<string, unknown>;
+    // (undocumented)
+    $q: Record<string, PlasmicQueryResult>;
+    // (undocumented)
+    $scopedItemVars: Record<string, unknown>;
+    // (undocumented)
+    $state: Record<string, unknown>;
+}
+
 // @public @deprecated (undocumented)
 export type QueryResult = Partial<ManyRowsResult<any>> & {
     error?: any;
