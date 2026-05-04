@@ -1,5 +1,6 @@
 import { mkCustomFunctionExpr } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import {
+  buildCustomCodeFn,
   getCustomFunctionParams,
   unwrapStatefulQueryResult,
 } from "@/wab/shared/core/custom-functions";
@@ -45,6 +46,33 @@ describe("unwrapStatefulQueryResult", () => {
       data: undefined,
       error: err,
     });
+  });
+});
+
+describe("buildCustomCodeFn", () => {
+  it("resolves data accessed from a settled $q", () => {
+    const $q = { dep: new StatefulQueryResult() };
+    $q.dep.resolvePromise("my-key", 42);
+    const fn = buildCustomCodeFn("$q.dep.data", { $q });
+    expect(fn()).toBe(42);
+  });
+
+  it("rethrows PlasmicUndefinedDataErrorPromise from a loading $q", async () => {
+    const $q = { dep: new StatefulQueryResult() };
+    const fn = buildCustomCodeFn("$q.dep.data", { $q });
+
+    let thrown: unknown;
+    try {
+      await fn();
+    } catch (err) {
+      thrown = err;
+    }
+    expect((thrown as any)?.plasmicType).toBe("PlasmicUndefinedDataError");
+  });
+
+  it("returns a rejected promise for normal runtime errors", async () => {
+    const fn = buildCustomCodeFn("foo.bar", { $q: {} });
+    await expect(fn()).rejects.toThrow();
   });
 });
 

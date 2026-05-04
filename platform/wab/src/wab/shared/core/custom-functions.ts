@@ -100,6 +100,9 @@ export function buildCustomCodeFn(
       const envValues = Object.values(env);
       return fn(...envValues);
     } catch (err) {
+      if ((err as any)?.plasmicType === "PlasmicUndefinedDataError") {
+        throw err;
+      }
       console.warn("Failed to execute custom code query:", err);
       return Promise.reject(err);
     }

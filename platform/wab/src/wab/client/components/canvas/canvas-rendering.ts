@@ -302,6 +302,7 @@ import type {
   ClientQueryResult,
   PlasmicQueryResult,
   QueryComponentNode,
+  QueryExecutionContext,
   usePlasmicInvalidate,
 } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
@@ -3787,17 +3788,34 @@ const mkComponentLevelQueryFetcher = computedFn(
               serverQueriesByKey
                 .map(({ query, varName }) => {
                   if (isKnownCustomCode(query.op)) {
+                    // run code against the resolved snapshot (via resolvedCtx),
+                    // not the live $q whose getters still throw.
+                    const codeStr = query.op.code;
                     const depQueryNames = getReferencedQueryNamesInCustomCode(
                       query,
                       component
                     );
+                    const resolveDeps = (
+                      $q: Record<string, PlasmicQueryResult>
+                    ) =>
+                      Object.fromEntries(
+                        depQueryNames.map((n) => [
+                          n,
+                          { data: $q[n]?.data, isLoading: false, key: null },
+                        ])
+                      );
                     return [
                       varName,
                       {
-                        id: `custom:${query.uuid}:${query.op.code}`,
-                        fn: buildCustomCodeFn(query.op.code, ctx.env),
-                        args: () =>
-                          depQueryNames.map((n) => ctx.env.$q[n]?.data),
+                        id: `custom:${query.uuid}:${codeStr}`,
+                        fn: (resolvedCtx: QueryExecutionContext) =>
+                          buildCustomCodeFn(codeStr, {
+                            ...ctx.env,
+                            ...resolvedCtx,
+                          })(),
+                        args: (qctx: QueryExecutionContext) => [
+                          { ...qctx, $q: resolveDeps(qctx.$q) },
+                        ],
                       },
                     ] as const;
                   }
