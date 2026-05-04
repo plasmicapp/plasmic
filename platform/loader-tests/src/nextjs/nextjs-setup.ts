@@ -206,7 +206,12 @@ export async function setupNextJs(opts: {
   };
 }
 
-export async function teardownNextJs(ctx: NextJsContext) {
+export async function teardownNextJs(ctx: NextJsContext | undefined) {
+  // ctx may be undefined if setupNextJs throws before assigning the variable
+  if (!ctx) {
+    return;
+  }
+
   const { tmpdirCleanup } = ctx;
 
   await teardownNextJsServer(ctx);
