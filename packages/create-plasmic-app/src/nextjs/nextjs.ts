@@ -12,6 +12,7 @@ import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
 import { makeLayout_app_codegen } from "./templates/app-codegen/layout";
+import { makePlasmicInitClient_app_codegen } from "./templates/app-codegen/plasmic-init-client";
 import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
 import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
 import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
@@ -121,6 +122,12 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
     await fs.writeFile(
       path.join(projectPath, "app", `layout.${jsOrTs}x`),
       makeLayout_app_codegen(jsOrTs)
+    );
+
+    // ./plasmic-init-client.tsx
+    await fs.writeFile(
+      path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
+      makePlasmicInitClient_app_codegen(jsOrTs)
     );
 
     // ./app/plasmic-host/page.tsx
