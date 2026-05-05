@@ -1,7 +1,7 @@
-import { getCodegenUrl } from "@/wab/shared/urls";
+import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
 import {
-  extractPlasmicQueryDataFromElement,
   GlobalVariantSpec,
+  extractPlasmicQueryDataFromElement,
   initPlasmicLoader,
   renderToString,
 } from "@plasmicapp/loader-react";
@@ -31,6 +31,7 @@ export async function genLoaderHtmlBundle(opts: {
     prepass,
   } = opts;
 
+  const codegenUrl = getCodegenUrl();
   const loader = initPlasmicLoader({
     projects: [
       {
@@ -40,7 +41,8 @@ export async function genLoaderHtmlBundle(opts: {
       },
     ],
     preview: !version,
-    host: getCodegenUrl(),
+    apiHost: getCodegenOriginUrl(),
+    cdnHost: codegenUrl,
   });
 
   const data = await loader.fetchComponentData({
@@ -93,7 +95,7 @@ export async function genLoaderHtmlBundle(opts: {
     hydrate &&
       React.createElement("script", {
         async: true,
-        src: `${getCodegenUrl()}/static/js/loader-hydrate.js`,
+        src: `${codegenUrl}/static/js/loader-hydrate.js`,
       })
   );
 

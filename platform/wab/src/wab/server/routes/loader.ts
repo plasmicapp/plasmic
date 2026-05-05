@@ -41,7 +41,7 @@ import {
 import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { toJson } from "@/wab/shared/model/model-tree-util";
-import { getCodegenUrl } from "@/wab/shared/urls";
+import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
 import S3 from "aws-sdk/clients/s3";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
@@ -623,7 +623,7 @@ export async function genLoaderHtmlBundleSandboxed(
         : await execa(
             `bwrap`,
             [
-              ...`--clearenv --setenv CODEGEN_HOST ${getCodegenUrl()} --unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
+              ...`--clearenv --setenv CODEGEN_HOST ${getCodegenUrl()} --setenv CODEGEN_ORIGIN_HOST ${getCodegenOriginUrl()} --unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
                 process.env.BWRAP_ARGS || ""
               } --chdir ${process.cwd()} ${cmd}`.split(/\s+/g),
               JSON.stringify(args),

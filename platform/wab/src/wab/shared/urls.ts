@@ -63,6 +63,10 @@ export function getCodegenUrl() {
   return process.env.CODEGEN_HOST || getPublicUrl();
 }
 
+export function getCodegenOriginUrl() {
+  return process.env.CODEGEN_ORIGIN_HOST || getCodegenUrl();
+}
+
 export function getIntegrationsUrl() {
   return process.env.INTEGRATIONS_HOST || getPublicUrl();
 }
