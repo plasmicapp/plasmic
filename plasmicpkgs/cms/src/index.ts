@@ -282,7 +282,6 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
     description: "Fetches table metadata from Plasmic CMS",
     importPath: "@plasmicpkgs/cms",
     isQuery: true,
-    isMutation: true,
     params: [
       {
         type: "object",
@@ -304,7 +303,6 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
     description: "Fetch content from a Plasmic CMS table",
     importPath: "@plasmicpkgs/cms",
     isQuery: true,
-    isMutation: true,
     params: [
       {
         type: "object",
@@ -336,7 +334,6 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
     description: "Fetch the count of entries from a Plasmic CMS table",
     importPath: "@plasmicpkgs/cms",
     isQuery: true,
-    isMutation: true,
     params: [
       {
         type: "object",
