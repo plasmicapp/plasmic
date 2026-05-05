@@ -370,6 +370,9 @@ async function wiTreeToTpl(
     "className",
     "style",
     "data-plasmic-name",
+    "data-plasmic-component",
+    "data-props",
+    "slot",
     "src",
     "srcset",
   ]);
@@ -505,6 +508,7 @@ async function wiTreeToTpl(
 
       const tpl = vtm.mkTplImage({
         attrs: {
+          ...htmlAttrsToTplAttrs(node),
           src: code(JSON.stringify(getSrc())),
         },
         type: ImageAssetType.Picture,

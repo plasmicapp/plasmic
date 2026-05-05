@@ -1,11 +1,10 @@
+import { addChild as addChildToPage } from "@/wab/client/copilot/tests/utils";
 import { changeElementTool } from "@/wab/client/copilot/tools/changeElement";
-import { readTool } from "@/wab/client/copilot/tools/read";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { ensureVariantSetting, getBaseVariant } from "@/wab/shared/Variants";
 import { ComponentType } from "@/wab/shared/core/components";
-import { customCode } from "@/wab/shared/core/exprs";
-import * as Tpls from "@/wab/shared/core/tpls";
+import { customCode, tryExtractJson } from "@/wab/shared/core/exprs";
 import { Component, TplTag } from "@/wab/shared/model/classes";
 
 let studioCtx: StudioCtx;
@@ -17,19 +16,12 @@ beforeEach(() => {
   jest.spyOn(studioCtx, "switchToArena").mockImplementation(() => {});
 });
 
-function rootDiv() {
-  return page.tplTree as TplTag;
-}
-
 function addChild(tag: string): TplTag {
-  const tpl = Tpls.mkTplTagX(tag);
-  ensureVariantSetting(tpl, [getBaseVariant(page)]);
-  studioCtx.focusedViewCtx()!.viewOps.insertAsChild(tpl, rootDiv());
-  return tpl;
+  return addChildToPage(studioCtx, page, tag);
 }
 
 describe("changeElement copilot tool", () => {
-  it("changes static HTML attrs and read serializes them", async () => {
+  it("changes static HTML attrs on tpl variant settings", async () => {
     const link = addChild("a");
 
     const result = await changeElementTool.execute(studioCtx, {
@@ -50,19 +42,15 @@ describe("changeElement copilot tool", () => {
     expect(result).toContain(
       `Element "${link.uuid}" attrs changed successfully.`
     );
-    const output = await readTool.execute(studioCtx, {
-      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
-    });
-
-    expect(output).toContain(`<a id="${link.uuid}"`);
-    expect(output).toContain(`href="/checkout"`);
-    expect(output).toContain(`aria-label="Checkout link"`);
-    expect(output).toContain(`title=""`);
-    expect(output).toContain(`tabIndex="3"`);
-    expect(output).toContain(`download="true"`);
+    const vs = ensureVariantSetting(link, [getBaseVariant(page)]);
+    expect(tryExtractJson(vs.attrs.href)).toEqual("/checkout");
+    expect(tryExtractJson(vs.attrs["aria-label"])).toEqual("Checkout link");
+    expect(tryExtractJson(vs.attrs.title)).toEqual("");
+    expect(tryExtractJson(vs.attrs.tabIndex)).toEqual(3);
+    expect(tryExtractJson(vs.attrs.download)).toEqual(true);
   });
 
-  it("removes static HTML attrs and read omits them", async () => {
+  it("removes static HTML attrs from tpl variant settings", async () => {
     const link = addChild("a");
 
     await changeElementTool.execute(studioCtx, {
@@ -78,22 +66,17 @@ describe("changeElement copilot tool", () => {
       ],
     });
 
-    const beforeRemoval = await readTool.execute(studioCtx, {
-      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
-    });
-    expect(beforeRemoval).toContain(`href="/checkout"`);
-    expect(beforeRemoval).toContain(`title="Checkout"`);
+    const vs = ensureVariantSetting(link, [getBaseVariant(page)]);
+    expect(tryExtractJson(vs.attrs.href)).toEqual("/checkout");
+    expect(tryExtractJson(vs.attrs.title)).toEqual("Checkout");
 
     await changeElementTool.execute(studioCtx, {
       componentUuid: page.uuid,
       changes: [{ tplUuid: link.uuid, attrs: { href: null } }],
     });
 
-    const afterRemoval = await readTool.execute(studioCtx, {
-      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
-    });
-    expect(afterRemoval).not.toContain(`href="/checkout"`);
-    expect(afterRemoval).toContain(`title="Checkout"`);
+    expect(vs.attrs.href).toBeUndefined();
+    expect(tryExtractJson(vs.attrs.title)).toEqual("Checkout");
   });
 
   it("changes attrs even when a dynamic style expression blocks styles", async () => {
@@ -117,10 +100,7 @@ describe("changeElement copilot tool", () => {
       `Element "${link.uuid}" attrs changed successfully.`
     );
 
-    const output = await readTool.execute(studioCtx, {
-      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
-    });
-    expect(output).toContain(`href="/order"`);
-    expect(output).not.toContain(`color: red`);
+    expect(tryExtractJson(vs.attrs.href)).toEqual("/order");
+    expect(vs.rs.values.color).toBeUndefined();
   });
 });

@@ -140,6 +140,21 @@ function getStylesFromVariantSetting(
   return styles;
 }
 
+function getAttrsFromVariantSetting(
+  vs: VariantSetting
+): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  for (const [key, expr] of Object.entries(vs.attrs)) {
+    if (!["id", "style", "children"].includes(key)) {
+      const value = extractStaticExprValue(expr);
+      if (value !== undefined) {
+        attrs[key] = value;
+      }
+    }
+  }
+  return attrs;
+}
+
 function getStyleString(vs: any): string | undefined {
   const styles = getStylesFromVariantSetting(vs);
   const entries = Object.entries(styles);
@@ -167,14 +182,8 @@ function buildTplTag(tpl: TplTag): XmlElement {
   }
 
   // Include static HTML attributes
-  for (const [key, expr] of Object.entries(vs.attrs)) {
-    if (["style", "children"].includes(key)) {
-      continue;
-    }
-    const value = extractStaticExprValue(expr);
-    if (value !== undefined) {
-      attrs[key] = value;
-    }
+  for (const [key, value] of Object.entries(getAttrsFromVariantSetting(vs))) {
+    attrs[key] = value;
   }
 
   // For text blocks, render inline with text content
@@ -327,6 +336,7 @@ interface TplOverride {
   vsUid: number;
   rsUid: number;
   styles: Record<string, string>;
+  attrs: Record<string, string>;
 }
 
 /**
@@ -350,13 +360,15 @@ function getTplOverrides(
     }
 
     const styles = getStylesFromVariantSetting(vs);
+    const attrs = getAttrsFromVariantSetting(vs);
 
-    if (Object.keys(styles).length > 0) {
+    if (Object.keys(styles).length > 0 || Object.keys(attrs).length > 0) {
       overrides.push({
         tplUuid: tpl.uuid,
         vsUid: vs.uid,
         rsUid: vs.rs.uid,
         styles,
+        attrs,
       });
     }
   }
@@ -365,18 +377,25 @@ function getTplOverrides(
 }
 
 function buildTplOverride(o: TplOverride): XmlElement {
+  const variantSettingChildren: XmlElement[] = [];
+  if (Object.keys(o.styles).length > 0) {
+    variantSettingChildren.push({
+      RuleSet: [{ _attr: { id: String(o.rsUid) } }, JSON.stringify(o.styles)],
+    });
+  }
+  if (Object.keys(o.attrs).length > 0) {
+    variantSettingChildren.push({
+      Attrs: JSON.stringify(o.attrs),
+    });
+  }
+
   return {
     element: [
       { _attr: { uuid: o.tplUuid } },
       {
         VariantSetting: [
           { _attr: { id: String(o.vsUid) } },
-          {
-            RuleSet: [
-              { _attr: { id: String(o.rsUid) } },
-              JSON.stringify(o.styles),
-            ],
-          },
+          ...variantSettingChildren,
         ],
       },
     ],

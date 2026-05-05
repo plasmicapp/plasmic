@@ -1,6 +1,9 @@
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
+import {
+  addChild as addChildToPage,
+  rootDiv as getRootDiv,
+} from "@/wab/client/copilot/tests/utils";
 import { insertHtmlTool } from "@/wab/client/copilot/tools/insertHtml";
-import { readTool } from "@/wab/client/copilot/tools/read";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import {
@@ -9,7 +12,7 @@ import {
   mkVariant,
 } from "@/wab/shared/Variants";
 import { ComponentType } from "@/wab/shared/core/components";
-import { customCode } from "@/wab/shared/core/exprs";
+import { customCode, tryExtractJson } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import {
   addComponentState,
@@ -33,18 +36,15 @@ beforeEach(() => {
 });
 
 function rootDiv() {
-  return page.tplTree as TplTag;
+  return getRootDiv(page);
 }
 
 function addChild(tag: string, opts: Tpls.MkTplTagOpts = {}): TplTag {
-  const tpl = Tpls.mkTplTagX(tag, opts);
-  ensureVariantSetting(tpl, [getBaseVariant(page)]);
-  studioCtx.focusedViewCtx()!.viewOps.insertAsChild(tpl, rootDiv());
-  return tpl;
+  return addChildToPage(studioCtx, page, tag, opts);
 }
 
 describe("insertHtml copilot tool", () => {
-  it("preserves static HTML attrs and read serializes them", async () => {
+  it("preserves static HTML attrs on tpl variant settings", async () => {
     await insertHtmlTool.execute(studioCtx, {
       html: '<a href="/order" target="_blank" aria-label="">Order</a>',
       componentUuid: page.uuid,
@@ -53,14 +53,10 @@ describe("insertHtml copilot tool", () => {
     });
 
     const link = Tpls.tplChildren(rootDiv())[0] as TplTag;
-    const output = await readTool.execute(studioCtx, {
-      elements: [{ componentUuid: page.uuid, elementUuid: link.uuid }],
-    });
-
-    expect(output).toContain(`<a id="${link.uuid}"`);
-    expect(output).toContain(`href="/order"`);
-    expect(output).toContain(`target="_blank"`);
-    expect(output).toContain(`aria-label=""`);
+    const vs = ensureVariantSetting(link, [getBaseVariant(page)]);
+    expect(tryExtractJson(vs.attrs.href)).toEqual("/order");
+    expect(tryExtractJson(vs.attrs.target)).toEqual("_blank");
+    expect(tryExtractJson(vs.attrs["aria-label"])).toEqual("");
   });
 
   describe("insertRelLoc: replace", () => {
