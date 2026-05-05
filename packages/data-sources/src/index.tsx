@@ -1,3 +1,4 @@
+export { throwIfPlasmicUndefinedDataError } from "./common";
 export { usePlasmicQueries as unstable_usePlasmicQueries } from "./serverQueries/client";
 export {
   StatefulQueryResult as _StatefulQueryResult,

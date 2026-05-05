@@ -252,6 +252,9 @@ export interface TableSchema {
     schema?: string;
 }
 
+// @public (undocumented)
+export function throwIfPlasmicUndefinedDataError(err: unknown): void;
+
 // @public
 export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, options: QueryExecutionInitialContext): Promise<ExecutePlasmicQueriesResult>;
 

@@ -22,6 +22,12 @@ export function isPlasmicUndefinedDataErrorPromise(
   );
 }
 
+export function throwIfPlasmicUndefinedDataError(err: unknown): void {
+  if (isPlasmicUndefinedDataErrorPromise(err)) {
+    throw err;
+  }
+}
+
 export function tagPlasmicUndefinedDataErrorPromise(
   promise: Promise<any>
 ): void {
