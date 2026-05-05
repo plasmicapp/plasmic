@@ -29,6 +29,7 @@ import {
   _StatefulQueryResult as StatefulQueryResult,
   _StatefulQueryState as StatefulQueryState,
   makeQueryCacheKey,
+  throwIfPlasmicUndefinedDataError,
   unstable_usePlasmicQueries as usePlasmicQueries,
 } from "@plasmicapp/data-sources";
 import type { SWRResponse } from "@plasmicapp/query";
@@ -100,9 +101,7 @@ export function buildCustomCodeFn(
       const envValues = Object.values(env);
       return fn(...envValues);
     } catch (err) {
-      if ((err as any)?.plasmicType === "PlasmicUndefinedDataError") {
-        throw err;
-      }
+      throwIfPlasmicUndefinedDataError(err);
       console.warn("Failed to execute custom code query:", err);
       return Promise.reject(err);
     }
@@ -244,11 +243,7 @@ export function getCustomFunctionParams(
         );
         if (result.err) {
           // Surface the error to indicate prop eval error instead of downstream error
-          if (
-            (result.err as any)?.plasmicType === "PlasmicUndefinedDataError"
-          ) {
-            throw result.err;
-          }
+          throwIfPlasmicUndefinedDataError(result.err);
           throw new Error(
             `Failed to evaluate query parameter "${param.argName}": ${
               (result.err as Error).message ?? String(result.err)

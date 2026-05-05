@@ -1,6 +1,7 @@
 import { stripParensAndMaybeConvertToIife } from "@/wab/shared/core/exprs";
 import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { throwIfPlasmicUndefinedDataError } from "@plasmicapp/data-sources";
 import { $State } from "@plasmicapp/react-web";
 
 export const ENABLED_GLOBALS = new Set([
@@ -111,13 +112,7 @@ const _compileCodeExpr = maybeComputedFn(function _compileCodeExpr(
     try {
       return code.bind(thisObj ?? {})(sandboxProxy);
     } catch (err) {
-      // PlasmicUndefinedDataError is a pending-query sentinel (a tagged Promise
-      // used for Suspense). Re-throw it silently so callers can handle it — but
-      // don't log it, because this is expected during query loading and would
-      // otherwise spam the console and trigger the canvas error-boundary loop.
-      if ((err as any)?.plasmicType === "PlasmicUndefinedDataError") {
-        throw err;
-      }
+      throwIfPlasmicUndefinedDataError(err);
       console.error(`Error evaluating custom code \`${src}\`:`, err);
       throw err;
     }
