@@ -140,12 +140,16 @@ function getStylesFromVariantSetting(
   return styles;
 }
 
+// Attrs that are either rendered by buildTplTag (id, style, children) or store internal
+// asset data we don't need in Copilot (e.g. outerHTML on svg resolves to a base64 data).
+const RESERVED_ATTR_KEYS = new Set(["id", "style", "children", "outerHTML"]);
+
 function getAttrsFromVariantSetting(
   vs: VariantSetting
 ): Record<string, string> {
   const attrs: Record<string, string> = {};
   for (const [key, expr] of Object.entries(vs.attrs)) {
-    if (!["id", "style", "children"].includes(key)) {
+    if (!RESERVED_ATTR_KEYS.has(key)) {
       const value = extractStaticExprValue(expr);
       if (value !== undefined) {
         attrs[key] = value;
