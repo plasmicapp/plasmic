@@ -51,58 +51,59 @@ export async function prefillCloudfront(
     )}`
   );
 
-  try {
-    await Promise.all(
-      // Prefill both browser + server and browserOnly builds
-      loaderPublishments.map(async (publishment) => {
-        const resolvedProjectIdSpecs = await getResolvedProjectVersions(
-          mgr,
-          publishment.projectIds
-        );
+  for (const publishment of loaderPublishments) {
+    try {
+      const resolvedProjectIdSpecs = await getResolvedProjectVersions(
+        mgr,
+        publishment.projectIds
+      );
 
-        const label = `Pre-filling codegen combo ${JSON.stringify(
-          resolvedProjectIdSpecs
-        )}, version=${publishment.loaderVersion}, platform=${
-          publishment.platform
-        }, browserOnly=${publishment.browserOnly}, i18n=${JSON.stringify({
-          key: publishment.i18nKeyScheme,
-          prefix: publishment.i18nTagPrefix,
-        })}, appDir=${publishment.appDir} projectIds=${JSON.stringify(
-          publishment.projectIds
-        )} pkgVersionId=${pkgVersionId}`;
+      const label = `Pre-filling codegen combo ${JSON.stringify(
+        resolvedProjectIdSpecs
+      )}, version=${publishment.loaderVersion}, platform=${
+        publishment.platform
+      }, browserOnly=${publishment.browserOnly}, i18n=${JSON.stringify({
+        key: publishment.i18nKeyScheme,
+        prefix: publishment.i18nTagPrefix,
+      })}, appDir=${publishment.appDir} projectIds=${JSON.stringify(
+        publishment.projectIds
+      )} pkgVersionId=${pkgVersionId}`;
 
-        await withSpan(
-          "loader-prefill",
-          async () => {
-            await genPublishedLoaderCodeBundle(
-              mgr,
-              pool,
-              makeGenPublishedLoaderCodeBundleOpts({
-                source: "prefill",
-                projectVersions: Object.fromEntries(
-                  resolvedProjectIdSpecs.map((spec) => {
-                    const [pid, version] = spec.split("@");
-                    return [pid, mkVersionToSync(version, false)];
-                  })
-                ),
-                platform: publishment.platform,
-                appDir: publishment.appDir ?? false,
-                loaderVersion: publishment.loaderVersion,
-                browserOnly: publishment.browserOnly,
-                i18n: {
-                  keyScheme: publishment.i18nKeyScheme ?? undefined,
-                  tagPrefix: publishment.i18nTagPrefix ?? undefined,
-                },
-              })
-            );
-          },
-          label
-        );
-      })
-    );
-  } catch (err) {
-    // Even if there was an error, we set isPrefilled to true, else it'll
-    // never be pre-filled.
+      await withSpan(
+        "loader-prefill",
+        async () => {
+          await genPublishedLoaderCodeBundle(
+            mgr,
+            pool,
+            makeGenPublishedLoaderCodeBundleOpts({
+              source: "prefill",
+              projectVersions: Object.fromEntries(
+                resolvedProjectIdSpecs.map((spec) => {
+                  const [pid, version] = spec.split("@");
+                  return [pid, mkVersionToSync(version, false)];
+                })
+              ),
+              platform: publishment.platform,
+              appDir: publishment.appDir ?? false,
+              loaderVersion: publishment.loaderVersion,
+              browserOnly: publishment.browserOnly,
+              i18n: {
+                keyScheme: publishment.i18nKeyScheme ?? undefined,
+                tagPrefix: publishment.i18nTagPrefix ?? undefined,
+              },
+            })
+          );
+        },
+        label
+      );
+    } catch (err) {
+      // Even if there was an error, continue with remaining combos and mark
+      // as pre-filled at the end, else it'll never be pre-filled.
+      logger().error(
+        `Error pre-filling combo for ${projectId}@${pkgVersion.version}`,
+        err
+      );
+    }
   }
   await mgr.updatePkgVersion(
     pkgVersion.pkgId,
