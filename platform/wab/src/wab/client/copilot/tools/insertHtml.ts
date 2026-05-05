@@ -29,26 +29,26 @@ export const insertHtmlTool = defineCopilotTool(
 
     const viewCtx = await studioCtx.getViewCtxForComponent(component, variants);
 
-    const result = await htmlToTpl(html, {
+    const htmlToTplResult = await htmlToTpl(html, {
       site: studioCtx.site,
       vtm: viewCtx.variantTplMgr(),
       appCtx: viewCtx.appCtx,
     });
 
-    if (!result) {
+    if (!htmlToTplResult) {
       throw new Error("Failed to parse HTML snippet");
     }
 
     const pasted = unwrap(
       await studioCtx.change<never, boolean>(({ success }) => {
-        result.finalize({
+        htmlToTplResult.finalize({
           component,
           tplMgr: viewCtx.tplMgr(),
         });
 
         return success(
           viewCtx.viewOps.pasteNodes({
-            nodes: result.tpls,
+            nodes: htmlToTplResult.tpls,
             cursorClientPt: undefined,
             target,
             loc: insertRelLoc as InsertRelLoc,
@@ -57,6 +57,11 @@ export const insertHtmlTool = defineCopilotTool(
       })
     );
 
+    if (insertRelLoc === "replace") {
+      return pasted
+        ? `Replaced element "${tplUuid}" with ${htmlToTplResult.tpls.length} new element(s).`
+        : `Failed to replace element "${tplUuid}".`;
+    }
     return pasted
       ? "Inserted HTML successfully."
       : "HTML was parsed but no elements were inserted.";

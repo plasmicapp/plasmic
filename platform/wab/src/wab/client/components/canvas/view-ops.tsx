@@ -43,6 +43,7 @@ import {
 } from "@/wab/client/observability/events/insert-item";
 import { DeleteTplResult, deleteTpl } from "@/wab/client/operations/delete-tpl";
 import { renameTpl } from "@/wab/client/operations/rename-tpl";
+import { validateTplRemoval } from "@/wab/client/operations/utils/validate-tpl-removal";
 import { promptComponentName, promptPageName } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
@@ -2630,6 +2631,23 @@ export class ViewOps {
     target?: TplNode | Selectable;
     loc?: InsertRelLoc;
   }) {
+    // Replacing the root with multiple nodes would only replace the first and
+    // the rest of the nodes are inserted as siblings, but the root has no siblings.
+    // So we reject replacing root with multiple elements.
+    if (
+      loc === InsertRelLoc.replace &&
+      nodes.length > 1 &&
+      isKnownTplNode(target) &&
+      target.parent == null
+    ) {
+      notification.error({
+        message: "Cannot replace component root with multiple elements",
+        description:
+          "Wrap your replacement in a single container element instead.",
+      });
+      return false;
+    }
+
     let curTarget = target;
     let curLoc = loc;
     let anyPasted = false;
@@ -3046,6 +3064,66 @@ export class ViewOps {
           return false;
         }
         return this.canInsertAsParent(newItem, target, showErrorNotification);
+      case InsertRelLoc.replace: {
+        if (target instanceof SlotSelection) {
+          if (showErrorNotification) {
+            notification.error({ message: "Cannot replace a slot" });
+          }
+          return false;
+        }
+
+        const isNonBaseVariant = !isBaseVariant(
+          this.viewCtx().variantTplMgr().getCurrentVariantCombo()
+        );
+        // A non-base replace only takes the hide path when the target is
+        // variantable; otherwise it falls through to the destructive path.
+        const shouldHideInVariant =
+          isNonBaseVariant && Tpls.isTplVariantable(target);
+
+        // The component root is the same node in every variant, so we should
+        // not replace it in non-base variant.
+        if (target.parent == null && isNonBaseVariant) {
+          if (showErrorNotification) {
+            notification.error({
+              message: "Cannot replace the component root in a variant",
+              description:
+                "The component root is shared across variants. Edit it in base, or replace a child element instead.",
+            });
+          }
+          return false;
+        }
+
+        // Only check TplRef and implicit-state references when target is expected to be removed,
+        // because a non-base replace hides the target in the active variant
+        // instead of removing it from the tree, so its references can stay valid.
+        if (!shouldHideInVariant) {
+          const owningComponent = $$$(target).tryGetOwningComponent();
+          if (owningComponent) {
+            const removalErr = validateTplRemoval(
+              [target],
+              owningComponent,
+              this.site()
+            );
+            if (removalErr) {
+              if (showErrorNotification) {
+                notification.error({
+                  message: "Cannot replace element",
+                  description: removalErr.message,
+                });
+              }
+              return false;
+            }
+          }
+        }
+        // Replacing the root: no parent, so no sibling rules to check.
+        // Component cycle detection check is already handled in the TplQuery
+        // within the replace operation.
+        if (target.parent == null) {
+          return true;
+        }
+
+        return this.canInsertAsSibling(newItem, target, showErrorNotification);
+      }
       default:
         return unexpected();
     }
@@ -3103,6 +3181,48 @@ export class ViewOps {
               TplSlot
             )
           );
+          break;
+        }
+        case InsertRelLoc.replace: {
+          if (targetTplOrSlotSelection.parent == null) {
+            // Root: no parent to anchor a sibling insert against. replaceWith
+            // handles the null-parent branch (and runs checkComponentCycles).
+            $$$(targetTplOrSlotSelection).replaceWith(newItem);
+          } else {
+            // Non-root: delegate to the sibling-insert path so we inherit
+            // the full insertAsChild fix-up chain.
+            const targetParent = targetTplOrSlotSelection.parent;
+            this.insertAsSibling(newItem, targetTplOrSlotSelection, "before");
+
+            const vtm = this.viewCtx().variantTplMgr();
+            const currentCombo = vtm.getCurrentVariantCombo();
+            const shouldHideInVariant =
+              Tpls.isTplVariantable(targetTplOrSlotSelection) &&
+              !isBaseVariant(currentCombo);
+
+            if (shouldHideInVariant) {
+              // variant-scoped replace hides the target in the active combo
+              // rather than deleting it from the tree, so base and other
+              // variants still see the original element.
+              const visibility = canSetDisplayNone(
+                this.studioCtx().codeComponentsRegistry,
+                targetTplOrSlotSelection
+              )
+                ? TplVisibility.DisplayNone
+                : TplVisibility.NotRendered;
+              setTplVisibility(
+                targetTplOrSlotSelection,
+                currentCombo,
+                visibility
+              );
+            } else {
+              $$$(targetTplOrSlotSelection).remove({ deep: true });
+              // Column count could change during remove; rebalance the remaining columns.
+              if (targetParent && Tpls.isTplColumns(targetParent)) {
+                redistributeColumnsSizes(targetParent, vtm);
+              }
+            }
+          }
           break;
         }
         default:
@@ -5061,6 +5181,7 @@ export enum InsertRelLoc {
   append = "append",
   after = "after",
   wrap = "wrap",
+  replace = "replace",
 }
 
 const AS_CHILD_LOC = [InsertRelLoc.prepend, InsertRelLoc.append];

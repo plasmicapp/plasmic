@@ -1,23 +1,10 @@
+import { validateTplRemoval } from "@/wab/client/operations/utils/validate-tpl-removal";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { redistributeColumnsSizes } from "@/wab/shared/columns-utils";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import {
-  findImplicitStatesOfNodesInTree,
-  findImplicitUsages,
-  getStateDisplayName,
-  isStateUsedInExpr,
-} from "@/wab/shared/core/states";
 import * as Tpls from "@/wab/shared/core/tpls";
-import {
-  Component,
-  Site,
-  State,
-  TplNode,
-  isKnownTplRef,
-} from "@/wab/shared/model/classes";
-import L from "lodash";
+import { Component, Site, TplNode } from "@/wab/shared/model/classes";
 
 export type DeleteTplResult =
   | { result: "deleted" }
@@ -63,57 +50,13 @@ export function deleteTpl(
     return { result: "error", message: "Cannot remove the root element." };
   }
 
-  // Implicit state validation
-  const removedImplicitStates: State[] = [];
-  for (const tpl of tpls) {
-    removedImplicitStates.push(
-      ...findImplicitStatesOfNodesInTree(component, tpl)
-    );
-  }
-
-  for (const state of removedImplicitStates) {
-    // Check if state is referenced within the component (excluding deleted subtrees)
-    const refs = Tpls.findExprsInTree(component.tplTree, tpls).filter(
-      ({ expr }) => isStateUsedInExpr(state, expr)
-    );
-    if (refs.length > 0) {
-      const maybeNode = refs.find((r) => r.node)?.node;
-      return {
-        result: "error",
-        message: `It contains variable "${getStateDisplayName(
-          state
-        )}" which is referenced in the current component.`,
-        referencingNode: maybeNode,
-      };
-    }
-
-    // Check cross-component references
-    const implicitUsages = findImplicitUsages(site, state);
-    if (implicitUsages.length > 0) {
-      const components = L.uniq(implicitUsages.map((usage) => usage.component));
-      return {
-        result: "error",
-        message: `Cannot remove element: it contains variable "${getStateDisplayName(
-          state
-        )}" which is referenced in ${components
-          .map((c) => getComponentDisplayName(c))
-          .join(", ")}.`,
-      };
-    }
-  }
-
-  // TplRef validation
-  for (const { expr, node: maybeNode } of Tpls.findExprsInComponent(
-    component
-  )) {
-    if (isKnownTplRef(expr) && tpls.includes(expr.tpl)) {
-      return {
-        result: "error",
-        message:
-          "It is referenced by another element in an invoke action element interaction.",
-        referencingNode: maybeNode,
-      };
-    }
+  const error = validateTplRemoval(tpls, component, site);
+  if (error) {
+    return {
+      result: "error",
+      message: error.message,
+      referencingNode: error.referencingNode,
+    };
   }
 
   // Permanent deletion
