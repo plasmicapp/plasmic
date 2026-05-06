@@ -8,7 +8,6 @@ import {
   usePropValueEditorContext,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   StudioPropType,
   getPropTypeDefaultValue,
@@ -59,7 +58,6 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
   disabled,
 }: ArrayPropEditorProps<Value>) {
   const [inspect, setInspect] = useState<number | undefined>(undefined);
-  const sc = useStudioCtx();
 
   function addNewElement() {
     const fromEntries = Object.fromEntries(

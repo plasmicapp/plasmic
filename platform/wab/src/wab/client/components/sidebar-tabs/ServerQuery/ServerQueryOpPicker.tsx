@@ -79,6 +79,77 @@ const LazyValuePreview = React.lazy(async () => {
 
 const CUSTOM_CODE_OPTION = "__custom_code__";
 
+type ServerQueryContext = "query" | "mutation";
+
+const ServerQueryContext = React.createContext<ServerQueryContext | undefined>(
+  undefined
+);
+
+function ServerQueryContextProvider(props: {
+  mode: ServerQueryContext;
+  children: React.ReactNode;
+}) {
+  return (
+    <ServerQueryContext.Provider value={props.mode}>
+      {props.children}
+    </ServerQueryContext.Provider>
+  );
+}
+
+function useServerQueryContext() {
+  return React.useContext(ServerQueryContext);
+}
+
+function useMkCustomFunctionArgs() {
+  const serverQueryContext = useServerQueryContext() ?? "query";
+
+  return React.useCallback(
+    (
+      customFunction: CustomFunction,
+      registrationMeta: CustomFunctionMeta<any> | undefined
+    ): FunctionArg[] => {
+      if (!registrationMeta?.params) {
+        return [];
+      }
+
+      const args: FunctionArg[] = [];
+      const defaultParamValues = customFunction.params.map(
+        () => undefined as any
+      );
+      for (const [paramIndex, param] of customFunction.params.entries()) {
+        const registeredParam = registrationMeta.params?.find(
+          (p) => p.name === param.argName
+        );
+        if (!registeredParam || typeof registeredParam === "string") {
+          continue;
+        }
+
+        const propType = registeredParam as StudioPropType<any>;
+        const defaultValue = getPropTypeDefaultValue(propType, {
+          componentPropValues: defaultParamValues,
+          ccContextData: undefined,
+          controlExtras: {
+            path: [param.argName],
+            mode: serverQueryContext,
+          },
+        });
+        if (defaultValue != null) {
+          defaultParamValues[paramIndex] = defaultValue;
+          args.push(
+            new FunctionArg({
+              uuid: mkShortId(),
+              argType: param,
+              expr: codeLit(defaultValue),
+            })
+          );
+        }
+      }
+      return args;
+    },
+    [serverQueryContext]
+  );
+}
+
 interface QueryDraft {
   queryName?: string;
   fnExpr?: CustomFunctionExpr;
@@ -162,49 +233,6 @@ function getAvailableCustomFunctions(
   return availableCustomFunctions;
 }
 
-/**
- * Create FunctionArgs for a new CustomFunction, with default values
- * for parameters that have defaultValue defined in registration metadata.
- */
-function mkCustomFunctionArgs(
-  customFunction: CustomFunction,
-  registrationMeta: CustomFunctionMeta<any> | undefined,
-  filterMode: "query" | "mutation"
-): FunctionArg[] {
-  if (!registrationMeta?.params) {
-    return [];
-  }
-
-  const args: FunctionArg[] = [];
-  const defaultParamValues = customFunction.params.map(() => undefined as any);
-  for (const [paramIndex, param] of customFunction.params.entries()) {
-    const registeredParam = registrationMeta.params?.find(
-      (p) => p.name === param.argName
-    );
-    if (!registeredParam || typeof registeredParam === "string") {
-      continue;
-    }
-
-    const propType = registeredParam as StudioPropType<any>;
-    const defaultValue = getPropTypeDefaultValue(propType, {
-      componentPropValues: defaultParamValues,
-      ccContextData: undefined,
-      controlExtras: { path: [param.argName], mode: filterMode },
-    });
-    if (defaultValue != null) {
-      defaultParamValues[paramIndex] = defaultValue;
-      args.push(
-        new FunctionArg({
-          uuid: mkShortId(),
-          argType: param,
-          expr: codeLit(defaultValue),
-        })
-      );
-    }
-  }
-  return args;
-}
-
 export const ServerQueryOpDraftForm = observer(
   function ServerQueryOpDraftForm(props: {
     value: QueryDraft;
@@ -216,7 +244,6 @@ export const ServerQueryOpDraftForm = observer(
     showQueryName?: boolean;
     allowedOps?: string[];
     exprCtx: ExprCtx;
-    filterMode: "query" | "mutation";
   }) {
     const {
       value,
@@ -226,9 +253,10 @@ export const ServerQueryOpDraftForm = observer(
       env: data,
       schema,
       showQueryName,
-      filterMode,
       exprCtx,
     } = props;
+    const serverQueryContext = useServerQueryContext() ?? "query";
+    const mkCustomFunctionArgs = useMkCustomFunctionArgs();
     const studioCtx = useStudioCtx();
     const viewCtx = studioCtx.focusedViewCtx();
 
@@ -254,9 +282,9 @@ export const ServerQueryOpDraftForm = observer(
     const availableFunctions = React.useMemo(
       () =>
         getAllCustomFunctions(studioCtx.site).filter((fn) =>
-          filterMode === "mutation" ? fn.isMutation : fn.isQuery
+          serverQueryContext === "mutation" ? fn.isMutation : fn.isQuery
         ),
-      [studioCtx.site.projectDependencies.length, filterMode]
+      [studioCtx.site.projectDependencies.length, serverQueryContext]
     );
 
     const argsMap = React.useMemo(
@@ -342,9 +370,8 @@ export const ServerQueryOpDraftForm = observer(
           exprCtx,
           schema,
           env: data,
-          functionMode: filterMode,
         };
-      }, [schema, data, funcParamsValues, exprCtx, ccContextData, filterMode]);
+      }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
 
     React.useEffect(() => {
       // Don't auto-select a function when in custom code mode
@@ -362,7 +389,7 @@ export const ServerQueryOpDraftForm = observer(
       const firstFunc = availableFunctions[0];
       const meta = getRegistrationMeta(firstFunc);
       if (!value?.fnExpr) {
-        const args = mkCustomFunctionArgs(firstFunc, meta, filterMode);
+        const args = mkCustomFunctionArgs(firstFunc, meta);
         onChange({
           ...value,
           fnExpr: new CustomFunctionExpr({
@@ -380,7 +407,7 @@ export const ServerQueryOpDraftForm = observer(
             ...value,
             fnExpr: new CustomFunctionExpr({
               func: firstFunc,
-              args: mkCustomFunctionArgs(firstFunc, meta, filterMode),
+              args: mkCustomFunctionArgs(firstFunc, meta),
             }),
           });
         }
@@ -451,11 +478,7 @@ export const ServerQueryOpDraftForm = observer(
             codeExpr: undefined,
             fnExpr: new CustomFunctionExpr({
               func: newFunc,
-              args: mkCustomFunctionArgs(
-                newFunc,
-                getRegistrationMeta(newFunc),
-                filterMode
-              ),
+              args: mkCustomFunctionArgs(newFunc, getRegistrationMeta(newFunc)),
             }),
           });
         }
@@ -546,8 +569,7 @@ export const ServerQueryOpDraftForm = observer(
                       func,
                       args: mkCustomFunctionArgs(
                         func,
-                        getRegistrationMeta(func),
-                        filterMode
+                        getRegistrationMeta(func)
                       ),
                     })
                   : undefined,
@@ -897,51 +919,52 @@ export const ServerQueryOpExprFormAndPreview = observer(
     }, []);
 
     const contents = (
-      <div className="fill-height">
-        <div className="flex-row fill-height">
-          <div
-            className={cx({
-              "flex-col fill-height fill-width": true,
-            })}
-            style={{ maxWidth: 500, flexShrink: 0 }}
-          >
-            <div className="flex-col fill-width fill-height overflow-scroll p-xxlg flex-children-no-shrink">
-              <ServerQueryOpDraftForm
-                value={draft}
-                onChange={setDraft}
-                readOnly={readOnly}
-                env={env}
-                schema={schema}
-                isDisabled={readOnly}
-                allowedOps={allowedOps}
-                showQueryName={!!parentQuery}
-                exprCtx={exprCtx}
-                filterMode={filterMode}
-              />
+      <ServerQueryContextProvider mode={filterMode}>
+        <div className="fill-height">
+          <div className="flex-row fill-height">
+            <div
+              className={cx({
+                "flex-col fill-height fill-width": true,
+              })}
+              style={{ maxWidth: 500, flexShrink: 0 }}
+            >
+              <div className="flex-col fill-width fill-height overflow-scroll p-xxlg flex-children-no-shrink">
+                <ServerQueryOpDraftForm
+                  value={draft}
+                  onChange={setDraft}
+                  readOnly={readOnly}
+                  env={env}
+                  schema={schema}
+                  isDisabled={readOnly}
+                  allowedOps={allowedOps}
+                  showQueryName={!!parentQuery}
+                  exprCtx={exprCtx}
+                />
+              </div>
+              <BottomModalButtons>
+                <Button
+                  id="data-source-modal-save-btn"
+                  type="primary"
+                  disabled={!saveOp}
+                  onClick={saveOp}
+                >
+                  Save
+                </Button>
+                <Button
+                  onClick={executeOp}
+                  withIcons={"startIcon"}
+                  disabled={!validDraft}
+                  startIcon={<Icon icon={SearchIcon} />}
+                >
+                  Execute
+                </Button>
+                <Button onClick={onCancel}>Cancel</Button>
+              </BottomModalButtons>
             </div>
-            <BottomModalButtons>
-              <Button
-                id="data-source-modal-save-btn"
-                type="primary"
-                disabled={!saveOp}
-                onClick={saveOp}
-              >
-                Save
-              </Button>
-              <Button
-                onClick={executeOp}
-                withIcons={"startIcon"}
-                disabled={!validDraft}
-                startIcon={<Icon icon={SearchIcon} />}
-              >
-                Execute
-              </Button>
-              <Button onClick={onCancel}>Cancel</Button>
-            </BottomModalButtons>
+            <ServerQueryOpPreview queryState={executeResult?.queryState} />
           </div>
-          <ServerQueryOpPreview queryState={executeResult?.queryState} />
         </div>
-      </div>
+      </ServerQueryContextProvider>
     );
     return contents;
   }

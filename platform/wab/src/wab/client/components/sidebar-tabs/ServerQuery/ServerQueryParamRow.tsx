@@ -127,7 +127,6 @@ export function getServerQueryParamRowItems(opts: {
     opts;
   const mkControlExtras = (path: (string | number)[]): ControlExtras => ({
     path,
-    mode: propValueEditorContext.functionMode,
   });
 
   // Check if the top-level param should be hidden

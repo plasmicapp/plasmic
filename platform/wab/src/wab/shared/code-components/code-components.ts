@@ -3938,12 +3938,18 @@ function maybeStateMetaToDefaultExpr(
   );
 }
 
+type DefaultValueControlExtras = {
+  path: (string | number)[];
+  item?: any;
+  mode?: "query" | "mutation";
+};
+
 export const getPropTypeDefaultValue = (
   propType: StudioPropType<any>,
   context?: {
-    componentPropValues: any;
-    ccContextData: any;
-    controlExtras: any;
+    componentPropValues?: any;
+    ccContextData?: any;
+    controlExtras: DefaultValueControlExtras;
   }
 ) => {
   if (!isPlainObjectPropType(propType)) {
@@ -3969,7 +3975,13 @@ export const getPropTypeDefaultValue = (
       // parent default value has higher priority
       continue;
     }
-    const fieldDefaultValue = getPropTypeDefaultValue(fieldPropType, context);
+    const fieldDefaultValue = getPropTypeDefaultValue(fieldPropType, {
+      ...context,
+      controlExtras: {
+        ...context?.controlExtras,
+        path: [...(context?.controlExtras?.path ?? []), fieldName],
+      },
+    });
     if (fieldDefaultValue != null) {
       if (!defaultValue) {
         defaultValue = {};

@@ -100,7 +100,6 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     const nextControlExtras: ControlExtras = {
       path: [...controlExtras.path, fieldName],
       item: evaluatedValue,
-      mode: controlExtras.mode,
     };
     const fieldValue =
       compositeValue && fieldName in compositeValue

@@ -191,7 +191,6 @@ export type PropValuePath = (number | string)[];
 export interface ControlExtras {
   path: PropValuePath;
   item?: any; // used for objects and array types
-  mode?: "query" | "mutation"; // used for custom function params
 }
 
 export interface PropValueEditorContextData {
@@ -204,7 +203,6 @@ export interface PropValueEditorContextData {
   schema?: DataPickerTypesSchema;
   exprCtx?: ExprCtx;
   defaultValue?: Record<string, any>;
-  functionMode?: "query" | "mutation";
 }
 
 export const PropValueEditorContext =
