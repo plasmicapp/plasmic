@@ -79,6 +79,32 @@ describe("PageParamsProvider query params", () => {
     expect(queryText("multi")).toBe("1,2");
   });
 
+  it("uses query params from props during client rendering", () => {
+    renderClient(
+      <PageParamsProvider query={{ test: "from-props", multi: ["a", "b"] }}>
+        <QueryReader />
+        <QueryReader name="multi" />
+      </PageParamsProvider>
+    );
+
+    expect(queryText("test")).toBe("from-props");
+    expect(queryText("multi")).toBe("a,b");
+  });
+
+  it("overrides prop query params with browser query params", () => {
+    window.history.replaceState({}, "", "/page?test=from-browser");
+
+    renderClient(
+      <PageParamsProvider query={{ test: "from-props", propOnly: "preserved" }}>
+        <QueryReader />
+        <QueryReader name="propOnly" />
+      </PageParamsProvider>
+    );
+
+    expect(queryText("test")).toBe("from-browser");
+    expect(queryText("propOnly")).toBe("preserved");
+  });
+
   it("updates when browser history changes query params", () => {
     window.history.replaceState({}, "", "/page?test=initial");
 
