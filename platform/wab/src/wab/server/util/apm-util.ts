@@ -16,11 +16,17 @@ export async function withSpan<T>(
   const tracer = trace.getTracer("app");
   return tracer.startActiveSpan(name, async (span) => {
     try {
-      return await f();
-    } finally {
+      const result = await f();
       logger().info(
         `span "${name}" finished in ${new Date().getTime() - start}ms${suffix}`
       );
+      return result;
+    } catch (err) {
+      logger().error(
+        `span "${name}" failed in ${new Date().getTime() - start}ms${suffix}`
+      );
+      throw err;
+    } finally {
       promTimer.end();
       span.end();
     }
