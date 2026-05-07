@@ -2406,17 +2406,31 @@ export class ViewOps {
 
     // Active variants (both component and global) are flattened into
     // the target variant setting via effectiveVs above, so the paste
-    // matches what the user sees. Global variant settings are NOT
-    // preserved, they would end up on hidden artboards, not directly visible
-    // to user and cause confusion. Only private style variant settings
-    // are preserved, since they define interactive states for the node.
-
-    // The code below filters variant settings to ensure only private style variants
-    // are preserved. Vsettings with no private style variants become empty
-    // and are skipped. Stripping can cause multiple vsettings to collapse to the same
-    // combo e.g. [red, :hover] and [:hover] both become [:hover] after stripping.
-    // These are merged via EffectiveVariantSetting so the combo-specific overrides
-    // from [red, :hover] are reflected in the pasted [:hover] setting.
+    // matches what the user sees. In addition, global variant settings
+    // and private style variant settings are preserved as separate
+    // variant settings on the pasted node, so responsive overrides
+    // (e.g., MobileScreen, Desktop) and interactive states (e.g.,
+    // :hover) carry across the paste — particularly important for
+    // cross-page paste where users expect responsive design intent
+    // to be retained without redoing per-variant overrides.
+    //
+    // Note: in the cross-component case, preserved global variant
+    // settings may end up on artboards that are hidden by default in
+    // the target component. The styles are still applied when those
+    // global variants become active; the user just won't see the
+    // override visually unless they enable the global variant artboard.
+    //
+    // The code below filters variant settings to those involving
+    // global or private style variants (component variants are only
+    // permitted if they were active at copy time, since they don't
+    // exist in the target component), strips component variants from
+    // their combos, then skips empty combos. Stripping can cause
+    // multiple vsettings to collapse to the same combo — e.g.,
+    // [red, MobileScreen] and [MobileScreen] both become [MobileScreen]
+    // after stripping component variant "red". These are merged via
+    // EffectiveVariantSetting so the combo-specific overrides from
+    // [red, MobileScreen] are reflected in the pasted [MobileScreen]
+    // setting.
     const preservedVSettings = node.vsettings.filter((vs) =>
       vs.variants.every(
         (v) =>
@@ -2427,7 +2441,9 @@ export class ViewOps {
     );
     preservedVSettings.forEach(
       (vs) =>
-        (vs.variants = vs.variants.filter((v) => isPrivateStyleVariant(v)))
+        (vs.variants = vs.variants.filter(
+          (v) => isGlobalVariant(v) || isPrivateStyleVariant(v)
+        ))
     );
     const effectiveVsMap = new Map<Variant[], EffectiveVariantSetting>();
     for (const vs of preservedVSettings) {
