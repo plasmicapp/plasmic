@@ -144,7 +144,7 @@ import {
 } from "@/wab/shared/core/style-props";
 import * as styles from "@/wab/shared/core/styles";
 import { getCssInitial } from "@/wab/shared/css";
-import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import {
   parseExpr,
   pathToDisplayString,
@@ -2840,10 +2840,13 @@ export function addFallbacksToCodeExpressions(
           continue;
         }
 
-        const evaluatedExpr = evalCodeWithEnv(
+        const { val: evaluatedExpr, err } = tryEvalExpr(
           isKnownCustomCode(expr) ? expr.code : pathToString(expr.path),
           canvasEnv
         );
+        if (err) {
+          continue;
+        }
         expr.fallback = Exprs.codeLit(evaluatedExpr);
       }
     }
