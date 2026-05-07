@@ -17,48 +17,10 @@ import { PLASMIC } from "@/plasmic-init";
 // PLASMIC.registerComponent(...);
 
 /**
- * ClientPlasmicRootProvider is a Client Component that passes in the loader for you.
+ * ClientPlasmicRootProvider is a Client Component that passes the loader to PlasmicRootProvider.
  *
- * Why? Props passed from Server to Client Components must be serializable.
+ * Props passed from a Server Component to a Client Component must be serializable.
  * https://nextjs.org/docs/app/getting-started/server-and-client-components#passing-data-from-server-to-client-components
- * However, PlasmicRootProvider requires a loader, but the loader is NOT serializable.
- *
- * In a Server Component like app/<your-path>/path.tsx, rendering the following would not work:
- *
- * \`\`\`tsx
- * import { PLASMIC } from "@/plasmic-init";
- * import { PlasmicRootProvider } from "plasmicapp/loader-nextjs";
- * export default function MyPage() {
- *   const prefetchedData = await PLASMIC.fetchComponentData("YourPage");
- *   return (
- *     <PlasmicRootProvider
- *       loader={PLASMIC} // ERROR: loader is not serializable
- *       prefetchedData={prefetchedData}
- *     >
- *       {yourContent()}
- *     </PlasmicRootProvider>;
- *   );
- * }
- * \`\`\`
- *
- * Therefore, we define ClientPlasmicRootProvider as a Client Component (this file is marked "use client").
- * ClientPlasmicRootProvider wraps the PlasmicRootProvider and passes in the loader for you,
- * while allowing your Server Component to pass in prefetched data and other serializable props:
- *
- * \`\`\`tsx
- * import { PLASMIC } from "@/plasmic-init";
- * import { ClientPlasmicRootProvider } from "@/plasmic-init-client"; // changed
- * export default function MyPage() {
- *   const prefetchedData = await PLASMIC.fetchComponentData("YourPage");
- *   return (
- *     <ClientPlasmicRootProvider // don't pass in loader
- *       prefetchedData={prefetchedData}
- *     >
- *       {yourContent()}
- *     </ClientPlasmicRootProvider>;
- *   );
- * }
- * \`\`\`
  */
 export function ClientPlasmicRootProvider(
   props${ifTs(

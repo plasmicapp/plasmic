@@ -14,7 +14,6 @@ import {
 } from "@/wab/shared/codegen/react-p/page-metadata";
 import { serializeGeneratePageMetadataBody } from "@/wab/shared/codegen/react-p/page-metadata/serializer";
 import {
-  getReactWebNamedImportsForRender,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
   makeServerPageSkeletonPropsName,
@@ -41,7 +40,6 @@ import {
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
-import { getReactWebPackageName } from "@/wab/shared/codegen/react-p/utils";
 import { ComponentExportOutput, ExportOpts } from "@/wab/shared/codegen/types";
 import { assert } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
@@ -132,10 +130,6 @@ ${makeTaggedPlasmicImport(
   component.uuid,
   "rscClient"
 )}
-
-import {
-  ${getReactWebNamedImportsForRender()}
-} from "${getReactWebPackageName(opts)}";
 
 ${serializeServerPageQueries(ctx)}
 

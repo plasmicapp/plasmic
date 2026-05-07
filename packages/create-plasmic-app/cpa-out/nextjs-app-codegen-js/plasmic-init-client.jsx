@@ -1,8 +1,4 @@
-import { ifTs } from "../../../utils/file-utils";
-import { JsOrTs } from "../../../utils/types";
-
-export function makePlasmicInitClient_app_codegen(jsOrTs: JsOrTs): string {
-  return `"use client";
+"use client";
 
 import * as React from "react";
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
@@ -15,12 +11,7 @@ import Link from "next/link";
  * https://nextjs.org/docs/app/getting-started/server-and-client-components#passing-data-from-server-to-client-components
  */
 export function ClientPlasmicRootProvider(
-  props${ifTs(
-    jsOrTs,
-    ': Omit<React.ComponentProps<typeof PlasmicRootProvider>, "Link">'
-  )}
+  props
 ) {
   return <PlasmicRootProvider Link={Link} {...props} />;
-}
-`;
 }
