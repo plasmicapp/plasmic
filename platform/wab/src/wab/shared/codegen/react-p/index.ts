@@ -159,6 +159,7 @@ import {
   getAppRouterSkeletonImports,
   getPageRouterSkeletonImports,
   getRscMetadata,
+  getTanStackSkeletonImports,
   serializeAppRouterGenerateMetadata,
   serializeAppRouterGenerateStaticParamsSkeleton,
   serializePageQueryTree,
@@ -2736,25 +2737,51 @@ function serializePageAwareSkeletonWrapperTs(
   } else if (opts.platform === "tanstack") {
     const headOptionsImport = `${nodeComponentNameImport}__HeadOptions`;
     plasmicModuleImports.push(headOptionsImport);
+    if (ctx.hasServerQueries) {
+      plasmicModuleImports.push("serverQueryTree");
+    }
 
     const componentPathStr = component.pageMeta?.path || "/";
+    const loaderEntry = ctx.hasServerQueries
+      ? `
+      loaderDeps: ({ search }) => ({ search }),
+      loader: async ({ params, location, deps }) => {
+        const $ctx = {
+          pageRoute: ${JSON.stringify(componentPathStr)},
+          pagePath: location.pathname,
+          params: (params ?? {}) as Record<string, string | string[] | undefined>,
+          query: (deps.search ?? {}) as Record<string, string | string[] | undefined>,
+        };
+        const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+          serverQueryTree,
+          { $props: {}, $ctx }
+        );
+        return { prefetchedCache: prefetchedCache as Record<string, any> };
+      },`
+      : "";
     tanstackRouteInfo = `export const Route = createFileRoute("${componentPathStr}")({
       head: () => ({
         meta: [...${headOptionsImport}.meta],
         links: [
           ...${headOptionsImport}.links,
         ]
-      }),
+      }),${loaderEntry}
       component: ${componentName},
     });`;
 
     content = `<PageParamsProvider__
-        route={Route.fullPath}
-        params={Route.useParams()}
-        query={Route.useSearch()}
-      >
-       ${content}
-      </PageParamsProvider__>`;
+      route={Route.fullPath}
+      params={Route.useParams()}
+      query={Route.useSearch()}
+    >
+     ${content}
+    </PageParamsProvider__>`;
+    if (ctx.hasServerQueries) {
+      componentBodyPrefix = `const { prefetchedCache } = Route.useLoaderData();`;
+      content = `<PlasmicQueryDataProvider prefetchedCache={prefetchedCache}>
+        ${content}
+      </PlasmicQueryDataProvider>`;
+    }
   }
 
   let globalContextsImport = "";
@@ -2828,7 +2855,7 @@ function serializePageAwareSkeletonWrapperTs(
         ? `import type { PageProps } from "gatsby";
         export { Head };`
         : isPageComponent(component) && opts.platform === "tanstack"
-        ? `import { createFileRoute } from "@tanstack/react-router";`
+        ? getTanStackSkeletonImports(ctx)
         : ""
     }
 

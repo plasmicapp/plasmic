@@ -398,6 +398,18 @@ export function getAppRouterSkeletonImports({
   }`;
 }
 
+export function getTanStackSkeletonImports({
+  hasServerQueries,
+}: Pick<SerializerBaseContext, "hasServerQueries">) {
+  return `import { createFileRoute } from "@tanstack/react-router";${
+    hasServerQueries
+      ? `
+import { unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
+      : ""
+  }`;
+}
+
 /**
  * Serializes `requiredServerQueryFunctions` export for loader. Includes user-registered
  * custom functions (non-hostless) referenced by queries in this component.
