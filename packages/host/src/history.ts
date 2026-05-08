@@ -56,7 +56,7 @@ export function useBrowserQueryParams() {
         window.removeEventListener(LOCATION_CHANGE_EVENT, onStoreChange);
       };
     },
-    () => window.location.search,
+    () => (typeof window === "undefined" ? undefined : window.location.search),
     () => undefined
   );
 
