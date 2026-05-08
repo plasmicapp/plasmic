@@ -1,18 +1,16 @@
 // @vitest-environment jsdom
 
-import React, { act } from "react";
-import { Root, createRoot } from "react-dom/client";
+import { act, cleanup, render, screen } from "@testing-library/react";
+import React from "react";
 import { renderToString } from "react-dom/server.node";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DataCtxReader, PageParamsProvider } from "./data";
-
-(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 function formatQueryValue(value: string | string[]) {
   return Array.isArray(value) ? value.join(",") : value;
 }
 
-function QueryReader({ name = "test" }: { name?: string }) {
+function QueryReader({ name }: { name: string }) {
   return (
     <DataCtxReader>
       {($ctx) => (
@@ -24,39 +22,21 @@ function QueryReader({ name = "test" }: { name?: string }) {
   );
 }
 
-describe("PageParamsProvider query params", () => {
-  let container: HTMLDivElement;
-  let root: Root | undefined;
+function queryText(name: string) {
+  return screen.getByTestId(name).textContent;
+}
 
+describe("PageParamsProvider query params", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/");
-    container = document.createElement("div");
-    document.body.appendChild(container);
   });
 
-  afterEach(() => {
-    if (root) {
-      act(() => root?.unmount());
-    }
-    root = undefined;
-    container.remove();
-  });
-
-  function renderClient(ui: React.ReactElement) {
-    act(() => {
-      root = createRoot(container);
-      root.render(ui);
-    });
-  }
-
-  function queryText(name: string) {
-    return container.querySelector(`[data-testid="${name}"]`)?.textContent;
-  }
+  afterEach(cleanup);
 
   it("provides query params from props during server rendering", () => {
     const html = renderToString(
       <PageParamsProvider query={{ test: "from-props", multi: ["a", "b"] }}>
-        <QueryReader />
+        <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>
     );
@@ -68,9 +48,9 @@ describe("PageParamsProvider query params", () => {
   it("reads query params from the current browser location", () => {
     window.history.replaceState({}, "", "/page?test=Hello&multi=1&multi=2");
 
-    renderClient(
+    render(
       <PageParamsProvider>
-        <QueryReader />
+        <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>
     );
@@ -80,9 +60,9 @@ describe("PageParamsProvider query params", () => {
   });
 
   it("uses query params from props during client rendering", () => {
-    renderClient(
+    render(
       <PageParamsProvider query={{ test: "from-props", multi: ["a", "b"] }}>
-        <QueryReader />
+        <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>
     );
@@ -94,9 +74,9 @@ describe("PageParamsProvider query params", () => {
   it("overrides prop query params with browser query params", () => {
     window.history.replaceState({}, "", "/page?test=from-browser");
 
-    renderClient(
+    render(
       <PageParamsProvider query={{ test: "from-props", propOnly: "preserved" }}>
-        <QueryReader />
+        <QueryReader name="test" />
         <QueryReader name="propOnly" />
       </PageParamsProvider>
     );
@@ -108,9 +88,9 @@ describe("PageParamsProvider query params", () => {
   it("updates when browser history changes query params", () => {
     window.history.replaceState({}, "", "/page?test=initial");
 
-    renderClient(
+    render(
       <PageParamsProvider>
-        <QueryReader />
+        <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>
     );

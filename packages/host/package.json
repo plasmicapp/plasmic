@@ -57,6 +57,7 @@
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
+    "@testing-library/react": "^14.0.0",
     "@types/classnames": "^2.3.4",
     "@types/node": "^20.3.3",
     "@types/react": "^18",
