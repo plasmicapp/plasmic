@@ -281,6 +281,7 @@ function PlasmicButton__RenderFunc(props: {
       className={classNames(
         "plasmic_default__all",
         "plasmic_default__button",
+        "plasmic_default__button__47tFX",
         "root_reset_47tFXWjN2C4NyHFGGpaYQ3",
         "plasmic_default_styles",
         "plasmic_mixins",
@@ -425,7 +426,6 @@ function PlasmicButton__RenderFunc(props: {
           data-plasmic-override={overrides.startIconContainer}
           className={classNames(
             "plasmic_default__all",
-            "plasmic_default__div",
             "Button__startIconContainer__men7Z",
             {
               Button__startIconContainercolor_blue__men7Z7OS1A: hasVariant(
@@ -449,7 +449,6 @@ function PlasmicButton__RenderFunc(props: {
               <CheckSvgIcon
                 className={classNames(
                   "plasmic_default__all",
-                  "plasmic_default__svg",
                   "Button__svg__s6Xxe"
                 )}
                 role={"img"}
@@ -519,7 +518,6 @@ function PlasmicButton__RenderFunc(props: {
         data-plasmic-override={overrides.contentContainer}
         className={classNames(
           "plasmic_default__all",
-          "plasmic_default__div",
           "Button__contentContainer__sXXwU",
           {
             Button__contentContainer___focusVisibleWithin__sXXwUcjR25:
@@ -650,7 +648,6 @@ function PlasmicButton__RenderFunc(props: {
           data-plasmic-override={overrides.endIconContainer}
           className={classNames(
             "plasmic_default__all",
-            "plasmic_default__div",
             "Button__endIconContainer___3CzAx",
             {
               Button__endIconContainercolor_white___3CzAx5R3VM: hasVariant(
@@ -676,7 +673,6 @@ function PlasmicButton__RenderFunc(props: {
               <IconIcon
                 className={classNames(
                   "plasmic_default__all",
-                  "plasmic_default__svg",
                   "Button__svg__liJa"
                 )}
                 role={"img"}

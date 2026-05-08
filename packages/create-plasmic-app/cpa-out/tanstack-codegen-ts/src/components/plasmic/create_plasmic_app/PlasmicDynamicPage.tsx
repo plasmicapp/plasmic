@@ -175,7 +175,6 @@ function PlasmicDynamicPage__RenderFunc(props: {
           data-plasmic-for-node={forNode}
           className={classNames(
             "plasmic_default__all",
-            "plasmic_default__div",
             "root_reset_47tFXWjN2C4NyHFGGpaYQ3",
             "plasmic_default_styles",
             "plasmic_mixins",
@@ -188,7 +187,6 @@ function PlasmicDynamicPage__RenderFunc(props: {
             data-plasmic-override={overrides.section}
             className={classNames(
               "plasmic_default__all",
-              "plasmic_default__section",
               "DynamicPage__section__mbqxB"
             )}
           >
@@ -198,6 +196,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
               className={classNames(
                 "plasmic_default__all",
                 "plasmic_default__h1",
+                "plasmic_default__h1__47tFX",
                 "__wab_text",
                 "DynamicPage__h1__uyAe1"
               )}

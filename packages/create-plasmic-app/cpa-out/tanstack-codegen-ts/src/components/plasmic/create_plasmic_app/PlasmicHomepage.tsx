@@ -179,7 +179,6 @@ function PlasmicHomepage__RenderFunc(props: {
           data-plasmic-for-node={forNode}
           className={classNames(
             "plasmic_default__all",
-            "plasmic_default__div",
             "root_reset_47tFXWjN2C4NyHFGGpaYQ3",
             "plasmic_default_styles",
             "plasmic_mixins",
@@ -192,7 +191,6 @@ function PlasmicHomepage__RenderFunc(props: {
             data-plasmic-override={overrides.section}
             className={classNames(
               "plasmic_default__all",
-              "plasmic_default__section",
               "Homepage__section__pXQ"
             )}
           >
@@ -202,6 +200,7 @@ function PlasmicHomepage__RenderFunc(props: {
               className={classNames(
                 "plasmic_default__all",
                 "plasmic_default__h1",
+                "plasmic_default__h1__47tFX",
                 "__wab_text",
                 "Homepage__h1__equfk"
               )}
@@ -213,7 +212,6 @@ function PlasmicHomepage__RenderFunc(props: {
               data-plasmic-override={overrides.text}
               className={classNames(
                 "plasmic_default__all",
-                "plasmic_default__div",
                 "__wab_text",
                 "Homepage__text__aC4Gm"
               )}
@@ -226,7 +224,9 @@ function PlasmicHomepage__RenderFunc(props: {
                     }
                   </React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__47tFX"
+                    }
                     style={{ fontWeight: 700 }}
                   >
                     {"Therefore, please avoid changing this project."}
@@ -240,7 +240,9 @@ function PlasmicHomepage__RenderFunc(props: {
                     }
                   </React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__47tFX"
+                    }
                     style={{ fontWeight: 700 }}
                   >
                     {"Code"}

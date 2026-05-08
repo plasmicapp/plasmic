@@ -69,7 +69,7 @@ export async function makeAppRouterPageCtx({
     pageRoute,
     pagePath,
     params: pageParams,
-    query: (await searchParams) ?? {}
+    query: {}
   };
   return ctx;
 }

@@ -31,11 +31,12 @@ async function Homepage({ params, searchParams }) {
   // variant context providers. These wrappers may be moved to
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
+  const ctx = await makeAppRouterPageCtx({ params, searchParams });
   return (
     <PageParamsProvider__
-      route="/"
-      params={await params}
-      query={await searchParams}
+      route={ctx.pageRoute}
+      params={ctx.params}
+      query={ctx.query}
     >
       <PlasmicHomepageServer />
     </PageParamsProvider__>

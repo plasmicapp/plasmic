@@ -9,8 +9,15 @@ import {
   generateDynamicMetadata,
   DynamicPageServerSkeletonProps
 } from "../../../components/plasmic/create_plasmic_app/PlasmicDynamicPageServer";
-
 import type { Metadata, ResolvingMetadata } from "next";
+
+// Uncomment and populate to statically pre-render this route at build time.
+// Each entry should be an object whose keys match the dynamic segments in the route path.
+// See https://nextjs.org/docs/app/api-reference/functions/generate-static-params
+//
+// export async function generateStaticParams() {
+//   return [];
+// }
 
 export async function generateMetadata(
   { params, searchParams }: DynamicPageServerSkeletonProps,
@@ -43,11 +50,12 @@ async function DynamicPage({
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
 
+  const ctx = await makeAppRouterPageCtx({ params, searchParams });
   return (
     <PageParamsProvider__
-      route="/dynamic/[slug]"
-      params={await params}
-      query={await searchParams}
+      route={ctx.pageRoute}
+      params={ctx.params}
+      query={ctx.query}
     >
       <PlasmicDynamicPageServer />
     </PageParamsProvider__>

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type * as React from "react";
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
 import Link from "next/link";
 

@@ -19,3 +19,8 @@ export const PLASMIC = initPlasmicLoader({
   // only use this for development, as this is significantly slower.
   preview: false,
 });
+
+// Register custom functions here so they are available during SSR.
+// See https://docs.plasmic.app/learn/registering-custom-functions/
+//
+// PLASMIC.registerFunction(...);

@@ -119,6 +119,7 @@ function PlasmicHomepage__RenderFunc(props) {
               className={classNames(
                 projectcss.all,
                 projectcss.h1,
+                projectcss.h1__47tFX,
                 projectcss.__wab_text,
                 sty.h1
               )}
@@ -142,7 +143,9 @@ function PlasmicHomepage__RenderFunc(props) {
                     }
                   </React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__47tFX"
+                    }
                     style={{ fontWeight: 700 }}
                   >
                     {"Therefore, please avoid changing this project."}
@@ -156,7 +159,9 @@ function PlasmicHomepage__RenderFunc(props) {
                     }
                   </React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__47tFX"
+                    }
                     style={{ fontWeight: 700 }}
                   >
                     {"Code"}

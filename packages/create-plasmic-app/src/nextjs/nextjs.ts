@@ -118,6 +118,9 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       makeCatchallPage_app_loader(jsOrTs)
     );
   } else {
+    // Replace starter layout. Removes app/layout.js in JS projects before writing layout.jsx.
+    deleteGlob(path.join(projectPath, "app", "layout.*"));
+
     // ./app/layout.tsx
     await fs.writeFile(
       path.join(projectPath, "app", `layout.${jsOrTs}x`),

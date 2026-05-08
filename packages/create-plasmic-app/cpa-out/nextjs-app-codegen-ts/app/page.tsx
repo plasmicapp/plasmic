@@ -9,7 +9,6 @@ import {
   generateDynamicMetadata,
   HomepageServerSkeletonProps
 } from "../components/plasmic/create_plasmic_app/PlasmicHomepageServer";
-
 import type { Metadata, ResolvingMetadata } from "next";
 
 export async function generateMetadata(
@@ -40,11 +39,12 @@ async function Homepage({ params, searchParams }: HomepageServerSkeletonProps) {
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
 
+  const ctx = await makeAppRouterPageCtx({ params, searchParams });
   return (
     <PageParamsProvider__
-      route="/"
-      params={await params}
-      query={await searchParams}
+      route={ctx.pageRoute}
+      params={ctx.params}
+      query={ctx.query}
     >
       <PlasmicHomepageServer />
     </PageParamsProvider__>

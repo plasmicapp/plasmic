@@ -4,8 +4,10 @@ import { JsOrTs } from "../../../utils/types";
 export function makePlasmicInitClient_app_codegen(jsOrTs: JsOrTs): string {
   return `"use client";
 
-import * as React from "react";
-import { PlasmicRootProvider } from "@plasmicapp/react-web";
+${ifTs(
+  jsOrTs,
+  'import type * as React from "react";\n'
+)}import { PlasmicRootProvider } from "@plasmicapp/react-web";
 import Link from "next/link";
 
 /**

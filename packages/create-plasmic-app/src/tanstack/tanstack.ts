@@ -29,7 +29,17 @@ export const tanstackStrategy: CPAStrategy = {
     const parentDir = path.dirname(fullProjectPath);
     process.chdir(parentDir);
 
-    const createCommand = `npx create-tsrouter-app@latest ${projectName} --template file-router --add-ons start`;
+    const createCommand = [
+      `npx create-tsrouter-app@latest ${projectName}`,
+      "--framework React",
+      "--router-only",
+      "--no-toolchain",
+      "--package-manager yarn",
+      "--git",
+      "--no-intent",
+      "--no-examples",
+      "--yes",
+    ].join(" ");
 
     await spawnOrFail(createCommand);
 
