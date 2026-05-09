@@ -1,8 +1,6 @@
-import {
-  initPlasmicLoader,
-} from "@plasmicapp/loader-gatsby";
+const { initPlasmicLoader } = require("@plasmicapp/loader-gatsby");
 
-export function initPlasmicLoaderWithRegistrations(plasmicOptions) {
+function initPlasmicLoaderWithRegistrations(plasmicOptions) {
   const PLASMIC = initPlasmicLoader(plasmicOptions);
 
   // You can register any code components that you want to use here; see
@@ -16,3 +14,5 @@ export function initPlasmicLoaderWithRegistrations(plasmicOptions) {
 
   return PLASMIC;
 }
+
+module.exports = { initPlasmicLoaderWithRegistrations };

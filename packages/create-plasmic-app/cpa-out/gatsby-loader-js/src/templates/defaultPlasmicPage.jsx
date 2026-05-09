@@ -15,7 +15,7 @@ export const query = graphql`
 `;
 
 
-const PlasmicGatsbyPage = ({ data, location }) => {
+const PlasmicGatsbyPage = ({ data, location, pageContext }) => {
   const {
     plasmicComponents,
     plasmicOptions,
@@ -26,6 +26,7 @@ const PlasmicGatsbyPage = ({ data, location }) => {
     <PlasmicRootProvider
       loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
       prefetchedData={plasmicComponents}
+      prefetchedQueryData={pageContext.queryCache}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}

@@ -25,15 +25,18 @@ export const query = graphql\`
 
 ${ifTs(
   jsOrTs,
-  `interface PlasmicGatsbyPageProps extends PageProps {
+  `export interface PlasmicGatsbyPageProps extends PageProps {
   data: {
     plasmicOptions: InitOptions
     plasmicComponents: ComponentRenderData
   }
+  pageContext: {
+    queryCache?: Record<string, any>
+  }
 }
 `
 )}
-const PlasmicGatsbyPage = ({ data, location }${ifTs(
+const PlasmicGatsbyPage = ({ data, location, pageContext }${ifTs(
     jsOrTs,
     ": PlasmicGatsbyPageProps"
   )}) => {
@@ -47,6 +50,7 @@ const PlasmicGatsbyPage = ({ data, location }${ifTs(
     <PlasmicRootProvider
       loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
       prefetchedData={plasmicComponents}
+      prefetchedQueryData={pageContext.queryCache}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
@@ -73,29 +77,127 @@ export const GATSBY_404 = `const NotFound = () => {
 export default NotFound;
 `;
 
-export function GATSBY_PLUGIN_CONFIG(
+export function makeGatsbyConfig(
   projectId: string,
   projectApiToken: string,
   jsOrTs: JsOrTs
 ): string {
-  return `{
-  resolve: "@plasmicapp/loader-gatsby",
-  options: {
-    projects: [
-      {
-        id: "${projectId}",
-        token: "${projectApiToken}",
-      },
-    ], // An array of project ids.
-    preview: false,
-    defaultPlasmicPage: ${
-      jsOrTs === "ts" ? "path" : "require"
-    }.resolve("./src/templates/defaultPlasmicPage.${jsOrTs}x"),
+  return `${
+    jsOrTs === "ts"
+      ? `import path from "path";
+import type { GatsbyConfig } from "gatsby";`
+      : `const path = require("path");`
+  }
+
+${
+  jsOrTs === "ts" ? `` : `/** @type {import("gatsby").GatsbyConfig} */\n`
+}const config${ifTs(jsOrTs, `: GatsbyConfig`)} = {
+  siteMetadata: {
+    siteUrl: \`https://www.yourdomain.tld\`,
   },
-},
-{
-  resolve: "gatsby-plugin-react-helmet",
+  graphqlTypegen: true,
+  plugins: [
+    {
+      resolve: "@plasmicapp/loader-gatsby",
+      options: {
+        projects: [
+          {
+            id: "${projectId}",
+            token: "${projectApiToken}",
+          },
+        ], // An array of project ids.
+        preview: false,
+        defaultPlasmicPage: path.resolve("./src/templates/defaultPlasmicPage.${jsOrTs}x"),
+      },
+    },
+    {
+      resolve: "gatsby-plugin-react-helmet",
+    },
+  ],
+};
+
+${jsOrTs === "ts" ? `export default config` : `module.exports = config`};
+`;
 }
+
+export function makeGatsbyNode(jsOrTs: JsOrTs): string {
+  return `/**
+ * Implement Gatsby's Node APIs in this file.
+ *
+ * See: https://www.gatsbyjs.com/docs/node-apis/
+ *
+ * \`onCreatePage\` runs \`extractPlasmicQueryData\` at build time so that the
+ * SSG'd HTML for each Plasmic page contains its actual rendered content,
+ * rather than the \`<Suspense fallback>\` ("Loading...") of unresolved data
+ * queries.
+ */
+${
+  jsOrTs === "ts"
+    ? `import type { CreatePageArgs } from "gatsby";
+import * as React from "react";
+import {
+  extractPlasmicQueryData,
+  PlasmicComponent,
+  PlasmicRootProvider,
+} from "@plasmicapp/loader-gatsby";
+import type { GatsbyPluginOptions } from "@plasmicapp/loader-gatsby";
+import gatsbyConfig from "./gatsby-config";
+import { initPlasmicLoaderWithRegistrations } from "./src/plasmic-init";
+import type { PlasmicGatsbyPageProps } from "./src/templates/defaultPlasmicPage";`
+    : `const React = require("react");
+const {
+  extractPlasmicQueryData,
+  PlasmicComponent,
+  PlasmicRootProvider,
+} = require("@plasmicapp/loader-gatsby");
+const gatsbyConfig = require("./gatsby-config");
+const { initPlasmicLoaderWithRegistrations } = require("./src/plasmic-init");`
+}
+
+const plasmicLoaderOptions = gatsbyConfig.plugins.find(
+  (p) => p && p.resolve === "@plasmicapp/loader-gatsby"
+)${ifTs(jsOrTs, `!`)}.options${ifTs(jsOrTs, ` as GatsbyPluginOptions`)};
+const PLASMIC = initPlasmicLoaderWithRegistrations(plasmicLoaderOptions);
+
+${
+  jsOrTs === "ts" ? `export const onCreatePage =` : `exports.onCreatePage =`
+} async ({ page, actions }${ifTs(
+    jsOrTs,
+    `: CreatePageArgs<PlasmicGatsbyPageProps["pageContext"]>`
+  )}) => {
+  if (page.component !== plasmicLoaderOptions.defaultPlasmicPage) {
+    return;
+  }
+  if (page.context?.queryCache) {
+    return;
+  }
+
+  const componentData = await PLASMIC.maybeFetchComponentData(page.path);
+  if (!componentData) {
+    return;
+  }
+  const meta = componentData.entryCompMetas[0];
+
+  const queryCache = await extractPlasmicQueryData(
+    React.createElement(
+      PlasmicRootProvider,
+      {
+        loader: PLASMIC,
+        prefetchedData: componentData,
+        pageRoute: meta.path,
+        pageParams: meta.params,
+        pageQuery: {},
+      },
+      React.createElement(PlasmicComponent, { component: meta.displayName })
+    )
+  );
+
+  actions.deletePage(page);
+  actions.createPage({
+    ...page,
+    context: { ...page.context, queryCache },
+  });
+};
 `;
 }
 
@@ -202,17 +304,21 @@ exports.onRenderBody = ({ pathname, setHeadComponents }) => {
 `;
 
 export function makeGatsbyPlasmicInit(jsOrTs: JsOrTs): string {
-  return `import {
-  initPlasmicLoader,${ifTs(
-    jsOrTs,
-    `
-  InitOptions,`
-  )}
-} from "@plasmicapp/loader-gatsby";
+  return `${
+    jsOrTs === "ts"
+      ? `import {
+  initPlasmicLoader,
+  InitOptions,
+} from "@plasmicapp/loader-gatsby";`
+      : `const { initPlasmicLoader } = require("@plasmicapp/loader-gatsby");`
+  }
 
-export function initPlasmicLoaderWithRegistrations(plasmicOptions${ifTs(
+${ifTs(
+  jsOrTs,
+  `export `
+)}function initPlasmicLoaderWithRegistrations(plasmicOptions${ifTs(
     jsOrTs,
-    ": InitOptions"
+    `: InitOptions`
   )}) {
   const PLASMIC = initPlasmicLoader(plasmicOptions);
 
@@ -227,7 +333,11 @@ export function initPlasmicLoaderWithRegistrations(plasmicOptions${ifTs(
 
   return PLASMIC;
 }
-`;
+${
+  jsOrTs === "ts"
+    ? ``
+    : `\nmodule.exports = { initPlasmicLoaderWithRegistrations };\n`
+}`;
 }
 
 export function wrapAppRootForCodegen(): string {

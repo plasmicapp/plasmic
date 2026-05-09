@@ -16,14 +16,17 @@ export const query = graphql`
   }
 `;
 
-interface PlasmicGatsbyPageProps extends PageProps {
+export interface PlasmicGatsbyPageProps extends PageProps {
   data: {
     plasmicOptions: InitOptions
     plasmicComponents: ComponentRenderData
   }
+  pageContext: {
+    queryCache?: Record<string, any>
+  }
 }
 
-const PlasmicGatsbyPage = ({ data, location }: PlasmicGatsbyPageProps) => {
+const PlasmicGatsbyPage = ({ data, location, pageContext }: PlasmicGatsbyPageProps) => {
   const {
     plasmicComponents,
     plasmicOptions,
@@ -34,6 +37,7 @@ const PlasmicGatsbyPage = ({ data, location }: PlasmicGatsbyPageProps) => {
     <PlasmicRootProvider
       loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
       prefetchedData={plasmicComponents}
+      prefetchedQueryData={pageContext.queryCache}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}

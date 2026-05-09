@@ -1,24 +1,23 @@
-import { createReadStream, existsSync, promises as fs } from "fs";
+import { existsSync, promises as fs } from "fs";
 import L from "lodash";
 import path from "path";
-import * as readline from "readline";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import {
   deleteGlob,
   generateWelcomePage,
   getPlasmicConfig,
-  ifTs,
 } from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy } from "../utils/strategy";
 import {
   GATSBY_404,
-  GATSBY_PLUGIN_CONFIG,
   GATSBY_SSR_CONFIG,
+  makeGatsbyConfig,
   makeGatsbyDefaultPage,
   makeGatsbyHostPage,
+  makeGatsbyNode,
   makeGatsbyPlasmicInit,
   wrapAppRootForCodegen,
 } from "./template";
@@ -89,33 +88,18 @@ export const gatsbyStrategy: CPAStrategy = {
     );
 
     if (scheme === "loader") {
-      // create-gatsby will create a default gatsby-config that we need to modify
       const gatsbyConfigFile = path.join(
         projectPath,
         `gatsby-config.${jsOrTs}`
       );
-      const rl = readline.createInterface({
-        input: createReadStream(gatsbyConfigFile),
-        crlfDelay: Infinity,
-      });
-      // Typescript doesn't accept require.resolve
-      // https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/#requireresolve
-      let result = ifTs(jsOrTs, `import path from "path";\n`);
-      const pluginConfig = GATSBY_PLUGIN_CONFIG(
-        projectId,
-        ensure(projectApiToken, "Missing projectApiToken"),
-        jsOrTs
+      await fs.writeFile(
+        gatsbyConfigFile,
+        makeGatsbyConfig(
+          projectId,
+          ensure(projectApiToken, "Missing projectApiToken"),
+          jsOrTs
+        )
       );
-      for await (const line of rl) {
-        if (line.includes("plugins: []")) {
-          result += "  plugins: [" + pluginConfig + "]\n";
-        } else if (line.includes("plugins: [")) {
-          result += line + pluginConfig + "\n";
-        } else {
-          result += line + "\n";
-        }
-      }
-      await fs.writeFile(gatsbyConfigFile, result);
     }
   },
   generateFiles: async (args) => {
@@ -140,8 +124,12 @@ export const gatsbyStrategy: CPAStrategy = {
       })
     );
 
-    // Start with an empty gatsby-node
-    await fs.writeFile(path.join(projectPath, `gatsby-node.${jsOrTs}`), "");
+    // gatsby-node implements onCreatePage to prefetch query data for SSG.
+    // For codegen scheme, leave it empty.
+    await fs.writeFile(
+      path.join(projectPath, `gatsby-node.${jsOrTs}`),
+      scheme === "loader" ? makeGatsbyNode(jsOrTs) : ""
+    );
 
     // Updates `gatsby-ssr` to include script tag for preamble
     await fs.writeFile(
