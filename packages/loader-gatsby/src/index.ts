@@ -7,6 +7,7 @@ export {
   PlasmicCanvasHost,
   PlasmicComponent,
   PlasmicRootProvider,
+  extractPlasmicQueryData,
   repeatedElement,
   useDataEnv,
   usePlasmicCanvasComponentInfo,
@@ -27,5 +28,6 @@ export type {
   TokenRegistration,
 } from "@plasmicapp/loader-react";
 export { createPages, createResolvers, sourceNodes } from "./gatsby-node";
+export type { GatsbyPluginOptions } from "./gatsby-node";
 export { replaceRenderer } from "./gatsby-ssr";
 export { initPlasmicLoader } from "./loader";

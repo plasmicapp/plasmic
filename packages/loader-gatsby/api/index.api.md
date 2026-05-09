@@ -9,6 +9,7 @@ import { ComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentRenderData } from '@plasmicapp/loader-react';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
+import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
 import { GatsbyNode } from 'gatsby';
 import { InitOptions } from '@plasmicapp/loader-react';
 import { PageMeta } from '@plasmicapp/loader-react';
@@ -46,6 +47,14 @@ export const createResolvers: GatsbyNode["createResolvers"];
 export { DataCtxReader }
 
 export { DataProvider }
+
+export { extractPlasmicQueryData }
+
+// @public (undocumented)
+export type GatsbyPluginOptions = PluginOptions & InitOptions & {
+    defaultPlasmicPage?: string;
+    ignorePaths?: string[];
+};
 
 export { InitOptions }
 
