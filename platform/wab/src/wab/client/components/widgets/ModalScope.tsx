@@ -6,7 +6,7 @@ import { FocusScope } from "react-aria";
 
 export type ModalScopeProps = Omit<
   React.ComponentProps<"div">,
-  "tabIndex" | "onKeyDown" | "onKeyUp" | "onKeyPress"
+  "tabIndex" | "onKeyDown" | "onKeyUp" | "onKeyPress" | "onContextMenu"
 > & {
   allowKeyCombos?: string[] | string[][];
   containFocus?: boolean;
@@ -59,6 +59,7 @@ function ModalScopeInternal({
       ref={containerElRef}
       {...keyboardEventHandlers}
       {...props}
+      onContextMenu={(e) => e.stopPropagation()}
       // Setting tabIndex -1 allows this div to be focused via clicking but not
       // tabbed to. This is necessary to prevent FocusScope's contain
       // functionality from causing unnecessary scrolling.
