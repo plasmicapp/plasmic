@@ -103,4 +103,78 @@ describe("changeElement copilot tool", () => {
     expect(tryExtractJson(vs.attrs.href)).toEqual("/order");
     expect(vs.rs.values.color).toBeUndefined();
   });
+
+  it("ignores reserved attrs instead of writing them to vs.attrs", async () => {
+    const link = addChild("a");
+    const vs = ensureVariantSetting(link, [getBaseVariant(page)]);
+
+    const result = await changeElementTool.execute(studioCtx, {
+      componentUuid: page.uuid,
+      changes: [
+        {
+          tplUuid: link.uuid,
+          attrs: {
+            style: "color: red; padding: 10px;",
+            class: "my-class",
+            className: "my-class",
+            id: "my-id",
+            "data-plasmic-name": "Foo",
+            "data-plasmic-component": "Bar",
+            "data-props": "{}",
+            slot: "header",
+            src: "/img.png",
+            srcset: "/img.png 1x",
+            children: "child text",
+            outerHTML: "<svg/>",
+            // A non-reserved attr alongside the reserved ones should still be applied.
+            href: "/order",
+          },
+        },
+      ],
+    });
+
+    expect(result).toContain(
+      `Element "${link.uuid}" attrs changed successfully.`
+    );
+    expect(result).toContain(`ignored reserved attrs`);
+    for (const reserved of [
+      "style",
+      "class",
+      "className",
+      "id",
+      "data-plasmic-name",
+      "data-plasmic-component",
+      "data-props",
+      "slot",
+      "src",
+      "srcset",
+      "children",
+      "outerHTML",
+    ]) {
+      expect(result).toContain(`"${reserved}"`);
+    }
+    const { href, ...restAttrs } = vs.attrs;
+    expect(restAttrs).toEqual({});
+    expect(tryExtractJson(href)).toEqual("/order");
+  });
+
+  it("does not create a variant setting when only reserved attrs are passed", async () => {
+    const link = addChild("a");
+
+    const result = await changeElementTool.execute(studioCtx, {
+      componentUuid: page.uuid,
+      changes: [
+        {
+          tplUuid: link.uuid,
+          attrs: { style: "color: red", id: "x" },
+        },
+      ],
+    });
+
+    expect(result).not.toContain(`attrs changed successfully`);
+    expect(result).toContain(`ignored reserved attrs`);
+    const vs = ensureVariantSetting(link, [getBaseVariant(page)]);
+    expect(vs.attrs.style).toBeUndefined();
+    expect(vs.attrs.id).toBeUndefined();
+  });
 });

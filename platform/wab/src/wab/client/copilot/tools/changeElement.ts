@@ -1,3 +1,4 @@
+import { htmlAttrsIgnoredByTpl } from "@/wab/client/operations/html-to-tpl";
 import { renameTpl } from "@/wab/client/operations/rename-tpl";
 import { processUnsanitizedStyles } from "@/wab/client/web-importer/html-parser";
 import { unwrap } from "@/wab/commons/failable-utils";
@@ -15,6 +16,14 @@ import {
 import { codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import { JsonObject } from "@/wab/shared/core/lang";
 import { flattenTpls, isTplNamable } from "@/wab/shared/core/tpls";
+
+// Attrs copilot must not write via change.attrs
+const COPILOT_RESERVED_ATTR_KEYS = new Set([
+  ...htmlAttrsIgnoredByTpl,
+  "id",
+  "children",
+  "outerHTML",
+]);
 
 export const changeElementTool = defineCopilotTool(
   COPILOT_TOOL_DEFS.changeElement,
@@ -75,19 +84,40 @@ export const changeElementTool = defineCopilotTool(
           }
 
           if (change.attrs) {
-            const vs = vtm.ensureVariantSetting(tpl, variantCombo);
-
+            const allowedEntries: [string, string | number | boolean | null][] =
+              [];
+            const ignoredKeys: string[] = [];
             for (const [key, value] of Object.entries(change.attrs)) {
-              if (value === null) {
-                delete vs.attrs[key];
+              if (COPILOT_RESERVED_ATTR_KEYS.has(key)) {
+                ignoredKeys.push(key);
               } else {
-                vs.attrs[key] = codeLit(value);
+                allowedEntries.push([key, value]);
               }
             }
 
-            response.push(
-              `Element "${change.tplUuid}" attrs changed successfully.`
-            );
+            if (allowedEntries.length > 0) {
+              const vs = vtm.ensureVariantSetting(tpl, variantCombo);
+              for (const [key, value] of allowedEntries) {
+                if (value === null) {
+                  delete vs.attrs[key];
+                } else {
+                  vs.attrs[key] = codeLit(value);
+                }
+              }
+              response.push(
+                `Element "${change.tplUuid}" attrs changed successfully.`
+              );
+            }
+
+            if (ignoredKeys.length > 0) {
+              response.push(
+                `Element "${
+                  change.tplUuid
+                }" ignored reserved attrs: ${ignoredKeys
+                  .map((k) => `"${k}"`)
+                  .join(", ")}`
+              );
+            }
           }
 
           if (change.styles) {

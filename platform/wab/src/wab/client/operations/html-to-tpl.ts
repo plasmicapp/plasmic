@@ -199,6 +199,20 @@ export async function htmlToTpl(
   };
 }
 
+// Attrs handled via dedicated paths instead of vs.attrs. Exported so copilot
+// tools can reuse the same exclusion list.
+export const htmlAttrsIgnoredByTpl = new Set([
+  "class", // RuleSet styles
+  "className", // RuleSet styles
+  "style", // RuleSet styles (split to safe/unsafe)
+  "data-plasmic-name", // Tpl name
+  "data-plasmic-component", // Plasmic metadata
+  "data-props", // Plasmic metadata
+  "slot", // Plasmic slot
+  "src", // image asset
+  "srcset", // image asset
+]);
+
 type TplVariantSettingsData = {
   variantCombo: WIVariant[];
   safeStyles: Record<string, string>;
@@ -364,18 +378,6 @@ async function wiTreeToTpl(
 
     tplVariantSettingsData.set(tpl, tplVariantSettings);
   }
-
-  const htmlAttrsIgnoredByTpl = new Set([
-    "class",
-    "className",
-    "style",
-    "data-plasmic-name",
-    "data-plasmic-component",
-    "data-props",
-    "slot",
-    "src",
-    "srcset",
-  ]);
 
   function htmlAttrsToTplAttrs(node: WIBase): AttrsSpec {
     return filterObject(node.attrs, ([key]) => !htmlAttrsIgnoredByTpl.has(key));
