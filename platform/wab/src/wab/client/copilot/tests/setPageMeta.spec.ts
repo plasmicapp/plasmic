@@ -128,6 +128,33 @@ describe("setPageMeta copilot tool", () => {
     );
   });
 
+  it("clears nullable meta fields when given null", async () => {
+    const { uuid: componentUuid } = await createPage("Landing", "/landing");
+
+    await setPageMetaTool.execute(studioCtx, {
+      componentUuid,
+      title: "Landing | Acme",
+      description: "Welcome.",
+      canonical: "https://example.com/landing",
+      openGraphImage: "https://example.com/landing-og.png",
+    });
+
+    await setPageMetaTool.execute(studioCtx, {
+      componentUuid,
+      title: null,
+      description: null,
+      canonical: null,
+      openGraphImage: null,
+    });
+    const page = expectPage(componentUuid);
+
+    expect(page.pageMeta.title).toBeNull();
+    // `description` is non-nullable on the model, so null clears to ""
+    expect(page.pageMeta.description).toEqual("");
+    expect(page.pageMeta.canonical).toBeNull();
+    expect(page.pageMeta.openGraphImage).toBeNull();
+  });
+
   it("rejects non-page components", async () => {
     const component = await studioCtx.changeUnsafe(() =>
       studioCtx.addComponent("Widget", {

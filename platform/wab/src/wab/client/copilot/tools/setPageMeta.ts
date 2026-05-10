@@ -65,14 +65,10 @@ export const setPageMetaTool = defineCopilotTool(
       throw new Error(`Component "${input.componentUuid}" is not a page.`);
     }
 
-    if (
-      input.name === undefined &&
-      input.path === undefined &&
-      input.title === undefined &&
-      input.description === undefined &&
-      input.canonical === undefined &&
-      input.openGraphImage === undefined
-    ) {
+    const hasUpdates = Object.entries(input).some(
+      ([key, value]) => key !== "componentUuid" && value !== undefined
+    );
+    if (!hasUpdates) {
       throw new Error("At least one page metadata field is required.");
     }
     const name = input.name?.trim();
