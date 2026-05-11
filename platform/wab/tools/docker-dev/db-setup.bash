@@ -12,10 +12,16 @@ EOF
 chmod 600 ~/.pgpass
 
 # createdb are missing on some platforms, like Macports postgresql4-server.
-psql -U postgres -c "create user wab password '$PGPASSWORD';"                                   # no special permissions
-psql -U postgres -c "create user cypress password '$PGPASSWORD';"                               # no special permissions
-psql -U postgres -c "create user superwab password '$PGPASSWORD' createdb createrole in group wab;" # let create tables and users
-psql -U postgres -c "create user supertdbwab password '$PGPASSWORD' createdb createrole in group wab;"       # let create tables and users
-psql -U postgres -c 'create database wab owner wab;'
+psql -U wab -d postgres -c "alter user wab password '$PGPASSWORD';"                         # bootstrap user
+psql -U wab -d postgres -c "create user cypress password '$PGPASSWORD';"                     # no special permissions
+psql -U wab -d postgres -c "create user superwab password '$PGPASSWORD' createdb createrole in group wab;"    # let create tables and users
+psql -U wab -d postgres -c "create user supertdbwab password '$PGPASSWORD' createdb createrole in group wab;"  # let create tables and users
+psql -U wab -d postgres -c 'alter database wab owner to wab;'
+
 # Needed for generate_uuid_v4, used in some migrations.
-psql -U postgres -c 'create extension if not exists "uuid-ossp";'
+psql -U wab -d wab -c 'create extension if not exists "uuid-ossp";'
+
+# The postgres image creates POSTGRES_USER as a superuser. Keep `wab` as the
+# app/database owner, but drop superuser privileges so test helpers can force
+# drop databases with active `wab` sessions.
+psql -U wab -d postgres -c 'alter user wab nosuperuser createdb nocreaterole;'

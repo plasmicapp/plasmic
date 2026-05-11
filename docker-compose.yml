@@ -5,13 +5,15 @@ services:
     restart: always
     environment:
       - POSTGRES_PASSWORD=SEKRET
+      - POSTGRES_USER=wab
+      - POSTGRES_DB=wab
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U wab"]
       interval: 5s
       timeout: 10s
       retries: 5
@@ -22,12 +24,12 @@ services:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for debugging purpose
-    - |
-      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
-      yarn typeorm migration:run && \
-      yarn seed && \
-      cd /plasmic && \
-      yarn dev
+      - |
+        jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+        yarn typeorm migration:run && \
+        yarn seed && \
+        cd /plasmic && \
+        yarn dev
     volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic
@@ -64,6 +66,7 @@ services:
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=SEKRET
       - NODE_ENV=development
+      - POSTGRES_USER=wab
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
     tty: true
