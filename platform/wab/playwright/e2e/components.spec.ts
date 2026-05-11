@@ -7,8 +7,10 @@ import { test } from "../fixtures/test";
 import { goToProject } from "../utils/studio-utils";
 import { undoAndRedo } from "../utils/undo-and-redo";
 
-// Test isn't passing even in cypress
-// TODO: fix
+// Was not passing in Cypress at the time of migration.
+// It clicks into a Widget instance and tries to add a component variant group there,
+// which no longer has an "Add variant group" option in the right panel.
+// TODO - run variant group steps while editing the Widget artboard not the page artboard.
 test.describe.skip("components", () => {
   let projectId: string;
 
@@ -40,9 +42,9 @@ test.describe.skip("components", () => {
 
     await models.studio.extractComponentNamed("Widget");
 
-    await models.studio.openComponentInNewFrame("Widget", {
-      editInNewArtboard: true,
-    });
+    // NOTE: the `editInNewArtboard` flag in openComponentInNewFrame is
+    // misnamed — `false` actually clicks "Edit in new artboard".
+    await models.studio.openComponentInNewFrame("Widget");
 
     await page.keyboard.press("n");
 

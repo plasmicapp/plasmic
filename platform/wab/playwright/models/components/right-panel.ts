@@ -1343,6 +1343,12 @@ export class RightPanel extends BaseModel {
       .waitFor({ state: "detached", timeout: 2000 });
   }
 
+  async closeDataPicker() {
+    const picker = this.frame.locator('[data-test-id="data-picker"]');
+    await picker.getByRole("button", { name: "Cancel" }).click();
+    await picker.waitFor({ state: "detached", timeout: 5000 });
+  }
+
   async clickDataPlasmicProp(propName: string) {
     const prop = this.frame.locator(`[data-plasmic-prop="${propName}"]`);
     await prop.click();

@@ -69,42 +69,62 @@ export async function getComponentUuid(
   return null;
 }
 
-function clone<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
-}
-
 export async function checkFormValues(
   expectedFormItems: ExpectedFormItem[],
   root: FrameLocator
 ) {
-  for (const item of clone(expectedFormItems)) {
+  for (const item of expectedFormItems) {
     if (item.type !== "Checkbox") {
-      const labelByText = root.locator(`text=${item.label}`).first();
-      await expect(labelByText).toBeVisible({ timeout: 15000 });
+      await expect(
+        root
+          .locator(".ant-form-item-label label")
+          .filter({ hasText: item.label })
+      ).toBeVisible({ timeout: 15000 });
     }
-    if (item.value) {
-      const valueStr = String(item.value);
+    if (item.value == null) {
+      continue;
+    }
+    const valueStr = String(item.value);
 
-      if (item.type === "Text Area") {
-        const textarea = root.locator(`textarea[name="${item.name}"]`);
-        await expect(textarea).toHaveValue(valueStr);
-      } else if (item.type === "Select") {
-        // Handle Select type
-      } else if (item.type === "Checkbox") {
-        const checkbox = root.locator(
-          `input[type="checkbox"][name="${item.name}"]`
+    switch (item.type) {
+      case "Text Area":
+        await expect(root.locator(`textarea[name="${item.name}"]`)).toHaveValue(
+          valueStr
         );
-        await expect(checkbox).toBeChecked();
-      } else if (item.type === "Radio Group") {
+        break;
+      case "Checkbox":
+        await expect(
+          root.locator(`input[type="checkbox"][name="${item.name}"]`)
+        ).toBeChecked();
+        break;
+      case "Radio Group":
         await expect(
           root.locator(`input[type="radio"][value="${item.value}"]`)
         ).toBeChecked();
-      } else if (item.type === "DatePicker") {
-        // Handle DatePicker type
-      } else {
-        const input = root.locator(`input[name="${item.name}"]`);
-        await expect(input).toHaveValue(valueStr);
+        break;
+      case "Select": {
+        // Scope by the form-item label so the right Select is picked
+        // when multiple are on the page.
+        const formItem = root
+          .locator(".ant-form-item")
+          .filter({
+            has: root
+              .locator(".ant-form-item-label label")
+              .filter({ hasText: item.label }),
+          })
+          .first();
+        await expect(formItem.locator(".ant-select-selection-item")).toHaveText(
+          valueStr
+        );
+        break;
       }
+      case "DatePicker":
+        // Not currently asserted; left as a no-op for parity.
+        break;
+      default:
+        await expect(root.locator(`input[name="${item.name}"]`)).toHaveValue(
+          valueStr
+        );
     }
   }
 }
