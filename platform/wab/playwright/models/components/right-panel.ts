@@ -731,10 +731,13 @@ export class RightPanel extends BaseModel {
         variable?: string[];
         operation?: string;
         value?: string;
+        startIndex?: string;
+        deleteCount?: string;
         arguments?: Record<string, string>;
         eventRef?: string;
         customFunction?: string;
       };
+      dynamicArgs?: Record<string, string>;
       mode?: "always" | "never" | "when";
       conditionalExpr?: string;
     }>
@@ -816,6 +819,24 @@ export class RightPanel extends BaseModel {
       if (interaction.args.customFunction) {
         await this.customFunctionInput.click();
         await this.insertMonacoCode(interaction.args.customFunction);
+      }
+
+      for (const argName of ["startIndex", "deleteCount"] as const) {
+        const argValue = interaction.args[argName];
+        if (argValue) {
+          await this.setDataPlasmicProp(argName, argValue);
+        }
+      }
+
+      if (interaction.dynamicArgs) {
+        for (const [argName, argValue] of Object.entries(
+          interaction.dynamicArgs
+        )) {
+          const input = this.frame.locator(`[data-plasmic-prop="${argName}"]`);
+          await input.click({ button: "right" });
+          await this.useDynamicValueButton.click();
+          await this.insertMonacoCode(argValue);
+        }
       }
 
       if (interaction.mode) {

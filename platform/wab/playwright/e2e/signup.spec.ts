@@ -105,9 +105,20 @@ test.describe("Signup flow", () => {
       .getByText("Enter valid emails only, comma separated...")
       .waitFor({ timeout: 5000 });
 
+    await page
+      .locator('[data-test-id="invite-emails"] .ant-select-selection-item', {
+        hasText: "user2@g",
+      })
+      .locator(".ant-select-selection-item-remove")
+      .click();
+    await page.getByRole("combobox").click();
+    await page.keyboard.type("user2@gmail.com");
+    await page.keyboard.press("Enter");
+    await page.keyboard.press("Escape");
+
     await Promise.all([
       page.waitForURL(`**/projects/${projectId}**`, { timeout: 60_000 }),
-      page.getByText("Do this later").click(),
+      page.getByText("Send invites").click(),
     ]);
 
     await waitForFrameToLoad(page);

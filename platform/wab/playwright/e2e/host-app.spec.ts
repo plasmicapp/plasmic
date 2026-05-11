@@ -129,10 +129,25 @@ test.describe("host-app", () => {
 
     await models.studio.rightPanel.checkNoErrors();
 
+    const consoleLogs: string[] = [];
+    const consoleListener = (msg: any) => {
+      if (msg.type() === "log") {
+        consoleLogs.push(msg.text());
+      }
+    };
+    page.on("console", consoleListener);
     await goToProject(page, `/projects/${projectId}`);
 
     await models.studio.rightPanel.checkNoErrors();
     await models.studio.waitForSave();
+    page.off("console", consoleListener);
+
+    expect(
+      consoleLogs.some((text) => text.includes("Save result is SkipUpToDate"))
+    ).toBe(true);
+    expect(
+      consoleLogs.some((text) => text.includes("Save result is Success"))
+    ).toBe(false);
 
     await models.studio.rightPanel.configureProjectAppHost(
       "plasmic-host-updated-old-host"

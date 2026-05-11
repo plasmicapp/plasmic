@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
-test.describe.skip("routing - branch UI not appearing", () => {
+test.describe.skip("routing - branch text edit not applying reliably", () => {
   let projectId: string;
 
   test.afterEach(async ({ apiClient }) => {
@@ -14,11 +14,25 @@ test.describe.skip("routing - branch UI not appearing", () => {
   test("should switch branches", async ({ models, page, apiClient }) => {
     projectId = await apiClient.setupNewProject({
       name: "routing-branches",
+      devFlags: { branching: true },
     });
 
-    await goToProject(page, `/projects/${projectId}?devFlags=branching`);
+    await goToProject(page, `/projects/${projectId}`);
 
     await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
+
+    async function getFrameWithText(text: string) {
+      for (const index of [0, 1, 2]) {
+        const frame = models.studio.getComponentFrameByIndex(index);
+        const textLocator = frame.getByText(text).first();
+        if (await textLocator.isVisible({ timeout: 2000 }).catch(() => false)) {
+          return frame;
+        }
+      }
+      const fallback = models.studio.componentFrame;
+      await expect(fallback.getByText(text).first()).toBeVisible();
+      return fallback;
+    }
 
     const mainFrame = await models.studio.createNewComponent("DisplayBranch");
     await models.studio.focusFrameRoot(mainFrame);
@@ -26,18 +40,12 @@ test.describe.skip("routing - branch UI not appearing", () => {
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.renameSelectionTag("text");
 
-    const canvasBounds = await mainFrame.boundingBox();
-    if (canvasBounds) {
-      await page.mouse.dblclick(
-        canvasBounds.x + canvasBounds.width / 2,
-        canvasBounds.y + canvasBounds.height / 2
-      );
-      await page.waitForTimeout(500);
-    }
-
-    await page.keyboard.type("Main");
+    await models.studio.rightPanel.textContentButton.click();
+    await page.keyboard.insertText("Main");
     await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
+    await page.keyboard.press("Escape");
+    await models.studio.leftPanel.switchToTreeTab();
 
     await models.studio.publishVersion("need to publish before branching");
 
@@ -50,9 +58,10 @@ test.describe.skip("routing - branch UI not appearing", () => {
       await branchButton.click();
       await page.waitForTimeout(500);
 
-      const newBranchButton = models.studio.frame
-        .locator("button")
-        .filter({ hasText: "New" });
+      const newBranchButton = models.studio.frame.getByRole("button", {
+        name: "New",
+        exact: true,
+      });
       await newBranchButton.click();
 
       await page.keyboard.type(branchName);
@@ -65,25 +74,15 @@ test.describe.skip("routing - branch UI not appearing", () => {
         timeout: 15_000,
       });
 
-      await models.studio.leftPanel.selectTreeNode(["text"]);
+      const frame = await getFrameWithText("Main");
+      const textElement = frame.getByText("Main").first();
+      await expect(textElement).toBeVisible();
 
-      const frame = models.studio.frames.first();
-      const textElement = frame
-        .locator('div[data-plasmic-role="text"]')
-        .first();
-      await expect(textElement).toContainText("Main");
-
-      const frameBounds = await frame.boundingBox();
-      if (frameBounds) {
-        await page.mouse.dblclick(
-          frameBounds.x + frameBounds.width / 2,
-          frameBounds.y + frameBounds.height / 2
-        );
-        await page.waitForTimeout(500);
-      }
-
+      await textElement.click({ force: true });
+      await page.waitForTimeout(500);
+      await models.studio.rightPanel.textContentButton.click();
       await page.keyboard.press("ControlOrMeta+a");
-      await page.keyboard.type(branchName);
+      await page.keyboard.insertText(branchName);
       await page.keyboard.press("Escape");
       await page.waitForTimeout(500);
     }
@@ -115,52 +114,22 @@ test.describe.skip("routing - branch UI not appearing", () => {
     await createNewBranch("Feature");
 
     await switchBranch("main");
-    await models.studio.leftPanel.selectTreeNode(["text"]);
-    const textInMainBranch = models.studio.frames
-      .first()
-      .locator('div[data-plasmic-role="text"]')
-      .first();
-    await expect(textInMainBranch).toContainText("Main");
+    await getFrameWithText("Main");
 
     await switchBranch("Feature");
-    await models.studio.leftPanel.selectTreeNode(["text"]);
-    const textInFeatureBranch = models.studio.frames
-      .first()
-      .locator('div[data-plasmic-role="text"]')
-      .first();
-    await expect(textInFeatureBranch).toContainText("Feature");
+    await getFrameWithText("Feature");
 
     await goToProject(page, `/projects/${projectId}?branch=main`);
-    await models.studio.leftPanel.selectTreeNode(["text"]);
-    let textAfterUrlSwitch = models.studio.frames
-      .first()
-      .locator('div[data-plasmic-role="text"]')
-      .first();
-    await expect(textAfterUrlSwitch).toContainText("Main");
+    await getFrameWithText("Main");
 
     await goToProject(page, `/projects/${projectId}?branch=Feature`);
-    await models.studio.leftPanel.selectTreeNode(["text"]);
-    textAfterUrlSwitch = models.studio.frames
-      .first()
-      .locator('div[data-plasmic-role="text"]')
-      .first();
-    await expect(textAfterUrlSwitch).toContainText("Feature");
+    await getFrameWithText("Feature");
 
     await goToProject(page, `/projects/${projectId}?branch=main`);
-    await models.studio.leftPanel.selectTreeNode(["text"]);
-    textAfterUrlSwitch = models.studio.frames
-      .first()
-      .locator('div[data-plasmic-role="text"]')
-      .first();
-    await expect(textAfterUrlSwitch).toContainText("Main");
+    await getFrameWithText("Main");
 
     await goToProject(page, `/projects/${projectId}?branch=NonExistentBranch`);
     await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
-    await models.studio.leftPanel.selectTreeNode(["text"]);
-    const textInNonExistent = models.studio.frames
-      .first()
-      .locator('div[data-plasmic-role="text"]')
-      .first();
-    await expect(textInNonExistent).toContainText("Main");
+    await getFrameWithText("Main");
   });
 });
