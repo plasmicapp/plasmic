@@ -708,21 +708,7 @@ export class StudioModel extends BaseModel {
   }
 
   async waitForSave() {
-    await this.page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        const checkSaveIndicator = () => {
-          const saveIndicator = document.querySelector(
-            '*[class^="PlasmicSaveIndicator"]'
-          );
-          if (!saveIndicator) {
-            resolve();
-          } else {
-            setTimeout(checkSaveIndicator, 100);
-          }
-        };
-        checkSaveIndicator();
-      });
-    });
+    await expect(this.saveIndicator).toHaveCount(0, { timeout: 60000 });
   }
 
   async pressPublishButton() {

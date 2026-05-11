@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, type ConsoleMessage } from "@playwright/test";
 import { test } from "../fixtures/test";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
@@ -130,7 +130,7 @@ test.describe("host-app", () => {
     await models.studio.rightPanel.checkNoErrors();
 
     const consoleLogs: string[] = [];
-    const consoleListener = (msg: any) => {
+    const consoleListener = (msg: ConsoleMessage) => {
       if (msg.type() === "log") {
         consoleLogs.push(msg.text());
       }
@@ -138,13 +138,22 @@ test.describe("host-app", () => {
     page.on("console", consoleListener);
     await goToProject(page, `/projects/${projectId}`);
 
-    await models.studio.rightPanel.checkNoErrors();
-    await models.studio.waitForSave();
-    page.off("console", consoleListener);
+    try {
+      await models.studio.rightPanel.checkNoErrors();
+      await models.studio.waitForSave();
+      await expect
+        .poll(
+          () =>
+            consoleLogs.some((text) =>
+              text.includes("Save result is SkipUpToDate")
+            ),
+          { timeout: 15000 }
+        )
+        .toBe(true);
+    } finally {
+      page.off("console", consoleListener);
+    }
 
-    expect(
-      consoleLogs.some((text) => text.includes("Save result is SkipUpToDate"))
-    ).toBe(true);
     expect(
       consoleLogs.some((text) => text.includes("Save result is Success"))
     ).toBe(false);

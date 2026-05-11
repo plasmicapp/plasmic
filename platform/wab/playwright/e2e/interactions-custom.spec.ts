@@ -25,7 +25,6 @@ test.describe.skip("state-management-custom-interactions", () => {
 
   test("can create page navigation and custom function interactions", async ({
     models,
-    page,
   }) => {
     await models.studio.switchArena("page navigation interactions");
     await models.studio.waitStudioLoaded();
@@ -50,7 +49,6 @@ test.describe.skip("state-management-custom-interactions", () => {
       destination: "`/page2/foo`",
       isDynamicValue: true,
     });
-    await page.waitForTimeout(100_000);
 
     await contentFrame
       .locator("text=Go to page2 (dynamic value)")
