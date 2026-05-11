@@ -187,11 +187,7 @@ export function PageParamsProvider({
 }: PageParamsProviderProps) {
   params = fixCatchallParams(params);
   const $ctx = useDataEnv() || {};
-  const browserQuery = useBrowserQueryParams();
-  const effectiveQuery = useMemo(
-    () => (browserQuery ? { ...query, ...browserQuery } : query),
-    [browserQuery, query]
-  );
+  const effectiveQuery = useBrowserQueryParams() ?? query;
   const path = route ? mkPathFromRouteAndParams(route, params) : undefined;
   return (
     <DataProvider

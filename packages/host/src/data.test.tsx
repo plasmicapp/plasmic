@@ -59,7 +59,7 @@ describe("PageParamsProvider query params", () => {
     expect(queryText("multi")).toBe("1,2");
   });
 
-  it("uses query params from props during client rendering", () => {
+  it("uses empty browser query params over prop query params during client rendering", () => {
     render(
       <PageParamsProvider query={{ test: "from-props", multi: ["a", "b"] }}>
         <QueryReader name="test" />
@@ -67,22 +67,22 @@ describe("PageParamsProvider query params", () => {
       </PageParamsProvider>
     );
 
-    expect(queryText("test")).toBe("from-props");
-    expect(queryText("multi")).toBe("a,b");
+    expect(queryText("test")).toBe("");
+    expect(queryText("multi")).toBe("");
   });
 
-  it("overrides prop query params with browser query params", () => {
+  it("uses browser query params as the source of truth, dropping prop-only keys", () => {
     window.history.replaceState({}, "", "/page?test=from-browser");
 
     render(
-      <PageParamsProvider query={{ test: "from-props", propOnly: "preserved" }}>
+      <PageParamsProvider query={{ test: "from-props", propOnly: "dropped" }}>
         <QueryReader name="test" />
         <QueryReader name="propOnly" />
       </PageParamsProvider>
     );
 
     expect(queryText("test")).toBe("from-browser");
-    expect(queryText("propOnly")).toBe("preserved");
+    expect(queryText("propOnly")).toBe("");
   });
 
   it("updates when browser history changes query params", () => {
