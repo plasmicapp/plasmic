@@ -125,12 +125,37 @@ Example outputs, depending on how you installed Node:
 
 Keep that path handy — you'll paste it into the config in Step 3, and use the directory it's in for `env.PATH`.
 
-#### Step 3 — Paste the MCP configuration
+#### Step 3 — Add the MCP configuration
 
-Open `claude_desktop_config.json` and replace its contents with (using _your_ `npx` path from Step 2):
+Open `claude_desktop_config.json`. The file may be empty (`{}`) or it may already have content in it (such as a `"preferences"` block). Either way, you're going to **add a new top-level key called `"mcpServers"`** alongside whatever already exists — keep the existing content as-is.
+
+Before (your file might look like either of these — or something similar):
+
+**Empty file**
+
+```json
+{}
+```
+
+**Existing config**
 
 ```json
 {
+  "preferences": {
+    "quickEntryDictationShortcut": "capslock",
+    "sidebarMode": "chat"
+  }
+}
+```
+
+You should add the `"mcpServers"` key as a sibling of any existing keys (using _your_ `npx` path from Step 2):
+
+```json
+{
+  "preferences": {
+    "quickEntryDictationShortcut": "capslock",
+    "sidebarMode": "chat"
+  },
   "mcpServers": {
     "chrome-devtools": {
       "command": "/Users/you/.asdf/installs/nodejs/22.18.0/bin/npx",
