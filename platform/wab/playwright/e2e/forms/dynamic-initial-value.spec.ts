@@ -33,6 +33,8 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.leftPanel.addComponent("Form");
     await waitForFrameToLoad(page);
 
+    const formFrame = models.studio.frames.first().contentFrame();
+
     const outlineButton = (models.studio as any).studioFrame.locator(
       'button[data-test-tabkey="outline"]'
     );
@@ -40,6 +42,20 @@ test.describe("dynamic-initial-value", () => {
     if (isPressed === "true") {
       await outlineButton.click();
     }
+
+    async function expectFormState(value: Record<string, unknown>) {
+      for (const [key, fieldValue] of Object.entries(value)) {
+        await expect(formFrame.locator("body")).toContainText(
+          `${JSON.stringify(key)}:${JSON.stringify(fieldValue)}`,
+          { timeout: 15_000 }
+        );
+      }
+    }
+
+    await models.studio.leftPanel.insertNode("Text");
+    await models.studio.rightPanel.bindTextContentToCustomCode(
+      "JSON.stringify($state.form.value)"
+    );
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
 
@@ -53,6 +69,7 @@ test.describe("dynamic-initial-value", () => {
       "initialValue",
       "initial text value"
     );
+    await expectFormState({ testField: "initial text value" });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const input = liveFrame.locator('input[name="testField"]');
@@ -64,6 +81,10 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.setDataPlasmicProp("name", "numberField");
     await models.studio.rightPanel.setSelectByLabel("inputType", "Number");
     await models.studio.rightPanel.setDataPlasmicProp("initialValue", "123");
+    await expectFormState({
+      testField: "initial text value",
+      numberField: 123,
+    });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const numberInput = liveFrame.locator('input[name="numberField"]');
@@ -78,6 +99,11 @@ test.describe("dynamic-initial-value", () => {
       "initialValue",
       "foo bar text area"
     );
+    await expectFormState({
+      testField: "initial text value",
+      numberField: 123,
+      textAreaField: "foo bar text area",
+    });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const textarea = liveFrame.locator('textarea[name="textAreaField"]');
@@ -88,6 +114,11 @@ test.describe("dynamic-initial-value", () => {
     await page.waitForTimeout(500);
     await models.studio.rightPanel.setDataPlasmicProp("name", "checkboxFalse");
     await models.studio.rightPanel.setSelectByLabel("inputType", "Checkbox");
+    await expectFormState({
+      testField: "initial text value",
+      numberField: 123,
+      textAreaField: "foo bar text area",
+    });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const checkbox = liveFrame.locator(
@@ -101,6 +132,12 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.setDataPlasmicProp("name", "checkboxTrue");
     await models.studio.rightPanel.setSelectByLabel("inputType", "Checkbox");
     await models.studio.rightPanel.clickDataPlasmicProp("initialValue");
+    await expectFormState({
+      testField: "initial text value",
+      numberField: 123,
+      textAreaField: "foo bar text area",
+      checkboxTrue: true,
+    });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const checkbox = liveFrame.locator(
