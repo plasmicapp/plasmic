@@ -2820,6 +2820,7 @@ export function addFallbacksToCodeExpressions(
   newToOldTpl: <T extends TplNode>(t: T) => T,
   root: TplTag | TplComponent
 ) {
+  const warnings: string[] = [];
   flattenTpls(root).forEach((node) => {
     for (const { expr } of findExprsInNode(node)) {
       if (
@@ -2845,12 +2846,18 @@ export function addFallbacksToCodeExpressions(
           canvasEnv
         );
         if (err) {
+          warnings.push(
+            `Error extracting fallback in ${
+              summarizeTplPath(node) || summarizeTpl(node)
+            }, it was omitted from the new component. Check the console for errors.`
+          );
           continue;
         }
         expr.fallback = Exprs.codeLit(evaluatedExpr);
       }
     }
   });
+  return warnings;
 }
 
 export function fixTplRefEpxrs(

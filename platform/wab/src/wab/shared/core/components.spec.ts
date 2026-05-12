@@ -15,14 +15,16 @@ import {
   getFolderComponentDisplayName,
   mkComponent,
 } from "@/wab/shared/core/components";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
+import { customCode, tryExtractJson } from "@/wab/shared/core/exprs";
 import { createSite } from "@/wab/shared/core/sites";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { CanvasEnv } from "@/wab/shared/eval";
 import {
   RuleSet,
   TplTag,
   Variant,
   VariantSetting,
+  isKnownCustomCode,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
@@ -195,7 +197,7 @@ describe("extractComponent", () => {
   };
 
   it("should extract necessary variants", () => {
-    const tpl = extractComponent({
+    const { tplComponent: tpl } = extractComponent({
       site,
       name: "Inner",
       containingComponent: component,
@@ -224,7 +226,7 @@ describe("extractComponent", () => {
       "large",
       "small",
     ]);
-    const [newBase, newHover, ccHoverPressed, newPrivateInputHover] =
+    const [newBase, newHover, ccHoverPressed, _newPrivateInputHover] =
       inner.variants;
     const [newPrimary, newSecondary] = inner.variantGroups[0].variants;
     const [newLarge, newSmall] = inner.variantGroups[1].variants;
@@ -355,6 +357,39 @@ describe("extractComponent", () => {
     ]);
 
     assertSiteInvariants(site);
+  });
+
+  it("warns and omits fallback when extracting fallback fails", () => {
+    const localSite = createSite();
+    const localTplMgr = new TplMgr({ site: localSite });
+    const localComponent = localTplMgr.addComponent({
+      name: "FallbackTest",
+      type: ComponentType.Plain,
+    });
+    const localBase = getBaseVariant(localComponent);
+    const localTree = mkTplTagX("div", {
+      baseVariant: localBase,
+      attrs: { title: customCode("$ctx.bad.val") },
+    });
+    $$$(localComponent.tplTree).append(localTree);
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    const { tplComponent: tpl, warnings } = extractComponent({
+      site: localSite,
+      name: "Extracted",
+      containingComponent: localComponent,
+      tpl: localTree,
+      tplMgr: localTplMgr,
+      getCanvasEnvForTpl: () => ({ $ctx: {} } as CanvasEnv),
+    });
+    consoleErrorSpy.mockRestore();
+
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toContain("Error extracting fallback in");
+    const titleExpr = tpl.component.tplTree.vsettings[0].attrs.title;
+    expect(isKnownCustomCode(titleExpr) && titleExpr.fallback).toBeUndefined();
   });
 });
 

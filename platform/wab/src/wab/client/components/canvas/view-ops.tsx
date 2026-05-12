@@ -3440,7 +3440,7 @@ export class ViewOps {
 
     const name = this.tplMgr().getUniqueComponentName(resp.name);
     this.change(() => {
-      const tplComponent = Components.extractComponent({
+      const { tplComponent, warnings } = Components.extractComponent({
         site: this.site(),
         name,
         tpl: ensure(
@@ -3461,6 +3461,13 @@ export class ViewOps {
           name,
           tplComponent.component.name
         );
+      }
+      for (const warning of warnings) {
+        notification.warn({
+          message: "Fallback omitted",
+          description: warning,
+          duration: 0,
+        });
       }
       const arena = this.viewCtx().studioCtx.currentArena;
       const key = common.mkUuid();

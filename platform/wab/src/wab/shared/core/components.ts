@@ -1062,7 +1062,7 @@ export function extractComponent({
   resurfaceParams?: boolean;
   tplMgr: TplMgr;
   getCanvasEnvForTpl: (node: TplNode) => CanvasEnv | undefined;
-}) {
+}): { tplComponent: TplComponent; warnings: string[] } {
   // First, clone the tpl.  After cloning, the Tpl nodes are new, but they are still
   // referencing Variants from the old component.
   const clonedTpl = Tpls.clone(tpl) as TplTag | TplComponent;
@@ -1626,7 +1626,7 @@ export function extractComponent({
     );
   }
 
-  Tpls.addFallbacksToCodeExpressions(
+  const warnings = Tpls.addFallbacksToCodeExpressions(
     getCanvasEnvForTpl,
     <T extends TplNode>(_tpl: T): T => {
       return ensure(
@@ -1651,8 +1651,7 @@ export function extractComponent({
       }
     );
   }
-
-  return tplComponent;
+  return { tplComponent, warnings };
 }
 
 export function isHostLessCodeComponent(component: Component) {
