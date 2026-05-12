@@ -42,10 +42,10 @@ function ensureHistoryChangeEvents() {
   };
 }
 
-export function useBrowserQueryParams() {
+export function useBrowserQueryParams(enabled: boolean) {
   const search = useSyncExternalStore(
     (onStoreChange) => {
-      if (typeof window === "undefined") {
+      if (!enabled || typeof window === "undefined") {
         return () => {};
       }
       ensureHistoryChangeEvents();
@@ -56,7 +56,10 @@ export function useBrowserQueryParams() {
         window.removeEventListener(LOCATION_CHANGE_EVENT, onStoreChange);
       };
     },
-    () => (typeof window === "undefined" ? undefined : window.location.search),
+    () =>
+      !enabled || typeof window === "undefined"
+        ? undefined
+        : window.location.search,
     () => undefined
   );
 

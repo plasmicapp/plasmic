@@ -35,6 +35,7 @@ export default function PlasmicLoaderPage(props${ifTs(
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={router.query}
+      trackQueryParams
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>

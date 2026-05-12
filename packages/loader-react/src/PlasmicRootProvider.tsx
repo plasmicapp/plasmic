@@ -137,6 +137,11 @@ export function PlasmicRootProvider(
      */
     pageQuery?: Record<string, string | string[] | undefined>;
     /**
+     * Defaults to false. If true, query params are derived from `location.search` sync
+     * with client-side history changes. `query` prop is used as a fallback during SSR.
+     */
+    trackQueryParams?: boolean;
+    /**
      * Whether the internal Plasmic React.Suspense boundaries should be removed
      */
     disableLoadingBoundary?: boolean;
@@ -174,6 +179,7 @@ export function PlasmicRootProvider(
     pageRoute,
     pageParams,
     pageQuery,
+    trackQueryParams,
     suspenseFallback,
     disableLoadingBoundary,
     disableRootLoadingBoundary,
@@ -300,6 +306,7 @@ export function PlasmicRootProvider(
           route={pageRoute}
           params={pageParams}
           query={pageQuery}
+          trackQueryParams={trackQueryParams}
         >
           <MaybeWrap
             cond={!shouldDisableRootLoadingBoundary}

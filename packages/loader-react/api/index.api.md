@@ -293,6 +293,7 @@ export function PlasmicRootProvider(props: {
     pageRoute?: string;
     pageParams?: Record<string, string | string[] | undefined>;
     pageQuery?: Record<string, string | string[] | undefined>;
+    trackQueryParams?: boolean;
     disableLoadingBoundary?: boolean;
     disableRootLoadingBoundary?: boolean;
     suspenseFallback?: React_2.ReactNode;

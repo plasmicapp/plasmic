@@ -177,6 +177,12 @@ export interface PageParamsProviderProps {
    * Page query params (e.g. { q: "search term" })
    */
   query?: Record<string, string | string[] | undefined>;
+
+  /**
+   * Defaults to false. If true, query params are derived from `location.search` sync
+   * with client-side history changes. `query` prop is used as a fallback during SSR.
+   */
+  trackQueryParams?: boolean;
 }
 
 export function PageParamsProvider({
@@ -184,10 +190,12 @@ export function PageParamsProvider({
   route,
   params = {},
   query = {},
+  trackQueryParams = false,
 }: PageParamsProviderProps) {
   params = fixCatchallParams(params);
   const $ctx = useDataEnv() || {};
-  const effectiveQuery = useBrowserQueryParams() ?? query;
+  const browserQuery = useBrowserQueryParams(trackQueryParams);
+  const effectiveQuery = trackQueryParams ? browserQuery ?? query : query;
   const path = route ? mkPathFromRouteAndParams(route, params) : undefined;
   return (
     <DataProvider

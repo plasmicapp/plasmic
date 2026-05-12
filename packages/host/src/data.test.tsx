@@ -45,11 +45,48 @@ describe("PageParamsProvider query params", () => {
     expect(html).toContain("a,b");
   });
 
-  it("reads query params from the current browser location", () => {
+  it("uses prop query params verbatim by default, ignoring the browser URL", () => {
+    window.history.replaceState(
+      {},
+      "",
+      "/page?test=from-browser&onlyBrowser=x"
+    );
+
+    render(
+      <PageParamsProvider query={{ test: "from-props", propOnly: "kept" }}>
+        <QueryReader name="test" />
+        <QueryReader name="propOnly" />
+        <QueryReader name="onlyBrowser" />
+      </PageParamsProvider>
+    );
+
+    expect(queryText("test")).toBe("from-props");
+    expect(queryText("propOnly")).toBe("kept");
+    expect(queryText("onlyBrowser")).toBe("");
+  });
+
+  it("does not re-render on history changes when trackQueryParams is off", () => {
+    window.history.replaceState({}, "", "/page?test=initial");
+
+    render(
+      <PageParamsProvider query={{ test: "from-props" }}>
+        <QueryReader name="test" />
+      </PageParamsProvider>
+    );
+
+    expect(queryText("test")).toBe("from-props");
+
+    act(() => {
+      window.history.pushState({}, "", "/page?test=changed");
+    });
+    expect(queryText("test")).toBe("from-props");
+  });
+
+  it("reads query params from the current browser location when trackQueryParams is on", () => {
     window.history.replaceState({}, "", "/page?test=Hello&multi=1&multi=2");
 
     render(
-      <PageParamsProvider>
+      <PageParamsProvider trackQueryParams>
         <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>
@@ -59,9 +96,12 @@ describe("PageParamsProvider query params", () => {
     expect(queryText("multi")).toBe("1,2");
   });
 
-  it("uses empty browser query params over prop query params during client rendering", () => {
+  it("uses empty browser query params over prop query params during client rendering when trackQueryParams is on", () => {
     render(
-      <PageParamsProvider query={{ test: "from-props", multi: ["a", "b"] }}>
+      <PageParamsProvider
+        trackQueryParams
+        query={{ test: "from-props", multi: ["a", "b"] }}
+      >
         <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>
@@ -71,11 +111,14 @@ describe("PageParamsProvider query params", () => {
     expect(queryText("multi")).toBe("");
   });
 
-  it("uses browser query params as the source of truth, dropping prop-only keys", () => {
+  it("uses browser query params as the source of truth when trackQueryParams is on, dropping prop-only keys", () => {
     window.history.replaceState({}, "", "/page?test=from-browser");
 
     render(
-      <PageParamsProvider query={{ test: "from-props", propOnly: "dropped" }}>
+      <PageParamsProvider
+        trackQueryParams
+        query={{ test: "from-props", propOnly: "dropped" }}
+      >
         <QueryReader name="test" />
         <QueryReader name="propOnly" />
       </PageParamsProvider>
@@ -85,11 +128,11 @@ describe("PageParamsProvider query params", () => {
     expect(queryText("propOnly")).toBe("");
   });
 
-  it("updates when browser history changes query params", () => {
+  it("updates when browser history changes query params and trackQueryParams is on", () => {
     window.history.replaceState({}, "", "/page?test=initial");
 
     render(
-      <PageParamsProvider>
+      <PageParamsProvider trackQueryParams>
         <QueryReader name="test" />
         <QueryReader name="multi" />
       </PageParamsProvider>

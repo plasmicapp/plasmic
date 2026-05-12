@@ -54,6 +54,7 @@ const PlasmicGatsbyPage = ({ data, location, pageContext }${ifTs(
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
+      trackQueryParams
       Head={Helmet}
     >
       <Helmet>
