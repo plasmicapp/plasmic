@@ -275,7 +275,7 @@
     "downshift": "^6.1.12",
     "emoji-picker-react": "^4.18.0",
     "errorhandler": "^1.5.2",
-    "esbuild": "^0.18.0",
+    "esbuild": "^0.25.0",
     "esbuild-register": "^3.6.0",
     "escodegen": "^2.1.0",
     "execa": "^5.1.1",
