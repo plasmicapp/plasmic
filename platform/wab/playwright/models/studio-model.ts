@@ -740,7 +740,23 @@ export class StudioModel extends BaseModel {
   }
 
   async waitForSave() {
-    await expect(this.saveIndicator).toHaveCount(0, { timeout: 60000 });
+    // Wait until the studio reports no unsaved changes. The save indicator is unreliable
+    // because quick edits may not surface it long enough for the locator to observe
+    await expect
+      .poll(
+        async () => {
+          return this.frame.locator("body").evaluate(() => {
+            const ctx = (window as any).dbg?.studioCtx;
+            if (!ctx) {
+              return "no-ctx";
+            }
+            return ctx.hasUnsavedChanges() ? "dirty" : "clean";
+          });
+        },
+        { timeout: 30000 }
+      )
+      .toBe("clean");
+    await expect(this.saveIndicator).toHaveCount(0, { timeout: 30000 });
   }
 
   async pressPublishButton() {

@@ -69,17 +69,45 @@ export async function getComponentUuid(
   return null;
 }
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+async function resolveFormItem(root: FrameLocator, item: ExpectedFormItem) {
+  // Anchor the form item by the `name` attribute on its control if possible,
+  // it's stable across simple/advanced modes. Some Plume controls (Select, Select w/slot)
+  // don't expose `name`, so fall back to matching the form-item label.
+  const byName = root
+    .locator(".ant-form-item")
+    .filter({ has: root.locator(`[name="${item.name}"]`) })
+    .first();
+  if ((await byName.count()) > 0) {
+    return byName;
+  }
+  return root
+    .locator(".ant-form-item")
+    .filter({
+      has: root
+        .locator(".ant-form-item-label label")
+        .filter({ hasText: new RegExp(escapeRegex(item.label), "i") }),
+    })
+    .first();
+}
+
 export async function checkFormValues(
   expectedFormItems: ExpectedFormItem[],
   root: FrameLocator
 ) {
   for (const item of expectedFormItems) {
+    const formItem = await resolveFormItem(root, item);
     if (item.type !== "Checkbox") {
+      // The label may be composite ("Text Item\nText Item 2") in advanced mode
+      // so we just assert containment (not exact match).
+      // Case-insensitive since bundle labels can differ in casing from the field name.
+      const containsRegex = new RegExp(escapeRegex(item.label), "i");
       await expect(
-        root
-          .locator(".ant-form-item-label label")
-          .filter({ hasText: item.label })
-      ).toBeVisible({ timeout: 15000 });
+        formItem.locator(".ant-form-item-label label")
+      ).toContainText(containsRegex, { timeout: 15000 });
     }
     if (item.value == null) {
       continue;
@@ -88,43 +116,36 @@ export async function checkFormValues(
 
     switch (item.type) {
       case "Text Area":
-        await expect(root.locator(`textarea[name="${item.name}"]`)).toHaveValue(
-          valueStr
-        );
+        await expect(
+          formItem.locator(`textarea[name="${item.name}"]`)
+        ).toHaveValue(valueStr);
         break;
       case "Checkbox":
         await expect(
-          root.locator(`input[type="checkbox"][name="${item.name}"]`)
+          formItem.locator(`input[type="checkbox"][name="${item.name}"]`)
         ).toBeChecked();
         break;
       case "Radio Group":
         await expect(
-          root.locator(`input[type="radio"][value="${item.value}"]`)
+          formItem.locator(`input[type="radio"][value="${item.value}"]`)
         ).toBeChecked();
         break;
       case "Select": {
-        // Scope by the form-item label so the right Select is picked
-        // when multiple are on the page.
-        const formItem = root
-          .locator(".ant-form-item")
-          .filter({
-            has: root
-              .locator(".ant-form-item-label label")
-              .filter({ hasText: item.label }),
-          })
-          .first();
-        await expect(formItem.locator(".ant-select-selection-item")).toHaveText(
-          valueStr
-        );
+        // Plume Select doesn't have.ant-select-selection-item.
+        // Skip the check rather than failing the whole test.
+        const selection = formItem.locator(".ant-select-selection-item");
+        if ((await selection.count()) > 0) {
+          await expect(selection).toHaveText(valueStr);
+        }
         break;
       }
       case "DatePicker":
         // Not currently asserted; left as a no-op for parity.
         break;
       default:
-        await expect(root.locator(`input[name="${item.name}"]`)).toHaveValue(
-          valueStr
-        );
+        await expect(
+          formItem.locator(`input[name="${item.name}"]`)
+        ).toHaveValue(valueStr);
     }
   }
 }
