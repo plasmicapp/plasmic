@@ -99,7 +99,6 @@ export const CustomFunctionEditor = observer(
               },
               allowedOps,
               exprCtx,
-              filterMode: "mutation",
               ...rest,
             });
           }}

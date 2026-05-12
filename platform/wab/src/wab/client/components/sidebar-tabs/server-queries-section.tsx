@@ -73,7 +73,6 @@ const ServerQueryRow = observer(
         tpl,
         schema,
         exprCtx,
-        filterMode: "query"
       });
     };
 
