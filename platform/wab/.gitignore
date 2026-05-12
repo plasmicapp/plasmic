@@ -14,7 +14,6 @@ dev-build
 /src/wab/styles/css-variables.ts
 .intercom-token
 yarn-error.log
-cypress/videos
 .cache
 package-lock.json
 localhost-key.pem

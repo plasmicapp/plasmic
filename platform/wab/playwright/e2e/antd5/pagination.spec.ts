@@ -1,5 +1,5 @@
 import { expect, FrameLocator, Page } from "@playwright/test";
-import * as queryData from "../../../cypress/fixtures/northwind-orders-query.json";
+import * as queryData from "../../fixtures-data/northwind-orders-query.json";
 import { test } from "../../fixtures/test";
 import { goToProject } from "../../utils/studio-utils";
 

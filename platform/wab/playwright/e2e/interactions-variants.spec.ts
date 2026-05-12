@@ -1,5 +1,5 @@
 import { expect, Locator } from "@playwright/test";
-import bundles from "../../cypress/bundles";
+import bundles from "../bundles";
 import { test } from "../fixtures/test";
 import { goToProject } from "../utils/studio-utils";
 

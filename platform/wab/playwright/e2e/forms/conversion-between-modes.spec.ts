@@ -1,4 +1,4 @@
-import formsBundle from "../../../cypress/bundles/forms.json";
+import formsBundle from "../../bundles/forms.json";
 import { PageModels, test } from "../../fixtures/test";
 import {
   ExpectedFormItem,

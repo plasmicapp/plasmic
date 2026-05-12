@@ -24,6 +24,5 @@ rsync -ril \
   --exclude 'wab/build/**' \
   --exclude 'typedoc/**' \
   --exclude 'hired.com-filter/**' \
-  --exclude 'cypress/videos/*.mp4' \
   --exclude typedoc.json.gz \
   "$PROJROOT" "$@"

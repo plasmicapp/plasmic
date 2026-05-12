@@ -443,7 +443,7 @@ test.describe("data token usages", () => {
         async (route) => {
           const fixturePath = pathModule.join(
             __dirname,
-            "../../cypress/fixtures/strapi-v5-restaurants.json"
+            "../fixtures-data/strapi-v5-restaurants.json"
           );
           const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
           await route.fulfill({

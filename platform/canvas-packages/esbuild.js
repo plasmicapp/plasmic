@@ -142,7 +142,7 @@ const clientConfigs = clientEntries.map(({ pkg, useSubJSXRuntime }) => ({
       name: "antd-fixup",
       setup(build) {
         build.onLoad({ filter: /FormItem\.js$/ }, async (args) => {
-          let text = await fs.promises.readFile(args.path, "utf8");
+          const text = await fs.promises.readFile(args.path, "utf8");
           return {
             contents: text.replace(
               /FormContext, FormItemStatusContext, NoStyleItemContext/,
@@ -246,7 +246,7 @@ const clientConfigs = clientEntries.map(({ pkg, useSubJSXRuntime }) => ({
         console.log("watching...");
       }
     })
-    .catch((err) => {
+    .catch((_err) => {
       // console.error(err);
       process.exit(1);
     })
@@ -254,7 +254,7 @@ const clientConfigs = clientEntries.map(({ pkg, useSubJSXRuntime }) => ({
 
 // We also use esbuild to build server-side packages, which are used for upgrading
 // hostless packages via PublishHostless or for creating new hostless packages
-// for cypress tests. All we need to do is to be able to run the
+// for Playwright tests. All we need to do is to be able to run the
 // registerAll() call to see and update component metadata -- we do not need to
 // actually use or render the components! So we can just bundle them enough to
 // do so, and don't have to worry about all the plugin package-swapping we have

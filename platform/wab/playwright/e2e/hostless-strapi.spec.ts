@@ -20,7 +20,7 @@ test.describe("hostless-strapi", () => {
       if (route.request().url().includes("restaurants-v5")) {
         const fixturePath = path.join(
           __dirname,
-          "../../cypress/fixtures/strapi-v5-restaurants.json"
+          "../fixtures-data/strapi-v5-restaurants.json"
         );
         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
         await route.fulfill({
@@ -31,7 +31,7 @@ test.describe("hostless-strapi", () => {
       } else {
         const fixturePath = path.join(
           __dirname,
-          "../../cypress/fixtures/strapi-restaurants.json"
+          "../fixtures-data/strapi-restaurants.json"
         );
         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
         await route.fulfill({
@@ -45,7 +45,7 @@ test.describe("hostless-strapi", () => {
     await page.route(/undefined/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../../cypress/fixtures/strapi-error.json"
+        "../fixtures-data/strapi-error.json"
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -76,7 +76,7 @@ test.describe("hostless-strapi", () => {
       await page.route(url, async (route) => {
         const fullImagePath = path.join(
           __dirname,
-          "../../cypress/fixtures/",
+          "../fixtures-data/",
           imagePath
         );
         const imageData = fs.readFileSync(fullImagePath);

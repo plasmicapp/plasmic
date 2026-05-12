@@ -17,7 +17,7 @@ import * as Prettier from "prettier";
 import sh from "shellsync";
 
 async function migrate() {
-  const path = "cypress/bundles/stale-bundle.json";
+  const path = "playwright/bundles/stale-bundle.json";
   // Support both a single bundle or an array with bundles and their IDs
   const bundleArray = JSON.parse(
     fs.readFileSync(path, { encoding: "utf8" })

@@ -422,7 +422,6 @@ module.exports = {
     SocketIOClient: false,
     JSX: false,
     JQuery: false,
-    Cypress: false,
     cy: false,
   },
 };

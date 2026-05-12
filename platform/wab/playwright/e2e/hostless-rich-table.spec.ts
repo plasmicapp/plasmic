@@ -7,7 +7,7 @@ import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 const queryData = JSON.parse(
   readFileSync(
-    path.join(__dirname, "../../cypress/fixtures/northwind-orders-query.json"),
+    path.join(__dirname, "../fixtures-data/northwind-orders-query.json"),
     "utf-8"
   )
 );

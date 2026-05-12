@@ -396,7 +396,7 @@ export class ApiClient {
     let bundle: any;
 
     if (typeof templateNameOrBundle === "string") {
-      const bundles = require("../../cypress/bundles");
+      const bundles = require("../bundles");
       bundle =
         bundles.default?.[templateNameOrBundle] ||
         bundles[templateNameOrBundle];

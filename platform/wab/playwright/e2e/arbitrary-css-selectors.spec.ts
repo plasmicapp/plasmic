@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { test } from "../fixtures/test";
 
-import bundles from "../../cypress/bundles";
+import bundles from "../bundles";
 import { goToProject } from "../utils/studio-utils";
 
 const BUNDLE_NAME = "state-management";

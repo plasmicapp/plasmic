@@ -322,17 +322,6 @@ taking wab/create-react-app-new/ as an example:
 
 [More details]: https://stackoverflow.com/questions/18770545/why-is-my-git-submodule-head-detached-from-master/55570998 for more on this.
 
-## Writing E2E tests
-
-Some pointers:
-
-- Normally `cy` operates on the top-most document, but we often want to interact
-  with the arena frames. To do so, use the `Framed` utility class.
-
-- Often, be sure to use `{force:true}`, or else cypress will attempt to
-  auto-scroll things into view (which we almost never want since there's no real
-  scrolling in our app).
-
 ## Audit licenses of dependencies
 
 For node dependencies, do this from each project directory:

@@ -1710,7 +1710,7 @@ export function addMainAppServerRoutes(
   );
 
   /**
-   * Fake data for demos and cypress tests.
+   * Fake data for demos and playwright tests.
    */
   app.get("/api/v1/demodata/tweets", getFakeTweets);
   app.get("/api/v1/demodata/tasks", getFakeTasks);

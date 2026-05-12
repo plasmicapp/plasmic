@@ -11,7 +11,7 @@ test.describe("hostless-sanity-io", () => {
     await page.route(/\/production\?query=\*{_type}$/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../../cypress/fixtures/sanity-io-all.json"
+        "../fixtures-data/sanity-io-all.json"
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -24,7 +24,7 @@ test.describe("hostless-sanity-io", () => {
     await page.route(/screening/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../../cypress/fixtures/sanity-io-screening.json"
+        "../fixtures-data/sanity-io-screening.json"
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -37,7 +37,7 @@ test.describe("hostless-sanity-io", () => {
     await page.route(/movie/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../../cypress/fixtures/sanity-io-movies.json"
+        "../fixtures-data/sanity-io-movies.json"
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -68,7 +68,7 @@ test.describe("hostless-sanity-io", () => {
       await page.route(imageUrls[i], async (route) => {
         const imagePath = path.join(
           __dirname,
-          `../../cypress/fixtures/images/sanity-io/${i + 1}.jpeg`
+          `../fixtures-data/images/sanity-io/${i + 1}.jpeg`
         );
         const imageData = fs.readFileSync(imagePath);
         await route.fulfill({

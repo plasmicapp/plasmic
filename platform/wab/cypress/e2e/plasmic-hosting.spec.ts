@@ -1,1 +1,0 @@
-describe("plasmic-hosting", function () {});

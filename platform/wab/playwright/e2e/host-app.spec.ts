@@ -90,7 +90,7 @@ test.describe("host-app", () => {
     await models.studio.waitStudioLoaded();
 
     await models.studio.leftPanel.switchToTreeTab();
-    // TODO - Cypress uses ["root", "badge"], figure out discrepancy (another below)
+    // TODO - Cypress used ["root", "badge"], figure out discrepancy (another below)
     await models.studio.leftPanel.selectTreeNode(["free box", "badge"]);
 
     await expect(models.studio.frame.getByText("Plasmician")).toBeVisible();

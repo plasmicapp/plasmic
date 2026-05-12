@@ -28,7 +28,7 @@ Plasmic is an open-source visual web builder. This monorepo contains:
 - Infra: Docker, k8s, Terraform
 - Package Managers: asdf, npm, yarn, pnpm
 - Languages: Node.js, TypeScript
-- Libraries: React, MobX, TypeORM, Jest, Playwright, Cypress (deprecating) Storybook
+- Libraries: React, MobX, TypeORM, Jest, Playwright, Storybook
 
 ## Instructions for AI assistant
 

@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 
-import bundles from "../../cypress/bundles";
+import bundles from "../bundles";
 import { NumberInteractionsArena } from "../models/arenas/number-interactions";
 import { goToProject } from "../utils/studio-utils";
 
