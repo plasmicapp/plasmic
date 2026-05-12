@@ -155,6 +155,84 @@ function parseMemberExpression(
 }
 
 /**
+ * Like getMemberExpressionKey, but preserves the original type of numeric
+ * literal keys (e.g. `arr[0]` → 0, not "0"). Returns undefined for dynamic
+ * accessors.
+ */
+function getMemberExpressionKeyPreservingType(
+  node: ast.MemberExpression
+): string | number | undefined {
+  if (!node.computed && node.property.type === "Identifier") {
+    return node.property.name;
+  } else if (
+    node.computed &&
+    node.property.type === "Literal" &&
+    (typeof node.property.value === "string" ||
+      typeof node.property.value === "number")
+  ) {
+    return node.property.value;
+  }
+  return undefined;
+}
+
+/**
+ * Like parseMemberExpression, but preserves numeric literal indices as
+ * numbers (e.g. `arr[0]` → 0, not "0"). Returns undefined entries for
+ * dynamic accessors or non-identifier roots.
+ */
+function parseMemberExpressionPreservingType(
+  node: ast.MemberExpression
+): Array<string | number | undefined> {
+  const right = getMemberExpressionKeyPreservingType(node);
+  if (node.object.type === "Identifier") {
+    return [node.object.name, right];
+  } else if (node.object.type === "MemberExpression") {
+    return [...parseMemberExpressionPreservingType(node.object), right];
+  } else {
+    return [undefined, right];
+  }
+}
+
+/**
+ * If `code` is exactly a member-access chain like `$ctx.foo.bar`,
+ * `$queries["x"].y`, or `someFreeVar.a[0]`, returns the path array
+ * (suitable for ObjectPath.path). Otherwise returns undefined.
+ *
+ * Pure member access means: an Identifier root, then only static `.prop`
+ * or `["literal"]` / `[0]` accessors — no operators, no calls, no dynamic
+ * keys.
+ *
+ * Numeric literal indices are preserved as numbers (matching how Studio
+ * stores ObjectPath.path for array accessors).
+ */
+export function tryParseAsObjectPath(
+  code: string
+): (string | number)[] | undefined {
+  let parsed: ast.Program;
+  try {
+    parsed = parseCode(code);
+  } catch {
+    return undefined;
+  }
+  const body = parsed.body;
+  if (body.length !== 1 || body[0].type !== "ExpressionStatement") {
+    return undefined;
+  }
+  const expr = body[0].expression;
+  if (expr.type === "Identifier") {
+    return [expr.name];
+  }
+  if (expr.type !== "MemberExpression") {
+    return undefined;
+  }
+  const parts = parseMemberExpressionPreservingType(expr);
+  if (parts.some((p) => p === undefined)) {
+    return undefined;
+  }
+  return parts as (string | number)[];
+}
+
+/**
  * This function parses a code expression to find usages of `$ctx`, `$props`
  * and `$state`. At the moment it supports usages such as `$props.name` and
  * `$props["string"]`. Usages like `const { destructured } = $props` are not

@@ -18,22 +18,18 @@ import {
   spawn,
   xSetDefault,
 } from "@/wab/shared/common";
+import { interpolatedStringToTemplatedString } from "@/wab/shared/copilot/dynamic-value-input";
 import {
   ExprCtx,
   asCode,
   clone,
   codeLit,
   createExprForDataPickerValue,
-  customCode,
   extractValueSavedFromDataPicker,
   isRealCodeExpr,
   summarizeExpr,
 } from "@/wab/shared/core/exprs";
 import { tryGetOwnerSite } from "@/wab/shared/core/tpls";
-import {
-  getDynamicBindings,
-  isDynamicValue,
-} from "@/wab/shared/dynamic-bindings";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import {
   isPathDataToken,
@@ -405,15 +401,6 @@ export const TemplatedTextEditor = React.forwardRef<
     );
   }
 );
-
-function interpolatedStringToTemplatedString(str: string): TemplatedString {
-  const { jsSnippets, stringSegments } = getDynamicBindings(str);
-  return new TemplatedString({
-    text: stringSegments.map((seg, i) =>
-      isDynamicValue(seg) ? customCode(jsSnippets[i]) : seg
-    ),
-  });
-}
 
 // Ensures the syntax is correct and the dynamic values can become parameters
 // in a prepared statement

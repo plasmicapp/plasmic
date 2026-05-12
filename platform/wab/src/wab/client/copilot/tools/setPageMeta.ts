@@ -1,17 +1,17 @@
 import { unwrap } from "@/wab/commons/failable-utils";
+import { parseDynamicStringInput } from "@/wab/shared/copilot/dynamic-value-input";
 import {
   COPILOT_TOOL_DEFS,
-  CopilotPageMetaValue,
   defineCopilotTool,
 } from "@/wab/shared/copilot/enterprise/copilot-tools";
 import { getComponentByUuid } from "@/wab/shared/copilot/utils";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { mkTemplatedStringOfOneDynExpr } from "@/wab/shared/core/exprs";
 import {
-  codeLit,
-  customCode,
-  mkTemplatedStringOfOneDynExpr,
-} from "@/wab/shared/core/exprs";
-import { ObjectPath, TemplatedString } from "@/wab/shared/model/classes";
+  TemplatedString,
+  isKnownCustomCode,
+  isKnownObjectPath,
+} from "@/wab/shared/model/classes";
 import { serializeComponent } from "@/wab/shared/web-exporter/component-exporter";
 
 type PageMetaString = string | TemplatedString;
@@ -20,41 +20,16 @@ function normalizePagePath(path: string) {
   return path.startsWith("/") ? path : `/${path}`;
 }
 
-function fallbackExpr(fallback: string | null | undefined) {
-  return fallback === undefined
-    ? undefined
-    : fallback === null
-    ? null
-    : codeLit(fallback);
-}
-
-function dynamicPageMetaPart(
-  value: Exclude<CopilotPageMetaValue, string | null | { type: "template" }>
-) {
-  if (value.type === "code") {
-    return customCode(value.code, fallbackExpr(value.fallback));
-  } else {
-    return new ObjectPath({
-      path: value.path,
-      fallback: fallbackExpr(value.fallback),
-    });
+function toPageMetaValue(value: string | null): PageMetaString | null {
+  if (value === null) {
+    return null;
   }
-}
-
-function pageMetaValueToModelValue(
-  value: CopilotPageMetaValue
-): PageMetaString | null {
-  if (value === null || typeof value === "string") {
-    return value;
-  } else if (value.type === "template") {
-    return new TemplatedString({
-      text: value.parts.map((part) =>
-        typeof part === "string" ? part : dynamicPageMetaPart(part)
-      ),
-    });
-  } else {
-    return mkTemplatedStringOfOneDynExpr(dynamicPageMetaPart(value));
+  const parsed = parseDynamicStringInput(value);
+  // PageMeta fields are `String | TemplatedString`, so wrap ObjectPath/CustomCode
+  if (isKnownObjectPath(parsed) || isKnownCustomCode(parsed)) {
+    return mkTemplatedStringOfOneDynExpr(parsed);
   }
+  return parsed;
 }
 
 export const setPageMetaTool = defineCopilotTool(
@@ -76,6 +51,24 @@ export const setPageMetaTool = defineCopilotTool(
       throw new Error("Page name cannot be empty.");
     }
 
+    // Parse dyn-string inputs up-front so any parse error surfaces as a tool
+    // error before we enter `studioCtx.change` (which would otherwise swallow
+    // the throw inside its failable wrapper).
+    const titleValue =
+      input.title !== undefined ? toPageMetaValue(input.title) : undefined;
+    const descriptionValue =
+      input.description !== undefined
+        ? toPageMetaValue(input.description) ?? ""
+        : undefined;
+    const canonicalValue =
+      input.canonical !== undefined
+        ? toPageMetaValue(input.canonical)
+        : undefined;
+    const openGraphImageValue =
+      input.openGraphImage !== undefined
+        ? toPageMetaValue(input.openGraphImage)
+        : undefined;
+
     unwrap(
       await studioCtx.change(({ success }) => {
         if (name !== undefined) {
@@ -86,22 +79,17 @@ export const setPageMetaTool = defineCopilotTool(
             .tplMgr()
             .changePagePath(component, normalizePagePath(input.path.trim()));
         }
-        if (input.title !== undefined) {
-          component.pageMeta.title = pageMetaValueToModelValue(input.title);
+        if (titleValue !== undefined) {
+          component.pageMeta.title = titleValue;
         }
-        if (input.description !== undefined) {
-          component.pageMeta.description =
-            pageMetaValueToModelValue(input.description) ?? "";
+        if (descriptionValue !== undefined) {
+          component.pageMeta.description = descriptionValue;
         }
-        if (input.canonical !== undefined) {
-          component.pageMeta.canonical = pageMetaValueToModelValue(
-            input.canonical
-          );
+        if (canonicalValue !== undefined) {
+          component.pageMeta.canonical = canonicalValue;
         }
-        if (input.openGraphImage !== undefined) {
-          component.pageMeta.openGraphImage = pageMetaValueToModelValue(
-            input.openGraphImage
-          );
+        if (openGraphImageValue !== undefined) {
+          component.pageMeta.openGraphImage = openGraphImageValue;
         }
         return success();
       })

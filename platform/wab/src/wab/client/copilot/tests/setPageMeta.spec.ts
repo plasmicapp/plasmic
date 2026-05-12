@@ -51,10 +51,10 @@ describe("setPageMeta copilot tool", () => {
       componentUuid,
       name: "Pricing",
       path: "pricing",
-      title: "Pricing | Acme",
-      description: "Simple pricing for every team.",
-      canonical: "https://example.com/pricing",
-      openGraphImage: "https://example.com/pricing-og.png",
+      title: '"Pricing | Acme"',
+      description: '"Simple pricing for every team."',
+      canonical: '"https://example.com/pricing"',
+      openGraphImage: '"https://example.com/pricing-og.png"',
     });
     const page = expectPage(componentUuid);
 
@@ -76,26 +76,13 @@ describe("setPageMeta copilot tool", () => {
 
     await setPageMetaTool.execute(studioCtx, {
       componentUuid,
-      title: {
-        type: "template",
-        parts: [
-          "Product ",
-          { type: "objectPath", path: ["$ctx", "params", "slug"] },
-        ],
-      },
-      description: {
-        type: "code",
-        code: "$props.description",
-        fallback: "Product details",
-      },
-      canonical: {
-        type: "objectPath",
-        path: ["$ctx", "path"],
-      },
-      openGraphImage: {
-        type: "code",
-        code: "$props.openGraphImage",
-      },
+      // Backtick-wrapped templated string with interpolation.
+      title: "`Product ${$ctx.params.slug}`",
+      // Bare JS expression (no backticks) — escape hatch for raw code.
+      description: "$props.description ?? 'Product details'",
+      // Backtick-wrapped, single interpolation.
+      canonical: "`${$ctx.path}`",
+      openGraphImage: "`${$props.openGraphImage}`",
     });
     const page = expectPage(componentUuid);
 
@@ -112,9 +99,8 @@ describe("setPageMeta copilot tool", () => {
     const description = page.pageMeta.description as TemplatedString;
     const descriptionExpr = description.text[1] as CustomCode;
     expect(descriptionExpr).toBeInstanceOf(CustomCode);
-    expect(descriptionExpr.code).toEqual("($props.description)");
-    expect((descriptionExpr.fallback as CustomCode).code).toEqual(
-      '"Product details"'
+    expect(descriptionExpr.code).toEqual(
+      "($props.description ?? 'Product details')"
     );
 
     const canonical = page.pageMeta.canonical as TemplatedString;
@@ -122,10 +108,11 @@ describe("setPageMeta copilot tool", () => {
     expect((canonical.text[1] as ObjectPath).path).toEqual(["$ctx", "path"]);
 
     const openGraphImage = page.pageMeta.openGraphImage as TemplatedString;
-    expect(openGraphImage.text[1]).toBeInstanceOf(CustomCode);
-    expect((openGraphImage.text[1] as CustomCode).code).toEqual(
-      "($props.openGraphImage)"
-    );
+    expect(openGraphImage.text[1]).toBeInstanceOf(ObjectPath);
+    expect((openGraphImage.text[1] as ObjectPath).path).toEqual([
+      "$props",
+      "openGraphImage",
+    ]);
   });
 
   it("clears nullable meta fields when given null", async () => {
@@ -133,10 +120,10 @@ describe("setPageMeta copilot tool", () => {
 
     await setPageMetaTool.execute(studioCtx, {
       componentUuid,
-      title: "Landing | Acme",
-      description: "Welcome.",
-      canonical: "https://example.com/landing",
-      openGraphImage: "https://example.com/landing-og.png",
+      title: '"Landing | Acme"',
+      description: '"Welcome."',
+      canonical: '"https://example.com/landing"',
+      openGraphImage: '"https://example.com/landing-og.png"',
     });
 
     await setPageMetaTool.execute(studioCtx, {
@@ -153,6 +140,18 @@ describe("setPageMeta copilot tool", () => {
     expect(page.pageMeta.description).toEqual("");
     expect(page.pageMeta.canonical).toBeNull();
     expect(page.pageMeta.openGraphImage).toBeNull();
+  });
+
+  it("returns error for unquoted plain text", async () => {
+    const { uuid: componentUuid } = await createPage("Landing", "/landing");
+
+    await expect(
+      setPageMetaTool.execute(studioCtx, {
+        componentUuid,
+        // Plain prose — neither quoted, backtick-wrapped, nor valid JS.
+        title: "My nice title",
+      })
+    ).rejects.toThrow(/quote/i);
   });
 
   it("rejects non-page components", async () => {
