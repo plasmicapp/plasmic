@@ -14,74 +14,12 @@ import NewPageModal, {
 } from "@/wab/client/components/widgets/NewPageModal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { maybe, nullToUndefined } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { Site } from "@/wab/shared/model/classes";
-import { Form, Select, notification } from "antd";
-import L, { orderBy } from "lodash";
+import { Form, Select } from "antd";
+import { orderBy } from "lodash";
 import React from "react";
 const { Option } = Select;
-
-export interface HasName {
-  name?: string | null;
-}
-
-export function uniqueNameWith<T>(
-  newName: string,
-  existingItems: T[],
-  typeLabel: string,
-  getName: (item: T) => string | undefined
-) {
-  newName = newName.trim().toLowerCase();
-  if (
-    existingItems.some(
-      (item) => maybe(getName(item), (name) => name.toLowerCase()) === newName
-    )
-  ) {
-    notification.error({
-      description: `Another ${typeLabel} with same name already exists`,
-      message: `Please enter a different name.`,
-    });
-    return false;
-  }
-  return true;
-}
-
-// Returns true if unique.  Case-insensitive.
-export function uniqueName(name: string, xs: HasName[], typeLabel) {
-  return uniqueNameWith(name, xs, typeLabel, (item) =>
-    nullToUndefined(item.name)
-  );
-}
-
-export function uniqueRenameWith<T>(
-  newName: string,
-  curItem: T,
-  allItems: T[],
-  typeLabel: string,
-  getName: (item: T) => string | undefined
-): "unchanged" | "conflict" | "changed" {
-  if (newName === getName(curItem)) {
-    return "unchanged";
-  }
-  if (
-    !uniqueNameWith(newName, L.without(allItems, curItem), typeLabel, getName)
-  ) {
-    return "conflict";
-  }
-  return "changed";
-}
-
-export function uniqueRename(
-  newName: string,
-  curItem: HasName,
-  allItems: HasName[],
-  typeLabel: string
-) {
-  return uniqueRenameWith(newName, curItem, allItems, typeLabel, (item) =>
-    nullToUndefined(item.name)
-  );
-}
 
 export async function promptComponentName(
   opts: {

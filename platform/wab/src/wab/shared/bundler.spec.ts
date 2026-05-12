@@ -1,18 +1,31 @@
 /** @jest-environment node */
 import { Bundler } from "@/wab/shared/bundler";
 import { jsonClone, mkUuid } from "@/wab/shared/common";
-import { Comparator } from "@/wab/shared/core/cmp";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { jsonLit } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
+import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
+  TplTag,
   ensureKnownComponent,
   ensureKnownTplComponent,
-  TplTag,
 } from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { BaseRuntime } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { TEST_GLOBAL_VARIANT } from "@/wab/test/tpls";
+
+// Equality comparator that uses class metadata to guide its crawling
+export class Comparator {
+  _rt: BaseRuntime;
+  constructor(rt = meta) {
+    this._rt = rt;
+  }
+  deepEq(x, y) {
+    return instUtil.deepEquals(x, y);
+  }
+}
 
 describe("bundler", () => {
   it("should work", function () {
