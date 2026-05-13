@@ -114,10 +114,7 @@ import {
   makeWabSlotClassName,
   makeWabTextClassName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
-import {
-  getReferencedQueryNamesInCustomCode,
-  isServerQueryWithOperation,
-} from "@/wab/shared/codegen/react-p/server-queries/utils";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { deriveReactHookSpecs } from "@/wab/shared/codegen/react-p/utils";
 import {
   paramToVarName,
@@ -152,7 +149,7 @@ import {
 } from "@/wab/shared/core/components";
 import {
   StatefulQueryResult,
-  buildCustomCodeFn,
+  buildCustomCodePlasmicQuery,
   getCustomFunctionParams,
 } from "@/wab/shared/core/custom-functions";
 import {
@@ -302,7 +299,6 @@ import type {
   ClientQueryResult,
   PlasmicQueryResult,
   QueryComponentNode,
-  QueryExecutionContext,
   usePlasmicInvalidate,
 } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
@@ -3788,35 +3784,13 @@ const mkComponentLevelQueryFetcher = computedFn(
               serverQueriesByKey
                 .map(({ query, varName }) => {
                   if (isKnownCustomCode(query.op)) {
-                    // run code against the resolved snapshot (via resolvedCtx),
-                    // not the live $q whose getters still throw.
-                    const codeStr = query.op.code;
-                    const depQueryNames = getReferencedQueryNamesInCustomCode(
-                      query,
-                      component
-                    );
-                    const resolveDeps = (
-                      $q: Record<string, PlasmicQueryResult>
-                    ) =>
-                      Object.fromEntries(
-                        depQueryNames.map((n) => [
-                          n,
-                          { data: $q[n]?.data, isLoading: false, key: null },
-                        ])
-                      );
                     return [
                       varName,
-                      {
-                        id: `custom:${query.uuid}:${codeStr}`,
-                        fn: (resolvedCtx: QueryExecutionContext) =>
-                          buildCustomCodeFn(codeStr, {
-                            ...ctx.env,
-                            ...resolvedCtx,
-                          })(),
-                        args: (qctx: QueryExecutionContext) => [
-                          { ...qctx, $q: resolveDeps(qctx.$q) },
-                        ],
-                      },
+                      buildCustomCodePlasmicQuery(
+                        query.uuid,
+                        query.op.code,
+                        () => ctx.env
+                      ),
                     ] as const;
                   }
                   const op = query.op;
@@ -3859,6 +3833,7 @@ const mkComponentLevelQueryFetcher = computedFn(
                 })
                 .filter(notNil)
             ),
+            stateSpecs: ctx.stateSpecs,
             propsContext: {},
             children: [],
           }),
@@ -3871,8 +3846,8 @@ const mkComponentLevelQueryFetcher = computedFn(
         const new$Q =
           sub.dataSources?.unstable_usePlasmicQueries?.(
             serverQueryTree,
-            ctx.env.$props ?? {},
             ctx.env.$ctx ?? {},
+            ctx.env.$props ?? {},
             (ctx.env.$state as Record<string, unknown> | undefined) ?? {}
           ) ?? {};
 

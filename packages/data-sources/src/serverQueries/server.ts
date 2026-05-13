@@ -1,27 +1,44 @@
 import {
   assertUnexpectedNodeType,
+  createInitial$State,
   resolveParams,
   safeExecResult,
   StatefulQueryResult,
 } from "./common";
-import { makeQueryCacheKey } from "./makeQueryCacheKey";
 import {
+  QueryExecutionContext as CommonQueryExecutionContext,
   ExecutePlasmicQueriesResult,
   PlasmicQuery,
   PlasmicQueryResult,
   QueryCodeComponentNode,
   QueryComponentNode,
   QueryDataProviderNode,
-  QueryExecutionContext,
-  QueryExecutionInitialContext,
   QueryNode,
   QueryRepeatedNode,
   QueryVisibilityNode,
 } from "./types";
 
+/**
+ * Server-side QueryExecutionContext has an extra $scopedItemVars
+ * for nested component/element context.
+ */
+type QueryExecutionContext = CommonQueryExecutionContext & {
+  $scopedItemVars: Record<string, unknown>;
+};
+
+/**
+ * Initial context just before execution.
+ * @internal
+ */
+type QueryExecutionInitialContext = Pick<
+  CommonQueryExecutionContext,
+  "$ctx" | "$props"
+>;
+
 interface DiscoveredQuery {
   $query: StatefulQueryResult;
   query: PlasmicQuery;
+  ctx: QueryExecutionContext;
 }
 
 const ROOT_COMPONENT_KEY_PATH = "root";
@@ -40,6 +57,8 @@ function executeQueryTree(
   const initialContext: QueryExecutionContext = {
     $props,
     $ctx,
+    // Placeholder; executeComponentNode replaces this with an initial
+    // $state derived from the component's own stateSpecs.
     $state: {},
     $q: {} as Record<string, StatefulQueryResult>,
     $scopedItemVars: {},
@@ -126,10 +145,22 @@ function executeComponentNode(
     queriesByComponent.set(componentKeyPath, componentQueries);
   }
 
+  // Each component owns its own $state derived from node.stateSpecs. Parent-scope state
+  // does not leak into this component's $state.
+  const $state: QueryExecutionContext["$state"] =
+    node.stateSpecs.length > 0
+      ? createInitial$State(
+          parentContext.$ctx,
+          evaluatedProps,
+          componentQueries as Record<string, PlasmicQueryResult>,
+          node.stateSpecs
+        )
+      : {};
+
   const componentContext: QueryExecutionContext = {
     $props: evaluatedProps,
     $ctx: parentContext.$ctx,
-    $state: parentContext.$state,
+    $state,
     $q: componentQueries,
     $scopedItemVars: parentContext.$scopedItemVars,
   };
@@ -144,16 +175,7 @@ function executeComponentNode(
     const $query = new StatefulQueryResult();
     componentQueries[queryName] = $query;
 
-    const capturedContext = componentContext;
-    const capturedArgsFn = query.args;
-
-    const plasmicQuery: PlasmicQuery = {
-      id: query.id,
-      fn: query.fn,
-      execParams: () => capturedArgsFn(capturedContext),
-    };
-
-    discovered.push({ $query, query: plasmicQuery });
+    discovered.push({ $query, query, ctx: componentContext });
   }
 
   node.children.forEach((child, idx) => {
@@ -329,7 +351,7 @@ export async function executePlasmicQueries(
 
     await Promise.all(
       newQueries.map((d) =>
-        executePlasmicQuery(d.$query, d.query).catch(() => {
+        executePlasmicQuery(d.$query, d.query, d.ctx).catch(() => {
           // Errors are stored in the StatefulQueryResult
         })
       )
@@ -366,16 +388,20 @@ export async function executePlasmicQueries(
   return { cache, queries };
 }
 
-export async function executePlasmicQuery<T>(
+export async function executePlasmicQuery<
+  T,
+  F extends (...args: unknown[]) => Promise<T>
+>(
   $query: StatefulQueryResult<T>,
-  query: PlasmicQuery<(...args: unknown[]) => Promise<T>>
+  query: PlasmicQuery<F>,
+  ctx: QueryExecutionContext
 ): Promise<PlasmicQueryResult<T> & { current: { state: "done" } }> {
   if ($query.current.state === "loading" || $query.current.state === "done") {
     return $query.getDoneResult();
   }
 
   do {
-    const paramsResult = resolveParams(query.execParams);
+    const paramsResult = resolveParams(query.id, () => query.args(ctx));
     switch (paramsResult.status) {
       case "blocked": {
         try {
@@ -387,13 +413,9 @@ export async function executePlasmicQuery<T>(
         continue;
       }
       case "ready": {
-        const cacheKey = makeQueryCacheKey(
-          query.id,
-          paramsResult.resolvedParams
-        );
         $query.loadingPromise(
-          cacheKey,
-          query.fn(...paramsResult.resolvedParams)
+          paramsResult.cacheKey,
+          Promise.resolve(query.fn(...paramsResult.resolvedParams))
         );
         return $query.getDoneResult();
       }

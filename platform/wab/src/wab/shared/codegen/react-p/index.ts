@@ -1394,24 +1394,31 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     const $refs = refsRef.current;
 
     ${
-      // Initialize server queries early so state init funcs can access $q.
-      // $stateRef is used to pass $state to the hook without creating a
-      // circular dependency (useDollarState needs $q, $q hook needs $state).
-      // The ref captures the previous render's $state; it is updated after
-      // useDollarState runs so execParams (called lazily) sees the latest value.
-      ctx.hasServerQueries
-        ? `
+      component.states.length
+        ? `const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
+          (${serializeStateSpecs(component, ctx)})
+        , [$props, $ctx, $refs]);`
+        : ""
+    }${
+    // Initialize server queries early so state init funcs can access $q.
+    // $stateRef is used to pass $state to the hook without creating a
+    // circular dependency (useDollarState needs $q, $q hook needs $state).
+    // After useDollarState runs, $stateRef is updated with the live $state proxy.
+    ctx.hasServerQueries
+      ? `
       ${
         component.states.length
-          ? "const $stateRef = React.useRef<Record<string, unknown>>({});"
+          ? "const $stateRef = React.useRef<Record<string, unknown> | null>(null);"
           : ""
       }
       const $q = unstable_usePlasmicQueries(${
         useRscServerWrapper && isPage ? "pageQueryTree" : "serverQueryTree"
-      }, $props, $ctx${component.states.length ? ", $stateRef.current" : ""});
+      }, $ctx, $props, ${
+          component.states.length ? "$stateRef.current" : "null"
+        });
       `
-        : ""
-    }
+      : ""
+  }
 
     ${serializeGlobalVariantValues(
       ctx.usedGlobalVariantGroups,
@@ -1435,12 +1442,9 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
     ${
       component.states.length
-        ? `const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
-          (${serializeStateSpecs(component, ctx)})
-        , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: ${
-          ctx.usesComponentLevelQueries ? "$queries" : "{}"
-        }, $q: ${ctx.hasServerQueries ? "$q" : "{}"}, $refs});${
+        ? `const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: ${
+            ctx.usesComponentLevelQueries ? "$queries" : "{}"
+          }, $q: ${ctx.hasServerQueries ? "$q" : "{}"}, $refs});${
             ctx.hasServerQueries
               ? `
         $stateRef.current = $state;`

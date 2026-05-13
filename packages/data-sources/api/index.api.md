@@ -113,9 +113,9 @@ export interface Pagination {
 }
 
 // @internal (undocumented)
-export interface PlasmicQuery<F extends (...args: unknown[]) => Promise<unknown> = (...args: unknown[]) => Promise<unknown>> {
+export interface PlasmicQuery<F extends (...args: any[]) => Promise<unknown> = (...args: any[]) => Promise<unknown>> {
     // (undocumented)
-    execParams: () => Parameters<F>;
+    args: ContextFn<Parameters<F>>;
     // (undocumented)
     fn: F;
     // (undocumented)
@@ -137,24 +137,19 @@ export interface QueryComponentNode {
     // (undocumented)
     propsContext: Record<string, ContextFn<unknown>>;
     // (undocumented)
-    queries: Record<string, SerializedServerQuery>;
+    queries: Record<string, PlasmicQuery>;
+    stateSpecs: $StateSpec[];
     // (undocumented)
     type: "component";
 }
 
-// @public (undocumented)
-export interface QueryExecutionContext {
-    // (undocumented)
+// @internal
+export type QueryExecutionContext = {
     $ctx: Record<string, unknown>;
-    // (undocumented)
     $props: Record<string, unknown>;
-    // (undocumented)
-    $q: Record<string, PlasmicQueryResult>;
-    // (undocumented)
-    $scopedItemVars: Record<string, unknown>;
-    // (undocumented)
     $state: Record<string, unknown>;
-}
+    $q: Record<string, PlasmicQueryResult>;
+};
 
 // @public @deprecated (undocumented)
 export type QueryResult = Partial<ManyRowsResult<any>> & {
@@ -196,9 +191,12 @@ export class _StatefulQueryResult<T = unknown> implements PlasmicQueryResult<T> 
     removeListener(listener: _StateListener<T>): void;
     // (undocumented)
     reset(): void;
+    // (undocumented)
     resolvePromise(key: string, data: T): void;
     // (undocumented)
     settable: SettablePromise<T>;
+    // (undocumented)
+    toJSON(): _StatefulQueryState<T>;
 }
 
 // @internal (undocumented)
@@ -259,7 +257,7 @@ export function throwIfPlasmicUndefinedDataError(err: unknown): void;
 export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, options: QueryExecutionInitialContext): Promise<ExecutePlasmicQueriesResult>;
 
 // @internal
-export function unstable_usePlasmicQueries(tree: QueryComponentNode, $props: Record<string, unknown>, $ctx: Record<string, unknown>, $state?: Record<string, unknown>): Record<string, PlasmicQueryResult>;
+export function unstable_usePlasmicQueries(tree: QueryComponentNode, $ctx: QueryExecutionContext["$ctx"], $props: QueryExecutionContext["$props"], $state: QueryExecutionContext["$state"] | null): Record<string, PlasmicQueryResult>;
 
 // @internal
 export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;

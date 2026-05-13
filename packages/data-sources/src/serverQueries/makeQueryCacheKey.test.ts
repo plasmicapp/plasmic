@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { noopFn } from "../utils";
+import { StatefulQueryResult } from "./common";
 import { makeQueryCacheKey } from "./makeQueryCacheKey";
 
 describe("makeQueryCacheKey", () => {
@@ -53,6 +54,19 @@ describe("makeQueryCacheKey", () => {
     obj.last = obj.items[1];
     expect(makeQueryCacheKey("q", [obj, obj.items[1]])).toEqual(
       `q:[{"first":{"id":1},"items":["ρ:REF:$.0.first",{"id":2}],"last":"ρ:REF:$.0.items.1"},"ρ:REF:$.0.items.1"]`
+    );
+  });
+  it("serializes StatefulQueryResult is each state", () => {
+    const initial = new StatefulQueryResult();
+
+    const done = new StatefulQueryResult();
+    done.resolvePromise("key1", { b: 2, a: 1, c: 3 });
+
+    const errored = new StatefulQueryResult();
+    errored.rejectPromise("key2", new Error("boom"));
+
+    expect(makeQueryCacheKey("fn", [initial, done, errored])).toEqual(
+      `fn:[{"key":null,"state":"initial"},{"data":{"a":1,"b":2,"c":3},"key":"key1","state":"done"},{"error":{},"key":"key2","state":"done"}]`
     );
   });
 });

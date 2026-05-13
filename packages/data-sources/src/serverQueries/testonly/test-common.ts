@@ -13,13 +13,33 @@ export const asyncFunc = (...args: unknown[]) => {
   });
 };
 
+function shallowEqual(a: unknown, b: unknown): boolean {
+  if (a === b) {
+    return true;
+  }
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+  }
+  if (a && b && typeof a === "object" && typeof b === "object") {
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    return (
+      aKeys.length === bKeys.length &&
+      aKeys.every((k) => (a as any)[k] === (b as any)[k])
+    );
+  }
+  return false;
+}
+
 /**
- * Find the first call whose arguments match the given args.
+ * Find the first call whose arguments match the given args using shallow equality.
  * For example, [1] matches [1] or [1, 2] but not [2, 1].
+ * Arrays and objects are compared shallowly, so findAsyncFuncCall(["a", "b"])
+ * matches a call made with asyncFunc(["a", "b"]).
  */
 export function findAsyncFuncCall(...args: unknown[]) {
   const found = asyncFuncCalls.find((call) =>
-    args.every((arg, i) => call.args[i] === arg)
+    args.every((arg, i) => shallowEqual(call.args[i], arg))
   );
   if (!found) {
     throw new Error(

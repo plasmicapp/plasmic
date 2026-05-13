@@ -1,10 +1,13 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   StatefulQueryResult,
   createDollarQueries,
+  createInitial$State,
   resolveParams,
   safeExec,
-  shallowEqualRecords,
   wrapDollarQueriesForMetadata,
   wrapDollarQueriesWithFallbacks,
 } from "./common";
@@ -53,6 +56,12 @@ describe("StatefulQueryResult", () => {
     expect(() => unwrapData(result)).toThrowError(error);
     await expect(originalPromise).rejects.toBe(error);
   });
+
+  it("toJSON", () => {
+    const result = new StatefulQueryResult();
+    expect(result.toJSON()).toBe(result.current);
+    expect(JSON.stringify(result)).toEqual('{"state":"initial","key":null}');
+  });
 });
 
 describe("createDollarQueries", () => {
@@ -75,32 +84,38 @@ describe("createDollarQueries", () => {
 
 describe("resolveParams", () => {
   it("returns ready for empty params", () => {
-    expect(resolveParams(() => [] as [])).toEqual({
+    expect(resolveParams("queryId", () => [] as [])).toEqual({
       status: "ready",
       resolvedParams: [],
+      cacheKey: "queryId:[]",
     });
   });
   it("returns ready for null params", () => {
-    expect(resolveParams(() => [null])).toEqual({
+    expect(resolveParams("queryId", () => [null])).toEqual({
       status: "ready",
       resolvedParams: [null],
+      cacheKey: "queryId:[null]",
     });
   });
   it("returns ready for undefined params", () => {
-    expect(resolveParams(() => [undefined])).toEqual({
+    expect(resolveParams("queryId", () => [undefined])).toEqual({
       status: "ready",
       resolvedParams: [undefined],
+      cacheKey: 'queryId:["ρ:UNDEFINED"]',
     });
   });
   it("returns ready for simple params", () => {
-    expect(resolveParams(() => ["foo", 42] as [string, number])).toEqual({
+    expect(
+      resolveParams("queryId", () => ["foo", 42] as [string, number])
+    ).toEqual({
       status: "ready",
       resolvedParams: ["foo", 42],
+      cacheKey: 'queryId:["foo",42]',
     });
   });
   it("returns error for other errors", () => {
     expect(
-      resolveParams(() => {
+      resolveParams("queryId", () => {
         throw new Error("other error");
       })
     ).toMatchObject({
@@ -113,26 +128,29 @@ describe("resolveParams", () => {
   });
   it("works with StatefulQueryResult, blocked -> ready", () => {
     const queryResult = new StatefulQueryResult();
-    expect(resolveParams(() => ["foo", queryResult.data])).toEqual({
+    expect(resolveParams("queryId", () => ["foo", queryResult.data])).toEqual({
       status: "blocked",
       promise: queryResult.settable.promise,
     });
 
     queryResult.resolvePromise("key", "done");
-    expect(resolveParams(() => ["foo", queryResult.data])).toEqual({
+    expect(resolveParams("queryId", () => ["foo", queryResult.data])).toEqual({
       status: "ready",
       resolvedParams: ["foo", "done"],
+      cacheKey: 'queryId:["foo","done"]',
     });
   });
   it("works with StatefulQueryResult, blocked -> error", () => {
     const queryResult = new StatefulQueryResult();
-    expect(resolveParams(() => ["foo", queryResult.data])).toEqual({
+    expect(resolveParams("queryId", () => ["foo", queryResult.data])).toEqual({
       status: "blocked",
       promise: queryResult.settable.promise,
     });
 
     queryResult.rejectPromise("key", new Error("other error"));
-    expect(resolveParams(() => ["foo", queryResult.data])).toMatchObject({
+    expect(
+      resolveParams("queryId", () => ["foo", queryResult.data])
+    ).toMatchObject({
       status: "error",
       error: {
         message: "Error resolving function params",
@@ -222,36 +240,209 @@ describe("wrapDollarQueriesWithFallbacks, wrapDollarQueriesForMetadata", () => {
   });
 });
 
-describe("shallowEqualRecords", () => {
-  it("returns true for same reference", () => {
-    const a = { x: 1 };
-    expect(shallowEqualRecords(a, a)).toBe(true);
+describe("createInitial$State", () => {
+  it("returns undefined without initVal", () => {
+    const $state = createInitial$State({}, {}, {}, [
+      { path: "count", type: "private" },
+    ]);
+    expect($state.count).toBeUndefined();
   });
 
-  it("returns true for equal records", () => {
-    expect(shallowEqualRecords({ x: 1, y: "a" }, { x: 1, y: "a" })).toBe(true);
+  it("returns propValue", () => {
+    const $state = createInitial$State({}, { value: "from prop" }, {}, [
+      {
+        path: "value",
+        valueProp: "value",
+        type: "writable",
+      },
+    ]);
+    expect($state.value).toEqual("from prop");
   });
 
-  it("returns false for different values", () => {
-    expect(shallowEqualRecords({ x: 1 }, { x: 2 })).toBe(false);
+  it("returns initVal", () => {
+    const $state = createInitial$State({}, {}, {}, [
+      { path: "value", initVal: "from initVal", type: "private" },
+    ]);
+    expect($state.value).toBe("from initVal");
   });
 
-  it("returns false for different keys", () => {
-    expect(shallowEqualRecords({ x: 1 }, { y: 1 })).toBe(false);
+  it("invokes initFunc with execution context and returns it", () => {
+    const $ctx = { ctxName: "ctxValue" };
+    const $props = { propName: "propValue" };
+    const $queryStates = { queryName: new StatefulQueryResult() };
+    $queryStates.queryName.resolvePromise("queryKey", "queryValue");
+
+    const $state = createInitial$State($ctx, $props, $queryStates, [
+      {
+        path: "stateName",
+        initVal: "stateValue",
+        type: "private",
+      },
+      {
+        path: "merged",
+        initFunc: (executionCtx) =>
+          [
+            executionCtx.$ctx.ctxName,
+            executionCtx.$props.propName,
+            `${executionCtx.$q.queryName.key}:${executionCtx.$q.queryName.data}`,
+            executionCtx.$state.stateName,
+          ].join(","),
+        type: "private",
+      },
+    ]);
+    expect($state.merged).toEqual(
+      "ctxValue,propValue,queryKey:queryValue,stateValue"
+    );
+    expect($state.stateName).toEqual("stateValue");
   });
 
-  it("returns false for different key counts", () => {
-    expect(shallowEqualRecords({ x: 1 }, { x: 1, y: 2 })).toBe(false);
+  it("returns or throws from query", () => {
+    const $queryStates = { query: new StatefulQueryResult() };
+    const $state = createInitial$State({}, {}, $queryStates, [
+      {
+        path: "dependsOnQuery",
+        initFunc: ({ $q }) => $q.query.data,
+        type: "private",
+      },
+    ]);
+    expect(() => $state.dependsOnQuery).toThrow("Query is not done");
+
+    $queryStates.query.resolvePromise("qureyKey", "done");
+    expect($state.dependsOnQuery).toEqual("done");
   });
 
-  it("uses reference equality for values", () => {
-    const obj = {};
-    expect(shallowEqualRecords({ x: obj }, { x: obj })).toBe(true);
-    expect(shallowEqualRecords({ x: obj }, { x: {} })).toBe(false);
+  it("caches successful initFunc results but retries on throw", () => {
+    const $queryStates = { query: new StatefulQueryResult() };
+    const initFunc = vi.fn(({ $q }) => $q.query.data);
+    const $state = createInitial$State({}, {}, $queryStates, [
+      { path: "value", initFunc, type: "private" },
+    ]);
+
+    // Throws keep re-running so the next read can pick up a settled query.
+    expect(() => $state.value).toThrow();
+    expect(() => $state.value).toThrow();
+    expect(initFunc).toHaveBeenCalledTimes(2);
+
+    // First successful read computes and caches.
+    $queryStates.query.resolvePromise("k", "done");
+    expect($state.value).toEqual("done");
+    expect(initFunc).toHaveBeenCalledTimes(3);
+
+    // Subsequent reads return the cached value without re-invoking initFunc.
+    expect($state.value).toEqual("done");
+    expect($state.value).toEqual("done");
+    expect(initFunc).toHaveBeenCalledTimes(3);
   });
 
-  it("returns true for two empty records", () => {
-    expect(shallowEqualRecords({}, {})).toBe(true);
+  it("returns objects for nested path prefixes", () => {
+    const $state = createInitial$State({}, {}, {}, [
+      { path: "tpl.value", initVal: "from initVal", type: "private" },
+      { path: "tpl.noInit", type: "private" },
+      { path: "tpl2.noInit", type: "private" },
+    ]);
+
+    expect($state.tpl).toBeTypeOf("object");
+    const $stateTpl = $state.tpl as Record<string, unknown>;
+    expect($stateTpl.value).toEqual("from initVal");
+    expect($stateTpl.noInit).toBeUndefined();
+
+    expect($state.tpl2).toBeTypeOf("object");
+    const $stateTpl2 = $state.tpl2 as Record<string, unknown>;
+    expect($stateTpl2.noInit).toBeUndefined();
+
+    expect($state.value).toBeUndefined();
+    expect($state.noInit).toBeUndefined();
+  });
+
+  it("returns stable sub-proxies (same reference on repeated access)", () => {
+    const $state = createInitial$State({}, {}, {}, [
+      { path: "tpl.value", type: "private" },
+    ]);
+    expect($state.tpl).toBe($state.tpl);
+  });
+
+  it("returns undefined for repeated specs", () => {
+    const $state = createInitial$State({}, {}, {}, [
+      { path: "items[].selected", initVal: "", type: "private" },
+    ]);
+    expect($state["items"]).toBeUndefined();
+    expect($state["items[]"]).toBeUndefined();
+  });
+
+  it("skips only [] specs and still builds the rest of the state", () => {
+    const $queryStates = { query: new StatefulQueryResult() };
+    $queryStates.query.resolvePromise("k", "queryValue");
+
+    const $state = createInitial$State({}, {}, $queryStates, [
+      { path: "items[].selected", initVal: "", type: "private" },
+      { path: "count", initVal: 7, type: "private" },
+      { path: "tpl.label", initVal: "hi", type: "private" },
+      {
+        path: "fromQuery",
+        initFunc: ({ $q }) => $q.query.data,
+        type: "private",
+      },
+      { path: "after[].x", initVal: "", type: "private" },
+    ]);
+
+    // The [] specs are skipped entirely.
+    expect($state["items"]).toBeUndefined();
+    expect($state["items[]"]).toBeUndefined();
+    expect($state["after"]).toBeUndefined();
+
+    // ...but every non-[] spec around them still works.
+    expect($state.count).toBe(7);
+    expect(($state.tpl as Record<string, unknown>).label).toBe("hi");
+    expect($state.fromQuery).toBe("queryValue");
+    expect(Object.keys($state)).toEqual(["count", "tpl", "fromQuery"]);
+  });
+
+  it("matches JavaScript object behavior", () => {
+    const jsState = {
+      foo: "$.foo",
+      tpl: { foo: "$.tpl.foo" },
+    };
+
+    const $state = createInitial$State({}, {}, {}, [
+      { path: "foo", initVal: "$.foo", type: "private" },
+      { path: "tpl.foo", initVal: "$.tpl.foo", type: "private" },
+    ]);
+
+    function expectJavaScriptBehavior(state: typeof jsState) {
+      // is typeof object
+      expect(state).toBeTypeOf("object");
+      expect(state.tpl).toBeTypeOf("object");
+
+      // implements keys, values, entries
+      expect(Object.keys(state)).toEqual(["foo", "tpl"]);
+      expect(Object.values(state)).toEqual(["$.foo", { foo: "$.tpl.foo" }]);
+      expect(Object.entries(state)).toEqual([
+        ["foo", "$.foo"],
+        ["tpl", { foo: "$.tpl.foo" }],
+      ]);
+      expect(Object.keys(state.tpl)).toEqual(["foo"]);
+      expect(Object.values(state.tpl)).toEqual(["$.tpl.foo"]);
+      expect(Object.entries(state.tpl)).toEqual([["foo", "$.tpl.foo"]]);
+
+      // implements in
+      expect("foo" in state).toBe(true);
+      expect("tpl" in state).toBe(true);
+      expect("unknown" in state).toBe(false);
+      expect("foo" in state.tpl).toBe(true);
+      expect("unknown" in state.tpl).toBe(false);
+
+      // unknown keys return undefined
+      expect(state["unknown"]).toBeUndefined();
+      expect(state["tpl"]["unknown"]).toBeUndefined();
+
+      // implements conversion
+      expect(String(state)).toEqual("[object Object]");
+      expect(JSON.stringify(state)).toEqual(
+        '{"foo":"$.foo","tpl":{"foo":"$.tpl.foo"}}'
+      );
+    }
+    expectJavaScriptBehavior(jsState);
+    expectJavaScriptBehavior($state as typeof jsState);
   });
 });
 

@@ -5,17 +5,21 @@ import {
   ServerNode,
   ServerQueryTree,
 } from "@/wab/shared/codegen/react-p/server-queries/types";
-import {
-  ServerQueryWithOperation,
-  getReferencedQueryNamesInCustomCode,
-} from "@/wab/shared/codegen/react-p/server-queries/utils";
+import { ServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
+import { serializeStateSpecs } from "@/wab/shared/codegen/react-p/states";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import {
   ExprCtx,
   asCode,
   stripParensAndMaybeConvertToIife,
 } from "@/wab/shared/core/exprs";
-import { Component, isKnownCustomCode } from "@/wab/shared/model/classes";
+import { parseCodeExpression } from "@/wab/shared/eval/expression-parser";
+import {
+  CustomCode,
+  CustomFunctionExpr,
+  isKnownCustomCode,
+} from "@/wab/shared/model/classes";
 import { convertToFunction } from "@/wab/shared/parser-utils";
 import { groupBy } from "lodash";
 
@@ -24,9 +28,9 @@ import { groupBy } from "lodash";
  * If scopedItemVars are provided, they are destructured from ctx.$scopedItemVars.
  *
  * Example:
- *   makeContextFn("$props.userId", []) → "({ $props }) => ($props.userId)"
+ *   makeContextFn("$props.userId", []) → "({ $q, $props, $ctx, $state }) => ($props.userId)"
  *   makeContextFn("currentItem", ["currentItem", "currentIndex"])
- *     → "({ $scopedItemVars: { currentItem, currentIndex } }) => (currentItem)"
+ *     → "({ $q, $props, $ctx, $state, $scopedItemVars: { currentItem, currentIndex } }) => (currentItem)"
  */
 function makeContextFn(
   exprCode: DynamicExprCode,
@@ -44,7 +48,7 @@ function makeContextFn(
  * Wraps an array of DynamicExprCode strings in a ContextFn returning an array.
  *
  * Example:
- *   makeArgsFn(["$props.url"], []) → "({ $props }) => [$props.url]"
+ *   makeArgsFn(["$props.url"], []) → "({ $q, $props, $ctx, $state }) => [$props.url]"
  */
 function makeArgsFn(argExprs: string[], scopedItemVars: string[]): string {
   if (scopedItemVars.length > 0) {
@@ -62,9 +66,9 @@ function makeArgsFn(argExprs: string[], scopedItemVars: string[]): string {
  */
 export function serializeServerQueryTree(
   tree: ServerQueryTree,
-  exprCtx: ExprCtx
+  ctx: SerializerBaseContext
 ): string {
-  return serializeComponentNode(tree.rootNode, exprCtx, []);
+  return serializeComponentNode(tree.rootNode, ctx, []);
 }
 
 /**
@@ -73,41 +77,39 @@ export function serializeServerQueryTree(
  */
 export function serializeRootComponentQueries(
   queries: ServerQueryWithOperation[],
-  exprCtx: ExprCtx,
-  component?: Component
+  ctx: SerializerBaseContext
 ): string {
+  const hasStates = ctx.component.states.some(
+    (state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode)
+  );
+  const stateSpecs = hasStates ? serializeStateSpecs(ctx.component, ctx) : "[]";
   const queriesEntries = queries
     .map(
-      (q) =>
-        `${toVarName(q.name)}: ${serializeServerQuery(
-          q,
-          exprCtx,
-          [],
-          component
-        )}`
+      (q) => `${toVarName(q.name)}: ${serializeServerQuery(q, ctx.exprCtx, [])}`
     )
     .join(", ");
   return `{
   type: "component",
   queries: { ${queriesEntries} },
   propsContext: {},
+  stateSpecs: ${stateSpecs},
   children: [],
 }`;
 }
 
 function serializeComponentNode(
   node: ServerComponentNode,
-  exprCtx: ExprCtx,
+  ctx: SerializerBaseContext,
   scopedItemVars: string[]
 ): string {
+  const { exprCtx } = ctx;
   const queriesEntries = node.queries
     .map(
       (q) =>
         `${toVarName(q.name)}: ${serializeServerQuery(
           q,
           exprCtx,
-          scopedItemVars,
-          node.component
+          scopedItemVars
         )}`
     )
     .join(", ");
@@ -115,11 +117,18 @@ function serializeComponentNode(
     .map(([k, v]) => `${jsLiteral(k)}: ${makeContextFn(v, scopedItemVars)}`)
     .join(", ");
   const childrenStr = node.children
-    .map((c) => serializeServerNode(c, exprCtx, scopedItemVars))
+    .map((c) => serializeServerNode(c, ctx, scopedItemVars))
     .join(", ");
+  const hasStates = node.states.some(
+    (state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode)
+  );
+  const stateSpecsCode = hasStates
+    ? serializeStateSpecs(node.component, ctx)
+    : "[]";
   return `{
   type: "component",
   queries: { ${queriesEntries} },
+  stateSpecs: ${stateSpecsCode},
   propsContext: { ${propsEntries} },
   children: [${childrenStr}],
 }`;
@@ -127,19 +136,19 @@ function serializeComponentNode(
 
 function serializeServerNode(
   node: ServerNode,
-  exprCtx: ExprCtx,
+  ctx: SerializerBaseContext,
   scopedItemVars: string[]
 ): string {
   const { type } = node;
   switch (type) {
     case "component":
-      return serializeComponentNode(node, exprCtx, scopedItemVars);
+      return serializeComponentNode(node, ctx, scopedItemVars);
     case "codeComponent": {
       const propsEntries = Object.entries(node.propsContext)
         .map(([k, v]) => `${jsLiteral(k)}: ${makeContextFn(v, scopedItemVars)}`)
         .join(", ");
       const childrenStr = node.children
-        .map((c) => serializeServerNode(c, exprCtx, scopedItemVars))
+        .map((c) => serializeServerNode(c, ctx, scopedItemVars))
         .join(", ");
       const configStr =
         node.serverRenderingConfig !== undefined
@@ -154,7 +163,7 @@ function serializeServerNode(
     case "dataProvider": {
       const { name, data } = node;
       const childrenStr = node.children
-        .map((c) => serializeServerNode(c, exprCtx, scopedItemVars))
+        .map((c) => serializeServerNode(c, ctx, scopedItemVars))
         .join(", ");
       return `{
   type: "dataProvider",
@@ -165,7 +174,7 @@ function serializeServerNode(
     }
     case "visibility": {
       const childrenStr = node.children
-        .map((c) => serializeServerNode(c, exprCtx, scopedItemVars))
+        .map((c) => serializeServerNode(c, ctx, scopedItemVars))
         .join(", ");
       return `{
   type: "visibility",
@@ -178,7 +187,7 @@ function serializeServerNode(
       // collectionExpr is evaluated BEFORE iteration, so it doesn't have the item vars yet
       const childScopedVars = [...scopedItemVars, itemName, indexName];
       const childrenStr = node.children
-        .map((c) => serializeServerNode(c, exprCtx, childScopedVars))
+        .map((c) => serializeServerNode(c, ctx, childScopedVars))
         .join(", ");
       return `{
   type: "repeated",
@@ -194,37 +203,88 @@ function serializeServerNode(
 function serializeServerQuery(
   query: ServerQueryWithOperation,
   exprCtx: ExprCtx,
-  scopedItemVars: string[],
-  component?: Component
+  scopedItemVars: string[]
 ): string {
-  const { op } = query;
+  if (isKnownCustomCode(query.op)) {
+    return serializeCustomCode(query.uuid, query.op, scopedItemVars);
+  } else {
+    return serializeCustomFunctionExpr(query.op, exprCtx, scopedItemVars);
+  }
+}
 
-  if (isKnownCustomCode(op)) {
-    // fn accepts the full context so the user code can reference $q, $props, $ctx, and $state
-    const depNames = component
-      ? getReferencedQueryNamesInCustomCode(query, component)
-      : [];
-    const qEntries = depNames.map(
-      (n) =>
-        `${JSON.stringify(n)}: { data: $q[${JSON.stringify(
-          n
-        )}].data, isLoading: false, key: null }`
-    );
-    const qInner = qEntries.length > 0 ? ` ${qEntries.join(", ")} ` : "";
-    const argsBody = `[{ $q: {${qInner}}, $props, $ctx, $state }]`;
-    const argsCode =
-      scopedItemVars.length > 0
-        ? `({ $q, $props, $ctx, $state, $scopedItemVars: { ${scopedItemVars.join(
-            ", "
-          )} } }) => ${argsBody}`
-        : `({ $q, $props, $ctx, $state }) => ${argsBody}`;
-    return `{
-  id: ${jsLiteral(`custom:${query.uuid}`)},
+function serializeCustomCode(
+  queryUuid: string,
+  op: CustomCode,
+  scopedItemVars: string[]
+): string {
+  const { usedDollarVarKeys } = parseCodeExpression(op.code);
+
+  const paramList =
+    scopedItemVars.length > 0
+      ? `{ $q, $props, $ctx, $state, $scopedItemVars: { ${scopedItemVars.join(
+          ", "
+        )} } }`
+      : `{ $q, $props, $ctx, $state }`;
+
+  // $q and $state may be references to `StatefulQueryResult.data` which throws
+  // `PlasmicUndefinedDataErrorPromise` to indicate it's blocked.
+  // Therefore, we need to explicitly access `$q.queryName.data` for queries
+  // and `$state.referencesQuery` for states.
+  const $qDeps = [...usedDollarVarKeys.$q];
+  const $qAccessLines = $qDeps.map((k) => `    $q[${jsLiteral(k)}].data;`);
+  const $stateDeps = [...usedDollarVarKeys.$state];
+  // Access the most-specific path, e.g. `$state.tpl.input` over `$state.tpl`.
+  const $statePaths = $stateDeps.filter(
+    (path) => !$stateDeps.some((other) => other.startsWith(path + "."))
+  );
+  const $stateAccessLines = $statePaths.map(
+    (p) =>
+      `    $state${p
+        .split(".")
+        .map((seg) => `[${JSON.stringify(seg)}]`)
+        .join("")};`
+  );
+  const $allAccessLines = [...$qAccessLines, ...$stateAccessLines];
+
+  // Filter each $ variable to only referenced keys so the cache key depends
+  // only on values the code actually uses.
+  // filter("$q") -> `{ "greeting": $q["greeting"], }` or `{}`
+  // Dotted $state paths (e.g. "user.name") collapse to top-level key "user".
+  // There is an equivalent runtime version of this logic in canvas-rendering
+  const filter = (varName: "$ctx" | "$props" | "$q" | "$state") => {
+    const topLevelKeys = [
+      ...new Set([...usedDollarVarKeys[varName]].map((k) => k.split(".")[0])),
+    ];
+    if (topLevelKeys.length === 0) {
+      return "{}";
+    }
+    const entries = topLevelKeys.map((k) => {
+      const key = jsLiteral(k);
+      return `        ${key}: ${varName}[${key}]`;
+    });
+    return `{\n${entries.join(",\n")},\n      }`;
+  };
+  const argsReturn = `{
+      $ctx: ${filter("$ctx")},
+      $props: ${filter("$props")},
+      $q: ${filter("$q")},
+      $state: ${filter("$state")},
+    }`;
+  const argsCode = `(${paramList}) => {\n${
+    $allAccessLines.length > 0 ? $allAccessLines.join("\n") + "\n" : ""
+  }    return [${argsReturn}];\n  }`;
+  return `{
+  id: ${jsLiteral(`custom:${queryUuid}`)},
   fn: ${convertToFunction(op.code, "{ $q, $props, $ctx, $state }")},
   args: ${argsCode},
 }`;
-  }
+}
 
+function serializeCustomFunctionExpr(
+  op: CustomFunctionExpr,
+  exprCtx: ExprCtx,
+  scopedItemVars: string[]
+): string {
   const namespace = op.func.namespace ? `${op.func.namespace}.` : "";
   const fnCode = `$$.${namespace}${op.func.importName}`;
   const id = customFunctionId(op.func);

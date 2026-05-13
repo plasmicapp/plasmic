@@ -35,14 +35,21 @@ export const CustomFunctionExprPreview = observer(
       studioCtx.getRegisteredFunctionsMap().get(functionId),
       `Missing registered function for ${SERVER_QUERY_LOWER}`
     );
-    const { queryState } = useServerQueryOp({
-      fnId: functionId,
-      fn: regFunc.function,
-      expr,
-      env,
-      exprCtx,
-    });
-    return <QueryResultPreview queryState={queryState} title={title} />;
+    const result = useServerQueryOp(
+      env
+        ? {
+            fnId: functionId,
+            fn: regFunc.function,
+            expr,
+            env,
+            exprCtx,
+          }
+        : undefined
+    );
+    if (!result) {
+      return null;
+    }
+    return <QueryResultPreview queryState={result.queryState} title={title} />;
   }
 );
 
@@ -85,11 +92,15 @@ export const CustomCodePreview = observer(function CustomCodePreview(props: {
   env?: Record<string, any>;
 }) {
   const { queryUuid, expr, env, title } = props;
-  const result = useServerQueryOp({
-    fnId: `custom-code:${queryUuid}`,
-    code: expr,
-    env,
-  });
+  const result = useServerQueryOp(
+    env
+      ? {
+          fnId: `custom-code:${queryUuid}`,
+          code: expr,
+          env,
+        }
+      : undefined
+  );
   if (!result) {
     return null;
   }

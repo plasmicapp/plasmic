@@ -1,11 +1,11 @@
 /** @internal */
 export interface PlasmicQuery<
-  F extends (...args: unknown[]) => Promise<unknown> = (
-    ...args: unknown[]
+  F extends (...args: any[]) => Promise<unknown> = (
+    ...args: any[]
   ) => Promise<unknown>
 > {
   fn: F;
-  execParams: () => Parameters<F>;
+  args: ContextFn<Parameters<F>>;
   id: string;
 }
 
@@ -24,13 +24,16 @@ export interface PlasmicQueryResult<T = unknown> {
   isLoading: boolean;
 }
 
-export interface QueryExecutionContext {
-  $props: Record<string, unknown>;
+/**
+ * Context during execution.
+ * @internal
+ */
+export type QueryExecutionContext = {
   $ctx: Record<string, unknown>;
+  $props: Record<string, unknown>;
   $state: Record<string, unknown>;
   $q: Record<string, PlasmicQueryResult>;
-  $scopedItemVars: Record<string, unknown>;
-}
+};
 
 /**
  * A function that takes the execution context and returns a value.
@@ -38,20 +41,15 @@ export interface QueryExecutionContext {
  */
 export type ContextFn<R> = (ctx: QueryExecutionContext) => R;
 
-export interface SerializedServerQuery {
-  // cache key identifier
-  id: string;
-  // direct function reference (closed over from module scope)
-  fn: (...args: unknown[]) => Promise<unknown>;
-  // function returning ordered args evaluated against runtime context
-  args: ContextFn<unknown[]>;
-}
-
 /** @internal */
 export interface QueryComponentNode {
   type: "component";
-  queries: Record<string, SerializedServerQuery>;
+  queries: Record<string, PlasmicQuery>;
   propsContext: Record<string, ContextFn<unknown>>;
+  /**
+   * Lazily initializes $state proxy for this component.
+   */
+  stateSpecs: $StateSpec[];
   children: QueryNode[];
 }
 
@@ -97,15 +95,26 @@ export type QueryNode =
   | QueryDataProviderNode
   | QueryVisibilityNode;
 
-/** @internal */
-export type QueryExecutionInitialContext = Pick<
-  QueryExecutionContext,
-  "$props" | "$ctx"
->;
-
 export interface ExecutePlasmicQueriesResult {
   /** All queries, including nested, by query cache key hash. Passed to PlasmicRootProvider */
   cache: Record<string, unknown>;
   /** Root component query results keyed by query name. */
   queries: Record<string, PlasmicQueryResult>;
+}
+
+// TODO: Move $StateSpec to common package of data-sources and react-web?
+
+export interface $StateSpec<T = any> {
+  path: string;
+  initFunc?: (
+    env: QueryExecutionContext & {
+      /** @deprecated This field is here to conform to react-web's $StateSpec. */
+      $queries: Record<string, any>;
+      /** @deprecated This field is here to conform to react-web's $StateSpec. */
+      $refs: Record<string, any>;
+    }
+  ) => T;
+  initVal?: T;
+  type: "private" | "readonly" | "writable";
+  valueProp?: string;
 }

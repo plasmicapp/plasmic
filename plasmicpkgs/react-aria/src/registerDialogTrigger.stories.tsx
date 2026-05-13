@@ -255,7 +255,9 @@ export const WithPopover: Story = {
       expect(doc.queryByTestId("dialog-content")).not.toBeInTheDocument();
     });
 
-    await expect(trigger).toHaveFocus();
+    await waitFor(() => {
+      expect(trigger).toHaveFocus();
+    });
     // With keyboard navigation, press Space to open and Escape to dismiss
     await userEvent.keyboard("[Space]");
 

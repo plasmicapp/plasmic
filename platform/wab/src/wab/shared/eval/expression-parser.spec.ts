@@ -98,6 +98,17 @@ describe("parseCodeExpression", function () {
     expect(parsed).toEqual(expected);
   });
 
+  it("should find uses of $q", () => {
+    const parsed = parseCodeExpression(
+      '$q.foo.data + $q["bar"].data + $q.baz.key + $q.qux'
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$q = true;
+    expected.usesUnknownDollarVarKeys.$q = false;
+    expected.usedDollarVarKeys.$q = new Set(["foo", "bar", "baz", "qux"]);
+    expect(parsed).toEqual(expected);
+  });
+
   it("should find uses of $state", () => {
     const parsed = parseCodeExpression(
       '$state.a.deep.value + $state["b"].foo + $state[c].bar + "$state.d" - $state.e[f].g'

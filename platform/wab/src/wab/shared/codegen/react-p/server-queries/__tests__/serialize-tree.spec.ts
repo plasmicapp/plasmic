@@ -8,9 +8,12 @@ import {
   ServerVisibilityContextNode,
 } from "@/wab/shared/codegen/react-p/server-queries/types";
 import { ServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { mkShortId } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { ExprCtx, customCode } from "@/wab/shared/core/exprs";
+import { codeLit, customCode } from "@/wab/shared/core/exprs";
+import { mkParamsForState } from "@/wab/shared/core/lang";
+import { mkState } from "@/wab/shared/core/states";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
@@ -97,6 +100,7 @@ function createSimpleQueryTree(
     type: "component",
     component,
     queries,
+    states: component.states,
     propsContext: {},
     children,
   };
@@ -107,11 +111,16 @@ function createSimpleQueryTree(
   };
 }
 
-const exprCtx: ExprCtx = {
-  component: null,
+const ctx = {
+  exprCtx: {
+    component: null,
+    projectFlags: DEVFLAGS,
+    inStudio: false,
+  },
+  exportOpts: { shouldTransformWritableStates: false },
+  fakeTpls: [],
   projectFlags: DEVFLAGS,
-  inStudio: false,
-};
+} as unknown as SerializerBaseContext;
 
 describe("serializeServerQueryTree", () => {
   it("should emit fn as a direct JS reference and args as a function (not a quoted string)", () => {
@@ -122,7 +131,7 @@ describe("serializeServerQueryTree", () => {
     ]);
     const tree = createSimpleQueryTree(component, [query]);
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     // fn should be a direct JS expression, NOT a quoted string
     expect(serialized).toContain("fn: $$.fetchData");
@@ -148,7 +157,7 @@ describe("serializeServerQueryTree", () => {
     ]);
     const tree = createSimpleQueryTree(component, [query]);
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     expect(serialized).toContain("fn: $$.myNamespace.fetchData");
     expect(serialized).toContain('id: "myNamespace.fetchData"');
@@ -157,13 +166,34 @@ describe("serializeServerQueryTree", () => {
   it("should serialize nested components without componentUuid", () => {
     const parentComponent = createMockComponent("ParentComponent");
     const childComponent = createMockComponent("ChildComponent");
-    const func = createMockCustomFunction("fetchChild");
-    const query = createMockServerQuery("childQuery", func);
+    const func = createMockCustomFunction("fetchChild", [{ argName: "id" }]);
+    // Child query reads $state.counter
+    const query = createMockServerQuery("childQuery", func, [
+      { argName: "id", exprCode: "$state.counter" },
+    ]);
+
+    // Give the child component a private state with a default value.
+    const { valueParam, onChangeParam } = mkParamsForState({
+      name: "counter",
+      variableType: "number",
+      accessType: "private",
+      onChangeProp: "onCounterChange",
+      defaultExpr: codeLit(42),
+    });
+    const childState = mkState({
+      param: valueParam,
+      onChangeParam,
+      accessType: "private",
+      variableType: "number",
+    });
+    childComponent.states.push(childState);
+    childComponent.params.push(valueParam, onChangeParam);
 
     const childNode: ServerComponentNode = {
       type: "component",
       component: childComponent,
       queries: [query],
+      states: childComponent.states,
       propsContext: { someProp: "$props.parentProp" },
       children: [],
     };
@@ -174,12 +204,13 @@ describe("serializeServerQueryTree", () => {
         type: "component",
         component: parentComponent,
         queries: [],
+        states: [],
         propsContext: {},
         children: [childNode],
       },
     };
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     // Check structure via string content
     expect(serialized).toContain('type: "component"');
@@ -189,6 +220,18 @@ describe("serializeServerQueryTree", () => {
       "({ $q, $props, $ctx, $state }) => ($props.parentProp)"
     );
     expect(serialized).not.toContain("componentUuid");
+    // Child component emits stateSpecs so its $state is populated before query args run.
+    expect(serialized).toContain('path: "counter"');
+    expect(serialized).toContain('variableType: "number"');
+    expect(serialized).toContain("initFunc:");
+    // Child query args reference $state.counter.
+    expect(serialized).toContain(
+      "args: ({ $q, $props, $ctx, $state }) => [$state.counter]"
+    );
+    // Every component node emits stateSpecs (root uses `[]` since it has no states,
+    // child has the counter state).
+    expect(serialized.match(/stateSpecs:/g)?.length).toBe(2);
+    expect(serialized).toContain("stateSpecs: [],");
   });
 
   it("should serialize visibility nodes with function expression", () => {
@@ -199,6 +242,7 @@ describe("serializeServerQueryTree", () => {
       type: "component",
       component: childComponent,
       queries: [],
+      states: [],
       propsContext: {},
       children: [],
     };
@@ -215,12 +259,13 @@ describe("serializeServerQueryTree", () => {
         type: "component",
         component,
         queries: [],
+        states: [],
         propsContext: {},
         children: [visibilityNode],
       },
     };
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     expect(serialized).toContain('type: "visibility"');
     // visibilityExpr is now a function
@@ -237,6 +282,7 @@ describe("serializeServerQueryTree", () => {
       type: "component",
       component: childComponent,
       queries: [],
+      states: [],
       propsContext: {},
       children: [],
     };
@@ -255,12 +301,13 @@ describe("serializeServerQueryTree", () => {
         type: "component",
         component,
         queries: [],
+        states: [],
         propsContext: {},
         children: [repeatedNode],
       },
     };
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     expect(serialized).toContain('type: "repeated"');
     // collectionExpr is now a function (no item vars in scope at repeated node level)
@@ -283,6 +330,7 @@ describe("serializeServerQueryTree", () => {
       type: "component",
       component: childComponent,
       queries: [query],
+      states: [],
       propsContext: { item: "currentItem" },
       children: [],
     };
@@ -301,12 +349,13 @@ describe("serializeServerQueryTree", () => {
         type: "component",
         component,
         queries: [],
+        states: [],
         propsContext: {},
         children: [repeatedNode],
       },
     };
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     // Child of repeated node: args and propsContext should destructure item vars
     expect(serialized).toContain(
@@ -325,6 +374,7 @@ describe("serializeServerQueryTree", () => {
       type: "component",
       component: childComponent,
       queries: [],
+      states: [],
       propsContext: {},
       children: [],
     };
@@ -342,12 +392,13 @@ describe("serializeServerQueryTree", () => {
         type: "component",
         component,
         queries: [],
+        states: [],
         propsContext: {},
         children: [dataProviderNode],
       },
     };
 
-    const serialized = serializeServerQueryTree(tree, exprCtx);
+    const serialized = serializeServerQueryTree(tree, ctx);
 
     expect(serialized).toContain('type: "dataProvider"');
     expect(serialized).toContain('name: "userData"');
@@ -379,6 +430,7 @@ describe("hasNestedQueries", () => {
       type: "component",
       component: childComponent,
       queries: [query],
+      states: [],
       propsContext: {},
       children: [],
     };
@@ -389,6 +441,7 @@ describe("hasNestedQueries", () => {
         type: "component",
         component: parentComponent,
         queries: [],
+        states: [],
         propsContext: {},
         children: [childNode],
       },
@@ -414,6 +467,7 @@ describe("hasNestedQueries", () => {
       type: "component",
       component: childComponent,
       queries: [query],
+      states: [],
       propsContext: {},
       children: [],
     };
@@ -430,6 +484,7 @@ describe("hasNestedQueries", () => {
         type: "component",
         component: parentComponent,
         queries: [],
+        states: [],
         propsContext: {},
         children: [visibilityNode],
       },
@@ -448,6 +503,7 @@ describe("hasNestedQueries", () => {
       type: "component",
       component: childComponent,
       queries: [query],
+      states: [],
       propsContext: {},
       children: [],
     };
@@ -466,6 +522,7 @@ describe("hasNestedQueries", () => {
         type: "component",
         component: parentComponent,
         queries: [],
+        states: [],
         propsContext: {},
         children: [repeatedNode],
       },

@@ -8,6 +8,7 @@ import { pageReferencesSearchParams } from "@/wab/shared/codegen/react-p/seriali
 import {
   getDataTokensFromServerQueries,
   serializeRootServerQueryTree,
+  serializeServerComponentBody,
 } from "@/wab/shared/codegen/react-p/server-queries/index";
 import {
   makePlasmicClientRscComponentName,
@@ -26,8 +27,9 @@ import {
   mkComponent,
   mkPageMeta,
 } from "@/wab/shared/core/components";
-import { customCode } from "@/wab/shared/core/exprs";
-import { mkParam } from "@/wab/shared/core/lang";
+import { codeLit, customCode } from "@/wab/shared/core/exprs";
+import { mkParam, mkParamsForState } from "@/wab/shared/core/lang";
+import { mkState } from "@/wab/shared/core/states";
 import { mkTplInlinedText, mkTplTagX } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ExprText } from "@/wab/shared/model/classes";
@@ -249,8 +251,9 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       expect(result).toContain("myQuery");
       expect(result).toContain('id: "fetchData"');
       expect(result).toContain("fn: $$.fetchData");
-      expect(result).toContain("$ctx.apiUrl");
-      expect(result).toContain("10");
+      expect(result).toContain(
+        `  args: ({ $q, $props, $ctx, $state }) => [$ctx.apiUrl, 10],`
+      );
     });
 
     it("serializes a custom code server query (no await)", () => {
@@ -263,7 +266,15 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {"); // no async
       expect(result).toContain("return 1 + 2;");
       expect(result).toContain(
-        "args: ({ $q, $props, $ctx, $state }) => [{ $q: {}, $props, $ctx, $state }]"
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {},
+      $state: {},
+    }];
+  },`
       );
     });
 
@@ -280,7 +291,15 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       expect(result).toContain("fn: async ({ $q, $props, $ctx, $state }) => {"); // has async
       expect(result).toContain("return await new Promise(r => r(3000))");
       expect(result).toContain(
-        "args: ({ $q, $props, $ctx, $state }) => [{ $q: {}, $props, $ctx, $state }]"
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {},
+      $state: {},
+    }];
+  },`
       );
     });
 
@@ -320,11 +339,22 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
-      // fn accepts context with $q/$props/$ctx/$state destructured
       expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {");
-      // args resolves each dep and packages a snapshot for fn + cache key
       expect(result).toContain(
-        'args: ({ $q, $props, $ctx, $state }) => [{ $q: { "queryA": { data: $q["queryA"].data, isLoading: false, key: null }, "queryB": { data: $q["queryB"].data, isLoading: false, key: null } }, $props, $ctx, $state }]'
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    $q["queryA"].data;
+    $q["queryB"].data;
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {
+        "queryA": $q["queryA"],
+        "queryB": $q["queryB"],
+      },
+      $state: {},
+    }];
+  },`
       );
     });
 
@@ -338,23 +368,63 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
-      // fn accepts context — $q, $props, $ctx, $state available directly
       expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {");
-      // args resolves the dep and passes a resolved context snapshot
       expect(result).toContain(
-        'args: ({ $q, $props, $ctx, $state }) => [{ $q: { "greeting": { data: $q["greeting"].data, isLoading: false, key: null } }, $props, $ctx, $state }]'
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    $q["greeting"].data;
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {
+        "greeting": $q["greeting"],
+      },
+      $state: {},
+    }];
+  },`
       );
     });
 
-    it("does not include self-references in $q dependencies", () => {
+    it("includes self-references in $q dependencies", () => {
       const component = mkComponentWithQueries(
         mkServerQuery("myQuery", mkCustomCodeOp("$q.myQuery"))
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
-      // self-reference is excluded from the resolved $q snapshot
       expect(result).toContain(
-        "args: ({ $q, $props, $ctx, $state }) => [{ $q: {}, $props, $ctx, $state }]"
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    $q["myQuery"].data;
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {
+        "myQuery": $q["myQuery"],
+      },
+      $state: {},
+    }];
+  },`
+      );
+    });
+
+    it("eagerly accesses $state properties referenced in custom code", () => {
+      const component = mkComponentWithQueries(
+        mkServerQuery("stateDepQuery", mkCustomCodeOp(`$state.myStateVar`))
+      );
+      const result = serializeRootServerQueryTree(makeCtx(component));
+      expect(result).toContain(
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    $state["myStateVar"];
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {},
+      $state: {
+        "myStateVar": $state["myStateVar"],
+      },
+    }];
+  },`
       );
     });
 
@@ -368,12 +438,23 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
 
       const result = serializeRootServerQueryTree(makeCtx(component));
       // Keys should be varNames, not display names
-      expect(result).toContain('"greeting"'); // appears in args dep snapshot
       expect(result).toContain("fullGreeting"); // unquoted key in queries object
       expect(result).not.toContain('"Greeting"');
       expect(result).not.toContain('"Full Greeting"');
-      // deps should reference the varName key in the resolved snapshot
-      expect(result).toContain('"greeting": { data: $q["greeting"].data');
+      expect(result).toContain(
+        `
+  args: ({ $q, $props, $ctx, $state }) => {
+    $q["greeting"].data;
+    return [{
+      $ctx: {},
+      $props: {},
+      $q: {
+        "greeting": $q["greeting"],
+      },
+      $state: {},
+    }];
+  },`
+      );
     });
 
     it("returns empty string when ctx.hasServerQueries is false", () => {
@@ -438,6 +519,60 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       expect(result).toEqual(
         new Set(["$dataTokens_abc123_token", "$dataTokens_proj2_tokenB"])
       );
+    });
+  });
+
+  describe("serializeServerComponentBody", () => {
+    it("passes $props and $ctx to unstable_executePlasmicQueries", () => {
+      // Page component with a server query that references $state, plus a
+      // private number state with a default value. stateSpecs is now carried
+      // on the serverQueryTree itself, so the component body does not need to
+      // declare a separate stateSpecs const.
+      const component = mkComponentWithQueries(
+        mkServerQuery(
+          "myQuery",
+          mkCustomFunctionExpr(
+            "fetchData",
+            ["id"],
+            [{ name: "id", code: "$state.counter" }]
+          )
+        )
+      );
+      const { valueParam, onChangeParam } = mkParamsForState({
+        name: "counter",
+        variableType: "number",
+        accessType: "private",
+        onChangeProp: "onCounterChange",
+        defaultExpr: codeLit(42),
+      });
+      const state = mkState({
+        param: valueParam,
+        onChangeParam,
+        accessType: "private",
+        variableType: "number",
+      });
+      component.states.push(state);
+      component.params.push(valueParam, onChangeParam);
+
+      const ctx = {
+        component,
+        hasServerQueries: true,
+        exprCtx: {
+          component: null,
+          projectFlags: DEVFLAGS,
+          inStudio: false,
+        },
+        exportOpts: { shouldTransformWritableStates: false },
+        fakeTpls: [],
+        projectFlags: DEVFLAGS,
+      } as unknown as SerializerBaseContext;
+
+      const body = serializeServerComponentBody(ctx);
+
+      expect(body).not.toContain("$refs");
+      // No separate stateSpecs const — it lives on the tree.
+      expect(body).not.toContain("const stateSpecs =");
+      expect(body).toContain("{ $props: rest, $ctx: ctx }");
     });
   });
 });

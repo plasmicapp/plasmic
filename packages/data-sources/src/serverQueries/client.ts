@@ -7,16 +7,21 @@ import {
 import * as React from "react";
 import { mapRecordEntries, mapRecords, noopFn, notNil } from "../utils";
 import {
+  ResolveParamsResult,
   StatefulQueryResult,
-  StatefulQueryState,
   SyncPromise,
   createDollarQueries,
+  createInitial$State,
   resolveParams,
-  shallowEqualRecords,
-  useRenderEffect,
+  usePrevious,
 } from "./common";
 import { makeQueryCacheKey } from "./makeQueryCacheKey";
-import { PlasmicQuery, PlasmicQueryResult, QueryComponentNode } from "./types";
+import {
+  PlasmicQuery,
+  PlasmicQueryResult,
+  QueryComponentNode,
+  QueryExecutionContext,
+} from "./types";
 
 const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
 
@@ -41,47 +46,16 @@ const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
  * };
  *
  * export function ClientComponent($props, $ctx) {
- *   const $q = usePlasmicQueries(serverQueryTree, $props, $ctx);
+ *   const $q = usePlasmicQueries(serverQueryTree, $ctx, $props, null);
  *   return <div>{$q.films.data}</div>
  * }
  */
 export function usePlasmicQueries(
   tree: QueryComponentNode,
-  $props: Record<string, unknown>,
-  $ctx: Record<string, unknown>,
-  $state?: Record<string, unknown>
+  $ctx: QueryExecutionContext["$ctx"],
+  $props: QueryExecutionContext["$props"],
+  $state: QueryExecutionContext["$state"] | null
 ): Record<string, PlasmicQueryResult> {
-  // Query invalidation should follow top-level prop/context changes,
-  // not object recreation from re-renders.
-  const stableProps = useShallowStableRecord($props);
-  const stableCtx = useShallowStableRecord($ctx);
-  // $state is a valtio proxy with a stable reference, so we use a ref to
-  // capture the latest value lazily at execParams call time. This avoids a
-  // circular dependency with useDollarState (which depends on $q).
-  const $stateRef = React.useRef($state ?? {});
-  $stateRef.current = $state ?? {};
-  const $queries = React.useMemo(
-    () => createDollarQueries(Object.keys(tree.queries)),
-    [tree]
-  );
-  const queries = React.useMemo(() => {
-    return mapRecords(
-      (_name, q) => ({
-        id: q.id,
-        fn: q.fn,
-        execParams: () =>
-          q.args({
-            $q: $queries,
-            $props: stableProps,
-            $ctx: stableCtx,
-            $state: $stateRef.current,
-            $scopedItemVars: {},
-          }),
-      }),
-      tree.queries
-    );
-  }, [$queries, stableCtx, stableProps, tree]);
-
   // Since we codegen components with data fetching and content rendering
   // together, the component will be suspended when query data is not loaded.
   // Therefore, this hook's primary complexity is handling component suspension
@@ -99,99 +73,133 @@ export function usePlasmicQueries(
   // since SWR is responsible for other behaviors like revalidation.
 
   // Wrap queries with the GLOBAL_CACHE.
-  const wrappedQueries = React.useMemo(() => wrapQueries(queries), [queries]);
+  const wrappedQueries = React.useMemo(() => wrapQueries(tree.queries), [tree]);
+
+  const $queries = React.useMemo(
+    () => createDollarQueries(Object.keys(tree.queries)),
+    [tree]
+  );
   const $queryStates = $queries as Record<string, StatefulQueryResult>;
+
+  // $state should be null on the first render only since useDollarState
+  // is run AFTER usePlasmicQueries. This gives usePlasmicQueries the chance
+  // to resolve query/state interdependencies on the first render via
+  // createInitial$State, which lazily evaluates initial state values.
+  if (!$state) {
+    $state = createInitial$State($ctx, $props, $queryStates, tree.stateSpecs);
+  }
+
   const { fallback: prefetchedCache, cache: swrCache } = usePlasmicDataConfig();
 
-  // Normally, useMutablePlasmicQueryData re-renders when its own query settles.
-  // However, it will NOT re-render when dependent queries settle or reset due to prop change.
-  // This counter forces useMutablePlasmicQueryData to re-resolve params.
-  const [settledCount, setSettledCount] = React.useState(0);
-  React.useEffect(() => {
-    let cleanup = false;
-    const resultListener = (
-      next: StatefulQueryState,
-      prev: StatefulQueryState
-    ) => {
-      if (cleanup) {
+  // Holds the latest resolved params per query for this render.
+  // Used later by usePlasmicQuery.
+  const paramsResults: Record<string, ResolveParamsResult> = {};
+
+  // Execution context changes every render, don't bother memo-ing this.
+  // Our memoization will be based on the resolved params cache key instead.
+  const executionCtx: QueryExecutionContext = {
+    $ctx,
+    $props,
+    $q: $queryStates,
+    $state,
+  };
+
+  // Check if params resolve consistently with $queryStates.
+  // If the queries changed, or any params don't resolve consistently,
+  // then reset all queries to "initial" to ensure we don't show stale data.
+  // The invariant after this block of code is that all $queryStates in
+  // "loading" or "done" states are in paramsResults.
+  // $queryStates in "initial" state will be resolved in initPlasmicQueriesSync.
+  const prevWrappedQueries = usePrevious(wrappedQueries);
+  let consistent =
+    prevWrappedQueries === undefined ||
+    Object.is(prevWrappedQueries, wrappedQueries);
+  mapRecords(
+    (queryName, $query, query) => {
+      if (!consistent || $query.current.state === "initial") {
         return;
       }
 
-      if (prev.state === "done" || next.state === "done") {
-        // Queue microtask since the listener may run during the render phase
-        // due to useRenderEffect.
-        queueMicrotask(() => setSettledCount((v) => v + 1));
+      const paramsResult = resolveParams(query.id, () =>
+        query.args(executionCtx)
+      );
+      paramsResults[queryName] = paramsResult;
+
+      if (paramsResult.status === "blocked") {
+        consistent = false;
+      } else if (
+        paramsResult.status === "error" &&
+        $query.current.key !== null
+      ) {
+        consistent = false;
+      } else if (
+        paramsResult.status === "ready" &&
+        paramsResult.cacheKey !== $query.current.key
+      ) {
+        consistent = false;
       }
-    };
-    mapRecords((_queryName, $query) => {
-      $query.addListener(resultListener);
-    }, $queryStates);
-    return () => {
-      cleanup = true;
-      mapRecords((_queryName, $query) => {
-        $query.removeListener(resultListener);
-      }, $queryStates);
-    };
-  }, [$queryStates]);
-
-  // Start queries during the render phase with useRenderEffect.
-  useRenderEffect(
-    (prevDeps) => {
-      // If wrappedQueries changed, something in the query execParams changed ($ctx or $props)
-      // Existing resolved params may no longer be correct, so we reset all $queries to force params
-      // to re-resolve. If params are unchanged, cached data will be resolved immediately.
-      if (prevDeps) {
-        const prevWrappedQueries: Record<string, PlasmicQuery> = prevDeps[0];
-        if (!Object.is(prevWrappedQueries, wrappedQueries)) {
-          mapRecords((_queryName, $query) => {
-            $query.reset();
-          }, $queryStates);
-        }
-      }
-
-      // Core loop that starts queries outside SWR and checks caches.
-      let cleanup = false;
-      const loop = async () => {
-        while (true) {
-          initPlasmicQueriesSync(
-            $queryStates,
-            wrappedQueries,
-            prefetchedCache,
-            swrCache
-          );
-
-          const loadingQueries = mapRecordEntries((_queryName, $query) => {
-            if ($query.isLoading) {
-              return $query.getDoneResult();
-            } else {
-              return null;
-            }
-          }, $queryStates).filter(notNil);
-
-          if (loadingQueries.length === 0) {
-            break;
-          }
-
-          await Promise.race(loadingQueries);
-          if (cleanup) {
-            break;
-          }
-        }
-      };
-
-      loop()
-        // Avoid PromiseRejectionHandledWarning on internal promise that users can't catch.
-        .catch(noopFn);
-      return () => {
-        cleanup = true;
-      };
     },
-    [wrappedQueries, $queryStates, settledCount]
+    $queryStates,
+    wrappedQueries
   );
+  if (!consistent) {
+    mapRecords((_queryName, $query) => {
+      $query.reset();
+    }, $queryStates);
+    for (const k of Object.keys(paramsResults)) {
+      delete paramsResults[k];
+    }
+  }
+
+  // Core loop that starts queries outside SWR and checks caches.
+  // Stop when a new render starts or the component unmounts.
+  const stopRef = React.useRef<() => void>();
+  stopRef.current?.();
+  let stopped = false;
+  const stop = new Promise<void>((resolve) => {
+    stopRef.current = () => {
+      stopped = true;
+      resolve();
+    };
+  });
+  React.useEffect(() => () => stopRef.current?.(), []);
+  const loop = async () => {
+    while (true) {
+      initPlasmicQueriesSync(
+        $queryStates,
+        wrappedQueries,
+        paramsResults,
+        executionCtx,
+        prefetchedCache,
+        swrCache
+      );
+
+      const loadingQueries = mapRecordEntries((_queryName, $query) => {
+        if ($query.isLoading) {
+          return $query.getDoneResult();
+        } else {
+          return null;
+        }
+      }, $queryStates).filter(notNil);
+
+      if (loadingQueries.length === 0) {
+        break;
+      }
+
+      await Promise.race([stop, ...loadingQueries]);
+      if (stopped) {
+        break;
+      }
+    }
+  };
+
+  loop()
+    // Avoid PromiseRejectionHandledWarning on internal promise that users can't catch.
+    .catch(noopFn);
 
   mapRecords(
-    (_queryName, $query, query) => {
-      usePlasmicQuery($query, query, settledCount);
+    (queryName, $query, query) => {
+      usePlasmicQuery($query, query, paramsResults[queryName]);
     },
     $queryStates,
     wrappedQueries
@@ -226,7 +234,7 @@ function wrapQueries(
     return {
       id: query.id,
       fn: wrappedFn,
-      execParams: query.execParams,
+      args: query.args,
     };
   }, queries);
 }
@@ -234,10 +242,14 @@ function wrapQueries(
 /**
  * Synchronously resolves params and resolves from cache or starts loading.
  * This function does as much as possible without awaiting any promises.
+ *
+ * Resolved params will be assigned to paramsResults.
  */
 function initPlasmicQueriesSync(
   $queries: Record<string, StatefulQueryResult>,
   queries: Record<string, PlasmicQuery>,
+  paramsResults: Record<string, ResolveParamsResult>,
+  executionCtx: QueryExecutionContext,
   prefetchedCache: { [k: string]: unknown },
   clientCache: { get: (k: string) => unknown }
 ): void {
@@ -249,12 +261,16 @@ function initPlasmicQueriesSync(
     anySettled = false;
 
     mapRecords(
-      (_queryName, $query, query) => {
+      (queryName, $query, query) => {
         if ($query.current.state !== "initial") {
           return;
         }
 
-        const paramsResult = resolveParams(query.execParams);
+        const paramsResult = resolveParams(query.id, () =>
+          query.args(executionCtx)
+        );
+        paramsResults[queryName] = paramsResult;
+
         if (paramsResult.status === "error") {
           // params errored, reject and don't try again next iteration
           $query.rejectPromise(null, paramsResult.error);
@@ -263,7 +279,7 @@ function initPlasmicQueriesSync(
         } else if (paramsResult.status === "blocked") {
           // params blocked, try again next iteration if any resolved
           return;
-        } // else paramsResult.status === "ready
+        } // else paramsResult.status === "ready"
 
         const cacheKey = makeQueryCacheKey(
           query.id,
@@ -309,22 +325,12 @@ function initPlasmicQueriesSync(
   } while (anySettled);
 }
 
-/**
- * TODO: Use paramsResult from usePlasmicQueries to avoid double param resolution.
- */
-function usePlasmicQuery<T, F extends (...args: any[]) => Promise<T>>(
+function usePlasmicQuery<T, F extends (...args: unknown[]) => Promise<T>>(
   $query: PlasmicQueryResult<T>,
   query: PlasmicQuery<F>,
-  settledCount?: number
+  paramsResult: ResolveParamsResult<Parameters<F>>
 ): SWRResponse<T, unknown> {
   const $queryState = $query as StatefulQueryResult<T>;
-
-  // Since query.execParams never changes, we need a way to know when to retry
-  // resolving params. The parent can pass in settledCount that increments as
-  // queries settle.
-  const paramsResult = React.useMemo(() => {
-    return resolveParams(query.execParams);
-  }, [query.execParams, settledCount]);
 
   const { key, fetcher } = React.useMemo((): {
     key: string | null;
@@ -348,11 +354,33 @@ function usePlasmicQuery<T, F extends (...args: any[]) => Promise<T>>(
         return {
           key: cacheKey,
           fetcher: () => {
-            const promise = query.fn(...paramsResult.resolvedParams);
-            $queryState.loadingPromise(cacheKey, promise);
-            return promise.finally(() => {
-              GLOBAL_CACHE.delete(cacheKey);
-            });
+            const clientCachedPromise = GLOBAL_CACHE.get(cacheKey);
+            if (clientCachedPromise?.result) {
+              // If in global cache, transition directly to resolved/rejected.
+              if (clientCachedPromise.result.state === "resolved") {
+                $queryState.resolvePromise(
+                  cacheKey,
+                  clientCachedPromise.result.value as T
+                );
+              } else {
+                $queryState.rejectPromise(
+                  cacheKey,
+                  clientCachedPromise.result.error
+                );
+              }
+              return (clientCachedPromise.promise as Promise<T>).finally(() => {
+                // Delete key from global cache after we're sure SWR has it
+                GLOBAL_CACHE.delete(cacheKey);
+              });
+            } else {
+              // Otherwise, transition to loading and call the function.
+              const promise = query.fn(...paramsResult.resolvedParams);
+              $queryState.loadingPromise(cacheKey, promise);
+              return promise.finally(() => {
+                // Delete key from global cache after we're sure SWR has it
+                GLOBAL_CACHE.delete(cacheKey);
+              });
+            }
           },
         };
       }
@@ -379,16 +407,6 @@ function usePlasmicQuery<T, F extends (...args: any[]) => Promise<T>>(
   }
 
   return result;
-}
-
-function useShallowStableRecord<T extends Record<string, unknown>>(
-  value: T
-): T {
-  const ref = React.useRef(value);
-  if (!shallowEqualRecords(ref.current, value)) {
-    ref.current = value;
-  }
-  return ref.current;
 }
 
 export const _testonly = {

@@ -60,6 +60,7 @@ export function createTestTree(): QueryComponentNode {
       },
     },
     propsContext: {},
+    stateSpecs: [],
     children: [],
   };
 }
@@ -71,7 +72,7 @@ export function TestComponent({
   tree: QueryComponentNode;
   $props?: TestQueriesProps;
 }) {
-  const $q = usePlasmicQueries(tree, $props ?? {}, {});
+  const $q = usePlasmicQueries(tree, {}, $props ?? {}, null);
   return JSON.stringify($q.result.data);
 }
 

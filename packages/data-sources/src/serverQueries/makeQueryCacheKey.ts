@@ -54,6 +54,10 @@ function sortObjectsDeep(value: any, visitedObjects: Map<object, any>): any {
     return visitedValue;
   }
 
+  if (typeof value.toJSON === "function") {
+    return sortObjectsDeep(value.toJSON(), visitedObjects);
+  }
+
   if (Array.isArray(value)) {
     // create new value early to avoid infinite recursion
     const newArr = [] as any;

@@ -863,31 +863,32 @@ export const ServerQueryOpExprFormAndPreview = observer(
         }
       : undefined;
 
-    const executeOp = validDraft
-      ? () => {
-          const queryName = validDraft.queryName || "untitled";
-          if (validDraft.fnExpr) {
-            const registeredFn = studioCtx
-              .getRegisteredFunctionsMap()
-              .get(customFunctionId(validDraft.fnExpr.func));
-            if (registeredFn) {
+    const executeOp =
+      validDraft && env
+        ? () => {
+            const queryName = validDraft.queryName || "untitled";
+            if (validDraft.fnExpr) {
+              const registeredFn = studioCtx
+                .getRegisteredFunctionsMap()
+                .get(customFunctionId(validDraft.fnExpr.func));
+              if (registeredFn) {
+                setExecuteArgs({
+                  fnId: queryName,
+                  fn: registeredFn.function,
+                  expr: clone(validDraft.fnExpr) as CustomFunctionExpr,
+                  env,
+                  exprCtx,
+                });
+              }
+            } else if (validDraft.codeExpr) {
               setExecuteArgs({
                 fnId: queryName,
-                fn: registeredFn.function,
-                expr: clone(validDraft.fnExpr) as CustomFunctionExpr,
+                code: clone(validDraft.codeExpr) as CustomCode,
                 env,
-                exprCtx,
               });
             }
-          } else if (validDraft.codeExpr) {
-            setExecuteArgs({
-              fnId: queryName,
-              code: clone(validDraft.codeExpr) as CustomCode,
-              env,
-            });
           }
-        }
-      : undefined;
+        : undefined;
 
     // Auto-execute on mount if initial value is valid
     React.useEffect(() => {

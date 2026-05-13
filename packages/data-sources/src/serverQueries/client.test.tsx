@@ -7,11 +7,13 @@ import { act, getByText, render, renderHook } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { _testonly, usePlasmicQueries } from "./client";
+import { StatefulQueryResult } from "./common";
 import { makeQueryCacheKey } from "./makeQueryCacheKey";
 import {
   asyncFunc,
   asyncFuncCalls,
   expectQueryLoading,
+  expectQueryRejected,
   expectQueryResolved,
   findAsyncFuncCall,
 } from "./testonly/test-common";
@@ -67,7 +69,7 @@ describe("usePlasmicQueries", () => {
 
     it("resolves with global shared cache", async () => {
       const renderHookResult = renderHook(
-        () => usePlasmicQueries(defaultTree, {}, {}),
+        () => usePlasmicQueries(defaultTree, {}, {}, null),
         {
           // can only have 1 test like this since it uses global shared cache
           wrapper: undefined,
@@ -87,7 +89,8 @@ describe("usePlasmicQueries", () => {
         describe("default queries", () => {
           beforeEach(async () => {
             const renderHookResult = renderHook(
-              (props: TestQueriesProps) => usePlasmicQueries(tree, props, {}),
+              (props: TestQueriesProps) =>
+                usePlasmicQueries(tree, {}, props, null),
               {
                 initialProps: {},
                 wrapper: TestProvider,
@@ -198,7 +201,7 @@ describe("usePlasmicQueries", () => {
         describe("cached queries", () => {
           it("resolves immediately if cached", async () => {
             const renderHookResult = renderHook(
-              () => usePlasmicQueries(tree, {}, {}),
+              () => usePlasmicQueries(tree, {}, {}, null),
               {
                 wrapper: ({ children }) => (
                   <TestProvider
@@ -235,7 +238,7 @@ describe("usePlasmicQueries", () => {
 
           it("resolves zero values immediately if cached", async () => {
             const renderHookResult = renderHook(
-              () => usePlasmicQueries(tree, {}, {}),
+              () => usePlasmicQueries(tree, {}, {}, null),
               {
                 wrapper: ({ children }) => (
                   <TestProvider
@@ -279,13 +282,14 @@ describe("usePlasmicQueries", () => {
           },
         },
         propsContext: {},
+        stateSpecs: [],
         children: [],
       };
 
       it("does not rerun when props object is recreated with the same values", async () => {
         const renderHookResult = renderHook(
           ({ multiplier }: { multiplier: number }) =>
-            usePlasmicQueries(tree, { multiplier }, {}),
+            usePlasmicQueries(tree, {}, { multiplier }, null),
           {
             initialProps: { multiplier: 1 },
             wrapper: TestProvider,
@@ -316,7 +320,7 @@ describe("usePlasmicQueries", () => {
       it("reruns when prop values actually change", async () => {
         const renderHookResult = renderHook(
           ({ multiplier }: { multiplier: number }) =>
-            usePlasmicQueries(tree, { multiplier }, {}),
+            usePlasmicQueries(tree, {}, { multiplier }, null),
           {
             initialProps: { multiplier: 1 },
             wrapper: TestProvider,
@@ -338,6 +342,305 @@ describe("usePlasmicQueries", () => {
         findAsyncFuncCall(2).resolve("dep-2");
         await vi.waitFor(() =>
           expectQueryResolved(renderHookResult.result.current.dep, "dep-2")
+        );
+
+        expectedAsyncFuncCalls = 2;
+      });
+    });
+
+    describe("$state references", () => {
+      // Shared "list of ids → state.ids → get by ids" scenario.
+      // - listIds fetches a list of ids.
+      // - state.ids derives from $q.listIds.data via initFunc.
+      // - getByIds fetches details by reading $state.ids.
+      const listIdsTree: QueryComponentNode = {
+        type: "component",
+        queries: {
+          listIds: {
+            id: "listIdsFn",
+            fn: asyncFunc,
+            args: () => ["list-all"],
+          },
+          getByIds: {
+            id: "getByIdsFn",
+            fn: asyncFunc,
+            args: ({ $state }) => [($state as any).ids],
+          },
+        },
+        propsContext: {},
+        stateSpecs: [
+          {
+            path: "ids",
+            type: "private" as const,
+            initFunc: ({ $q }: any) => $q.listIds.data as string[],
+          },
+        ],
+        children: [],
+      };
+
+      it("resolves immediately when queries are prefetched", async () => {
+        const cachedIds = ["id1", "id2"];
+        const renderHookResult = renderHook(
+          () => usePlasmicQueries(listIdsTree, {}, {}, null),
+          {
+            wrapper: ({ children }) => (
+              <TestProvider
+                prefetchedCache={{
+                  [makeQueryCacheKey("listIdsFn", ["list-all"])]: cachedIds,
+                  [makeQueryCacheKey("getByIdsFn", [cachedIds])]: [
+                    "item1",
+                    "item2",
+                  ],
+                }}
+              >
+                {children}
+              </TestProvider>
+            ),
+          }
+        );
+        unmount = renderHookResult.unmount;
+
+        expect(asyncFuncCalls).toHaveLength(0);
+        expectQueryResolved(renderHookResult.result.current.listIds, cachedIds);
+        expectQueryResolved(renderHookResult.result.current.getByIds, [
+          "item1",
+          "item2",
+        ]);
+
+        expectedAsyncFuncCalls = 0;
+      });
+
+      it("rejects query when referenced state-source query rejects", async () => {
+        const renderHookResult = renderHook(
+          () => usePlasmicQueries(listIdsTree, {}, {}, null),
+          { wrapper: TestProvider }
+        );
+        unmount = renderHookResult.unmount;
+
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(1));
+        findAsyncFuncCall("list-all").reject(new Error("listIds-failed"));
+
+        await vi.waitFor(() =>
+          expectQueryRejected(
+            renderHookResult.result.current.listIds,
+            "listIds-failed"
+          )
+        );
+        await vi.waitFor(() =>
+          expectQueryRejected(
+            renderHookResult.result.current.getByIds,
+            "Error resolving function params"
+          )
+        );
+
+        expectedAsyncFuncCalls = 1;
+      });
+
+      it("reruns query when referenced state value changes", async () => {
+        const renderHookResult = renderHook(
+          ({ $state }: { $state: Record<string, unknown> | null }) =>
+            usePlasmicQueries(listIdsTree, {}, {}, $state),
+          {
+            initialProps: { $state: { ids: ["id1"] } },
+            wrapper: TestProvider,
+          }
+        );
+        unmount = renderHookResult.unmount;
+
+        // listIds runs with its fixed param; getByIds runs with $state.ids.
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(2));
+        findAsyncFuncCall("list-all").resolve(["id1", "id2"]);
+        findAsyncFuncCall(["id1"]).resolve(["item1"]);
+        await vi.waitFor(() =>
+          expectQueryResolved(renderHookResult.result.current.getByIds, [
+            "item1",
+          ])
+        );
+
+        // Rerender with a different $state.ids.
+        renderHookResult.rerender({ $state: { ids: ["id2"] } });
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(3));
+        expect(asyncFuncCalls[2]?.args).toEqual([["id2"]]);
+        // listIds does not refetch; getByIds refetches with id2
+        expectQueryResolved(renderHookResult.result.current.listIds, [
+          "id1",
+          "id2",
+        ]);
+        expectQueryLoading(renderHookResult.result.current.getByIds);
+        findAsyncFuncCall(["id2"]).resolve(["item2"]);
+        await vi.waitFor(() =>
+          expectQueryResolved(renderHookResult.result.current.getByIds, [
+            "item2",
+          ])
+        );
+
+        expectedAsyncFuncCalls = 3;
+      });
+
+      it("does not rerun query when an unreferenced $state value changes", async () => {
+        const renderHookResult = renderHook(
+          ({ $state }: { $state: Record<string, unknown> | null }) =>
+            usePlasmicQueries(listIdsTree, {}, {}, $state),
+          {
+            initialProps: { $state: { ids: ["id1"], unrelated: 1 } },
+            wrapper: TestProvider,
+          }
+        );
+        unmount = renderHookResult.unmount;
+
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(2));
+        findAsyncFuncCall("list-all").resolve(["id1"]);
+        findAsyncFuncCall(["id1"]).resolve(["item1"]);
+        await vi.waitFor(() =>
+          expectQueryResolved(renderHookResult.result.current.getByIds, [
+            "item1",
+          ])
+        );
+
+        // Mutate only the unrelated key.
+        renderHookResult.rerender({
+          $state: { ids: ["id1"], unrelated: 2 },
+        });
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        });
+
+        expect(asyncFuncCalls).toHaveLength(2);
+        expectQueryResolved(renderHookResult.result.current.getByIds, [
+          "item1",
+        ]);
+
+        expectedAsyncFuncCalls = 2;
+      });
+
+      it("does not reset queries when $state ref changes but values are stable", async () => {
+        const tree: QueryComponentNode = {
+          type: "component",
+          queries: {
+            pageQuery: {
+              id: "pageFn",
+              fn: asyncFunc,
+              args: () => ["page-param"],
+            },
+          },
+          propsContext: {},
+          stateSpecs: [],
+          children: [],
+        };
+
+        const renderHookResult = renderHook(
+          ({ $state }: { $state: Record<string, unknown> | null }) =>
+            usePlasmicQueries(tree, {}, {}, $state),
+          { initialProps: { $state: null }, wrapper: TestProvider }
+        );
+        unmount = renderHookResult.unmount;
+
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(1));
+        findAsyncFuncCall("page-param").resolve("page-data");
+        await vi.waitFor(() =>
+          expectQueryResolved(
+            renderHookResult.result.current.pageQuery,
+            "page-data"
+          )
+        );
+
+        const stateTransitions: string[] = [];
+        (
+          renderHookResult.result.current
+            .pageQuery as unknown as StatefulQueryResult
+        ).addListener((next, prev) => {
+          stateTransitions.push(`${prev.state}->${next.state}`);
+        });
+
+        renderHookResult.rerender({ $state: {} });
+        await act(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        });
+
+        expect(stateTransitions).toHaveLength(0);
+        expectQueryResolved(
+          renderHookResult.result.current.pageQuery,
+          "page-data"
+        );
+
+        expectedAsyncFuncCalls = 1;
+      });
+
+      it("resolves state → state → query chain", async () => {
+        const stateSpecs = [
+          { path: "stateA", type: "private" as const, initVal: "base" },
+          {
+            path: "stateB",
+            type: "private" as const,
+            initFunc: ({ $state }: any) =>
+              ($state.stateA as string) + "-derived",
+          },
+        ];
+
+        const tree: QueryComponentNode = {
+          type: "component",
+          queries: {
+            items: {
+              id: "itemsFn",
+              fn: asyncFunc,
+              args: ({ $state }) => [($state as any).stateB],
+            },
+          },
+          propsContext: {},
+          stateSpecs: stateSpecs,
+          children: [],
+        };
+
+        const renderHookResult = renderHook(
+          () => usePlasmicQueries(tree, {}, {}, null),
+          { wrapper: TestProvider }
+        );
+        unmount = renderHookResult.unmount;
+
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(1));
+        expect(asyncFuncCalls[0]!.args).toEqual(["base-derived"]);
+
+        findAsyncFuncCall("base-derived").resolve(["result1", "result2"]);
+        await vi.waitFor(() =>
+          expectQueryResolved(renderHookResult.result.current.items, [
+            "result1",
+            "result2",
+          ])
+        );
+
+        expectedAsyncFuncCalls = 1;
+      });
+
+      it("resolves state → query → state → query chain", async () => {
+        const renderHookResult = renderHook(
+          () => usePlasmicQueries(listIdsTree, {}, {}, null),
+          { wrapper: TestProvider }
+        );
+        unmount = renderHookResult.unmount;
+
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(1));
+        expect(asyncFuncCalls[0]!.args).toEqual(["list-all"]);
+        expectQueryLoading(renderHookResult.result.current.listIds);
+        expectQueryLoading(renderHookResult.result.current.getByIds);
+
+        findAsyncFuncCall("list-all").resolve(["id1", "id2"]);
+        await vi.waitFor(() =>
+          expectQueryResolved(renderHookResult.result.current.listIds, [
+            "id1",
+            "id2",
+          ])
+        );
+
+        await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(2));
+        expect(asyncFuncCalls[1]!.args).toEqual([["id1", "id2"]]);
+        expectQueryLoading(renderHookResult.result.current.getByIds);
+
+        findAsyncFuncCall(["id1", "id2"]).resolve(["item1", "item2"]);
+        await vi.waitFor(() =>
+          expectQueryResolved(renderHookResult.result.current.getByIds, [
+            "item1",
+            "item2",
+          ])
         );
 
         expectedAsyncFuncCalls = 2;
@@ -370,7 +673,7 @@ describe("usePlasmicQueries", () => {
 
           await runResolveTestInComponent(container);
 
-          expectedSuspenseCount = 2;
+          expectedSuspenseCount = 1;
           expectedAsyncFuncCalls = 4;
         });
 
@@ -420,7 +723,7 @@ describe("usePlasmicQueries", () => {
 
           await act(async () => {
             expect(container.innerHTML).toContain("TestProvider SUSPENDED");
-            expect(container.innerHTML).toContain("suspense count: 3");
+            expect(container.innerHTML).toContain("suspense count: 2");
             expect(asyncFuncCalls).toHaveLength(5);
             // Resolve dep1 to same result
             findAsyncFuncCall("dep1-param-changed").resolve("dep1-done");
@@ -430,7 +733,7 @@ describe("usePlasmicQueries", () => {
             expect(container.innerHTML).toContain("result-done");
           });
 
-          expectedSuspenseCount = 3;
+          expectedSuspenseCount = 2;
           expectedAsyncFuncCalls = 5;
         });
 
@@ -453,7 +756,7 @@ describe("usePlasmicQueries", () => {
 
           await act(async () => {
             expect(container.innerHTML).toContain("TestProvider SUSPENDED");
-            expect(container.innerHTML).toContain("suspense count: 3");
+            expect(container.innerHTML).toContain("suspense count: 2");
             await vi.waitFor(() => expect(asyncFuncCalls).toHaveLength(5));
             // Resolve dep2 with changed result
             findAsyncFuncCall("dep2-param-changed").resolve(
@@ -473,11 +776,11 @@ describe("usePlasmicQueries", () => {
             );
           });
           await act(async () => {
-            expect(container.innerHTML).toContain("suspense count: 4");
+            expect(container.innerHTML).toContain("suspense count: 2");
             expect(container.innerHTML).toContain("result-done-changed");
           });
 
-          expectedSuspenseCount = 4;
+          expectedSuspenseCount = 2;
           expectedAsyncFuncCalls = 7;
         });
       });
@@ -487,7 +790,7 @@ describe("usePlasmicQueries", () => {
       beforeEach(async () => {
         const InvalidateTestComponent = () => {
           const { mutate } = usePlasmicDataConfig();
-          const $q = usePlasmicQueries(defaultTree, {}, {});
+          const $q = usePlasmicQueries(defaultTree, {}, {}, null);
           return (
             <>
               <span>{JSON.stringify($q.result.data)}</span>
@@ -551,7 +854,7 @@ describe("usePlasmicQueries", () => {
           );
         });
         await act(async () => {
-          expect(container.innerHTML).toContain("suspense count: 3");
+          expect(container.innerHTML).toContain("suspense count: 2");
           expect(asyncFuncCalls).toHaveLength(1);
           findAsyncFuncCall("result-param").resolve("result-redone");
         });
@@ -559,7 +862,7 @@ describe("usePlasmicQueries", () => {
           expect(container.innerHTML).toContain("result-redone");
         });
 
-        expectedSuspenseCount = 3;
+        expectedSuspenseCount = 2;
         expectedAsyncFuncCalls = 1;
       });
 
@@ -574,7 +877,7 @@ describe("usePlasmicQueries", () => {
         });
         await act(async () => {
           expect(container.innerHTML).toContain("TestProvider SUSPENDED");
-          expect(container.innerHTML).toContain("[suspense count: 3]");
+          expect(container.innerHTML).toContain("[suspense count: 2]");
           expect(asyncFuncCalls).toHaveLength(2);
           findAsyncFuncCall("result-param", "dep3-redone").resolve(
             "result-redone"
@@ -584,7 +887,7 @@ describe("usePlasmicQueries", () => {
           expect(container.innerHTML).toContain("result-redone");
         });
 
-        expectedSuspenseCount = 3;
+        expectedSuspenseCount = 2;
         expectedAsyncFuncCalls = 2;
       });
 
@@ -606,7 +909,7 @@ describe("usePlasmicQueries", () => {
         });
         await act(async () => {
           expect(container.innerHTML).toContain("TestProvider SUSPENDED");
-          expect(container.innerHTML).toContain("[suspense count: 3]");
+          expect(container.innerHTML).toContain("[suspense count: 2]");
           expect(asyncFuncCalls).toHaveLength(3);
           findAsyncFuncCall("result-param", "dep3-redone").resolve(
             "result-redone"
@@ -616,7 +919,7 @@ describe("usePlasmicQueries", () => {
           expect(container.innerHTML).toContain("result-redone");
         });
 
-        expectedSuspenseCount = 3;
+        expectedSuspenseCount = 2;
         expectedAsyncFuncCalls = 3;
       });
 
@@ -638,7 +941,7 @@ describe("usePlasmicQueries", () => {
         });
         await act(async () => {
           expect(container.innerHTML).toContain("TestProvider SUSPENDED");
-          expect(container.innerHTML).toContain("[suspense count: 3]");
+          expect(container.innerHTML).toContain("[suspense count: 2]");
           expect(asyncFuncCalls).toHaveLength(3);
           findAsyncFuncCall("result-param", "dep3-redone").resolve(
             "result-redone"
@@ -648,7 +951,7 @@ describe("usePlasmicQueries", () => {
           expect(container.innerHTML).toContain("result-redone");
         });
 
-        expectedSuspenseCount = 3;
+        expectedSuspenseCount = 2;
         expectedAsyncFuncCalls = 3;
       });
     });
@@ -668,7 +971,7 @@ async function runResolveTestInComponent(container: HTMLElement) {
     findAsyncFuncCall("result-param").resolve("result-done");
   });
   await act(async () => {
-    expect(container.innerHTML).toContain(`[suspense count: 2]`);
+    expect(container.innerHTML).toContain(`[suspense count: 1]`);
     expect(container.innerHTML).toContain("result-done");
   });
 }

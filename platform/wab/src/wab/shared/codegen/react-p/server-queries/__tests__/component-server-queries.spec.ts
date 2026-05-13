@@ -10,6 +10,7 @@ import {
   ServerVisibilityContextNode,
 } from "@/wab/shared/codegen/react-p/server-queries/types";
 import { ServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Component, Site } from "@/wab/shared/model/classes";
@@ -84,6 +85,12 @@ describe("Component server queries", () => {
     projectFlags: DEVFLAGS,
     inStudio: false,
   };
+  const ctx = {
+    exprCtx,
+    exportOpts: { shouldTransformWritableStates: false },
+    fakeTpls: [],
+    projectFlags: DEVFLAGS,
+  } as unknown as SerializerBaseContext;
 
   describe("collectComponentServerQueries for simple component instance", () => {
     const site = generateSiteFromBundle(_simpleBundle as [string, Bundle][]);
@@ -214,17 +221,17 @@ describe("Component server queries", () => {
         exprCtx,
       });
 
-      const serializedCode = serializeServerQueryTree(tree, exprCtx);
+      const serializedCode = serializeServerQueryTree(tree, ctx);
 
       // The serialized output should be JS code
       expect(serializedCode).toContain("fn: $$.fetch");
       // args should be a function expression
-      expect(serializedCode).toContain("args: ({ $q, $props, $ctx, $state })");
+      expect(serializedCode).toContain("args: ({ $q, $props, $ctx, $state }");
       // Should have a repeated node
       expect(serializedCode).toContain('type: "repeated"');
       // collectionExpr should be a function
       expect(serializedCode).toContain(
-        "collectionExpr: ({ $q, $props, $ctx, $state })"
+        "collectionExpr: ({ $q, $props, $ctx, $state"
       );
       // Children of repeated nodes should destructure item vars
       expect(serializedCode).toContain("{ currentItem, currentIndex }");

@@ -80,10 +80,9 @@ export function getRscMetadata(
   };
 }
 
-function serializeServerComponentBody() {
+export function serializeServerComponentBody(ctx: SerializerBaseContext) {
   return `const { params, searchParams, ...rest } = props;
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
-
   const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
     serverQueryTree,
     { $props: rest, $ctx: ctx }
@@ -107,7 +106,7 @@ function serializeServerQueriesServerWrapper(
 
   const componentBody = !ctx.hasServerQueries
     ? ""
-    : serializeServerComponentBody();
+    : serializeServerComponentBody(ctx);
   const usesSearchParams = pageReferencesSearchParams(component);
 
   return `
@@ -214,7 +213,7 @@ function serializeComponentServerQueryTree(
 
 /**
  * Serializes serverQueryTree for client components. Generates a root tree (no children).
- * Used by unstable_usePlasmicQueries(qs, $props, $ctx, $state) in the render component.
+ * Used by unstable_usePlasmicQueries(qs, $ctx, $props, $state) in the render component.
  */
 export function serializeRootServerQueryTree(ctx: SerializerBaseContext) {
   if (!ctx.hasServerQueries) {
@@ -224,11 +223,7 @@ export function serializeRootServerQueryTree(ctx: SerializerBaseContext) {
     isServerQueryWithOperation
   );
 
-  const serializedTree = serializeRootComponentQueries(
-    serverQueries,
-    ctx.exprCtx,
-    ctx.component
-  );
+  const serializedTree = serializeRootComponentQueries(serverQueries, ctx);
   return serializeComponentServerQueryTree(ctx, serializedTree);
 }
 
@@ -243,11 +238,7 @@ export function serializePageQueryTree(ctx: SerializerBaseContext) {
   const serverQueries = ctx.component.serverQueries.filter(
     isServerQueryWithOperation
   );
-  const serializedTree = serializeRootComponentQueries(
-    serverQueries,
-    ctx.exprCtx,
-    ctx.component
-  );
+  const serializedTree = serializeRootComponentQueries(serverQueries, ctx);
   return `const pageQueryTree: QueryComponentNode = ${serializedTree};`;
 }
 
@@ -284,7 +275,7 @@ ${makeServerQueryTreeTypeImport()}
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
     : "";
   const tree = collectComponentServerQueries(ctx);
-  const serializedTree = serializeServerQueryTree(tree, ctx.exprCtx);
+  const serializedTree = serializeServerQueryTree(tree, ctx);
 
   const module = `
 ${customFunctionsAndLibsImport}

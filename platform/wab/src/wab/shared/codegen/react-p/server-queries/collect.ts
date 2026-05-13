@@ -84,6 +84,7 @@ function collectComponentNode(
     type: "component",
     component,
     queries,
+    states: component.states,
     propsContext,
     children,
   };
