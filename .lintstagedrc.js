@@ -5,8 +5,7 @@ module.exports = {
 
   // Format HCL/Terragrunt files, but never touch generated *.lock.hcl (excluded via extglob)
   "!(*lock).hcl": (files) => {
-    // Prefer terragrunt's formatter for *.hcl; fall back to terraform fmt if needed
-    return files.map((f) => `terragrunt hclfmt --file "${f}"`);
+    return files.map((f) => `terragrunt hcl format --file "${f}"`);
   },
 
   // Terraform files (format on commit)
