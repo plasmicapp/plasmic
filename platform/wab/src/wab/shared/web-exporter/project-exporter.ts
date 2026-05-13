@@ -156,7 +156,14 @@ export function serializeAnimationSequence(
  */
 export function serializeInvalidResource(
   uuid: string,
-  type: "component" | "token" | "tpl" | "globalVariant" | "animation",
+  type:
+    | "component"
+    | "token"
+    | "tpl"
+    | "globalVariant"
+    | "variantGroup"
+    | "variant"
+    | "animation",
   message: string
 ): string {
   return toXml({ "invalid-resource": [{ _attr: { uuid, type } }, message] });

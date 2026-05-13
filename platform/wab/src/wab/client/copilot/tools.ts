@@ -1,4 +1,7 @@
+import { addVariantsToComponentVariantGroupTool } from "@/wab/client/copilot/tools/addVariantsToComponentVariantGroup";
 import { changeElementTool } from "@/wab/client/copilot/tools/changeElement";
+import { createComponentTool } from "@/wab/client/copilot/tools/createComponent";
+import { createComponentVariantGroupsTool } from "@/wab/client/copilot/tools/createComponentVariantGroups";
 import { deleteElementTool } from "@/wab/client/copilot/tools/deleteElement";
 import { insertHtmlTool } from "@/wab/client/copilot/tools/insertHtml";
 import { readTool } from "@/wab/client/copilot/tools/read";
@@ -11,4 +14,8 @@ export const COPILOT_TOOLS: Record<string, AnyCopilotTool> = {
   [changeElementTool.toolName]: changeElementTool,
   [deleteElementTool.toolName]: deleteElementTool,
   [readTool.toolName]: readTool,
+  [createComponentTool.toolName]: createComponentTool,
+  [createComponentVariantGroupsTool.toolName]: createComponentVariantGroupsTool,
+  [addVariantsToComponentVariantGroupTool.toolName]:
+    addVariantsToComponentVariantGroupTool,
 };

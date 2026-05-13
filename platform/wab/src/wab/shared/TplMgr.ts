@@ -227,6 +227,7 @@ import {
   GlobalVariantGroup,
   ImageAsset,
   Mixin,
+  PageMetaParams,
   Param,
   ProjectDependency,
   Site,
@@ -1306,15 +1307,31 @@ export class TplMgr {
     {
       type,
       name = "",
-      useFreeRoot = false,
       styles,
+      rootTpl,
+      pageMeta,
     }: {
       type: ComponentType;
       name?: string;
-      useFreeRoot?: boolean;
-      styles?: CSSProperties;
-    } = { type: ComponentType.Frame }
+      /**
+       * Optional pageMeta fields for `ComponentType.Page`. Any subset is
+       * accepted; missing `path` defaults to a slugified component name, and
+       * the provided `path` is uniquified against existing pages either way.
+       * `roleId` is sourced from the site, not the caller.
+       */
+      pageMeta?: Partial<Omit<PageMetaParams, "roleId">>;
+    } & (
+      | {
+          rootTpl: TplNode;
+          styles?: never;
+        }
+      | {
+          rootTpl?: never;
+          styles?: CSSProperties;
+        }
+    ) = { type: ComponentType.Frame }
   ) {
+    let useFreeRoot = false;
     // Scratch artboards default to free root container for now.
     if (name === "") {
       assert(
@@ -1329,7 +1346,7 @@ export class TplMgr {
       );
     }
 
-    const root = mkTplTagX("div", {});
+    const root = rootTpl ?? mkTplTagX("div", {});
 
     const validName = name;
     const component = mkComponent({
@@ -1338,41 +1355,48 @@ export class TplMgr {
       type,
     });
     const baseVariant = getBaseVariant(component);
-    const baseVs = mkVariantSetting({ variants: [baseVariant] });
-    root.vsettings.push(baseVs);
-    const rsh = RSH(baseVs.rs, root);
 
-    if (useFreeRoot) {
-      rsh.set("display", "block");
+    if (rootTpl) {
+      // Ensure a base variant setting exists in case of caller provided rootTpl.
+      ensureVariantSetting(root, [baseVariant]);
     } else {
-      rsh.set("display", "flex");
-      rsh.set("flex-direction", "column");
-    }
-    rsh.set("position", "relative");
+      const baseVs = mkVariantSetting({ variants: [baseVariant] });
+      root.vsettings.push(baseVs);
+      const rsh = RSH(baseVs.rs, root);
 
-    if (type === ComponentType.Page) {
-      rsh.set("width", "stretch");
-      rsh.set("height", "stretch");
-      if (DEVFLAGS.pageLayout) {
-        rsh.merge(CONTENT_LAYOUT_INITIALS);
+      if (useFreeRoot) {
+        rsh.set("display", "block");
+      } else {
+        rsh.set("display", "flex");
+        rsh.set("flex-direction", "column");
       }
-    } else if (type === ComponentType.Frame) {
-      rsh.set("width", "stretch");
-      rsh.set("height", "stretch");
-    } else {
-      rsh.set("width", "wrap");
-      rsh.set("height", "wrap");
-    }
+      rsh.set("position", "relative");
 
-    if (styles) {
-      rsh.merge(styles);
+      if (type === ComponentType.Page) {
+        rsh.set("width", "stretch");
+        rsh.set("height", "stretch");
+        if (DEVFLAGS.pageLayout) {
+          rsh.merge(CONTENT_LAYOUT_INITIALS);
+        }
+      } else if (type === ComponentType.Frame) {
+        rsh.set("width", "stretch");
+        rsh.set("height", "stretch");
+      } else {
+        rsh.set("width", "wrap");
+        rsh.set("height", "wrap");
+      }
+
+      if (styles) {
+        rsh.merge(styles);
+      }
     }
 
     if (type === ComponentType.Page) {
-      const path = this.nameToPath(validName);
-
       component.pageMeta = mkPageMeta({
-        path: this.getUniquePagePath(path),
+        ...pageMeta,
+        path: this.getUniquePagePath(
+          this.nameToPath(pageMeta?.path ?? validName)
+        ),
         roleId: this.site().defaultPageRoleId,
       });
 
