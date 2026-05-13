@@ -6,6 +6,7 @@ import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   Component,
   ComponentDataQuery,
+  ComponentServerQuery,
   Param,
   Site,
 } from "@/wab/shared/model/classes";
@@ -23,6 +24,7 @@ export async function promptExtractComponent(props: {
   containingComponent: Component;
   linkedParams: Param[];
   queriesToCreateProps: ComponentDataQuery[];
+  serverQueriesToCreateProps: ComponentServerQuery[];
 }) {
   return showTemporaryPrompt<ExtractComponentResponse>((onSubmit, onCancel) => (
     <Modal
@@ -36,6 +38,7 @@ export async function promptExtractComponent(props: {
         containingComponent={props.containingComponent}
         linkedParams={props.linkedParams}
         queriesToCreateProps={props.queriesToCreateProps}
+        serverQueriesToCreateProps={props.serverQueriesToCreateProps}
         onSubmit={(resp) => onSubmit(resp)}
         onCancel={() => onCancel()}
       />
@@ -48,10 +51,16 @@ export function ExtractComponentForm(props: {
   containingComponent: Component;
   linkedParams: Param[];
   queriesToCreateProps: ComponentDataQuery[];
+  serverQueriesToCreateProps: ComponentServerQuery[];
   onSubmit: (resp: ExtractComponentResponse) => void;
   onCancel: () => void;
 }) {
-  const { containingComponent, linkedParams, queriesToCreateProps } = props;
+  const {
+    containingComponent,
+    linkedParams,
+    queriesToCreateProps,
+    serverQueriesToCreateProps,
+  } = props;
 
   const resp = useLocalStore<ExtractComponentResponse>(() => ({
     name: "",
@@ -94,7 +103,9 @@ export function ExtractComponentForm(props: {
           styleType={["bordered"]}
         />
       </Form.Item>
-      {(linkedParams.length > 0 || queriesToCreateProps.length > 0) &&
+      {(linkedParams.length > 0 ||
+        queriesToCreateProps.length > 0 ||
+        serverQueriesToCreateProps.length > 0) &&
         !!containingComponent.name && (
           <div className="mb-xlg">
             Your new component will also have props for{" "}
@@ -104,6 +115,9 @@ export function ExtractComponentForm(props: {
                   <code key={s.variable.name}>{s.variable.name}</code>
                 )),
                 ...queriesToCreateProps.map((q) => (
+                  <code key={q.name}>{q.name}</code>
+                )),
+                ...serverQueriesToCreateProps.map((q) => (
                   <code key={q.name}>{q.name}</code>
                 )),
               ],

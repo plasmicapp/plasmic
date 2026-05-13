@@ -196,33 +196,19 @@ export function replaceVarWithPropInCodeExprs(
 }
 
 /**
- * Iterate over tpl tree renaming `$queries.queryVarName` to
- * `$props.propVarName` in all custom code expressions.
+ * Iterate over tpl tree renaming `<varType>.<varName>` (e.g.
+ * `$state.<varName>`, `$queries.<varName>`, or `$q.<varName>`) to
+ * `$props.<propVarName>` in all custom code expressions.
  */
-export function replaceQueryWithPropInCodeExprs(
+export function replaceDollarVarWithPropInCodeExprs(
   tree: TplNode,
-  queryVarName: string,
+  varType: "$state" | "$queries" | "$q",
+  varName: string,
   propVarName: string
 ) {
   Tpls.flattenTpls(tree).forEach((node) => {
     for (const { expr } of Tpls.findExprsInNode(node)) {
-      renameObjectInExpr(expr, "$queries", "$props", queryVarName, propVarName);
-    }
-  });
-}
-
-/**
- * Iterate over tpl tree renaming `$state.varName` to
- * `$props.propVarName` in all custom code expressions.
- */
-export function replaceStateWithPropInCodeExprs(
-  tree: TplNode,
-  stateVarName: string,
-  propVarName: string
-) {
-  Tpls.flattenTpls(tree).forEach((node) => {
-    for (const { expr } of Tpls.findExprsInNode(node)) {
-      renameObjectInExpr(expr, "$state", "$props", stateVarName, propVarName);
+      renameObjectInExpr(expr, varType, "$props", varName, propVarName);
     }
   });
 }

@@ -182,8 +182,7 @@ import {
 import { typeFactory } from "@/wab/shared/model/model-util";
 import {
   isParamUsedInExpr,
-  replaceQueryWithPropInCodeExprs,
-  replaceStateWithPropInCodeExprs,
+  replaceDollarVarWithPropInCodeExprs,
   replaceVarWithPropInCodeExprs,
 } from "@/wab/shared/refactoring";
 import { naturalSort } from "@/wab/shared/sort";
@@ -1003,7 +1002,12 @@ export function findPropUsages(component: Component, prop: Param) {
 export function findObjectsUsedInExprs(
   component: Component,
   tpl: TplTag | TplComponent
-): { params: Param[]; queries: ComponentDataQuery[]; vars: string[] } {
+): {
+  params: Param[];
+  queries: ComponentDataQuery[];
+  serverQueries: ComponentServerQuery[];
+  vars: string[];
+} {
   const infos: ParsedExprInfo[] = [];
   Tpls.flattenTpls(tpl).forEach((node) => {
     if (!Tpls.isTplVariantable(node)) {
@@ -1036,8 +1040,17 @@ export function findObjectsUsedInExprs(
           )
         )
       );
+  const serverQueries = info.usesUnknownDollarVarKeys.$q
+    ? component.serverQueries
+    : uniq(
+        filterFalsy(
+          [...info.usedDollarVarKeys.$q].map((key) =>
+            getComponentServerQueryByVarName(component, key)
+          )
+        )
+      );
 
-  return { params, queries, vars: [...info.usedFreeVars] };
+  return { params, queries, serverQueries, vars: [...info.usedFreeVars] };
 }
 
 export function extractComponent({
@@ -1490,6 +1503,7 @@ export function extractComponent({
     params: paramsUsedInExprs,
     vars: varsUsedInExprs,
     queries: queriesUsedInExprs,
+    serverQueries: serverQueriesUsedInExprs,
   } = findObjectsUsedInExprs(containingComponent, clonedTpl);
   for (const containingParam of paramsUsedInExprs) {
     if (
@@ -1553,38 +1567,49 @@ export function extractComponent({
       })
     );
     if (isKnownStateParam(containingParam)) {
-      replaceStateWithPropInCodeExprs(
+      replaceDollarVarWithPropInCodeExprs(
         component.tplTree,
+        "$state",
         toVarName(containingParam.variable.name),
         toVarName(newParam.variable.name)
       );
     }
   }
-  for (const query of queriesUsedInExprs) {
+  const passDollarVarAsProp = (
+    varType: "$queries" | "$q",
+    queryName: string
+  ) => {
     const newParam = Lang.mkParam({
-      name: tplMgr.getUniqueParamName(component, query.name),
+      name: tplMgr.getUniqueParamName(component, queryName),
       type: typeFactory.any(),
       paramType: "prop",
     });
     component.params.push(newParam);
     jsNamesOfParamsAlreadyExtracted.add(toVarName(newParam.variable.name));
     const vs = ensureVariantSetting(tplComponent, [containingBaseVariant]);
-    // Pass $queries.<name> into extracted component $props.<name>.
+    // Pass <varType>.<name> into extracted component $props.<name>.
     vs.args.push(
       new Arg({
         param: newParam,
         expr: new ObjectPath({
-          path: ["$queries", toVarName(query.name)],
+          path: [varType, toVarName(queryName)],
           fallback: undefined,
         }),
       })
     );
-    // Refactor usages of $queries.<name> to $props.<name>.
-    replaceQueryWithPropInCodeExprs(
+    // Refactor usages of <varType>.<name> to $props.<name>.
+    replaceDollarVarWithPropInCodeExprs(
       component.tplTree,
-      toVarName(query.name),
+      varType,
+      toVarName(queryName),
       toVarName(newParam.variable.name)
     );
+  };
+  for (const query of queriesUsedInExprs) {
+    passDollarVarAsProp("$queries", query.name);
+  }
+  for (const query of serverQueriesUsedInExprs) {
+    passDollarVarAsProp("$q", query.name);
   }
 
   // Create props for dataRep vars that are being used in tree rooted in tpl.
@@ -2064,6 +2089,14 @@ export function getComponentDataQueryByVarName(
 ) {
   name = toVarName(name);
   return component.dataQueries.find((q) => toVarName(q.name) === name);
+}
+
+export function getComponentServerQueryByVarName(
+  component: Component,
+  name: string
+) {
+  name = toVarName(name);
+  return component.serverQueries.find((q) => toVarName(q.name) === name);
 }
 
 export function getVariantGroupByVarName(component: Component, name: string) {

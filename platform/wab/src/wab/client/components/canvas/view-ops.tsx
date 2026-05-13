@@ -3417,8 +3417,11 @@ export class ViewOps {
       }
     }
 
-    const { params: paramsUsedInExprs, queries: queriesToCreateProps } =
-      Components.findObjectsUsedInExprs(containingComponent, tpl);
+    const {
+      params: paramsUsedInExprs,
+      queries: queriesToCreateProps,
+      serverQueries: serverQueriesToCreateProps,
+    } = Components.findObjectsUsedInExprs(containingComponent, tpl);
     const linkedParams = L.uniq([
       ...flattenedTpls
         .filter((t): t is TplSlot => Tpls.isTplSlot(t))
@@ -3433,6 +3436,7 @@ export class ViewOps {
       containingComponent,
       linkedParams,
       queriesToCreateProps,
+      serverQueriesToCreateProps,
     });
     if (!resp) {
       return;
