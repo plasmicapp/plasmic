@@ -1080,7 +1080,7 @@ function CaretUI({ top, left }: CaretUIProps) {
       <Tooltip
         title={"Insert dynamic value here"}
         overlayClassName={"show-ant-tooltip-arrow"}
-        open={hover}
+        open={hover && isFocused}
       >
         <div className="custom-caret" />
       </Tooltip>

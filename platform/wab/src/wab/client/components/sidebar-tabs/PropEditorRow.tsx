@@ -744,13 +744,12 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     isDynamicValueDisabledInPropType(propType) ??
     false;
   const [showFallback, setShowFallback] = React.useState<boolean>(
-    expr !== undefined && isFallbackSet(expr) && !disabledDynamicValue
+    expr !== undefined && isRealCodeExpr(expr) && !disabledDynamicValue
   );
   const layout = props.layout ?? getPropTypeLayout(propType);
   const isFlattenedObjectProp = isFlattenedObjectPropType(propType);
   const wabType = ensurePropTypeToWabType(studioCtx.site, propType);
   const propTypeType = getPropTypeType(propType);
-  const isStringPropType = propTypeType === "string";
   const isTemplatedStringWithDynamicParts =
     isKnownTemplatedString(expr) && hasDynamicParts(expr);
   const isEditedAsTemplatedString = shouldEditAsTemplatedString(
@@ -770,6 +769,12 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     isCustomCode &&
     !isEditedAsTemplatedString &&
     !(isKnownQueryData(wabType) && isQuery(expr));
+  // The inline editor for ObjectPaths on text props is TemplatedStringPropEditor
+  // (which doesn't have fallback). This adds a fallback row below.
+  const showFallbackBelow =
+    isCustomCode &&
+    !(isKnownQueryData(wabType) && isQuery(expr)) &&
+    (!isEditedAsTemplatedString || isKnownObjectPath(expr));
   const forceSetState = isNested ? ("isSet" as const) : undefined;
   const canLinkToProp =
     !disableLinkToProp &&
@@ -839,22 +844,18 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     const currentExpr = exprRef.current;
     const shortId = makeShortProjectId(studioCtx.siteInfo.id);
 
-    const shouldSetFallback = currentExpr && !isStringPropType;
-
     const newExpr = new ObjectPath({
       path: dataToken
         ? [makeDataTokenIdentifier(shortId, toVarName(dataToken.name))]
         : ["undefined"],
-      fallback: shouldSetFallback
+      fallback: currentExpr
         ? currentExpr
           ? clone(currentExpr)
           : codeLit(undefined)
         : undefined,
     });
     onChange(maybeWrapExpr(newExpr));
-    if (shouldSetFallback) {
-      setShowFallback(true);
-    }
+    setShowFallback(true);
     setIsDataPickerVisible(!dataToken);
   }
 
@@ -988,7 +989,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         )}
       {!readOnly &&
         !disabled &&
-        canPropHaveFallback &&
+        showFallbackBelow &&
         !showFallback &&
         !disableFallback && (
           <Menu.Item key={"fallback"} onClick={() => setShowFallback(true)}>
@@ -1225,7 +1226,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                         </StandardMarkdown>
                       </div>
                     )}
-                  {expr && isKnownTemplatedString(expr) && evaluated && (
+                  {evaluated && (
                     <ValuePreview val={evaluated.val} err={evaluated.err} />
                   )}
                 </div>
@@ -1269,7 +1270,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 onChange={onChange}
               />
             )}
-            {canPropHaveFallback &&
+            {showFallbackBelow &&
               showFallback &&
               !disableFallback &&
               viewCtx &&
