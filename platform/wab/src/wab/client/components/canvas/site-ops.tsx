@@ -15,6 +15,7 @@ import {
   ResizableImage,
   maybeUploadImage,
 } from "@/wab/client/dom-utils";
+import { deleteStyleToken } from "@/wab/client/operations/delete-style-token";
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
@@ -127,7 +128,6 @@ import {
   updateStateAccessType,
 } from "@/wab/shared/core/states";
 import {
-  changeTokenUsage,
   extractAnimationSequenceUsages,
   extractMixinUsages,
   extractTokenUsages,
@@ -1830,11 +1830,7 @@ export class SiteOps {
       },
       ({ success }) => {
         tokens.forEach((token) => {
-          const [usages, _] = extractTokenUsages(this.site, token);
-          usages.forEach((usage) => {
-            changeTokenUsage(this.site, token, usage, "inline");
-          });
-          arrayRemove(this.site.styleTokens, token);
+          deleteStyleToken({ site: this.site, token });
         });
         return success();
       }

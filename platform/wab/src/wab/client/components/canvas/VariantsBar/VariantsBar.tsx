@@ -311,7 +311,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
   });
   const preventDismissingRef = useRef(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const component = viewCtx?.currentComponent();
+  const component = viewCtx.currentComponent();
   const groupToSuperComp =
     component && getSuperComponentVariantGroupToComponent(component);
 

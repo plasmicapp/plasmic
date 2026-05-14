@@ -41,27 +41,35 @@ export function getTplByUuid(component: Component, uuid: string): TplNode {
 }
 
 /**
- * Find variants by their UUIDs within a component's available variants.
- * Throws if any UUIDs are not found.
+ * Find variants by their UUIDs.
+ *
+ * Pass component (and optionally tpl) to scope the lookup to that
+ * component's own variants plus all in-scope globals.
+ *
+ * Omit component to scope to global variants only
+ * useful for resources like style tokens whose VariantedValue are Global variant only.
+ *
+ * Returns the resolved variants and any uuids that didn't
+ * match.
  */
 export function getVariantsByUuids(
   variantUuids: string[],
   opts: {
-    component: Component;
-    tpl?: TplNode | null;
     site: Site;
+    component?: Component;
+    tpl?: TplNode | null;
   }
-): VariantCombo {
-  const allVariants = getAllVariantsForTpl({
+): { variants: VariantCombo; invalidUuids: string[] } {
+  const variantPool = getAllVariantsForTpl({
     component: opts.component,
     tpl: opts.tpl ?? null,
     site: opts.site,
     includeSuperVariants: true,
   });
-  const variantMap = new Map(allVariants.map((v) => [v.uuid, v]));
+
+  const variantMap = new Map(variantPool.map((v) => [v.uuid, v]));
   const variants: VariantCombo = [];
   const invalidUuids: string[] = [];
-
   for (const uuid of variantUuids) {
     const variant = variantMap.get(uuid);
     if (variant) {
@@ -70,14 +78,7 @@ export function getVariantsByUuids(
       invalidUuids.push(uuid);
     }
   }
-
-  if (invalidUuids.length) {
-    throw new Error(
-      `Variant(s) not found: ${invalidUuids.map((u) => `"${u}"`).join(", ")}.`
-    );
-  }
-
-  return variants;
+  return { variants, invalidUuids };
 }
 
 /**

@@ -3,6 +3,7 @@ import { isPageComponent } from "@/wab/shared/core/components";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { allAnimationSequences } from "@/wab/shared/core/sites";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import {
   AnimationSequence,
@@ -89,18 +90,9 @@ export function serializeProject(
 
   if (opts.tokens) {
     const allFinalTokens = siteFinalStyleTokensAllDeps(site);
-    const tokenElements = site.styleTokens.map((token) => {
-      const attrs: XmlAttrs = {
-        name: token.name,
-        uuid: token.uuid,
-        type: token.type,
-        value: token.value,
-      };
-      if (isTokenRef(token.value)) {
-        attrs.resolvedValue = derefTokenRefs(allFinalTokens, token.value);
-      }
-      return { token: { _attr: attrs } };
-    });
+    const tokenElements = site.styleTokens.map((token) => ({
+      token: buildTokenXmlBody(token, allFinalTokens),
+    }));
     projectChildren.push({ tokens: tokenElements });
   }
 
@@ -118,11 +110,20 @@ export function serializeProject(
 /**
  * Serialize a single style token to XML.
  * If the token references another token, adds a resolvedValue attribute.
+ * Each entry in `variantedValues` becomes a `<varianted-value>` child element.
  */
 export function serializeToken(
   token: StyleToken,
   opts: { site: Site }
 ): string {
+  const allFinalTokens = siteFinalStyleTokensAllDeps(opts.site);
+  return toXml({ token: buildTokenXmlBody(token, allFinalTokens) });
+}
+
+function buildTokenXmlBody(
+  token: StyleToken,
+  allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>
+): XmlObject[] | { _attr: XmlAttrs } {
   const attrs: XmlAttrs = {
     name: token.name,
     uuid: token.uuid,
@@ -130,10 +131,23 @@ export function serializeToken(
     value: token.value,
   };
   if (isTokenRef(token.value)) {
-    const allFinalTokens = siteFinalStyleTokensAllDeps(opts.site);
     attrs.resolvedValue = derefTokenRefs(allFinalTokens, token.value);
   }
-  return toXml({ token: { _attr: attrs } });
+  if (token.variantedValues.length === 0) {
+    return { _attr: attrs };
+  }
+  const children: XmlObject[] = [{ _attr: attrs }];
+  for (const vv of token.variantedValues) {
+    const vvAttrs: XmlAttrs = {
+      variantUuids: vv.variants.map((v) => v.uuid).join(","),
+      value: vv.value,
+    };
+    if (isTokenRef(vv.value)) {
+      vvAttrs.resolvedValue = derefTokenRefs(allFinalTokens, vv.value);
+    }
+    children.push({ "varianted-value": { _attr: vvAttrs } });
+  }
+  return children;
 }
 
 /**
@@ -163,6 +177,7 @@ export function serializeInvalidResource(
     | "globalVariant"
     | "variantGroup"
     | "variant"
+    | "variantedValue"
     | "animation",
   message: string
 ): string {

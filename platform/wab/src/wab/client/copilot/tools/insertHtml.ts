@@ -1,6 +1,7 @@
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { htmlToTpl } from "@/wab/client/operations/html-to-tpl";
 import { unwrap } from "@/wab/commons/failable-utils";
+import { VariantCombo } from "@/wab/shared/Variants";
 import {
   COPILOT_TOOL_DEFS,
   defineCopilotTool,
@@ -19,13 +20,23 @@ export const insertHtmlTool = defineCopilotTool(
   ) => {
     const component = getComponentByUuid(studioCtx.site, componentUuid);
     const target = getTplByUuid(component, tplUuid);
-    const variants = variantUuids?.length
-      ? getVariantsByUuids(variantUuids, {
-          component,
-          tpl: target,
-          site: studioCtx.site,
-        })
-      : undefined;
+
+    let variants: VariantCombo | undefined;
+    if (variantUuids?.length) {
+      const result = getVariantsByUuids(variantUuids, {
+        component,
+        tpl: target,
+        site: studioCtx.site,
+      });
+      if (result.invalidUuids.length) {
+        throw new Error(
+          `Variant(s) not found: ${result.invalidUuids
+            .map((u) => `"${u}"`)
+            .join(", ")}.`
+        );
+      }
+      variants = result.variants;
+    }
 
     const viewCtx = await studioCtx.getViewCtxForComponent(component, variants);
 

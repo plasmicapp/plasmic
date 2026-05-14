@@ -922,12 +922,12 @@ export function getAllVariantsForTpl({
   site,
   includeSuperVariants,
 }: {
-  component: Component;
+  component?: Component;
   tpl: TplNode | null | undefined;
   site: Site;
   includeSuperVariants?: boolean;
 }) {
-  return component
+  const componentVariants = component
     ? [
         ...component.variants.filter(isCodeComponentVariant),
         ...component.variants.filter((v) => isComponentStyleVariant(v)),
@@ -938,12 +938,15 @@ export function getAllVariantsForTpl({
         ...(includeSuperVariants && component.superComp
           ? allSuperComponentVariants(component.superComp)
           : []),
-        ...site.globalVariantGroups.flatMap((group) => group.variants),
-        ...site.projectDependencies.flatMap((dep) =>
-          dep.site.globalVariantGroups.flatMap((group) => group.variants)
-        ),
       ]
     : [];
+  return [
+    ...componentVariants,
+    ...site.globalVariantGroups.flatMap((group) => group.variants),
+    ...site.projectDependencies.flatMap((dep) =>
+      dep.site.globalVariantGroups.flatMap((group) => group.variants)
+    ),
+  ];
 }
 
 export function getDisplayVariants({

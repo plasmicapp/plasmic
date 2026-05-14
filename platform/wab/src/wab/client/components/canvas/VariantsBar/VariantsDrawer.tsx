@@ -53,7 +53,7 @@ interface VariantsDrawerProps extends DefaultVariantsDrawerProps {
   onClearVariants?: () => void;
   onTargetVariant?: (variant: Variant) => void;
   onRemoveVariant?: (variant: Variant) => void;
-  component?: Component;
+  component: Component;
 }
 
 export const VariantsDrawer = observer(VariantsDrawer_);
@@ -80,7 +80,7 @@ function VariantsDrawer_({
   const variantsListRef = useRef<HTMLDivElement>(null);
 
   const allVariants = getAllVariantsForTpl({
-    component: component!,
+    component,
     tpl: focusedTpl,
     site: studioCtx.site,
   });

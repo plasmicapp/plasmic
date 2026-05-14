@@ -3,7 +3,7 @@ import { renameTpl } from "@/wab/client/operations/rename-tpl";
 import { processUnsanitizedStyles } from "@/wab/client/web-importer/html-parser";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { getBaseVariant } from "@/wab/shared/Variants";
+import { VariantCombo, getBaseVariant } from "@/wab/shared/Variants";
 import {
   COPILOT_TOOL_DEFS,
   defineCopilotTool,
@@ -30,12 +30,21 @@ export const changeElementTool = defineCopilotTool(
   async (studioCtx, { componentUuid, variantUuids, changes }) => {
     const component = getComponentByUuid(studioCtx.site, componentUuid);
 
-    const variants = variantUuids?.length
-      ? getVariantsByUuids(variantUuids, {
-          component,
-          site: studioCtx.site,
-        })
-      : undefined;
+    let variants: VariantCombo | undefined;
+    if (variantUuids?.length) {
+      const result = getVariantsByUuids(variantUuids, {
+        component,
+        site: studioCtx.site,
+      });
+      if (result.invalidUuids.length) {
+        throw new Error(
+          `Variant(s) not found: ${result.invalidUuids
+            .map((u) => `"${u}"`)
+            .join(", ")}.`
+        );
+      }
+      variants = result.variants;
+    }
 
     const { vtm, arena } = getComponentArenaAndVariantTplMgr(
       studioCtx.site,
