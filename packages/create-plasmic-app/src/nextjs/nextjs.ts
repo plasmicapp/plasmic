@@ -30,7 +30,7 @@ export const nextjsStrategy: CPAStrategy = {
     const experimentalAppArg = platformOptions.nextjs?.appDir
       ? "--app"
       : "--no-app";
-    const templateArg = template ? ` --template ${template}` : "";
+    const templateArg = template ? ` --example ${template}` : "";
     // TODO: Change to latest when nextjs stops using react@19-rc
     const createCommand =
       `npx create-next-app@14 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
