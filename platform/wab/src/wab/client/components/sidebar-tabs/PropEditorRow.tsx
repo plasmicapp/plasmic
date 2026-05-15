@@ -744,12 +744,13 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     isDynamicValueDisabledInPropType(propType) ??
     false;
   const [showFallback, setShowFallback] = React.useState<boolean>(
-    expr !== undefined && isRealCodeExpr(expr) && !disabledDynamicValue
+    expr !== undefined && isFallbackSet(expr) && !disabledDynamicValue
   );
   const layout = props.layout ?? getPropTypeLayout(propType);
   const isFlattenedObjectProp = isFlattenedObjectPropType(propType);
   const wabType = ensurePropTypeToWabType(studioCtx.site, propType);
   const propTypeType = getPropTypeType(propType);
+  const isStringPropType = propTypeType === "string";
   const isTemplatedStringWithDynamicParts =
     isKnownTemplatedString(expr) && hasDynamicParts(expr);
   const isEditedAsTemplatedString = shouldEditAsTemplatedString(
@@ -769,12 +770,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     isCustomCode &&
     !isEditedAsTemplatedString &&
     !(isKnownQueryData(wabType) && isQuery(expr));
-  // The inline editor for ObjectPaths on text props is TemplatedStringPropEditor
-  // (which doesn't have fallback). This adds a fallback row below.
-  const showFallbackBelow =
-    isCustomCode &&
-    !(isKnownQueryData(wabType) && isQuery(expr)) &&
-    (!isEditedAsTemplatedString || isKnownObjectPath(expr));
   const forceSetState = isNested ? ("isSet" as const) : undefined;
   const canLinkToProp =
     !disableLinkToProp &&
@@ -844,18 +839,20 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     const currentExpr = exprRef.current;
     const shortId = makeShortProjectId(studioCtx.siteInfo.id);
 
+    const shouldSetFallback = currentExpr && !isStringPropType;
+
     const newExpr = new ObjectPath({
       path: dataToken
         ? [makeDataTokenIdentifier(shortId, toVarName(dataToken.name))]
         : ["undefined"],
-      fallback: currentExpr
+      fallback: shouldSetFallback
         ? currentExpr
           ? clone(currentExpr)
           : codeLit(undefined)
         : undefined,
     });
     onChange(maybeWrapExpr(newExpr));
-    setShowFallback(true);
+    setShowFallback(!!shouldSetFallback);
     setIsDataPickerVisible(!dataToken);
   }
 
@@ -989,11 +986,35 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         )}
       {!readOnly &&
         !disabled &&
-        showFallbackBelow &&
+        canPropHaveFallback &&
         !showFallback &&
         !disableFallback && (
           <Menu.Item key={"fallback"} onClick={() => setShowFallback(true)}>
             Change fallback value
+          </Menu.Item>
+        )}
+      {!readOnly &&
+        !disabled &&
+        canPropHaveFallback &&
+        showFallback &&
+        !disableFallback && (
+          <Menu.Item
+            key={"removeFallback"}
+            onClick={() => {
+              if (expr && isFallbackSet(expr)) {
+                const codeExpr = ensureInstance(expr, CustomCode, ObjectPath);
+                const newExpr = isKnownCustomCode(codeExpr)
+                  ? new CustomCode({ code: codeExpr.code, fallback: undefined })
+                  : new ObjectPath({
+                      path: codeExpr.path,
+                      fallback: undefined,
+                    });
+                onChange(maybeWrapExpr(newExpr));
+              }
+              setShowFallback(false);
+            }}
+          >
+            Remove fallback value
           </Menu.Item>
         )}
       {!readOnly &&
@@ -1008,6 +1029,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                   ? maybeWrapExpr(expr.fallback)
                   : undefined
               );
+              setShowFallback(false);
             }}
           >
             Remove dynamic value
@@ -1226,7 +1248,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                         </StandardMarkdown>
                       </div>
                     )}
-                  {evaluated && (
+                  {evaluated && propTypeType !== "object" && (
                     <ValuePreview val={evaluated.val} err={evaluated.err} />
                   )}
                 </div>
@@ -1270,7 +1292,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 onChange={onChange}
               />
             )}
-            {showFallbackBelow &&
+            {canPropHaveFallback &&
               showFallback &&
               !disableFallback &&
               viewCtx &&
@@ -1297,6 +1319,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                             });
                         onChange(maybeWrapExpr(newExpr));
                       });
+                      setShowFallback(false);
                     }}
                   >
                     <PropValueEditor
