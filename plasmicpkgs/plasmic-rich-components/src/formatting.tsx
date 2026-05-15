@@ -4,14 +4,14 @@ import React from "react";
 import {
   BaseColumnConfig,
   BooleanSettings,
-  DateTimeSettings,
   DATETIME_TYPES,
   DEFAULT_BOOLEAN_SETTINGS,
   DEFAULT_CURRENCY_SETTINGS,
   DEFAULT_DATETIME_SETTINGS,
   DEFAULT_RELATIVE_DATETIME_SETTINGS,
-  NumberSettings,
+  DateTimeSettings,
   NUMBER_TYPES,
+  NumberSettings,
   RelativeDateTimeSettings,
 } from "./field-mappings";
 import { isOneOf, maybe } from "./utils";
@@ -58,7 +58,9 @@ export function getFieldAggregateValue(
   cconfigs: BaseColumnConfig[] | undefined,
   separator = ", "
 ) {
-  if (!cconfigs?.length) return undefined;
+  if (!cconfigs?.length) {
+    return undefined;
+  }
 
   return cconfigs?.length
     ? cconfigs.map((item) => getFieldValue(record, item)).join(separator)
@@ -125,16 +127,23 @@ function tryCoerceAuto(value: unknown) {
   return CANNOT_COERCE;
 }
 
+// `new Intl.NumberFormat("", ...)` throws `RangeError: invalid language tag`, so collapse
+// empty locales to undefined (host default).
+function safeLocale(locale: string | undefined) {
+  return locale && locale.trim() !== "" ? locale : undefined;
+}
+
 function renderNumber(value: number, cconfig: NumberSettings) {
+  const locale = safeLocale(cconfig.locale);
   if (cconfig.dataType === "number") {
-    return new Intl.NumberFormat(cconfig.locale, cconfig).format(value);
+    return new Intl.NumberFormat(locale, cconfig).format(value);
   } else if (cconfig.dataType === "percent") {
-    return new Intl.NumberFormat(cconfig.locale, {
+    return new Intl.NumberFormat(locale, {
       ...cconfig,
       style: "percent",
     }).format(value);
   } else if (cconfig.dataType === "currency") {
-    return new Intl.NumberFormat(cconfig.locale, {
+    return new Intl.NumberFormat(locale, {
       ...DEFAULT_CURRENCY_SETTINGS,
       ...cconfig,
       style: "currency",
@@ -155,7 +164,10 @@ function renderDate(value: Date, cconfig: DateTimeSettings) {
   if (opts.timeStyle === "none") {
     delete opts["timeStyle"];
   }
-  return new Intl.DateTimeFormat(cconfig.locale, opts as any).format(value);
+  return new Intl.DateTimeFormat(
+    safeLocale(cconfig.locale),
+    opts as any
+  ).format(value);
 }
 
 const SECOND_MS = 1000;
@@ -178,7 +190,10 @@ function renderRelativeDate(value: Date, cconfig: RelativeDateTimeSettings) {
     ...cconfig,
   };
   const unit = cconfig.unit ?? "day";
-  const formatter = new Intl.RelativeTimeFormat(cconfig.locale, opts);
+  const formatter = new Intl.RelativeTimeFormat(
+    safeLocale(cconfig.locale),
+    opts
+  );
   if (isOneOf(unit, UNITS_BY_MS)) {
     // for "exact" units, we can do it by just calcluating the difference
     // by ms
