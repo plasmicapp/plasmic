@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@plasmicapp/cli": "^0.1.361",
-    "@plasmicapp/react-web": "^1.0.6",
+    "@plasmicapp/react-web": "^1.0.8",
     "gatsby": "^5.14.6",
     "gatsby-plugin-react-helmet": "^6.16.0",
     "react": "^18.2.0",

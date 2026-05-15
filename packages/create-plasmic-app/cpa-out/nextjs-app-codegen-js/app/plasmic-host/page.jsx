@@ -1,3 +1,5 @@
+"use client";
+  
 import * as React from 'react';
 import { PlasmicCanvasHost, registerComponent } from '@plasmicapp/react-web/lib/host';
 

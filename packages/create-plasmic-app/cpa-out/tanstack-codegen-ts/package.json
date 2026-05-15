@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@plasmicapp/cli": "^0.1.361",
-    "@plasmicapp/react-web": "^1.0.6",
+    "@plasmicapp/react-web": "^1.0.8",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
-    "@tanstack/react-query": "^5.100.9",
+    "@tanstack/react-query": "^5.100.10",
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/router-plugin": "^1.132.0",
