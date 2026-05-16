@@ -12,8 +12,7 @@ export function runExpressApp(
   const server = http.createServer(app);
   const config = loadConfig();
 
-  server.keepAliveTimeout = 185 * 1000;
-  server.headersTimeout = 190 * 1000;
+  server.keepAliveTimeout = config.keepAliveTimeoutMs;
 
   setupServer?.(server);
 

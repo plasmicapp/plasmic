@@ -147,6 +147,7 @@ export async function createBackend(
         mailUserOps: "",
         mailBcc: "",
         terminationGracePeriodMs: 5000,
+        keepAliveTimeoutMs: 60000,
         genericWorkerPoolSize: 1,
         loaderWorkerPoolSize: 1,
       });
