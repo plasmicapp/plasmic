@@ -292,7 +292,6 @@ function _TopBar({ preview }: TopBarProps) {
                                 stepIndex: 0,
                                 tour,
                                 flags: {},
-                                results: {},
                                 triggers: [],
                               });
                             }}

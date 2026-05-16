@@ -224,10 +224,6 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
         // In case the visibility of the current target changes, we clear the flags
         // this is to avoid that flags that force components state to be active when
         // the user goes out of the tour route and somehow it becomes inconsistent.
-        // As an example `keepDataPickerOpen` flag is used to keep the data picker open
-        // but it also blocks the visibility change of the data picker to change, but
-        // the data picker can be unmounted when the user unfocuses the component.
-        //
         // If the user finds the path back to the tour step, the tour will resume.
         studioCtx.setOnboardingTourState({
           ...studioCtx.onboardingTourState,
@@ -257,7 +253,6 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
       stepIndex: 0,
       tour: "",
       flags: {},
-      results: {},
       triggers: [],
     });
   };
@@ -295,8 +290,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
   };
 
   const advanceToNextStep = async (
-    flags: Partial<TutorialStateFlags> = {},
-    results: Record<string, any> = {}
+    flags: Partial<TutorialStateFlags> = {}
   ) => {
     studioCtx.setOnboardingTourState({
       ...studioCtx.onboardingTourState,
@@ -353,10 +347,6 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
       stepIndex: tourState.stepIndex + 1,
       tour: tourState.tour,
       flags: currentFlags,
-      results: {
-        ...studioCtx.onboardingTourState.results,
-        ...results,
-      },
       triggers: nextStep.triggers || [],
     });
   };
@@ -445,7 +435,6 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
             stepIndex: 0,
             tour: templateTour,
             flags: {},
-            results: {},
             triggers: [],
           });
         }

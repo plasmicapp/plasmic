@@ -7492,7 +7492,6 @@ export class StudioCtx extends WithDbCtx {
     stepIndex: 0,
     tour: "",
     flags: {},
-    results: {},
     triggers: [],
   });
 
@@ -7504,16 +7503,6 @@ export class StudioCtx extends WithDbCtx {
 
   setOnboardingTourState(state: OnboardingTourState) {
     this._onboardingTourState.set(state);
-  }
-
-  mergeOnboardingTourStateResults(results: OnboardingTourState["results"]) {
-    this._onboardingTourState.set({
-      ...this.onboardingTourState,
-      results: {
-        ...this.onboardingTourState.results,
-        ...results,
-      },
-    });
   }
 
   shownSyntheticSections = observable.map(new Map());
@@ -7560,12 +7549,6 @@ interface OnboardingTourState {
   triggers: TutorialEventsType[];
   tour: string;
   flags: Partial<TutorialStateFlags>;
-  results: {
-    addedQuery?: string;
-    dynamicPage?: string;
-    form?: string;
-    richTable?: string;
-  };
 }
 
 interface CanvasLoadRequest {

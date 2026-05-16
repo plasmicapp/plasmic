@@ -9,12 +9,7 @@ import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Step } from "react-joyride";
 
 export interface TutorialStateFlags {
-  keepInspectObjectPropEditorOpen: boolean;
-  keepActionBuilderUncollapsed: boolean;
-  keepHandlerFunctionOptionsVisible: boolean;
   forceAddDrawerOpen: boolean;
-  keepDataPickerOpen: boolean;
-  keepInteractionModalOpen: boolean;
 }
 
 export interface OnNextCtx {

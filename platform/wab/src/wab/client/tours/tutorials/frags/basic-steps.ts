@@ -1,4 +1,3 @@
-import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   TutorialEvent,
   TutorialEventsType,
@@ -100,28 +99,6 @@ export function addElementStepFunc({
   };
 }
 
-export function changeRightTabKeyStepFunc(
-  tab: RightTabKey
-): TutorialStepFunctionality<OnNextCtx> {
-  return {
-    target: STUDIO_ELEMENTS_TARGETS.editorTabs,
-    triggers: [TutorialEventsType.RightTabSwitched],
-    shouldAdvance: (event: TutorialEvent) => {
-      return (
-        event.type === TutorialEventsType.RightTabSwitched &&
-        event.params.tabKey === tab
-      );
-    },
-    placement: "left",
-    highlightTarget:
-      tab === "settings"
-        ? STUDIO_ELEMENTS_TARGETS.editorTabsSettings
-        : tab === "component"
-        ? STUDIO_ELEMENTS_TARGETS.editorTabsComponents
-        : STUDIO_ELEMENTS_TARGETS.editorTabsStyle,
-  };
-}
-
 export const OPEN_ADD_DRAWER_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> = {
   target: STUDIO_ELEMENTS_TARGETS.studioAddElement,
   placement: "right",
@@ -138,26 +115,6 @@ export const OPEN_ADD_DRAWER_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> = {
     forceAddDrawerOpen: true,
   },
 };
-
-export const TURN_ON_INTERACTIVE_MODE_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> =
-  {
-    target: STUDIO_ELEMENTS_TARGETS.interactiveCanvasSwitch,
-    placement: "right-start",
-    highlightTarget: STUDIO_ELEMENTS_TARGETS.interactiveCanvasSwitch,
-    advanceOnUserChanges: async (ctx: OnNextCtx) => {
-      return ctx.studioCtx.isInteractiveMode;
-    },
-  };
-
-export const TURN_OFF_INTERACTIVE_MODE_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> =
-  {
-    target: STUDIO_ELEMENTS_TARGETS.interactiveCanvasSwitch,
-    placement: "right-start",
-    // highlightTarget: STUDIO_ELEMENTS_TARGETS.interactiveCanvasSwitch,
-    advanceOnUserChanges: async (ctx: OnNextCtx) => {
-      return !ctx.studioCtx.isInteractiveMode;
-    },
-  };
 
 export const ADD_TEXT_STEP: StudioTutorialStep = {
   name: "add-text",
