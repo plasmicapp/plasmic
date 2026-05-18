@@ -79,7 +79,10 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
               !targetVsText || isKnownRawText(targetVsText)
                 ? () => {
                     viewCtx.change(() => {
-                      targetVs.text = convertTextToDynamic(targetVs.text);
+                      targetVs.text = convertTextToDynamic(
+                        targetVs.text,
+                        tpl.parent
+                      );
                       viewCtx.setTriggerEditingTextDataPicker(true);
                     });
                   }

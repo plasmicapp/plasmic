@@ -27,6 +27,7 @@ import type {
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { cx, ensureInstance, spawn } from "@/wab/shared/common";
 import {
+  asCode,
   ExprCtx,
   getCodeExpressionWithFallback,
 } from "@/wab/shared/core/exprs";
@@ -51,6 +52,7 @@ import {
   CustomCode,
   ensureKnownRawText,
   ensureKnownTplTag,
+  isKnownTemplatedString,
   Marker,
   ObjectPath,
   TplNode,
@@ -850,10 +852,13 @@ function mkExprTextProps(
   if (!isExprText(effectiveVs.text)) {
     throw new Error("mkExprTextProps expects ValTag with ExprText");
   }
-  const expr = getCodeExpressionWithFallback(
-    ensureInstance(effectiveVs.text.expr, CustomCode, ObjectPath),
-    exprCtx
-  );
+  const textExpr = effectiveVs.text.expr;
+  const expr = isKnownTemplatedString(textExpr)
+    ? asCode(textExpr, exprCtx).code
+    : getCodeExpressionWithFallback(
+        ensureInstance(textExpr, CustomCode, ObjectPath),
+        exprCtx
+      );
   const content = evalCodeWithEnv(expr, env);
   if (content && typeof content === "object") {
     throw new Error(

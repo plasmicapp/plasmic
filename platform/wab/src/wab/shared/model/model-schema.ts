@@ -528,7 +528,7 @@ RichText
     markers: [Marker]
     text: String
   ExprText
-    expr: CustomCode | ObjectPath
+    expr: CustomCode | ObjectPath | TemplatedString
     html: Bool
 Var
   name: String

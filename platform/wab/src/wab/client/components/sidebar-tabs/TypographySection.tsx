@@ -1,6 +1,9 @@
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
-import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
+import {
+  StringPropEditor,
+  TemplatedStringPropEditor,
+} from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
 import {
@@ -33,6 +36,7 @@ import {
   createExprForDataPickerValue,
   ExprCtx,
   extractValueSavedFromDataPicker,
+  flattenTemplatedStringToString,
   isFallbackSet,
   tryExtractString,
 } from "@/wab/shared/core/exprs";
@@ -49,9 +53,12 @@ import {
   ExprText,
   isKnownCustomCode,
   isKnownExprText,
+  isKnownObjectPath,
+  isKnownTemplatedString,
   ObjectPath,
   RawText,
   RichText,
+  TemplatedString,
   TplSlot,
   TplTag,
 } from "@/wab/shared/model/classes";
@@ -239,6 +246,10 @@ const TextContentRow = observer(function TextContentRow(props: {
     return null;
   }
 
+  // Sub-nodes (e.g. <span>, <strong>) are text tpls inside a rich text block. Their content
+  // can be a TemplatedString. Top-level blocks can only be ObjectPath/CustomCode.
+  const isSubNode = isTplTextBlock(textTpl.parent);
+
   const textTplOps = makeTplTextOps(viewCtx, textTpl);
   const {
     effectiveVs,
@@ -253,9 +264,13 @@ const TextContentRow = observer(function TextContentRow(props: {
     return null;
   }
 
-  const codeExpr = isKnownExprText(text)
-    ? ensureInstance(text.expr, ObjectPath, CustomCode)
-    : undefined;
+  // Only top-level dynamic text supports fallback.
+  const codeExpr =
+    isKnownExprText(text) &&
+    !isSubNode &&
+    (isKnownObjectPath(text.expr) || isKnownCustomCode(text.expr))
+      ? text.expr
+      : undefined;
   if (codeExpr && isFallbackSet(codeExpr) && !showFallback) {
     setShowFallback(true);
   }
@@ -293,11 +308,30 @@ const TextContentRow = observer(function TextContentRow(props: {
     return (
       <Menu>
         {makeTplTextMenu(textTplOps)}
-        {isKnownExprText(text) && !isFallbackSet(text.expr) && (
+        {!isSubNode && isKnownExprText(text) && !isFallbackSet(text.expr) && (
           <Menu.Item key={"fallback"} onClick={() => setShowFallback(true)}>
             Change fallback value
           </Menu.Item>
         )}
+        {isSubNode &&
+          isKnownExprText(text) &&
+          isKnownTemplatedString(text.expr) && (
+            <Menu.Item
+              key={"unlink"}
+              onClick={() =>
+                onChange(
+                  new RawText({
+                    text: flattenTemplatedStringToString(
+                      text.expr as TemplatedString
+                    ),
+                    markers: [],
+                  })
+                )
+              }
+            >
+              Use static value
+            </Menu.Item>
+          )}
       </Menu>
     );
   };
@@ -334,54 +368,77 @@ const TextContentRow = observer(function TextContentRow(props: {
               />
             )}
             {isKnownExprText(text) ? (
-              <DataPickerEditor
-                viewCtx={viewCtx}
-                value={extractValueSavedFromDataPicker(text.expr, exprCtx)}
-                onChange={(val) => {
-                  if (!val) {
-                    return;
-                  }
-                  assert(
-                    codeExpr,
-                    "Unexpected undefined value, codeExpr must be defined when data binding"
-                  );
-                  const fallbackExpr = codeExpr.fallback
-                    ? clone(codeExpr.fallback)
-                    : undefined;
-                  const newExpr = createExprForDataPickerValue(
-                    val,
-                    fallbackExpr
-                  );
-                  onChange(
-                    new ExprText({
-                      expr: newExpr,
-                      html: text.html,
-                    })
-                  );
-                }}
-                onUnlink={() => {
-                  const fallbackText =
-                    (codeExpr &&
-                      isKnownCustomCode(codeExpr.fallback) &&
-                      tryExtractString(codeExpr.fallback)) ||
-                    "";
-                  onChange(
-                    new RawText({
-                      text: fallbackText,
-                      markers: [],
-                    })
-                  );
-                }}
-                visible={isDataPickerVisible}
-                setVisible={setIsDataPickerVisible}
-                isDisabled={isDisabled}
-                disabledTooltip={disabledTooltip}
-                data={viewCtx.getCanvasEnvForTpl(tpl)}
-                schema={viewCtx.customFunctionsSchema()}
-                flatten={true}
-                key={tpl.uid}
-                context="The text content to be displayed"
-              />
+              isSubNode ? (
+                <TemplatedStringPropEditor
+                  viewCtx={viewCtx}
+                  value={text.expr}
+                  onChange={(val) => {
+                    const newExpr =
+                      typeof val === "string"
+                        ? new TemplatedString({ text: [val] })
+                        : val;
+                    onChange(
+                      new ExprText({
+                        expr: newExpr,
+                        html: text.html,
+                      })
+                    );
+                  }}
+                  data={viewCtx.getCanvasEnvForTpl(tpl)}
+                  schema={viewCtx.customFunctionsSchema()}
+                  component={viewCtx.currentComponent()}
+                  key={tpl.uid}
+                />
+              ) : (
+                <DataPickerEditor
+                  viewCtx={viewCtx}
+                  value={extractValueSavedFromDataPicker(text.expr, exprCtx)}
+                  onChange={(val) => {
+                    if (!val) {
+                      return;
+                    }
+                    assert(
+                      codeExpr,
+                      "Unexpected undefined value, codeExpr must be defined when data binding"
+                    );
+                    const fallbackExpr = codeExpr.fallback
+                      ? clone(codeExpr.fallback)
+                      : undefined;
+                    const newExpr = createExprForDataPickerValue(
+                      val,
+                      fallbackExpr
+                    );
+                    onChange(
+                      new ExprText({
+                        expr: newExpr,
+                        html: text.html,
+                      })
+                    );
+                  }}
+                  onUnlink={() => {
+                    const fallbackText =
+                      (codeExpr &&
+                        isKnownCustomCode(codeExpr.fallback) &&
+                        tryExtractString(codeExpr.fallback)) ||
+                      "";
+                    onChange(
+                      new RawText({
+                        text: fallbackText,
+                        markers: [],
+                      })
+                    );
+                  }}
+                  visible={isDataPickerVisible}
+                  setVisible={setIsDataPickerVisible}
+                  isDisabled={isDisabled}
+                  disabledTooltip={disabledTooltip}
+                  data={viewCtx.getCanvasEnvForTpl(tpl)}
+                  schema={viewCtx.customFunctionsSchema()}
+                  flatten={true}
+                  key={tpl.uid}
+                  context="The text content to be displayed"
+                />
+              )
             ) : (
               <TextEditor
                 viewCtx={viewCtx}
@@ -394,15 +451,11 @@ const TextContentRow = observer(function TextContentRow(props: {
           </MaybeWrap>
         </ContextMenuIndicator>
       </LabeledItemRow>
-      {isKnownExprText(text) && showFallback && (
+      {isKnownExprText(text) && codeExpr && showFallback && (
         <FallbackEditor
-          isSet={isFallbackSet(text.expr)}
+          isSet={isFallbackSet(codeExpr)}
           definedIndicator={indicator}
           onUnset={() => {
-            assert(
-              codeExpr,
-              "Unexpected undefined value, codeExpr must be defined when data binding"
-            );
             const newExpr = ensureInstance(
               clone(codeExpr),
               ObjectPath,
@@ -416,7 +469,7 @@ const TextContentRow = observer(function TextContentRow(props: {
         >
           <StringPropEditor
             value={
-              codeExpr && codeExpr.fallback
+              codeExpr.fallback
                 ? asCode(codeExpr.fallback, exprCtx).code.slice(1, -1)
                 : undefined
             }
@@ -424,10 +477,6 @@ const TextContentRow = observer(function TextContentRow(props: {
               if (!val) {
                 return;
               }
-              assert(
-                codeExpr,
-                "Unexpected undefined value, codeExpr must be defined when data binding"
-              );
               const newExpr = ensureInstance(
                 clone(codeExpr),
                 ObjectPath,

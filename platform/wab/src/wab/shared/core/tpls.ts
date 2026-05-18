@@ -74,6 +74,7 @@ import {
   StyleMarker,
   StyleScopeClassNamePropType,
   TargetType,
+  TemplatedString,
   TplComponent,
   TplNode,
   TplSlot,
@@ -128,6 +129,7 @@ import {
 } from "@/wab/shared/core/components";
 import * as Exprs from "@/wab/shared/core/exprs";
 import {
+  flattenTemplatedStringToString,
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
   tryExtractJson,
@@ -2014,9 +2016,14 @@ export function getRichTextContent(text: RichText, viewCtx: ViewCtx) {
   }
   if (isKnownExprText(text)) {
     assert(
-      isKnownCustomCode(text.expr) || isKnownObjectPath(text.expr),
-      "Text expression is not CustomCode nor ObjectPath"
+      isKnownCustomCode(text.expr) ||
+        isKnownObjectPath(text.expr) ||
+        isKnownTemplatedString(text.expr),
+      "Text expression is not CustomCode, ObjectPath, or TemplatedString"
     );
+    if (isKnownTemplatedString(text.expr)) {
+      return flattenTemplatedStringToString(text.expr);
+    }
     return isKnownCustomCode(text.expr)
       ? text.expr.code
       : pathToDisplayString(text.expr.path, viewCtx.site, viewCtx.siteInfo.id);
@@ -2025,13 +2032,25 @@ export function getRichTextContent(text: RichText, viewCtx: ViewCtx) {
 }
 
 /**
- * Converts a RichText element to an empty ExprText.
- *
- * If present, sets the original text as the fallback.
+ * Converts a RichText element to an ExprText. Inline sub-nodes (with text block parent)
+ * get a TemplatedString; top-level blocks get an ObjectPath with original text as fallback.
  */
 export function convertTextToDynamic(
-  text: RichText | null | undefined
+  text: RichText | null | undefined,
+  parent: TplNode | TplSlot | undefined | null
 ): ExprText {
+  if (isTplTextBlock(parent)) {
+    const staticText =
+      isKnownRawText(text) && text.text !== "Enter some text" ? text.text : "";
+    const codePill = new ObjectPath({
+      path: ["undefined"],
+      fallback: undefined,
+    });
+    return new ExprText({
+      expr: new TemplatedString({ text: [staticText, codePill, ""] }),
+      html: false,
+    });
+  }
   return new ExprText({
     expr: new ObjectPath({
       path: ["undefined"],

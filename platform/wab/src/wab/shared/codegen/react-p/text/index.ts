@@ -13,8 +13,8 @@ import {
   plainTextToReact,
 } from "@/wab/shared/codegen/util";
 import { assert, ensure, tuple } from "@/wab/shared/common";
-import { getCodeExpressionWithFallback } from "@/wab/shared/core/exprs";
 import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
+import { asCode, getCodeExpressionWithFallback } from "@/wab/shared/core/exprs";
 import { defaultStyleClassNames } from "@/wab/shared/core/styles";
 import { TplTextTag } from "@/wab/shared/core/tpls";
 import {
@@ -31,6 +31,7 @@ import {
   isKnownExprText,
   isKnownObjectPath,
   isKnownRawText,
+  isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import memoizeOne from "memoize-one";
 
@@ -44,10 +45,14 @@ function resolveRichTextToJsx(
 
   if (isKnownExprText(text)) {
     assert(
-      isKnownCustomCode(text.expr) || isKnownObjectPath(text.expr),
-      "Expected CustomCode or ObjectPath expr"
+      isKnownCustomCode(text.expr) ||
+        isKnownObjectPath(text.expr) ||
+        isKnownTemplatedString(text.expr),
+      "Expected CustomCode, ObjectPath, or TemplatedString expr"
     );
-    const textCode = getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
+    const textCode = isKnownTemplatedString(text.expr)
+      ? asCode(text.expr, ctx.exprCtx).code
+      : getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
 
     const className = serializeClassExpr(
       ctx.exportOpts,
