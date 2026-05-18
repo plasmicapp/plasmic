@@ -5,7 +5,14 @@ import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { ensureVariantSetting, getBaseVariant } from "@/wab/shared/Variants";
 import { ComponentType } from "@/wab/shared/core/components";
 import { customCode, tryExtractJson } from "@/wab/shared/core/exprs";
-import { Component, TplTag } from "@/wab/shared/model/classes";
+import {
+  Component,
+  TplTag,
+  ensureKnownCustomCode,
+  ensureKnownEventHandler,
+  ensureKnownFunctionExpr,
+  isKnownEventHandler,
+} from "@/wab/shared/model/classes";
 
 let studioCtx: StudioCtx;
 let page: Component;
@@ -156,6 +163,44 @@ describe("changeElement copilot tool", () => {
     const { href, ...restAttrs } = vs.attrs;
     expect(restAttrs).toEqual({});
     expect(tryExtractJson(href)).toEqual("/order");
+  });
+
+  it("converts HTML event-handler attrs into interactions, null deletes by React-style key", async () => {
+    const button = addChild("button");
+
+    await changeElementTool.execute(studioCtx, {
+      componentUuid: page.uuid,
+      changes: [
+        {
+          tplUuid: button.uuid,
+          attrs: {
+            onclick: "hidePasswordForm()",
+            onSubmit: "handlePasswordChange(event)",
+          },
+        },
+      ],
+    });
+
+    const vs = ensureVariantSetting(button, [getBaseVariant(page)]);
+    // Lowercase `onclick` is normalized to React-style `onClick`.
+    expect(vs.attrs.onclick).toBeUndefined();
+    const onClick = ensureKnownEventHandler(vs.attrs.onClick);
+    expect(onClick.interactions[0].actionName).toBe("customFunction");
+    const fnExpr = ensureKnownFunctionExpr(
+      onClick.interactions[0].args[0].expr
+    );
+    expect(ensureKnownCustomCode(fnExpr.bodyExpr).code).toBe(
+      "(hidePasswordForm())"
+    );
+    // Already-camelCase keys are kept as-is.
+    expect(isKnownEventHandler(vs.attrs.onSubmit)).toBe(true);
+
+    // null deletes under the React-style key, regardless of input casing.
+    await changeElementTool.execute(studioCtx, {
+      componentUuid: page.uuid,
+      changes: [{ tplUuid: button.uuid, attrs: { onclick: null } }],
+    });
+    expect(vs.attrs.onClick).toBeUndefined();
   });
 
   it("does not create a variant setting when only reserved attrs are passed", async () => {

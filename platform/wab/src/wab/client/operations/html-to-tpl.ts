@@ -17,11 +17,15 @@ import {
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
-import { filterObject } from "@/wab/shared/collections";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
-import { code, customCode } from "@/wab/shared/core/exprs";
+import {
+  code,
+  customCode,
+  InteractionConditionalMode,
+} from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
+import { mkNameArg } from "@/wab/shared/core/lang";
 import { getResponsiveStrategy } from "@/wab/shared/core/sites";
 import { mkRuleSet } from "@/wab/shared/core/styles";
 import { AttrsSpec, TplTagType } from "@/wab/shared/core/tpls";
@@ -37,7 +41,10 @@ import {
   AnimationSequence,
   Component,
   CustomCode,
+  EventHandler,
+  FunctionExpr,
   ImageAssetRef,
+  Interaction,
   isKnownTplTag,
   KeyFrame,
   RawText,
@@ -213,6 +220,52 @@ export const htmlAttrsIgnoredByTpl = new Set([
   "srcset", // image asset
 ]);
 
+/** Matches both lowercase HTML (`onclick`) and camelCase React (`onClick`). */
+export function isHtmlEventHandlerAttr(name: string) {
+  return /^on[a-zA-Z]/.test(name);
+}
+
+/**
+ * Normalize an HTML event-handler attribute name to camelCase e.g. `onclick` -> `onClick`.
+ * Compound names like `onmouseover` -> `onMouseover` are not perfectly cased;
+ * `getAllEventHandlersOfAttrType` only requires `startsWith("on")` so codegen picks them up.
+ */
+export function normalizeHtmlEventHandlerAttrName(name: string) {
+  if (/^on[A-Z]/.test(name)) {
+    return name;
+  }
+  return "on" + name.charAt(2).toUpperCase() + name.slice(3);
+}
+
+/**
+ * Wrap a JS string from an HTML event-handler attribute into an `EventHandler` expr
+ * containing a single customFunction interaction.
+ */
+export function mkEventHandlerExprFromHtmlAttrValue(
+  jsCode: string
+): EventHandler {
+  const eventHandler = new EventHandler({ interactions: [] });
+  const interaction = new Interaction({
+    interactionName: "Run code",
+    actionName: "customFunction",
+    condExpr: null,
+    conditionalMode: InteractionConditionalMode.Always,
+    args: [
+      mkNameArg({
+        name: "customFunction",
+        expr: new FunctionExpr({
+          bodyExpr: customCode(jsCode),
+          argNames: [],
+        }),
+      }),
+    ],
+    parent: eventHandler,
+    uuid: mkShortId(),
+  });
+  eventHandler.interactions.push(interaction);
+  return eventHandler;
+}
+
 type TplVariantSettingsData = {
   variantCombo: WIVariant[];
   safeStyles: Record<string, string>;
@@ -380,7 +433,22 @@ async function wiTreeToTpl(
   }
 
   function htmlAttrsToTplAttrs(node: WIBase): AttrsSpec {
-    return filterObject(node.attrs, ([key]) => !htmlAttrsIgnoredByTpl.has(key));
+    const result: AttrsSpec = {};
+    for (const [key, value] of Object.entries(node.attrs)) {
+      if (htmlAttrsIgnoredByTpl.has(key)) {
+        continue;
+      }
+      if (isHtmlEventHandlerAttr(key)) {
+        if (!value.trim()) {
+          continue;
+        }
+        result[normalizeHtmlEventHandlerAttrName(key)] =
+          mkEventHandlerExprFromHtmlAttrValue(value);
+        continue;
+      }
+      result[key] = value;
+    }
+    return result;
   }
 
   async function rec(node: WIElement): Promise<TplNode[]> {

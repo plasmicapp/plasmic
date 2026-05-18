@@ -1,4 +1,9 @@
-import { htmlAttrsIgnoredByTpl } from "@/wab/client/operations/html-to-tpl";
+import {
+  htmlAttrsIgnoredByTpl,
+  isHtmlEventHandlerAttr,
+  mkEventHandlerExprFromHtmlAttrValue,
+  normalizeHtmlEventHandlerAttrName,
+} from "@/wab/client/operations/html-to-tpl";
 import { renameTpl } from "@/wab/client/operations/rename-tpl";
 import { processUnsanitizedStyles } from "@/wab/client/web-importer/html-parser";
 import { unwrap } from "@/wab/commons/failable-utils";
@@ -107,7 +112,16 @@ export const changeElementTool = defineCopilotTool(
             if (allowedEntries.length > 0) {
               const vs = vtm.ensureVariantSetting(tpl, variantCombo);
               for (const [key, value] of allowedEntries) {
-                if (value === null) {
+                if (isHtmlEventHandlerAttr(key)) {
+                  // Store event-handler attrs (e.g. onclick) as EventHandler exprs
+                  const reactKey = normalizeHtmlEventHandlerAttrName(key);
+                  if (value === null) {
+                    delete vs.attrs[reactKey];
+                  } else if (typeof value === "string" && value.trim()) {
+                    vs.attrs[reactKey] =
+                      mkEventHandlerExprFromHtmlAttrValue(value);
+                  }
+                } else if (value === null) {
                   delete vs.attrs[key];
                 } else {
                   vs.attrs[key] = codeLit(value);
