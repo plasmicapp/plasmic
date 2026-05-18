@@ -2633,13 +2633,17 @@ export async function genCode(req: Request, res: Response) {
 
   const metadata = parseMetadata(req.body.metadata);
 
-  req.analytics.track("Codegen", {
-    projectId: project.id,
-    projectName: project.name,
-    numComponents: output.components.length,
-    ...exportOpts,
-    ...metadata,
-  });
+  req.analytics.track(
+    "Codegen",
+    {
+      projectId: project.id,
+      projectName: project.name,
+      numComponents: output.components.length,
+      ...exportOpts,
+      ...metadata,
+    },
+    { sampleThreshold: 0.1 }
+  );
   res.json({
     ...output,
     // convert the nameInIdToUuid from map to string array.

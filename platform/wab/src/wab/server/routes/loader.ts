@@ -937,15 +937,19 @@ function trackLoaderCodegenEvent(
   }
 ) {
   const { versionType, platform } = opts;
-  req.analytics.track("Codegen", {
-    newCompScheme: "blackbox",
-    projectId: projects.map((p) => p.id).join(","),
-    projectName: projects.map((p) => p.name).join(","),
-    source: "loader2",
-    scheme: "loader2",
-    platform,
-    versionType,
-  });
+  req.analytics.track(
+    "Codegen",
+    {
+      newCompScheme: "blackbox",
+      projectId: projects.map((p) => p.id).join(","),
+      projectName: projects.map((p) => p.name).join(","),
+      source: "loader2",
+      scheme: "loader2",
+      platform,
+      versionType,
+    },
+    { sampleThreshold: 0.1 }
+  );
 }
 
 const getHydrationScriptInfo = () => {
