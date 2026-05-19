@@ -1271,6 +1271,139 @@ const mkTextChild = computedFn(
   { keepAlive: true }
 );
 
+// Builds read-only React children for RawText, mirroring codegen output (resolveRichTextToJsx).
+// Canvas text uses `white-space: pre-wrap`, so <br/> insertion isn't needed.
+function renderRawTextChildren(
+  react: typeof React,
+  rawText: ReturnType<typeof ensureKnownRawText>,
+  node: TplTag,
+  ctx: RenderingCtx
+): React.ReactNode[] {
+  if (rawText.markers.length === 0) {
+    return [rawText.text];
+  }
+
+  const normalizedMarkers = normalizeMarkers(
+    rawText.markers,
+    rawText.text.length,
+    isTagInline(node.tag)
+  );
+
+  const spanClassName = defaultStyleClassNames(
+    studioDefaultStylesClassNameBase,
+    { tag: "span", projectId: canvasProjectId }
+  ).join(" ");
+
+  const children: React.ReactNode[] = [];
+  for (let i = 0; i < normalizedMarkers.length; i++) {
+    const marker = normalizedMarkers[i];
+    if (marker.type === "nodeMarker") {
+      const childTpl = ensureKnownTplTag(marker.tpl);
+      const childInline = isTagInline(childTpl.tag);
+      children.push(
+        react.createElement(mkTextChild(ctx.viewCtx), {
+          key: `n-${i}-${childTpl.uuid}`,
+          node: childTpl,
+          ctx: {
+            ...ctx,
+            inline: childInline,
+            valKey: ctx.valKey + "." + childTpl.uuid,
+          },
+        })
+      );
+      continue;
+    }
+
+    // Match codegen: when the previous marker was a block-level nodeMarker,
+    // trim a leading newline from the following text so `white-space: pre-wrap`
+    // doesn't print an unwanted line break.
+    const prevMarker = i > 0 ? normalizedMarkers[i - 1] : undefined;
+    const removeInitialLineBreak =
+      prevMarker?.type === "nodeMarker" &&
+      !isTagInline(ensureKnownTplTag(prevMarker.tpl).tag);
+    let textPart = rawText.text.substr(marker.position, marker.length);
+    if (removeInitialLineBreak && textPart.startsWith("\n")) {
+      textPart = textPart.slice(1);
+    }
+
+    if (marker.type === "styleMarker") {
+      const cssRules: Record<string, any> = getCssRulesFromRs(marker.rs, true);
+      if ("fontWeight" in cssRules) {
+        cssRules["fontWeight"] = parseInt(cssRules["fontWeight"]);
+      }
+      if (Object.keys(cssRules).length === 0) {
+        children.push(textPart);
+      } else {
+        children.push(
+          react.createElement(
+            "span",
+            { key: `s-${i}`, className: spanClassName, style: cssRules },
+            textPart
+          )
+        );
+      }
+    } else {
+      children.push(textPart);
+    }
+  }
+  return children;
+}
+
+// Read-only version of mkCanvasText: renders content as plain React elements.
+// mkRichText uses this when not editing to avoid initializing Slate
+export const mkReadOnlyCanvasText = computedFn(
+  (react: typeof React) =>
+    function ReadOnlyCanvasText({
+      node,
+      inline,
+      ctx,
+      effectiveVs,
+    }: Pick<RichTextProps, "node" | "inline" | "ctx" | "effectiveVs">) {
+      return mkUseCanvasObserver(ctx.sub, ctx.viewCtx)(
+        () =>
+          withErrorDisplayFallback(
+            react,
+            ctx,
+            node,
+            () => {
+              const className = mkClassName(node, inline);
+              const tag = inline ? "span" : "div";
+
+              if (isExprText(effectiveVs.text)) {
+                const exprTextProps = mkExprTextProps(
+                  node,
+                  effectiveVs,
+                  ctx.env,
+                  {
+                    projectFlags: ctx.projectFlags,
+                    component: ctx.ownerComponent ?? null,
+                    inStudio: true,
+                  }
+                );
+                return react.createElement(tag, {
+                  className,
+                  style: DEFAULT_TEXT_STYLE,
+                  ...exprTextProps,
+                });
+              }
+
+              const rawText = ensureKnownRawText(effectiveVs.text);
+              return react.createElement(tag, {
+                className,
+                style: DEFAULT_TEXT_STYLE,
+                children: renderRawTextChildren(react, rawText, node, ctx),
+              });
+            },
+            {
+              hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
+            }
+          ),
+        `mkReadOnlyCanvasText(${node.uuid})`
+      );
+    },
+  { keepAlive: true }
+);
+
 interface SlateChildrenProps {
   node: TplTag;
   inline: boolean;

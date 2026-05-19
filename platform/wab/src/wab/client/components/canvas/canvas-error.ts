@@ -59,6 +59,11 @@ export const mkCanvasErrorBoundary = computedFn(
         this.componentDidMountOrUpdate();
       }
 
+      // Stable reference so the rerender-queue Set dedupes by identity.
+      private resetError = () => {
+        this.setState({ error: null });
+      };
+
       private componentDidMountOrUpdate() {
         // Upon mount or update, if we're currently rendering an error,
         // we add a listener for whenever a re-render happens, and forces
@@ -90,13 +95,7 @@ export const mkCanvasErrorBoundary = computedFn(
           // by withErrorDisplayFallback). Registering a rerender observer for
           // them creates an infinite loop — the observer resets state.error,
           // the re-render re-throws the same pending promise, and so on.
-          viewCtx.addRerenderObserver(() => {
-            // On next re-render, we unset the error so that we can
-            // try rendering children again
-            this.setState({
-              error: null,
-            });
-          });
+          viewCtx.addRerenderObserver(this.resetError);
         }
       }
 

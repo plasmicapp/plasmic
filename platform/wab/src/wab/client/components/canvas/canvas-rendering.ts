@@ -1,6 +1,7 @@
 import {
   SlateRenderNodeOpts,
   mkCanvasText,
+  mkReadOnlyCanvasText,
   mkSlateChildren,
 } from "@/wab/client/components/canvas/CanvasText";
 import {
@@ -3190,16 +3191,24 @@ const mkRichText = computedFn(
                     },
                     children:
                       attrs.children ??
-                      react.createElement(mkCanvasText(react), {
-                        node,
-                        readOnly: !isEditing,
-                        onChange: subOnChange,
-                        onUpdateContext: subOnUpdateContext,
-                        inline: !!ctx.inline,
-                        ctx,
-                        effectiveVs,
-                        key: String(!isEditing),
-                      }),
+                      (isEditing
+                        ? react.createElement(mkCanvasText(react), {
+                            node,
+                            readOnly: false,
+                            onChange: subOnChange,
+                            onUpdateContext: subOnUpdateContext,
+                            inline: !!ctx.inline,
+                            ctx,
+                            effectiveVs,
+                            key: "editing",
+                          })
+                        : react.createElement(mkReadOnlyCanvasText(react), {
+                            node,
+                            inline: !!ctx.inline,
+                            ctx,
+                            effectiveVs,
+                            key: "readonly",
+                          })),
                   }),
                 }
               );
