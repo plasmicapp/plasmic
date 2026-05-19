@@ -1,13 +1,13 @@
 {
   "name": "plasmicpkgs-dev",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "dev-inspect": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "2.0.4",
+    "@plasmicapp/loader-nextjs": "2.0.5",
     "@plasmicpkgs/cms": "0.0.23",
     "@plasmicpkgs/commerce": "0.0.244",
     "@plasmicpkgs/commerce-shopify": "0.0.252",
