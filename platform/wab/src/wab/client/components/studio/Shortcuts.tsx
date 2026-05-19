@@ -348,4 +348,62 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
     title: group.name,
     chunks: [{ shortcuts: group.shortcuts }],
   })),
+  {
+    title: "Text Editor",
+    chunks: [
+      {
+        title: "While editing a text layer:",
+        shortcuts: mkNoActionShortcuts(
+          {
+            combos: "mod+b",
+            description: "Bold (apply font-weight: 700)",
+          },
+          {
+            combos: "mod+i",
+            description: "Italic (apply font-style: italic)",
+          },
+          {
+            combos: "mod+u",
+            description: "Underline",
+          },
+          {
+            combos: "mod+shift+k",
+            description: "Strikethrough",
+          },
+          {
+            combos: "mod+k",
+            description: "Insert link",
+          },
+          {
+            combos: "mod+shift+b",
+            description: "Wrap in <strong> tag",
+          },
+          {
+            combos: "mod+shift+i",
+            description: "Wrap in <i> tag",
+          },
+          {
+            combos: "mod+shift+e",
+            description: "Wrap in <em> tag",
+          },
+          {
+            combos: "mod+shift+s",
+            description: "Wrap in <span> tag",
+          },
+          {
+            combos: "mod+shift+c",
+            description: "Wrap in <code> tag",
+          },
+          {
+            combos: "mod+shift+,",
+            description: "Wrap in <sub> tag",
+          },
+          {
+            combos: "mod+shift+.",
+            description: "Wrap in <sup> tag",
+          }
+        ),
+      },
+    ],
+  },
 ];
