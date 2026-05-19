@@ -932,7 +932,8 @@ export class PlasmicComponentLoader {
 
   async unstable__getServerQueriesData(
     renderData: ComponentRenderData,
-    $ctx: Record<string, any>
+    $ctx: Record<string, any>,
+    $props?: Record<string, any>
   ) {
     const module = this.getExecFuncModule(
       renderData,
@@ -945,7 +946,7 @@ export class PlasmicComponentLoader {
     );
 
     try {
-      const $serverQueries = await module?.executeServerQueries($ctx);
+      const $serverQueries = await module?.executeServerQueries($ctx, $props);
       return $serverQueries;
     } catch (err) {
       console.error("Error executing server queries function", err);

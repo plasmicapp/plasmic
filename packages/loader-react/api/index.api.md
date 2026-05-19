@@ -272,7 +272,7 @@ export class PlasmicComponentLoader {
         query: Promise<ParamsRecord> | ParamsRecord;
     }): Promise<any>;
     // (undocumented)
-    unstable__getServerQueriesData(renderData: ComponentRenderData, $ctx: Record<string, any>): Promise<any>;
+    unstable__getServerQueriesData(renderData: ComponentRenderData, $ctx: Record<string, any>, $props?: Record<string, any>): Promise<any>;
 }
 
 // @public
