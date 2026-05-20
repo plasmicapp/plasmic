@@ -129,7 +129,10 @@ import {
 import * as exprs from "@/wab/shared/core/exprs";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import {
+  isTagInline,
+  isTagListContainer,
+} from "@/wab/shared/core/rich-text-util";
 import {
   SQ,
   SelQuery,
@@ -1180,12 +1183,14 @@ export class ViewOps {
     }
 
     if (focusObj instanceof ValNodes.ValTextTag) {
-      // Edit oldest text ancestor; e.g. if you double-click in a list item in
-      // a big rich text block it should edit the whole block instead of only
-      // the list item.
-      const sq = SQ(focusObj, this.valState());
-      const valPath = sq.ancestors().toArray().reverse();
-      focusObj = valPath.find((obj) => obj instanceof ValNodes.ValTextTag);
+      if (!isTagInline(focusObj.tpl.tag)) {
+        // For block tags (li, h1, p, etc.), edit rich text root. Inline tags
+        // (span, strong, em, etc.) are edited directly.
+        const sq = SQ(focusObj, this.valState());
+        const valPath = sq.ancestors().toArray().reverse();
+        focusObj =
+          valPath.find((obj) => obj instanceof ValNodes.ValTextTag) ?? focusObj;
+      }
 
       return this.viewCtx().renderState.tryGetUpdatedVal(
         focusObj as ValNodes.ValTextTag
@@ -1321,8 +1326,9 @@ export class ViewOps {
           saveTextToTpl(existingTpl, vs, text, tplTag.children);
           return existingTpl;
         }
-        // The TplTag didn't already exist.
-        const newTpl = Tpls.clone(tplTag);
+        // The TplTag didn't already exist. Preserve the source tpl's uuid (same as slate
+        // element uuid) to keep the cursor in place after rerender.
+        const newTpl = Tpls.clone(tplTag, true);
         const vs = newTpl.vsettings[0];
         vs.variants = [baseVariant];
         saveTextToTpl(newTpl, vs, text, tplTag.children);

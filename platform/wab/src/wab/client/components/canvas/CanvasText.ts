@@ -25,7 +25,7 @@ import type {
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { cx, ensureInstance, spawn } from "@/wab/shared/common";
+import { cx, ensureInstance, mkShortId, spawn } from "@/wab/shared/common";
 import {
   asCode,
   ExprCtx,
@@ -88,6 +88,7 @@ type RichTextProps = {
 
 export type ShortcutFnOpts = {
   prompt: (opts: ReactPromptOpts) => Promise<string | undefined>;
+  vc: ViewCtx;
 };
 
 // ShortcutFn is a function that is triggered by a shortcut.
@@ -157,7 +158,11 @@ function wrapInInlineTag(
     }
     const { children, attrs } = props;
 
-    const element = mkTplTagElement(tag, attrs, children);
+    // Pre-generate a uuid so the slate node and tpl match. Otherwise saveText clones the tpl
+    // with a new uuid and the next render's initialValue differs from slate, resetting
+    // cursor placement.
+    const uuid = mkShortId();
+    const element = mkTplTagElement(tag, attrs, children, uuid);
     wrapOrInsertTplTag(editor, element, sub);
   };
 }
@@ -897,7 +902,7 @@ export const mkCanvasText = computedFn(
           [inline]
         );
 
-        const shortcutOpts: ShortcutFnOpts = { prompt: reactPrompt };
+        const shortcutOpts: ShortcutFnOpts = { prompt: reactPrompt, vc };
 
         // Called on both value and selection changes
         const onSlateChange = react.useCallback(() => {
@@ -962,19 +967,20 @@ export const mkCanvasText = computedFn(
         // differences in the initialValue passed to this component.
         // This might happen when syncing the bundle from server, switching
         // variants, etc.
+        //
+        // Compare against the editor's current children so when model save is triggered by
+        // the editor, the new initialValue matches slate and we skip the reset.
         const forceUpdate = useForceUpdate(react);
-        const prevInitialValueRef = react.useRef(initialValue);
         react.useEffect(() => {
-          if (!isEqual(prevInitialValueRef.current, initialValue)) {
+          if (!isEqual(editor.children, initialValue)) {
             // A different initialValue has been specified; reset editor value
-            prevInitialValueRef.current = initialValue;
             // Directly mutate the children.
             // Slate will adjust the selection automatically if necessary.
             editor.children = initialValue;
             // editor.children mutation won't trigger a re-render, so force it.
             forceUpdate();
           }
-        }, [initialValue, prevInitialValueRef, editor]);
+        }, [initialValue, editor]);
 
         if (isExprText(effectiveVs.text)) {
           // If node.text is a custom code expression, there's no need to use Slate.
