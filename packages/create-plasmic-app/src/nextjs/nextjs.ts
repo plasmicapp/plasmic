@@ -32,9 +32,9 @@ export const nextjsStrategy: CPAStrategy = {
       ? "--app"
       : "--no-app";
     const templateArg = template ? ` --example ${template}` : "";
-    // TODO: Change to latest when nextjs stops using react@19-rc
+    // NOTE: Not using create-next-app@latest to keep major version bumps deliberate
     const createCommand =
-      `npx create-next-app@14 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
+      `npx create-next-app@16 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
       ` --eslint --no-src-dir  --import-alias "@/*" --no-tailwind`;
 
     // Default Next.js starter already supports Typescript
@@ -51,17 +51,17 @@ export const nextjsStrategy: CPAStrategy = {
     }
   },
   overwriteConfig: async (args) => {
-    const { projectPath, scheme } = args;
-    const nextjsConfigFile = path.join(projectPath, "next.config.mjs");
+    const { projectPath, scheme, jsOrTs } = args;
     if (scheme === "codegen") {
+      const isTs = jsOrTs === "ts";
+      const typePragma = isTs
+        ? `import type { NextConfig } from "next";\n\n`
+        : `/** @type {import('next').NextConfig} */\n`;
+      const typeAnnotation = isTs ? ": NextConfig" : "";
+
       await fs.writeFile(
-        nextjsConfigFile,
-        `
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+        path.join(projectPath, `next.config.${isTs ? "ts" : "mjs"}`),
+        `${typePragma}const nextConfig${typeAnnotation} = {
   trailingSlash: true,
   reactStrictMode: true,
 };
