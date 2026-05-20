@@ -12022,9 +12022,6 @@
   },
   "wrapPagesWithGlobalContexts": true,
   "preserveJsImportExtensions": false,
-  "postSyncCommands": [
-    "git ls-files -m | xargs pre-commit run prettier --files"
-  ],
   "cliVersion": "0.1.361",
   "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.361/dist/plasmic.schema.json"
 }
