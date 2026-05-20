@@ -91,8 +91,7 @@ describe("wabToTsType", () => {
       expect(wabToTsType(typeFactory.bool())).toBe("boolean");
       expect(wabToTsType(typeFactory.img())).toBe("string");
       expect(wabToTsType(typeFactory.href())).toBe("string");
-      // PLA-13024: This is incorrect - there is no Target type in scope!
-      expect(wabToTsType(typeFactory.target())).toBe("Target");
+      expect(wabToTsType(typeFactory.target())).toBe("string");
     });
 
     it("maps any to any", () => {

@@ -217,7 +217,7 @@ export const wabToTsTypeMap = {
   collection: "Array<any>",
   renderable: "ReactNode",
   href: "string",
-  target: "Target",
+  target: "string",
 };
 
 export function wabToTsType(type: Type, forCodeGen?: boolean): string {
