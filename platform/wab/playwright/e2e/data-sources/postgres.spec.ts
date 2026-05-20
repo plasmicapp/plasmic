@@ -101,7 +101,7 @@ test.describe("Postgres Data Source", () => {
     await page.waitForTimeout(200);
 
     await studio.leftPanel.insertNode("Text");
-    await studio.bindTextContentToDynamicValue(["insertedId"]);
+    await studio.bindRichTextBlockToDynamicValue(["insertedId"]);
 
     const updateStepName = "tutorialdbUpdateById";
     const createStepName = "tutorialdbCreate";
@@ -245,7 +245,7 @@ async function setupCustomersList(studio: StudioModel) {
   await studio.leftPanel.insertNode("Horizontal stack");
   await studio.rightPanel.repeatOnCustomCode("$queries.query.data");
   await studio.leftPanel.insertNode("Heading");
-  await studio.bindTextContentToDynamicValue(["currentItem", "contact_name"]);
+  await studio.bindRichTextBlockToDynamicValue(["currentItem", "contact_name"]);
 }
 
 async function expectCustomersInDesign(

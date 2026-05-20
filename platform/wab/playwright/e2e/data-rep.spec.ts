@@ -252,22 +252,18 @@ test.describe("data-rep", () => {
     await elementNameInput.fill("item");
     await elementNameInput.press("Enter");
 
-    const textContentLabel = models.studio.frame.locator(
-      '[data-test-id="text-content"] label'
-    );
-    await textContentLabel.click({ button: "right" });
-    await models.studio.frame.getByText("Use dynamic value").click();
-    await models.studio.rightPanel.selectPathInDataPicker(["item"]);
+    await models.studio.bindRichTextToDynamicValue(["item"]);
 
     await models.studio.focusFrameRoot(frame);
     await page.waitForTimeout(1000);
 
     const rootElt = frame.locator(".__wab_root");
-    await expect(rootElt).toContainText("foobarbaz");
+    // Dynamic value on a sub-node appends a dynamic pill to existing static text
+    await expect(rootElt).toContainText("WorldfooWorldbarWorldbaz");
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const app = liveFrame.locator("#plasmic-app");
-      await expect(app).toContainText("foobarbaz");
+      await expect(app).toContainText("WorldfooWorldbarWorldbaz");
     });
   });
 });

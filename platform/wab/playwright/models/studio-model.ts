@@ -663,9 +663,21 @@ export class StudioModel extends BaseModel {
     await this.promptSubmitButton.click();
   }
 
-  async bindTextContentToDynamicValue(path: string[]) {
+  // Convert top level rich text block to dynamic value (ObjectPath)
+  async bindRichTextBlockToDynamicValue(path: string[]) {
     await this.textContent.click({ button: "right" });
     await this.useDynamicValueButton.click();
+    await this.rightPanel.selectPathInDataPicker(path);
+  }
+
+  // Convert rich text sub-node to dynamic value (TemplatedString)
+  async bindRichTextToDynamicValue(path: string[]) {
+    await this.textContent.click({ button: "right" });
+    await this.useDynamicValueButton.click();
+    await this.frame
+      .locator('[data-test-id="text-content"] .code-chip')
+      .first()
+      .click();
     await this.rightPanel.selectPathInDataPicker(path);
   }
 

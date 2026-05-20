@@ -302,13 +302,7 @@ test.describe("data-binding", () => {
     await models.studio.createNewPropButton.click();
     await models.studio.linkNewProp("linkProp");
 
-    await models.studio.textContent.click({ button: "right" });
-    await models.studio.useDynamicValueButton.click();
-    await models.studio.rightPanel.frame
-      .locator('[data-test-id="data-picker"]')
-      .getByText("linkProp")
-      .click();
-    await models.studio.rightPanel.saveDataPicker();
+    await models.studio.bindRichTextToDynamicValue(["linkProp"]);
 
     await models.studio.focusFrameRoot(framed);
     await models.studio.leftPanel.frame
@@ -319,13 +313,14 @@ test.describe("data-binding", () => {
       .click();
 
     await page.waitForTimeout(1000);
-    await expect(framed.getByText("Hello /!")).toBeVisible();
+    // Dynamic value on a sub-node appends a dynamic pill to existing static text
+    await expect(framed.getByText("Hello World/!")).toBeVisible();
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("#plasmic-app a")).toHaveAttribute(
         "href",
         "/"
       );
-      await expect(liveFrame.locator("#plasmic-app a")).toContainText("/");
+      await expect(liveFrame.locator("#plasmic-app a")).toContainText("World/");
     });
   });
 });

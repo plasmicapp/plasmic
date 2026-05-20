@@ -314,6 +314,7 @@ const TextContentRow = observer(function TextContentRow(props: {
           </Menu.Item>
         )}
         {isSubNode &&
+          !isDisabled &&
           isKnownExprText(text) &&
           isKnownTemplatedString(text.expr) && (
             <Menu.Item
@@ -384,6 +385,7 @@ const TextContentRow = observer(function TextContentRow(props: {
                       })
                     );
                   }}
+                  disabled={isDisabled}
                   data={viewCtx.getCanvasEnvForTpl(tpl)}
                   schema={viewCtx.customFunctionsSchema()}
                   component={viewCtx.currentComponent()}

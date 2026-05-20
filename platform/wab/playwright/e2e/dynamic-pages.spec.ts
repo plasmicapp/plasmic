@@ -55,7 +55,7 @@ test.describe("dynamic-pages", () => {
     await page.keyboard.press("Escape");
 
     await models.studio.leftPanel.selectTreeNode(["XXX"]);
-    await models.studio.bindTextContentToDynamicValue([
+    await models.studio.bindRichTextToDynamicValue([
       "Page URL path params",
       "name",
     ]);
@@ -68,9 +68,10 @@ test.describe("dynamic-pages", () => {
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
+      // Dynamic value on a sub-node appends a dynamic pill to existing static text
       await expect(
         liveFrame.locator("#plasmic-app .__wab_text").first()
-      ).toContainText("Hello World!");
+      ).toContainText("Hello XXXWorld!");
     });
 
     await models.studio.focusFrameRoot(indexFrame);
@@ -92,7 +93,7 @@ test.describe("dynamic-pages", () => {
       '"Say hello to [child]"',
       '"NAME"',
     ]);
-    await models.studio.bindTextContentToDynamicValue(["currentItem"]);
+    await models.studio.bindRichTextToDynamicValue(["currentItem"]);
 
     await models.studio.leftPanel.selectTreeNode(['"Say hello to [child]"']);
     await page.keyboard.press("ControlOrMeta+Alt+L");
@@ -103,10 +104,11 @@ test.describe("dynamic-pages", () => {
     );
     await models.studio.waitForSave();
 
+    // Preserves the existing text, so it becomes "NAME" + item
     const expected = [
-      "Say hello to foo",
-      "Say hello to bar",
-      "Say hello to baz",
+      "Say hello to NAMEfoo",
+      "Say hello to NAMEbar",
+      "Say hello to NAMEbaz",
     ];
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -121,7 +123,7 @@ test.describe("dynamic-pages", () => {
       await page.waitForTimeout(1000);
       await expect(
         liveFrame.locator("#plasmic-app .__wab_text").first()
-      ).toContainText("Hello foo!");
+      ).toContainText("Hello XXXfoo!");
     });
   });
 });

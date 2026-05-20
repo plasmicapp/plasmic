@@ -87,20 +87,23 @@ async function copyQueryFromPage(
 ) {
   await models.studio.rightPanel.addServerQueryButton.click();
 
-  await models.studio.frame
+  // Hover to open antd nested submenus. Clicking can race with submenu open/close
+  // and leave the menu collapsed before the leaf is clickable.
+  const copyFromTitle = models.studio.frame
     .locator(".ant-dropdown-menu-submenu-title")
-    .filter({ hasText: "Copy from..." })
-    .click();
+    .filter({ hasText: "Copy from..." });
+  await copyFromTitle.hover();
 
-  await models.studio.frame
+  const sourcePageTitle = models.studio.frame
     .locator(".ant-dropdown-menu-submenu-title")
-    .filter({ hasText: sourcePage })
-    .click();
+    .filter({ hasText: sourcePage });
+  await sourcePageTitle.hover();
 
-  await models.studio.frame
+  const queryItem = models.studio.frame
     .locator(".ant-dropdown-menu-item")
-    .getByText(queryName, { exact: true })
-    .click();
+    .getByText(queryName, { exact: true });
+  await queryItem.waitFor({ state: "visible" });
+  await queryItem.click();
 }
 
 /**
