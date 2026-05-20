@@ -30,7 +30,7 @@ type ServerQueryExecutionContext = QueryExecutionContext & {
  * Initial context just before execution.
  * @internal
  */
-type QueryExecutionInitialContext = Pick<
+type InitialQueryExecutionContext = Pick<
   QueryExecutionContext,
   "$ctx" | "$props"
 >;
@@ -49,7 +49,7 @@ function appendKeyPath(currentKeyPath: string, currentInput: string): string {
 
 function executeQueryTree(
   rootNode: QueryComponentNode,
-  env: QueryExecutionInitialContext,
+  env: InitialQueryExecutionContext,
   queriesByComponent: Map<string, Record<string, StatefulQueryResult>>
 ): DiscoveredQuery[] {
   const { $props, $ctx } = env;
@@ -332,7 +332,7 @@ function executeRepeatedNode(
  */
 export async function executePlasmicQueries(
   rootNode: QueryComponentNode,
-  env: QueryExecutionInitialContext
+  env: InitialQueryExecutionContext
 ): Promise<ExecutePlasmicQueriesResult> {
   const queriesByComponent = new Map<
     string,
