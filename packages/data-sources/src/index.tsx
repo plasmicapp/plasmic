@@ -17,6 +17,7 @@ export type {
 
 // exports below are deprecated and will be removed in major version bump
 
+export { executeServerQuery } from "./serverQueries/server";
 export { usePlasmicDataConfig } from "@plasmicapp/query";
 export { Fetcher, FetcherMeta } from "./components/Fetcher";
 export type { FetcherProps } from "./components/Fetcher";

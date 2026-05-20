@@ -426,3 +426,10 @@ export async function executePlasmicQuery<
     }
   } while (true);
 }
+
+/** @deprecated no-op function for compatibility only */
+export async function executeServerQuery<F extends (...args: any[]) => any>(
+  _query?: any
+): Promise<{ data: ReturnType<F>; isLoading: boolean }> {
+  return { data: undefined as any, isLoading: false };
+}

@@ -57,6 +57,12 @@ export function deriveFieldConfigs<T extends BaseFieldConfig>(specifiedFieldsPar
 export function executePlasmicDataOp<T extends SingleRowResult | ManyRowsResult>(op: DataOp, opts?: ExecuteOpts): Promise<T>;
 
 // @public @deprecated (undocumented)
+export function executeServerQuery<F extends (...args: any[]) => any>(_query?: any): Promise<{
+    data: ReturnType<F>;
+    isLoading: boolean;
+}>;
+
+// @public @deprecated (undocumented)
 export function Fetcher(props: FetcherProps): React_2.ReactElement | null;
 
 // @public @deprecated (undocumented)
