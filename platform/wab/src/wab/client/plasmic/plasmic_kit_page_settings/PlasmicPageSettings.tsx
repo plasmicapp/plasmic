@@ -20,6 +20,7 @@ import {
   Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
+  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
   StrictProps,
   useDollarState,
@@ -62,6 +63,8 @@ export type PlasmicPageSettings__OverridesType = {
   root?: Flex__<"div">;
   routeInput?: Flex__<typeof Textbox>;
   characterCount?: Flex__<"div">;
+  span?: Flex__<"span">;
+  link?: Flex__<"a">;
   imageAssetPicker?: Flex__<"div">;
   propsControl?: Flex__<"div">;
   renderModeLabel?: Flex__<"div">;
@@ -117,27 +120,29 @@ function PlasmicPageSettings__RenderFunc(props: {
         path: "loginRequiredSwitch.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "renderModeSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "roleRequiredSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -256,6 +261,7 @@ function PlasmicPageSettings__RenderFunc(props: {
                         className={classNames(
                           projectcss.all,
                           projectcss.textarea,
+                          projectcss.textarea__6BCq4,
                           sty.textarea___40UOz
                         )}
                         placeholder={
@@ -351,14 +357,39 @@ function PlasmicPageSettings__RenderFunc(props: {
             >
               {"Open Graph image"}
             </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__v3EQ
-              )}
-            >
-              {"The preview image when the page is shared on social media."}
+            <div className={classNames(projectcss.all, sty.freeBox__dGq)}>
+              <span
+                data-plasmic-name={"span"}
+                data-plasmic-override={overrides.span}
+                className={classNames(
+                  projectcss.all,
+                  projectcss.span,
+                  projectcss.span__6BCq4,
+                  projectcss.__wab_text,
+                  sty.span
+                )}
+              >
+                {"The preview image when the page is shared on social media."}
+              </span>
+              <PlasmicLink__
+                data-plasmic-name={"link"}
+                data-plasmic-override={overrides.link}
+                className={classNames(
+                  projectcss.all,
+                  projectcss.a,
+                  projectcss.a__6BCq4,
+                  projectcss.__wab_text,
+                  sty.link
+                )}
+                href={
+                  "https://developers.facebook.com/docs/sharing/webmasters/images/"
+                }
+                platform={"react"}
+                rel={"noopener noreferrer"}
+                target={"_blank"}
+              >
+                {"Learn more."}
+              </PlasmicLink__>
             </div>
           </div>
           <div className={classNames(projectcss.all, sty.freeBox__bmaVn)}>
@@ -372,6 +403,15 @@ function PlasmicPageSettings__RenderFunc(props: {
               )}
             >
               {"This is the image asset picker"}
+            </div>
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__hatY
+              )}
+            >
+              {"(Recommended: 1200 x 630 pixels)"}
             </div>
           </div>
         </div>
@@ -573,6 +613,8 @@ const PlasmicDescendants = {
     "root",
     "routeInput",
     "characterCount",
+    "span",
+    "link",
     "imageAssetPicker",
     "propsControl",
     "renderModeLabel",
@@ -586,6 +628,8 @@ const PlasmicDescendants = {
   ],
   routeInput: ["routeInput"],
   characterCount: ["characterCount"],
+  span: ["span"],
+  link: ["link"],
   imageAssetPicker: ["imageAssetPicker"],
   propsControl: ["propsControl"],
   renderModeLabel: ["renderModeLabel"],
@@ -612,6 +656,8 @@ type NodeDefaultElementType = {
   root: "div";
   routeInput: typeof Textbox;
   characterCount: "div";
+  span: "span";
+  link: "a";
   imageAssetPicker: "div";
   propsControl: "div";
   renderModeLabel: "div";
@@ -687,6 +733,8 @@ export const PlasmicPageSettings = Object.assign(
     // Helper components rendering sub-elements
     routeInput: makeNodeComponent("routeInput"),
     characterCount: makeNodeComponent("characterCount"),
+    span: makeNodeComponent("span"),
+    link: makeNodeComponent("link"),
     imageAssetPicker: makeNodeComponent("imageAssetPicker"),
     propsControl: makeNodeComponent("propsControl"),
     renderModeLabel: makeNodeComponent("renderModeLabel"),

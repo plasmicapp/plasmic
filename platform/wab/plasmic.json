@@ -5231,7 +5231,7 @@
     {
       "projectId": "6BCq4vMow1yqGKFdcP68Rz",
       "projectName": "[Plasmic Kit] Page Settings",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_page_settings/plasmic_plasmic_kit_page_settings.module.css",
       "components": [
         {
@@ -5284,7 +5284,8 @@
       "splitsProviderFilePath": "",
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_page_settings/PlasmicStyleTokensProvider.tsx",
       "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_page_settings/plasmic.tsx",
-      "customFunctions": []
+      "customFunctions": [],
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "oermwjefjidrRRHcrxyCjQ",
@@ -12024,6 +12025,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.359",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.359/dist/plasmic.schema.json"
+  "cliVersion": "0.1.361",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.361/dist/plasmic.schema.json"
 }

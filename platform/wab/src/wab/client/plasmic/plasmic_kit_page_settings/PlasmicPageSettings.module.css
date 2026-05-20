@@ -265,10 +265,10 @@
   font-size: 12px;
   line-height: 1.25;
 }
-.text__v3EQ {
-  font-size: 11px;
-  line-height: 1.5;
+.freeBox__dGq {
+  display: flex;
   color: var(--token-UunsGa2Y3t3);
+  flex-direction: column;
 }
 .freeBox__bmaVn {
   display: flex;
@@ -279,11 +279,14 @@
   top: auto;
   left: auto;
   width: 100%;
-  row-gap: 4px;
   min-width: 0;
 }
 .imageAssetPicker {
   position: relative;
+}
+.text__hatY {
+  font-size: 11px;
+  text-align: right;
 }
 .freeBox__pd0 {
   display: flex;
