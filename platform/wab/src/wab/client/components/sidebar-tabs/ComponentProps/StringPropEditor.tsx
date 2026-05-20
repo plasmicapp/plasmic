@@ -9,8 +9,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   asCode,
   ExprCtx,
-  flattenTemplatedStringToString,
-  hasDynamicParts,
+  simplifyTemplatedString,
 } from "@/wab/shared/core/exprs";
 import {
   Component,
@@ -282,22 +281,6 @@ function normalizeToTemplatedString(
   }
 }
 
-function simplifyTemplatedString(
-  ts: TemplatedString
-): TemplatedStringPropEditorValue {
-  const nonEmpty = ts.text.filter((p) => p !== "");
-  if (
-    nonEmpty.length === 1 &&
-    (isKnownObjectPath(nonEmpty[0]) || isKnownCustomCode(nonEmpty[0]))
-  ) {
-    return nonEmpty[0];
-  }
-  if (!hasDynamicParts(ts)) {
-    return flattenTemplatedStringToString(ts);
-  }
-  return ts;
-}
-
 /**
  * Tests equality for TemplatedStrings by comparing JavaScript codegen output.
  */
@@ -311,4 +294,4 @@ function templatedStringsEqual(
   return codeA === codeB;
 }
 
-export const _testonly = { simplifyTemplatedString, templatedStringsEqual };
+export const _testonly = { templatedStringsEqual };

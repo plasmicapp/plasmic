@@ -1,10 +1,14 @@
 import { _testonly } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
-import { customCode, ExprCtx } from "@/wab/shared/core/exprs";
+import {
+  customCode,
+  ExprCtx,
+  simplifyTemplatedString,
+} from "@/wab/shared/core/exprs";
 import { createSite } from "@/wab/shared/core/sites";
 import { getProjectFlags } from "@/wab/shared/devflags";
 import { ObjectPath, TemplatedString } from "@/wab/shared/model/classes";
 
-const { templatedStringsEqual, simplifyTemplatedString } = _testonly;
+const { templatedStringsEqual } = _testonly;
 
 const exprCtx: ExprCtx = {
   component: null,

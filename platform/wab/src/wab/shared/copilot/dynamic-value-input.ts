@@ -1,4 +1,4 @@
-import { customCode } from "@/wab/shared/core/exprs";
+import { customCode, simplifyTemplatedString } from "@/wab/shared/core/exprs";
 import {
   getDynamicBindings,
   isDynamicValue,
@@ -11,8 +11,6 @@ import {
   CustomCode,
   ObjectPath,
   TemplatedString,
-  isKnownCustomCode,
-  isKnownObjectPath,
 } from "@/wab/shared/model/classes";
 import { parseJsCode, writeJs } from "@/wab/shared/parser-utils";
 import type * as ast from "estree";
@@ -101,19 +99,7 @@ function templateLiteralToValue(
       text.push(buildDynamicExprFromJsSnippet(code));
     }
   });
-  const hasDynamic = text.some((part) => typeof part !== "string");
-  if (!hasDynamic) {
-    return text.join("");
-  }
-  // Single dyn part with no text returns raw expr, like `simplifyTemplatedString` in StringPropEditor.tsx.
-  const nonEmpty = text.filter((part) => part !== "");
-  if (
-    nonEmpty.length === 1 &&
-    (isKnownObjectPath(nonEmpty[0]) || isKnownCustomCode(nonEmpty[0]))
-  ) {
-    return nonEmpty[0];
-  }
-  return new TemplatedString({ text });
+  return simplifyTemplatedString(new TemplatedString({ text }));
 }
 
 function invalidInputMessage(input: string): string {

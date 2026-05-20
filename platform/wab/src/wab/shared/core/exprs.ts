@@ -1365,6 +1365,27 @@ export function flattenTemplatedStringToString(text: TemplatedString): string {
   return text.text.filter(isString).join("");
 }
 
+/**
+ * Collapses a TemplatedString if possible:
+ * - A single non-empty dynamic part returns the bare expr.
+ * - A static text only template returns the joined string.
+ */
+export function simplifyTemplatedString(
+  ts: TemplatedString
+): string | TemplatedString | ObjectPath | CustomCode {
+  const nonEmpty = ts.text.filter((p) => p !== "");
+  if (
+    nonEmpty.length === 1 &&
+    (isKnownObjectPath(nonEmpty[0]) || isKnownCustomCode(nonEmpty[0]))
+  ) {
+    return nonEmpty[0];
+  }
+  if (!hasDynamicParts(ts)) {
+    return flattenTemplatedStringToString(ts);
+  }
+  return ts;
+}
+
 export function getSingleDynExprFromTemplatedString(expr: TemplatedString) {
   const single = only(expr.text.filter((x) => x !== ""));
   const typed = ensureInstance(single, CustomCode, ObjectPath);
