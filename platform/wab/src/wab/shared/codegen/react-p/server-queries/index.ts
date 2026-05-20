@@ -213,7 +213,7 @@ function serializeComponentServerQueryTree(
 
 /**
  * Serializes serverQueryTree for client components. Generates a root tree (no children).
- * Used by unstable_usePlasmicQueries(qs, $ctx, $props, $state) in the render component.
+ * Used by unstable_usePlasmicQueries(qs, { $ctx, $props, $state }) in the render component.
  */
 export function serializeRootServerQueryTree(ctx: SerializerBaseContext) {
   if (!ctx.hasServerQueries) {

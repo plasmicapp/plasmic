@@ -46,16 +46,20 @@ const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
  * };
  *
  * export function ClientComponent($props, $ctx) {
- *   const $q = usePlasmicQueries(serverQueryTree, $ctx, $props, null);
+ *   const $q = usePlasmicQueries(serverQueryTree, { $ctx, $props, $state: null });
  *   return <div>{$q.films.data}</div>
  * }
  */
 export function usePlasmicQueries(
   tree: QueryComponentNode,
-  $ctx: QueryExecutionContext["$ctx"],
-  $props: QueryExecutionContext["$props"],
-  $state: QueryExecutionContext["$state"] | null
+  env: {
+    $ctx: QueryExecutionContext["$ctx"];
+    $props: QueryExecutionContext["$props"];
+    $state: QueryExecutionContext["$state"] | null;
+  }
 ): Record<string, PlasmicQueryResult> {
+  const { $ctx, $props } = env;
+  let $state = env.$state;
   // Since we codegen components with data fetching and content rendering
   // together, the component will be suspended when query data is not loaded.
   // Therefore, this hook's primary complexity is handling component suspension

@@ -69,7 +69,12 @@ describe("usePlasmicQueries", () => {
 
     it("resolves with global shared cache", async () => {
       const renderHookResult = renderHook(
-        () => usePlasmicQueries(defaultTree, {}, {}, null),
+        () =>
+          usePlasmicQueries(defaultTree, {
+            $ctx: {},
+            $props: {},
+            $state: null,
+          }),
         {
           // can only have 1 test like this since it uses global shared cache
           wrapper: undefined,
@@ -90,7 +95,11 @@ describe("usePlasmicQueries", () => {
           beforeEach(async () => {
             const renderHookResult = renderHook(
               (props: TestQueriesProps) =>
-                usePlasmicQueries(tree, {}, props, null),
+                usePlasmicQueries(tree, {
+                  $ctx: {},
+                  $props: props,
+                  $state: null,
+                }),
               {
                 initialProps: {},
                 wrapper: TestProvider,
@@ -201,7 +210,8 @@ describe("usePlasmicQueries", () => {
         describe("cached queries", () => {
           it("resolves immediately if cached", async () => {
             const renderHookResult = renderHook(
-              () => usePlasmicQueries(tree, {}, {}, null),
+              () =>
+                usePlasmicQueries(tree, { $ctx: {}, $props: {}, $state: null }),
               {
                 wrapper: ({ children }) => (
                   <TestProvider
@@ -238,7 +248,8 @@ describe("usePlasmicQueries", () => {
 
           it("resolves zero values immediately if cached", async () => {
             const renderHookResult = renderHook(
-              () => usePlasmicQueries(tree, {}, {}, null),
+              () =>
+                usePlasmicQueries(tree, { $ctx: {}, $props: {}, $state: null }),
               {
                 wrapper: ({ children }) => (
                   <TestProvider
@@ -289,7 +300,11 @@ describe("usePlasmicQueries", () => {
       it("does not rerun when props object is recreated with the same values", async () => {
         const renderHookResult = renderHook(
           ({ multiplier }: { multiplier: number }) =>
-            usePlasmicQueries(tree, {}, { multiplier }, null),
+            usePlasmicQueries(tree, {
+              $ctx: {},
+              $props: { multiplier },
+              $state: null,
+            }),
           {
             initialProps: { multiplier: 1 },
             wrapper: TestProvider,
@@ -320,7 +335,11 @@ describe("usePlasmicQueries", () => {
       it("reruns when prop values actually change", async () => {
         const renderHookResult = renderHook(
           ({ multiplier }: { multiplier: number }) =>
-            usePlasmicQueries(tree, {}, { multiplier }, null),
+            usePlasmicQueries(tree, {
+              $ctx: {},
+              $props: { multiplier },
+              $state: null,
+            }),
           {
             initialProps: { multiplier: 1 },
             wrapper: TestProvider,
@@ -381,7 +400,12 @@ describe("usePlasmicQueries", () => {
       it("resolves immediately when queries are prefetched", async () => {
         const cachedIds = ["id1", "id2"];
         const renderHookResult = renderHook(
-          () => usePlasmicQueries(listIdsTree, {}, {}, null),
+          () =>
+            usePlasmicQueries(listIdsTree, {
+              $ctx: {},
+              $props: {},
+              $state: null,
+            }),
           {
             wrapper: ({ children }) => (
               <TestProvider
@@ -412,7 +436,12 @@ describe("usePlasmicQueries", () => {
 
       it("rejects query when referenced state-source query rejects", async () => {
         const renderHookResult = renderHook(
-          () => usePlasmicQueries(listIdsTree, {}, {}, null),
+          () =>
+            usePlasmicQueries(listIdsTree, {
+              $ctx: {},
+              $props: {},
+              $state: null,
+            }),
           { wrapper: TestProvider }
         );
         unmount = renderHookResult.unmount;
@@ -439,7 +468,7 @@ describe("usePlasmicQueries", () => {
       it("reruns query when referenced state value changes", async () => {
         const renderHookResult = renderHook(
           ({ $state }: { $state: Record<string, unknown> | null }) =>
-            usePlasmicQueries(listIdsTree, {}, {}, $state),
+            usePlasmicQueries(listIdsTree, { $ctx: {}, $props: {}, $state }),
           {
             initialProps: { $state: { ids: ["id1"] } },
             wrapper: TestProvider,
@@ -480,7 +509,7 @@ describe("usePlasmicQueries", () => {
       it("does not rerun query when an unreferenced $state value changes", async () => {
         const renderHookResult = renderHook(
           ({ $state }: { $state: Record<string, unknown> | null }) =>
-            usePlasmicQueries(listIdsTree, {}, {}, $state),
+            usePlasmicQueries(listIdsTree, { $ctx: {}, $props: {}, $state }),
           {
             initialProps: { $state: { ids: ["id1"], unrelated: 1 } },
             wrapper: TestProvider,
@@ -530,7 +559,7 @@ describe("usePlasmicQueries", () => {
 
         const renderHookResult = renderHook(
           ({ $state }: { $state: Record<string, unknown> | null }) =>
-            usePlasmicQueries(tree, {}, {}, $state),
+            usePlasmicQueries(tree, { $ctx: {}, $props: {}, $state }),
           { initialProps: { $state: null }, wrapper: TestProvider }
         );
         unmount = renderHookResult.unmount;
@@ -592,7 +621,7 @@ describe("usePlasmicQueries", () => {
         };
 
         const renderHookResult = renderHook(
-          () => usePlasmicQueries(tree, {}, {}, null),
+          () => usePlasmicQueries(tree, { $ctx: {}, $props: {}, $state: null }),
           { wrapper: TestProvider }
         );
         unmount = renderHookResult.unmount;
@@ -613,7 +642,12 @@ describe("usePlasmicQueries", () => {
 
       it("resolves state → query → state → query chain", async () => {
         const renderHookResult = renderHook(
-          () => usePlasmicQueries(listIdsTree, {}, {}, null),
+          () =>
+            usePlasmicQueries(listIdsTree, {
+              $ctx: {},
+              $props: {},
+              $state: null,
+            }),
           { wrapper: TestProvider }
         );
         unmount = renderHookResult.unmount;
@@ -790,7 +824,11 @@ describe("usePlasmicQueries", () => {
       beforeEach(async () => {
         const InvalidateTestComponent = () => {
           const { mutate } = usePlasmicDataConfig();
-          const $q = usePlasmicQueries(defaultTree, {}, {}, null);
+          const $q = usePlasmicQueries(defaultTree, {
+            $ctx: {},
+            $props: {},
+            $state: null,
+          });
           return (
             <>
               <span>{JSON.stringify($q.result.data)}</span>

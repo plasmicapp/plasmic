@@ -1455,9 +1455,9 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
       }
       const $q = unstable_usePlasmicQueries(${
         useRscServerWrapper && isPage ? "pageQueryTree" : "serverQueryTree"
-      }, $ctx, $props, ${
+      }, { $ctx, $props, $state: ${
           component.states.length ? "$stateRef.current" : "null"
-        });
+        } });
       `
       : ""
   }

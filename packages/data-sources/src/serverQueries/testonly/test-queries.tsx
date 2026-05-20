@@ -72,7 +72,11 @@ export function TestComponent({
   tree: QueryComponentNode;
   $props?: TestQueriesProps;
 }) {
-  const $q = usePlasmicQueries(tree, {}, $props ?? {}, null);
+  const $q = usePlasmicQueries(tree, {
+    $ctx: {},
+    $props: $props ?? {},
+    $state: null,
+  });
   return JSON.stringify($q.result.data);
 }
 

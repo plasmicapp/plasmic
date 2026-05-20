@@ -3869,12 +3869,12 @@ const mkComponentLevelQueryFetcher = computedFn(
           ]
         );
         const new$Q =
-          sub.dataSources?.unstable_usePlasmicQueries?.(
-            serverQueryTree,
-            ctx.env.$ctx ?? {},
-            ctx.env.$props ?? {},
-            (ctx.env.$state as Record<string, unknown> | undefined) ?? {}
-          ) ?? {};
+          sub.dataSources?.unstable_usePlasmicQueries?.(serverQueryTree, {
+            $ctx: ctx.env.$ctx ?? {},
+            $props: ctx.env.$props ?? {},
+            $state:
+              (ctx.env.$state as Record<string, unknown> | undefined) ?? {},
+          }) ?? {};
 
         const triggerQueryLoad = (queries: DataOrServerQueries) => {
           Object.values(queries).forEach((query) => {

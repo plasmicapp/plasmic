@@ -286,7 +286,11 @@ export function throwIfPlasmicUndefinedDataError(err: unknown): void;
 export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, options: QueryExecutionInitialContext): Promise<ExecutePlasmicQueriesResult>;
 
 // @internal
-export function unstable_usePlasmicQueries(tree: QueryComponentNode, $ctx: QueryExecutionContext["$ctx"], $props: QueryExecutionContext["$props"], $state: QueryExecutionContext["$state"] | null): Record<string, PlasmicQueryResult>;
+export function unstable_usePlasmicQueries(tree: QueryComponentNode, env: {
+    $ctx: QueryExecutionContext["$ctx"];
+    $props: QueryExecutionContext["$props"];
+    $state: QueryExecutionContext["$state"] | null;
+}): Record<string, PlasmicQueryResult>;
 
 // @internal
 export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;

@@ -181,12 +181,11 @@ export function useServerQueryOp(
     wrapFetch,
   ]);
 
-  const $queries = usePlasmicQueries(
-    queryTree,
-    env.$ctx ?? {},
-    env.$props ?? {},
-    env.$state ?? {}
-  );
+  const $queries = usePlasmicQueries(queryTree, {
+    $ctx: env.$ctx ?? {},
+    $props: env.$props ?? {},
+    $state: env.$state ?? {},
+  });
 
   // $query is a mutable object and will not trigger React updates as normal,
   // so we secretly use the internal state which is guaranteed to change.
