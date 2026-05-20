@@ -275,10 +275,13 @@ test.describe("server queries", () => {
         .filter({ hasText: "Insert" })
         .click();
 
-      // Type the rest of the expression
+      // Paste the rest of the expression. We use `keyboard.type` because Monaco
+      // fires auto-close-quote with Playwright's synthetic keystrokes.
       await page.keyboard.press("End");
-      await page.keyboard.type(' + ", enjoy your stay!', { delay: 5 });
-      await page.keyboard.press("ArrowRight");
+      await page.evaluate(() =>
+        navigator.clipboard.writeText(' + ", enjoy your stay!"')
+      );
+      await page.keyboard.press("ControlOrMeta+V");
 
       await serverQueryModal.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText(
