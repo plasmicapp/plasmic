@@ -49,10 +49,10 @@ function appendKeyPath(currentKeyPath: string, currentInput: string): string {
 
 function executeQueryTree(
   rootNode: QueryComponentNode,
-  options: QueryExecutionInitialContext,
+  env: QueryExecutionInitialContext,
   queriesByComponent: Map<string, Record<string, StatefulQueryResult>>
 ): DiscoveredQuery[] {
-  const { $props, $ctx } = options;
+  const { $props, $ctx } = env;
 
   const initialContext: QueryExecutionContext = {
     $props,
@@ -332,7 +332,7 @@ function executeRepeatedNode(
  */
 export async function executePlasmicQueries(
   rootNode: QueryComponentNode,
-  options: QueryExecutionInitialContext
+  env: QueryExecutionInitialContext
 ): Promise<ExecutePlasmicQueriesResult> {
   const queriesByComponent = new Map<
     string,
@@ -342,7 +342,7 @@ export async function executePlasmicQueries(
   const discoveredQueries: DiscoveredQuery[] = [];
 
   while (true) {
-    const newQueries = executeQueryTree(rootNode, options, queriesByComponent);
+    const newQueries = executeQueryTree(rootNode, env, queriesByComponent);
 
     if (newQueries.length === 0) {
       break;

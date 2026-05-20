@@ -283,14 +283,10 @@ export interface TableSchema {
 export function throwIfPlasmicUndefinedDataError(err: unknown): void;
 
 // @public
-export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, options: QueryExecutionInitialContext): Promise<ExecutePlasmicQueriesResult>;
+export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, env: QueryExecutionInitialContext): Promise<ExecutePlasmicQueriesResult>;
 
 // @internal
-export function unstable_usePlasmicQueries(tree: QueryComponentNode, env: {
-    $ctx: QueryExecutionContext["$ctx"];
-    $props: QueryExecutionContext["$props"];
-    $state: QueryExecutionContext["$state"] | null;
-}): Record<string, PlasmicQueryResult>;
+export function unstable_usePlasmicQueries(tree: QueryComponentNode, env: ClientQueryExecutionContext): Record<string, PlasmicQueryResult>;
 
 // @internal
 export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;

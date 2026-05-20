@@ -26,6 +26,17 @@ import {
 const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
 
 /**
+ * Initial context just before execution.
+ * @internal
+ */
+type ClientQueryExecutionContext = Pick<
+  QueryExecutionContext,
+  "$ctx" | "$props"
+> & {
+  $state: QueryExecutionContext["$state"] | null;
+};
+
+/**
  * @internal
  * This hook's job is to execute queries and re-render when query state changes.
  * Data caching can be controlled via @plasmicapp/query.
@@ -52,14 +63,9 @@ const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
  */
 export function usePlasmicQueries(
   tree: QueryComponentNode,
-  env: {
-    $ctx: QueryExecutionContext["$ctx"];
-    $props: QueryExecutionContext["$props"];
-    $state: QueryExecutionContext["$state"] | null;
-  }
+  env: ClientQueryExecutionContext
 ): Record<string, PlasmicQueryResult> {
   const { $ctx, $props } = env;
-  let $state = env.$state;
   // Since we codegen components with data fetching and content rendering
   // together, the component will be suspended when query data is not loaded.
   // Therefore, this hook's primary complexity is handling component suspension
@@ -89,6 +95,7 @@ export function usePlasmicQueries(
   // is run AFTER usePlasmicQueries. This gives usePlasmicQueries the chance
   // to resolve query/state interdependencies on the first render via
   // createInitial$State, which lazily evaluates initial state values.
+  let $state = env.$state;
   if (!$state) {
     $state = createInitial$State($ctx, $props, $queryStates, tree.stateSpecs);
   }
