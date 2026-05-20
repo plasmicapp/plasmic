@@ -39,15 +39,19 @@ function DataQueryCodeEditorLayout_(
   const viewCtx = studioCtx.focusedViewCtx();
   const showCopilot = DEVFLAGS.showCopilot && !!viewCtx;
 
-  // Convert stored flattened format ($dataTokens_projId_name) to display
-  // format ($dataTokens.name) for the editor
+  // Convert stored flattened format ($dataTokens_projId_name) to editor display format
+  // ($dataTokens.name) If the code is not parseable, fall back to the raw value.
   const displayValue = React.useMemo(() => {
     if (viewCtx) {
-      return transformDataTokensToDisplay(
-        defaultValue,
-        viewCtx.site,
-        studioCtx.siteInfo.id
-      );
+      try {
+        return transformDataTokensToDisplay(
+          defaultValue,
+          viewCtx.site,
+          studioCtx.siteInfo.id
+        );
+      } catch {
+        return defaultValue;
+      }
     }
     return defaultValue;
   }, [defaultValue, viewCtx, studioCtx.siteInfo.id]);
@@ -87,15 +91,21 @@ function DataQueryCodeEditorLayout_(
           data={completionData}
           onChange={(val: string) => {
             setCurrentValue(val);
-            onChange(
-              viewCtx
-                ? transformDataTokensInCode(
-                    val,
-                    viewCtx.site,
-                    studioCtx.siteInfo.id
-                  )
-                : val
-            );
+            // While the user types, the code may have invalid syntax. Swallow parse errors
+            // and pass the raw display value through.
+            let transformed = val;
+            if (viewCtx) {
+              try {
+                transformed = transformDataTokensInCode(
+                  val,
+                  viewCtx.site,
+                  studioCtx.siteInfo.id
+                );
+              } catch {
+                transformed = val;
+              }
+            }
+            onChange(transformed);
           }}
           enableMinimap={false}
           hideGlobalSuggestions={true}

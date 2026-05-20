@@ -58,6 +58,7 @@ import {
   TplTag,
   isKnownComponentServerQuery,
 } from "@/wab/shared/model/classes";
+import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
 import { smartHumanize } from "@/wab/shared/strs";
 import { CustomFunctionMeta } from "@plasmicapp/host";
@@ -134,7 +135,12 @@ type ValidQueryDraft =
   | SetRequired<QueryDraft, "codeExpr">;
 function isValidQueryDraft(draft: QueryDraft): draft is ValidQueryDraft {
   if (draft.codeExpr) {
-    return draft.codeExpr.code.trim().length > 0;
+    const code = draft.codeExpr.code.trim();
+    if (code.length === 0) {
+      return false;
+    }
+    // Block save/execute on unparseable JS to avoid committing a broken draft.
+    return isValidJavaScriptCode(code) || isValidJavaScriptCode(`(${code})`);
   }
   return draft.fnExpr !== undefined;
 }
