@@ -1,8 +1,8 @@
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
-  makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
+  makeCanvasVariantContextMenu,
 } from "@/wab/client/components/VariantControls";
 import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
 import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader.module.scss";
@@ -23,11 +23,10 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import {
+  StyleVariant,
   getDisplayVariants,
   isStyleOrCodeComponentVariant,
-  StyleVariant,
 } from "@/wab/shared/Variants";
-import { cx } from "@/wab/shared/common";
 import {
   isFrameComponent,
   isPageComponent,
@@ -203,9 +202,7 @@ export const VariantName = observer(function VariantName_({
   return (
     <span
       key={variant.uuid}
-      className={cx("CanvasFrame__Label__variant", {
-        "CanvasFrame__Label__variant--target": isSelected,
-      })}
+      className="CanvasFrame__Label__variant"
       onContextMenu={(e: any) => {
         e.preventDefault();
         maybeShowContextMenu(
