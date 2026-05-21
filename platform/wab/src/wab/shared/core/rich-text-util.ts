@@ -1,10 +1,15 @@
-import type {
-  Marker,
-  NodeMarker,
-  StyleMarker,
+import { cleanPlainText, plainTextToReact } from "@/wab/shared/codegen/util";
+import { getCssRulesFromRs } from "@/wab/shared/css";
+import {
+  isKnownTplTag,
+  type Marker,
+  type NodeMarker,
+  type RawText,
+  type StyleMarker,
 } from "@/wab/shared/model/classes";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import "@/wab/client/components/canvas/slate";
+import L from "lodash";
 import type { MakeADT } from "ts-adt/MakeADT";
 
 export type NormalizedMarker = {
@@ -107,4 +112,91 @@ export function isTagInline(tag: string) {
 
 export function isTagListContainer(tag: string) {
   return listContainerTags.includes(tag);
+}
+
+export interface RichTextRenderTarget<T> {
+  // Render a plain-text run. `text` has already been transformed via `cleanPlainText`
+  // (or `plainTextToReact` if `whitespaceNormal` is set).
+  text(text: string, key: string): T;
+  // Render a styled-text run. `text` is already transformed. `cssRules` has
+  // `fontWeight` parsed to a number.
+  styledRun(
+    text: string,
+    cssRules: Record<string, any>,
+    spanClassName: string,
+    key: string
+  ): T;
+  // Render a nested child (NodeMarker).
+  nodeMarker(tpl: NodeMarker["tpl"], key: string): T;
+}
+
+export interface RenderRichTextOpts {
+  // Class string applied to <span> wrappers around styled runs. Canvas and
+  // codegen use different bases so this is caller-supplied.
+  spanClassName: string;
+  // When true, plain-text runs are processed by `plainTextToReact`.
+  // Only used by codegen.
+  whitespaceNormal?: boolean;
+}
+
+// Walks a RawText's normalized markers and dispatches to the supplied `target` for
+// each logical child. Used by codegen (JSX), canvas read-only rendering (React nodes),
+// and localization (dummy React tree) so they all agree on the structure of rich-text.
+export function renderRichTextChildren<T>(
+  rawText: RawText,
+  target: RichTextRenderTarget<T>,
+  opts: RenderRichTextOpts
+): T[] {
+  const transform = opts.whitespaceNormal ? plainTextToReact : cleanPlainText;
+
+  if (rawText.markers.length === 0) {
+    return [target.text(transform(rawText.text), "t-0")];
+  }
+
+  const normalizedMarkers = normalizeMarkers(
+    rawText.markers,
+    rawText.text.length
+  );
+  const children: T[] = [];
+
+  for (let i = 0; i < normalizedMarkers.length; i++) {
+    const marker = normalizedMarkers[i];
+    if (marker.type === "nodeMarker") {
+      const key = isKnownTplTag(marker.tpl)
+        ? `n-${i}-${marker.tpl.uuid}`
+        : `n-${i}`;
+      children.push(target.nodeMarker(marker.tpl, key));
+      continue;
+    }
+
+    // If the previous marker was a block-level element, strip one leading line break from
+    // the following text so `white-space: pre-wrap` doesn't print an unwanted line break.
+    const prevMarker = i > 0 ? normalizedMarkers[i - 1] : undefined;
+    const removeInitialLineBreak =
+      prevMarker?.type === "nodeMarker" &&
+      isKnownTplTag(prevMarker.tpl) &&
+      !isTagInline(prevMarker.tpl.tag);
+    const textPart = transform(
+      rawText.text.substr(marker.position, marker.length),
+      removeInitialLineBreak
+    );
+
+    if (marker.type === "styleMarker") {
+      const cssRules: Record<string, any> = getCssRulesFromRs(marker.rs, true);
+      if ("fontWeight" in cssRules) {
+        cssRules["fontWeight"] = parseInt(cssRules["fontWeight"]);
+      }
+      if (L.isEmpty(cssRules)) {
+        children.push(target.text(textPart, `t-${i}`));
+      } else {
+        children.push(
+          target.styledRun(textPart, cssRules, opts.spanClassName, `s-${i}`)
+        );
+      }
+    } else {
+      children.push(target.text(textPart, `t-${i}`));
+    }
+  }
+
+  return children;
 }

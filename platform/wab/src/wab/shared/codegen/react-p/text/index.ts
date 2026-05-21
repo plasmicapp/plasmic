@@ -1,5 +1,3 @@
-// Important: If we change the generated strings we need to update
-// `resolveRichTextToDummyElt` in `shared/localization.tsx` as well :/
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
 import { serializeClassExpr } from "@/wab/shared/codegen/react-p/class-names";
 import {
@@ -16,13 +14,9 @@ import {
 } from "@/wab/shared/codegen/util";
 import { assert, ensure, tuple } from "@/wab/shared/common";
 import { getCodeExpressionWithFallback } from "@/wab/shared/core/exprs";
-import {
-  isTagInline,
-  normalizeMarkers,
-} from "@/wab/shared/core/rich-text-util";
+import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import { defaultStyleClassNames } from "@/wab/shared/core/styles";
-import { TplTextTag, isTplTag } from "@/wab/shared/core/tpls";
-import { getCssRulesFromRs } from "@/wab/shared/css";
+import { TplTextTag } from "@/wab/shared/core/tpls";
 import {
   LocalizationConfig,
   extractAllVariantCombosForText,
@@ -38,7 +32,6 @@ import {
   isKnownObjectPath,
   isKnownRawText,
 } from "@/wab/shared/model/classes";
-import L from "lodash";
 import memoizeOne from "memoize-one";
 
 function resolveRichTextToJsx(
@@ -80,8 +73,6 @@ function resolveRichTextToJsx(
     return { content, isDynamic: false };
   }
 
-  const normalizedMarkers = normalizeMarkers(text.markers, text.text.length);
-
   const spanClassName = defaultStyleClassNames(
     makeDefaultStyleClassNameBase(ctx.exportOpts),
     {
@@ -90,50 +81,28 @@ function resolveRichTextToJsx(
     }
   ).join(" ");
 
-  const children: string[] = [];
+  const whitespaceNormal = !!ctx.exportOpts.whitespaceNormal;
+  // The helper has already applied cleanPlainText / plainTextToReact to the
+  // text. In non-whitespaceNormal mode we still need to embed the raw string
+  // as a JS expression (wrapped in `{ ... }`); in whitespaceNormal mode the
+  // text is already HTML-encoded and is inserted directly.
+  const wrapInner = (s: string) => (whitespaceNormal ? s : `{${jsLiteral(s)}}`);
+
   ctx.insideRichTextBlock = true;
-
-  for (let i = 0; i < normalizedMarkers.length; i++) {
-    const marker = normalizedMarkers[i];
-    if (marker.type === "nodeMarker") {
-      children.push(`{${ctx.serializeTplNode(ctx, marker.tpl)}}`);
-    } else {
-      const cssRules =
-        marker.type === "styleMarker" ? getCssRulesFromRs(marker.rs, true) : {};
-
-      // If the previous marker was a block-level element, we must remove one
-      // line break from the beginning of the text so `white-space: pre-wrap`
-      // will not print an unwanted line break.
-      const prevMarker = i > 0 ? normalizedMarkers[i - 1] : undefined;
-      const textPart = text.text.substr(marker.position, marker.length);
-      const removeInitialLineBreak =
-        prevMarker?.type === "nodeMarker" &&
-        isTplTag(prevMarker.tpl) &&
-        !isTagInline(prevMarker.tpl.tag);
-      const plainText = ctx.exportOpts.whitespaceNormal
-        ? plainTextToReact(textPart, removeInitialLineBreak)
-        : "{" +
-          jsLiteral(cleanPlainText(textPart, removeInitialLineBreak)) +
-          "}";
-
-      if ("fontWeight" in cssRules) {
-        // fontWeight is typed as a number
-        cssRules["fontWeight"] = parseInt(cssRules["fontWeight"]) as any;
-      }
-
-      if (L.isEmpty(cssRules)) {
-        children.push(`<React.Fragment>${plainText}</React.Fragment>`);
-      } else {
-        // We make sure these spans also have the default class names, so they properly
-        // override any global styles for span.
-        children.push(
-          `<span className={"${spanClassName}"} style={${JSON.stringify(
-            cssRules
-          )}}>${plainText}</span>`
-        );
-      }
-    }
-  }
+  const children = renderRichTextChildren<string>(
+    text,
+    {
+      text: (textPart) =>
+        `<React.Fragment>${wrapInner(textPart)}</React.Fragment>`,
+      styledRun: (textPart, cssRules, className) =>
+        // Make sure these spans have default class names, to override global span styles.
+        `<span className={"${className}"} style={${JSON.stringify(
+          cssRules
+        )}}>${wrapInner(textPart)}</span>`,
+      nodeMarker: (tpl) => `{${ctx.serializeTplNode(ctx, tpl)}}`,
+    },
+    { spanClassName, whitespaceNormal }
+  );
   if (richTextRoot) {
     ctx.insideRichTextBlock = false;
   }

@@ -35,6 +35,7 @@ import {
   isTagListContainer,
   listContainerTags,
   normalizeMarkers,
+  renderRichTextChildren,
   textInlineTags,
 } from "@/wab/shared/core/rich-text-util";
 import {
@@ -1271,82 +1272,40 @@ const mkTextChild = computedFn(
   { keepAlive: true }
 );
 
-// Builds read-only React children for RawText, mirroring codegen output (resolveRichTextToJsx).
-// Canvas text uses `white-space: pre-wrap`, so <br/> insertion isn't needed.
+// Builds read-only React children for RawText. Unlike codegen, plain-text runs are wrapped
+// in <span> to mirror Slate's renderLeaf shape (Studio hover/click/selection logic relies
+// on it). Canvas text uses `white-space: pre-wrap`, so <br/> insertion isn't needed.
 function renderRawTextChildren(
   react: typeof React,
   rawText: ReturnType<typeof ensureKnownRawText>,
-  node: TplTag,
   ctx: RenderingCtx
 ): React.ReactNode[] {
-  if (rawText.markers.length === 0) {
-    return [rawText.text];
-  }
-
-  const normalizedMarkers = normalizeMarkers(
-    rawText.markers,
-    rawText.text.length,
-    isTagInline(node.tag)
-  );
-
   const spanClassName = defaultStyleClassNames(
     studioDefaultStylesClassNameBase,
     { tag: "span", projectId: canvasProjectId }
   ).join(" ");
 
-  const children: React.ReactNode[] = [];
-  for (let i = 0; i < normalizedMarkers.length; i++) {
-    const marker = normalizedMarkers[i];
-    if (marker.type === "nodeMarker") {
-      const childTpl = ensureKnownTplTag(marker.tpl);
-      const childInline = isTagInline(childTpl.tag);
-      children.push(
-        react.createElement(mkTextChild(ctx.viewCtx), {
-          key: `n-${i}-${childTpl.uuid}`,
+  return renderRichTextChildren<React.ReactNode>(
+    rawText,
+    {
+      text: (text, key) => react.createElement("span", { key }, text),
+      styledRun: (text, cssRules, className, key) =>
+        react.createElement("span", { key, className, style: cssRules }, text),
+      nodeMarker: (tpl, key) => {
+        const childTpl = ensureKnownTplTag(tpl);
+        return react.createElement(mkTextChild(ctx.viewCtx), {
+          key,
           node: childTpl,
           ctx: {
             ...ctx,
-            inline: childInline,
+            inline: isTagInline(childTpl.tag),
             valKey: ctx.valKey + "." + childTpl.uuid,
           },
-        })
-      );
-      continue;
-    }
-
-    // Match codegen: when the previous marker was a block-level nodeMarker,
-    // trim a leading newline from the following text so `white-space: pre-wrap`
-    // doesn't print an unwanted line break.
-    const prevMarker = i > 0 ? normalizedMarkers[i - 1] : undefined;
-    const removeInitialLineBreak =
-      prevMarker?.type === "nodeMarker" &&
-      !isTagInline(ensureKnownTplTag(prevMarker.tpl).tag);
-    let textPart = rawText.text.substr(marker.position, marker.length);
-    if (removeInitialLineBreak && textPart.startsWith("\n")) {
-      textPart = textPart.slice(1);
-    }
-
-    if (marker.type === "styleMarker") {
-      const cssRules: Record<string, any> = getCssRulesFromRs(marker.rs, true);
-      if ("fontWeight" in cssRules) {
-        cssRules["fontWeight"] = parseInt(cssRules["fontWeight"]);
-      }
-      if (Object.keys(cssRules).length === 0) {
-        children.push(textPart);
-      } else {
-        children.push(
-          react.createElement(
-            "span",
-            { key: `s-${i}`, className: spanClassName, style: cssRules },
-            textPart
-          )
-        );
-      }
-    } else {
-      children.push(textPart);
-    }
-  }
-  return children;
+        });
+      },
+    },
+    { spanClassName }
+  );
 }
 
 // Read-only version of mkCanvasText: renders content as plain React elements.
@@ -1391,7 +1350,7 @@ export const mkReadOnlyCanvasText = computedFn(
               return react.createElement(tag, {
                 className,
                 style: DEFAULT_TEXT_STYLE,
-                children: renderRawTextChildren(react, rawText, node, ctx),
+                children: renderRawTextChildren(react, rawText, ctx),
               });
             },
             {

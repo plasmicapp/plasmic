@@ -13,10 +13,7 @@ import {
   isPlainComponent,
 } from "@/wab/shared/core/components";
 import { isFallbackableExpr, tryExtractJson } from "@/wab/shared/core/exprs";
-import {
-  isTagInline,
-  normalizeMarkers,
-} from "@/wab/shared/core/rich-text-util";
+import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import {
   flattenTpls,
   hasTextAncestor,
@@ -28,7 +25,6 @@ import {
   tplChildren,
   TplTextTag,
 } from "@/wab/shared/core/tpls";
-import { getCssRulesFromRs } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   Component,
@@ -52,7 +48,7 @@ import {
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { genTranslatableString } from "@plasmicapp/react-web";
-import { isEmpty, sortBy, uniq } from "lodash";
+import { sortBy, uniq } from "lodash";
 import React from "react";
 
 export type LocalizationKeyScheme = "content" | "hash" | "path";
@@ -408,8 +404,6 @@ function createDummyEltForTextBlock(
     }
   };
 
-  // Important: Strings and React tree's structure must match up
-  // `resolveRichTextToJsx` :/
   const resolveRichTextToDummyElt = (text: RichText | null | undefined) => {
     if (!text) {
       return "";
@@ -426,43 +420,21 @@ function createDummyEltForTextBlock(
       return cleanPlainText(text.text);
     }
 
-    const normalizedMarkers = normalizeMarkers(text.markers, text.text.length);
-    const children: React.ReactNode[] = [];
-    for (let i = 0; i < normalizedMarkers.length; i++) {
-      const marker = normalizedMarkers[i];
-      if (marker.type === "nodeMarker") {
-        children.push(rec(marker.tpl));
-      } else {
-        // We need the CSS rules to decide whether we wrap the text in a
-        // component (or a span, in codegen) or not.
-        const cssRules =
-          marker.type === "styleMarker"
-            ? getCssRulesFromRs(marker.rs, true)
-            : {};
-        const prevMarker = i > 0 ? normalizedMarkers[i - 1] : undefined;
-
-        // We also need to make sure the generated strings are the same
-        // as the ones from codegen.
-        const plainText = cleanPlainText(
-          text.text.substr(marker.position, marker.length),
-          prevMarker?.type === "nodeMarker" &&
-            isTplTag(prevMarker.tpl) &&
-            !isTagInline(prevMarker.tpl.tag)
-        );
-
-        if (isEmpty(cssRules)) {
-          children.push(
-            <React.Fragment key={keyCount++}>{plainText}</React.Fragment>
-          );
-        } else {
-          children.push(
-            <DummyReactComponent key={keyCount++}>
-              {plainText}
-            </DummyReactComponent>
-          );
-        }
-      }
-    }
+    const children = renderRichTextChildren<React.ReactNode>(
+      text,
+      {
+        text: (plainText) => (
+          <React.Fragment key={keyCount++}>{plainText}</React.Fragment>
+        ),
+        styledRun: (plainText) => (
+          <DummyReactComponent key={keyCount++}>
+            {plainText}
+          </DummyReactComponent>
+        ),
+        nodeMarker: (tpl) => rec(tpl),
+      },
+      { spanClassName: "" }
+    );
 
     return <React.Fragment>{...children}</React.Fragment>;
   };
