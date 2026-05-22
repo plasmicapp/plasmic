@@ -432,13 +432,13 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             onClick: () => {
               if (editorRef.current && trySave(editorRef.current.getValue())) {
                 const code = editorRef.current.getValue();
-                // Transform data token references from display format to storage format
+                // Transform data tokens from display format to storage format.
                 const transformedCode = viewCtx
                   ? transformDataTokensInCode(
                       code,
                       viewCtx.site,
                       viewCtx.studioCtx.siteInfo.id
-                    )
+                    ).code
                   : code;
                 onChange(transformedCode);
               }

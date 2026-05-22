@@ -352,55 +352,59 @@ describe("transformDataTokensInCode", function () {
 
   it("should transform local token to flat identifier", () => {
     const code = "$dataTokens.myToken";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(`$dataTokens_${shortProjectId}_myToken`);
   });
 
   it("should transform dependency token to flat identifier", () => {
     const code = "$dataTokens.myDep.depToken";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(`$dataTokens_${depShortId}_depToken`);
   });
 
   it("should not transform dep namespace reference", () => {
     const code = "$dataTokens.myDep";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe("$dataTokens.myDep");
   });
 
   it("should transform tokens with nested dot notation", () => {
     // Local
     const code = "$dataTokens.myToken.a.b.c";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(`$dataTokens_${shortProjectId}_myToken.a.b.c`);
 
     // Dep
     const depCode = "$dataTokens.myDep.depToken.x.y.z";
-    const depResult = transformDataTokensInCode(depCode, mockSite, projectId);
+    const depResult = transformDataTokensInCode(
+      depCode,
+      mockSite,
+      projectId
+    ).code;
     expect(depResult).toBe(`$dataTokens_${depShortId}_depToken.x.y.z`);
   });
 
   it("should transform local token with bracket notation", () => {
     const code = '$dataTokens.myToken["key"]';
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(`$dataTokens_${shortProjectId}_myToken["key"]`);
   });
 
   it("should transform local token with mixed dot and bracket notation", () => {
     const code = '$dataTokens.myToken.a["b"].c[0]';
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(`$dataTokens_${shortProjectId}_myToken.a["b"].c[0]`);
   });
 
   it("should transform dependency token with mixed notation", () => {
     const code = '$dataTokens.myDep.depToken.nested["prop"]';
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(`$dataTokens_${depShortId}_depToken.nested["prop"]`);
   });
 
   it("should transform token with nested path in function call", () => {
     const code = "Object.keys($dataTokens.myToken.nested)";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(
       `Object.keys($dataTokens_${shortProjectId}_myToken.nested)`
     );
@@ -408,7 +412,7 @@ describe("transformDataTokensInCode", function () {
 
   it("should transform multiple tokens in function call", () => {
     const code = "merge($dataTokens.token1, $dataTokens.myDep.token2.data)";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(
       `merge($dataTokens_${shortProjectId}_token1, $dataTokens_${depShortId}_token2.data)`
     );
@@ -417,7 +421,7 @@ describe("transformDataTokensInCode", function () {
   it("should transform token in complex expression", () => {
     const code =
       "($dataTokens.myToken.value || 0) + $dataTokens.myDep.depToken.count";
-    const result = transformDataTokensInCode(code, mockSite, projectId);
+    const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(
       `($dataTokens_${shortProjectId}_myToken.value || 0) + $dataTokens_${depShortId}_depToken.count`
     );

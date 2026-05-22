@@ -91,20 +91,13 @@ function DataQueryCodeEditorLayout_(
           data={completionData}
           onChange={(val: string) => {
             setCurrentValue(val);
-            // While the user types, the code may have invalid syntax. Swallow parse errors
-            // and pass the raw display value through.
-            let transformed = val;
-            if (viewCtx) {
-              try {
-                transformed = transformDataTokensInCode(
+            const transformed = viewCtx
+              ? transformDataTokensInCode(
                   val,
                   viewCtx.site,
                   studioCtx.siteInfo.id
-                );
-              } catch {
-                transformed = val;
-              }
-            }
+                ).code
+              : val;
             onChange(transformed);
           }}
           enableMinimap={false}

@@ -843,6 +843,7 @@ function replaceIdentifierWithMemberExpr(node: ast.Identifier, path: string[]) {
 
 /**
  * Converts $dataTokens code references from display to bundle format.
+ * Returns raw (input) code on parse error.
  *
  * Display format (what users type):
  *   - Local tokens: $dataTokens.tokenName
@@ -853,6 +854,18 @@ function replaceIdentifierWithMemberExpr(node: ast.Identifier, path: string[]) {
  *   - Imported tokens: $dataTokens_1T8AH_tokenName
  */
 export function transformDataTokensInCode(
+  code: string,
+  site: Site,
+  projectId: ProjectId
+): { code: string; error?: Error } {
+  try {
+    return { code: transformDataTokensInCodeUnsafe(code, site, projectId) };
+  } catch (error) {
+    return { code, error: error as Error };
+  }
+}
+
+function transformDataTokensInCodeUnsafe(
   code: string,
   site: Site,
   projectId: ProjectId

@@ -173,9 +173,6 @@ test.describe("server queries", () => {
     projectId = await apiClient.setupNewProject({
       name: "custom-code-server-queries",
     });
-    await page
-      .context()
-      .grantPermissions(["clipboard-read", "clipboard-write"]);
     await goToProject(
       page,
       `/projects/${projectId}?serverQueries=true&dataTokens=true`
@@ -223,12 +220,10 @@ test.describe("server queries", () => {
     await test.step('Create "Greeting" query with data token from inspector', async () => {
       const codeEditor = await openNewCustomCodeQuery(models, "Greeting");
 
-      await page.evaluate(() =>
-        navigator.clipboard.writeText(
-          "await new Promise(resolve => setTimeout(() => {\n  resolve(`Welcome to ${ }`)\n}, 2000))"
-        )
+      // insertText bypasses Monaco auto-close brackets
+      await page.keyboard.insertText(
+        "await new Promise(resolve => setTimeout(() => {\n  resolve(`Welcome to ${ }`)\n}, 2000))"
       );
-      await page.keyboard.press("ControlOrMeta+V");
 
       // Position cursor between ${ and } to insert the data token there
       for (let i = 0; i < 14; i++) {
@@ -275,13 +270,10 @@ test.describe("server queries", () => {
         .filter({ hasText: "Insert" })
         .click();
 
-      // Paste the rest of the expression. We use `keyboard.type` because Monaco
-      // fires auto-close-quote with Playwright's synthetic keystrokes.
+      // Type the rest of the expression
       await page.keyboard.press("End");
-      await page.evaluate(() =>
-        navigator.clipboard.writeText(' + ", enjoy your stay!"')
-      );
-      await page.keyboard.press("ControlOrMeta+V");
+      // insertText bypasses Monaco auto-close quotes.
+      await page.keyboard.insertText(' + ", enjoy your stay!"');
 
       await serverQueryModal.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText(
