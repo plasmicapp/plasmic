@@ -1,6 +1,7 @@
 import { expect, Page } from "@playwright/test";
 import { PageModels, test } from "../fixtures/test";
 import { setDynamicVisibility } from "../utils/auto-open-utils";
+import { pasteIntoMonaco } from "../utils/key-utils";
 import { goToProject } from "../utils/studio-utils";
 
 const MOCK_API_URL = "https://mock-api-for-server-queries.test";
@@ -220,8 +221,8 @@ test.describe("server queries", () => {
     await test.step('Create "Greeting" query with data token from inspector', async () => {
       const codeEditor = await openNewCustomCodeQuery(models, "Greeting");
 
-      // insertText bypasses Monaco auto-close brackets
-      await page.keyboard.insertText(
+      await pasteIntoMonaco(
+        codeEditor,
         "await new Promise(resolve => setTimeout(() => {\n  resolve(`Welcome to ${ }`)\n}, 2000))"
       );
 
@@ -255,7 +256,7 @@ test.describe("server queries", () => {
     await assertQuerySummary("greeting");
 
     await test.step('Create "Full Greeting" query with $q reference from inspector', async () => {
-      await openNewCustomCodeQuery(models, "Full Greeting");
+      const codeEditor = await openNewCustomCodeQuery(models, "Full Greeting");
 
       // Insert $q.greeting.data from the data context inspector
       await serverQueryModal.locator('[data-insert-path="$q"]').click();
@@ -270,10 +271,9 @@ test.describe("server queries", () => {
         .filter({ hasText: "Insert" })
         .click();
 
-      // Type the rest of the expression
       await page.keyboard.press("End");
-      // insertText bypasses Monaco auto-close quotes.
-      await page.keyboard.insertText(' + ", enjoy your stay!"');
+      // Use synthetic paste so Monaco doesn't auto-close the inner `"`.
+      await pasteIntoMonaco(codeEditor, ' + ", enjoy your stay!"');
 
       await serverQueryModal.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText(
