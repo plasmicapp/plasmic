@@ -888,7 +888,8 @@ export const ServerQueryOpExprFormAndPreview = observer(
                 .get(customFunctionId(validDraft.fnExpr.func));
               if (registeredFn) {
                 setExecuteArgs({
-                  fnId: queryName,
+                  // Match QueryResultPreview.tsx to share SWR cache entry
+                  fnId: customFunctionId(validDraft.fnExpr.func),
                   fn: registeredFn.function,
                   expr: clone(validDraft.fnExpr) as CustomFunctionExpr,
                   env,
@@ -897,7 +898,8 @@ export const ServerQueryOpExprFormAndPreview = observer(
               }
             } else if (validDraft.codeExpr) {
               setExecuteArgs({
-                fnId: queryName,
+                // Match CustomCodePreview to share SWR cache entry
+                fnId: `custom-code:${parentQuery?.uuid ?? queryName}`,
                 code: clone(validDraft.codeExpr) as CustomCode,
                 env,
               });
