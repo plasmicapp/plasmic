@@ -82,10 +82,9 @@ function resolveRichTextToJsx(
   ).join(" ");
 
   const whitespaceNormal = !!ctx.exportOpts.whitespaceNormal;
-  // The helper has already applied cleanPlainText / plainTextToReact to the
-  // text. In non-whitespaceNormal mode we still need to embed the raw string
-  // as a JS expression (wrapped in `{ ... }`); in whitespaceNormal mode the
-  // text is already HTML-encoded and is inserted directly.
+  // The helper has already applied cleanPlainText / plainTextToReact to the text.
+  // Embeds the raw string as JS expr (wrapped in `{ ... }`) in non-whitespaceNormal mode.
+  // In whitespaceNormal mode the text is already HTML-encoded.
   const wrapInner = (s: string) => (whitespaceNormal ? s : `{${jsLiteral(s)}}`);
 
   ctx.insideRichTextBlock = true;
