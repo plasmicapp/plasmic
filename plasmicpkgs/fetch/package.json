@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/fetch",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "Plasmic registration call for fetch function",
   "repository": {
     "type": "git",
