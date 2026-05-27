@@ -66,6 +66,7 @@ const registerGraphqlFetchParams: CustomFunctionMeta<typeof fetchGraphQL> = {
       fields: {
         url: {
           type: "string",
+          displayName: "URL",
         },
         method: {
           type: "choice",
@@ -82,6 +83,7 @@ const registerGraphqlFetchParams: CustomFunctionMeta<typeof fetchGraphQL> = {
         },
         varOverrides: {
           type: "object",
+          displayName: "Variable overrides",
         },
       },
     },

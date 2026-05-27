@@ -39,6 +39,7 @@ export const queryStrapiMeta: CustomFunctionMeta<typeof queryStrapi> = {
         },
         filterLogic: {
           type: "queryBuilder",
+          displayName: "Filter",
           description: "Filter fetched entries. Defaults to fetch all entries.",
           config: (_: any, ctx: any) => {
             const fields = ctx?.strapiFields || [];

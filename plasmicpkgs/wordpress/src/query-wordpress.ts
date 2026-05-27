@@ -230,7 +230,7 @@ export const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
 
         filterLogic: {
           type: "queryBuilder",
-          displayName: "Filters",
+          displayName: "Filter",
           description: "Filter fetched entries. Defaults to fetch all entries.",
           config: (_: any, ctx: any) => {
             const { queryType, categories, tags } = ctx;
