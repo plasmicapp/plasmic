@@ -1,4 +1,3 @@
-import { PlasmicConfig } from "@plasmicapp/cli/dist/utils/config-utils";
 import { promises as fs } from "fs";
 import L from "lodash";
 import path from "path";
@@ -12,7 +11,6 @@ import {
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
-import { PlasmicCssImport } from "../utils/types";
 import { makeLayout_app_codegen } from "./templates/app-codegen/layout";
 import { makePlasmicHostPage_app_codegen } from "./templates/app-codegen/plasmic-host";
 import { makePlasmicInitClient_app_codegen } from "./templates/app-codegen/plasmic-init-client";
@@ -121,6 +119,15 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       makeCatchallPage_app_loader(jsOrTs)
     );
   } else {
+    // Replace starter layout. Removes app/layout.js in JS projects before writing layout.jsx.
+    deleteGlob(path.join(projectPath, "app", "layout.*"));
+
+    // ./app/layout.tsx
+    await fs.writeFile(
+      path.join(projectPath, "app", `layout.${jsOrTs}x`),
+      makeLayout_app_codegen(jsOrTs)
+    );
+
     // ./plasmic-init-client.tsx
     await fs.writeFile(
       path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
@@ -144,26 +151,8 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       projectPath,
     });
 
-    // Read plasmic.json so we can wire each top-level project's plasmic.css
-    // import directly into the root layout template.
-    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
-    const layoutAbsPath = path.join(projectPath, "app", `layout.${jsOrTs}x`);
-    const cssImports = getPlasmicCssImports({
-      projectPath,
-      rootFileAbsPath: layoutAbsPath,
-      config,
-    });
-
-    // Replace starter layout. Removes app/layout.js in JS projects before writing layout.jsx.
-    deleteGlob(path.join(projectPath, "app", "layout.*"));
-
-    // ./app/layout.tsx
-    await fs.writeFile(
-      path.join(projectPath, "app", `layout.${jsOrTs}x`),
-      makeLayout_app_codegen(jsOrTs, cssImports)
-    );
-
     // Make an index (/) page if the project didn't have one.
+    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
     const plasmicFiles = L.map(
       L.flatMap(config.projects, (p) => p.components),
       (c) => c.importSpec.modulePath
@@ -205,6 +194,12 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       makeCatchallPage_pages_loader(jsOrTs)
     );
   } else {
+    // ./pages/_app.tsx
+    await fs.writeFile(
+      path.join(projectPath, "pages", `_app.${jsOrTs}x`),
+      makeCustomApp_pages_codegen(jsOrTs)
+    );
+
     // ./pages/plasmic-host.tsx
     await fs.writeFile(
       path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
@@ -221,23 +216,8 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       projectPath,
     });
 
-    // Read plasmic.json so we can wire each top-level project's plasmic.css
-    // import directly into the _app template.
-    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
-    const appAbsPath = path.join(projectPath, "pages", `_app.${jsOrTs}x`);
-    const cssImports = getPlasmicCssImports({
-      projectPath,
-      rootFileAbsPath: appAbsPath,
-      config,
-    });
-
-    // ./pages/_app.tsx
-    await fs.writeFile(
-      appAbsPath,
-      makeCustomApp_pages_codegen(jsOrTs, cssImports)
-    );
-
     // Make an index page if the project didn't have one.
+    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
     const plasmicFiles = L.map(
       L.flatMap(config.projects, (p) => p.components),
       (c) => c.importSpec.modulePath
@@ -249,43 +229,4 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       );
     }
   }
-}
-
-/**
- * Builds the list of `plasmic.css` imports the Next.js root file (Pages Router
- * `_app.{ext}`, App Router `app/layout.{ext}`) needs for every top-level
- * project in `plasmic.json`. Next.js disallows global non-module CSS imports
- * outside of those files.
- *
- * The marker comment in the emitted import (plasmic-import: <id>/projectcss)
- * matches the convention used by @plasmicapp/cli sync, so subsequent syncs
- * can update paths in-place without producing duplicates.
- *
- * @param rootFileAbsPath Absolute path to the Next.js root file (`_app.{ext}`
- *   for Pages Router, `app/layout.{ext}` for App Router).
- */
-function getPlasmicCssImports(args: {
-  projectPath: string;
-  rootFileAbsPath: string;
-  config: PlasmicConfig;
-}): PlasmicCssImport[] {
-  const { projectPath, rootFileAbsPath, config } = args;
-  return (config.projects || [])
-    .filter((p) => !p.indirect && !!p.cssFilePath)
-    .map((p) => {
-      const absoluteCssPath = path.join(
-        projectPath,
-        config.srcDir,
-        p.cssFilePath
-      );
-      let relPath = path.relative(
-        path.dirname(rootFileAbsPath),
-        absoluteCssPath
-      );
-      if (!relPath.startsWith(".")) {
-        relPath = `./${relPath}`;
-      }
-
-      return { projectId: p.projectId, importPath: relPath };
-    });
 }

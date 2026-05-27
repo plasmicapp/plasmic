@@ -1,5 +1,5 @@
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
-import { serializeGlobalCssClass } from "@/wab/shared/codegen/react-p/class-names";
+import { serializeClassExpr } from "@/wab/shared/codegen/react-p/class-names";
 import {
   makeDefaultStyleClassNameBase,
   makeWabHtmlTextClassName,
@@ -49,7 +49,8 @@ function resolveRichTextToJsx(
     );
     const textCode = getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
 
-    const className = serializeGlobalCssClass(
+    const className = serializeClassExpr(
+      ctx.exportOpts,
       makeWabHtmlTextClassName(ctx.exportOpts)
     );
     const code = text.html

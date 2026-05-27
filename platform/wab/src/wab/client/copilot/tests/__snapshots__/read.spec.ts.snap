@@ -71,21 +71,21 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <variant name=":focus" uuid="nXTFjlmK5XoA">
       <element uuid="Sya0jp-3z04Q">
         <VariantSetting id="3008241">
-          <RuleSet id="3008240">{"animation":"var(--anim-mz8pGamSoahc) 1s ease-in-out 0s 1 normal none running"}</RuleSet>
+          <RuleSet id="3008240">{"animation":"bouncemz8PGamSoahc 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name=":focus" uuid="o0aQD1uD0PE7">
       <element uuid="dmoXeGSEu9FR">
         <VariantSetting id="3008252">
-          <RuleSet id="3008251">{"animation":"var(--anim-8_EsQyUE1f6D) 1s ease-in-out 0s 1 normal none running"}</RuleSet>
+          <RuleSet id="3008251">{"animation":"zoomIn8EsQyUe1F6D 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
     <variant name=":focus" uuid="PSb4MDAD-yZ3">
       <element uuid="Y2BCutCiq0ay">
         <VariantSetting id="3008263">
-          <RuleSet id="3008262">{"animation":"var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running"}</RuleSet>
+          <RuleSet id="3008262">{"animation":"slideInLeftamPxFrYy2Bqz 1s ease-in-out 0s 1 normal none running"}</RuleSet>
         </VariantSetting>
       </element>
     </variant>
@@ -165,7 +165,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 
 exports[`read copilot tool reads specific animations by UUID with full @keyframes 1`] = `
 "<animation name="Bounce" uuid="mz8pGamSoahc">
-  @keyframes bounce-mz8pGamSoahc {
+  @keyframes bouncemz8PGamSoahc {
     0% {
     transform: translate3d(0px, 0px, 0);  
     }
@@ -196,7 +196,7 @@ exports[`read copilot tool reads specific animations by UUID with full @keyframe
   }
 </animation>
 <animation name="Flash" uuid="gywO1jkB0c0b">
-  @keyframes flash-gywO1jkB0c0b {
+  @keyframes flashgywO1JkB0C0B {
     0% {
     opacity: 1;  
     }

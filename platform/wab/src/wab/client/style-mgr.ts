@@ -23,7 +23,6 @@ import {
   withoutNils,
   xSetDefault,
 } from "@/wab/shared/common";
-import { getAnimationSequenceIdentifier } from "@/wab/shared/core/animation-sequences";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -45,7 +44,6 @@ import {
   genCanvasRules,
   generateAnimationPropValue,
   generateKeyframesRule,
-  makeAnimationKeyframeCssVarName,
   makeDefaultStylesRuleBodyFor,
   makeDefaultStylesRules,
   mkCssVarsRuleForCanvas,
@@ -912,18 +910,7 @@ export class StyleMgr {
       // base variant class (e.g., when previewing base variant animation, it shouldn't
       // play in mobile variant frame which also has the base variant class).
       const selector = `[${valOwnerProp}="${frameValOwnerKey}"] ${baseSelector}`;
-      // Bind --anim-<uuid> on the same rule so the var() inside `animation:` resolves.
-      const animVarDecls = animations
-        .map(
-          (anim) =>
-            `${makeAnimationKeyframeCssVarName(
-              anim.sequence
-            )}: ${getAnimationSequenceIdentifier(anim.sequence)};`
-        )
-        .join(" ");
-      rules.push(
-        `${selector} { ${animVarDecls} animation: ${animationProp}; }`
-      );
+      rules.push(`${selector} { animation: ${animationProp}; }`);
     }
 
     return rules.join("\n");

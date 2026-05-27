@@ -485,29 +485,26 @@ function maybeRenamePathExt(
 }
 
 function fixFileExtension(context: PlasmicContext) {
-  // Project-level CSS files are always non-module (.css), keyframes and
-  // shared :where(.plasmic_tokens) vars need to be global. Component-level
-  // CSS files follow the scheme.
-  const componentCssExt =
+  const cssExt =
     context.config.style.scheme === "css-modules" ? ".module.css" : ".css";
   context.config.style.defaultStyleCssFilePath = maybeRenamePathExt(
     context,
     context.config.style.defaultStyleCssFilePath,
-    ".css",
+    cssExt,
     { continueOnFailure: true }
   );
   context.config.projects.forEach((project) => {
     project.cssFilePath = maybeRenamePathExt(
       context,
       project.cssFilePath,
-      ".css",
+      cssExt,
       { continueOnFailure: true }
     );
     project.components.forEach((component) => {
       component.cssFilePath = maybeRenamePathExt(
         context,
         component.cssFilePath,
-        componentCssExt,
+        cssExt,
         { continueOnFailure: true }
       );
     });

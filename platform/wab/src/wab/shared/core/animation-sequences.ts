@@ -19,5 +19,5 @@ export function collectUsedAnimationSequences(site: Site): AnimationSequence[] {
 export function getAnimationSequenceIdentifier(
   animationSequence: AnimationSequence
 ) {
-  return `${toVarName(animationSequence.name)}-${animationSequence.uuid}`;
+  return toVarName(animationSequence.name + animationSequence.uuid);
 }

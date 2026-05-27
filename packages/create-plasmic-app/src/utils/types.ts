@@ -7,11 +7,6 @@ export type PlatformOptions = {
 };
 export type SchemeType = "codegen" | "loader";
 
-export type PlasmicCssImport = {
-  projectId: string;
-  importPath: string;
-};
-
 export function platformTypeToString(s: PlatformType): string {
   return s === "nextjs"
     ? "Next.js"

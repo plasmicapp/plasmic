@@ -50,10 +50,10 @@ import {
 import {
   makeCssClassName,
   makeSerializedClassNameRef,
+  serializeClassExpr,
   serializeClassNames,
   serializeClassNamesCall,
   serializeComponentRootResetClasses,
-  serializeGlobalCssClass,
 } from "@/wab/shared/codegen/react-p/class-names";
 import {
   generateCodeComponentsHelpersFromRegistry,
@@ -117,7 +117,6 @@ import {
   makeComponentCssIdFileName,
   makeComponentRenderIdFileName,
   makeCssFileName,
-  makeCssTaggedPlasmicImport,
   makeDefaultExternalPropsName,
   makeDefaultInlineClassName,
   makeDefaultStyleClassNameBase,
@@ -151,7 +150,6 @@ import {
   makeWabHtmlTextClassName,
   maybeCondExpr,
   pagePathConflictsWithAppRouter,
-  projectStyleCssImportName,
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
@@ -265,7 +263,6 @@ import {
   code as toCode,
 } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   siteFinalStyleTokens,
   siteFinalStyleTokensAllDeps,
@@ -293,12 +290,12 @@ import {
 import {
   CssVarResolver,
   genTokenVarDataWithVariants,
+  makeAnimationKeyframesRules,
   makeBaseRuleNamer,
   makeCssTokenVarsRuleSets,
   makeDefaultStylesRules,
   makeLayoutVarsRules,
   makeMixinVarsRules,
-  makeProjectAnimationsBlocks,
   makePseudoClassAwareRuleNamer,
   makePseudoElementAwareRuleNamer,
   makeStyleScopeClassName,
@@ -529,42 +526,7 @@ export function exportProjectConfig(
     site,
     `.${makePlasmicTokensClassName(projectId, exportOpts)}`
   );
-
-  // Keyframes live in `plasmic.css` (non-module) so their names stay global.
-  // Per-sequence `--plsmc-anim-<id>: <ident>;` declarations sit inside
-  // `.plasmic_default_styles` (unsuffixed, shared across projects) so a host
-  // component can resolve a keyframe defined in a dep — both projects'
-  // `.plasmic_default_styles` blocks merge in the cascade. Animation IDs
-  // include AnimationSequence uuid so cross-project collisions can't happen.
-  const animationsBlocks = makeProjectAnimationsBlocks(site, resolver);
-  const animationVarsRule = animationsBlocks.varDecls
-    ? `.${makePlasmicDefaultStylesClassName(exportOpts)} {
-${animationsBlocks.varDecls}
-}`
-    : "";
-
-  // Chain direct deps' plasmic.css via @import so a single project-CSS
-  // import (e.g. from _app.tsx on Next.js) transitively loads them all.
-  // The dep path is a best-effort placeholder; the trailing
-  // /* plasmic-import: */ directive lets the plasmic cli re-resolve it at sync time.
-  const depCssImports = walkDependencyTree(site, "direct")
-    .map((dep) => {
-      const depCssFile = makeProjectCssFileName(
-        dep.projectId as ProjectId,
-        exportOpts
-      );
-      // Loader outputs a flat directory structure with list of modules at same level.
-      const depImportPath =
-        exportOpts.targetEnv === "loader"
-          ? `./${depCssFile}`
-          : `../${L.snakeCase(dep.name)}/${depCssFile}`;
-      return makeCssTaggedPlasmicImport(
-        depImportPath,
-        dep.projectId,
-        projectStyleCssImportName
-      );
-    })
-    .join("\n");
+  const animationKeyframesRules = makeAnimationKeyframesRules(site);
 
   const splitsProviderBundle = makeSplitsProviderBundle(
     site,
@@ -599,16 +561,18 @@ ${animationsBlocks.varDecls}
     exportOpts
   );
 
-  const cssRulesBody = `
-      ${depCssImports}
+  return {
+    projectName,
+    projectId,
+    cssFileName: makeProjectCssFileName(projectId, exportOpts),
+    cssRules: `
       ${fontsCss}
       ${cssTokenVarsRules}
       ${cssTokenOverrideVarsRules}
       ${layoutVarsRules}
+      ${animationKeyframesRules}
       ${defaultTagStylesVarsRules}
       ${cssMixinPropVarsRules}
-      ${animationVarsRule}
-      ${animationsBlocks.keyframes}
       ${
         // If we're using CSS modules, defaultcss should be generated inside
         // the projectcss module.
@@ -618,12 +582,7 @@ ${animationsBlocks.varDecls}
       }
       ${resetRule}
       ${defaultTagStyles ?? ""}
-    `;
-  return {
-    projectName,
-    projectId,
-    cssFileName: makeProjectCssFileName(projectId, exportOpts),
-    cssRules: cssRulesBody,
+    `,
     revision,
     projectRevId,
     version,
@@ -1293,7 +1252,10 @@ export function renderPage(
     // with `min-height: 100vh` and stretching children.  See
     // https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Scaffolding-to-render-full-viewport-components_su2po#_luKso
     renderBody = `
-      <div className={${serializeGlobalCssClass("plasmic_page_wrapper")}}>
+      <div className={${serializeClassExpr(
+        ctx.exportOpts,
+        "plasmic_page_wrapper"
+      )}}>
         ${makeChildrenStr([renderBody])}
       </div>
     `;

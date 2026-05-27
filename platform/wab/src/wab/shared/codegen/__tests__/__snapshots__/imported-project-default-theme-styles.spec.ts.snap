@@ -279,9 +279,9 @@ import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 123456789
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
 
     import "@plasmicapp/react-web/lib/plasmic.css";
-    import "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
-    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+    import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicHomepage.css" // plasmic-import: WEcg8qFNJmkz/css
   
 
@@ -747,10 +747,11 @@ export default PlasmicHomepage;
     import { createUseStyleTokens } from "@plasmicapp/react-web";
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
-
+  
     import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
-import "./plasmic.css"; // plasmic-import: dDhZ6zwZLAf7xJZyZTRjNo/projectcss
 
+    import "./plasmic.css"; // plasmic-import: dDhZ6zwZLAf7xJZyZTRjNo/projectcss
+  
     const data = {
     base: \`\${"plasmic_tokens_1234567890"} \${"plasmic_tokens_dDhZ6zwZLAf7xJZyZTRjNo"}\`,
     varianted: [
@@ -870,9 +871,9 @@ import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 123456789
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
 
     import "@plasmicapp/react-web/lib/plasmic.css";
-    import "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
-    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+    import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicTest.css" // plasmic-import: bSp5ll34SsDD/css
   
 
@@ -1158,7 +1159,6 @@ declare module '*.module.css' {
 }
 --- plasmic.css ---
 
-      @import "../imported_project_1/plasmic.css"; /* plasmic-import: dDhZ6zwZLAf7xJZyZTRjNo/projectcss */
       @import url('https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700&display=swap');
       
       
@@ -1171,13 +1171,12 @@ declare module '*.module.css' {
   }
     
       
+      
         
         .plasmic_default_styles {
           --mixin-K-a1yZi9mim-_font-family: "Inter", sans-serif; --mixin-K-a1yZi9mim-_font-size: 16px; --mixin-K-a1yZi9mim-_font-weight: 400; --mixin-K-a1yZi9mim-_font-style: normal; --mixin-K-a1yZi9mim-_text-align: left; --mixin-K-a1yZi9mim-_text-transform: none; --mixin-K-a1yZi9mim-_line-height: 1.5; --mixin-K-a1yZi9mim-_letter-spacing: normal; --mixin-K-a1yZi9mim-_white-space: pre-wrap; --mixin-K-a1yZi9mim-_user-select: text; --mixin-K-a1yZi9mim-_text-decoration-line: none; --mixin-K-a1yZi9mim-_text-overflow: clip; --mixin-K-a1yZi9mim-_color: #FF9D00; --mixin-iKbid-IqVxcH_color: #000000; --mixin-iKbid-IqVxcH_font-weight: 700; --mixin-iKbid-IqVxcH_font-size: 64px; --mixin-iKbid-IqVxcH_line-height: 1; --mixin-iKbid-IqVxcH_letter-spacing: -1px; --mixin-iKbid-IqVxcH_white-space: pre-wrap; --mixin-5tmxh91YK0eG_color: #000000; --mixin-5tmxh91YK0eG_font-size: 48px; --mixin-5tmxh91YK0eG_font-weight: 700; --mixin-5tmxh91YK0eG_letter-spacing: -0.5px; --mixin-5tmxh91YK0eG_line-height: 1.1; --mixin-5tmxh91YK0eG_white-space: pre-wrap; --mixin-j9U8HBZTYi1F_color: #0070f3; --mixin-j9U8HBZTYi1F_white-space: pre-wrap; --mixin-y4uKpCqHdNtD_color: #000000; --mixin-y4uKpCqHdNtD_font-size: 32px; --mixin-y4uKpCqHdNtD_font-weight: 600; --mixin-y4uKpCqHdNtD_line-height: 1.2; --mixin-y4uKpCqHdNtD_white-space: pre-wrap; --mixin-28IvujOFbkOl_color: #000000; --mixin-28IvujOFbkOl_font-size: 24px; --mixin-28IvujOFbkOl_font-weight: 600; --mixin-28IvujOFbkOl_line-height: 1.3; --mixin-28IvujOFbkOl_white-space: pre-wrap; --mixin-BsWSPlLbLlsP_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-BsWSPlLbLlsP_border-bottom-color: #dddddd; --mixin-BsWSPlLbLlsP_border-bottom-style: solid; --mixin-BsWSPlLbLlsP_border-bottom-width: 1px; --mixin-BsWSPlLbLlsP_border-left-color: #dddddd; --mixin-BsWSPlLbLlsP_border-left-style: solid; --mixin-BsWSPlLbLlsP_border-left-width: 1px; --mixin-BsWSPlLbLlsP_border-right-color: #dddddd; --mixin-BsWSPlLbLlsP_border-right-style: solid; --mixin-BsWSPlLbLlsP_border-right-width: 1px; --mixin-BsWSPlLbLlsP_border-top-color: #dddddd; --mixin-BsWSPlLbLlsP_border-top-style: solid; --mixin-BsWSPlLbLlsP_border-top-width: 1px; --mixin-BsWSPlLbLlsP_border-bottom-left-radius: 3px; --mixin-BsWSPlLbLlsP_border-bottom-right-radius: 3px; --mixin-BsWSPlLbLlsP_border-top-left-radius: 3px; --mixin-BsWSPlLbLlsP_border-top-right-radius: 3px; --mixin-BsWSPlLbLlsP_font-family: "Inconsolata"; --mixin-BsWSPlLbLlsP_padding-bottom: 1px; --mixin-BsWSPlLbLlsP_padding-left: 4px; --mixin-BsWSPlLbLlsP_padding-right: 4px; --mixin-BsWSPlLbLlsP_padding-top: 1px; --mixin-BsWSPlLbLlsP_white-space: pre-wrap; --mixin-i9uNumGW3GVX_border-left-color: #dddddd; --mixin-i9uNumGW3GVX_border-left-style: solid; --mixin-i9uNumGW3GVX_border-left-width: 3px; --mixin-i9uNumGW3GVX_color: #888888; --mixin-i9uNumGW3GVX_padding-left: 10px; --mixin-i9uNumGW3GVX_white-space: pre-wrap; --mixin-PQt6M7M3Uelg_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-PQt6M7M3Uelg_border-bottom-color: #dddddd; --mixin-PQt6M7M3Uelg_border-bottom-style: solid; --mixin-PQt6M7M3Uelg_border-bottom-width: 1px; --mixin-PQt6M7M3Uelg_border-left-color: #dddddd; --mixin-PQt6M7M3Uelg_border-left-style: solid; --mixin-PQt6M7M3Uelg_border-left-width: 1px; --mixin-PQt6M7M3Uelg_border-right-color: #dddddd; --mixin-PQt6M7M3Uelg_border-right-style: solid; --mixin-PQt6M7M3Uelg_border-right-width: 1px; --mixin-PQt6M7M3Uelg_border-top-color: #dddddd; --mixin-PQt6M7M3Uelg_border-top-style: solid; --mixin-PQt6M7M3Uelg_border-top-width: 1px; --mixin-PQt6M7M3Uelg_border-bottom-left-radius: 3px; --mixin-PQt6M7M3Uelg_border-bottom-right-radius: 3px; --mixin-PQt6M7M3Uelg_border-top-left-radius: 3px; --mixin-PQt6M7M3Uelg_border-top-right-radius: 3px; --mixin-PQt6M7M3Uelg_font-family: "Inconsolata"; --mixin-PQt6M7M3Uelg_padding-bottom: 3px; --mixin-PQt6M7M3Uelg_padding-left: 6px; --mixin-PQt6M7M3Uelg_padding-right: 6px; --mixin-PQt6M7M3Uelg_padding-top: 3px; --mixin-PQt6M7M3Uelg_white-space: pre-wrap; --mixin-AEBcURu5N5vI_display: flex; --mixin-AEBcURu5N5vI_flex-direction: column; --mixin-AEBcURu5N5vI_align-items: stretch; --mixin-AEBcURu5N5vI_justify-content: flex-start; --mixin-AEBcURu5N5vI_list-style-position: outside; --mixin-AEBcURu5N5vI_padding-left: 40px; --mixin-AEBcURu5N5vI_position: relative; --mixin-AEBcURu5N5vI_list-style-type: disc; --mixin-AEBcURu5N5vI_white-space: pre-wrap; --mixin-ZhC49davny6P_display: flex; --mixin-ZhC49davny6P_flex-direction: column; --mixin-ZhC49davny6P_align-items: stretch; --mixin-ZhC49davny6P_justify-content: flex-start; --mixin-ZhC49davny6P_list-style-position: outside; --mixin-ZhC49davny6P_padding-left: 40px; --mixin-ZhC49davny6P_position: relative; --mixin-ZhC49davny6P_list-style-type: decimal; --mixin-ZhC49davny6P_white-space: pre-wrap; --mixin-R_fESbKmFG3-_color: #000000; --mixin-R_fESbKmFG3-_font-size: 20px; --mixin-R_fESbKmFG3-_font-weight: 600; --mixin-R_fESbKmFG3-_line-height: 1.5; --mixin-R_fESbKmFG3-_white-space: pre-wrap; --mixin-PZGG7T7JBi57_color: #000000; --mixin-PZGG7T7JBi57_font-size: 16px; --mixin-PZGG7T7JBi57_font-weight: 600; --mixin-PZGG7T7JBi57_line-height: 1.5; --mixin-PZGG7T7JBi57_white-space: pre-wrap; --mixin-UyQ_eaVtWYfQ_color: #3291ff; --mixin-UyQ_eaVtWYfQ_white-space: pre-wrap; --mixin-vK68ld_rzZci_white-space: pre-wrap; --mixin-3hXauC0xCT8V_white-space: pre-wrap
         }
         
-      
-      
       
       
       :where(.root_reset_1234567890) {
@@ -1919,7 +1918,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
-    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+    import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
     import sty from "./PlasmicHomepage.module.css" // plasmic-import: WEcg8qFNJmkz/css
   
 
@@ -2080,13 +2079,13 @@ const $$ = {};
         <React.Fragment>
   
 
-      <div className={"plasmic_page_wrapper"}>
+      <div className={projectcss.plasmic_page_wrapper}>
         <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames("all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, sty.root)}
+      className={classNames(projectcss.all, projectcss.root_reset, projectcss.plasmic_default_styles, projectcss.plasmic_mixins, styleTokensClassNames, sty.root)}
       
       >
             <div
@@ -2094,7 +2093,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__c9Ojb)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__c9Ojb)}
       
       >
             { "Default text" }
@@ -2104,7 +2103,7 @@ const $$ = {};
       data-plasmic-override={overrides.span}
       
       
-      className={classNames("all", "span", "span__12345", "__wab_text", sty.span)}
+      className={classNames(projectcss.all, projectcss.span, projectcss.span__12345, projectcss.__wab_text, sty.span)}
       
       >
             { "Default text span" }
@@ -2114,7 +2113,7 @@ const $$ = {};
       data-plasmic-override={overrides.section}
       
       
-      className={classNames("all", sty.section)}
+      className={classNames(projectcss.all, sty.section)}
       
       >
             <h1
@@ -2122,7 +2121,7 @@ const $$ = {};
       data-plasmic-override={overrides.h1}
       
       
-      className={classNames("all", "h1", "h1__12345", "__wab_text", sty.h1)}
+      className={classNames(projectcss.all, projectcss.h1, projectcss.h1__12345, projectcss.__wab_text, sty.h1)}
       
       >
             { "Welcome to your first page." }
@@ -2132,7 +2131,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text___2Lat2)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text___2Lat2)}
       
       >
             <React.Fragment><React.Fragment>{"If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.\\n\\nIt's always easier to start from examples! Add a new page using a template\\u2014do this from the list of pages in the top toolbar.\\n\\nOr press the big blue + button to start inserting items into this page.\\n\\nIntegrate this project into your codebase\\u2014press the "}</React.Fragment><span className={"plasmic_default__all plasmic_default__span plasmic_default__span__12345"} style={{"fontWeight":700}}>{"Code"}</span><React.Fragment>{" button in the top right and follow the quickstart instructions.\\n\\nJoin our Slack community (icon in bottom left) for help any time."}</React.Fragment></React.Fragment>
@@ -2158,7 +2157,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__cNbBt)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__cNbBt)}
       
       >
             { "Enter some text" }
@@ -2168,7 +2167,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__aF0GU)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__aF0GU)}
       
       >
             { "Enter some text" }
@@ -2187,7 +2186,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__kkenk)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__kkenk)}
       
       >
             { "Enter some text" }
@@ -2197,7 +2196,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__npiUr)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__npiUr)}
       
       >
             { "Enter some text" }
@@ -2216,7 +2215,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text___3BuRe)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text___3BuRe)}
       
       >
             { "Enter some text" }
@@ -2226,7 +2225,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__h6CG7)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__h6CG7)}
       
       >
             { "Enter some text" }
@@ -2245,7 +2244,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__sJtfM)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__sJtfM)}
       
       >
             { "Enter some text" }
@@ -2255,7 +2254,7 @@ const $$ = {};
       
       
       
-      className={classNames("all", "__wab_text", sty.text__sfhq1)}
+      className={classNames(projectcss.all, projectcss.__wab_text, sty.text__sfhq1)}
       
       >
             { "Enter some text" }
@@ -2385,12 +2384,13 @@ export default PlasmicHomepage;
     import { createUseStyleTokens } from "@plasmicapp/react-web";
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
+  
+    import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
 
-    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
-import "./plasmic.css"; // plasmic-import: dDhZ6zwZLAf7xJZyZTRjNo/projectcss
-
+    import plasmic_imported_project_1_css from "./plasmic.module.css"; // plasmic-import: dDhZ6zwZLAf7xJZyZTRjNo/projectcss
+  
     const data = {
-    base: \`\${"plasmic_tokens_1234567890"} \${"plasmic_tokens_dDhZ6zwZLAf7xJZyZTRjNo"}\`,
+    base: \`\${projectcss.plasmic_tokens} \${plasmic_imported_project_1_css.plasmic_tokens}\`,
     varianted: [
     
   ],
@@ -2510,7 +2510,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
-    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+    import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
     import sty from "./PlasmicTest.module.css" // plasmic-import: bSp5ll34SsDD/css
   
 
@@ -2628,7 +2628,7 @@ const $$ = {};
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames("all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, sty.root)}
+      className={classNames(projectcss.all, projectcss.root_reset, projectcss.plasmic_default_styles, projectcss.plasmic_mixins, styleTokensClassNames, sty.root)}
       
       >
             <div
@@ -2636,7 +2636,7 @@ const $$ = {};
       data-plasmic-override={overrides.freeBox}
       
       
-      className={classNames("all", sty.freeBox)}
+      className={classNames(projectcss.all, sty.freeBox)}
       
       >
             { renderPlasmicSlot({
@@ -2794,14 +2794,13 @@ declare module '*.module.css' {
   const classes: { readonly [key: string]: string }
   export default classes
 }
---- plasmic.css ---
+--- plasmic.module.css ---
 
-      @import "../imported_project_1/plasmic.css"; /* plasmic-import: dDhZ6zwZLAf7xJZyZTRjNo/projectcss */
       @import url('https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700&display=swap');
       
       
       
-  .plasmic_tokens_1234567890 {
+  .plasmic_tokens {
     --plsmc-standard-width: 800px;
     --plsmc-wide-width: 1280px;
     --plsmc-viewport-gap: 16px;
@@ -2809,13 +2808,12 @@ declare module '*.module.css' {
   }
     
       
+      
         
         .plasmic_default_styles {
           --mixin-K-a1yZi9mim-_font-family: "Inter", sans-serif; --mixin-K-a1yZi9mim-_font-size: 16px; --mixin-K-a1yZi9mim-_font-weight: 400; --mixin-K-a1yZi9mim-_font-style: normal; --mixin-K-a1yZi9mim-_text-align: left; --mixin-K-a1yZi9mim-_text-transform: none; --mixin-K-a1yZi9mim-_line-height: 1.5; --mixin-K-a1yZi9mim-_letter-spacing: normal; --mixin-K-a1yZi9mim-_white-space: pre-wrap; --mixin-K-a1yZi9mim-_user-select: text; --mixin-K-a1yZi9mim-_text-decoration-line: none; --mixin-K-a1yZi9mim-_text-overflow: clip; --mixin-K-a1yZi9mim-_color: #FF9D00; --mixin-iKbid-IqVxcH_color: #000000; --mixin-iKbid-IqVxcH_font-weight: 700; --mixin-iKbid-IqVxcH_font-size: 64px; --mixin-iKbid-IqVxcH_line-height: 1; --mixin-iKbid-IqVxcH_letter-spacing: -1px; --mixin-iKbid-IqVxcH_white-space: pre-wrap; --mixin-5tmxh91YK0eG_color: #000000; --mixin-5tmxh91YK0eG_font-size: 48px; --mixin-5tmxh91YK0eG_font-weight: 700; --mixin-5tmxh91YK0eG_letter-spacing: -0.5px; --mixin-5tmxh91YK0eG_line-height: 1.1; --mixin-5tmxh91YK0eG_white-space: pre-wrap; --mixin-j9U8HBZTYi1F_color: #0070f3; --mixin-j9U8HBZTYi1F_white-space: pre-wrap; --mixin-y4uKpCqHdNtD_color: #000000; --mixin-y4uKpCqHdNtD_font-size: 32px; --mixin-y4uKpCqHdNtD_font-weight: 600; --mixin-y4uKpCqHdNtD_line-height: 1.2; --mixin-y4uKpCqHdNtD_white-space: pre-wrap; --mixin-28IvujOFbkOl_color: #000000; --mixin-28IvujOFbkOl_font-size: 24px; --mixin-28IvujOFbkOl_font-weight: 600; --mixin-28IvujOFbkOl_line-height: 1.3; --mixin-28IvujOFbkOl_white-space: pre-wrap; --mixin-BsWSPlLbLlsP_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-BsWSPlLbLlsP_border-bottom-color: #dddddd; --mixin-BsWSPlLbLlsP_border-bottom-style: solid; --mixin-BsWSPlLbLlsP_border-bottom-width: 1px; --mixin-BsWSPlLbLlsP_border-left-color: #dddddd; --mixin-BsWSPlLbLlsP_border-left-style: solid; --mixin-BsWSPlLbLlsP_border-left-width: 1px; --mixin-BsWSPlLbLlsP_border-right-color: #dddddd; --mixin-BsWSPlLbLlsP_border-right-style: solid; --mixin-BsWSPlLbLlsP_border-right-width: 1px; --mixin-BsWSPlLbLlsP_border-top-color: #dddddd; --mixin-BsWSPlLbLlsP_border-top-style: solid; --mixin-BsWSPlLbLlsP_border-top-width: 1px; --mixin-BsWSPlLbLlsP_border-bottom-left-radius: 3px; --mixin-BsWSPlLbLlsP_border-bottom-right-radius: 3px; --mixin-BsWSPlLbLlsP_border-top-left-radius: 3px; --mixin-BsWSPlLbLlsP_border-top-right-radius: 3px; --mixin-BsWSPlLbLlsP_font-family: "Inconsolata"; --mixin-BsWSPlLbLlsP_padding-bottom: 1px; --mixin-BsWSPlLbLlsP_padding-left: 4px; --mixin-BsWSPlLbLlsP_padding-right: 4px; --mixin-BsWSPlLbLlsP_padding-top: 1px; --mixin-BsWSPlLbLlsP_white-space: pre-wrap; --mixin-i9uNumGW3GVX_border-left-color: #dddddd; --mixin-i9uNumGW3GVX_border-left-style: solid; --mixin-i9uNumGW3GVX_border-left-width: 3px; --mixin-i9uNumGW3GVX_color: #888888; --mixin-i9uNumGW3GVX_padding-left: 10px; --mixin-i9uNumGW3GVX_white-space: pre-wrap; --mixin-PQt6M7M3Uelg_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-PQt6M7M3Uelg_border-bottom-color: #dddddd; --mixin-PQt6M7M3Uelg_border-bottom-style: solid; --mixin-PQt6M7M3Uelg_border-bottom-width: 1px; --mixin-PQt6M7M3Uelg_border-left-color: #dddddd; --mixin-PQt6M7M3Uelg_border-left-style: solid; --mixin-PQt6M7M3Uelg_border-left-width: 1px; --mixin-PQt6M7M3Uelg_border-right-color: #dddddd; --mixin-PQt6M7M3Uelg_border-right-style: solid; --mixin-PQt6M7M3Uelg_border-right-width: 1px; --mixin-PQt6M7M3Uelg_border-top-color: #dddddd; --mixin-PQt6M7M3Uelg_border-top-style: solid; --mixin-PQt6M7M3Uelg_border-top-width: 1px; --mixin-PQt6M7M3Uelg_border-bottom-left-radius: 3px; --mixin-PQt6M7M3Uelg_border-bottom-right-radius: 3px; --mixin-PQt6M7M3Uelg_border-top-left-radius: 3px; --mixin-PQt6M7M3Uelg_border-top-right-radius: 3px; --mixin-PQt6M7M3Uelg_font-family: "Inconsolata"; --mixin-PQt6M7M3Uelg_padding-bottom: 3px; --mixin-PQt6M7M3Uelg_padding-left: 6px; --mixin-PQt6M7M3Uelg_padding-right: 6px; --mixin-PQt6M7M3Uelg_padding-top: 3px; --mixin-PQt6M7M3Uelg_white-space: pre-wrap; --mixin-AEBcURu5N5vI_display: flex; --mixin-AEBcURu5N5vI_flex-direction: column; --mixin-AEBcURu5N5vI_align-items: stretch; --mixin-AEBcURu5N5vI_justify-content: flex-start; --mixin-AEBcURu5N5vI_list-style-position: outside; --mixin-AEBcURu5N5vI_padding-left: 40px; --mixin-AEBcURu5N5vI_position: relative; --mixin-AEBcURu5N5vI_list-style-type: disc; --mixin-AEBcURu5N5vI_white-space: pre-wrap; --mixin-ZhC49davny6P_display: flex; --mixin-ZhC49davny6P_flex-direction: column; --mixin-ZhC49davny6P_align-items: stretch; --mixin-ZhC49davny6P_justify-content: flex-start; --mixin-ZhC49davny6P_list-style-position: outside; --mixin-ZhC49davny6P_padding-left: 40px; --mixin-ZhC49davny6P_position: relative; --mixin-ZhC49davny6P_list-style-type: decimal; --mixin-ZhC49davny6P_white-space: pre-wrap; --mixin-R_fESbKmFG3-_color: #000000; --mixin-R_fESbKmFG3-_font-size: 20px; --mixin-R_fESbKmFG3-_font-weight: 600; --mixin-R_fESbKmFG3-_line-height: 1.5; --mixin-R_fESbKmFG3-_white-space: pre-wrap; --mixin-PZGG7T7JBi57_color: #000000; --mixin-PZGG7T7JBi57_font-size: 16px; --mixin-PZGG7T7JBi57_font-weight: 600; --mixin-PZGG7T7JBi57_line-height: 1.5; --mixin-PZGG7T7JBi57_white-space: pre-wrap; --mixin-UyQ_eaVtWYfQ_color: #3291ff; --mixin-UyQ_eaVtWYfQ_white-space: pre-wrap; --mixin-vK68ld_rzZci_white-space: pre-wrap; --mixin-3hXauC0xCT8V_white-space: pre-wrap
         }
         
-      
-      
       
       
         :where(.all) {   display: block;
@@ -3094,7 +3092,7 @@ declare module '*.module.css' {
 .plasmic_page_wrapper { display: flex; width: 100%; min-height: 100vh; align-items: stretch; align-self: start;}
 .plasmic_page_wrapper > * { height: auto !important; }
 .__wab_expr_html_text { white-space: normal; }
-      :where(.root_reset_1234567890) {
+      :where(.root_reset) {
       font-family: var(--mixin-K-a1yZi9mim-_font-family);
 font-size: var(--mixin-K-a1yZi9mim-_font-size);
 font-weight: var(--mixin-K-a1yZi9mim-_font-weight);
@@ -3107,7 +3105,7 @@ letter-spacing: var(--mixin-K-a1yZi9mim-_letter-spacing);
 white-space: var(--mixin-K-a1yZi9mim-_white-space);  
   }
       
-    :where(.root_reset_1234567890) h1:where(.h1__12345), h1:where(.root_reset_1234567890.h1__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) h1, :where(.root_reset_1234567890_tags) h1, h1:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) h1:where(.h1__12345), h1:where(.root_reset.h1__12345), :where(.root_reset .__wab_expr_html_text) h1, :where(.root_reset_tags) h1, h1:where(.root_reset_tags) {
         color: var(--mixin-iKbid-IqVxcH_color);
 font-weight: var(--mixin-iKbid-IqVxcH_font-weight);
 font-size: var(--mixin-iKbid-IqVxcH_font-size);
@@ -3116,7 +3114,7 @@ letter-spacing: var(--mixin-iKbid-IqVxcH_letter-spacing);
     }
   
 
-    :where(.root_reset_1234567890) h2:where(.h2__12345), h2:where(.root_reset_1234567890.h2__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) h2, :where(.root_reset_1234567890_tags) h2, h2:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) h2:where(.h2__12345), h2:where(.root_reset.h2__12345), :where(.root_reset .__wab_expr_html_text) h2, :where(.root_reset_tags) h2, h2:where(.root_reset_tags) {
         color: var(--mixin-5tmxh91YK0eG_color);
 font-size: var(--mixin-5tmxh91YK0eG_font-size);
 font-weight: var(--mixin-5tmxh91YK0eG_font-weight);
@@ -3125,12 +3123,12 @@ line-height: var(--mixin-5tmxh91YK0eG_line-height);
     }
   
 
-    :where(.root_reset_1234567890) a:where(.a__12345), a:where(.root_reset_1234567890.a__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) a, :where(.root_reset_1234567890_tags) a, a:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) a:where(.a__12345), a:where(.root_reset.a__12345), :where(.root_reset .__wab_expr_html_text) a, :where(.root_reset_tags) a, a:where(.root_reset_tags) {
         color: var(--mixin-j9U8HBZTYi1F_color);  
     }
   
 
-    :where(.root_reset_1234567890) h3:where(.h3__12345), h3:where(.root_reset_1234567890.h3__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) h3, :where(.root_reset_1234567890_tags) h3, h3:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) h3:where(.h3__12345), h3:where(.root_reset.h3__12345), :where(.root_reset .__wab_expr_html_text) h3, :where(.root_reset_tags) h3, h3:where(.root_reset_tags) {
         color: var(--mixin-y4uKpCqHdNtD_color);
 font-size: var(--mixin-y4uKpCqHdNtD_font-size);
 font-weight: var(--mixin-y4uKpCqHdNtD_font-weight);
@@ -3138,7 +3136,7 @@ line-height: var(--mixin-y4uKpCqHdNtD_line-height);
     }
   
 
-    :where(.root_reset_1234567890) h4:where(.h4__12345), h4:where(.root_reset_1234567890.h4__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) h4, :where(.root_reset_1234567890_tags) h4, h4:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) h4:where(.h4__12345), h4:where(.root_reset.h4__12345), :where(.root_reset .__wab_expr_html_text) h4, :where(.root_reset_tags) h4, h4:where(.root_reset_tags) {
         color: var(--mixin-28IvujOFbkOl_color);
 font-size: var(--mixin-28IvujOFbkOl_font-size);
 font-weight: var(--mixin-28IvujOFbkOl_font-weight);
@@ -3146,7 +3144,7 @@ line-height: var(--mixin-28IvujOFbkOl_line-height);
     }
   
 
-    :where(.root_reset_1234567890) code:where(.code__12345), code:where(.root_reset_1234567890.code__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) code, :where(.root_reset_1234567890_tags) code, code:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) code:where(.code__12345), code:where(.root_reset.code__12345), :where(.root_reset .__wab_expr_html_text) code, :where(.root_reset_tags) code, code:where(.root_reset_tags) {
         background: #f8f8f8;
 font-family: var(--mixin-BsWSPlLbLlsP_font-family);
 border-radius: var(--mixin-BsWSPlLbLlsP_border-top-left-radius) var(--mixin-BsWSPlLbLlsP_border-top-right-radius) var(--mixin-BsWSPlLbLlsP_border-bottom-right-radius) var(--mixin-BsWSPlLbLlsP_border-bottom-left-radius);
@@ -3158,14 +3156,14 @@ border-left: var(--mixin-BsWSPlLbLlsP_border-left-width) var(--mixin-BsWSPlLbLls
     }
   
 
-    :where(.root_reset_1234567890) blockquote:where(.blockquote__12345), blockquote:where(.root_reset_1234567890.blockquote__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) blockquote, :where(.root_reset_1234567890_tags) blockquote, blockquote:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) blockquote:where(.blockquote__12345), blockquote:where(.root_reset.blockquote__12345), :where(.root_reset .__wab_expr_html_text) blockquote, :where(.root_reset_tags) blockquote, blockquote:where(.root_reset_tags) {
         color: var(--mixin-i9uNumGW3GVX_color);
 padding-left: var(--mixin-i9uNumGW3GVX_padding-left);
 border-left: var(--mixin-i9uNumGW3GVX_border-left-width) var(--mixin-i9uNumGW3GVX_border-left-style) var(--mixin-i9uNumGW3GVX_border-left-color);  
     }
   
 
-    :where(.root_reset_1234567890) pre:where(.pre__12345), pre:where(.root_reset_1234567890.pre__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) pre, :where(.root_reset_1234567890_tags) pre, pre:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) pre:where(.pre__12345), pre:where(.root_reset.pre__12345), :where(.root_reset .__wab_expr_html_text) pre, :where(.root_reset_tags) pre, pre:where(.root_reset_tags) {
         background: #f8f8f8;
 font-family: var(--mixin-PQt6M7M3Uelg_font-family);
 border-radius: var(--mixin-PQt6M7M3Uelg_border-top-left-radius) var(--mixin-PQt6M7M3Uelg_border-top-right-radius) var(--mixin-PQt6M7M3Uelg_border-bottom-right-radius) var(--mixin-PQt6M7M3Uelg_border-bottom-left-radius);
@@ -3177,7 +3175,7 @@ border-left: var(--mixin-PQt6M7M3Uelg_border-left-width) var(--mixin-PQt6M7M3Uel
     }
   
 
-    :where(.root_reset_1234567890) ul:where(.ul__12345), ul:where(.root_reset_1234567890.ul__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) ul, :where(.root_reset_1234567890_tags) ul, ul:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) ul:where(.ul__12345), ul:where(.root_reset.ul__12345), :where(.root_reset .__wab_expr_html_text) ul, :where(.root_reset_tags) ul, ul:where(.root_reset_tags) {
         display: var(--mixin-AEBcURu5N5vI_display);
 flex-direction: var(--mixin-AEBcURu5N5vI_flex-direction);
 align-items: var(--mixin-AEBcURu5N5vI_align-items);
@@ -3190,7 +3188,7 @@ column-gap: var(--mixin-AEBcURu5N5vI_column-gap);
     }
   
 
-    :where(.root_reset_1234567890) ol:where(.ol__12345), ol:where(.root_reset_1234567890.ol__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) ol, :where(.root_reset_1234567890_tags) ol, ol:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) ol:where(.ol__12345), ol:where(.root_reset.ol__12345), :where(.root_reset .__wab_expr_html_text) ol, :where(.root_reset_tags) ol, ol:where(.root_reset_tags) {
         display: var(--mixin-ZhC49davny6P_display);
 flex-direction: var(--mixin-ZhC49davny6P_flex-direction);
 align-items: var(--mixin-ZhC49davny6P_align-items);
@@ -3203,7 +3201,7 @@ column-gap: var(--mixin-ZhC49davny6P_column-gap);
     }
   
 
-    :where(.root_reset_1234567890) h5:where(.h5__12345), h5:where(.root_reset_1234567890.h5__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) h5, :where(.root_reset_1234567890_tags) h5, h5:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) h5:where(.h5__12345), h5:where(.root_reset.h5__12345), :where(.root_reset .__wab_expr_html_text) h5, :where(.root_reset_tags) h5, h5:where(.root_reset_tags) {
         color: var(--mixin-R_fESbKmFG3-_color);
 font-size: var(--mixin-R_fESbKmFG3-_font-size);
 font-weight: var(--mixin-R_fESbKmFG3-_font-weight);
@@ -3211,7 +3209,7 @@ line-height: var(--mixin-R_fESbKmFG3-_line-height);
     }
   
 
-    :where(.root_reset_1234567890) h6:where(.h6__12345), h6:where(.root_reset_1234567890.h6__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) h6, :where(.root_reset_1234567890_tags) h6, h6:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) h6:where(.h6__12345), h6:where(.root_reset.h6__12345), :where(.root_reset .__wab_expr_html_text) h6, :where(.root_reset_tags) h6, h6:where(.root_reset_tags) {
         color: var(--mixin-PZGG7T7JBi57_color);
 font-size: var(--mixin-PZGG7T7JBi57_font-size);
 font-weight: var(--mixin-PZGG7T7JBi57_font-weight);
@@ -3219,17 +3217,17 @@ line-height: var(--mixin-PZGG7T7JBi57_line-height);
     }
   
 
-    :where(.root_reset_1234567890) a:where(.a__12345):hover, a:where(.root_reset_1234567890.a__12345):hover, :where(.root_reset_1234567890 .__wab_expr_html_text) a:hover, :where(.root_reset_1234567890_tags) a:hover, a:where(.root_reset_1234567890_tags):hover {
+    :where(.root_reset) a:where(.a__12345):hover, a:where(.root_reset.a__12345):hover, :where(.root_reset .__wab_expr_html_text) a:hover, :where(.root_reset_tags) a:hover, a:where(.root_reset_tags):hover {
         color: var(--mixin-UyQ_eaVtWYfQ_color);  
     }
   
 
-    :where(.root_reset_1234567890) li:where(.li__12345), li:where(.root_reset_1234567890.li__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) li, :where(.root_reset_1234567890_tags) li, li:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) li:where(.li__12345), li:where(.root_reset.li__12345), :where(.root_reset .__wab_expr_html_text) li, :where(.root_reset_tags) li, li:where(.root_reset_tags) {
       
     }
   
 
-    :where(.root_reset_1234567890) p:where(.p__12345), p:where(.root_reset_1234567890.p__12345), :where(.root_reset_1234567890 .__wab_expr_html_text) p, :where(.root_reset_1234567890_tags) p, p:where(.root_reset_1234567890_tags) {
+    :where(.root_reset) p:where(.p__12345), p:where(.root_reset.p__12345), :where(.root_reset .__wab_expr_html_text) p, :where(.root_reset_tags) p, p:where(.root_reset_tags) {
       
     }
   
@@ -3255,7 +3253,7 @@ line-height: var(--mixin-PZGG7T7JBi57_line-height);
   });
 
   
---- plasmic__default_style.css ---
+--- plasmic__default_style.module.css ---
 
         :where(.all) {   display: block;
   white-space: inherit;

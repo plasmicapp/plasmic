@@ -115,9 +115,9 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
 import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
 
     import "@plasmicapp/react-web/lib/plasmic.css";
+    import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
-    
-    
+    import  "./plasmic.css"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectcss
     import  "./PlasmicSeo.css" // plasmic-import: yjEpnuKb4eHY/css
   
 
@@ -487,9 +487,11 @@ export function PlasmicSeoServer(props: PlasmicSeoServerProps) {
     import { createUseStyleTokens } from "@plasmicapp/react-web";
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectModule
+  
+    import "./plasmic.css"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectcss
 
     
-
+  
     const data = {
     base: \`\${"plasmic_tokens_3UYiEMfU3twU4iYSx86cub"}\`,
     varianted: [
@@ -653,7 +655,6 @@ export const pageCanonical: any = (() => { try { return ({
 
 --- plasmic.css ---
 
-      
       @import url('https://fonts.googleapis.com/css2?family=Roboto%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C700%3B0%2C900&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&display=swap');
       
       
@@ -666,13 +667,12 @@ export const pageCanonical: any = (() => { try { return ({
   }
     
       
+      
         
         .plasmic_default_styles {
           --mixin-Km94s0mCg1tc_font-family: "Roboto", sans-serif; --mixin-Km94s0mCg1tc_font-size: 16px; --mixin-Km94s0mCg1tc_font-weight: 400; --mixin-Km94s0mCg1tc_font-style: normal; --mixin-Km94s0mCg1tc_color: #000000; --mixin-Km94s0mCg1tc_text-align: left; --mixin-Km94s0mCg1tc_text-transform: none; --mixin-Km94s0mCg1tc_line-height: 1.5; --mixin-Km94s0mCg1tc_letter-spacing: normal; --mixin-Km94s0mCg1tc_white-space: pre-wrap; --mixin-Km94s0mCg1tc_user-select: text; --mixin-Km94s0mCg1tc_text-decoration-line: none; --mixin-Km94s0mCg1tc_text-overflow: clip; --mixin-OICBBOxCAsvd_font-size: 72px; --mixin-OICBBOxCAsvd_font-weight: 900; --mixin-OICBBOxCAsvd_letter-spacing: -4px; --mixin-OICBBOxCAsvd_line-height: 1; --mixin-OICBBOxCAsvd_white-space: pre-wrap; --mixin-Ep_U4xE6_RBo_font-size: 48px; --mixin-Ep_U4xE6_RBo_font-weight: 700; --mixin-Ep_U4xE6_RBo_letter-spacing: -1px; --mixin-Ep_U4xE6_RBo_line-height: 1.1; --mixin-Ep_U4xE6_RBo_white-space: pre-wrap; --mixin-_yeM8rScakKu_font-size: 32px; --mixin-_yeM8rScakKu_font-weight: 600; --mixin-_yeM8rScakKu_letter-spacing: -0.8px; --mixin-_yeM8rScakKu_line-height: 1.2; --mixin-_yeM8rScakKu_white-space: pre-wrap; --mixin-71EwpdFcNmyG_font-size: 24px; --mixin-71EwpdFcNmyG_font-weight: 600; --mixin-71EwpdFcNmyG_letter-spacing: -0.5px; --mixin-71EwpdFcNmyG_line-height: 1.3; --mixin-71EwpdFcNmyG_white-space: pre-wrap; --mixin-erqJJqT6Lajh_font-size: 20px; --mixin-erqJJqT6Lajh_font-weight: 600; --mixin-erqJJqT6Lajh_letter-spacing: -0.3px; --mixin-erqJJqT6Lajh_line-height: 1.5; --mixin-erqJJqT6Lajh_white-space: pre-wrap; --mixin-Msrq90G1gY-K_font-size: 16px; --mixin-Msrq90G1gY-K_font-weight: 600; --mixin-Msrq90G1gY-K_line-height: 1.5; --mixin-Msrq90G1gY-K_white-space: pre-wrap; --mixin-Ap4f8C38x5hD_color: #0070f3; --mixin-Ap4f8C38x5hD_white-space: pre-wrap; --mixin-iXGPq71_ntrz_color: #3291ff; --mixin-iXGPq71_ntrz_white-space: pre-wrap; --mixin-Z-GhXfXoZyBS_border-left-color: #dddddd; --mixin-Z-GhXfXoZyBS_border-left-style: solid; --mixin-Z-GhXfXoZyBS_border-left-width: 3px; --mixin-Z-GhXfXoZyBS_color: #888888; --mixin-Z-GhXfXoZyBS_padding-left: 10px; --mixin-Z-GhXfXoZyBS_white-space: pre-wrap; --mixin-iXY9OaUFuega_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-iXY9OaUFuega_border-bottom-color: #dddddd; --mixin-iXY9OaUFuega_border-bottom-style: solid; --mixin-iXY9OaUFuega_border-bottom-width: 1px; --mixin-iXY9OaUFuega_border-left-color: #dddddd; --mixin-iXY9OaUFuega_border-left-style: solid; --mixin-iXY9OaUFuega_border-left-width: 1px; --mixin-iXY9OaUFuega_border-right-color: #dddddd; --mixin-iXY9OaUFuega_border-right-style: solid; --mixin-iXY9OaUFuega_border-right-width: 1px; --mixin-iXY9OaUFuega_border-top-color: #dddddd; --mixin-iXY9OaUFuega_border-top-style: solid; --mixin-iXY9OaUFuega_border-top-width: 1px; --mixin-iXY9OaUFuega_border-bottom-left-radius: 3px; --mixin-iXY9OaUFuega_border-bottom-right-radius: 3px; --mixin-iXY9OaUFuega_border-top-left-radius: 3px; --mixin-iXY9OaUFuega_border-top-right-radius: 3px; --mixin-iXY9OaUFuega_font-family: "Inconsolata"; --mixin-iXY9OaUFuega_padding-bottom: 1px; --mixin-iXY9OaUFuega_padding-left: 4px; --mixin-iXY9OaUFuega_padding-right: 4px; --mixin-iXY9OaUFuega_padding-top: 1px; --mixin-iXY9OaUFuega_white-space: pre-wrap; --mixin-eI5S-I5TVY7J_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-eI5S-I5TVY7J_border-bottom-color: #dddddd; --mixin-eI5S-I5TVY7J_border-bottom-style: solid; --mixin-eI5S-I5TVY7J_border-bottom-width: 1px; --mixin-eI5S-I5TVY7J_border-left-color: #dddddd; --mixin-eI5S-I5TVY7J_border-left-style: solid; --mixin-eI5S-I5TVY7J_border-left-width: 1px; --mixin-eI5S-I5TVY7J_border-right-color: #dddddd; --mixin-eI5S-I5TVY7J_border-right-style: solid; --mixin-eI5S-I5TVY7J_border-right-width: 1px; --mixin-eI5S-I5TVY7J_border-top-color: #dddddd; --mixin-eI5S-I5TVY7J_border-top-style: solid; --mixin-eI5S-I5TVY7J_border-top-width: 1px; --mixin-eI5S-I5TVY7J_border-bottom-left-radius: 3px; --mixin-eI5S-I5TVY7J_border-bottom-right-radius: 3px; --mixin-eI5S-I5TVY7J_border-top-left-radius: 3px; --mixin-eI5S-I5TVY7J_border-top-right-radius: 3px; --mixin-eI5S-I5TVY7J_font-family: "Inconsolata"; --mixin-eI5S-I5TVY7J_padding-bottom: 3px; --mixin-eI5S-I5TVY7J_padding-left: 6px; --mixin-eI5S-I5TVY7J_padding-right: 6px; --mixin-eI5S-I5TVY7J_padding-top: 3px; --mixin-eI5S-I5TVY7J_white-space: pre-wrap; --mixin-tvSZ7FZ6mttG_display: flex; --mixin-tvSZ7FZ6mttG_flex-direction: column; --mixin-tvSZ7FZ6mttG_align-items: stretch; --mixin-tvSZ7FZ6mttG_justify-content: flex-start; --mixin-tvSZ7FZ6mttG_list-style-position: outside; --mixin-tvSZ7FZ6mttG_padding-left: 40px; --mixin-tvSZ7FZ6mttG_position: relative; --mixin-tvSZ7FZ6mttG_list-style-type: decimal; --mixin-tvSZ7FZ6mttG_white-space: pre-wrap; --mixin-QRKsNlwSCB5i_display: flex; --mixin-QRKsNlwSCB5i_flex-direction: column; --mixin-QRKsNlwSCB5i_align-items: stretch; --mixin-QRKsNlwSCB5i_justify-content: flex-start; --mixin-QRKsNlwSCB5i_list-style-position: outside; --mixin-QRKsNlwSCB5i_padding-left: 40px; --mixin-QRKsNlwSCB5i_position: relative; --mixin-QRKsNlwSCB5i_list-style-type: disc; --mixin-QRKsNlwSCB5i_white-space: pre-wrap
         }
         
-      
-      
       
       
       :where(.root_reset_3UYiEMfU3twU4iYSx86cub) {
@@ -1343,9 +1343,9 @@ import { myNum as $dataTokens_12345_myNum, myCode as $dataTokens_12345_myCode } 
 import { dep2Token as $dataTokens_3SFZd_dep2Token } from "./plasmic-data-tokens"; // plasmic-import: 3SFZdTKJa8BF7jgeRZMBcG/dataTokens
 
     import "@plasmicapp/react-web/lib/plasmic.css";
-    import "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
-    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+    import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicP1.css" // plasmic-import: _OsB_FsYM5mY/css
   
 
@@ -1714,9 +1714,11 @@ export default PlasmicP1;
     import { createUseStyleTokens } from "@plasmicapp/react-web";
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
-
+  
     import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
 
+    
+  
     const data = {
     base: \`\${"plasmic_tokens_1234567890"}\`,
     varianted: [
@@ -1754,8 +1756,6 @@ export const myCode: any = (() => { try { return ("test" + " code"); } catch (e)
 
 --- plasmic.css ---
 
-      @import "../data_tokens_dep/plasmic.css"; /* plasmic-import: 1T8AHUHZeUyK1iDkHxrRw6/projectcss */
-@import "../data_tokens_dep_2/plasmic.css"; /* plasmic-import: 3SFZdTKJa8BF7jgeRZMBcG/projectcss */
       @import url('https://fonts.googleapis.com/css2?family=Roboto%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C700%3B0%2C900&family=Inter%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&display=swap');
       
       
@@ -1768,13 +1768,12 @@ export const myCode: any = (() => { try { return ("test" + " code"); } catch (e)
   }
     
       
+      
         
         .plasmic_default_styles {
           --mixin-f7_jdPLOIIXg_font-family: "Roboto", sans-serif; --mixin-f7_jdPLOIIXg_font-size: 16px; --mixin-f7_jdPLOIIXg_font-weight: 400; --mixin-f7_jdPLOIIXg_font-style: normal; --mixin-f7_jdPLOIIXg_color: #535353; --mixin-f7_jdPLOIIXg_text-align: left; --mixin-f7_jdPLOIIXg_text-transform: none; --mixin-f7_jdPLOIIXg_line-height: 1.5; --mixin-f7_jdPLOIIXg_letter-spacing: normal; --mixin-f7_jdPLOIIXg_white-space: pre-wrap; --mixin-f7_jdPLOIIXg_user-select: text; --mixin-f7_jdPLOIIXg_text-decoration-line: none; --mixin-f7_jdPLOIIXg_text-overflow: clip; --mixin-6gMsa0qv0dhP_font-family: "Inter", sans-serif; --mixin-6gMsa0qv0dhP_color: #000000; --mixin-6gMsa0qv0dhP_font-size: 72px; --mixin-6gMsa0qv0dhP_font-weight: 900; --mixin-6gMsa0qv0dhP_letter-spacing: -4px; --mixin-6gMsa0qv0dhP_line-height: 1; --mixin-6gMsa0qv0dhP_white-space: pre-wrap; --mixin-WI1YKqPFX12X_font-family: "Inter", sans-serif; --mixin-WI1YKqPFX12X_color: #000000; --mixin-WI1YKqPFX12X_font-size: 48px; --mixin-WI1YKqPFX12X_font-weight: 700; --mixin-WI1YKqPFX12X_letter-spacing: -1px; --mixin-WI1YKqPFX12X_line-height: 1.1; --mixin-WI1YKqPFX12X_white-space: pre-wrap; --mixin-tw40YX77nOa3_font-family: "Inter", sans-serif; --mixin-tw40YX77nOa3_color: #000000; --mixin-tw40YX77nOa3_font-size: 32px; --mixin-tw40YX77nOa3_font-weight: 600; --mixin-tw40YX77nOa3_letter-spacing: -0.8px; --mixin-tw40YX77nOa3_line-height: 1.2; --mixin-tw40YX77nOa3_white-space: pre-wrap; --mixin-6KMnxbMolx5M_font-family: "Inter", sans-serif; --mixin-6KMnxbMolx5M_color: #000000; --mixin-6KMnxbMolx5M_font-size: 24px; --mixin-6KMnxbMolx5M_font-weight: 600; --mixin-6KMnxbMolx5M_letter-spacing: -0.5px; --mixin-6KMnxbMolx5M_line-height: 1.3; --mixin-6KMnxbMolx5M_white-space: pre-wrap; --mixin-urUz-DsfUxPl_font-family: "Inter", sans-serif; --mixin-urUz-DsfUxPl_color: #000000; --mixin-urUz-DsfUxPl_font-size: 20px; --mixin-urUz-DsfUxPl_font-weight: 600; --mixin-urUz-DsfUxPl_letter-spacing: -0.3px; --mixin-urUz-DsfUxPl_line-height: 1.5; --mixin-urUz-DsfUxPl_white-space: pre-wrap; --mixin-UIUV07vIV1yG_font-family: "Inter", sans-serif; --mixin-UIUV07vIV1yG_color: #000000; --mixin-UIUV07vIV1yG_font-size: 16px; --mixin-UIUV07vIV1yG_font-weight: 600; --mixin-UIUV07vIV1yG_line-height: 1.5; --mixin-UIUV07vIV1yG_white-space: pre-wrap; --mixin-UFtcprtVs9xs_color: #0070f3; --mixin-UFtcprtVs9xs_white-space: pre-wrap; --mixin-G-XgQLMrXkBE_color: #3291ff; --mixin-G-XgQLMrXkBE_white-space: pre-wrap; --mixin-LQocgxgWO6Fi_border-left-color: #dddddd; --mixin-LQocgxgWO6Fi_border-left-style: solid; --mixin-LQocgxgWO6Fi_border-left-width: 3px; --mixin-LQocgxgWO6Fi_color: #888888; --mixin-LQocgxgWO6Fi_padding-left: 10px; --mixin-LQocgxgWO6Fi_white-space: pre-wrap; --mixin-xJ-ndDJl_vq1_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-xJ-ndDJl_vq1_border-bottom-color: #dddddd; --mixin-xJ-ndDJl_vq1_border-bottom-style: solid; --mixin-xJ-ndDJl_vq1_border-bottom-width: 1px; --mixin-xJ-ndDJl_vq1_border-left-color: #dddddd; --mixin-xJ-ndDJl_vq1_border-left-style: solid; --mixin-xJ-ndDJl_vq1_border-left-width: 1px; --mixin-xJ-ndDJl_vq1_border-right-color: #dddddd; --mixin-xJ-ndDJl_vq1_border-right-style: solid; --mixin-xJ-ndDJl_vq1_border-right-width: 1px; --mixin-xJ-ndDJl_vq1_border-top-color: #dddddd; --mixin-xJ-ndDJl_vq1_border-top-style: solid; --mixin-xJ-ndDJl_vq1_border-top-width: 1px; --mixin-xJ-ndDJl_vq1_border-bottom-left-radius: 3px; --mixin-xJ-ndDJl_vq1_border-bottom-right-radius: 3px; --mixin-xJ-ndDJl_vq1_border-top-left-radius: 3px; --mixin-xJ-ndDJl_vq1_border-top-right-radius: 3px; --mixin-xJ-ndDJl_vq1_font-family: "Inconsolata"; --mixin-xJ-ndDJl_vq1_padding-bottom: 1px; --mixin-xJ-ndDJl_vq1_padding-left: 4px; --mixin-xJ-ndDJl_vq1_padding-right: 4px; --mixin-xJ-ndDJl_vq1_padding-top: 1px; --mixin-xJ-ndDJl_vq1_white-space: pre-wrap; --mixin-kBEOc6IRvykp_background: linear-gradient(#f8f8f8, #f8f8f8); --mixin-kBEOc6IRvykp_border-bottom-color: #dddddd; --mixin-kBEOc6IRvykp_border-bottom-style: solid; --mixin-kBEOc6IRvykp_border-bottom-width: 1px; --mixin-kBEOc6IRvykp_border-left-color: #dddddd; --mixin-kBEOc6IRvykp_border-left-style: solid; --mixin-kBEOc6IRvykp_border-left-width: 1px; --mixin-kBEOc6IRvykp_border-right-color: #dddddd; --mixin-kBEOc6IRvykp_border-right-style: solid; --mixin-kBEOc6IRvykp_border-right-width: 1px; --mixin-kBEOc6IRvykp_border-top-color: #dddddd; --mixin-kBEOc6IRvykp_border-top-style: solid; --mixin-kBEOc6IRvykp_border-top-width: 1px; --mixin-kBEOc6IRvykp_border-bottom-left-radius: 3px; --mixin-kBEOc6IRvykp_border-bottom-right-radius: 3px; --mixin-kBEOc6IRvykp_border-top-left-radius: 3px; --mixin-kBEOc6IRvykp_border-top-right-radius: 3px; --mixin-kBEOc6IRvykp_font-family: "Inconsolata"; --mixin-kBEOc6IRvykp_padding-bottom: 3px; --mixin-kBEOc6IRvykp_padding-left: 6px; --mixin-kBEOc6IRvykp_padding-right: 6px; --mixin-kBEOc6IRvykp_padding-top: 3px; --mixin-kBEOc6IRvykp_white-space: pre-wrap; --mixin-8QxsMEV1460Q_display: flex; --mixin-8QxsMEV1460Q_flex-direction: column; --mixin-8QxsMEV1460Q_align-items: stretch; --mixin-8QxsMEV1460Q_justify-content: flex-start; --mixin-8QxsMEV1460Q_list-style-position: outside; --mixin-8QxsMEV1460Q_padding-left: 40px; --mixin-8QxsMEV1460Q_position: relative; --mixin-8QxsMEV1460Q_list-style-type: decimal; --mixin-8QxsMEV1460Q_white-space: pre-wrap; --mixin-QtrLNVmrq2kw_display: flex; --mixin-QtrLNVmrq2kw_flex-direction: column; --mixin-QtrLNVmrq2kw_align-items: stretch; --mixin-QtrLNVmrq2kw_justify-content: flex-start; --mixin-QtrLNVmrq2kw_list-style-position: outside; --mixin-QtrLNVmrq2kw_padding-left: 40px; --mixin-QtrLNVmrq2kw_position: relative; --mixin-QtrLNVmrq2kw_list-style-type: disc; --mixin-QtrLNVmrq2kw_white-space: pre-wrap
         }
         
-      
-      
       
       
       :where(.root_reset_1234567890) {

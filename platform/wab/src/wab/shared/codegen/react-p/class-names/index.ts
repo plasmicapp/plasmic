@@ -5,11 +5,13 @@ import {
   isBaseVariant,
   isCodeComponentVariant,
   isStandaloneVariantGroup,
+  isValidComboForToken,
 } from "@/wab/shared/Variants";
 import { getContextGlobalVariantsWithVariantedTokens } from "@/wab/shared/codegen/react-p/global-variants";
 import {
   NodeNamer,
   getExportedComponentName,
+  makeCssProjectImportName,
   makeDefaultInlineClassName,
   makeDefaultStyleClassNameBase,
   makePlasmicDefaultStylesClassName,
@@ -19,10 +21,11 @@ import {
   makeStyleTokensClassNames,
   makeWabInstanceClassName,
   makeWabTextClassName,
+  projectStyleCssImportName,
   shortPlasmicPrefix,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
-import { TargetEnv } from "@/wab/shared/codegen/types";
+import { ExportOpts, TargetEnv } from "@/wab/shared/codegen/types";
 import {
   ensureJsIdentifier,
   jsLiteral,
@@ -30,7 +33,7 @@ import {
   toClassName,
   toJsIdentifier,
 } from "@/wab/shared/codegen/util";
-import { tuple, withoutNils } from "@/wab/shared/common";
+import { ensure, tuple, withoutNils } from "@/wab/shared/common";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import { defaultStyleClassNames } from "@/wab/shared/core/styles";
 import {
@@ -54,6 +57,7 @@ import {
 } from "@/wab/shared/variant-sort";
 import { sortBy, uniqBy } from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
+import type { SetRequired } from "type-fest";
 
 export function makeCssClassNameForVariantCombo(
   variantCombo: Variant[],
@@ -189,13 +193,16 @@ function shouldReferenceByClassName(vs: VariantSetting) {
 }
 
 /**
- * Project-level CSS lives in a non-module `plasmic.css`, so its class names
- * are global and resolved as plain string literals in JSX, regardless of
- * stylesScheme. Component-level (sty.X) refs are scheme-aware and handled at
- * their call sites.
+ * Returns object properties for CSS modules, string literals for regular CSS
  */
-export function serializeGlobalCssClass(name: string) {
-  return jsLiteral(name);
+export function serializeClassExpr(
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  name: string,
+  importName = projectStyleCssImportName
+) {
+  return exportOpts?.stylesOpts?.scheme === "css-modules"
+    ? `${importName}.${name}`
+    : jsLiteral(name);
 }
 
 export function serializeClassNames(
@@ -226,18 +233,21 @@ export function serializeClassNames(
     );
 
     for (const name of defaultClassnames) {
-      unconditionalClassExprs.push(serializeGlobalCssClass(name));
+      unconditionalClassExprs.push(serializeClassExpr(ctx.exportOpts, name));
     }
 
     if (isTplTextBlock(node)) {
       unconditionalClassExprs.push(
-        serializeGlobalCssClass(makeWabTextClassName(ctx.exportOpts))
+        serializeClassExpr(ctx.exportOpts, makeWabTextClassName(ctx.exportOpts))
       );
     }
 
     if (isTplTextBlock(node.parent) && isTagInline(node.tag)) {
       unconditionalClassExprs.push(
-        serializeGlobalCssClass(makeDefaultInlineClassName(ctx.exportOpts))
+        serializeClassExpr(
+          ctx.exportOpts,
+          makeDefaultInlineClassName(ctx.exportOpts)
+        )
       );
     }
   } else if (isTplComponent(node)) {
@@ -314,17 +324,25 @@ export function serializeComponentRootResetClasses(
     ctx.exportOpts
   );
 
-  unconditionalClassExprs.push(serializeGlobalCssClass(resetName));
+  unconditionalClassExprs.push(serializeClassExpr(ctx.exportOpts, resetName));
 
   if (includeTagStyles) {
-    unconditionalClassExprs.push(serializeGlobalCssClass(`${resetName}_tags`));
+    unconditionalClassExprs.push(
+      serializeClassExpr(ctx.exportOpts, `${resetName}_tags`)
+    );
   }
 
   unconditionalClassExprs.push(
-    serializeGlobalCssClass(makePlasmicDefaultStylesClassName(ctx.exportOpts))
+    serializeClassExpr(
+      ctx.exportOpts,
+      makePlasmicDefaultStylesClassName(ctx.exportOpts)
+    )
   );
   unconditionalClassExprs.push(
-    serializeGlobalCssClass(makePlasmicMixinsClassName(ctx.exportOpts))
+    serializeClassExpr(
+      ctx.exportOpts,
+      makePlasmicMixinsClassName(ctx.exportOpts)
+    )
   );
 
   const cssProjectDependencies = uniqBy(
@@ -337,7 +355,8 @@ export function serializeComponentRootResetClasses(
     unconditionalClassExprs.push(makeStyleTokensClassNames());
   } else {
     unconditionalClassExprs.push(
-      serializeGlobalCssClass(
+      serializeClassExpr(
+        ctx.exportOpts,
         makePlasmicTokensClassName(ctx.projectConfig.projectId, ctx.exportOpts)
       )
     );
@@ -345,11 +364,13 @@ export function serializeComponentRootResetClasses(
     unconditionalClassExprs.push(
       ...withoutNils(
         cssProjectDependencies.map((dep) =>
-          serializeGlobalCssClass(
+          serializeClassExpr(
+            ctx.exportOpts,
             makePlasmicTokensClassName(
               dep.projectId as ProjectId,
               ctx.exportOpts
-            )
+            ),
+            makeCssProjectImportName(dep.projectName)
           )
         )
       )
@@ -363,11 +384,35 @@ export function serializeComponentRootResetClasses(
     if (contextGlobalVariantCombos.length > 0) {
       const sorter = makeGlobalVariantComboSorter(ctx.site);
       sortedVariantCombos(contextGlobalVariantCombos, sorter).forEach((vc) => {
-        const comboClassNameExpr = jsLiteral(
-          `${makeCssClassNameForVariantCombo(vc, {
-            targetEnv: ctx.exportOpts.targetEnv,
-          })}`
-        );
+        let comboClassNameExpr: string;
+        if (ctx.exportOpts.stylesOpts.scheme === "css-modules") {
+          // If we're using css modules, we need to make sure we reference
+          // the right css import
+          const depMap = ctx.componentGenHelper.siteHelper.objToDepMap();
+          ensure(
+            isValidComboForToken(vc),
+            "Can only build varianted combos with one variant"
+          );
+          const variant = vc[0];
+          const variantGroup = ensure(
+            variant.parent,
+            "Global variants always have parent group"
+          );
+          const variantDep = depMap.get(variantGroup);
+          const importName = variantDep
+            ? makeCssProjectImportName(variantDep.name)
+            : "projectcss";
+          comboClassNameExpr = `[${importName}.${makeCssClassNameForVariantCombo(
+            vc,
+            { targetEnv: ctx.exportOpts.targetEnv }
+          )}]`;
+        } else {
+          comboClassNameExpr = jsLiteral(
+            `${makeCssClassNameForVariantCombo(vc, {
+              targetEnv: ctx.exportOpts.targetEnv,
+            })}`
+          );
+        }
         conditionalClassExprs.push(
           tuple(comboClassNameExpr, ctx.variantComboChecker(vc, true))
         );
