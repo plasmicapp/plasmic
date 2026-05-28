@@ -74,6 +74,11 @@ export function parseDynamicStringInput(
   if (expr.type === "TemplateLiteral") {
     return templateLiteralToValue(expr);
   }
+  // Bare top-level identifier (e.g. `Home`). Likely intended to be a static (quoted) string.
+  // Force the model to quote or use an accessor.
+  if (expr.type === "Identifier") {
+    throw new EvaluationError(invalidInputMessage(input));
+  }
 
   // Anything else: treat as a bare JS expression.
   return buildDynamicExprFromJsSnippet(input);

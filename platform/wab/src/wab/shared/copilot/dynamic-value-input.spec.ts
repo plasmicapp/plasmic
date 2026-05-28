@@ -224,6 +224,15 @@ describe("parseDynamicStringInput", () => {
         EvaluationError
       );
     });
+
+    it("throws on a bare single-word identifier", () => {
+      // "Home" parses as a JS Identifier. We need to throw since otherwise it silently
+      // becomes ObjectPath(["Home"])
+      expect(() => parseDynamicStringInput("Home")).toThrow(EvaluationError);
+      expect(() => parseDynamicStringInput("name")).toThrow(EvaluationError);
+      // $-prefixed identifier also rejected; a real dynamic ref needs at least one accessor.
+      expect(() => parseDynamicStringInput("$ctx")).toThrow(EvaluationError);
+    });
   });
 });
 
