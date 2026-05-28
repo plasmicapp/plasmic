@@ -226,11 +226,11 @@ export function isHtmlEventHandlerAttr(name: string) {
 }
 
 /**
- * Normalize an HTML event-handler attribute name to camelCase e.g. `onclick` -> `onClick`.
- * Compound names like `onmouseover` -> `onMouseover` are not perfectly cased;
- * `getAllEventHandlersOfAttrType` only requires `startsWith("on")` so codegen picks them up.
+ * Camelcase the first letter of an HTML event-handler attribute, e.g. `onclick` -> `onClick`.
+ * Compound names like `onmousedown` become `onMousedown` (not `onMouseDown`); codegen
+ * only requires `startsWith("on")` so they still get picked up as handlers.
  */
-export function normalizeHtmlEventHandlerAttrName(name: string) {
+export function toReactEventAttr(name: string) {
   if (/^on[A-Z]/.test(name)) {
     return name;
   }
@@ -442,7 +442,7 @@ async function wiTreeToTpl(
         if (!value.trim()) {
           continue;
         }
-        result[normalizeHtmlEventHandlerAttrName(key)] =
+        result[toReactEventAttr(key)] =
           mkEventHandlerExprFromHtmlAttrValue(value);
         continue;
       }

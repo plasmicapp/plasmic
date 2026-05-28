@@ -2,7 +2,7 @@ import {
   htmlAttrsIgnoredByTpl,
   isHtmlEventHandlerAttr,
   mkEventHandlerExprFromHtmlAttrValue,
-  normalizeHtmlEventHandlerAttrName,
+  toReactEventAttr,
 } from "@/wab/client/operations/html-to-tpl";
 import { renameTpl } from "@/wab/client/operations/rename-tpl";
 import { processUnsanitizedStyles } from "@/wab/client/web-importer/html-parser";
@@ -114,7 +114,7 @@ export const changeElementTool = defineCopilotTool(
               for (const [key, value] of allowedEntries) {
                 if (isHtmlEventHandlerAttr(key)) {
                   // Store event-handler attrs (e.g. onclick) as EventHandler exprs
-                  const reactKey = normalizeHtmlEventHandlerAttrName(key);
+                  const reactKey = toReactEventAttr(key);
                   if (value === null) {
                     delete vs.attrs[reactKey];
                   } else if (typeof value === "string" && value.trim()) {
