@@ -131,6 +131,12 @@ export interface ExprCtx {
 
 export type FallbackableExpr = CustomCode | ObjectPath;
 
+export type TemplatedStringPropEditorValue =
+  | string
+  | TemplatedString
+  | ObjectPath
+  | CustomCode;
+
 export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
   switchType(expr)
     .when(CustomCode, (customCode: CustomCode) => {
@@ -1372,7 +1378,7 @@ export function flattenTemplatedStringToString(text: TemplatedString): string {
  */
 export function simplifyTemplatedString(
   ts: TemplatedString
-): string | TemplatedString | ObjectPath | CustomCode {
+): TemplatedStringPropEditorValue {
   const nonEmpty = ts.text.filter((p) => p !== "");
   if (
     nonEmpty.length === 1 &&

@@ -10,14 +10,13 @@ import {
   asCode,
   ExprCtx,
   simplifyTemplatedString,
+  TemplatedStringPropEditorValue,
 } from "@/wab/shared/core/exprs";
 import {
   Component,
-  CustomCode,
   isKnownCustomCode,
   isKnownObjectPath,
   isKnownTemplatedString,
-  ObjectPath,
   TemplatedString,
 } from "@/wab/shared/model/classes";
 import { Input, InputRef } from "antd";
@@ -107,12 +106,6 @@ export const StringPropEditor = React.forwardRef<
     />
   );
 });
-
-export type TemplatedStringPropEditorValue =
-  | string
-  | TemplatedString
-  | ObjectPath
-  | CustomCode;
 
 export interface TemplatedStringPropEditorProps {
   onChange: (value: TemplatedStringPropEditorValue) => void;

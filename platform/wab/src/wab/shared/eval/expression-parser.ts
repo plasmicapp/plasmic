@@ -113,10 +113,12 @@ export function emptyParsedExprInfo(): ParsedExprInfo {
  * returns "b" if given expression is `a.b` or `a["b"]`) or undefined if it's
  * not possible to get it without performing evaluations (e.g. returns
  * undefined if given expression is `a[b]`).
+ *
+ * Numeric literal keys are preserved as numbers (e.g. `arr[0]` → 0, not "0").
  */
 function getMemberExpressionKey(
   node: ast.MemberExpression
-): string | undefined {
+): string | number | undefined {
   if (!node.computed && node.property.type === "Identifier") {
     // This is an expression like `obj.name`.
     return node.property.name;
@@ -126,8 +128,8 @@ function getMemberExpressionKey(
     (typeof node.property.value === "string" ||
       typeof node.property.value === "number")
   ) {
-    // This is an expression like `obj["value"]`.
-    return `${node.property.value}`;
+    // This is an expression like `obj["value"]` or `obj[0]`.
+    return node.property.value;
   }
 
   // Expression might be acessing `obj[variable]`. Since we don't want to
@@ -139,12 +141,13 @@ function getMemberExpressionKey(
 /**
  * Given a member expression like $state.a["b"][c] this function returns
  * it parsed as: `["$state", "a", "b", undefined]` (note `c` is undefined
- * because it's an unknown variable).
+ * because it's an unknown variable). Numeric literal indices are
+ * stringified (e.g. `arr[0]` → "0").
  */
 function parseMemberExpression(
   node: ast.MemberExpression
 ): Array<string | undefined> {
-  const right = getMemberExpressionKey(node);
+  const right = getMemberExpressionKey(node)?.toString();
   if (node.object.type === "Identifier") {
     return [node.object.name, right];
   } else if (node.object.type === "MemberExpression") {
@@ -155,27 +158,6 @@ function parseMemberExpression(
 }
 
 /**
- * Like getMemberExpressionKey, but preserves the original type of numeric
- * literal keys (e.g. `arr[0]` → 0, not "0"). Returns undefined for dynamic
- * accessors.
- */
-function getMemberExpressionKeyPreservingType(
-  node: ast.MemberExpression
-): string | number | undefined {
-  if (!node.computed && node.property.type === "Identifier") {
-    return node.property.name;
-  } else if (
-    node.computed &&
-    node.property.type === "Literal" &&
-    (typeof node.property.value === "string" ||
-      typeof node.property.value === "number")
-  ) {
-    return node.property.value;
-  }
-  return undefined;
-}
-
-/**
  * Like parseMemberExpression, but preserves numeric literal indices as
  * numbers (e.g. `arr[0]` → 0, not "0"). Returns undefined entries for
  * dynamic accessors or non-identifier roots.
@@ -183,7 +165,7 @@ function getMemberExpressionKeyPreservingType(
 function parseMemberExpressionPreservingType(
   node: ast.MemberExpression
 ): Array<string | number | undefined> {
-  const right = getMemberExpressionKeyPreservingType(node);
+  const right = getMemberExpressionKey(node);
   if (node.object.type === "Identifier") {
     return [node.object.name, right];
   } else if (node.object.type === "MemberExpression") {

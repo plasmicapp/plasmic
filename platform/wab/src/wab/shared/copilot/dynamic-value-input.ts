@@ -1,4 +1,8 @@
-import { customCode, simplifyTemplatedString } from "@/wab/shared/core/exprs";
+import {
+  customCode,
+  simplifyTemplatedString,
+  TemplatedStringPropEditorValue,
+} from "@/wab/shared/core/exprs";
 import {
   getDynamicBindings,
   isDynamicValue,
@@ -20,7 +24,7 @@ import { z } from "zod";
  * Input for copilot dynamic value tool params. A single string whose form is
  * disambiguated by its outermost JS expression:
  *
- * - **Quoted static string** — "My title" or 'My title'. Parsed as a JS string literal.
+ * - **Quoted static string** — "hello, 'hello', or `hello`. Parsed as a JS string literal.
  * - **Backtick-wrapped templated string** — e.g. `Hello ${$ctx.params.slug}`.  `${...}` is a
  *   JS expression. A pure-static backtick template (`Hi`) is equivalent to a quoted string.
  * - **Bare JS expression** — e.g. $props.title ?? 'None'. Input parsed as one JS expression.
@@ -31,17 +35,10 @@ import { z } from "zod";
 export const dynamicStringSchema = z
   .string()
   .describe(
-    `Either a quoted static string (e.g. "My title"), a backtick-wrapped JS interpolated string (e.g. \`Hi \${$ctx.params.slug}\`), or a JS expression (e.g. $props.title ?? "None"). Plain text MUST be wrapped in double quotes.`
+    `Either a quoted static string (e.g. "hello, 'hello', or \`hello\`), a backtick-wrapped JS interpolated string (e.g. \`Hi \${$ctx.params.slug}\`), or a JS expression (e.g. $props.title ?? "None"). Plain text MUST be wrapped in quotes.`
   );
 
 export type DynamicStringInput = z.infer<typeof dynamicStringSchema>;
-
-// Result type matching `TemplatedStringPropEditorValue`
-export type DynamicStringValue =
-  | string
-  | TemplatedString
-  | ObjectPath
-  | CustomCode;
 
 /**
  * Converts copilot string input to Plasmic representation. Input is parsed as a JS expression
@@ -55,7 +52,7 @@ export type DynamicStringValue =
  */
 export function parseDynamicStringInput(
   input: DynamicStringInput
-): DynamicStringValue {
+): TemplatedStringPropEditorValue {
   let expr: ast.Expression;
   try {
     const program = parseJsCode(input);
@@ -84,7 +81,7 @@ export function parseDynamicStringInput(
 
 function templateLiteralToValue(
   literal: ast.TemplateLiteral
-): DynamicStringValue {
+): TemplatedStringPropEditorValue {
   const text: Array<string | ObjectPath | CustomCode> = [];
   literal.quasis.forEach((q, i) => {
     text.push(q.value.cooked ?? q.value.raw);

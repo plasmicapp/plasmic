@@ -16,6 +16,7 @@ import {
   transformDataTokenPathToDisplay,
   transformDataTokensInCode,
   transformDataTokensToDisplay,
+  tryParseAsObjectPath,
 } from "@/wab/shared/eval/expression-parser";
 import {
   CompositeExpr,
@@ -734,5 +735,81 @@ describe("extractDataTokenIdentifiers", function () {
       "$dataTokens_level2_tokenA",
       "$dataTokens_level3_token",
     ]);
+  });
+});
+
+describe("tryParseAsObjectPath", function () {
+  it("returns a single-element path for a bare identifier", () => {
+    expect(tryParseAsObjectPath("foo")).toEqual(["foo"]);
+  });
+
+  it("parses a dotted member-access chain", () => {
+    expect(tryParseAsObjectPath("$ctx.foo.bar")).toEqual([
+      "$ctx",
+      "foo",
+      "bar",
+    ]);
+  });
+
+  it("parses string-literal bracket accessors as string keys", () => {
+    expect(tryParseAsObjectPath('$queries["x"].y')).toEqual([
+      "$queries",
+      "x",
+      "y",
+    ]);
+  });
+
+  it("preserves numeric-literal bracket accessors as numbers", () => {
+    expect(tryParseAsObjectPath("$ctx.items[0].name")).toEqual([
+      "$ctx",
+      "items",
+      0,
+      "name",
+    ]);
+  });
+
+  it("accepts mixed dot and bracket access on a free variable", () => {
+    expect(tryParseAsObjectPath('foo.bar["baz"][1]')).toEqual([
+      "foo",
+      "bar",
+      "baz",
+      1,
+    ]);
+  });
+
+  it("rejects optional-chaining access (`?.`)", () => {
+    expect(tryParseAsObjectPath("$ctx?.foo")).toBeUndefined();
+    expect(tryParseAsObjectPath("$ctx.foo?.bar")).toBeUndefined();
+    expect(tryParseAsObjectPath("foo?.[0]")).toBeUndefined();
+  });
+
+  it("rejects dynamic (non-literal) bracket accessors", () => {
+    expect(tryParseAsObjectPath("$ctx[bar]")).toBeUndefined();
+    expect(tryParseAsObjectPath("$ctx.items[idx]")).toBeUndefined();
+  });
+
+  it("rejects expressions that are not pure member access", () => {
+    expect(tryParseAsObjectPath("foo()")).toBeUndefined();
+    expect(tryParseAsObjectPath("a + b")).toBeUndefined();
+    expect(tryParseAsObjectPath('$ctx.foo ?? "x"')).toBeUndefined();
+    expect(tryParseAsObjectPath("a.b()")).toBeUndefined();
+    expect(tryParseAsObjectPath("!foo")).toBeUndefined();
+  });
+
+  it("rejects non-identifier roots (this, literals, parenthesized exprs)", () => {
+    expect(tryParseAsObjectPath("this.foo")).toBeUndefined();
+    expect(tryParseAsObjectPath('"str".length')).toBeUndefined();
+    expect(tryParseAsObjectPath("(a || b).c")).toBeUndefined();
+  });
+
+  it("rejects non-string/number literal bracket keys", () => {
+    expect(tryParseAsObjectPath("$ctx[true]")).toBeUndefined();
+    expect(tryParseAsObjectPath("$ctx[null]")).toBeUndefined();
+  });
+
+  it("returns undefined when input fails to parse as JS", () => {
+    expect(tryParseAsObjectPath("a.")).toBeUndefined();
+    expect(tryParseAsObjectPath("a..b")).toBeUndefined();
+    expect(tryParseAsObjectPath("not valid {")).toBeUndefined();
   });
 });
