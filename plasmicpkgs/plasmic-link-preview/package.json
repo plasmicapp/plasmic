@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-link-preview",
-  "version": "1.0.152",
+  "version": "1.0.153",
   "description": "A React component that renders beautiful, fully-customizable link previews.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +28,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "1.0.8",
-    "@plasmicapp/host": "2.0.3",
+    "@plasmicapp/data-sources": "1.0.9",
+    "@plasmicapp/host": "2.0.4",
     "@types/node": "^14.0.26",
     "@types/react": "^18",
     "tsdx": "^0.14.1",
