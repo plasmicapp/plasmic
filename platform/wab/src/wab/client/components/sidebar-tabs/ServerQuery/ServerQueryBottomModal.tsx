@@ -15,6 +15,7 @@ import {
   TplNode,
   isKnownComponentServerQuery,
 } from "@/wab/shared/model/classes";
+import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -116,6 +117,10 @@ const ServerQueryOpExprBottomModalContent = observer(
       [onSave]
     );
 
+    // Server query modal gets its own isolated cache so it doesn't interfere
+    // with the cache in the current canvas.
+    const swrCache = React.useMemo(() => new Map<string, unknown>(), []);
+
     const env = (() => {
       const computedEnv =
         viewCtx && tpl
@@ -136,17 +141,19 @@ const ServerQueryOpExprBottomModalContent = observer(
 
     return (
       <PopoverFrameProvider containerSelector=".bottom-modals">
-        <ServerQueryOpExprFormAndPreview
-          value={value}
-          onSave={wrappedOnSave}
-          onCancel={onCancel}
-          env={env}
-          schema={schema}
-          readOnly={readOnly}
-          allowedOps={allowedOps}
-          exprCtx={exprCtx}
-          interaction={interaction}
-        />
+        <PlasmicQueryDataProvider provider={() => swrCache}>
+          <ServerQueryOpExprFormAndPreview
+            value={value}
+            onSave={wrappedOnSave}
+            onCancel={onCancel}
+            env={env}
+            schema={schema}
+            readOnly={readOnly}
+            allowedOps={allowedOps}
+            exprCtx={exprCtx}
+            interaction={interaction}
+          />
+        </PlasmicQueryDataProvider>
       </PopoverFrameProvider>
     );
   }

@@ -152,6 +152,8 @@ import {
   StatefulQueryResult,
   buildCustomCodePlasmicQuery,
   getCustomFunctionParams,
+  makeCustomCodeQueryKey,
+  wrapPlasmicQueryFetch,
 } from "@/wab/shared/core/custom-functions";
 import {
   ExprCtx,
@@ -3792,13 +3794,21 @@ const mkComponentLevelQueryFetcher = computedFn(
             queries: Object.fromEntries(
               serverQueriesByKey
                 .map(({ query, varName }) => {
+                  // Route every surface's fetch through the one shared studio
+                  // cache so a non-deterministic/stateful function executes
+                  // exactly once per cache key (canvas + preview + modal agree).
+                  const wrapFetch = ctx.viewCtx.studioCtx.executeServerQuery;
                   if (isKnownCustomCode(query.op)) {
                     return [
                       varName,
-                      buildCustomCodePlasmicQuery(
-                        query.uuid,
-                        query.op.code,
-                        () => ctx.env
+                      wrapPlasmicQueryFetch(
+                        buildCustomCodePlasmicQuery(
+                          // Match QueryResultPreview/modal custom-code id.
+                          makeCustomCodeQueryKey(query.uuid),
+                          query.op.code,
+                          () => ctx.env
+                        ),
+                        wrapFetch
                       ),
                     ] as const;
                   }
@@ -3814,7 +3824,12 @@ const mkComponentLevelQueryFetcher = computedFn(
                     varName,
                     {
                       id: funcId,
-                      fn: funcReg.function,
+                      fn: ((...fnArgs: any[]) =>
+                        wrapFetch(
+                          funcId,
+                          funcReg.function as any,
+                          ...fnArgs
+                        )) as typeof funcReg.function,
                       args: ({
                         $q,
                         $props,

@@ -184,6 +184,7 @@ import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { VariantCombo, isVariantSettingEmpty } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
+import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
   BundledInst,
@@ -7280,7 +7281,7 @@ export class StudioCtx extends WithDbCtx {
     }
   );
 
-  private dataOpCache: Record<string, Promise<any>> = {};
+  private dataOpCache = new BoundedCache<Promise<any>>(100);
 
   executePlasmicDataOp = asyncMaxAtATime(
     10,
@@ -7354,13 +7355,14 @@ export class StudioCtx extends WithDbCtx {
         userAuthToken: opts?.userAuthToken ?? appUserCtx.fakeAuthToken,
       });
 
-      if (cacheKey in this.dataOpCache) {
-        return this.dataOpCache[cacheKey];
+      const cached = this.dataOpCache.get(cacheKey);
+      if (cached) {
+        return cached;
       }
 
-      this.dataOpCache[cacheKey] = execute();
-
-      return this.dataOpCache[cacheKey];
+      const resultPromise = execute();
+      this.dataOpCache.set(cacheKey, resultPromise);
+      return resultPromise;
     }
   );
 
@@ -7372,11 +7374,13 @@ export class StudioCtx extends WithDbCtx {
       ...args: Parameters<F>
     ) => {
       const cacheKey = makeQueryCacheKey(id, args);
-      if (cacheKey in this.dataOpCache) {
-        return this.dataOpCache[cacheKey];
+      const cached = this.dataOpCache.get(cacheKey);
+      if (cached) {
+        return cached;
       }
-      this.dataOpCache[cacheKey] = fn(...args);
-      return this.dataOpCache[cacheKey];
+      const resultPromise = fn(...args);
+      this.dataOpCache.set(cacheKey, resultPromise);
+      return resultPromise;
     }
   );
 
@@ -7385,17 +7389,17 @@ export class StudioCtx extends WithDbCtx {
   // when the user clicks the "Refresh Data" button.
   mutateDataOp = (invalidateKey?: string) => {
     if (!isNil(invalidateKey)) {
-      delete this.dataOpCache[invalidateKey];
+      this.dataOpCache.delete(invalidateKey);
       if (invalidateKey.startsWith("$swr$")) {
-        delete this.dataOpCache[invalidateKey.slice(5)];
+        this.dataOpCache.delete(invalidateKey.slice(5));
       }
       return;
     }
-    this.dataOpCache = {};
+    this.dataOpCache.clear();
   };
 
   getAllDataOpCacheKeys = () => {
-    return Object.keys(this.dataOpCache);
+    return this.dataOpCache.keys();
   };
 
   private _currentAppUserCtx = observable.box<{

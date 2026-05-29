@@ -47,6 +47,17 @@ export {
   type _StatefulQueryState as StatefulQueryState,
 } from "@plasmicapp/data-sources";
 
+/**
+ * Wraps a data query function so every call routes its fetch through one shared cache
+ * keyed by `id` + args. This guarantees a non-deterministic function is executed once
+ * per cache key. When omitted the function is executed directly (each fetch is independent).
+ */
+export type ServerQueryFetchWrapper = (
+  id: string,
+  fn: (...args: any[]) => Promise<any>,
+  ...args: any[]
+) => Promise<any>;
+
 interface CustomFunctionOpArgs {
   fnId: string;
   fn: (...args: any[]) => any;
@@ -54,12 +65,14 @@ interface CustomFunctionOpArgs {
   env: Record<string, any>;
   exprCtx: ExprCtx;
   currGlobalThis?: typeof globalThis;
+  wrapFetch?: ServerQueryFetchWrapper;
 }
 
 export interface CustomCodeOpArgs {
   fnId: string;
   code: CustomCode;
   env: Record<string, any>;
+  wrapFetch?: ServerQueryFetchWrapper;
 }
 
 export type ServerQueryOpArgs = CustomFunctionOpArgs | CustomCodeOpArgs;
@@ -92,11 +105,20 @@ export function getEnvForPlasmicQueries(
 }
 
 /**
+ * Query ID for a custom-code data query
+ */
+export function makeCustomCodeQueryKey(uuid: string): string {
+  return `custom-code:${uuid}`;
+}
+
+/**
  * Builds a runtime `PlasmicQuery` node for Studio editor.
  *
  * In production codegen, the static env only contains $$ and $dataTokens.
  * In Studio editor, the static env also includes $q, which are static relative
  * to this query the user is currently editing.
+ *
+ * `queryId` should be the canonical key (e.g. `makeCustomCodeQueryKey`)
  */
 export function buildCustomCodePlasmicQuery(
   queryId: string,
@@ -112,6 +134,24 @@ export function buildCustomCodePlasmicQuery(
     id: `${queryId}:${code}`,
     fn: buildCustomCodeFn(code, getRawEnv),
     args: buildCustomCodeArgs(code, getRawEnv),
+  };
+}
+
+/**
+ * Wraps a PlasmicQuery node's fetcher with `wrapFetch` (shared studio cache),
+ * keyed by its own SWR `id` so the cache entry tracks the same identity.
+ */
+export function wrapPlasmicQueryFetch<
+  Q extends PlasmicQuery<(...args: any[]) => Promise<unknown>>
+>(node: Q, wrapFetch?: ServerQueryFetchWrapper): Q {
+  if (!wrapFetch) {
+    return node;
+  }
+  const innerFn = node.fn;
+  const id = node.id;
+  return {
+    ...node,
+    fn: ((...args: any[]) => wrapFetch(id, innerFn as any, ...args)) as Q["fn"],
   };
 }
 
@@ -217,6 +257,7 @@ export function useServerQueryOp(
 ): ServerQueryOpResult<unknown> | undefined {
   const fnId = args?.fnId ?? NOOP_ID;
   const fn = args && !isCustomCodeOpArgs(args) ? args.fn : noopFn;
+  const wrapFetch = args?.wrapFetch;
   const expr = args && !isCustomCodeOpArgs(args) ? args.expr : undefined;
   const env = args?.env ?? {};
   const exprCtx = args && !isCustomCodeOpArgs(args) ? args.exprCtx : undefined;
@@ -225,6 +266,18 @@ export function useServerQueryOp(
   const code = args && isCustomCodeOpArgs(args) ? args.code : undefined;
 
   const { mutate } = usePlasmicDataConfig();
+
+  // Route the fetch through the shared studio cache so previews and modal see the same result
+  // as canvas fetch. Stable across renders to avoid recreating the query tree.
+  const effectiveFn = React.useMemo(
+    (): typeof fn =>
+      wrapFetch
+        ? (((...fnArgs: any[]) =>
+            wrapFetch(fnId, fn as any, ...fnArgs)) as typeof fn)
+        : fn,
+    [fn, fnId, wrapFetch]
+  );
+
   const rootProps = env.$props ?? {};
   const rootCtx = env.$ctx ?? {};
   const rootState: Record<string, unknown> | null = env.$state ?? null;
@@ -237,10 +290,13 @@ export function useServerQueryOp(
         ? {
             type: "component",
             queries: {
-              [fnId]: buildCustomCodePlasmicQuery(
-                fnId,
-                code.code,
-                () => envRef.current
+              [fnId]: wrapPlasmicQueryFetch(
+                buildCustomCodePlasmicQuery(
+                  fnId,
+                  code.code,
+                  () => envRef.current
+                ),
+                wrapFetch
               ),
             },
             propsContext: {},
@@ -252,7 +308,7 @@ export function useServerQueryOp(
             queries: {
               [fnId]: {
                 id: fnId,
-                fn,
+                fn: effectiveFn,
                 args: ({ $q, $props, $ctx, $state }) =>
                   expr
                     ? getCustomFunctionParams(
@@ -274,7 +330,7 @@ export function useServerQueryOp(
             stateSpecs: [],
             children: [],
           },
-    [fnId, fn, expr, exprCtx, currGlobalThis, code]
+    [fnId, effectiveFn, expr, exprCtx, currGlobalThis, code, wrapFetch]
   );
   // Even if no args are present, we still need to run the hooks to obey
   // React hook rules, but we will ignore the results and return undefined.

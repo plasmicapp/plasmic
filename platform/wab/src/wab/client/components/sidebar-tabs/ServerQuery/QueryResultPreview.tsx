@@ -10,6 +10,7 @@ import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils
 import { ensure } from "@/wab/shared/common";
 import {
   StatefulQueryState,
+  makeCustomCodeQueryKey,
   useServerQueryOp,
 } from "@/wab/shared/core/custom-functions";
 import { ExprCtx } from "@/wab/shared/core/exprs";
@@ -43,6 +44,7 @@ export const CustomFunctionExprPreview = observer(
             expr,
             env,
             exprCtx,
+            wrapFetch: studioCtx.executeServerQuery,
           }
         : undefined
     );
@@ -92,12 +94,14 @@ export const CustomCodePreview = observer(function CustomCodePreview(props: {
   env?: Record<string, any>;
 }) {
   const { queryUuid, expr, env, title } = props;
+  const studioCtx = useStudioCtx();
   const result = useServerQueryOp(
     env
       ? {
-          fnId: `custom-code:${queryUuid}`,
+          fnId: makeCustomCodeQueryKey(queryUuid),
           code: expr,
           env,
+          wrapFetch: studioCtx.executeServerQuery,
         }
       : undefined
   );
