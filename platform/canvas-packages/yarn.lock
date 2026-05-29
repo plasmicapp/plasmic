@@ -1863,10 +1863,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.261.tgz#46989e5c948ffd92dce3d7a1b57ee8cd59226d07"
   integrity sha512-bxGQPChwnN/7cBFgIzuHwLimQbGqBA2zJos0P0izmg/92V5kyFN/rkqPyT+EoVRGudU3thjzJRhPbdvICL3olg==
 
-"@plasmicpkgs/antd5@^0.0.346":
-  version "0.0.346"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.346.tgz#dda2494687dbfaddd8bc5650cc0ab4bc36e5690c"
-  integrity sha512-jie1xU/Zumtn20QJur5heJU4od+MVkb/fJ3ZZsLbd1tMzEj6InmTDXuSx04iMb3L+g7VRdkYWuZq1CWphDh31w==
+"@plasmicpkgs/antd5@^0.0.347":
+  version "0.0.347"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.347.tgz#0126a44eaa077136776b5dbb6f86b52a914e7009"
+  integrity sha512-2tZ6JtZqIRNfa0Jmvnc2z7rmDQxVqNYCNM5TpLcGLMpOfBraPU2GDAzgHuJa0qNJ1eImj4pzaJnj2MRFgUwEiw==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -2008,10 +2008,10 @@
     contentstack "^3.15.1"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-contentful@^0.0.194":
-  version "0.0.194"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-contentful/-/plasmic-contentful-0.0.194.tgz#c1d986cc63b971bb710b4b5cf7c56ca38d8d81d3"
-  integrity sha512-ZAxVZBaWSmPHjycb3TuqrffH916siOQZTNOXjpOpy99tqhf4dLnL8bhIuQitaNm0QstBMNRnQe7I8DJKt4Wz5A==
+"@plasmicpkgs/plasmic-contentful@^0.0.195":
+  version "0.0.195"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-contentful/-/plasmic-contentful-0.0.195.tgz#abf5d08a4e6c3950bb603b7a2cce21683fa7e747"
+  integrity sha512-URwVBQvJmEvneE7X7FUxjL51sp1LTbZm1ZlfoiRxSjaeMxotSjrN3Knhw0Y9z5v4pzseeniKTlbACGdBva8yfA==
   dependencies:
     "@contentful/rich-text-html-renderer" "^15.13.1"
     "@contentful/rich-text-react-renderer" "^15.12.1"
