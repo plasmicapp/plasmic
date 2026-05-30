@@ -8,6 +8,10 @@ import {
   getServerQueryParamRowItems,
   propTypeForParam,
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryParamRow";
+import {
+  ServerQueryOpArgs,
+  useServerQueryOp,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/useServerQueryOp";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
@@ -36,11 +40,9 @@ import {
   withoutFalsy,
 } from "@/wab/shared/common";
 import {
-  ServerQueryOpArgs,
   StatefulQueryState,
   getCustomFunctionParams,
   makeCustomCodeQueryKey,
-  useServerQueryOp,
 } from "@/wab/shared/core/custom-functions";
 import {
   ExprCtx,
@@ -767,6 +769,12 @@ function _ServerQueryOpPreview(props: {
 
 export const ServerQueryOpPreview = React.memo(_ServerQueryOpPreview);
 
+/** Runs the query (via useServerQueryOp) and previews its result. */
+function ServerQueryOpExecutor(props: { args: ServerQueryOpArgs }) {
+  const result = useServerQueryOp(props.args);
+  return <ServerQueryOpPreview queryState={result.queryState} />;
+}
+
 export const ServerQueryOpExprFormAndPreview = observer(
   function ServerQueryOpExprFormAndPreview(props: {
     value: ServerQueryOp | ComponentServerQuery | undefined;
@@ -865,10 +873,9 @@ export const ServerQueryOpExprFormAndPreview = observer(
       return () => dispose();
     }, [studioCtx.site.dataTokens, draft.fnExpr?.args, draft.codeExpr]);
 
-    // Query executes (useServerQueryOp) when executeArgs changes.
-    // undefined query will not be run.
+    // The query runs in <ServerQueryOpExecutor> once executeArgs is set.
+    // Until then we render an empty preview.
     const [executeArgs, setExecuteArgs] = React.useState<ServerQueryOpArgs>();
-    const executeResult = useServerQueryOp(executeArgs);
     const validDraft = isValidQueryDraft(draft) && draft;
     const saveOp = validDraft
       ? async () => {
@@ -894,7 +901,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
                   expr: clone(validDraft.fnExpr) as CustomFunctionExpr,
                   env,
                   exprCtx,
-                  wrapFetch: studioCtx.executeServerQuery,
                 });
               }
             } else if (validDraft.codeExpr) {
@@ -902,7 +908,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
                 fnId: makeCustomCodeQueryKey(parentQuery?.uuid ?? queryName),
                 code: clone(validDraft.codeExpr) as CustomCode,
                 env,
-                wrapFetch: studioCtx.executeServerQuery,
               });
             }
           }
@@ -958,7 +963,11 @@ export const ServerQueryOpExprFormAndPreview = observer(
               <Button onClick={onCancel}>Cancel</Button>
             </BottomModalButtons>
           </div>
-          <ServerQueryOpPreview queryState={executeResult?.queryState} />
+          {executeArgs ? (
+            <ServerQueryOpExecutor args={executeArgs} />
+          ) : (
+            <ServerQueryOpPreview queryState={undefined} />
+          )}
         </div>
       </div>
     );

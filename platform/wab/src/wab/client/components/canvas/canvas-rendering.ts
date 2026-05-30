@@ -3794,9 +3794,8 @@ const mkComponentLevelQueryFetcher = computedFn(
             queries: Object.fromEntries(
               serverQueriesByKey
                 .map(({ query, varName }) => {
-                  // Route every surface's fetch through the one shared studio
-                  // cache so a non-deterministic/stateful function executes
-                  // exactly once per cache key (canvas + preview + modal agree).
+                  // Route through shared studio cache so a non-deterministic/stateful functions
+                  // execute once per cache key (canvas + preview + modal agree).
                   const wrapFetch = ctx.viewCtx.studioCtx.executeServerQuery;
                   if (isKnownCustomCode(query.op)) {
                     return [

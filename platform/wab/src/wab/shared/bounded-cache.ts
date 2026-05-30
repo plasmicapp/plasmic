@@ -1,14 +1,10 @@
 /**
  * A size-capped cache that evicts by least-recently-written.
  *
- * Backed by a `Map`, which preserves insertion order. On `set` we refresh the
- * key's position (delete + re-insert) and evict the oldest entries once
- * `maxSize` is exceeded. Note that `get` does NOT refresh position, so this is
- * not a true read-LRU. That's intentional: the goal is only to keep transient
- * keys (e.g. server-query cache keys whose id embeds a full code body that
- * changes on every edit) from growing without bound, while comfortably holding
- * the live entries of a normal multi-query project. An entry evicted while
- * still in use simply causes a re-fetch on the next read.
+ * Backed by a `Map`, which preserves insertion order. Refresh key position on `set`
+ * (delete + re-insert). Evicts oldest entries once `maxSize` is exceeded.
+ * `get` does not refresh position, we only care about keeping transient keys from
+ * growing without bound, while holding live entries of a normal multi-query project.
  */
 export class BoundedCache<V> {
   private readonly map = new Map<string, V>();
@@ -33,12 +29,12 @@ export class BoundedCache<V> {
       this.map.delete(key);
     }
     this.map.set(key, value);
-    while (this.map.size > this.maxSize) {
-      const oldest = this.map.keys().next().value as string | undefined;
-      if (oldest === undefined) {
+    // Evict oldest entries (Map preserves insertion order) if over maxSize
+    for (const oldestKey of this.map.keys()) {
+      if (this.map.size <= this.maxSize) {
         break;
       }
-      this.map.delete(oldest);
+      this.map.delete(oldestKey);
     }
     return this;
   }
