@@ -350,20 +350,37 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
 
       let itemIndex = 0;
 
+      // In search the left-nav is hidden, so each group needs a section label.
+      const isSearchMode = !!query;
+      let prevSectionKey: string | undefined = undefined;
       const virtualItems: VirtualItem[] = groupedItems
         .filter((group) => query || (group.sectionKey ?? group.key) === section)
-        .flatMap((group, index) => [
-          ...(!group.isHeaderLess ? [{ type: "header", group } as const] : []),
+        .flatMap((group, index) => {
+          const isFirstInSection =
+            !!group.sectionKey && group.sectionKey !== prevSectionKey;
+          prevSectionKey = group.sectionKey;
+          const showHeader =
+            !group.isHeaderLess || (isSearchMode && isFirstInSection);
+          const displayLabel = group.isHeaderLess
+            ? group.sectionLabel
+            : isSearchMode && group.sectionLabel
+            ? `${group.sectionLabel}  ›  ${group.label}`
+            : undefined;
+          return [
+            ...(showHeader
+              ? [{ type: "header", group, displayLabel } as const]
+              : []),
 
-          ...group.items.map(
-            (item) =>
-              ({ type: "item", item, group, itemIndex: itemIndex++ } as const)
-          ),
+            ...group.items.map(
+              (item) =>
+                ({ type: "item", item, group, itemIndex: itemIndex++ } as const)
+            ),
 
-          ...(index < groupedItems.length - 1
-            ? [{ type: "separator", group } as const]
-            : []),
-        ]);
+            ...(index < groupedItems.length - 1
+              ? [{ type: "separator", group } as const]
+              : []),
+          ];
+        });
 
       const items = groupedItems
         .filter((group) => query || (group.sectionKey ?? group.key) === section)
@@ -725,6 +742,8 @@ type VirtualItem =
   | {
       type: "header";
       group: AddItemGroup;
+      // Overrides group.label when rendering the header.
+      displayLabel?: string;
       item?: never;
     }
   | {
@@ -799,7 +818,9 @@ const Row = React.memo(function Row(props: {
                   // padding: "24px 16px",
                 }}
               >
-                {context.matcher.boldSnippets(virtualItem.group.label)}
+                {context.matcher.boldSnippets(
+                  virtualItem.displayLabel ?? virtualItem.group.label
+                )}
               </span>
             </ListSectionHeader>
           );
