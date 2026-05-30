@@ -517,7 +517,7 @@ export function makeTplMenu(
     }
 
     if (!forMultipleTpls && isTplTextBlock(tpl)) {
-      pushEdit(makeTplTextMenu(makeTplTextOps(viewCtx, tpl)));
+      pushEdit(makeTplTextMenu(makeTplTextOps(viewCtx, tpl), viewCtx));
     }
 
     if (!forMultipleTpls && isTplContainer(tpl) && !contentEditorMode) {

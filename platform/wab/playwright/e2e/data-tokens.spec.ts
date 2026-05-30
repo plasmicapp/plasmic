@@ -236,25 +236,40 @@ test.describe("data token usages", () => {
         depCCode,
       ];
 
-      await test.step("add all tokens to text fields", async () => {
-        for (const token of allTokens) {
-          await models.studio.leftPanel.insertText();
+      // Unlike the data picker — the submenu can't drill into
+      // an object token's nested path; skip nested-path tokens there.
+      const submenuTokens = allTokens.filter((token) => !token.nestedPath);
+      const insertedValues = [...allTokens, ...submenuTokens].map(
+        (token) => token.evaluatedValue ?? token.value
+      );
 
-          await models.studio.rightPanel.frame
-            .locator('[data-test-id="text-content"] label')
-            .click({ button: "right" });
+      await test.step("add all tokens to text fields", async () => {
+        const insertTextField = async () => {
+          await models.studio.leftPanel.insertText();
+          return models.studio.rightPanel.frame.locator(
+            '[data-test-id="text-content"] label'
+          );
+        };
+        // Pick every token via the data picker.
+        for (const token of allTokens) {
+          const textLabel = await insertTextField();
+          await textLabel.click({ button: "right" });
           await models.studio.useDynamicValueButton.click();
           await selectTokenInDataPicker(models.studio, token);
+        }
+        // Pick the same tokens again via the right-click "Data tokens" submenu.
+        for (const token of submenuTokens) {
+          const textLabel = await insertTextField();
+          await models.studio.pickDataTokenFromSubmenu(textLabel, token.name);
         }
       });
 
       await test.step("verify tokens in canvas", async () => {
-        const expectedTextInCanvas = allTokens
-          .map((token) => token.evaluatedValue ?? token.value)
-          .join("");
         const canvas = models.studio.componentFrame;
 
-        await expect(canvas.locator("body")).toHaveText(expectedTextInCanvas);
+        await expect(canvas.locator("body")).toHaveText(
+          insertedValues.join("")
+        );
       });
 
       await test.step("verify tokens in preview", async () => {
@@ -263,11 +278,10 @@ test.describe("data token usages", () => {
             ".plasmic_page_wrapper > div > div"
           );
 
-          await expect(previewValues).toHaveCount(allTokens.length);
+          await expect(previewValues).toHaveCount(insertedValues.length);
 
-          for (let i = 0; i < allTokens.length; i += 1) {
-            const value = allTokens[i].evaluatedValue ?? allTokens[i].value;
-            await expect(previewValues.nth(i)).toContainText(value);
+          for (let i = 0; i < insertedValues.length; i += 1) {
+            await expect(previewValues.nth(i)).toContainText(insertedValues[i]);
           }
         });
       });
@@ -333,6 +347,19 @@ test.describe("data token usages", () => {
       await dataTokenPopover.close();
 
       await models.studio.leftPanel.assertDataTokenExists("Welcome Text 2");
+
+      await test.step("can pick the existing token from the Data tokens submenu", async () => {
+        await models.studio.leftPanel.insertText();
+        await models.studio.pickDataTokenFromSubmenu(
+          targetElement.locator("label"),
+          newExpectedName
+        );
+        await expect(
+          targetElement
+            .locator(".code-editor-input, .templated-string-input")
+            .getByText(`$dataTokens.${newExpectedJsName}`)
+        ).toBeVisible();
+      });
     });
 
     test("can create data token by right clicking component props", async ({
@@ -429,6 +456,22 @@ test.describe("data token usages", () => {
 
         await models.studio.leftPanel.assertDataTokenExists(newExpectedName);
       }
+
+      await test.step("can pick an existing token from the Data tokens submenu", async () => {
+        const { displayName, jsName } = PROP_INFO[0];
+        await models.studio.leftPanel.insertNode("Slider");
+        const propRow = models.studio.rightPanel.frame.locator(
+          `[data-test-id="prop-editor-row-${displayName}"]`
+        );
+        await propRow.scrollIntoViewIfNeeded();
+        await models.studio.pickDataTokenFromSubmenu(
+          propRow.locator("label").nth(0),
+          `${displayName} 2`
+        );
+        await expect(
+          propRow.locator(`[data-plasmic-prop="${displayName}"]`)
+        ).toHaveText(`$dataTokens.${jsName}2`);
+      });
     });
 
     test("can create data token by right clicking server query prop", async ({
@@ -539,6 +582,23 @@ test.describe("data token usages", () => {
       await serverQueryModal.waitFor({ state: "hidden" });
       await models.studio.leftPanel.assertDataTokenExists(newExpectedName);
       await models.studio.leftPanel.assertDataTokenExists("Collection");
+
+      await test.step("can pick an existing token from the Data tokens submenu", async () => {
+        await models.studio.rightPanel.addServerQueryButton.click();
+        await models.studio.rightPanel.serverQueriesSection
+          .locator(`[data-plasmic-role="labeled-item"]`)
+          .last()
+          .click();
+        await serverQueryModal.waitFor();
+        const hostInput = serverQueryModal
+          .locator(`[data-test-id="prop-editor-row-host"]`)
+          .locator(`[data-plasmic-prop="host"]`);
+        await models.studio.pickDataTokenFromSubmenu(
+          hostInput,
+          newExpectedName
+        );
+        await expect(hostInput).toHaveText(`$dataTokens.${newExpectedJsName}`);
+      });
     });
   });
 

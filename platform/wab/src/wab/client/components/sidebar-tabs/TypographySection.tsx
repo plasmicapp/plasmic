@@ -27,7 +27,6 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import { assert, cx, ensureInstance } from "@/wab/shared/common";
 import {
   asCode,
@@ -44,8 +43,11 @@ import {
   inheritableTypographyCssProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
-import { getRichTextContent, isTplTextBlock } from "@/wab/shared/core/tpls";
-import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
+import {
+  getRichTextContent,
+  isTplTextBlock,
+  mkDataTokenExprText,
+} from "@/wab/shared/core/tpls";
 import {
   CustomCode,
   DataToken,
@@ -289,12 +291,7 @@ const TextContentRow = observer(function TextContentRow(props: {
     inStudio: true,
   };
   const switchToDynamicValue = (dataTokenName: string) => {
-    const shortId = makeShortProjectId(viewCtx.siteInfo.id);
-    const newExpr = new ObjectPath({
-      path: [makeDataTokenIdentifier(shortId, toVarName(dataTokenName))],
-      fallback: undefined,
-    });
-    onChange(new ExprText({ expr: newExpr, html: false }));
+    onChange(mkDataTokenExprText(viewCtx.siteInfo.id, dataTokenName));
   };
 
   const applyDynamicValue = convertToDynamicValue
@@ -307,7 +304,7 @@ const TextContentRow = observer(function TextContentRow(props: {
   const contextMenu = () => {
     return (
       <Menu>
-        {makeTplTextMenu(textTplOps)}
+        {makeTplTextMenu(textTplOps, viewCtx)}
         {!isSubNode && isKnownExprText(text) && !isFallbackSet(text.expr) && (
           <Menu.Item key={"fallback"} onClick={() => setShowFallback(true)}>
             Change fallback value

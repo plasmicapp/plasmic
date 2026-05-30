@@ -1,5 +1,7 @@
 import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
+import { Icon } from "@/wab/client/components/widgets/Icon";
 import { analytics } from "@/wab/client/observability";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { MaybeWrap, joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { ensure, filterFalsy } from "@/wab/shared/common";
 import type { MenuProps } from "antd";
@@ -132,6 +134,17 @@ export function MenuItemContent(props: {
   shortcut?: string;
 }) {
   return <TextAndShortcut {...props} />;
+}
+
+/** Content for a "Create new <entity>" menu item. */
+export function CreateNewMenuItemContent(props: {
+  entity: "data token" | "prop";
+}) {
+  return (
+    <div className="flex flex-vcenter">
+      <Icon icon={PlusIcon} className="mr-sm" /> Create new {props.entity}
+    </div>
+  );
 }
 
 export function KeyboardShortcut(props: {

@@ -19,6 +19,8 @@ import {
 } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 
+import { CreateNewMenuItemContent } from "@/wab/client/components/menu-builder";
+import { makeDataTokensSubMenu } from "@/wab/client/components/sidebar-tabs/DataBinding/data-tokens-context-menu";
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
 import {
@@ -33,12 +35,12 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import LinkIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Link";
-import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import {
+  DataTokenRef,
   DataTokenType,
   dataTypes,
   generateDataTokenName,
@@ -835,25 +837,44 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   };
 
   /** Directly change the current value to a dynamic value expr. */
-  function switchToDynamicValue(dataToken?: DataToken) {
+  function switchToDynamicValue(dataTokenRef?: DataTokenRef) {
+    const path = dataTokenRef
+      ? [
+          makeDataTokenIdentifier(
+            makeShortProjectId(dataTokenRef.projectId),
+            toVarName(dataTokenRef.token.name)
+          ),
+        ]
+      : ["undefined"];
+
+    // Keep the previous value as the fallback, except for string props.
     const currentExpr = exprRef.current;
-    const shortId = makeShortProjectId(studioCtx.siteInfo.id);
+    const fallback =
+      currentExpr && !isStringPropType ? clone(currentExpr) : undefined;
 
-    const shouldSetFallback = currentExpr && !isStringPropType;
+    onChange(maybeWrapExpr(new ObjectPath({ path, fallback })));
+    setShowFallback(fallback !== undefined);
+    setIsDataPickerVisible(!dataTokenRef);
+  }
 
-    const newExpr = new ObjectPath({
-      path: dataToken
-        ? [makeDataTokenIdentifier(shortId, toVarName(dataToken.name))]
-        : ["undefined"],
-      fallback: shouldSetFallback
-        ? currentExpr
-          ? clone(currentExpr)
-          : codeLit(undefined)
-        : undefined,
+  function renderDataTokensSubMenu() {
+    if (
+      readOnly ||
+      !allowDynamicValue ||
+      isCustomCode ||
+      isTemplatedStringWithDynamicParts ||
+      !viewCtx?.studioCtx.showDataTokens()
+    ) {
+      return null;
+    }
+    return makeDataTokensSubMenu({
+      site: studioCtx.site,
+      projectId: studioCtx.siteInfo.id,
+      onSelect: switchToDynamicValue,
+      onCreate: () => {
+        void createDataToken();
+      },
     });
-    onChange(maybeWrapExpr(newExpr));
-    setShowFallback(!!shouldSetFallback);
-    setIsDataPickerVisible(!dataToken);
   }
 
   async function createDataToken() {
@@ -881,7 +902,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         name: generateDataTokenName(label),
         value: tokenValue,
       });
-      switchToDynamicValue(token);
+      switchToDynamicValue({ token, projectId: studioCtx.siteInfo.id });
       setEditDataToken(token);
       return success();
     });
@@ -951,12 +972,11 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               ))}
             {getRealParams(ownerComponent).length > 0 && <Menu.Divider />}
             <Menu.Item onClick={() => setNewParamModalVisible(true)}>
-              <div className="flex flex-vcenter">
-                <Icon icon={PlusIcon} className="mr-sm" /> Create new prop
-              </div>
+              <CreateNewMenuItemContent entity="prop" />
             </Menu.Item>
           </Menu.SubMenu>
         )}
+      {renderDataTokensSubMenu()}
       {!readOnly &&
         allowDynamicValue &&
         !isCustomCode &&
@@ -967,21 +987,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             onClick={onUseDynamicValueClick}
           >
             Use dynamic value
-          </Menu.Item>
-        )}
-      {!readOnly &&
-        allowDynamicValue &&
-        !isCustomCode &&
-        !isTemplatedStringWithDynamicParts &&
-        viewCtx?.studioCtx.showDataTokens() && (
-          <Menu.Item
-            id="create-data-token-btn"
-            key={"create-data-token"}
-            onClick={() => {
-              void createDataToken();
-            }}
-          >
-            Create data token
           </Menu.Item>
         )}
       {!readOnly &&

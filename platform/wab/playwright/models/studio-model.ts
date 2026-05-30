@@ -1083,9 +1083,23 @@ export class StudioModel extends BaseModel {
    * rowLocator can be any element within the target row.
    */
   async createDataTokenForRow(rowLocator: Locator) {
-    const createMenuItem = this.frame.getByText("Create data token");
     await rowLocator.click({ button: "right" });
-    await createMenuItem.click();
+    await this.frame
+      .locator(".ant-dropdown-menu")
+      .getByText("Use data token", { exact: true })
+      .hover();
+    await this.frame.getByText("Create new data token").click();
+  }
+
+  /**
+   * Pick an existing data token by right clicking a prop row and selecting it
+   * from the "Use data token" submenu.
+   */
+  async pickDataTokenFromSubmenu(rowLocator: Locator, tokenName: string) {
+    await rowLocator.click({ button: "right" });
+    const menu = this.frame.locator(".ant-dropdown-menu");
+    await menu.getByText("Use data token", { exact: true }).hover();
+    await menu.getByText(tokenName, { exact: true }).click();
   }
 
   /**

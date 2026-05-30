@@ -21,6 +21,11 @@ import type { Opaque } from "type-fest";
 export type DataTokenType = "number" | "string" | "code";
 export type DataTokenValue = Opaque<string, "DataTokenValue">;
 
+export interface DataTokenRef {
+  token: DataToken;
+  projectId: ProjectId;
+}
+
 /**
  * Determine the type of a data token based on its value
  */

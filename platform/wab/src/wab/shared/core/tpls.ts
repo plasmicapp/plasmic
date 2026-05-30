@@ -94,8 +94,9 @@ import {
   TAG_TO_HTML_ATTRIBUTES,
   TAG_TO_HTML_INTERFACE,
 } from "@/wab/component-metas/tag-to-html-interface";
+import type { ProjectId } from "@/wab/shared/ApiSchema";
 import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   check,
@@ -148,6 +149,7 @@ import * as styles from "@/wab/shared/core/styles";
 import { getCssInitial } from "@/wab/shared/css";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import {
+  makeDataTokenIdentifier,
   parseExpr,
   pathToDisplayString,
   pathToString,
@@ -2060,6 +2062,25 @@ export function convertTextToDynamic(
         text.text !== "Enter some text"
           ? Exprs.codeLit(text.text)
           : undefined,
+    }),
+    html: false,
+  });
+}
+
+/** Builds an ExprText bound to the given data token. */
+export function mkDataTokenExprText(
+  tokenProjectId: ProjectId,
+  tokenName: string
+): ExprText {
+  return new ExprText({
+    expr: new ObjectPath({
+      path: [
+        makeDataTokenIdentifier(
+          makeShortProjectId(tokenProjectId),
+          toVarName(tokenName)
+        ),
+      ],
+      fallback: undefined,
     }),
     html: false,
   });

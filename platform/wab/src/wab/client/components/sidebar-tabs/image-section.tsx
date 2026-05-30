@@ -1,6 +1,9 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
-import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import {
+  CreateNewMenuItemContent,
+  MenuBuilder,
+} from "@/wab/client/components/menu-builder";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import {
   FallbackEditor,
@@ -17,8 +20,6 @@ import {
   StylePanelSection,
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
-import { Icon } from "@/wab/client/components/widgets/Icon";
-import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert, ensureInstance } from "@/wab/shared/common";
@@ -631,9 +632,7 @@ export function makeImageMenu({
                 });
               }}
             >
-              <div className="flex flex-vcenter">
-                <Icon icon={PlusIcon} className="mr-sm" /> Create new prop
-              </div>
+              <CreateNewMenuItemContent entity="prop" />
             </Menu.Item>
           </Menu.SubMenu>
         );
