@@ -1329,8 +1329,22 @@ export class ViewOps {
         // The TplTag didn't already exist. Preserve the source tpl's uuid (same as slate
         // element uuid) to keep the cursor in place after rerender.
         const newTpl = Tpls.clone(tplTag, true);
+        // Remap the entire subtree to baseVariant, or nodes with child tpls
+        // (e.g. bullet/number lists), are matched in ensureVariantSetting() as "existing"
+        // and a second base vsetting is added
+        const remapToBaseVariant = (node: TplNode) => {
+          for (const nodeVs of node.vsettings) {
+            if (isBaseVariant(nodeVs.variants)) {
+              nodeVs.variants = [baseVariant];
+            }
+          }
+          const tplChildren = (node as TplTag).children;
+          for (const child of tplChildren ?? []) {
+            remapToBaseVariant(child);
+          }
+        };
+        remapToBaseVariant(newTpl);
         const vs = newTpl.vsettings[0];
-        vs.variants = [baseVariant];
         saveTextToTpl(newTpl, vs, text, tplTag.children);
         return newTpl;
       }

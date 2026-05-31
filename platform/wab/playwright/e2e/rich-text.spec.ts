@@ -68,4 +68,50 @@ test.describe("rich-text", () => {
 
     await expect(textEditor).toContainText("so we thought!");
   });
+
+  test("create list in text", async ({ page, models }) => {
+    const pageErrors: string[] = [];
+    page.on("pageerror", (error) => pageErrors.push(error.message));
+    const baseVariantErrors = () =>
+      pageErrors.filter((message) =>
+        message.includes("Cannot add base vs to tpl that already has base vs")
+      );
+
+    await models.studio.leftPanel.addNewFrame();
+    const artboardFrame = models.studio.frame
+      .locator("iframe")
+      .first()
+      .contentFrame();
+    const artboardBody = artboardFrame.locator("body");
+
+    await artboardBody.click();
+    await models.studio.focusCreatedFrameRoot();
+    await models.studio.leftPanel.insertNode("Text");
+
+    const textEditor = artboardFrame.locator(".__wab_editor");
+    await textEditor.dblclick({ force: true });
+
+    const contentEditable = textEditor.locator('[contenteditable="true"]');
+    await contentEditable.press(`${modifierKey}+a`);
+    await contentEditable.press("Backspace");
+
+    await page.keyboard.insertText("-");
+    await page.keyboard.press("Space");
+    await page.keyboard.insertText("First item");
+    await page.keyboard.press("Enter");
+    await page.keyboard.insertText("Second item");
+    await page.keyboard.press("Escape");
+
+    await page.waitForTimeout(500);
+    expect(baseVariantErrors()).toEqual([]);
+
+    await models.studio.withinLiveMode(async (liveFrame) => {
+      const listItems = liveFrame.locator(".__wab_text ul li");
+      await expect(listItems).toHaveCount(2);
+      await expect(listItems.nth(0)).toContainText("First item");
+      await expect(listItems.nth(1)).toContainText("Second item");
+    });
+
+    expect(baseVariantErrors()).toEqual([]);
+  });
 });
