@@ -1,3 +1,9 @@
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  isStandaloneVariantGroup,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -15,14 +21,16 @@ import {
   removeComponentParam,
 } from "@/wab/shared/core/components";
 import {
+  ExprCtx,
+  InteractionConditionalMode,
   asCode,
   code,
   codeLit,
-  ExprCtx,
-  InteractionConditionalMode,
+  customCode,
   isFallbackSet,
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
+  stripParens,
   tryExtractJson,
   tryExtractLit,
 } from "@/wab/shared/core/exprs";
@@ -38,25 +46,9 @@ import {
   Component,
   ComponentVariantGroup,
   CustomCode,
-  ensureKnownFunctionType,
-  ensureKnownNamedState,
   EventHandler,
   Expr,
   Interaction,
-  isKnownCollectionExpr,
-  isKnownCustomCode,
-  isKnownFunctionArg,
-  isKnownFunctionExpr,
-  isKnownGenericEventHandler,
-  isKnownImageAssetRef,
-  isKnownNamedState,
-  isKnownObjectPath,
-  isKnownPageHref,
-  isKnownTplComponent,
-  isKnownTplRef,
-  isKnownTplTag,
-  isKnownVariantsRef,
-  isKnownVarRef,
   NameArg,
   NamedState,
   Param,
@@ -70,15 +62,26 @@ import {
   TplTag,
   VariantGroup,
   VariantGroupState,
+  ensureKnownFunctionType,
+  ensureKnownNamedState,
+  isKnownCollectionExpr,
+  isKnownCustomCode,
+  isKnownFunctionArg,
+  isKnownFunctionExpr,
+  isKnownGenericEventHandler,
+  isKnownImageAssetRef,
+  isKnownNamedState,
+  isKnownObjectPath,
+  isKnownPageHref,
+  isKnownTplComponent,
+  isKnownTplRef,
+  isKnownTplTag,
+  isKnownVarRef,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
+import { convertToFunction } from "@/wab/shared/parser-utils";
 import { smartHumanize } from "@/wab/shared/strs";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
 import { getPublicUrl } from "@/wab/shared/urls";
-import {
-  isStandaloneVariantGroup,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
 import { isArray } from "lodash";
 
 export const STATE_VARIABLE_TYPES = [
@@ -1115,7 +1118,18 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
       }`,
     },
     customFunctionOp: {
-      parameters: {},
+      parameters: {
+        customFunctionOp: {
+          onSerializeArg(value) {
+            if (!isKnownCustomCode(value)) {
+              return value;
+            }
+            return customCode(
+              `(${convertToFunction(stripParens(value.code))})()`
+            );
+          },
+        },
+      },
       function: `async ({ customFunctionOp, continueOnError }) => {
         try {
           const response = await customFunctionOp;

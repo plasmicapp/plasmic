@@ -6,6 +6,7 @@ import {
   clone,
   getRawCode,
   isFallbackSet,
+  stripParens,
 } from "@/wab/shared/core/exprs";
 import { findExprsInNode } from "@/wab/shared/core/tpls";
 import { tryEvalExpr } from "@/wab/shared/eval";
@@ -84,6 +85,7 @@ export function getEnvForPlasmicQueries(
       key === "$state" ||
       key === "$dataTokens" ||
       key === "$$" ||
+      key === "$steps" ||
       // depending on whether the env is at display or evaluation stage, we may receive either stored or displayable data tokens
       key.startsWith("$dataTokens_")
   );
@@ -124,7 +126,7 @@ const getCustomCodeFactory = computedFn(function getCustomCodeFactory(
   return new Function(
     ...(JSON.parse(staticKeysJson) as string[]),
     `return async ({ $ctx, $props, $q, $state } = {}) => {
-      return (${convertToFunction(code)})();
+      return (${convertToFunction(stripParens(code))})();
     }`
   );
 });
@@ -172,7 +174,7 @@ function buildCustomCodeArgs(
   code: string,
   getRawEnv: () => Record<string, any>
 ): (executionCtx: QueryExecutionContext) => [QueryExecutionContext] {
-  const { usedDollarVarKeys } = parseCodeExpression(code);
+  const { usedDollarVarKeys } = parseCodeExpression(stripParens(code));
   const depCtxNames = Array.from(usedDollarVarKeys.$ctx);
   const depPropsNames = Array.from(usedDollarVarKeys.$props);
   const depQueryNames = Array.from(usedDollarVarKeys.$q);

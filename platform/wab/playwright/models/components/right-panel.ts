@@ -736,8 +736,12 @@ export class RightPanel extends BaseModel {
         arguments?: Record<string, string>;
         eventRef?: string;
         customFunction?: string;
+        customFunctionOpCode?: string;
       };
       dynamicArgs?: Record<string, string>;
+      /** For customFunctionOp interactions, runs while the bottom modal is open
+       *  Useful for asserting the editor's data context. */
+      assertCustomFunctionOpModal?: (modal: Locator) => Promise<void>;
       mode?: "always" | "never" | "when";
       conditionalExpr?: string;
     }>
@@ -839,6 +843,13 @@ export class RightPanel extends BaseModel {
         }
       }
 
+      if (interaction.args.customFunctionOpCode) {
+        await this.configureCustomFunctionOpAsCustomCode(
+          interaction.args.customFunctionOpCode,
+          interaction.assertCustomFunctionOpModal
+        );
+      }
+
       if (interaction.mode) {
         const modeButton = this.frame.locator(
           `[data-plasmic-prop="mode-${interaction.mode}"]`
@@ -852,6 +863,44 @@ export class RightPanel extends BaseModel {
       }
     }
     await this.closeSidebarButton.click();
+  }
+
+  /**
+   * After the "customFunctionOp" action is selected in the actions dropdown,
+   * opens the bottom modal, switches to "Custom code query…", pastes the given
+   * code, and saves.
+   *
+   * Optionally runs `assertWhileOpen` against the modal locator after the code
+   * is in place but before Save — for tests that need to inspect the modal's
+   * data context (e.g. confirm $steps is visible).
+   */
+  private async configureCustomFunctionOpAsCustomCode(
+    code: string,
+    assertWhileOpen?: (modal: Locator) => Promise<void>
+  ) {
+    await this.frame
+      .locator('[data-plasmic-prop="data-source-open-modal-btn"]')
+      .click();
+
+    const modal = this.frame.locator(
+      '[data-test-id="server-query-bottom-modal"]'
+    );
+    await modal.getByText("Select...").click();
+    await this.frame.locator('[data-key="__custom_code__"]').click();
+
+    const editor = modal.locator("div.react-monaco-editor-container");
+    await editor.click();
+    await editor.locator(".view-lines").waitFor({ state: "visible" });
+
+    await this.page.evaluate((c) => navigator.clipboard.writeText(c), code);
+    await this.page.keyboard.press("ControlOrMeta+V");
+
+    if (assertWhileOpen) {
+      await assertWhileOpen(modal);
+    }
+
+    await modal.locator("button").getByText("Save").click();
+    await modal.waitFor({ state: "hidden" });
   }
 
   async addNavigationInteraction(

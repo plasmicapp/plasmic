@@ -12,6 +12,7 @@ import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import {
   ExprCtx,
   asCode,
+  stripParens,
   stripParensAndMaybeConvertToIife,
 } from "@/wab/shared/core/exprs";
 import { parseCodeExpression } from "@/wab/shared/eval/expression-parser";
@@ -217,7 +218,7 @@ function serializeCustomCode(
   op: CustomCode,
   scopedItemVars: string[]
 ): string {
-  const { usedDollarVarKeys } = parseCodeExpression(op.code);
+  const { usedDollarVarKeys } = parseCodeExpression(stripParens(op.code));
 
   const paramList =
     scopedItemVars.length > 0
@@ -275,7 +276,10 @@ function serializeCustomCode(
   }    return [${argsReturn}];\n  }`;
   return `{
   id: ${jsLiteral(`custom:${queryUuid}`)},
-  fn: ${convertToFunction(op.code, "{ $q, $props, $ctx, $state }")},
+  fn: ${convertToFunction(
+    stripParens(op.code),
+    "{ $q, $props, $ctx, $state }"
+  )},
   args: ${argsCode},
 }`;
 }

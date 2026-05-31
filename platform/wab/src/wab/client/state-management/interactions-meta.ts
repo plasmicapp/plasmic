@@ -40,6 +40,7 @@ import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CanvasEnv } from "@/wab/shared/eval";
 import {
+  CUSTOM_CODE_QUERY_CAP,
   DATA_SOURCE_LOWER,
   DATA_SOURCE_OPERATION_LOWER,
   SERVER_QUERY_LOWER,
@@ -58,6 +59,7 @@ import {
   Expr,
   FunctionExpr,
   Interaction,
+  isKnownCustomCode,
   isKnownFunctionType,
   isKnownPageHref,
   isKnownRenderableType,
@@ -435,6 +437,9 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
     getDefaultName: (_, { customFunctionOp }) => {
       if (!customFunctionOp) {
         return `Use ${SERVER_QUERY_LOWER}`;
+      }
+      if (isKnownCustomCode(customFunctionOp)) {
+        return CUSTOM_CODE_QUERY_CAP;
       }
       const expr = ensureKnownCustomFunctionExpr(customFunctionOp);
       return startCase(

@@ -34,6 +34,7 @@ export const SERVER_QUERY_PLURAL_CAP = "Data queries";
 export const A_SERVER_QUERY_LOWER = "a " + SERVER_QUERY_CAP.toLowerCase();
 export const SERVER_QUERY_LOWER = SERVER_QUERY_CAP.toLowerCase();
 export const SERVER_QUERY_PLURAL_LOWER = SERVER_QUERY_PLURAL_CAP.toLowerCase();
+export const CUSTOM_CODE_QUERY_CAP = "Custom code query";
 
 export const COMPONENT_PROP_CAP = "Prop";
 export const COMPONENT_PROP_LOWER = COMPONENT_PROP_CAP.toLowerCase();

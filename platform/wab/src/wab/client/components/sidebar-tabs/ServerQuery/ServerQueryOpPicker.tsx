@@ -18,6 +18,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { CUSTOM_CODE_QUERY_CAP } from "@/wab/shared/Labels";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import {
   StudioPropType,
@@ -40,7 +41,13 @@ import {
   getCustomFunctionParams,
   useServerQueryOp,
 } from "@/wab/shared/core/custom-functions";
-import { ExprCtx, clone, codeLit } from "@/wab/shared/core/exprs";
+import {
+  ExprCtx,
+  clone,
+  codeLit,
+  customCode,
+  stripParens,
+} from "@/wab/shared/core/exprs";
 import { isHostlessPackageInstalledWithHidden } from "@/wab/shared/core/project-deps";
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
@@ -135,7 +142,7 @@ type ValidQueryDraft =
   | SetRequired<QueryDraft, "codeExpr">;
 function isValidQueryDraft(draft: QueryDraft): draft is ValidQueryDraft {
   if (draft.codeExpr) {
-    const code = draft.codeExpr.code.trim();
+    const code = stripParens(draft.codeExpr.code);
     if (code.length === 0) {
       return false;
     }
@@ -484,10 +491,7 @@ export const ServerQueryOpDraftForm = observer(
       (newCode: string) => {
         onChange({
           ...value,
-          codeExpr: new CustomCode({
-            code: newCode,
-            fallback: undefined,
-          }),
+          codeExpr: customCode(newCode),
         });
       },
       [onChange, value]
@@ -602,7 +606,7 @@ export const ServerQueryOpDraftForm = observer(
             )}
             <StyleSelect.OptionGroup title={undefined} noTitle={false}>
               <StyleSelect.Option value={CUSTOM_CODE_OPTION}>
-                Custom code query...
+                {CUSTOM_CODE_QUERY_CAP}...
               </StyleSelect.Option>
             </StyleSelect.OptionGroup>
           </StyleSelect>
@@ -610,7 +614,7 @@ export const ServerQueryOpDraftForm = observer(
         {isCustomCodeMode ? (
           <DataQueryCodeEditorLayout
             data={cleanedEnvData}
-            defaultValue={value.codeExpr?.code ?? ""}
+            defaultValue={stripParens(value.codeExpr?.code ?? "")}
             onChange={handleCodeChange}
             schema={schema}
             context="server query custom code"

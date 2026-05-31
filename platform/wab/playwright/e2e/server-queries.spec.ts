@@ -500,6 +500,75 @@ test.describe("server queries", () => {
       );
     });
   });
+
+  test("Use Data Query interaction runs custom code with await", async ({
+    apiClient,
+    page,
+    models,
+  }) => {
+    projectId = await apiClient.setupNewProject({
+      name: "use-data-query-interaction-await",
+    });
+    await page
+      .context()
+      .grantPermissions(["clipboard-read", "clipboard-write"]);
+    await generateMocks(page);
+    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+
+    await models.studio.leftPanel.createNewPage("Await Page");
+
+    // State the second interaction will write into, so live mode has something
+    // to assert against.
+    await models.studio.rightPanel.clickPageData();
+    await models.studio.rightPanel.addState({
+      name: "todoTitle",
+      variableType: "text",
+      accessType: "private",
+      initialValue: "",
+    });
+
+    // Button that triggers the interaction.
+    await models.studio.leftPanel.switchToTreeTab();
+    await models.studio.leftPanel.insertNode("Button");
+
+    await models.studio.rightPanel.addComplexInteraction("onClick", [
+      {
+        actionName: "customFunctionOp",
+        args: {
+          customFunctionOpCode: `const res = await fetch("${MOCK_API_URL}/todos/1");\nres.json()`,
+        },
+      },
+      {
+        actionName: "customFunctionOp",
+        args: {
+          customFunctionOpCode: "$steps.customCodeQuery.title.toUpperCase()",
+        },
+        assertCustomFunctionOpModal: async (modal) => {
+          await expect(
+            modal.locator('[data-insert-path="$steps"]')
+          ).toBeVisible();
+        },
+      },
+      {
+        actionName: "updateVariable",
+        args: {
+          variable: ["todoTitle"],
+          operation: "newValue",
+          value: "$steps.customCodeQuery2",
+        },
+      },
+    ]);
+
+    // Text bound to the state, so we can assert the runtime result.
+    await models.studio.leftPanel.switchToTreeTab();
+    await models.studio.leftPanel.insertNode("Text");
+    await bindTextContent(models, "$state.todoTitle");
+
+    await models.studio.withinLiveMode(async (liveFrame) => {
+      await liveFrame.getByRole("button").click();
+      await expect(liveFrame.getByText("BUY MILK")).toBeVisible();
+    });
+  });
 });
 
 const ADVANCED_MOCK_URL = "https://mock-api-advanced-sq.test";

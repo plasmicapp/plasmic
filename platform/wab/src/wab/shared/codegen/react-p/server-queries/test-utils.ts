@@ -5,7 +5,6 @@ import { customCode } from "@/wab/shared/core/exprs";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   ComponentServerQuery,
-  CustomCode,
   CustomFunction,
   CustomFunctionExpr,
   FunctionArg,
@@ -21,7 +20,7 @@ export function mkServerQuery(name: string, op: ServerQueryOp | null) {
 }
 
 export function mkCustomCodeOp(codeStr: string) {
-  return new CustomCode({ code: codeStr, fallback: undefined });
+  return customCode(codeStr);
 }
 
 export function mkCustomFunctionExpr(
