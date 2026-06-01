@@ -212,10 +212,9 @@ export function filterHoverProps<T extends TextAreaProps | InputProps>(
 }
 
 /**
- * Flattens React children, unwrapping fragments and assigning stable keys.
- * Inlined from react-keyed-flatten-children (9kB) to avoid its react-is peer dependency (13kB).
- * Also, with plasmicpkgs, its always best to avoid pulling in unnecessary dependencies to keep bundle sizes down.
- * https://github.com/grrowl/react-keyed-flatten-children/blob/master/index.ts
+ * flattenChildren based on https://github.com/grrowl/react-keyed-flatten-children
+ *
+ * Works for React 18 and 19.
  */
 export function flattenChildren(
   children: React.ReactNode,
