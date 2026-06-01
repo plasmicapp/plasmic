@@ -6,7 +6,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
-import { matchScreenshot } from "../playwright-utils";
+import { matchScreenshot, responseText } from "../playwright-utils";
 import { makeEnvName } from "../setup-utils";
 
 for (const versions of LOADER_NEXTJS_VERSIONS) {
@@ -30,7 +30,10 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
     });
 
     test(`should work`, async ({ page }) => {
-      await page.goto(ctx.host);
+      const response = await page.goto(ctx.host);
+
+      // Verify the content is server-rendered into the initial HTML response
+      expect(await responseText(response)).toContain("Test embed");
 
       await expect(page.getByText("Test embed")).toBeVisible();
       await expect(page.getByText("Test embed")).toHaveCSS(

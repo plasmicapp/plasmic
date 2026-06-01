@@ -27,7 +27,7 @@ const ENVS = [
 test.skip(`Plasmic Website`, async () => {
   let bundleCtx: ProjectContext;
   test.beforeAll(async () => {
-    bundleCtx = await setupBundle("plasmic-website-2023-cypress_12.json");
+    bundleCtx = await setupBundle("plasmic-website-2023.json");
   });
   test.afterAll(async () => {
     await teardownBundle(bundleCtx);

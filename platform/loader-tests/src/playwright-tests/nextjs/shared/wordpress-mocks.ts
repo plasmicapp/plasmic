@@ -13,10 +13,10 @@ interface WordpressFixtures {
 }
 
 /**
- * Load WordPress fixture data from the cypress/fixtures directory
+ * Load WordPress fixture data from the fixtures directory
  */
 export function loadWordpressFixtures(): WordpressFixtures {
-  const fixturesPath = path.resolve(__dirname, "../../../../cypress/fixtures");
+  const fixturesPath = path.resolve(__dirname, "../../fixtures");
   const postsData: WordpressItem[] = JSON.parse(
     fs.readFileSync(path.join(fixturesPath, "wordpress-posts.json"), "utf8")
   );

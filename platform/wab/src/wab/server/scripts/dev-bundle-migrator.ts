@@ -57,7 +57,7 @@ const paths = [
   "../loader-tests/data/app-hosting.json",
   "../loader-tests/data/plasmic-contentful.json",
   "../loader-tests/data/plasmic-kit-website-components_16033.json",
-  "../loader-tests/data/plasmic-website-2023-cypress_12.json",
+  "../loader-tests/data/plasmic-website-2023.json",
   "../loader-tests/data/plasmic-app-components.json",
   "../loader-tests/data/plasmic-basic-components-example.json",
   "../loader-tests/data/plasmic-split-components.json",

@@ -11,7 +11,7 @@ import { PkgMgr, parseMasterPkg } from ".";
 // newer versions of Plume, but they will not be used until this
 // constant is updated to point to them. This makes it possible to
 // update Plume project, publish a new version, save the json to
-// git, and run tests against it in cypress before it is live in prod.
+// git, and run tests against it before it is live in prod.
 export const REAL_PLUME_VERSION = "19.4.2";
 
 async function updatePlumePkg() {

@@ -510,7 +510,7 @@ export interface StudioChangeOpts {
   // the event object may have been freed.  Passing this in means if StudioCtx
   // knows that your change function will be called asynchronously, it will call
   // event.persist() for you so that it will not be reused by React.  This should
-  // happen pretty rarely (more likely in cypress tests than real usage).
+  // happen pretty rarely (more likely in Playwright tests than real usage).
   // Note also that you should only need to do this for React events; if you're
   // using jquery events or raw browser events, they don't get reused in this way.
   event?: React.SyntheticEvent;

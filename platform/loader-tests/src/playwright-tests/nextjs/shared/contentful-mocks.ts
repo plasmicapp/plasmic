@@ -35,10 +35,10 @@ interface ContentfulFixtures {
 }
 
 /**
- * Load Contentful fixture data from the cypress/fixtures directory
+ * Load Contentful fixture data from the fixtures directory
  */
 export function loadContentfulFixtures() {
-  const fixturesPath = path.resolve(__dirname, "../../../../cypress/fixtures");
+  const fixturesPath = path.resolve(__dirname, "../../fixtures");
   const blogData: ContentfulResponse = JSON.parse(
     fs.readFileSync(path.join(fixturesPath, "contentful-blog.json"), "utf8")
   );

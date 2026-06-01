@@ -18,6 +18,7 @@ export async function testWebsiteDesktop(page: Page, ctx: WebsiteCtx) {
   await waitForPlasmicDynamic(page);
 
   await expect(page.getByText("Try Plasmic for free").first()).toBeVisible();
+  await expect(page.locator("body")).toContainText("Empower the whole team");
   await matchScreenshot(page, "plasmic-website-home.png");
 
   await page
@@ -69,13 +70,11 @@ export async function testWebsiteComponents(page: Page, ctx: WebsiteCtx) {
 
   await waitForPlasmicDynamic(page);
 
-  const bodyText = await page.locator("body").textContent();
-  if (bodyText?.includes("VERY COOL")) {
-    await expect(page.getByText("VERY COOL")).toBeVisible();
-    await expect(page.getByText("James Armenta")).toBeVisible();
-  } else {
-    await expect(page.locator("body")).toContainText(/.+/);
-  }
+  await expect(page.getByText("VERY COOL")).toBeVisible();
+  await expect(page.getByText("James Armenta")).toBeVisible();
+  await expect(page.locator("body")).toContainText(
+    "already been a huge increase in efficiency"
+  );
 
   await matchScreenshot(page, "plasmic-website-components.png");
 }

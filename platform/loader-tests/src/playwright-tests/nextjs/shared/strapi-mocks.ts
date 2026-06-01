@@ -9,10 +9,10 @@ interface StrapiFixtures {
 }
 
 /**
- * Load Strapi fixture data from the cypress/fixtures directory
+ * Load Strapi fixture data from the fixtures directory
  */
 export function loadStrapiFixtures(): StrapiFixtures {
-  const fixturesPath = path.resolve(__dirname, "../../../../cypress/fixtures");
+  const fixturesPath = path.resolve(__dirname, "../../fixtures");
   const v4Restaurants = JSON.parse(
     fs.readFileSync(path.join(fixturesPath, "strapi-restaurants.json"), "utf8")
   );

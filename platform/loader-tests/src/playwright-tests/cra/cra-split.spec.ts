@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { CraContext, setupCra, teardownCra } from "../../cra/cra-setup";
 import { LOADER_REACT_VERSIONS } from "../../env";
 import { test } from "../../fixtures";
+import { matchScreenshot, waitForPlasmicDynamic } from "../playwright-utils";
 
 const SPLIT_ID = "j7cCxfS-Vu";
 const SLICE_0_ID = "I4hoVVeME_";
@@ -36,6 +37,7 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       ]);
 
       await page.goto(ctx.host);
+      await waitForPlasmicDynamic(page);
       await expect(page.getByText(mainHeaderText)).toBeVisible({
         timeout: 10000,
       });
@@ -43,6 +45,7 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       await expect(page.getByText("active experiment")).toBeVisible();
       await expect(page.getByText("inactive segment")).toBeVisible();
       await expect(page.getByText("active schedule")).toBeVisible();
+      await matchScreenshot(page, "plasmic-splits-home.png");
     });
 
     test(`should render segment page`, async ({ page, context }) => {
@@ -55,6 +58,7 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       ]);
 
       await page.goto(`${ctx.host}/segment`);
+      await waitForPlasmicDynamic(page);
       await expect(page.getByText(mainHeaderText)).toBeVisible({
         timeout: 10000,
       });
@@ -62,6 +66,7 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       await expect(page.getByText("active experiment")).toBeVisible();
       await expect(page.getByText("active segment")).toBeVisible();
       await expect(page.getByText("active schedule")).toBeVisible();
+      await matchScreenshot(page, "plasmic-splits-home-segment.png");
     });
 
     test(`should render schedule page`, async ({ page, context }) => {
@@ -74,12 +79,14 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       ]);
 
       await page.goto(`${ctx.host}/schedule`);
+      await waitForPlasmicDynamic(page);
       await expect(page.getByText(mainHeaderText)).toBeVisible({
         timeout: 10000,
       });
 
       await expect(page.getByText("active experiment")).toBeVisible();
       await expect(page.getByText("inactive schedule")).toBeVisible();
+      await matchScreenshot(page, "plasmic-splits-home-schedule.png");
     });
 
     test(`should render experiment based on cookie`, async ({
@@ -95,6 +102,7 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       ]);
 
       await page.goto(ctx.host);
+      await waitForPlasmicDynamic(page);
       await expect(page.getByText(mainHeaderText)).toBeVisible({
         timeout: 10000,
       });
@@ -102,6 +110,7 @@ for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
       await expect(page.getByText("inactive experiment")).toBeVisible();
       await expect(page.getByText("inactive segment")).toBeVisible();
       await expect(page.getByText("active schedule")).toBeVisible();
+      await matchScreenshot(page, "plasmic-splits-home-experiment.png");
     });
   });
 }

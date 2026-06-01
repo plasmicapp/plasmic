@@ -6,7 +6,7 @@ import {
   setupGatsby,
   teardownGatsby,
 } from "../../gatsby/gatsby-setup";
-import { waitForPlasmicDynamic } from "../playwright-utils";
+import { matchScreenshot, waitForPlasmicDynamic } from "../playwright-utils";
 
 const SPLIT_ID = "j7cCxfS-Vu";
 const SLICE_0_ID = "I4hoVVeME_";
@@ -44,6 +44,7 @@ test.describe(`Gatsby Split`, () => {
     await expect(page.getByText("active experiment")).toBeVisible();
     await expect(page.getByText("inactive segment")).toBeVisible();
     await expect(page.getByText("active schedule")).toBeVisible();
+    await matchScreenshot(page, "plasmic-splits-home.png");
   });
 
   test(`should render segment page`, async ({ page }) => {
@@ -63,6 +64,7 @@ test.describe(`Gatsby Split`, () => {
     await expect(page.getByText("active experiment")).toBeVisible();
     await expect(page.getByText("active segment")).toBeVisible();
     await expect(page.getByText("active schedule")).toBeVisible();
+    await matchScreenshot(page, "plasmic-splits-home-segment.png");
   });
 
   test(`should render schedule page`, async ({ page }) => {
@@ -81,6 +83,7 @@ test.describe(`Gatsby Split`, () => {
     await expect(page.getByText("Split testing page")).toBeVisible();
     await expect(page.getByText("active experiment")).toBeVisible();
     await expect(page.getByText("inactive schedule")).toBeVisible();
+    await matchScreenshot(page, "plasmic-splits-home-schedule.png");
   });
 
   test(`should render experiment based on cookie`, async ({ page }) => {
@@ -100,5 +103,6 @@ test.describe(`Gatsby Split`, () => {
     await expect(page.getByText("inactive experiment")).toBeVisible();
     await expect(page.getByText("inactive segment")).toBeVisible();
     await expect(page.getByText("active schedule")).toBeVisible();
+    await matchScreenshot(page, "plasmic-splits-home-experiment.png");
   });
 });

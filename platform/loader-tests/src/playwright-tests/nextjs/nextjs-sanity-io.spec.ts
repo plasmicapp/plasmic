@@ -26,7 +26,7 @@ test.describe(`NextJS Sanity.io`, () => {
   });
 
   test(`should work`, async ({ page }) => {
-    const fixturesPath = path.resolve(__dirname, "../../../cypress/fixtures");
+    const fixturesPath = path.resolve(__dirname, "../fixtures");
     const allData = JSON.parse(
       fs.readFileSync(path.join(fixturesPath, "sanity-io-all.json"), "utf8")
     );

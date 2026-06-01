@@ -2,8 +2,6 @@
 
 End-to-end Playwright tests for Plasmic SDK packages. Tests verify that Plasmic projects render correctly when integrated into real framework apps (Next.js, Gatsby, CRA).
 
-> **Note:** The `cypress/` directory and Jest-based specs in `src/nextjs/*.spec.ts` are **obsolete** and no longer maintained or run by CI. All active tests use Playwright.
-
 ## How it works
 
 There are two kinds of Playwright tests:
@@ -44,9 +42,6 @@ The framework templates use pnpm with `--frozen-lockfile`. If you update a templ
 ```bash
 # All tests
 yarn test
-
-# Playwright only
-yarn test-playwright
 
 # Specific test file
 yarn test-playwright src/playwright-tests/nextjs/antd5/tabs.spec.ts

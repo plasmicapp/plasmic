@@ -230,7 +230,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
           e.stopPropagation();
         }
       }}
-      // This may not fire! Doesn't seem to if triggered with .blur() in Cypress.
+      // This may not fire! Doesn't seem to if triggered with .blur() in Playwright tests.
       // Maybe related? https://github.com/ianstormtaylor/slate/issues/3742
       onBlur={() => {
         if (draft !== undefined) {
