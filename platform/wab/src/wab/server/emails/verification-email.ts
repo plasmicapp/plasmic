@@ -1,4 +1,6 @@
+import { sanitize } from "@/wab/server/emails/sanitize";
 import { Request } from "express-serve-static-core";
+import { escape } from "lodash";
 
 export function generateEmailVerificationLink(
   host: string,
@@ -13,13 +15,16 @@ export function generateEmailVerificationLink(
 const PLASMIC_EMAIL_VERIFICATION_HTML = (
   appName: string,
   emailVerificationLink: string
-) => `<p><strong>Verify your email address</strong></p>
+) => {
+  const escapedAppName = escape(appName);
+  return `<p><strong>Verify your email address</strong></p>
 
-<p>To start using ${appName}, just click in the link below</p>
+<p>To start using ${escapedAppName}, just click in the link below</p>
 
 <a href="${emailVerificationLink}">${emailVerificationLink}</a>
 
-<p>If you didn't create an account in ${appName}, ignore this email.</p>`;
+<p>If you didn't create an account in ${escapedAppName}, ignore this email.</p>`;
+};
 
 export async function sendEmailVerificationToUser(
   req: Request,
@@ -34,14 +39,12 @@ export async function sendEmailVerificationToUser(
     ? `${nextPath}&token=${encodeURIComponent(token)}&mode=email+verification`
     : generateEmailVerificationLink(req.config.host, token, nextPath);
 
+  const safeAppName = appName ? sanitize(appName) : "Plasmic";
   await req.mailer.sendMail({
     from: req.config.mailFrom,
     to: email,
     bcc: req.config.mailBcc,
-    subject: `Verify your email address for ${appName ?? "Plasmic"}`,
-    html: PLASMIC_EMAIL_VERIFICATION_HTML(
-      appName ?? "Plasmic",
-      emailVerificationLink
-    ),
+    subject: `Verify your email address for ${safeAppName}`,
+    html: PLASMIC_EMAIL_VERIFICATION_HTML(safeAppName, emailVerificationLink),
   });
 }

@@ -1,3 +1,4 @@
+import { sanitize } from "@/wab/server/emails/sanitize";
 import { User } from "@/wab/server/entities/Entities";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { labelForResourceType, ResourceType } from "@/wab/shared/perms";
@@ -12,11 +13,11 @@ export async function sendShareEmail(
   resourceUrl: string,
   isInviteeExistingUser: boolean
 ) {
-  const text = `${fullName(
-    sharer
-  )} is using Plasmic and has invited you to the ${labelForResourceType(
+  const sharerName = sanitize(fullName(sharer)) || sharer.email;
+  const safeResourceName = sanitize(resourceName);
+  const text = `${sharerName} is using Plasmic and has invited you to the ${labelForResourceType(
     resourceType
-  )} "${resourceName}":
+  )} "${safeResourceName}":
 
 ${resourceUrl}
 
@@ -37,7 +38,7 @@ https://www.plasmic.app`
     replyTo: sharer.email,
     to: email,
     bcc: req.config.mailBcc,
-    subject: `${fullName(sharer)} invited you to "${resourceName}"`,
+    subject: `${sharerName} invited you to "${safeResourceName}"`,
     text,
   });
 }

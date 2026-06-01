@@ -65,4 +65,27 @@ Learn more at:
 https://www.plasmic.app`,
     });
   });
+
+  it("falls back to the sharer's email when they have no name", async () => {
+    const { req, config, mailer } = setupEmailTest();
+    await sendShareEmail(
+      req,
+      { email: "sharer@example.com" } as User,
+      "recipient@example.com",
+      "project",
+      "My Website",
+      "https://studio.plasmic.app/projects/123",
+      true
+    );
+    expect(mailer.sendMail).toHaveBeenCalledWith({
+      from: config.mailFrom,
+      replyTo: "sharer@example.com",
+      to: "recipient@example.com",
+      bcc: req.config.mailBcc,
+      subject: `sharer@example.com invited you to "My Website"`,
+      text: `sharer@example.com is using Plasmic and has invited you to the project "My Website":
+
+https://studio.plasmic.app/projects/123`,
+    });
+  });
 });
