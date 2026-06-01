@@ -42,7 +42,12 @@ import {
   trackInsertItem,
 } from "@/wab/client/observability/events/insert-item";
 import { DeleteTplResult, deleteTpl } from "@/wab/client/operations/delete-tpl";
+import {
+  ExtractComponentResult,
+  extractComponent as extractComponentOp,
+} from "@/wab/client/operations/extract-component";
 import { renameTpl } from "@/wab/client/operations/rename-tpl";
+import { validateComponentExtraction } from "@/wab/client/operations/utils/validate-component-extraction";
 import { validateTplRemoval } from "@/wab/client/operations/utils/validate-tpl-removal";
 import { promptComponentName, promptPageName } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
@@ -149,7 +154,6 @@ import {
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   findImplicitStatesOfNodesInTree,
-  findImplicitUsages,
   getStateDisplayName,
   isStateUsedInExpr,
 } from "@/wab/shared/core/states";
@@ -240,16 +244,13 @@ import {
   TplTag,
   Variant,
   VariantSetting,
-  ensureKnownEventHandler,
   isKnownArenaFrame,
-  isKnownEventHandler,
   isKnownExprText,
   isKnownImageAssetRef,
   isKnownNodeMarker,
   isKnownRenderExpr,
   isKnownTplComponent,
   isKnownTplNode,
-  isKnownTplRef,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import {
@@ -3282,160 +3283,31 @@ export class ViewOps {
     );
   }
 
-  async extractComponent(tpl?: TplNode) {
-    tpl =
-      tpl ||
+  async extractComponent(tplNode?: TplNode) {
+    const tpl =
+      tplNode ||
       ensure(
         this.viewCtx().focusedTpl(),
         "Should have focused tpl to be able to extract component"
       );
-    if (Tpls.isBodyTpl(tpl)) {
-      notification.error({
-        message: "Cannot extract page body",
-        description:
-          "Page body is a special element.  Choose another element to" +
-          " extract as a component.",
-      });
-      return;
-    }
-
-    if (Tpls.isTplTextBlock(tpl.parent)) {
-      notification.error({
-        message: "Cannot extract inline text into a component.",
-        description: "This feature is not supported at the moment.",
-      });
-      return;
-    }
-
-    if (!Tpls.isTplTagOrComponent(tpl) || Tpls.isTplColumn(tpl)) {
-      notification.error({
-        message: "Cannot extract this into a component.",
-        description:
-          "You can only extract tags or component instances into a new Component.",
-      });
-      return;
-    }
-
     const containingComponent = $$$(tpl).owningComponent();
+
+    const validationError = validateComponentExtraction(
+      tpl,
+      containingComponent,
+      this.site()
+    );
+    if (validationError) {
+      this.notifyCannotExtractComponent(validationError);
+      return;
+    }
+    assert(
+      Tpls.isTplTagOrComponent(tpl),
+      "Extraction validation guarantees tpl is a tag or component"
+    );
+
     const flattenedTpls = Tpls.flattenTpls(tpl);
-    const flattenedTplsSet = new Set(flattenedTpls);
     const varRefs = Array.from(Components.findVarRefs(tpl));
-
-    const removedImplicitStates = new Set(
-      findImplicitStatesOfNodesInTree(containingComponent, tpl)
-    );
-    const containingComponentExprs = Tpls.findExprsInTree(
-      containingComponent.tplTree,
-      [tpl]
-    );
-    for (const state of removedImplicitStates) {
-      const refs = containingComponentExprs.filter(({ expr }) =>
-        isStateUsedInExpr(state, expr)
-      );
-      if (refs.length > 0) {
-        const maybeNode = refs.find((r) => r.node)?.node;
-        const key = common.mkUuid();
-        notification.error({
-          key,
-          message: "Cannot create component",
-          description: (
-            <>
-              Selected elements contain variable "{getStateDisplayName(state)}"
-              which is referenced in the current component.{" "}
-              {maybeNode ? (
-                <a
-                  onClick={() => {
-                    this.viewCtx().setStudioFocusByTpl(maybeNode);
-                    notification.close(key);
-                  }}
-                >
-                  [Go to reference]
-                </a>
-              ) : null}
-            </>
-          ),
-        });
-        return;
-      }
-      const implicitUsages = findImplicitUsages(this.site(), state);
-      if (implicitUsages.length > 0) {
-        const components = L.uniq(
-          implicitUsages.map((usage) => usage.component)
-        );
-        notification.error({
-          message: "Cannot create component",
-          description: `Selected nodes contain variable "${getStateDisplayName(
-            state
-          )}" which is referenced in ${components
-            .map((c) => Components.getComponentDisplayName(c))
-            .join(", ")}.`,
-        });
-        return;
-      }
-    }
-
-    const tplExprs = Tpls.findExprsInTree(tpl);
-    const exprsInInteractions = tplExprs
-      .filter(({ expr }) => isKnownEventHandler(expr))
-      .flatMap(({ expr }) => {
-        const eventHandler = ensureKnownEventHandler(expr);
-        return eventHandler.interactions.flatMap((interaction) =>
-          Tpls.findExprsInInteraction(interaction)
-        );
-      });
-    const remainingStates = containingComponent.states.filter(
-      (s) => !removedImplicitStates.has(s)
-    );
-    for (const state of remainingStates) {
-      // We try to extract the component if the state is not referenced in any
-      // interaction. We guess that this state is read-only in this context and
-      // can be passed in as a prop of the new component.
-      const refsInInteractions = new Set(
-        exprsInInteractions.filter((expr) => isStateUsedInExpr(state, expr))
-      );
-      if (refsInInteractions.size === 0) {
-        continue;
-      }
-      const refs = tplExprs.filter(
-        ({ expr }) =>
-          isStateUsedInExpr(state, expr) && refsInInteractions.has(expr)
-      );
-      if (refs.length > 0) {
-        const maybeNode = refs.find((r) => r.node)?.node;
-        const key = common.mkUuid();
-        notification.error({
-          key,
-          message: "Cannot create component",
-          description: (
-            <>
-              Selected elements contain reference to "
-              {getStateDisplayName(state)}".{" "}
-              {maybeNode ? (
-                <a
-                  onClick={() => {
-                    this.viewCtx().setStudioFocusByTpl(maybeNode);
-                    notification.close(key);
-                  }}
-                >
-                  [Go to reference]
-                </a>
-              ) : null}
-            </>
-          ),
-        });
-        return;
-      }
-    }
-
-    for (const tplRef of tplExprs) {
-      const expr = tplRef.expr;
-      if (isKnownTplRef(expr)) {
-        if (!flattenedTplsSet.has(expr.tpl)) {
-          this.notifyMissingTplRef(tplRef.node ?? null, expr.tpl);
-          return;
-        }
-      }
-    }
 
     const {
       params: paramsUsedInExprs,
@@ -3462,27 +3334,28 @@ export class ViewOps {
       return;
     }
 
-    const name = this.tplMgr().getUniqueComponentName(resp.name);
+    let extractResult: ExtractComponentResult | undefined;
     this.change(() => {
-      const { tplComponent, warnings } = Components.extractComponent({
+      extractResult = extractComponentOp({
         site: this.site(),
-        name,
-        tpl: ensure(
-          tpl as TplTag | TplComponent,
-          "Unexpected tpl type to extract component"
-        ),
         containingComponent,
+        tpl,
+        name: resp.name,
         resurfaceParams: true,
         tplMgr: this.tplMgr(),
         getCanvasEnvForTpl: this.viewCtx().getCanvasEnvForTpl.bind(
           this.viewCtx()
         ),
       });
-      this.tplMgr().attachComponent(tplComponent.component);
+      if (extractResult.result === "error") {
+        this.notifyCannotExtractComponent(extractResult);
+        return;
+      }
+      const { tplComponent, warnings } = extractResult;
       this.viewCtx().selectNewTpl(tplComponent, true);
-      if (tplComponent.component.name !== name) {
+      if (tplComponent.component.name !== resp.name) {
         this.studioCtx().maybeWarnComponentRenaming(
-          name,
+          resp.name,
           tplComponent.component.name
         );
       }
@@ -3531,13 +3404,15 @@ export class ViewOps {
       });
     });
 
-    // Segment track
-    trackEvent("Create component", {
-      projectName: this.studioCtx().siteInfo.name,
-      componentName: name,
-      type: "component",
-      action: "extract-tpl-to-component",
-    });
+    if (extractResult?.result === "success") {
+      // Segment track
+      trackEvent("Create component", {
+        projectName: this.studioCtx().siteInfo.name,
+        componentName: extractResult.tplComponent.component.name,
+        type: "component",
+        action: "extract-tpl-to-component",
+      });
+    }
   }
   isEditing(domNode: HTMLElement | null = null) {
     const editingTextContext = this.viewCtx().editingTextContext();
@@ -5216,6 +5091,32 @@ export class ViewOps {
               [Go to reference]
             </a>
           )}
+        </>
+      ),
+    });
+  }
+
+  private notifyCannotExtractComponent(error: {
+    message: string;
+    referencingNode?: TplNode | null;
+  }) {
+    const key = common.mkUuid();
+    notification.error({
+      key,
+      message: "Cannot extract component",
+      description: (
+        <>
+          {error.message}{" "}
+          {error.referencingNode ? (
+            <a
+              onClick={() => {
+                this.viewCtx().setStudioFocusByTpl(error.referencingNode!);
+                notification.close(key);
+              }}
+            >
+              [Go to reference]
+            </a>
+          ) : null}
         </>
       ),
     });

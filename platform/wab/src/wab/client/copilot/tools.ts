@@ -6,6 +6,7 @@ import { createComponentVariantGroupsTool } from "@/wab/client/copilot/tools/cre
 import { createStyleTokensTool } from "@/wab/client/copilot/tools/createStyleTokens";
 import { deleteElementTool } from "@/wab/client/copilot/tools/deleteElement";
 import { deleteStyleTokensTool } from "@/wab/client/copilot/tools/deleteStyleTokens";
+import { extractComponentTool } from "@/wab/client/copilot/tools/extractComponent";
 import { insertHtmlTool } from "@/wab/client/copilot/tools/insertHtml";
 import { readTool } from "@/wab/client/copilot/tools/read";
 import { setPageMetaTool } from "@/wab/client/copilot/tools/setPageMeta";
@@ -19,6 +20,7 @@ export const COPILOT_TOOLS: Record<string, AnyCopilotTool> = {
   [deleteElementTool.toolName]: deleteElementTool,
   [readTool.toolName]: readTool,
   [createComponentTool.toolName]: createComponentTool,
+  [extractComponentTool.toolName]: extractComponentTool,
   [createComponentVariantGroupsTool.toolName]: createComponentVariantGroupsTool,
   [addVariantsToComponentVariantGroupTool.toolName]:
     addVariantsToComponentVariantGroupTool,
