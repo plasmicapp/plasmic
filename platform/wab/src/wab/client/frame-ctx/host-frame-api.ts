@@ -59,7 +59,7 @@ export type HostFrameApi = {
 /** Structured error for copilot tool calls — Comlink-serializable. */
 export type CopilotToolCallError = {
   message: string;
-  type: "TOOL_NOT_FOUND" | "EXECUTION_FAILED" | "TRANSPORT_ERROR";
+  type: "TOOL_NOT_FOUND" | "EXECUTION_FAILED";
 };
 
 /** Serializable result of a tool call execution (crosses TopFrame and HostFrame boundary via Comlink) */
