@@ -9,7 +9,10 @@ import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assert, switchType } from "@/wab/shared/common";
 import { tryGetVariantGroupValueFromArg } from "@/wab/shared/core/components";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
-import { generateAnimationPropValue } from "@/wab/shared/core/styles";
+import {
+  generateAnimationPropValue,
+  isStylePropApplicable,
+} from "@/wab/shared/core/styles";
 import {
   flattenTpls,
   isTplTextBlock,
@@ -116,7 +119,8 @@ export function getStylesFromRuleSet(rs: RuleSet): Record<string, string> {
 }
 
 function getStylesFromVariantSetting(
-  vs: VariantSetting
+  vs: VariantSetting,
+  tpl: TplNode
 ): Record<string, string> {
   const styles: Record<string, string> = getStylesFromRuleSet(vs.rs);
 
@@ -132,12 +136,10 @@ function getStylesFromVariantSetting(
     }
   }
 
-  if (vs.rs.animations) {
-    const animationValue = generateAnimationPropValue(vs.rs.animations);
-    styles["animation"] = animationValue ?? "none";
-  }
-
-  return styles;
+  // Filter styles to what's applicable for this TplNode
+  return Object.fromEntries(
+    Object.entries(styles).filter(([prop]) => isStylePropApplicable(tpl, prop))
+  );
 }
 
 // Attrs that are either rendered by buildTplTag (id, style, children) or store internal
@@ -159,8 +161,8 @@ function getAttrsFromVariantSetting(
   return attrs;
 }
 
-function getStyleString(vs: any): string | undefined {
-  const styles = getStylesFromVariantSetting(vs);
+function getStyleString(vs: VariantSetting, tpl: TplNode): string | undefined {
+  const styles = getStylesFromVariantSetting(vs, tpl);
   const entries = Object.entries(styles);
   if (entries.length === 0) {
     return undefined;
@@ -180,7 +182,7 @@ function buildTplTag(tpl: TplTag): XmlElement {
   }
 
   // Add inline styles from RuleSet
-  const style = getStyleString(vs);
+  const style = getStyleString(vs, tpl);
   if (style) {
     attrs.style = style;
   }
@@ -264,7 +266,7 @@ function buildTplComponent(tpl: TplComponent): XmlElement {
   }
 
   // Add inline styles from RuleSet on the component instance
-  const style = getStyleString(vs);
+  const style = getStyleString(vs, tpl);
   if (style) {
     attrs.style = style;
   }
@@ -363,7 +365,7 @@ function getTplOverrides(
       continue;
     }
 
-    const styles = getStylesFromVariantSetting(vs);
+    const styles = getStylesFromVariantSetting(vs, tpl);
     const attrs = getAttrsFromVariantSetting(vs);
 
     if (Object.keys(styles).length > 0 || Object.keys(attrs).length > 0) {

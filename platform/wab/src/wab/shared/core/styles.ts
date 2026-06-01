@@ -411,7 +411,7 @@ export const THEMABLE_TAGS = [
   "ul",
 ];
 
-function isStylePropApplicable(tpl: TplNode, prop: string) {
+export function isStylePropApplicable(tpl: TplNode, prop: string) {
   if (isTplTag(tpl)) {
     if (THEMABLE_TAGS.includes(tpl.tag)) {
       // All themable tags can have any style, as all styles are
