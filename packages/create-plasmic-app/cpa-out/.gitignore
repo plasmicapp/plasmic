@@ -8,12 +8,14 @@
 !/.gitignore
 !**/package.json
 !**/plasmic.json
+!**/jsconfig.json
 !**/tsconfig.json
+!**/*.css
 !**/*.js
 !**/*.jsx
+!**/*.mjs
 !**/*.ts
 !**/*.tsx
-!**/next.config.mjs
 
 # for tanstack start
 .tanstack/
