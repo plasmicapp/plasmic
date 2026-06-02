@@ -135,6 +135,6 @@
   "tanstackConfig": {
     "pagesDir": "../routes"
   },
-  "cliVersion": "0.1.361",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.361/dist/plasmic.schema.json"
+  "cliVersion": "0.1.363",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.363/dist/plasmic.schema.json"
 }

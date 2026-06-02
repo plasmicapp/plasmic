@@ -12,11 +12,11 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.361",
-    "@plasmicapp/react-web": "^1.0.8",
+    "@plasmicapp/cli": "^0.1.363",
+    "@plasmicapp/react-web": "^1.0.10",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
-    "@tanstack/react-query": "^5.100.10",
+    "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/router-plugin": "^1.132.0",

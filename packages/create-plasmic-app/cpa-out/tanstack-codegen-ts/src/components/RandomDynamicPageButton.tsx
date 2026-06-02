@@ -19,8 +19,7 @@ import {
 //
 // You can also stop extending from DefaultRandomDynamicPageButtonProps altogether and have
 // total control over the props for your component.
-export interface RandomDynamicPageButtonProps
-  extends DefaultRandomDynamicPageButtonProps {}
+export interface RandomDynamicPageButtonProps extends DefaultRandomDynamicPageButtonProps {}
 
 function RandomDynamicPageButton(props: RandomDynamicPageButtonProps) {
   // Use PlasmicRandomDynamicPageButton to render this component as it was
