@@ -357,7 +357,7 @@ export function isTypographyNode(tpl: TplNode): tpl is TplNode {
   ) {
     return true;
   } else if (isTplTag(tpl)) {
-    return THEMABLE_TAGS.includes(tpl.tag);
+    return (THEMABLE_TAGS as readonly string[]).includes(tpl.tag);
   } else {
     return false;
   }

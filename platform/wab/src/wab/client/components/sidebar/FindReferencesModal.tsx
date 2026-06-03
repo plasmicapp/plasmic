@@ -25,6 +25,7 @@ import {
   DefaultStyle,
   extractMixinUsages,
   extractTokenUsages,
+  getDefaultStyleTag,
 } from "@/wab/shared/core/styles";
 import {
   MutableToken,
@@ -117,7 +118,9 @@ export const FindReferencesModal = observer(
     const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
       undefined
     );
-    const [editTag, setEditTag] = React.useState<string | undefined>(undefined);
+    const [editDefaultStyle, setEditDefaultStyle] = React.useState<
+      DefaultStyle | undefined
+    >(undefined);
 
     const [findReferenceItem, setFindReferenceItem] = React.useState<
       Item | undefined
@@ -191,8 +194,7 @@ export const FindReferencesModal = observer(
             : `Default Typography`,
           type: type,
           onClick: () => {
-            setEditTag(theme.selector?.split(":")[0]);
-            setEditMixin(theme.style);
+            setEditDefaultStyle(theme);
           },
         };
       } else {
@@ -292,14 +294,24 @@ export const FindReferencesModal = observer(
         )}
         {editMixin && (
           <MixinPopup
-            mixin={editMixin}
             studioCtx={studioCtx}
+            mixin={editMixin}
+            themeTag={undefined}
             show={true}
             onClose={() => {
               setEditMixin(undefined);
-              setEditTag(undefined);
             }}
-            tag={editTag}
+          />
+        )}
+        {editDefaultStyle && (
+          <MixinPopup
+            studioCtx={studioCtx}
+            mixin={editDefaultStyle.style}
+            themeTag={getDefaultStyleTag(editDefaultStyle)}
+            show={true}
+            onClose={() => {
+              setEditDefaultStyle(undefined);
+            }}
           />
         )}
         {findReferenceItem && (

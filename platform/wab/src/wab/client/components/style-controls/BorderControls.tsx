@@ -7,7 +7,6 @@ import styles from "@/wab/client/components/style-controls/BorderControls.module
 import { LabeledLineStyleToggleButtonGroupItemRow } from "@/wab/client/components/style-controls/LineStyleControls";
 import {
   ExpsProvider,
-  MixinExpsProvider,
   StylePanelSection,
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
@@ -252,8 +251,6 @@ export const BorderControlsWrapper = observer(
             expsProvider.tpl.uuid,
             ...expsProvider.targetVariantCombo.map((v) => v.uuid),
           ]
-        : expsProvider instanceof MixinExpsProvider
-        ? expsProvider.mixin.uuid
         : expsProvider.targetRs().uid
     );
 

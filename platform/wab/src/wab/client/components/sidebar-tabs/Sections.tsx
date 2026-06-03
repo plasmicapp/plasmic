@@ -349,7 +349,7 @@ const htmlTagsWithAttributes = new Set([
   "input",
 ]);
 
-export function getRenderBySection(
+function getRenderBySection(
   tpl: TplNode,
   viewCtx: ViewCtx,
   renderOpts: Map<Section, boolean>

@@ -38,7 +38,6 @@ import {
   generate,
   mapify,
   tuple,
-  unexpected,
 } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
@@ -51,13 +50,12 @@ import {
   lineHeightProps,
   opacityProps,
   spacingProps,
-  typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import { ThemableTag } from "@/wab/shared/core/styles";
 import {
   isComponentRoot,
   isTplComponent,
   isTplTagOrComponent,
-  isTplTextBlock,
 } from "@/wab/shared/core/tpls";
 import {
   computeDefinedIndicator,
@@ -98,8 +96,6 @@ import {
   IRuleSetHelpersX,
   ReadonlyIRuleSetHelpersX,
   RSH,
-  RuleSetHelpers,
-  VariantedRuleSetHelpers,
 } from "@/wab/shared/RuleSetHelpers";
 import { isExplicitSize } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -964,6 +960,12 @@ export const TabbedStylePanelSection = observer(
   }
 );
 
+/**
+ * Unified interface for accessing target/merged rulesets.
+ * There are 2 implementations:
+ * - TplExpsProvider (for tpls that require merging of inherited rulesets)
+ * - SingleRsExpsProvider (a simple wrapper around a single ruleset)
+ */
 export interface ExpsProvider {
   maybeTargetExp: () => IRuleSetHelpersX | undefined;
 
@@ -972,10 +974,6 @@ export interface ExpsProvider {
 
   // This one uses effectiveExp for read, and ensuredTargetExp for write.
   mergedExp: () => IRuleSetHelpersX;
-
-  typographyDefaultOpen: () => boolean;
-
-  forTag: () => string;
 
   forDom: () => JQuery | undefined | null;
 
@@ -988,8 +986,6 @@ export interface ExpsProvider {
   showPositioningPanel: () => boolean;
 
   getTargetDeepLayoutParentRsh: () => ReadonlyIRuleSetHelpersX | undefined;
-
-  readonly forTextNode: boolean;
 
   isPropRemovable: (prop: string) => boolean;
 
@@ -1073,25 +1069,18 @@ export class FlexControlHelper {
 }
 
 export class SingleRsExpsProvider implements ExpsProvider {
-  protected _targetExp: IRuleSetHelpersX;
-
-  readonly forTextNode: boolean;
   constructor(
-    private rs: RuleSet,
-    public studioCtx: StudioCtx,
-    private unremovableProps: string[]
-  ) {
-    this._targetExp = new RuleSetHelpers(rs, this.forTag());
-    this.forTextNode = true;
-  }
-  maybeTargetExp = () => this._targetExp;
-  targetExp = () => this._targetExp;
+    private readonly rs: RuleSet,
+    private readonly rsh: IRuleSetHelpersX,
+    public readonly studioCtx: StudioCtx,
+    private readonly unremovableProps: string[],
+    private readonly themeTag?: ThemableTag
+  ) {}
+  maybeTargetExp = () => this.rsh;
+  targetExp = () => this.rsh;
   targetRs = () => this.rs;
   // This one uses effectiveExp for read, and ensuredTargetExp for write.
-  mergedExp = () => this._targetExp;
-  typographyDefaultOpen = () =>
-    typographyCssProps.some((prop) => this._targetExp.has(prop));
-  forTag = () => "div";
+  mergedExp = () => this.rsh;
   forDom = () => undefined;
   onContainerTypeChange = async (val: ContainerType) => {
     return this.studioCtx.changeUnsafe(() =>
@@ -1100,17 +1089,16 @@ export class SingleRsExpsProvider implements ExpsProvider {
   };
 
   onPositionChange = async (val: string) => {
-    const exp = this.mergedExp();
     await this.studioCtx.changeUnsafe(() => {
       if (val === "relative") {
         // When position is set to relative, then also make sure top/bottom/left/right
         // are set to auto, so we can make sure applying this mixin means the element
         // will be auto-layout-ed.
         ["top", "bottom", "left", "right"].forEach((prop) =>
-          exp.set(prop, "auto")
+          this.rsh.set(prop, "auto")
         );
       }
-      exp.set("position", val);
+      this.rsh.set("position", val);
     });
   };
 
@@ -1121,81 +1109,12 @@ export class SingleRsExpsProvider implements ExpsProvider {
   isPropRemovable = (prop: string) => !this.unremovableProps.includes(prop);
 
   definedIndicator = (prop: string): DefinedIndicatorType => {
-    if (this._targetExp.has(prop)) {
+    if (this.rsh.has(prop)) {
       return {
         source: "setNonVariable",
         prop,
-        value: ensure(this._targetExp.getRaw(prop), "value should be set"),
-        isDefaultTheme: false,
-      };
-    } else {
-      return { source: "none" };
-    }
-  };
-}
-
-export class RshExpsProvider implements ExpsProvider {
-  constructor(
-    private exp: IRuleSetHelpersX,
-    public studioCtx: StudioCtx,
-    private unremovableProps: string[]
-  ) {}
-  forTextNode = false;
-  maybeTargetExp = () => this.exp;
-  targetExp = () => this.exp;
-  targetRs = () => unexpected();
-  mergedExp = () => this.exp;
-  typographyDefaultOpen = () => false;
-  forTag = () => "div";
-  forDom = () => undefined;
-  onContainerTypeChange = () => unexpected();
-  onPositionChange = () => unexpected();
-  showPositioningPanel = () => true;
-
-  getTargetDeepLayoutParentRsh = () => undefined;
-
-  isPropRemovable = (prop: string) => !this.unremovableProps.includes(prop);
-
-  definedIndicator = (prop: string): DefinedIndicatorType => {
-    if (this.exp.has(prop)) {
-      return {
-        source: "setNonVariable",
-        prop,
-        value: ensure(this.exp.getRaw(prop), "value should be set"),
-        isDefaultTheme: false,
-      };
-    } else {
-      return { source: "none" };
-    }
-  };
-}
-
-export class MixinExpsProvider extends SingleRsExpsProvider {
-  constructor(
-    rs: RuleSet,
-    studioCtx: StudioCtx,
-    unremovableProps: string[],
-    private isDefaultTheme: boolean,
-    public mixin: Mixin,
-    private vsh?: VariantedStylesHelper
-  ) {
-    super(rs, studioCtx, unremovableProps);
-    this._targetExp = !this.isDefaultTheme
-      ? new RuleSetHelpers(rs, this.forTag())
-      : new VariantedRuleSetHelpers(
-          this.mixin,
-          this.forTag(),
-          ensure(this.vsh, "must exist for tags")
-        );
-  }
-
-  definedIndicator = (prop: string): DefinedIndicatorType => {
-    if (this._targetExp.has(prop)) {
-      return {
-        source: "setNonVariable",
-        prop,
-        value: ensure(this._targetExp.getRaw(prop), "value should be set"),
-        isDefaultTheme: this.isDefaultTheme,
+        value: ensure(this.rsh.getRaw(prop), "value should be set"),
+        themeTag: this.themeTag,
       };
     } else {
       return { source: "none" };
@@ -1209,7 +1128,6 @@ export class TplExpsProvider implements ExpsProvider {
   activeVariantCombo: VariantCombo;
   targetIndicatorCombo: VariantCombo;
   readonly studioCtx: StudioCtx;
-  readonly forTextNode: boolean;
 
   constructor(
     readonly viewCtx: ViewCtx,
@@ -1227,8 +1145,6 @@ export class TplExpsProvider implements ExpsProvider {
     this.targetIndicatorCombo = this.vtm.getTargetIndicatorComboForNode(
       this.tpl
     );
-
-    this.forTextNode = isTplTextBlock(tpl);
   }
   effectiveVs = computedFn(
     () => {
@@ -1258,8 +1174,6 @@ export class TplExpsProvider implements ExpsProvider {
     },
     { name: "mergedExp" }
   );
-  typographyDefaultOpen = () => isTplTextBlock(this.tpl);
-  forTag = () => (isKnownTplTag(this.tpl) ? this.tpl.tag : "div");
 
   onContainerTypeChange = (val: ContainerType) => {
     // The `display` style is special because we want to force

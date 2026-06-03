@@ -196,10 +196,11 @@ export const MixinsSection = observer(function (props: {
       />
       {editMixin && isEditable(viewCtx.studioCtx.site, editMixin) && (
         <MixinPopup
+          studioCtx={viewCtx.studioCtx}
           mixin={editMixin}
+          themeTag={undefined}
           show={true}
           onClose={onMixinEdited}
-          studioCtx={viewCtx.studioCtx}
         />
       )}
     </SidebarSection>

@@ -81,7 +81,7 @@ export const FAKE_CSS_PROPS = [
 // want for all elements.
 //
 // Tags by content category are listed here, currently used for display prop: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content
-export const cssInitialsOverrides = {
+const cssInitialsOverrides = {
   display: {
     img: "inline-block",
     li: "list-item",

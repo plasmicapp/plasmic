@@ -1,4 +1,3 @@
-import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
 import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
 import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
 import { OverflowSection } from "@/wab/client/components/sidebar-tabs/OverflowSection";
@@ -9,29 +8,31 @@ import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSect
 import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
 import { TransitionsPanelSection } from "@/wab/client/components/sidebar-tabs/TransitionsSection";
 import { TypographySection } from "@/wab/client/components/sidebar-tabs/TypographySection";
+import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import {
   BorderPanelSection,
   BorderRadiusSection,
 } from "@/wab/client/components/style-controls/BorderControls";
 import {
+  SingleRsExpsProvider,
   mkStyleComponent,
   providesStyleComponent,
-  SingleRsExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import Button from "@/wab/client/components/widgets/Button";
 import Select from "@/wab/client/components/widgets/Select";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { ensure, mkShortId, spawn, withoutNils } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { mkSelectorRuleSet } from "@/wab/shared/core/styles";
 import {
-  ensureKnownStyleExpr,
   StyleExpr,
   TplComponent,
+  ensureKnownStyleExpr,
 } from "@/wab/shared/model/classes";
-import { mkSelectorRuleSet } from "@/wab/shared/core/styles";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -209,6 +210,7 @@ const StyleExprForm = observer(function StyleExprForm(props: {
 
   const expsProvider = new SingleRsExpsProvider(
     selectorRuleSet.rs,
+    new RuleSetHelpers(selectorRuleSet.rs, "div"),
     studioCtx,
     /*unremovableProps=*/ []
   );

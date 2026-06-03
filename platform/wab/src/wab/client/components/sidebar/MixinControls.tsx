@@ -25,7 +25,7 @@ import {
 } from "@/wab/client/components/style-controls/BorderControls";
 import { OutlinePanelSection } from "@/wab/client/components/style-controls/OutlineControls";
 import {
-  MixinExpsProvider,
+  SingleRsExpsProvider,
   mkStyleComponent,
   providesStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
@@ -39,13 +39,21 @@ import PlasmicLeftMixinsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeft
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
+import {
+  RuleSetHelpers,
+  VariantedRuleSetHelpers,
+} from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn, tuple } from "@/wab/shared/common";
 import { extractTransitiveDepsFromMixins } from "@/wab/shared/core/project-deps";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { extractMixinUsages } from "@/wab/shared/core/styles";
+import {
+  BASE_THEMEABLE_TAG,
+  ThemableTag,
+  extractMixinUsages,
+} from "@/wab/shared/core/styles";
 import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { Menu, notification } from "antd";
@@ -113,17 +121,19 @@ export interface MixinPanelSelection {
 export interface MixinPopupProps {
   studioCtx: StudioCtx;
   mixin: Mixin;
+  themeTag: ThemableTag | undefined;
   show: boolean;
   onClose: () => void;
   autoFocusTitle?: boolean;
-  tag?: string;
 }
 
 const iconClass = "mixin-fg custom-svg-icon--lg monochrome-exempt";
 
 export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
-  const { studioCtx, mixin, tag } = props;
-  const isDefaultThemeStyle = !tag && mixin.forTheme;
+  const { studioCtx, mixin, themeTag } = props;
+  // Only the default typography style (no specific tag) is restricted to
+  // typography-only props; tag styles (e.g. ul/ol) keep all their panels.
+  const isDefaultThemeStyle = mixin.forTheme && themeTag === BASE_THEMEABLE_TAG;
   return (
     <SidebarModal
       title={
@@ -157,10 +167,9 @@ export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
       <MixinFormContent
         studioCtx={studioCtx}
         mixin={mixin}
+        themeTag={themeTag}
         panelSelection={isDefaultThemeStyle ? { typography: true } : undefined}
         inheritableTypographyPropsOnly={isDefaultThemeStyle}
-        isDefaultTheme={mixin.forTheme}
-        isList={!!(tag && isTagListContainer(tag))}
       />
     </SidebarModal>
   );
@@ -169,21 +178,19 @@ export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
 export const MixinFormContent = observer(function MixinFormContent(props: {
   studioCtx: StudioCtx;
   mixin: Mixin;
-  // If not defined, show all panels.
+  themeTag: ThemableTag | undefined;
+  /** If not defined, show all panels. **/
   panelSelection?: MixinPanelSelection;
   inheritableTypographyPropsOnly: boolean;
   warnOnRelativeFontUnits?: boolean;
-  isDefaultTheme?: boolean;
-  isList?: boolean;
   targetGlobalVariants?: Variant[];
 }) {
   const {
     studioCtx,
     mixin,
     panelSelection,
+    themeTag,
     inheritableTypographyPropsOnly,
-    isDefaultTheme,
-    isList,
     targetGlobalVariants,
     warnOnRelativeFontUnits,
   } = props;
@@ -194,13 +201,17 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
     targetGlobalVariants
   );
 
-  const expsProvider = new MixinExpsProvider(
+  const rsh =
+    themeTag !== undefined
+      ? new VariantedRuleSetHelpers(mixin, themeTag, vsh)
+      : new RuleSetHelpers(mixin.rs, "div");
+
+  const expsProvider = new SingleRsExpsProvider(
     mixin.rs,
+    rsh,
     studioCtx,
     /*unremovableProps=*/ [],
-    !!isDefaultTheme,
-    mixin,
-    vsh
+    themeTag
   );
 
   const styleComponent = mkStyleComponent({ expsProvider });
@@ -217,7 +228,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
         />
       )}
 
-      {isList && (!s || s.list) && (
+      {themeTag && isTagListContainer(themeTag) && (!s || s.list) && (
         <ListStyleSection expsProvider={expsProvider} />
       )}
 
@@ -450,8 +461,9 @@ function _MixinsPanel() {
 
       {editMixin && (
         <MixinPopup
-          mixin={editMixin}
           studioCtx={sc}
+          mixin={editMixin}
+          themeTag={undefined}
           show={true}
           onClose={() => {
             setEditMixin(undefined);
@@ -546,12 +558,12 @@ const MixinRow = observer(function MixinRow(props: {
 
 export const EditMixinButton = observer(function EditMixinButton(props: {
   mixin: Mixin;
+  themeTag: ThemableTag | undefined;
   className?: string;
   children?: React.ReactNode;
   onShowPopup?: (editing: boolean) => void;
-  tag?: string;
 }) {
-  const { mixin, className, children, tag } = props;
+  const { mixin, className, children, themeTag } = props;
   const studioCtx = useStudioCtx();
   const [editing, setEditing] = React.useState(false);
 
@@ -568,14 +580,14 @@ export const EditMixinButton = observer(function EditMixinButton(props: {
       </button>
       {editing && (
         <MixinPopup
+          studioCtx={studioCtx}
           mixin={mixin}
+          themeTag={themeTag}
           show={true}
           onClose={() => {
             setEditing(false);
             props.onShowPopup && props.onShowPopup(false);
           }}
-          studioCtx={studioCtx}
-          tag={tag}
         />
       )}
     </>

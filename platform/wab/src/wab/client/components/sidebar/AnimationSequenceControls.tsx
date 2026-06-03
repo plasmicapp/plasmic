@@ -47,6 +47,7 @@ import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/
 import PlasmicLeftAnimationSequencesPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftAnimationSequencesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
@@ -209,7 +210,12 @@ const AnimationSequenceEditModal = observer(
         {selectedKeyframe && (
           <AnimationSequenceStylePanelSections
             expsProvider={
-              new SingleRsExpsProvider(selectedKeyframe.rs, studioCtx, [])
+              new SingleRsExpsProvider(
+                selectedKeyframe.rs,
+                new RuleSetHelpers(selectedKeyframe.rs, "div"),
+                studioCtx,
+                []
+              )
             }
             vsh={vsh}
           />

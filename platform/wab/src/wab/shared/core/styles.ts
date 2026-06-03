@@ -390,7 +390,14 @@ export function makeDefaultStylesRuleBodyFor(
     .join("\n");
 }
 
-// Tags that support setting default styles.
+/**
+ * Base "tag" that is the root of all themable tags (the default typography).
+ * Obviously not a real tag, but it represents all elements.
+ * In some places, we split a selector into tag and pseudo-class parts,
+ * so this just works for selectors like ":hover".
+ */
+export const BASE_THEMEABLE_TAG = "";
+/** Tags that support setting default styles. */
 export const THEMABLE_TAGS = [
   "a",
   "blockquote",
@@ -409,11 +416,38 @@ export const THEMABLE_TAGS = [
   "pre",
   "strong",
   "ul",
-];
+] as const;
+
+export type ThemableTag =
+  | typeof BASE_THEMEABLE_TAG
+  | (typeof THEMABLE_TAGS)[number];
+
+/** Represents a ThemeStyle in Theme.styles or a Theme.defaultStyle. */
+export interface DefaultStyle {
+  style: Mixin;
+  selector: string;
+}
+
+export function getDefaultStyleTagAndPseudoClass(
+  defaultStyle: DefaultStyle
+): [ThemableTag, string | undefined] {
+  if (defaultStyle.selector) {
+    return defaultStyle.selector.split(":").map((part) => part.trim()) as [
+      ThemableTag,
+      string | undefined
+    ];
+  } else {
+    return [BASE_THEMEABLE_TAG, undefined];
+  }
+}
+
+export function getDefaultStyleTag(defaultStyle: DefaultStyle): ThemableTag {
+  return getDefaultStyleTagAndPseudoClass(defaultStyle)[0];
+}
 
 export function isStylePropApplicable(tpl: TplNode, prop: string) {
   if (isTplTag(tpl)) {
-    if (THEMABLE_TAGS.includes(tpl.tag)) {
+    if ((THEMABLE_TAGS as readonly string[]).includes(tpl.tag)) {
       // All themable tags can have any style, as all styles are
       // available anyway in the theme controls
       return true;
@@ -2801,11 +2835,6 @@ type TokenUsage =
   | TokenUsageByComponentProp
   | TokenUsageByComponentPropFallback;
 
-export interface DefaultStyle {
-  style: Mixin;
-  selector?: string;
-}
-
 export function changeTokenUsage(
   site: Site,
   token: StyleToken,
@@ -2946,6 +2975,7 @@ export function extractTokenUsages(
     if (findUsagesInRs(theme.defaultStyle.rs)) {
       usingThemes.add({
         style: theme.defaultStyle,
+        selector: BASE_THEMEABLE_TAG,
       });
     }
     for (const style of theme.styles) {

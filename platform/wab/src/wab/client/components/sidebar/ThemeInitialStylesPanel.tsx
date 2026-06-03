@@ -18,6 +18,7 @@ import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { spawn } from "@/wab/shared/common";
 import { getDefaultStyles } from "@/wab/shared/default-styles";
 import { RuleSet } from "@/wab/shared/model/classes";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { kebabCase, mapKeys } from "lodash";
 import { observer } from "mobx-react";
@@ -31,10 +32,12 @@ const InitialsForm = observer(function InitialsForm(props: {
   addItemKey: AddItemKey;
 }) {
   const { studioCtx, rs, addItemKey } = props;
-  const expsProvider = new SingleRsExpsProvider(rs, studioCtx, [
-    "display",
-    "flex-direction",
-  ]);
+  const expsProvider = new SingleRsExpsProvider(
+    rs,
+    new RuleSetHelpers(rs, "div"),
+    studioCtx,
+    ["display", "flex-direction"]
+  );
   return providesStyleComponent(
     mkStyleComponent({ expsProvider }),
     `${rs.uid}`

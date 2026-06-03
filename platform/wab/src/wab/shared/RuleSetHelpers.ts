@@ -16,6 +16,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import L, { memoize } from "lodash";
 import { CSSProperties } from "react";
 
+/** Helper for handling rulesets. */
 export interface IRuleSetHelpers {
   has(prop: string): boolean;
 
@@ -44,7 +45,7 @@ export type ReadonlyIRuleSetHelpersX = Pick<
 >;
 
 export class RuleSetHelpers implements IRuleSetHelpersX {
-  constructor(private _rs: RuleSet, protected _forTag: string) {}
+  constructor(private readonly _rs: RuleSet, public readonly _forTag: string) {}
 
   rs = () => this._rs;
 
@@ -146,9 +147,9 @@ export function extractStyles(
 
 export class VariantedRuleSetHelpers extends RuleSetHelpers {
   constructor(
-    private mixin: Mixin,
-    protected _forTag: string,
-    private vsh: VariantedStylesHelper
+    private readonly mixin: Mixin,
+    _forTag: string,
+    private readonly vsh: VariantedStylesHelper
   ) {
     super(vsh.getActiveVariantedRuleSet(mixin), _forTag);
   }

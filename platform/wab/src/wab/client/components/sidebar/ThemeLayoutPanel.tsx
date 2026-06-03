@@ -3,7 +3,7 @@
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledStyleDimItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
-  RshExpsProvider,
+  SingleRsExpsProvider,
   StyleComponent,
   providesStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
@@ -47,7 +47,8 @@ function ThemeLayoutPanel_(
       }
     };
     return new StyleComponent({
-      expsProvider: new RshExpsProvider(
+      expsProvider: new SingleRsExpsProvider(
+        baseExpr.rs(),
         makeExpProxy(baseExpr, {
           get: (p: string) => {
             return baseExpr.getRaw(p) ?? CONTENT_LAYOUT_DEFAULTS[p];

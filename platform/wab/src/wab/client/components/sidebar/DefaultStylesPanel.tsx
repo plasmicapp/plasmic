@@ -9,9 +9,10 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isScreenVariant } from "@/wab/shared/Variants";
 import { ensure, mkShortId } from "@/wab/shared/common";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
+  BASE_THEMEABLE_TAG,
   THEMABLE_TAGS,
+  ThemableTag,
   getApplicableSelectors,
   mkRuleSet,
 } from "@/wab/shared/core/styles";
@@ -31,7 +32,7 @@ const DefaultStylesPanel = observer(
     const site = studioCtx.site;
     const activeTheme = site.activeTheme;
     const readOnly = studioCtx.getLeftTabPermission("themes") === "readable";
-    const [tag, setTag] = React.useState<string>("");
+    const [tag, setTag] = React.useState<ThemableTag>(BASE_THEMEABLE_TAG);
     const [pseudoClass, setPseudoClass] = React.useState<string>("");
     const [mixin, setMixin] = React.useState<Mixin | undefined>(undefined);
     const [selectedGlobalVariants, setSelectedGlobalVariants] = React.useState<
@@ -133,7 +134,7 @@ const DefaultStylesPanel = observer(
         tagSelect={{
           props: {
             options: [
-              { value: "", label: "Normal text" },
+              { value: BASE_THEMEABLE_TAG, label: "Normal text" },
               ...THEMABLE_TAGS.map((themeTag) => ({
                 value: themeTag,
                 label: (
@@ -145,7 +146,8 @@ const DefaultStylesPanel = observer(
                 ),
               })),
             ],
-            onChange: (_tag) => setTag(_tag || ""),
+            onChange: (_tag) =>
+              setTag((_tag as ThemableTag | null) || BASE_THEMEABLE_TAG),
             value: tag,
           },
         }}
@@ -194,6 +196,7 @@ const DefaultStylesPanel = observer(
             <MixinFormContent
               studioCtx={studioCtx}
               mixin={mixin}
+              themeTag={tag}
               panelSelection={
                 tag
                   ? {
@@ -216,8 +219,6 @@ const DefaultStylesPanel = observer(
                     }
               }
               inheritableTypographyPropsOnly={!tag}
-              isDefaultTheme={true}
-              isList={!!(tag && isTagListContainer(tag))}
               targetGlobalVariants={selectedGlobalVariants}
               warnOnRelativeFontUnits={true}
             />

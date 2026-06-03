@@ -1,11 +1,9 @@
 import { ensure } from "@/wab/shared/common";
-import { getCssInitial } from "@/wab/shared/css";
 import {
   getCssDefault,
   IRuleSetHelpersX,
   ReadonlyIRuleSetHelpersX,
 } from "@/wab/shared/RuleSetHelpers";
-import L from "lodash";
 import { CSSProperties } from "react";
 
 export interface IBaseRuleSetHelpers {
@@ -117,29 +115,4 @@ export function makeMergedExpProxy(
     clear: (prop: string) => getTargetExp().clear(prop),
     clearAll: (props: string[]) => getTargetExp().clearAll(props),
   };
-}
-
-export function makeExpFromValues(
-  values: Record<string, string>
-): ReadonlyIRuleSetHelpersX {
-  return {
-    has: (prop: string) => prop in values,
-    get: (prop: string) => values[prop] || getCssInitial(prop, undefined),
-    getRaw: (prop: string) => values[prop],
-    props: () => Object.keys(values),
-  };
-}
-
-export function makeExpProxyWithOverrideRules(
-  exp: ReadonlyIRuleSetHelpersX,
-  overrides: Record<string, string>
-): ReadonlyIRuleSetHelpersX {
-  return makeReadonlyExpProxy(
-    exp,
-    makeReadonlyExpandedExp({
-      has: (prop: string) => prop in overrides || exp.has(prop),
-      getRaw: (prop: string) => overrides[prop] ?? exp.getRaw(prop),
-      props: () => L.uniq([...Object.keys(overrides), ...exp.props()]),
-    })
-  );
 }

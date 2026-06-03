@@ -1,5 +1,6 @@
 import { VariantCombo } from "@/wab/shared/Variants";
 import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
+import { ThemableTag } from "@/wab/shared/core/styles";
 import {
   Animation,
   Arg,
@@ -125,7 +126,7 @@ export type DefinedIndicatorType =
       source: "setNonVariable";
       prop: string;
       value: string;
-      isDefaultTheme?: boolean;
+      themeTag?: ThemableTag;
     }
   | {
       // Value set in the current target variant is the highest priority
