@@ -1,4 +1,4 @@
-import { promises as fs } from "fs";
+import { existsSync, promises as fs } from "fs";
 import L from "lodash";
 import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
@@ -52,6 +52,21 @@ export const nextjsStrategy: CPAStrategy = {
   },
   overwriteConfig: async (args) => {
     const { projectPath, scheme, jsOrTs } = args;
+
+    // create-next-app's globals.css forces a dark background with `prefers-color-scheme: dark`.
+    // It's imported by the /plasmic-host layout/_app and paints the Studio canvas black.
+    const globalsCssCandidates = [
+      path.join(projectPath, "app", "globals.css"),
+      path.join(projectPath, "src", "app", "globals.css"),
+      path.join(projectPath, "styles", "globals.css"),
+      path.join(projectPath, "src", "styles", "globals.css"),
+    ];
+    for (const globalsCssPath of globalsCssCandidates) {
+      if (existsSync(globalsCssPath)) {
+        await fs.writeFile(globalsCssPath, makeNeutralGlobalsCss());
+      }
+    }
+
     if (scheme === "codegen") {
       const isTs = jsOrTs === "ts";
       const typePragma = isTs
@@ -82,6 +97,24 @@ export default nextConfig;`
     await spawnOrFail(`${npmRunCmd} build`, projectPath);
   },
 };
+
+/**
+ * Canvas-safe globals.css: no body background/color or dark `color-scheme`,
+ * since it's loaded by /plasmic-host (for Studio canvas).
+ */
+function makeNeutralGlobalsCss(): string {
+  return `* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+`;
+}
 
 async function generateFilesAppDir(args: GenerateFilesArgs) {
   const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
