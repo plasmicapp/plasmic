@@ -7,6 +7,7 @@ import { doLogin, doLogout } from "@/wab/server/auth/util";
 import {
   DbMgr,
   MismatchPasswordError,
+  PasswordTooLongError,
   PwnedPasswordError,
   WeakPasswordError,
   generateSecretToken,
@@ -274,6 +275,13 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
           reason: "PwnedPasswordError",
         })
       );
+    } else if (error instanceof PasswordTooLongError) {
+      res.json(
+        ensureType<SignUpResponse>({
+          status: false,
+          reason: "PasswordTooLongError",
+        })
+      );
     } else {
       throw error;
     }
@@ -323,6 +331,7 @@ export async function updateSelfPassword(req: Request, res: Response) {
     if (
       error instanceof WeakPasswordError ||
       error instanceof PwnedPasswordError ||
+      error instanceof PasswordTooLongError ||
       error instanceof MismatchPasswordError
     ) {
       res.json(
@@ -443,6 +452,15 @@ export async function resetPassword(req: Request, res: Response) {
         ensureType<ResetPasswordResponse>({
           status: false,
           reason: "PwnedPasswordError",
+        })
+      );
+      return;
+    }
+    if (error instanceof PasswordTooLongError) {
+      res.json(
+        ensureType<ResetPasswordResponse>({
+          status: false,
+          reason: "PasswordTooLongError",
         })
       );
       return;

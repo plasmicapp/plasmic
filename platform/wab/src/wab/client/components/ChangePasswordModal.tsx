@@ -3,6 +3,7 @@ import {
   DefaultChangePasswordModalProps,
   PlasmicChangePasswordModal,
 } from "@/wab/client/plasmic/plasmic_kit_user_settings/PlasmicChangePasswordModal";
+import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -41,6 +42,11 @@ function ChangePasswordModal_(
           case "PwnedPasswordError":
             setError(
               "Password is a known leaked password. Please try another password."
+            );
+            break;
+          case "PasswordTooLongError":
+            setError(
+              `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`
             );
             break;
           case "MismatchPasswordError":

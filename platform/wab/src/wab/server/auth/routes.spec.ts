@@ -2,6 +2,7 @@
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { SharedApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
+import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import {
   BadRequestError,
   PreconditionFailedError,
@@ -88,6 +89,27 @@ describe("auth", () => {
       ).toEqual({
         status: false,
         reason: "WeakPasswordError",
+      });
+    });
+
+    it("rejects passwords that are too long", async () => {
+      const signUpParams = {
+        email: `${Date.now()}@example.com`,
+        password: "SuperStrongPassword!!" + "a".repeat(MAX_PASSWORD_LENGTH),
+        firstName: "GivenName",
+        lastName: "FamilyName",
+      };
+      expect(await api.signUp(signUpParams)).toEqual({
+        status: false,
+        reason: "PasswordTooLongError",
+      });
+
+      signUpParams.password = signUpParams.password.slice(
+        0,
+        MAX_PASSWORD_LENGTH
+      );
+      expect(await api.signUp(signUpParams)).toMatchObject({
+        status: true,
       });
     });
 

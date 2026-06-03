@@ -14,6 +14,7 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { trackEvent } from "@/wab/client/tracking";
 import { ApiUser } from "@/wab/shared/ApiSchema";
+import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
@@ -634,6 +635,11 @@ export function AppResetPasswordForm({
                 setFeedback({
                   type: "error",
                   content: "Please try a stronger password.",
+                });
+              } else if (res.reason === "PasswordTooLongError") {
+                setFeedback({
+                  type: "error",
+                  content: `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`,
                 });
               } else if (res.reason === "InvalidToken") {
                 setFeedback({

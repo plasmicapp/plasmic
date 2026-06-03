@@ -234,6 +234,7 @@ import {
   ProjectDependency,
   Site,
 } from "@/wab/shared/model/classes";
+import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { ratePasswordStrength } from "@/wab/shared/password-strength";
 import {
   ResourceId,
@@ -433,6 +434,10 @@ export class PwnedPasswordError extends DbMgrError {
   name = "PwnedPasswordError";
 }
 
+export class PasswordTooLongError extends DbMgrError {
+  name = "PasswordTooLongError";
+}
+
 export class MismatchPasswordError extends DbMgrError {
   name = "MismatchPasswordError";
 }
@@ -579,6 +584,10 @@ export async function checkWeakPassword(password: string | undefined) {
 
   if (password === undefined) {
     return;
+  }
+
+  if (password.length > MAX_PASSWORD_LENGTH) {
+    throw new PasswordTooLongError();
   }
 
   const passwordStrength = await ratePasswordStrength(password);

@@ -10,6 +10,7 @@ import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { mkUuid, spawnWrapper } from "@/wab/shared/common";
+import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import { Button, Divider, Input, notification } from "antd";
@@ -112,6 +113,11 @@ export function useAuthForm({
             type: "error",
             content:
               "Password is a known leaked password. Please try another password.",
+          });
+        } else if (res.reason === "PasswordTooLongError") {
+          setFormFeedback({
+            type: "error",
+            content: `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`,
           });
         } else if (res.reason === "BadEmailError") {
           setFormFeedback({
@@ -352,6 +358,11 @@ export function ResetPasswordForm() {
                 setFeedback({
                   type: "error",
                   content: "Please try a stronger password.",
+                });
+              } else if (res.reason === "PasswordTooLongError") {
+                setFeedback({
+                  type: "error",
+                  content: `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`,
                 });
               } else if (res.reason === "InvalidToken") {
                 setFeedback({
