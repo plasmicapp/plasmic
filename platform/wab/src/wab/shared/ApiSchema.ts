@@ -570,6 +570,13 @@ export interface GrantRevokeRequest {
   requireSignUp?: boolean;
 }
 
+/**
+ * Maximum number of grants allowed in a single grant-revoke request. Each grant
+ * may send an invite/share email, so capping the count bounds how many emails a
+ * single request can trigger, limiting abuse of the endpoint as a spam relay.
+ */
+export const MAX_GRANTS_PER_REQUEST = 5;
+
 export interface GrantRevokeResponse {
   perms: ApiPermission[];
   enqueued?: boolean;

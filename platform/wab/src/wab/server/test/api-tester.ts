@@ -19,11 +19,16 @@ export class ApiTester {
 
   constructor(
     private readonly baseURL: string,
-    private readonly baseHeaders: { [name: string]: string } = {}
+    private baseHeaders: { [name: string]: string } = {}
   ) {
     this.apiRequestContextPromise = request.newContext({
       baseURL,
     });
+  }
+
+  /** Sets a header sent with every subsequent request. */
+  setBaseHeader(name: string, value: string): void {
+    this.baseHeaders = { ...this.baseHeaders, [name]: value };
   }
 
   async req(
@@ -138,6 +143,11 @@ export class SharedApiTester extends SharedApi {
       hideDataOnError,
       noErrorTransform
     );
+  }
+
+  /** Sets a header sent with every subsequent request. */
+  setBaseHeader(name: string, value: string): void {
+    this.apiTester.setBaseHeader(name, value);
   }
 
   async dispose() {

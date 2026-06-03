@@ -7,6 +7,7 @@ import {
   PreconditionFailedError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
+import { MAX_GRANTS_PER_REQUEST, TeamId } from "@/wab/shared/ApiSchema";
 
 describe("auth", () => {
   let api: SharedApiTester;
@@ -169,6 +170,63 @@ describe("auth", () => {
           }
         }
       }
+    });
+  });
+
+  describe("grantRevoke", () => {
+    it("is rate limited per user", async () => {
+      await api.dispose();
+      api = new SharedApiTester(baseURL);
+      await api.refreshCsrfToken();
+      await api.signUp({
+        email: `${Date.now()}@example.com`,
+        password: "SuperStrongPassword!!",
+        firstName: "GivenName",
+        lastName: "FamilyName",
+      });
+      const dbUser = await sudoDbMgr.getUserById(api.user()!.id);
+      await sudoDbMgr.markEmailAsVerified(dbUser);
+
+      api.setBaseHeader("x-plasmic-test-rate-limit", "true");
+
+      for (let i = 0; i < 35; ++i) {
+        try {
+          await api.grantRevoke({ grants: [], revokes: [] });
+          expect(i).toBeLessThan(30);
+        } catch (error: unknown) {
+          if (error instanceof Error && error.message.includes("429")) {
+            expect(i).toBeGreaterThanOrEqual(30);
+          } else {
+            throw error;
+          }
+        }
+      }
+    });
+
+    it("rejects more than the max grants per request", async () => {
+      await api.signUp({
+        email: `${Date.now()}@example.com`,
+        password: "SuperStrongPassword!!",
+        firstName: "GivenName",
+        lastName: "FamilyName",
+      });
+      const dbUser = await sudoDbMgr.getUserById(api.user()!.id);
+      await sudoDbMgr.markEmailAsVerified(dbUser);
+
+      // The cap is enforced before any resource resolution, so the teamId
+      // doesn't need to reference a real team.
+      const grants = Array.from(
+        { length: MAX_GRANTS_PER_REQUEST + 1 },
+        (_, i) => ({
+          email: `recipient-${i}@example.com`,
+          teamId: "fake-team" as TeamId,
+          accessLevel: "editor" as const,
+        })
+      );
+
+      await expect(api.grantRevoke({ grants, revokes: [] })).rejects.toThrow(
+        BadRequestError
+      );
     });
   });
 

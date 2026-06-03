@@ -6,7 +6,11 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { getTeamInviteLink } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
-import { ApiTeam, Grant } from "@/wab/shared/ApiSchema";
+import {
+  ApiTeam,
+  Grant,
+  MAX_GRANTS_PER_REQUEST,
+} from "@/wab/shared/ApiSchema";
 import { ensure, isValidEmail, spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
@@ -159,7 +163,22 @@ export function TeamCreation() {
               >
                 Copy invite link
               </Button>
-              <Form.Item name={"inviteEmails"}>
+              <Form.Item
+                name={"inviteEmails"}
+                validateTrigger={"onChange"}
+                rules={[
+                  {
+                    validator: (_, value: string[] | undefined) =>
+                      (value?.length ?? 0) > MAX_GRANTS_PER_REQUEST
+                        ? Promise.reject(
+                            new Error(
+                              `You can invite at most ${MAX_GRANTS_PER_REQUEST} people at a time.`
+                            )
+                          )
+                        : Promise.resolve(),
+                  },
+                ]}
+              >
                 <Select
                   mode="tags"
                   data-test-id={"invite-emails"}
