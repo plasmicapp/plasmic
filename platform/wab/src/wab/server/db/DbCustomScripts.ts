@@ -10,7 +10,6 @@ import { findMissingImplicitStates } from "@/wab/server/db/custom-scripts/find-m
 import { fixDuplicatedComponents } from "@/wab/server/db/custom-scripts/fix-duplicated-components";
 import { fixInvalidImplicitStates } from "@/wab/server/db/custom-scripts/fix-invalid-implicit-states";
 import { profileCodegen } from "@/wab/server/db/custom-scripts/profile-codegen";
-import { reIdentifyUsers } from "@/wab/server/db/custom-scripts/re-identify-users";
 import { logger } from "@/wab/server/observability";
 import { spawn } from "@/wab/shared/common";
 import { exit } from "process";
@@ -49,9 +48,6 @@ async function main() {
   logger().info(`Running ${opts.script}`);
 
   await conn.transaction(async (em) => {
-    if (opts.script === "re-identify-users") {
-      await reIdentifyUsers(em);
-    }
     if (opts.script === "find-conflict-names") {
       await findConflictNames(em);
     }

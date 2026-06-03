@@ -176,8 +176,6 @@
     "@ai-sdk/google-vertex": "^4.0.0",
     "@ai-sdk/openai": "^3.0.0",
     "@ai-sdk/react": "^3.0.0",
-    "@amplitude/analytics-browser": "2.11.1",
-    "@amplitude/analytics-node": "1.3.6",
     "@apidevtools/swagger-parser": "^10.0.2",
     "@aws-sdk/client-dynamodb": "^3.1030.0",
     "@babel/core": "^7.29.0",

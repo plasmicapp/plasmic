@@ -7,7 +7,6 @@ export const ENV = {
   NODE_ENV: ensure(process.env.NODE_ENV, "NODE_ENV must be defined"),
   COMMITHASH: ensure(process.env.COMMITHASH, "COMMITHASH must be defined"),
   PUBLICPATH: ensure(process.env.PUBLICPATH, "PUBLICPATH must be defined"),
-  AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
   INTERCOM_APP_ID: process.env.INTERCOM_APP_ID,
   POSTHOG_API_KEY: process.env.POSTHOG_API_KEY,
   POSTHOG_HOST: process.env.POSTHOG_HOST,

@@ -28,7 +28,6 @@ describe("mkDefinePluginOptsForEnv", () => {
         NODE_ENV: REQUIRED_VAR,
         COMMITHASH: "123456",
         PUBLICPATH: "/",
-        AMPLITUDE_API_KEY: OPTIONAL_VAR,
         INTERCOM_APP_ID: OPTIONAL_VAR,
         POSTHOG_API_KEY: OPTIONAL_VAR,
         POSTHOG_HOST: OPTIONAL_VAR,
@@ -42,7 +41,6 @@ describe("mkDefinePluginOptsForEnv", () => {
       "process.env.NODE_ENV": '"development"',
       "process.env.COMMITHASH": '"123456"',
       "process.env.PUBLICPATH": '"/"',
-      "process.env.AMPLITUDE_API_KEY": undefined,
       "process.env.INTERCOM_APP_ID": undefined,
       "process.env.POSTHOG_API_KEY": undefined,
       "process.env.POSTHOG_HOST": undefined,
@@ -60,7 +58,6 @@ describe("mkDefinePluginOptsForEnv", () => {
         NODE_ENV: REQUIRED_VAR,
         COMMITHASH: "123456",
         PUBLICPATH: "/",
-        AMPLITUDE_API_KEY: OPTIONAL_VAR,
         INTERCOM_APP_ID: OPTIONAL_VAR,
         POSTHOG_API_KEY: OPTIONAL_VAR,
         POSTHOG_HOST: OPTIONAL_VAR,
@@ -74,7 +71,6 @@ describe("mkDefinePluginOptsForEnv", () => {
   });
   it("works in production with all optional vars", () => {
     process.env.NODE_ENV = "production";
-    process.env.AMPLITUDE_API_KEY = "amplitude_api_key";
     process.env.INTERCOM_APP_ID = "intercom_app_id";
     process.env.POSTHOG_API_KEY = "posthog_api_key";
     process.env.POSTHOG_HOST = "posthog_host";
@@ -88,7 +84,6 @@ describe("mkDefinePluginOptsForEnv", () => {
         NODE_ENV: REQUIRED_VAR,
         COMMITHASH: "123456",
         PUBLICPATH: "/",
-        AMPLITUDE_API_KEY: OPTIONAL_VAR,
         INTERCOM_APP_ID: OPTIONAL_VAR,
         POSTHOG_API_KEY: OPTIONAL_VAR,
         POSTHOG_HOST: OPTIONAL_VAR,
@@ -102,7 +97,6 @@ describe("mkDefinePluginOptsForEnv", () => {
       "process.env.NODE_ENV": '"production"',
       "process.env.COMMITHASH": '"123456"',
       "process.env.PUBLICPATH": '"/"',
-      "process.env.AMPLITUDE_API_KEY": '"amplitude_api_key"',
       "process.env.INTERCOM_APP_ID": '"intercom_app_id"',
       "process.env.POSTHOG_API_KEY": '"posthog_api_key"',
       "process.env.POSTHOG_HOST": '"posthog_host"',
@@ -119,7 +113,6 @@ describe("mkDefinePluginOptsForEnv", () => {
         NODE_ENV: "development", // already set in process.env
         COMMITHASH: "123456",
         PUBLICPATH: "/",
-        AMPLITUDE_API_KEY: OPTIONAL_VAR,
         INTERCOM_APP_ID: OPTIONAL_VAR,
         POSTHOG_API_KEY: OPTIONAL_VAR,
         POSTHOG_HOST: OPTIONAL_VAR,
@@ -137,7 +130,6 @@ describe("mkDefinePluginOptsForEnv", () => {
         NODE_ENV: REQUIRED_VAR,
         COMMITHASH: "123456",
         PUBLICPATH: REQUIRED_VAR, // missing in process.env
-        AMPLITUDE_API_KEY: OPTIONAL_VAR,
         INTERCOM_APP_ID: OPTIONAL_VAR,
         POSTHOG_API_KEY: OPTIONAL_VAR,
         POSTHOG_HOST: OPTIONAL_VAR,
