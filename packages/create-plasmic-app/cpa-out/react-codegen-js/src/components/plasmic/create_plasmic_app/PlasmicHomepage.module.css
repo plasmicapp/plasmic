@@ -25,23 +25,17 @@
 }
 .h1 {
   position: relative;
-  width: 100%;
-  height: auto;
   max-width: 800px;
-  margin-bottom: 32px;
+  height: auto;
+  width: 100%;
   min-width: 0;
 }
 .text {
   position: relative;
-  width: 100%;
-  height: auto;
   max-width: 800px;
+  height: auto;
+  width: 100%;
   min-width: 0;
-}
-@media (min-width: 768px) {
-  .text {
-    padding-left: 0px;
-  }
 }
 .randomDynamicPageButton:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;

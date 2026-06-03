@@ -5,15 +5,35 @@ import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-we
 
 import {
   PlasmicDynamicPage,
-  PlasmicDynamicPage__HeadOptions
+  PlasmicDynamicPage__HeadOptions,
+  serverQueryTree
 } from "../../../components/plasmic/create_plasmic_app/PlasmicDynamicPage";
 import { createFileRoute } from "@tanstack/react-router";
+import { unstable_executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
 export const Route = createFileRoute("/dynamic/$slug/")({
   head: () => ({
     meta: [...PlasmicDynamicPage__HeadOptions.meta],
     links: [...PlasmicDynamicPage__HeadOptions.links]
   }),
+  loaderDeps: ({ search }) => ({ search }),
+  loader: async ({ params, location, deps }) => {
+    const $ctx = {
+      pageRoute: "/dynamic/[slug]",
+      pagePath: location.pathname,
+      params: (params ?? {}) as Record<string, string | string[] | undefined>,
+      query: (deps.search ?? {}) as Record<
+        string,
+        string | string[] | undefined
+      >
+    };
+    const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+      serverQueryTree,
+      { $props: {}, $ctx }
+    );
+    return { prefetchedCache: prefetchedCache as Record<string, any> };
+  },
   component: DynamicPage
 });
 
@@ -35,14 +55,17 @@ function DynamicPage() {
   // TanStack Router __root Route
   // (https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start#the-root-of-your-application).
 
+  const { prefetchedCache } = Route.useLoaderData();
   return (
-    <PageParamsProvider__
-      route={Route.fullPath}
-      params={Route.useParams()}
-      query={Route.useSearch()}
-    >
-      <PlasmicDynamicPage />
-    </PageParamsProvider__>
+    <PlasmicQueryDataProvider prefetchedCache={prefetchedCache}>
+      <PageParamsProvider__
+        route={Route.fullPath}
+        params={Route.useParams()}
+        query={Route.useSearch()}
+      >
+        <PlasmicDynamicPage />
+      </PageParamsProvider__>
+    </PlasmicQueryDataProvider>
   );
 }
 

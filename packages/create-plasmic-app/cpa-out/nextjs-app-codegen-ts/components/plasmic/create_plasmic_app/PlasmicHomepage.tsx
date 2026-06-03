@@ -64,7 +64,6 @@ import {
 import { generateDynamicMetadata, PageCtx } from "./PlasmicHomepageServer"; // plasmic-import: 6uuAAE1jiCew/rscServer
 
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
-import { Fetcher } from "@plasmicapp/react-web/lib/data-sources";
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 
@@ -198,7 +197,9 @@ function PlasmicHomepage__RenderFunc(props: {
                 sty.h1
               )}
             >
-              {"create-plasmic-app"}
+              {hasVariant(globalVariants, "screen", "desktopOnly")
+                ? "create-plasmic-app"
+                : "cpa"}
             </h1>
             <div
               data-plasmic-name={"text"}
@@ -209,44 +210,9 @@ function PlasmicHomepage__RenderFunc(props: {
                 sty.text
               )}
             >
-              {hasVariant(globalVariants, "screen", "desktopOnly") ? (
-                <React.Fragment>
-                  <React.Fragment>
-                    {
-                      "This project is used by run-cpa.ts in the create-plasmic-app repo.\n\nrun-cpa.ts runs create-plasmic-app for many combinations of args (e.g. nextjs + appDir + loader + typescript) to check for changes in generated files. Any changes to this project will result in lots of changes to the generated files. "
-                    }
-                  </React.Fragment>
-                  <span
-                    className={
-                      "plasmic_default__all plasmic_default__span plasmic_default__span__47tFX"
-                    }
-                    style={{ fontWeight: 700 }}
-                  >
-                    {"Therefore, please avoid changing this project."}
-                  </span>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <React.Fragment>
-                    {
-                      "If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.\n\nIt's always easier to start from examples! Add a new page using a template\u2014do this from the list of pages in the top left (the gray + button).\n\nOr press the big blue + button to start dragging items into this page.\n\nIntegrate this project into your codebase\u2014press the "
-                    }
-                  </React.Fragment>
-                  <span
-                    className={
-                      "plasmic_default__all plasmic_default__span plasmic_default__span__47tFX"
-                    }
-                    style={{ fontWeight: 700 }}
-                  >
-                    {"Code"}
-                  </span>
-                  <React.Fragment>
-                    {
-                      " button in the top right and follow the quickstart instructions.\n\nJoin our Slack community (icon in bottom left) for help any time."
-                    }
-                  </React.Fragment>
-                </React.Fragment>
-              )}
+              {
+                "This project is used by run-cpa.ts in the create-plasmic-app repo.\n\n\nrun-cpa.ts runs create-plasmic-app for many combinations of args (e.g. nextjs + appDir + loader + typescript) to check for changes in generated files. Any changes to this project will result in lots of changes to the generated files. Therefore, please avoid changing this project.\n"
+              }
             </div>
             <RandomDynamicPageButton
               data-plasmic-name={"randomDynamicPageButton"}

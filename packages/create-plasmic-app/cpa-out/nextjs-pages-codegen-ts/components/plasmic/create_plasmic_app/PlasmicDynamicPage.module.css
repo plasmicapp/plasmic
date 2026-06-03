@@ -23,12 +23,19 @@
   min-width: 0;
   padding: 96px 24px;
 }
-.h1 {
+.h2 {
   position: relative;
   width: 100%;
   height: auto;
   max-width: 800px;
-  margin-bottom: 32px;
+  text-align: center;
+  min-width: 0;
+}
+.span {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
   text-align: center;
   min-width: 0;
 }

@@ -9,6 +9,8 @@ import * as React from "react";
 import { ClientDynamicPage } from "../../../app/dynamic/[slug]/page-client"; // plasmic-import: AO44A-w7hh/rscClient
 
 const $$ = {};
+import { unstable_executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
 export function generateDynamicMetadata($q, $ctx) {
   return {
@@ -18,6 +20,95 @@ export function generateDynamicMetadata($q, $ctx) {
     }
   };
 }
+
+export const serverQueryTree = {
+  type: "component",
+  queries: {
+    sha256: {
+      id: "custom:krgWtF9Kkesx",
+      fn: async ({ $q, $props, $ctx, $state }) => {
+        console.log("Running SHA-256");
+        const data = new TextEncoder().encode($ctx.params.slug);
+        const hash = await crypto.subtle.digest("SHA-256", data);
+        return [...new Uint8Array(hash)]
+          .map(b => b.toString(16).padStart(2, "0"))
+          .join("-");
+      },
+      args: ({ $q, $props, $ctx, $state }) => {
+        return [
+          {
+            $ctx: {
+              params: $ctx["params"]
+            },
+            $props: {},
+            $q: {},
+            $state: {}
+          }
+        ];
+      }
+    }
+  },
+  stateSpecs: [],
+  propsContext: {},
+  children: [
+    {
+      type: "component",
+      queries: {},
+      stateSpecs: [],
+      propsContext: {},
+      children: [
+        {
+          type: "component",
+          queries: {},
+          stateSpecs: [
+            {
+              path: "showStartIcon",
+              type: "private",
+              variableType: "variant",
+              initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+                $props.showStartIcon
+            },
+            {
+              path: "showEndIcon",
+              type: "private",
+              variableType: "variant",
+              initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+                $props.showEndIcon
+            },
+            {
+              path: "isDisabled",
+              type: "private",
+              variableType: "variant",
+              initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+                $props.isDisabled
+            },
+            {
+              path: "shape",
+              type: "private",
+              variableType: "variant",
+              initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.shape
+            },
+            {
+              path: "size",
+              type: "private",
+              variableType: "variant",
+              initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size
+            },
+            {
+              path: "color",
+              type: "private",
+              variableType: "variant",
+              initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color
+            }
+          ],
+
+          propsContext: { submitsForm: ({ $q, $props, $ctx, $state }) => true },
+          children: []
+        }
+      ]
+    }
+  ]
+};
 
 function mkPathFromRouteAndParams(route, params) {
   if (!params) {
@@ -51,6 +142,16 @@ export async function makeAppRouterPageCtx({ params, searchParams }) {
   return ctx;
 }
 
-export function PlasmicDynamicPageServer(props) {
-  return <ClientDynamicPage {...props} />;
+export async function PlasmicDynamicPageServer(props) {
+  const { params, searchParams, ...rest } = props;
+  const ctx = await makeAppRouterPageCtx({ params, searchParams });
+  const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+    serverQueryTree,
+    { $props: rest, $ctx: ctx }
+  );
+  return (
+    <PlasmicQueryDataProvider prefetchedCache={prefetchedCache}>
+      <ClientDynamicPage {...rest} />
+    </PlasmicQueryDataProvider>
+  );
 }

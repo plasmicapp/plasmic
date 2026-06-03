@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B0%2C900&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B0%2C900&display=swap");
 
 .plasmic_tokens_47tFXWjN2C4NyHFGGpaYQ3 {
+  --token-Tker7_vSXsP_: #777777;
+  --plasmic-token-foreground: var(--token-Tker7_vSXsP_);
+}
+
+.plasmic_tokens_47tFXWjN2C4NyHFGGpaYQ3 {
   --plsmc-standard-width: 800px;
   --plsmc-wide-width: 1280px;
   --plsmc-viewport-gap: 16px;
@@ -15,7 +20,7 @@
   --mixin-prihNuSPt-kU_font-size: 16px;
   --mixin-prihNuSPt-kU_font-weight: 400;
   --mixin-prihNuSPt-kU_font-style: normal;
-  --mixin-prihNuSPt-kU_color: #777777;
+  --mixin-prihNuSPt-kU_color: var(--token-Tker7_vSXsP_);
   --mixin-prihNuSPt-kU_text-align: left;
   --mixin-prihNuSPt-kU_text-transform: none;
   --mixin-prihNuSPt-kU_line-height: 1.5;

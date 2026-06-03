@@ -23,12 +23,19 @@
   min-width: 0;
   padding: 96px 24px;
 }
-.DynamicPage__h1__uyAe1 {
+.DynamicPage__h2__uyAe1 {
   position: relative;
   width: 100%;
   height: auto;
   max-width: 800px;
-  margin-bottom: 32px;
+  text-align: center;
+  min-width: 0;
+}
+.DynamicPage__span__eZlYo {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
   text-align: center;
   min-width: 0;
 }
