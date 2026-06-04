@@ -9052,7 +9052,7 @@
       "projectId": "w2GXN278dkQ2gQTVQnPehW",
       "projectApiToken": "XlpYxXeJBssbtNoLCawek4y1zywRmLqnhwf9ryxOaiQ3L99h4nH3LpZISJwqHOCvZIxcvX1CWe2QVnUrfg",
       "projectName": "[PlasmicKit] Data Binding",
-      "version": ">=0.0.0",
+      "version": "feat/link-to-source",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/plasmic_plasmic_kit_data_binding.css",
       "components": [
         {
