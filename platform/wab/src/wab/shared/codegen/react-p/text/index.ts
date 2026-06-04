@@ -1,5 +1,5 @@
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
-import { serializeClassExpr } from "@/wab/shared/codegen/react-p/class-names";
+import { serializeGlobalCssClass } from "@/wab/shared/codegen/react-p/class-names";
 import {
   makeDefaultStyleClassNameBase,
   makeWabHtmlTextClassName,
@@ -13,8 +13,8 @@ import {
   plainTextToReact,
 } from "@/wab/shared/codegen/util";
 import { assert, ensure, tuple } from "@/wab/shared/common";
-import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import { asCode, getCodeExpressionWithFallback } from "@/wab/shared/core/exprs";
+import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import { defaultStyleClassNames } from "@/wab/shared/core/styles";
 import { TplTextTag } from "@/wab/shared/core/tpls";
 import {
@@ -54,8 +54,7 @@ function resolveRichTextToJsx(
       ? asCode(text.expr, ctx.exprCtx).code
       : getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
 
-    const className = serializeClassExpr(
-      ctx.exportOpts,
+    const className = serializeGlobalCssClass(
       makeWabHtmlTextClassName(ctx.exportOpts)
     );
     const code = text.html
