@@ -10,7 +10,7 @@
   border-radius: 4px;
   border: 1px solid var(--token-sBh7BFhgAybb);
 }
-.root:hover {
+.root:hover:hover {
   border-color: var(--token-XeFw4MGauXBT);
 }
 .img {

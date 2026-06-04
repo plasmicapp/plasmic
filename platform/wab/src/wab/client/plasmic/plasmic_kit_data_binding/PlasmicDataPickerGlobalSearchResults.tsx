@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerGlobalSearchResults.module.css"; // plasmic-import: GDvL7J9P5V4/css
 
 createPlasmicElementProxy;
@@ -96,10 +96,10 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -107,14 +107,14 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
       <div
         data-plasmic-name={"text"}
         data-plasmic-override={overrides.text}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
+        className={classNames("all", "__wab_text", sty.text)}
       >
         {"Search results"}
       </div>
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
           defaultContents: (
@@ -126,11 +126,7 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                 )}
                 label={
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__beBrj
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__beBrj)}
                   >
                     <React.Fragment>
                       <React.Fragment>{"Titl"}</React.Fragment>
@@ -155,8 +151,8 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                 label={
                   <div
                     className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
+                      "all",
+                      "__wab_text",
                       sty.text___7LKw1
                     )}
                   >

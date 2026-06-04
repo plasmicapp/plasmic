@@ -21,7 +21,7 @@
   width: 100%;
   min-width: 0;
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-O4S7RMTqZ3);
 }
 .freeBox__b5WN {

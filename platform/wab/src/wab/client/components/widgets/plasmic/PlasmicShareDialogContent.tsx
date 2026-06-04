@@ -43,7 +43,7 @@ import PermissionItem from "./PermissionItem"; // plasmic-import: GFrmKeyhlA/com
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
+import "../../../plasmic/PP__plasmickit_share_dialog.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicShareDialogContent.module.css"; // plasmic-import: cWsnP3_PIix/css
 
 import LinkIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Link"; // plasmic-import: BQBWbw0fg66Lw/icon
@@ -159,32 +159,34 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
       {
         path: "shareByLinkAllowed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.shareByLinkAllowed,
       },
       {
         path: "resourceType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.resourceType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.resourceType,
       },
       {
         path: "permsCascade",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.permsCascade,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.permsCascade,
       },
       {
         path: "shareByLinkSwitch.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           hasVariant($state, "shareByLinkAllowed", "no")
             ? (() => {
                 try {
@@ -205,33 +207,36 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         path: "shareByLinkPermDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "value1",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1",
       },
       {
         path: "newUserRoleDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "value1",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1",
       },
       {
         path: "noShareByLink",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noShareByLink,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.noShareByLink,
       },
       {
         path: "everyoneElseDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "value1",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1",
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -244,10 +249,10 @@ function PlasmicShareDialogContent__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_kA1Hysr5ZeimtATHTDJz5B",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -287,7 +292,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__nnT7R, {
+        className={classNames("all", sty.freeBox__nnT7R, {
           [sty.freeBoxpermsCascade_showWorkspace__nnT7RGxhbk]: hasVariant(
             $state,
             "permsCascade",
@@ -321,7 +326,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__tXrf3, {
+          className={classNames("all", sty.freeBox__tXrf3, {
             [sty.freeBoxresourceType_project__tXrf3Wbkdw]: hasVariant(
               $state,
               "resourceType",
@@ -335,38 +340,33 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___1R,
-              {
-                [sty.textnoShareByLink___1RdsUq5]: hasVariant(
-                  $state,
-                  "noShareByLink",
-                  "noShareByLink"
-                ),
-                [sty.textresourceType_project___1Rwbkdw]: hasVariant(
-                  $state,
-                  "resourceType",
-                  "project"
-                ),
-                [sty.textresourceType_team___1Rhn7Mj]: hasVariant(
-                  $state,
-                  "resourceType",
-                  "team"
-                ),
-                [sty.textresourceType_workspace___1Rn5Uns]: hasVariant(
-                  $state,
-                  "resourceType",
-                  "workspace"
-                ),
-                [sty.textshareByLinkAllowed_yes___1Rn4Zx6]: hasVariant(
-                  $state,
-                  "shareByLinkAllowed",
-                  "yes"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text___1R, {
+              [sty.textnoShareByLink___1RdsUq5]: hasVariant(
+                $state,
+                "noShareByLink",
+                "noShareByLink"
+              ),
+              [sty.textresourceType_project___1Rwbkdw]: hasVariant(
+                $state,
+                "resourceType",
+                "project"
+              ),
+              [sty.textresourceType_team___1Rhn7Mj]: hasVariant(
+                $state,
+                "resourceType",
+                "team"
+              ),
+              [sty.textresourceType_workspace___1Rn5Uns]: hasVariant(
+                $state,
+                "resourceType",
+                "workspace"
+              ),
+              [sty.textshareByLinkAllowed_yes___1Rn4Zx6]: hasVariant(
+                $state,
+                "shareByLinkAllowed",
+                "yes"
+              ),
+            })}
           >
             {hasVariant($state, "resourceType", "team")
               ? "Organization members"
@@ -389,7 +389,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             hasIcon={true}
             icon={
               <LinkIcon
-                className={classNames(projectcss.all, sty.svg__bJcBd)}
+                className={classNames("all", sty.svg__bJcBd)}
                 role={"img"}
               />
             }
@@ -423,7 +423,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             : true
         ) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__yn7Fa, {
+            className={classNames("all", sty.freeBox__yn7Fa, {
               [sty.freeBoxnoShareByLink__yn7FadsUq5]: hasVariant(
                 $state,
                 "noShareByLink",
@@ -462,7 +462,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__hbZwy, {
+              className={classNames("all", sty.freeBox__hbZwy, {
                 [sty.freeBoxpermsCascade_showTeam__hbZwy57XP]: hasVariant(
                   $state,
                   "permsCascade",
@@ -615,13 +615,13 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   })}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__unetT)}
+                      className={classNames("all", sty.svg__unetT)}
                       role={"img"}
                     />
                   }
                   startIcon={
                     <LinkIcon
-                      className={classNames(projectcss.all, sty.svg___1D2A)}
+                      className={classNames("all", sty.svg___1D2A)}
                       role={"img"}
                     />
                   }
@@ -630,8 +630,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 >
                   <div
                     className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
+                      "all",
+                      "__wab_text",
                       sty.text__jdZdj,
                       {
                         [sty.textpermsCascade_showTeam__jdZdj57XP]: hasVariant(
@@ -662,7 +662,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 : true
             ) ? (
               <div
-                className={classNames(projectcss.all, sty.freeBox__fdzf5, {
+                className={classNames("all", sty.freeBox__fdzf5, {
                   [sty.freeBoxpermsCascade_showWorkspace__fdzf5Gxhbk]:
                     hasVariant($state, "permsCascade", "showWorkspace"),
                   [sty.freeBoxresourceType_project__fdzf5Wbkdw]: hasVariant(
@@ -693,30 +693,25 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mwPkd,
-                    {
-                      [sty.textpermsCascade_showWorkspace__mwPkdGxhbk]:
-                        hasVariant($state, "permsCascade", "showWorkspace"),
-                      [sty.textresourceType_project__mwPkdwbkdw]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "project"
-                      ),
-                      [sty.textresourceType_team__mwPkdHn7Mj]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "team"
-                      ),
-                      [sty.textshareByLinkAllowed_yes__mwPkdn4Zx6]: hasVariant(
-                        $state,
-                        "shareByLinkAllowed",
-                        "yes"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mwPkd, {
+                    [sty.textpermsCascade_showWorkspace__mwPkdGxhbk]:
+                      hasVariant($state, "permsCascade", "showWorkspace"),
+                    [sty.textresourceType_project__mwPkdwbkdw]: hasVariant(
+                      $state,
+                      "resourceType",
+                      "project"
+                    ),
+                    [sty.textresourceType_team__mwPkdHn7Mj]: hasVariant(
+                      $state,
+                      "resourceType",
+                      "team"
+                    ),
+                    [sty.textshareByLinkAllowed_yes__mwPkdn4Zx6]: hasVariant(
+                      $state,
+                      "shareByLinkAllowed",
+                      "yes"
+                    ),
+                  })}
                 >
                   {hasVariant($state, "resourceType", "team")
                     ? "Anyone with the link can join the organization as"
@@ -735,7 +730,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   )}
                   icon={
                     <PlusSvgIcon
-                      className={classNames(projectcss.all, sty.svg__lJfWp)}
+                      className={classNames("all", sty.svg__lJfWp)}
                       role={"img"}
                     />
                   }
@@ -775,7 +770,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         <div
           data-plasmic-name={"byInviteTab"}
           data-plasmic-override={overrides.byInviteTab}
-          className={classNames(projectcss.all, sty.byInviteTab, {
+          className={classNames("all", sty.byInviteTab, {
             [sty.byInviteTabpermsCascade_showWorkspace]: hasVariant(
               $state,
               "permsCascade",
@@ -824,7 +819,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox___1IUsx, {
+            className={classNames("all", sty.freeBox___1IUsx, {
               [sty.freeBoxpermsCascade_showTeam___1IUsx57XP]: hasVariant(
                 $state,
                 "permsCascade",
@@ -853,7 +848,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__vTye, {
+              className={classNames("all", sty.freeBox__vTye, {
                 [sty.freeBoxpermsCascade_showTeam__vTye57XP]: hasVariant(
                   $state,
                   "permsCascade",
@@ -904,47 +899,42 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 placeholder={"Invite someone by email…"}
                 prefixIcon={
                   <SearchSvgIcon
-                    className={classNames(projectcss.all, sty.svg__yai2I)}
+                    className={classNames("all", sty.svg__yai2I)}
                     role={"img"}
                   />
                 }
                 styleType={["bordered"]}
                 suffixIcon={
                   <CloseSvgIcon
-                    className={classNames(projectcss.all, sty.svg___9G5Fh)}
+                    className={classNames("all", sty.svg___9G5Fh)}
                     role={"img"}
                   />
                 }
               />
 
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kZecO,
-                  {
-                    [sty.textstate_noPermToShare__kZecOgPB]: hasVariant(
-                      $state,
-                      "state",
-                      "noPermToShare"
-                    ),
-                    [sty.textstate_submitting__kZecOzeWbX]: hasVariant(
-                      $state,
-                      "state",
-                      "submitting"
-                    ),
-                    [sty.textstate_unlogged__kZecOvijMz]: hasVariant(
-                      $state,
-                      "state",
-                      "unlogged"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__kZecO, {
+                  [sty.textstate_noPermToShare__kZecOgPB]: hasVariant(
+                    $state,
+                    "state",
+                    "noPermToShare"
+                  ),
+                  [sty.textstate_submitting__kZecOzeWbX]: hasVariant(
+                    $state,
+                    "state",
+                    "submitting"
+                  ),
+                  [sty.textstate_unlogged__kZecOvijMz]: hasVariant(
+                    $state,
+                    "state",
+                    "unlogged"
+                  ),
+                })}
               >
                 {"as"}
               </div>
               <div
-                className={classNames(projectcss.all, sty.freeBox__elohb, {
+                className={classNames("all", sty.freeBox__elohb, {
                   [sty.freeBoxstate_noPermToShare__elohBgPB]: hasVariant(
                     $state,
                     "state",
@@ -985,7 +975,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   )}
                   icon={
                     <PlusSvgIcon
-                      className={classNames(projectcss.all, sty.svg__frLSs)}
+                      className={classNames("all", sty.svg__frLSs)}
                       role={"img"}
                     />
                   }
@@ -1021,7 +1011,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               </div>
             </div>
             <div
-              className={classNames(projectcss.all, sty.freeBox___0VjOi, {
+              className={classNames("all", sty.freeBox___0VjOi, {
                 [sty.freeBoxresourceType_project___0VjOIwbkdw]: hasVariant(
                   $state,
                   "resourceType",
@@ -1050,14 +1040,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 }
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__kjUa7)}
+                    className={classNames("all", sty.svg__kjUa7)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__n9OjC)}
+                    className={classNames("all", sty.svg__n9OjC)}
                     role={"img"}
                   />
                 }
@@ -1081,7 +1071,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               : false
           ) ? (
             <div
-              className={classNames(projectcss.all, sty.freeBox__dYv8H, {
+              className={classNames("all", sty.freeBox__dYv8H, {
                 [sty.freeBoxpermsCascade_showTeam__dYv8H57XP]: hasVariant(
                   $state,
                   "permsCascade",
@@ -1120,7 +1110,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(projectcss.all, sty.freeBox__ekPne, {
+                className={classNames("all", sty.freeBox__ekPne, {
                   [sty.freeBoxresourceType_project__ekPnEwbkdw]: hasVariant(
                     $state,
                     "resourceType",
@@ -1154,23 +1144,18 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__sNt5G,
-                    {
-                      [sty.textstate_noPermToShare__sNt5GgPB]: hasVariant(
-                        $state,
-                        "state",
-                        "noPermToShare"
-                      ),
-                      [sty.textstate_unlogged__sNt5GvijMz]: hasVariant(
-                        $state,
-                        "state",
-                        "unlogged"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__sNt5G, {
+                    [sty.textstate_noPermToShare__sNt5GgPB]: hasVariant(
+                      $state,
+                      "state",
+                      "noPermToShare"
+                    ),
+                    [sty.textstate_unlogged__sNt5GvijMz]: hasVariant(
+                      $state,
+                      "state",
+                      "unlogged"
+                    ),
+                  })}
                 >
                   {hasVariant($state, "state", "noPermToShare")
                     ? "You don't have permission to share this resource."
@@ -1183,9 +1168,10 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     data-plasmic-name={"loginLink"}
                     data-plasmic-override={overrides.loginLink}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
+                      "all",
+                      "a",
+                      "a__kA1Hy",
+                      "__wab_text",
                       sty.loginLink,
                       {
                         [sty.loginLinkshareByLinkAllowed_no]: hasVariant(
@@ -1225,8 +1211,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 {(hasVariant($state, "state", "unlogged") ? true : false) ? (
                   <div
                     className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
+                      "all",
+                      "__wab_text",
                       sty.text__q89Gp,
                       {
                         [sty.textstate_noPermToShare__q89GpgPB]: hasVariant(
@@ -1260,7 +1246,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           <div
             data-plasmic-name={"permsContainer"}
             data-plasmic-override={overrides.permsContainer}
-            className={classNames(projectcss.all, sty.permsContainer, {
+            className={classNames("all", sty.permsContainer, {
               [sty.permsContainerresourceType_project]: hasVariant(
                 $state,
                 "resourceType",
@@ -1269,7 +1255,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__d1JVs, {
+              className={classNames("all", sty.freeBox__d1JVs, {
                 [sty.freeBoxpermsCascade_showWorkspace__d1JVsGxhbk]: hasVariant(
                   $state,
                   "permsCascade",
@@ -1283,29 +1269,24 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___0F4Up,
-                  {
-                    [sty.textpermsCascade_showTeam___0F4Up57XP]: hasVariant(
-                      $state,
-                      "permsCascade",
-                      "showTeam"
-                    ),
-                    [sty.textresourceType_workspace___0F4Upn5Uns]: hasVariant(
-                      $state,
-                      "resourceType",
-                      "workspace"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text___0F4Up, {
+                  [sty.textpermsCascade_showTeam___0F4Up57XP]: hasVariant(
+                    $state,
+                    "permsCascade",
+                    "showTeam"
+                  ),
+                  [sty.textresourceType_workspace___0F4Upn5Uns]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "workspace"
+                  ),
+                })}
               >
                 {"Who has access"}
               </div>
             </div>
             <div
-              className={classNames(projectcss.all, sty.freeBox__tC9Z5, {
+              className={classNames("all", sty.freeBox__tC9Z5, {
                 [sty.freeBoxpermsCascade_showTeam__tC9Z557XP]: hasVariant(
                   $state,
                   "permsCascade",
@@ -1333,13 +1314,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 ),
               })}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___5SoD
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text___5SoD)}>
                 <React.Fragment>
                   <React.Fragment>{""}</React.Fragment>
                   {
@@ -1347,10 +1322,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                       data-plasmic-name={"teamName"}
                       data-plasmic-override={overrides.teamName}
                       className={classNames(
-                        projectcss.all,
-                        projectcss.span,
-                        projectcss.__wab_text,
-                        projectcss.plasmic_default__inline,
+                        "all",
+                        "span",
+                        "span__kA1Hy",
+                        "__wab_text",
+                        "plasmic_default__inline",
                         sty.teamName
                       )}
                     >
@@ -1361,10 +1337,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   {
                     <span
                       className={classNames(
-                        projectcss.all,
-                        projectcss.span,
-                        projectcss.__wab_text,
-                        projectcss.plasmic_default__inline,
+                        "all",
+                        "span",
+                        "span__kA1Hy",
+                        "__wab_text",
+                        "plasmic_default__inline",
                         sty.span__stjKq
                       )}
                     >
@@ -1375,7 +1352,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 </React.Fragment>
               </div>
               <div
-                className={classNames(projectcss.all, sty.freeBox___13Zpo, {
+                className={classNames("all", sty.freeBox___13Zpo, {
                   [sty.freeBoxpermsCascade_showTeam___13Zpo57XP]: hasVariant(
                     $state,
                     "permsCascade",
@@ -1389,7 +1366,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   className={classNames("__wab_instance", sty.teamLink)}
                   endIcon={
                     <ArrowUpRightSvgIcon
-                      className={classNames(projectcss.all, sty.svg__y814Q)}
+                      className={classNames("all", sty.svg__y814Q)}
                       role={"img"}
                     />
                   }
@@ -1404,7 +1381,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               hasVariant($state, "permsCascade", "showWorkspace") ? true : false
             ) ? (
               <div
-                className={classNames(projectcss.all, sty.freeBox__gIdc, {
+                className={classNames("all", sty.freeBox__gIdc, {
                   [sty.freeBoxpermsCascade_showTeam__gIdc57XP]: hasVariant(
                     $state,
                     "permsCascade",
@@ -1420,11 +1397,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cwmeK
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__cwmeK)}
                 >
                   <React.Fragment>
                     <React.Fragment>{""}</React.Fragment>
@@ -1433,10 +1406,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                         data-plasmic-name={"workspaceName"}
                         data-plasmic-override={overrides.workspaceName}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.span,
-                          projectcss.__wab_text,
-                          projectcss.plasmic_default__inline,
+                          "all",
+                          "span",
+                          "span__kA1Hy",
+                          "__wab_text",
+                          "plasmic_default__inline",
                           sty.workspaceName
                         )}
                       >
@@ -1447,10 +1421,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     {
                       <span
                         className={classNames(
-                          projectcss.all,
-                          projectcss.span,
-                          projectcss.__wab_text,
-                          projectcss.plasmic_default__inline,
+                          "all",
+                          "span",
+                          "span__kA1Hy",
+                          "__wab_text",
+                          "plasmic_default__inline",
                           sty.span__okntb
                         )}
                       >
@@ -1460,14 +1435,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     <React.Fragment>{""}</React.Fragment>
                   </React.Fragment>
                 </div>
-                <div className={classNames(projectcss.all, sty.freeBox__frYBl)}>
+                <div className={classNames("all", sty.freeBox__frYBl)}>
                   <Button
                     data-plasmic-name={"workspaceLink"}
                     data-plasmic-override={overrides.workspaceLink}
                     className={classNames("__wab_instance", sty.workspaceLink)}
                     endIcon={
                       <ArrowUpRightSvgIcon
-                        className={classNames(projectcss.all, sty.svg__ghHOe)}
+                        className={classNames("all", sty.svg__ghHOe)}
                         role={"img"}
                       />
                     }
@@ -1491,7 +1466,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     role={"owner"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg__ar3M)}
+                        className={classNames("all", sty.svg__ar3M)}
                         role={"img"}
                       />
                     }
@@ -1505,7 +1480,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     email={"chungwu@plasmic.app"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg__hB6Fb)}
+                        className={classNames("all", sty.svg__hB6Fb)}
                         role={"img"}
                       />
                     }
@@ -1519,7 +1494,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     email={"ydmao@plasmic.app"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg__xozL8)}
+                        className={classNames("all", sty.svg__xozL8)}
                         role={"img"}
                       />
                     }
@@ -1533,7 +1508,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     email={"leo@plasmic.app"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg__hBaQ)}
+                        className={classNames("all", sty.svg__hBaQ)}
                         role={"img"}
                       />
                     }
@@ -1547,7 +1522,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     email={"ray@plasmic.app"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg___3ETf)}
+                        className={classNames("all", sty.svg___3ETf)}
                         role={"img"}
                       />
                     }
@@ -1561,7 +1536,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     email={"ray@plasmic.app"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg__iZSo0)}
+                        className={classNames("all", sty.svg__iZSo0)}
                         role={"img"}
                       />
                     }
@@ -1575,7 +1550,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     email={"ray@plasmic.app"}
                     spinner={
                       <ResetIcon
-                        className={classNames(projectcss.all, sty.svg__oieCy)}
+                        className={classNames("all", sty.svg__oieCy)}
                         role={"img"}
                       />
                     }
@@ -1587,7 +1562,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__auHu, {
+          className={classNames("all", sty.freeBox__auHu, {
             [sty.freeBoxresourceType_project__auHuwbkdw]: hasVariant(
               $state,
               "resourceType",
@@ -1620,7 +1595,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             : false
         ) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__s80E, {
+            className={classNames("all", sty.freeBox__s80E, {
               [sty.freeBoxpermsCascade_showWorkspace__s80EGxhbk]: hasVariant(
                 $state,
                 "permsCascade",
@@ -1654,7 +1629,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__vlUi4, {
+              className={classNames("all", sty.freeBox__vlUi4, {
                 [sty.freeBoxpermsCascade_showWorkspace__vlUi4Gxhbk]: hasVariant(
                   $state,
                   "permsCascade",
@@ -1663,7 +1638,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               })}
             >
               <LockIcon
-                className={classNames(projectcss.all, sty.svg__tc58B, {
+                className={classNames("all", sty.svg__tc58B, {
                   [sty.svgpermsCascade_showWorkspace__tc58BGxhbk]: hasVariant(
                     $state,
                     "permsCascade",
@@ -1674,30 +1649,28 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               />
 
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__u6F4K,
-                  {
-                    [sty.textpermsCascade_showWorkspace__u6F4KGxhbk]:
-                      hasVariant($state, "permsCascade", "showWorkspace"),
-                    [sty.textresourceType_project__u6F4Kwbkdw]: hasVariant(
-                      $state,
-                      "resourceType",
-                      "project"
-                    ),
-                    [sty.textresourceType_team__u6F4KHn7Mj]: hasVariant(
-                      $state,
-                      "resourceType",
-                      "team"
-                    ),
-                    [sty.textshareByLinkAllowed_yes__u6F4Kn4Zx6]: hasVariant(
-                      $state,
-                      "shareByLinkAllowed",
-                      "yes"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__u6F4K, {
+                  [sty.textpermsCascade_showWorkspace__u6F4KGxhbk]: hasVariant(
+                    $state,
+                    "permsCascade",
+                    "showWorkspace"
+                  ),
+                  [sty.textresourceType_project__u6F4Kwbkdw]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "project"
+                  ),
+                  [sty.textresourceType_team__u6F4KHn7Mj]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "team"
+                  ),
+                  [sty.textshareByLinkAllowed_yes__u6F4Kn4Zx6]: hasVariant(
+                    $state,
+                    "shareByLinkAllowed",
+                    "yes"
+                  ),
+                })}
               >
                 {hasVariant($state, "resourceType", "team")
                   ? "Anyone with the link can join the team as"
@@ -1720,7 +1693,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               )}
               icon={
                 <PlusSvgIcon
-                  className={classNames(projectcss.all, sty.svg__iwv5S)}
+                  className={classNames("all", sty.svg__iwv5S)}
                   role={"img"}
                 />
               }

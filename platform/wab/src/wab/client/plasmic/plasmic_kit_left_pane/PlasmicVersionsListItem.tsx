@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicVersionsListItem.module.css"; // plasmic-import: Of6596-KMlOa/css
 
 import UndoSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UndoSvg"; // plasmic-import: c6W2e2EwV/icon
@@ -119,21 +119,23 @@ function PlasmicVersionsListItem__RenderFunc(props: {
         path: "publish",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.publish,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.publish,
       },
       {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -146,10 +148,10 @@ function PlasmicVersionsListItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.listItemContainer,
         {
@@ -169,7 +171,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"listTopContainer"}
         data-plasmic-override={overrides.listTopContainer}
-        className={classNames(projectcss.all, sty.listTopContainer, {
+        className={classNames("all", sty.listTopContainer, {
           [sty.listTopContainerpublish]: hasVariant(
             $state,
             "publish",
@@ -180,21 +182,16 @@ function PlasmicVersionsListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"versionWrapper"}
           data-plasmic-override={overrides.versionWrapper}
-          className={classNames(projectcss.all, sty.versionWrapper)}
+          className={classNames("all", sty.versionWrapper)}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__xVvDs,
-              {
-                [sty.textpublish__xVvDsTqzbe]: hasVariant(
-                  $state,
-                  "publish",
-                  "publish"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__xVvDs, {
+              [sty.textpublish__xVvDsTqzbe]: hasVariant(
+                $state,
+                "publish",
+                "publish"
+              ),
+            })}
           >
             <React.Fragment>
               <React.Fragment>{""}</React.Fragment>
@@ -203,10 +200,11 @@ function PlasmicVersionsListItem__RenderFunc(props: {
                   data-plasmic-name={"versionNumber"}
                   data-plasmic-override={overrides.versionNumber}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.span,
-                    projectcss.__wab_text,
-                    projectcss.plasmic_default__inline,
+                    "all",
+                    "span",
+                    "span__aukbr",
+                    "__wab_text",
+                    "plasmic_default__inline",
                     sty.versionNumber,
                     {
                       [sty.versionNumberpublish]: hasVariant(
@@ -226,10 +224,11 @@ function PlasmicVersionsListItem__RenderFunc(props: {
                   data-plasmic-name={"versionTitle"}
                   data-plasmic-override={overrides.versionTitle}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.span,
-                    projectcss.__wab_text,
-                    projectcss.plasmic_default__inline,
+                    "all",
+                    "span",
+                    "span__aukbr",
+                    "__wab_text",
+                    "plasmic_default__inline",
                     sty.versionTitle,
                     {
                       [sty.versionTitlepublish]: hasVariant(
@@ -260,7 +259,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"versionsTagsContainer"}
         data-plasmic-override={overrides.versionsTagsContainer}
-        className={classNames(projectcss.all, sty.versionsTagsContainer, {
+        className={classNames("all", sty.versionsTagsContainer, {
           [sty.versionsTagsContainerpublish]: hasVariant(
             $state,
             "publish",
@@ -269,7 +268,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__cYmWv, {
+          className={classNames("all", sty.freeBox__cYmWv, {
             [sty.freeBoxpublish__cYmWvTqzbe]: hasVariant(
               $state,
               "publish",
@@ -278,22 +277,19 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__reOvX,
-              {
-                [sty.textpublish__reOvXTqzbe]: hasVariant(
-                  $state,
-                  "publish",
-                  "publish"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__reOvX, {
+              [sty.textpublish__reOvXTqzbe]: hasVariant(
+                $state,
+                "publish",
+                "publish"
+              ),
+            })}
           >
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -302,7 +298,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__yPlWh, {
+          className={classNames("all", sty.freeBox__yPlWh, {
             [sty.freeBoxpublish__yPlWhTqzbe]: hasVariant(
               $state,
               "publish",
@@ -310,16 +306,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__gspEw
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__gspEw)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -328,7 +320,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__coeVa, {
+          className={classNames("all", sty.freeBox__coeVa, {
             [sty.freeBoxpublish__coeVaTqzbe]: hasVariant(
               $state,
               "publish",
@@ -336,16 +328,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__kDwae
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__kDwae)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -354,7 +342,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__e7MK7, {
+          className={classNames("all", sty.freeBox__e7MK7, {
             [sty.freeBoxpublish__e7MK7Tqzbe]: hasVariant(
               $state,
               "publish",
@@ -362,16 +350,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___3W7Fj
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___3W7Fj)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -380,7 +364,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__yBerI, {
+          className={classNames("all", sty.freeBox__yBerI, {
             [sty.freeBoxpublish__yBerITqzbe]: hasVariant(
               $state,
               "publish",
@@ -388,16 +372,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__uvci7
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__uvci7)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -406,7 +386,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__t0GZk, {
+          className={classNames("all", sty.freeBox__t0GZk, {
             [sty.freeBoxpublish__t0GZkTqzbe]: hasVariant(
               $state,
               "publish",
@@ -414,16 +394,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___1E67
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___1E67)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -432,7 +408,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__q4Tyw, {
+          className={classNames("all", sty.freeBox__q4Tyw, {
             [sty.freeBoxpublish__q4TywTqzbe]: hasVariant(
               $state,
               "publish",
@@ -440,16 +416,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___0Jm9T
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___0Jm9T)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -458,7 +430,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__quNhM, {
+          className={classNames("all", sty.freeBox__quNhM, {
             [sty.freeBoxpublish__quNhMTqzbe]: hasVariant(
               $state,
               "publish",
@@ -466,16 +438,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__ekCof
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__ekCof)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -484,7 +452,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__g2Iuj, {
+          className={classNames("all", sty.freeBox__g2Iuj, {
             [sty.freeBoxpublish__g2IujTqzbe]: hasVariant(
               $state,
               "publish",
@@ -492,16 +460,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__v1Fm3
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__v1Fm3)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Tag"}
@@ -513,7 +477,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"itemInfoContainer"}
         data-plasmic-override={overrides.itemInfoContainer}
-        className={classNames(projectcss.all, sty.itemInfoContainer, {
+        className={classNames("all", sty.itemInfoContainer, {
           [sty.itemInfoContainerpublish]: hasVariant(
             $state,
             "publish",
@@ -524,12 +488,12 @@ function PlasmicVersionsListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"userAndDateContainer"}
           data-plasmic-override={overrides.userAndDateContainer}
-          className={classNames(projectcss.all, sty.userAndDateContainer)}
+          className={classNames("all", sty.userAndDateContainer)}
         >
           <div
             data-plasmic-name={"avatarContainer"}
             data-plasmic-override={overrides.avatarContainer}
-            className={classNames(projectcss.all, sty.avatarContainer)}
+            className={classNames("all", sty.avatarContainer)}
           >
             <PlasmicImg__
               data-plasmic-name={"img"}
@@ -549,11 +513,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"nameAndDate"}
             data-plasmic-override={overrides.nameAndDate}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.nameAndDate
-            )}
+            className={classNames("all", "__wab_text", sty.nameAndDate)}
           >
             <React.Fragment>
               <React.Fragment>{""}</React.Fragment>
@@ -562,10 +522,11 @@ function PlasmicVersionsListItem__RenderFunc(props: {
                   data-plasmic-name={"userName"}
                   data-plasmic-override={overrides.userName}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.span,
-                    projectcss.__wab_text,
-                    projectcss.plasmic_default__inline,
+                    "all",
+                    "span",
+                    "span__aukbr",
+                    "__wab_text",
+                    "plasmic_default__inline",
                     sty.userName
                   )}
                 >
@@ -574,7 +535,9 @@ function PlasmicVersionsListItem__RenderFunc(props: {
               }
               <React.Fragment> </React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-qKhMu66CwSx)" }}
               >
                 {"on "}
@@ -585,16 +548,19 @@ function PlasmicVersionsListItem__RenderFunc(props: {
                   data-plasmic-name={"versionDateTime"}
                   data-plasmic-override={overrides.versionDateTime}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.span,
-                    projectcss.__wab_text,
-                    projectcss.plasmic_default__inline,
+                    "all",
+                    "span",
+                    "span__aukbr",
+                    "__wab_text",
+                    "plasmic_default__inline",
                     sty.versionDateTime
                   )}
                 >
                   <React.Fragment>
                     <span
-                      className={"plasmic_default__all plasmic_default__span"}
+                      className={
+                        "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                      }
                       style={{ color: "var(--token-qKhMu66CwSx)" }}
                     >
                       {"8/26/2025, 2:15PM"}
@@ -618,7 +584,7 @@ function PlasmicVersionsListItem__RenderFunc(props: {
           <UndoSvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg, {
+            className={classNames("all", sty.svg, {
               [sty.svgpublish]: hasVariant($state, "publish", "publish"),
             })}
             role={"img"}

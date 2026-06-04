@@ -17,19 +17,19 @@
   box-shadow: 0px 8px 24px -16px #00000038, 0px 8px 15px -16px #00000024;
   border-radius: 8px;
 }
-.root:focus {
+.root:focus:focus {
   outline: none;
 }
-.rootimage_withImage:focus {
+.rootimage_withImage:focus:focus {
   outline: none;
 }
-.rootimage_withImage:hover {
+.rootimage_withImage:hover:hover {
   box-shadow: 0px 8px 32px -8px #00000038, 0px 8px 20px -16px #00000024;
 }
-.rootwithDropShadow:focus {
+.rootwithDropShadow:focus:focus {
   outline: none;
 }
-.rootwithDropShadow:hover {
+.rootwithDropShadow:hover:hover {
   box-shadow: 0px 8px 32px -8px #00000038, 0px 8px 20px -16px #00000024;
 }
 .button {
@@ -203,51 +203,18 @@
 }
 .freeBox__h0Gn {
   display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   height: 100%;
+  column-gap: 8px;
   min-height: 0;
   padding: 20px 16px;
 }
-.freeBox__h0Gn > :global(.__wab_flex-container) {
-  align-items: flex-start;
-  justify-content: flex-start;
-  min-height: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
+.freeBoxicon_withIcon__h0GNn8MlJ {
+  column-gap: 8px;
+  row-gap: 0px;
 }
-.freeBox__h0Gn > :global(.__wab_flex-container) > *,
-.freeBox__h0Gn > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__h0Gn > :global(.__wab_flex-container) > picture > img,
-.freeBox__h0Gn
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
-}
-.freeBoxicon_withIcon__h0GNn8MlJ > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.freeBoxicon_withIcon__h0GNn8MlJ > :global(.__wab_flex-container) > *,
-.freeBoxicon_withIcon__h0GNn8MlJ
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.freeBoxicon_withIcon__h0GNn8MlJ
-  > :global(.__wab_flex-container)
-  > picture
-  > img,
-.freeBoxicon_withIcon__h0GNn8MlJ
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
-  margin-top: 0px;
-}
-.freeBoxshowPreview__h0GNtvNg7 > :global(.__wab_flex-container) {
+.freeBoxshowPreview__h0GNtvNg7 {
   justify-content: space-between;
   align-items: center;
 }
@@ -290,21 +257,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__wHm4F > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox__wHm4F > :global(.__wab_flex-container) > *,
-.freeBox__wHm4F > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__wHm4F > :global(.__wab_flex-container) > picture > img,
-.freeBox__wHm4F
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
+  row-gap: 4px;
 }
 .root:focus .freeBox__wHm4F {
   outline: none;
@@ -316,24 +269,10 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  border-radius: 0px;
-}
-.frame317 > :global(.__wab_flex-container) {
-  flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
-  margin-left: calc(0px - 6px);
-  width: calc(100% + 6px);
-}
-.frame317 > :global(.__wab_flex-container) > *,
-.frame317 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.frame317 > :global(.__wab_flex-container) > picture > img,
-.frame317
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 6px;
+  column-gap: 6px;
+  border-radius: 0px;
 }
 .root:focus .frame317 {
   outline: none;
@@ -374,24 +313,10 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  column-gap: 16px;
   border-radius: 0px;
   padding: 0px;
-}
-.frame308 > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  margin-left: calc(0px - 16px);
-  width: calc(100% + 16px);
-}
-.frame308 > :global(.__wab_flex-container) > *,
-.frame308 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.frame308 > :global(.__wab_flex-container) > picture > img,
-.frame308
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 16px;
 }
 .slotTargetInstruction {
   text-align: left;

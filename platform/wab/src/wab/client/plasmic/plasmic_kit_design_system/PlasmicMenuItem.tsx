@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicMenuItem.module.css"; // plasmic-import: HuWzUuHGp49C/css
 
 createPlasmicElementProxy;
@@ -131,9 +131,9 @@ function PlasmicMenuItem__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       className={classNames(
         "__wab_instance",
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -141,21 +141,15 @@ function PlasmicMenuItem__RenderFunc(props: {
       plasmicUpdateVariant={updateVariant}
       textValue={args.label}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__dhJ3Z)}>
+      <div className={classNames("all", sty.freeBox__dhJ3Z)}>
         <BaseText
           data-plasmic-name={"ariaText"}
           data-plasmic-override={overrides.ariaText}
           className={classNames("__wab_instance", sty.ariaText)}
           slot={"label"}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__mm7In)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__nMqd0
-              )}
-            >
+          <div className={classNames("all", sty.freeBox__mm7In)}>
+            <div className={classNames("all", "__wab_text", sty.text__nMqd0)}>
               <React.Fragment>
                 {(() => {
                   try {
@@ -193,13 +187,7 @@ function PlasmicMenuItem__RenderFunc(props: {
             className={classNames("__wab_instance", sty.ariaDescription)}
             slot={"description"}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__dczkz
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__dczkz)}>
               <React.Fragment>{$props.description}</React.Fragment>
             </div>
           </BaseText2>

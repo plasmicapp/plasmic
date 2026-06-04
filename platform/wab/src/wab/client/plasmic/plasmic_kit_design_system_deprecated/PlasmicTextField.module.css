@@ -7,7 +7,7 @@
   row-gap: var(--token-YwPV7bN0RvD8);
   min-width: 0;
 }
-.ariaTextField[data-disabled]:global(.__wab_instance) {
+.ariaTextField[data-disabled][data-disabled]:global(.__wab_instance) {
   opacity: 0.5;
 }
 .label:global(.__wab_instance):global(.__wab_instance) {

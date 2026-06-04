@@ -26,13 +26,12 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_user_settings/PlasmicStyleTokensProvider"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/styleTokensProvider
 import IconButton from "../../widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../../../plasmic/PP__plasmickit_settings.module.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../../../plasmic/PP__plasmickit_settings.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
 import sty from "./PlasmicPersonalAccessToken.module.css"; // plasmic-import: F4ZVtfq6Xg/css
 
 import KeySvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__KeySvg"; // plasmic-import: xlWv-mkvk/icon
@@ -107,17 +106,21 @@ function PlasmicPersonalAccessToken__RenderFunc(props: {
         path: "copyState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.copyState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.copyState,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -126,13 +129,11 @@ function PlasmicPersonalAccessToken__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_aaggSgVS8yYsAwQffVQB4p",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootcopyState_copied]: hasVariant($state, "copyState", "copied"),
@@ -142,7 +143,7 @@ function PlasmicPersonalAccessToken__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxcopyState_copied]: hasVariant(
             $state,
             "copyState",
@@ -151,7 +152,7 @@ function PlasmicPersonalAccessToken__RenderFunc(props: {
         })}
       >
         <KeySvgIcon
-          className={classNames(projectcss.all, sty.svg___2Kau)}
+          className={classNames("all", sty.svg___2Kau)}
           role={"img"}
         />
 
@@ -164,18 +165,13 @@ function PlasmicPersonalAccessToken__RenderFunc(props: {
         <div
           data-plasmic-name={"copyLink"}
           data-plasmic-override={overrides.copyLink}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.copyLink,
-            {
-              [sty.copyLinkcopyState_copied]: hasVariant(
-                $state,
-                "copyState",
-                "copied"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.copyLink, {
+            [sty.copyLinkcopyState_copied]: hasVariant(
+              $state,
+              "copyState",
+              "copied"
+            ),
+          })}
         >
           {hasVariant($state, "copyState", "copied") ? "Copied" : "Copy"}
         </div>
@@ -187,7 +183,7 @@ function PlasmicPersonalAccessToken__RenderFunc(props: {
         withRedBackgroundHover={true}
       >
         <Trash2SvgIcon
-          className={classNames(projectcss.all, sty.svg__gp5XI)}
+          className={classNames("all", sty.svg__gp5XI)}
           role={"img"}
         />
       </IconButton>
@@ -222,7 +218,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPersonalAccessToken__VariantsArgs;
     args?: PlasmicPersonalAccessToken__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPersonalAccessToken__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPersonalAccessToken__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPersonalAccessToken__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

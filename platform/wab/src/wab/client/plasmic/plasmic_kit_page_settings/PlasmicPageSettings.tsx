@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_page_settings.module.css"; // plasmic-import: 6BCq4vMow1yqGKFdcP68Rz/projectcss
+import "./plasmic_plasmic_kit_page_settings.css"; // plasmic-import: 6BCq4vMow1yqGKFdcP68Rz/projectcss
 import sty from "./PlasmicPageSettings.module.css"; // plasmic-import: jTLog2H3DE/css
 
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
@@ -155,24 +155,18 @@ function PlasmicPageSettings__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_6BCq4vMow1yqGKFdcP68Rz",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__f5CjA)}>
-        <div className={classNames(projectcss.all, sty.freeBox__jBw6C)}>
-          <div className={classNames(projectcss.all, sty.freeBox__oAobL)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__byQuB
-              )}
-            >
+      <div className={classNames("all", sty.freeBox__f5CjA)}>
+        <div className={classNames("all", sty.freeBox__jBw6C)}>
+          <div className={classNames("all", sty.freeBox__oAobL)}>
+            <div className={classNames("all", "__wab_text", sty.text__byQuB)}>
               {"URL Path"}
             </div>
           </div>
@@ -183,30 +177,26 @@ function PlasmicPageSettings__RenderFunc(props: {
             placeholder={"/some-route"}
             prefixIcon={
               <SearchSvgIcon
-                className={classNames(projectcss.all, sty.svg__sXrs1)}
+                className={classNames("all", sty.svg__sXrs1)}
                 role={"img"}
               />
             }
             styleType={["bordered"]}
             suffixIcon={
               <CloseSvgIcon
-                className={classNames(projectcss.all, sty.svg__t5Rk5)}
+                className={classNames("all", sty.svg__t5Rk5)}
                 role={"img"}
               />
             }
           />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__ucQAw)}>
+        <div className={classNames("all", sty.freeBox__ucQAw)}>
           {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
-                <div className={classNames(projectcss.all, sty.freeBox__w0OV)}>
+                <div className={classNames("all", sty.freeBox__w0OV)}>
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__sM34
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__sM34)}
                   >
                     {"Title"}
                   </div>
@@ -216,14 +206,14 @@ function PlasmicPageSettings__RenderFunc(props: {
                   placeholder={"My fancy page"}
                   prefixIcon={
                     <SearchSvgIcon
-                      className={classNames(projectcss.all, sty.svg__xOaFz)}
+                      className={classNames("all", sty.svg__xOaFz)}
                       role={"img"}
                     />
                   }
                   styleType={["bordered"]}
                   suffixIcon={
                     <CloseSvgIcon
-                      className={classNames(projectcss.all, sty.svg__uZzrb)}
+                      className={classNames("all", sty.svg__uZzrb)}
                       role={"img"}
                     />
                   }
@@ -233,35 +223,29 @@ function PlasmicPageSettings__RenderFunc(props: {
             value: args.title,
           })}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__zOpQb)}>
-          <div className={classNames(projectcss.all, sty.freeBox__wdnNw)}>
+        <div className={classNames("all", sty.freeBox__zOpQb)}>
+          <div className={classNames("all", sty.freeBox__wdnNw)}>
             {renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__lGjqj)}
-                  >
+                  <div className={classNames("all", sty.freeBox__lGjqj)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__oSXc
                       )}
                     >
                       {"Description"}
                     </div>
                   </div>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__rmMyq)}
-                  >
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__j0Jrg)}
-                    >
+                  <div className={classNames("all", sty.freeBox__rmMyq)}>
+                    <div className={classNames("all", sty.freeBox__j0Jrg)}>
                       <textarea
                         className={classNames(
-                          projectcss.all,
-                          projectcss.textarea,
-                          projectcss.textarea__6BCq4,
+                          "all",
+                          "textarea",
+                          "textarea__6BCq4",
                           sty.textarea___40UOz
                         )}
                         placeholder={
@@ -275,51 +259,31 @@ function PlasmicPageSettings__RenderFunc(props: {
               value: args.description,
             })}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__uFy4)}>
-            <div className={classNames(projectcss.all, sty.freeBox__aYaBf)}>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__nf6Kg
-                )}
-              >
+          <div className={classNames("all", sty.freeBox__uFy4)}>
+            <div className={classNames("all", sty.freeBox__aYaBf)}>
+              <div className={classNames("all", "__wab_text", sty.text__nf6Kg)}>
                 {"Character count:"}
               </div>
               <div
                 data-plasmic-name={"characterCount"}
                 data-plasmic-override={overrides.characterCount}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.characterCount
-                )}
+                className={classNames("all", "__wab_text", sty.characterCount)}
               >
                 {"XX"}
               </div>
             </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__v5Bs7
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__v5Bs7)}>
               {"(Recommended: 160)"}
             </div>
           </div>
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__hurYr)}>
+        <div className={classNames("all", sty.freeBox__hurYr)}>
           {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
-                <div className={classNames(projectcss.all, sty.freeBox__xodgj)}>
+                <div className={classNames("all", sty.freeBox__xodgj)}>
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__nGAv
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__nGAv)}
                   >
                     {"Canonical URL"}
                   </div>
@@ -329,14 +293,14 @@ function PlasmicPageSettings__RenderFunc(props: {
                   placeholder={"https://canonical.url"}
                   prefixIcon={
                     <SearchSvgIcon
-                      className={classNames(projectcss.all, sty.svg__w2Vyd)}
+                      className={classNames("all", sty.svg__w2Vyd)}
                       role={"img"}
                     />
                   }
                   styleType={["bordered"]}
                   suffixIcon={
                     <CloseSvgIcon
-                      className={classNames(projectcss.all, sty.svg__xc8TJ)}
+                      className={classNames("all", sty.svg__xc8TJ)}
                       role={"img"}
                     />
                   }
@@ -346,26 +310,20 @@ function PlasmicPageSettings__RenderFunc(props: {
             value: args.canonical,
           })}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__zwdd8)}>
-          <div className={classNames(projectcss.all, sty.freeBox__elLZ)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__eyrOx
-              )}
-            >
+        <div className={classNames("all", sty.freeBox__zwdd8)}>
+          <div className={classNames("all", sty.freeBox__elLZ)}>
+            <div className={classNames("all", "__wab_text", sty.text__eyrOx)}>
               {"Open Graph image"}
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox__dGq)}>
+            <div className={classNames("all", sty.freeBox__dGq)}>
               <span
                 data-plasmic-name={"span"}
                 data-plasmic-override={overrides.span}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.span,
-                  projectcss.span__6BCq4,
-                  projectcss.__wab_text,
+                  "all",
+                  "span",
+                  "span__6BCq4",
+                  "__wab_text",
                   sty.span
                 )}
               >
@@ -375,10 +333,10 @@ function PlasmicPageSettings__RenderFunc(props: {
                 data-plasmic-name={"link"}
                 data-plasmic-override={overrides.link}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.a,
-                  projectcss.a__6BCq4,
-                  projectcss.__wab_text,
+                  "all",
+                  "a",
+                  "a__6BCq4",
+                  "__wab_text",
                   sty.link
                 )}
                 href={
@@ -392,92 +350,54 @@ function PlasmicPageSettings__RenderFunc(props: {
               </PlasmicLink__>
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__bmaVn)}>
+          <div className={classNames("all", sty.freeBox__bmaVn)}>
             <div
               data-plasmic-name={"imageAssetPicker"}
               data-plasmic-override={overrides.imageAssetPicker}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.imageAssetPicker
-              )}
+              className={classNames("all", "__wab_text", sty.imageAssetPicker)}
             >
               {"This is the image asset picker"}
             </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__hatY
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__hatY)}>
               {"(Recommended: 1200 x 630 pixels)"}
             </div>
           </div>
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__pd0)}>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__rAUsl
-            )}
-          >
+        <div className={classNames("all", sty.freeBox__pd0)}>
+          <div className={classNames("all", "__wab_text", sty.text__rAUsl)}>
             {"More metadata"}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__zwogK)} />
+          <div className={classNames("all", sty.freeBox__zwogK)} />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__r3Es1)}>
-          <div className={classNames(projectcss.all, sty.freeBox__gq12T)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__nXsp
-              )}
-            >
+        <div className={classNames("all", sty.freeBox__r3Es1)}>
+          <div className={classNames("all", sty.freeBox__gq12T)}>
+            <div className={classNames("all", "__wab_text", sty.text__nXsp)}>
               {""}
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__nlHjo)}>
+          <div className={classNames("all", sty.freeBox__nlHjo)}>
             <div
               data-plasmic-name={"propsControl"}
               data-plasmic-override={overrides.propsControl}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.propsControl
-              )}
+              className={classNames("all", "__wab_text", sty.propsControl)}
             >
               {"Props control"}
             </div>
           </div>
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__cMjM)}>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__a8Wj
-            )}
-          >
+        <div className={classNames("all", sty.freeBox__cMjM)}>
+          <div className={classNames("all", "__wab_text", sty.text__a8Wj)}>
             {"Advanced"}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__ykmFj)} />
+          <div className={classNames("all", sty.freeBox__ykmFj)} />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__wm2MJ)}>
+        <div className={classNames("all", sty.freeBox__wm2MJ)}>
           <div
             data-plasmic-name={"renderModeLabel"}
             data-plasmic-override={overrides.renderModeLabel}
-            className={classNames(projectcss.all, sty.renderModeLabel)}
+            className={classNames("all", sty.renderModeLabel)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__y4M9G
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__y4M9G)}>
               {"Render mode"}
             </div>
           </div>
@@ -510,20 +430,14 @@ function PlasmicPageSettings__RenderFunc(props: {
         <div
           data-plasmic-name={"loginRequiredRow"}
           data-plasmic-override={overrides.loginRequiredRow}
-          className={classNames(projectcss.all, sty.loginRequiredRow)}
+          className={classNames("all", sty.loginRequiredRow)}
         >
           <div
             data-plasmic-name={"loginRequiredLabel"}
             data-plasmic-override={overrides.loginRequiredLabel}
-            className={classNames(projectcss.all, sty.loginRequiredLabel)}
+            className={classNames("all", sty.loginRequiredLabel)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__fdmLq
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__fdmLq)}>
               {"Login needed"}
             </div>
           </div>
@@ -560,20 +474,14 @@ function PlasmicPageSettings__RenderFunc(props: {
         <div
           data-plasmic-name={"roleRequiredRow"}
           data-plasmic-override={overrides.roleRequiredRow}
-          className={classNames(projectcss.all, sty.roleRequiredRow)}
+          className={classNames("all", sty.roleRequiredRow)}
         >
           <div
             data-plasmic-name={"roleRequiredLabel"}
             data-plasmic-override={overrides.roleRequiredLabel}
-            className={classNames(projectcss.all, sty.roleRequiredLabel)}
+            className={classNames("all", sty.roleRequiredLabel)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__yxT2J
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__yxT2J)}>
               {"Role needed"}
             </div>
           </div>

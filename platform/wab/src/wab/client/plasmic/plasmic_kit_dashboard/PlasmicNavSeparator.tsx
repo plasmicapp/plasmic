@@ -14,26 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicNavSeparator.module.css"; // plasmic-import: cOUHQYmbvX/css
 
 createPlasmicElementProxy;
@@ -103,27 +100,30 @@ function PlasmicNavSeparator__RenderFunc(props: {
         path: "hideStarters",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideStarters,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hideStarters,
       },
       {
         path: "noPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noPadding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noPadding,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -132,34 +132,13 @@ function PlasmicNavSeparator__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.roothideStarters]: hasVariant(
             $state,
             "hideStarters",
@@ -172,7 +151,7 @@ function PlasmicNavSeparator__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxhideStarters]: hasVariant(
             $state,
             "hideStarters",
@@ -207,7 +186,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicNavSeparator__VariantsArgs;
     args?: PlasmicNavSeparator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicNavSeparator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicNavSeparator__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicNavSeparator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

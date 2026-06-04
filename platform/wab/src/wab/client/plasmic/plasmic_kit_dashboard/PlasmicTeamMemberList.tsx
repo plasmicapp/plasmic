@@ -16,12 +16,10 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
@@ -35,15 +33,12 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicTeamMemberList.module.css"; // plasmic-import: 3jXSiWKc1-/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -121,27 +116,30 @@ function PlasmicTeamMemberList__RenderFunc(props: {
         path: "isCollapsed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isCollapsed,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isCollapsed,
       },
       {
         path: "filterSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -150,34 +148,13 @@ function PlasmicTeamMemberList__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootisCollapsed]: hasVariant(
             $state,
             "isCollapsed",
@@ -189,23 +166,15 @@ function PlasmicTeamMemberList__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__l8Prb
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text__l8Prb)}>
           {"Members"}
         </div>
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.actions)}
+          className={classNames("all", sty.actions)}
         >
           <Button
             data-plasmic-name={"newButton"}
@@ -213,7 +182,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
             className={classNames("__wab_instance", sty.newButton)}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__lPfIg)}
+                className={classNames("all", sty.svg__lPfIg)}
                 role={"img"}
               />
             }
@@ -221,7 +190,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
             size={"wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg___0MNgN)}
+                className={classNames("all", sty.svg___0MNgN)}
                 role={"img"}
               />
             }
@@ -236,7 +205,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
             className={classNames("__wab_instance", sty.filterSelect)}
             icon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg___63J2T)}
+                className={classNames("all", sty.svg___63J2T)}
                 role={"img"}
               />
             }
@@ -309,52 +278,26 @@ function PlasmicTeamMemberList__RenderFunc(props: {
             className={classNames("__wab_instance", sty.memberSearch)}
             whiteBackground={true}
           />
-        </Stack__>
+        </div>
       </div>
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.header)}
+        className={classNames("all", sty.header)}
       >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__cuGtX
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text__cuGtX)}>
           {"Name"}
         </div>
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text___0Cf9
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text___0Cf9)}>
           {"Last active"}
         </div>
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__qi9E0
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text__qi9E0)}>
           {"Projects"}
         </div>
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__k2CEs
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text__k2CEs)}>
           {"Team role"}
         </div>
-      </Stack__>
+      </div>
       {renderPlasmicSlot({
         defaultContents: (
           <React.Fragment>
@@ -365,11 +308,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
               )}
               email={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__glRe0
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__glRe0)}
                 >
                   {"email@domain.com"}
                 </div>
@@ -384,11 +323,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
               )}
               name={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__f6B5V
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__f6B5V)}
                 >
                   {"Carl Sagan"}
                 </div>
@@ -402,11 +337,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
               )}
               name={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__j0Ij9
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__j0Ij9)}
                 >
                   {"Rosa Diaz"}
                 </div>
@@ -420,11 +351,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
               )}
               name={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__bf6Im
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__bf6Im)}
                 >
                   {"Jared Dunn"}
                 </div>
@@ -479,7 +406,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTeamMemberList__VariantsArgs;
     args?: PlasmicTeamMemberList__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTeamMemberList__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTeamMemberList__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTeamMemberList__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

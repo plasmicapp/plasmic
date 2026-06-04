@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicAddDrawerItem.module.css"; // plasmic-import: isQPD0RPCw/css
 
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
@@ -125,22 +125,25 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
         path: "isHighlighted",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHighlighted,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isHighlighted,
       },
       {
         path: "showPreviewImage",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showPreviewImage,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -158,10 +161,10 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -170,7 +173,7 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxshowPreviewImage]: hasVariant(
             $state,
             "showPreviewImage",
@@ -210,27 +213,27 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
               <IconButton
                 children2={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg___6O2L)}
+                    className={classNames("all", sty.svg___6O2L)}
                     role={"img"}
                   />
                 }
               >
                 <BeforeSvgIcon
-                  className={classNames(projectcss.all, sty.svg__zc4N)}
+                  className={classNames("all", sty.svg__zc4N)}
                   role={"img"}
                 />
               </IconButton>
               <IconButton
                 children2={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg___286BO)}
+                    className={classNames("all", sty.svg___286BO)}
                     role={"img"}
                   />
                 }
                 className={classNames("__wab_instance", sty.iconButton__ol5Pp)}
               >
                 <AfterSvgIcon
-                  className={classNames(projectcss.all, sty.svg__acGZq)}
+                  className={classNames("all", sty.svg__acGZq)}
                   role={"img"}
                 />
               </IconButton>
@@ -241,7 +244,7 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
         icon={renderPlasmicSlot({
           defaultContents: (
             <ComponentSvgIcon
-              className={classNames(projectcss.all, sty.svg__xaCli)}
+              className={classNames("all", sty.svg__xaCli)}
               role={"img"}
             />
           ),
@@ -295,7 +298,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAddDrawerItem__VariantsArgs;
     args?: PlasmicAddDrawerItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAddDrawerItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicAddDrawerItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAddDrawerItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

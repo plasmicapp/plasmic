@@ -6,7 +6,7 @@
   row-gap: var(--token-YwPV7bN0RvD8);
   min-width: 0;
 }
-.ariaComboBox[data-disabled]:global(.__wab_instance) {
+.ariaComboBox[data-disabled][data-disabled]:global(.__wab_instance) {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;

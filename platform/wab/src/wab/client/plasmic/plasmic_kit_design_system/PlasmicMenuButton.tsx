@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicMenuButton.module.css"; // plasmic-import: h69wHrrKtL/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -136,6 +136,7 @@ function PlasmicMenuButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -154,7 +155,7 @@ function PlasmicMenuButton__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       children2={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg___5FElZ)}
+          className={classNames("all", sty.svg___5FElZ)}
           role={"img"}
         />
       }
@@ -184,7 +185,7 @@ function PlasmicMenuButton__RenderFunc(props: {
       }
     >
       <DotsVerticalSvgIcon
-        className={classNames(projectcss.all, sty.svg__jeWc1, {
+        className={classNames("all", sty.svg__jeWc1, {
           [sty.svgtype_seamless__jeWc1Z4VSy]: hasVariant(
             $state,
             "type",

@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicColorSwatch.module.css"; // plasmic-import: 4AYfEug-RA/css
 
 createPlasmicElementProxy;
@@ -104,6 +104,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -121,10 +122,10 @@ function PlasmicColorSwatch__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisSelected]: hasVariant($state, "isSelected", "isSelected") }
@@ -133,7 +134,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxisSelected]: hasVariant(
             $state,
             "isSelected",
@@ -144,7 +145,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
         <div
           data-plasmic-name={"checker"}
           data-plasmic-override={overrides.checker}
-          className={classNames(projectcss.all, sty.checker, {
+          className={classNames("all", sty.checker, {
             [sty.checkerisSelected]: hasVariant(
               $state,
               "isSelected",
@@ -155,7 +156,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
           <div
             data-plasmic-name={"bgOpacity"}
             data-plasmic-override={overrides.bgOpacity}
-            className={classNames(projectcss.all, sty.bgOpacity, {
+            className={classNames("all", sty.bgOpacity, {
               [sty.bgOpacityisSelected]: hasVariant(
                 $state,
                 "isSelected",
@@ -167,7 +168,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
           <div
             data-plasmic-name={"color"}
             data-plasmic-override={overrides.color}
-            className={classNames(projectcss.all, sty.color, {
+            className={classNames("all", sty.color, {
               [sty.colorisSelected]: hasVariant(
                 $state,
                 "isSelected",
@@ -179,7 +180,7 @@ function PlasmicColorSwatch__RenderFunc(props: {
           <div
             data-plasmic-name={"border"}
             data-plasmic-override={overrides.border}
-            className={classNames(projectcss.all, sty.border, {
+            className={classNames("all", sty.border, {
               [sty.borderisSelected]: hasVariant(
                 $state,
                 "isSelected",

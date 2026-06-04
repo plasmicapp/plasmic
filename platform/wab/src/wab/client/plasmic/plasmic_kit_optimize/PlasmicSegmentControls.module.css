@@ -28,7 +28,6 @@
   max-width: 100%;
   position: relative;
   grid-column-end: span 8;
-  display: flex;
 }
 .svg {
   display: flex;
@@ -71,7 +70,6 @@
   font-size: 10px;
   font-family: "IBM Plex Mono";
   min-width: 0;
-  display: block;
 }
 .texthasRules__c2TBw9DniU {
   display: none;

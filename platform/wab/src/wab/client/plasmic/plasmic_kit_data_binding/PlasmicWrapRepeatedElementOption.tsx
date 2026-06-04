@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicWrapRepeatedElementOption.module.css"; // plasmic-import: QcDtYmEqee/css
 
 createPlasmicElementProxy;
@@ -101,10 +101,10 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -112,25 +112,19 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
       <div
         data-plasmic-name={"wrapRepeatedContainer"}
         data-plasmic-override={overrides.wrapRepeatedContainer}
-        className={classNames(projectcss.all, sty.wrapRepeatedContainer)}
+        className={classNames("all", sty.wrapRepeatedContainer)}
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <div className={classNames(projectcss.all, sty.freeBox__qa3Bj)}>
-              <div className={classNames(projectcss.all, sty.freeBox___2BBgb)}>
-                <div
-                  className={classNames(projectcss.all, sty.freeBox__zhBrH)}
-                />
+            <div className={classNames("all", sty.freeBox__qa3Bj)}>
+              <div className={classNames("all", sty.freeBox___2BBgb)}>
+                <div className={classNames("all", sty.freeBox__zhBrH)} />
               </div>
-              <div className={classNames(projectcss.all, sty.freeBox__lOdVl)}>
-                <div
-                  className={classNames(projectcss.all, sty.freeBox__osDk3)}
-                />
+              <div className={classNames("all", sty.freeBox__lOdVl)}>
+                <div className={classNames("all", sty.freeBox__osDk3)} />
               </div>
-              <div className={classNames(projectcss.all, sty.freeBox__jaWBc)}>
-                <div
-                  className={classNames(projectcss.all, sty.freeBox__byr9R)}
-                />
+              <div className={classNames("all", sty.freeBox__jaWBc)}>
+                <div className={classNames("all", sty.freeBox__byr9R)} />
               </div>
             </div>
           ),
@@ -140,14 +134,14 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
       <div
         data-plasmic-name={"frame31"}
         data-plasmic-override={overrides.frame31}
-        className={classNames(projectcss.all, sty.frame31)}
+        className={classNames("all", sty.frame31)}
       >
         <div
           data-plasmic-name={"wrapAllItems"}
           data-plasmic-override={overrides.wrapAllItems}
-          className={classNames(projectcss.all, sty.wrapAllItems)}
+          className={classNames("all", sty.wrapAllItems)}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__eorQg)}>
+          <div className={classNames("all", sty.freeBox__eorQg)}>
             {renderPlasmicSlot({
               defaultContents: "Wrap and Repeat",
               value: args.children,
@@ -161,11 +155,11 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
             overrides.wrapAllTheRepeatedElementsInASingleWrapper
           }
           className={classNames(
-            projectcss.all,
+            "all",
             sty.wrapAllTheRepeatedElementsInASingleWrapper
           )}
         >
-          <div className={classNames(projectcss.all, sty.freeBox___0DSaK)}>
+          <div className={classNames("all", sty.freeBox___0DSaK)}>
             {renderPlasmicSlot({
               defaultContents: "Wrap each element individually and repeat them",
               value: args.slot,

@@ -14,29 +14,25 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicBill.module.css"; // plasmic-import: sK-iPs7I1Z/css
 
 import MinusIcon from "../plasmic_kit/PlasmicIcon__Minus"; // plasmic-import: dHjXz96374PLA/icon
@@ -143,71 +139,52 @@ function PlasmicBill__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "hideBasePrice",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideBasePrice,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hideBasePrice,
       },
       {
         path: "hideSeatPrice",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideSeatPrice,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hideSeatPrice,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.roothideSeatPrice]: hasVariant(
             $state,
             "hideSeatPrice",
@@ -216,20 +193,16 @@ function PlasmicBill__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__azp5F)}
-      >
+      <div className={classNames("all", sty.freeBox__azp5F)}>
         <div
           data-plasmic-name={"lessSeats"}
           data-plasmic-override={overrides.lessSeats}
-          className={classNames(projectcss.all, sty.lessSeats, {
+          className={classNames("all", sty.lessSeats, {
             [sty.lessSeatstype_month]: hasVariant($state, "type", "month"),
           })}
         >
           <MinusIcon
-            className={classNames(projectcss.all, sty.svg__p1GtK, {
+            className={classNames("all", sty.svg__p1GtK, {
               [sty.svgtype_month__p1GtKEdjdn]: hasVariant(
                 $state,
                 "type",
@@ -239,12 +212,8 @@ function PlasmicBill__RenderFunc(props: {
             role={"img"}
           />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__y5JyR)}>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___91Tox)}
-          >
+        <div className={classNames("all", sty.freeBox__y5JyR)}>
+          <div className={classNames("all", sty.freeBox___91Tox)}>
             {renderPlasmicSlot({
               defaultContents: "10",
               value: args.numSeats,
@@ -254,14 +223,15 @@ function PlasmicBill__RenderFunc(props: {
               defaultContents: "seats",
               value: args.seatNoun,
             })}
-          </Stack__>
+          </div>
         </div>
         <button
           data-plasmic-name={"moreSeats"}
           data-plasmic-override={overrides.moreSeats}
           className={classNames(
-            projectcss.all,
-            projectcss.button,
+            "all",
+            "button",
+            "button__ooL7E",
             sty.moreSeats
           )}
           ref={(ref) => {
@@ -269,20 +239,14 @@ function PlasmicBill__RenderFunc(props: {
           }}
         >
           <PlusSvgIcon
-            className={classNames(projectcss.all, sty.svg__qGr4R)}
+            className={classNames("all", sty.svg__qGr4R)}
             role={"img"}
           />
         </button>
-      </Stack__>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__vvxAi)}
-      >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__huPEa, {
+      </div>
+      <div className={classNames("all", sty.freeBox__vvxAi)}>
+        <div
+          className={classNames("all", sty.freeBox__huPEa, {
             [sty.freeBoxhideBasePrice__huPEaeg0JJ]: hasVariant(
               $state,
               "hideBasePrice",
@@ -291,7 +255,7 @@ function PlasmicBill__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__gqF13, {
+            className={classNames("all", sty.freeBox__gqF13, {
               [sty.freeBoxhideBasePrice__gqF13Eg0JJ]: hasVariant(
                 $state,
                 "hideBasePrice",
@@ -304,7 +268,7 @@ function PlasmicBill__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__rl9Jl)}>
+            <div className={classNames("all", sty.freeBox__rl9Jl)}>
               {renderPlasmicSlot({
                 defaultContents: "1 Basic Team",
                 value: args.baseTitle,
@@ -315,14 +279,10 @@ function PlasmicBill__RenderFunc(props: {
                 className: classNames(sty.slotTargetBaseDescription),
               })}
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox___5SjCb)}>
-              <div className={classNames(projectcss.all, sty.freeBox__bYx0T)}>
+            <div className={classNames("all", sty.freeBox___5SjCb)}>
+              <div className={classNames("all", sty.freeBox__bYx0T)}>
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___5E8Tn
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___5E8Tn)}
                 >
                   {"$"}
                 </div>
@@ -332,25 +292,20 @@ function PlasmicBill__RenderFunc(props: {
                 })}
               </div>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__lXggG,
-                  {
-                    [sty.texttype_year__lXggGtDiat]: hasVariant(
-                      $state,
-                      "type",
-                      "year"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__lXggG, {
+                  [sty.texttype_year__lXggGtDiat]: hasVariant(
+                    $state,
+                    "type",
+                    "year"
+                  ),
+                })}
               >
                 {hasVariant($state, "type", "year") ? " / year" : " / month"}
               </div>
             </div>
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__rWav, {
+            className={classNames("all", sty.freeBox__rWav, {
               [sty.freeBoxhideBasePrice__rWavEg0JJ]: hasVariant(
                 $state,
                 "hideBasePrice",
@@ -368,7 +323,7 @@ function PlasmicBill__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox___2IfV0)}>
+            <div className={classNames("all", sty.freeBox___2IfV0)}>
               {renderPlasmicSlot({
                 defaultContents: "10 Basic seats",
                 value: args.seatTitle,
@@ -379,14 +334,10 @@ function PlasmicBill__RenderFunc(props: {
                 className: classNames(sty.slotTargetSeatDescription),
               })}
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox__pzNjL)}>
-              <div className={classNames(projectcss.all, sty.freeBox__gb5TY)}>
+            <div className={classNames("all", sty.freeBox__pzNjL)}>
+              <div className={classNames("all", sty.freeBox__gb5TY)}>
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6KagR
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6KagR)}
                 >
                   {"$"}
                 </div>
@@ -396,45 +347,35 @@ function PlasmicBill__RenderFunc(props: {
                 })}
               </div>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__tFDgn,
-                  {
-                    [sty.texttype_year__tFDgntDiat]: hasVariant(
-                      $state,
-                      "type",
-                      "year"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__tFDgn, {
+                  [sty.texttype_year__tFDgntDiat]: hasVariant(
+                    $state,
+                    "type",
+                    "year"
+                  ),
+                })}
               >
                 {hasVariant($state, "type", "year") ? " / year" : " / month"}
               </div>
             </div>
           </div>
-        </Stack__>
-        <div className={classNames(projectcss.all, sty.freeBox___2EnbQ)} />
+        </div>
+        <div className={classNames("all", sty.freeBox___2EnbQ)} />
 
-        <div className={classNames(projectcss.all, sty.freeBox___266J7)}>
+        <div className={classNames("all", sty.freeBox___266J7)}>
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__pAxv9,
-              {
-                [sty.texttype_month__pAxv9Edjdn]: hasVariant(
-                  $state,
-                  "type",
-                  "month"
-                ),
-                [sty.texttype_year__pAxv9TDiat]: hasVariant(
-                  $state,
-                  "type",
-                  "year"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__pAxv9, {
+              [sty.texttype_month__pAxv9Edjdn]: hasVariant(
+                $state,
+                "type",
+                "month"
+              ),
+              [sty.texttype_year__pAxv9TDiat]: hasVariant(
+                $state,
+                "type",
+                "year"
+              ),
+            })}
           >
             {hasVariant($state, "type", "year")
               ? "New yearly total "
@@ -442,15 +383,9 @@ function PlasmicBill__RenderFunc(props: {
               ? "New monthly total "
               : "Total"}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox___5MDgk)}>
-            <div className={classNames(projectcss.all, sty.freeBox__ixJv)}>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___8Uqs
-                )}
-              >
+          <div className={classNames("all", sty.freeBox___5MDgk)}>
+            <div className={classNames("all", sty.freeBox__ixJv)}>
+              <div className={classNames("all", "__wab_text", sty.text___8Uqs)}>
                 {"$"}
               </div>
               {renderPlasmicSlot({
@@ -460,25 +395,20 @@ function PlasmicBill__RenderFunc(props: {
               })}
             </div>
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__wgPbp,
-                {
-                  [sty.texttype_year__wgPbPtDiat]: hasVariant(
-                    $state,
-                    "type",
-                    "year"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__wgPbp, {
+                [sty.texttype_year__wgPbPtDiat]: hasVariant(
+                  $state,
+                  "type",
+                  "year"
+                ),
+              })}
             >
               {hasVariant($state, "type", "year") ? " / year" : " / month"}
             </div>
           </div>
         </div>
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -507,7 +437,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicBill__VariantsArgs;
     args?: PlasmicBill__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicBill__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicBill__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicBill__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

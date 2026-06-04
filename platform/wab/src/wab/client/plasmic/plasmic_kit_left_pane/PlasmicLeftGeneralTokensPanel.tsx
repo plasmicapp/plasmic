@@ -36,7 +36,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftGeneralTokensPanel.module.css"; // plasmic-import: bDbzY5jXLz/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -111,21 +111,24 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
         path: "isTargeting",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isTargeting,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isTargeting,
       },
       {
         path: "globalVariantSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "",
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -138,10 +141,10 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -175,14 +178,14 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
             data-plasmic-override={overrides.importTokensButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__o0O5S)}
+                className={classNames("all", sty.svg__o0O5S)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <DownloadSvgIcon
-                className={classNames(projectcss.all, sty.svg__e3TfD)}
+                className={classNames("all", sty.svg__e3TfD)}
                 role={"img"}
               />
             }
@@ -208,24 +211,16 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
           <div
             data-plasmic-name={"globalVariantsSelectContainer"}
             data-plasmic-override={overrides.globalVariantsSelectContainer}
-            className={classNames(
-              projectcss.all,
-              sty.globalVariantsSelectContainer
-            )}
+            className={classNames("all", sty.globalVariantsSelectContainer)}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__h2R,
-                {
-                  [sty.textisTargeting__h2RWy5IQ]: hasVariant(
-                    $state,
-                    "isTargeting",
-                    "isTargeting"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__h2R, {
+                [sty.textisTargeting__h2RWy5IQ]: hasVariant(
+                  $state,
+                  "isTargeting",
+                  "isTargeting"
+                ),
+              })}
             >
               {"Target:"}
             </div>
@@ -235,7 +230,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
               className={classNames("__wab_instance", sty.globalVariantSelect)}
               icon={
                 <PlusSvgIcon
-                  className={classNames(projectcss.all, sty.svg__ugBmB)}
+                  className={classNames("all", sty.svg__ugBmB)}
                   role={"img"}
                 />
               }
@@ -258,11 +253,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
               }}
               placeholder={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__hDqR6
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__hDqR6)}
                 >
                   {"Base"}
                 </div>
@@ -280,11 +271,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
                 value={"base"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__qa0Lm
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__qa0Lm)}
                 >
                   {"Base"}
                 </div>
@@ -297,7 +284,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       />
     </div>
   ) as React.ReactElement | null;

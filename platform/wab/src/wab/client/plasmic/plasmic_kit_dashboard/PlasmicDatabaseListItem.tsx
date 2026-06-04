@@ -16,13 +16,10 @@ import * as React from "react";
 import {
   Flex as Flex__,
   PlasmicLink as PlasmicLink__,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  hasVariant,
   renderPlasmicSlot,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -31,15 +28,12 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import Shared from "../../components/dashboard/Shared"; // plasmic-import: r2L4x5kulJ/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicDatabaseListItem.module.css"; // plasmic-import: G_RLd7TB5Ns/css
 
 import DatabaseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DatabaseSvg"; // plasmic-import: I6B50v8zj/icon
@@ -104,6 +98,8 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const globalVariants = _useGlobalVariants();
+
   const [isRootFocusVisible, triggerRootFocusVisibleProps] = useTrigger(
     "useFocusVisible",
     {
@@ -116,50 +112,24 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={PlasmicLink__}
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.a,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "a",
+        "a__ooL7E",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
-        {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [sty.root___focusVisible]: triggers.focusVisible_root,
-        }
+        { [sty.root___focusVisible]: triggers.focusVisible_root }
       )}
       href={"#"}
       platform={"react"}
@@ -168,23 +138,21 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
         triggerRootHoverProps,
       ]}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.left, {
+        className={classNames("all", sty.left, {
           [sty.left___focusVisible]: triggers.focusVisible_root,
         })}
       >
         <DatabaseSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
 
-        <div className={classNames(projectcss.all, sty.freeBox__na9Wj)}>
+        <div className={classNames("all", sty.freeBox__na9Wj)}>
           <EditableResourceName
             data-plasmic-name={"editableName"}
             data-plasmic-override={overrides.editableName}
@@ -194,7 +162,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
             state={triggers.hover_root ? "hover" : undefined}
           />
 
-          <div className={classNames(projectcss.all, sty.freeBox__tql95)}>
+          <div className={classNames("all", sty.freeBox__tql95)}>
             {renderPlasmicSlot({
               defaultContents: "updated 1h ago",
               value: args.timestamp,
@@ -205,11 +173,11 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
             })}
           </div>
         </div>
-      </Stack__>
+      </div>
       <div
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
-        className={classNames(projectcss.all, sty.right)}
+        className={classNames("all", sty.right)}
       >
         <Shared
           data-plasmic-name={"shared"}
@@ -226,15 +194,11 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"updatedJustNow"}
         data-plasmic-override={overrides.updatedJustNow}
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.updatedJustNow
-        )}
+        className={classNames("all", "__wab_text", sty.updatedJustNow)}
       >
         {"updated just now"}
       </div>
-    </Stack__>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 
@@ -282,7 +246,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDatabaseListItem__VariantsArgs;
     args?: PlasmicDatabaseListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDatabaseListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDatabaseListItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDatabaseListItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

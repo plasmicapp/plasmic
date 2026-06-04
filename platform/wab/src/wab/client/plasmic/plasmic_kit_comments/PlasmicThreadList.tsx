@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicThreadList.module.css"; // plasmic-import: nObxvgrqmfvo/css
 
 import SpeechBubblePlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubblePlusSvg"; // plasmic-import: g2gTPsRaJ/icon
@@ -103,15 +103,17 @@ function PlasmicThreadList__RenderFunc(props: {
         path: "noComments",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noComments,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noComments,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -124,10 +126,10 @@ function PlasmicThreadList__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootnoComments]: hasVariant($state, "noComments", "noComments") }
@@ -136,7 +138,7 @@ function PlasmicThreadList__RenderFunc(props: {
       <div
         data-plasmic-name={"threads"}
         data-plasmic-override={overrides.threads}
-        className={classNames(projectcss.all, sty.threads, {
+        className={classNames("all", sty.threads, {
           [sty.threadsnoComments]: hasVariant(
             $state,
             "noComments",
@@ -161,7 +163,7 @@ function PlasmicThreadList__RenderFunc(props: {
         <div
           data-plasmic-name={"noCommentsCard"}
           data-plasmic-override={overrides.noCommentsCard}
-          className={classNames(projectcss.all, sty.noCommentsCard, {
+          className={classNames("all", sty.noCommentsCard, {
             [sty.noCommentsCardnoComments]: hasVariant(
               $state,
               "noComments",
@@ -172,25 +174,22 @@ function PlasmicThreadList__RenderFunc(props: {
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text
-            )}
+            className={classNames("all", "__wab_text", sty.text)}
           >
             {"No comments"}
           </div>
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
-            className={classNames(projectcss.all, sty.freeBox)}
+            className={classNames("all", sty.freeBox)}
             style={{ display: "inline-block" }}
           >
             <span
               className={classNames(
-                projectcss.all,
-                projectcss.span,
-                projectcss.__wab_text,
+                "all",
+                "span",
+                "span__BP7V3",
+                "__wab_text",
                 sty.span__uO4IR
               )}
             >
@@ -199,16 +198,17 @@ function PlasmicThreadList__RenderFunc(props: {
             <SpeechBubblePlusSvgIcon
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg)}
+              className={classNames("all", sty.svg)}
               role={"img"}
               style={{ display: "inline", "vertical-align": "middle" }}
             />
 
             <span
               className={classNames(
-                projectcss.all,
-                projectcss.span,
-                projectcss.__wab_text,
+                "all",
+                "span",
+                "span__BP7V3",
+                "__wab_text",
                 sty.span__bNrLu
               )}
             >
@@ -262,7 +262,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThreadList__VariantsArgs;
     args?: PlasmicThreadList__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThreadList__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThreadList__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThreadList__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

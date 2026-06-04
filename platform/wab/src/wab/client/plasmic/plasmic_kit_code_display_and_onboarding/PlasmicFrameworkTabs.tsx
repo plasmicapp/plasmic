@@ -14,22 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import FrameworkTab from "../../components/studio/code-quickstart/FrameworkTab"; // plasmic-import: aSLlLoswhi/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_code_display_and_onboarding.module.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
+import "./plasmic_plasmic_kit_code_display_and_onboarding.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
 import sty from "./PlasmicFrameworkTabs.module.css"; // plasmic-import: tf_fQvs5kI8/css
 
 import GraphqlIcon from "./icons/PlasmicIcon__Graphql"; // plasmic-import: tVE40jlrgY/icon
@@ -51,7 +49,7 @@ type VariantPropType = keyof PlasmicFrameworkTabs__VariantsArgs;
 export const PlasmicFrameworkTabs__VariantProps = new Array<VariantPropType>();
 
 export type PlasmicFrameworkTabs__ArgsType = {
-  openInNewTab?: Target;
+  openInNewTab?: string;
   reactHref?: string;
   nextjsHref?: string;
   gatsbyHref?: string;
@@ -93,7 +91,7 @@ export type PlasmicFrameworkTabs__OverridesType = {
 };
 
 export interface DefaultFrameworkTabsProps {
-  openInNewTab?: Target;
+  openInNewTab?: string;
   reactHref?: string;
   nextjsHref?: string;
   gatsbyHref?: string;
@@ -137,22 +135,20 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        "all",
+        "root_reset_pTmuho7nuNtDcvZAf2kJgx",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
@@ -163,7 +159,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         destination={args.reactHref}
         logo={
           <ReactIcon
-            className={classNames(projectcss.all, sty.svg__hNQF)}
+            className={classNames("all", sty.svg__hNQF)}
             role={"img"}
           />
         }
@@ -178,7 +174,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         destination={args.nextjsHref}
         logo={
           <NextjsIcon
-            className={classNames(projectcss.all, sty.svg__kovLr)}
+            className={classNames("all", sty.svg__kovLr)}
             role={"img"}
           />
         }
@@ -194,11 +190,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         logo={
           <img
             alt={""}
-            className={classNames(
-              projectcss.all,
-              projectcss.img,
-              sty.img__i3ZU
-            )}
+            className={classNames("all", "img", "img__pTmuh", sty.img__i3ZU)}
             src={gatsbyHfAyqV1Qc2}
           />
         }
@@ -214,11 +206,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         logo={
           <img
             alt={""}
-            className={classNames(
-              projectcss.all,
-              projectcss.img,
-              sty.img__uRy6
-            )}
+            className={classNames("all", "img", "img__pTmuh", sty.img__uRy6)}
             src={hydrogenGyWGjPYh}
           />
         }
@@ -234,11 +222,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         logo={
           <img
             alt={""}
-            className={classNames(
-              projectcss.all,
-              projectcss.img,
-              sty.img__ldnM
-            )}
+            className={classNames("all", "img", "img__pTmuh", sty.img__ldnM)}
             src={remixPuIajWxD}
           />
         }
@@ -254,11 +238,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         logo={
           <img
             alt={""}
-            className={classNames(
-              projectcss.all,
-              projectcss.img,
-              sty.img__p0NiT
-            )}
+            className={classNames("all", "img", "img__pTmuh", sty.img__p0NiT)}
             src={tanstackSERoZFuGIf4}
           />
         }
@@ -274,11 +254,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         logo={
           <img
             alt={""}
-            className={classNames(
-              projectcss.all,
-              projectcss.img,
-              sty.img__mR4YS
-            )}
+            className={classNames("all", "img", "img__pTmuh", sty.img__mR4YS)}
             src={javascriptGlPcV90N}
           />
         }
@@ -294,11 +270,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         logo={
           <img
             alt={""}
-            className={classNames(
-              projectcss.all,
-              projectcss.img,
-              sty.img__dcs2X
-            )}
+            className={classNames("all", "img", "img__pTmuh", sty.img__dcs2X)}
             src={phpSk5QCRrjj2}
           />
         }
@@ -312,10 +284,7 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         className={classNames("__wab_instance", sty.rest)}
         destination={args.restHref}
         logo={
-          <RestIcon
-            className={classNames(projectcss.all, sty.svg__sE64)}
-            role={"img"}
-          />
+          <RestIcon className={classNames("all", sty.svg__sE64)} role={"img"} />
         }
         name={"REST API"}
         openInNewTab={args.openInNewTab}
@@ -328,14 +297,14 @@ function PlasmicFrameworkTabs__RenderFunc(props: {
         destination={args.graphqlHref}
         logo={
           <GraphqlIcon
-            className={classNames(projectcss.all, sty.svg___5FZlj)}
+            className={classNames("all", sty.svg___5FZlj)}
             role={"img"}
           />
         }
         name={"GraphQL"}
         openInNewTab={args.openInNewTab}
       />
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -392,7 +361,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFrameworkTabs__VariantsArgs;
     args?: PlasmicFrameworkTabs__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicFrameworkTabs__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicFrameworkTabs__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicFrameworkTabs__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

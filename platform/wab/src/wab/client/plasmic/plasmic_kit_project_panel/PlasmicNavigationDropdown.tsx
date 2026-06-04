@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -15,7 +15,6 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -27,18 +26,19 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import FolderItem from "../../components/sidebar-tabs/ProjectPanel/FolderItem"; // plasmic-import: iWeSjEMdI3/component
 import SearchInput from "../../components/sidebar-tabs/ProjectPanel/SearchInput"; // plasmic-import: CHoUJxFMpo/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../project_panel/plasmic_project_panel.module.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
+import "../project_panel/plasmic_project_panel.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicNavigationDropdown.module.css"; // plasmic-import: Kyrn_lAAwr/css
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
 import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import SortSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SortSvg"; // plasmic-import: tzSml-ZqphbQ/icon
 
 createPlasmicElementProxy;
 
@@ -64,6 +64,7 @@ export type PlasmicNavigationDropdown__OverridesType = {
   searchInput?: Flex__<typeof SearchInput>;
   expandButton?: Flex__<typeof Button>;
   collapseButton?: Flex__<typeof Button>;
+  sortButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultNavigationDropdownProps {
@@ -101,6 +102,8 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -108,41 +111,27 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_m8VxGcigeLAEXFe8c12w5Q",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__qEfvh)}
-      >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__pzpNm)}
-        >
+      <div className={classNames("all", sty.freeBox__qEfvh)}>
+        <div className={classNames("all", sty.freeBox__pzpNm)}>
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text
-            )}
+            className={classNames("all", "__wab_text", sty.text)}
           >
             {"Pages, Components, Arenas"}
           </div>
           <div
             data-plasmic-name={"plusButtonContainer"}
             data-plasmic-override={overrides.plusButtonContainer}
-            className={classNames(projectcss.all, sty.plusButtonContainer)}
+            className={classNames("all", sty.plusButtonContainer)}
           >
             <Button
               data-plasmic-name={"plusButton"}
@@ -150,14 +139,14 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
               className={classNames("__wab_instance", sty.plusButton)}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__vda28)}
+                  className={classNames("all", sty.svg__vda28)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <PlusSvgIcon
-                  className={classNames(projectcss.all, sty.svg___8QOoj)}
+                  className={classNames("all", sty.svg___8QOoj)}
                   role={"img"}
                 />
               }
@@ -167,29 +156,37 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
               {"New"}
             </Button>
           </div>
-        </Stack__>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___15Gjd)}
-        >
+        </div>
+        <div className={classNames("all", sty.freeBox___15Gjd)}>
           <SearchInput
             data-plasmic-name={"searchInput"}
             data-plasmic-override={overrides.searchInput}
             className={classNames("__wab_instance", sty.searchInput)}
           />
 
-          <div className={classNames(projectcss.all, sty.freeBox__vwmNm)}>
+          <div className={classNames("all", sty.freeBox__vwmNm)}>
             <Button
               data-plasmic-name={"expandButton"}
               data-plasmic-override={overrides.expandButton}
               className={classNames("__wab_instance", sty.expandButton)}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__fNf9P)}
+                  role={"img"}
+                />
+              }
               font={"dim"}
               size={"compact"}
+              startIcon={
+                <ArrowRightSvgIcon
+                  className={classNames("all", sty.svg__vB4Vz)}
+                  role={"img"}
+                />
+              }
               type={["clear"]}
             >
               <ExpandAllIcon
-                className={classNames(projectcss.all, sty.svg__dqoJ6)}
+                className={classNames("all", sty.svg__dqoJ6)}
                 role={"img"}
               />
             </Button>
@@ -197,19 +194,56 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
               data-plasmic-name={"collapseButton"}
               data-plasmic-override={overrides.collapseButton}
               className={classNames("__wab_instance", sty.collapseButton)}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__qphk0)}
+                  role={"img"}
+                />
+              }
               font={"dim"}
               size={"compact"}
+              startIcon={
+                <ArrowRightSvgIcon
+                  className={classNames("all", sty.svg__glsZe)}
+                  role={"img"}
+                />
+              }
               type={["clear"]}
             >
               <CollapseAllIcon
-                className={classNames(projectcss.all, sty.svg___4X1LL)}
+                className={classNames("all", sty.svg___4X1LL)}
+                role={"img"}
+              />
+            </Button>
+            <Button
+              data-plasmic-name={"sortButton"}
+              data-plasmic-override={overrides.sortButton}
+              className={classNames("__wab_instance", sty.sortButton)}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__ky1Mj)}
+                  role={"img"}
+                />
+              }
+              font={"dim"}
+              size={"compact"}
+              startIcon={
+                <ArrowRightSvgIcon
+                  className={classNames("all", sty.svg__a1U95)}
+                  role={"img"}
+                />
+              }
+              type={["clear"]}
+            >
+              <SortSvgIcon
+                className={classNames("all", sty.svg__kzByT)}
                 role={"img"}
               />
             </Button>
           </div>
-        </Stack__>
-      </Stack__>
-      <div className={classNames(projectcss.all, sty.freeBox__n0S7B)}>
+        </div>
+      </div>
+      <div className={classNames("all", sty.freeBox__n0S7B)}>
         {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
@@ -246,7 +280,6 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
               </FolderItem>
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </div>
@@ -263,14 +296,15 @@ const PlasmicDescendants = {
     "searchInput",
     "expandButton",
     "collapseButton",
+    "sortButton",
   ],
-
   text: ["text"],
   plusButtonContainer: ["plusButtonContainer", "plusButton"],
   plusButton: ["plusButton"],
   searchInput: ["searchInput"],
   expandButton: ["expandButton"],
   collapseButton: ["collapseButton"],
+  sortButton: ["sortButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -283,6 +317,7 @@ type NodeDefaultElementType = {
   searchInput: typeof SearchInput;
   expandButton: typeof Button;
   collapseButton: typeof Button;
+  sortButton: typeof Button;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -290,23 +325,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNavigationDropdown__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicNavigationDropdown__VariantsArgs;
     args?: PlasmicNavigationDropdown__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicNavigationDropdown__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicNavigationDropdown__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicNavigationDropdown__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicNavigationDropdown__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -352,6 +387,7 @@ export const PlasmicNavigationDropdown = Object.assign(
     searchInput: makeNodeComponent("searchInput"),
     expandButton: makeNodeComponent("expandButton"),
     collapseButton: makeNodeComponent("collapseButton"),
+    sortButton: makeNodeComponent("sortButton"),
 
     // Metadata about props expected for PlasmicNavigationDropdown
     internalVariantProps: PlasmicNavigationDropdown__VariantProps,

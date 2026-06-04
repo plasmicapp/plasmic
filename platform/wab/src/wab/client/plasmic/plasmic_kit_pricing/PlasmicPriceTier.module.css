@@ -49,47 +49,17 @@
   flex-direction: column;
   align-self: flex-start;
   width: 100%;
+  row-gap: 24px;
   min-width: 0;
   min-height: 0;
-}
-.freeBox__yUOuh > :global(.__wab_flex-container) {
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  margin-top: calc(0px - 24px);
-  height: calc(100% + 24px);
-}
-.freeBox__yUOuh > :global(.__wab_flex-container) > *,
-.freeBox__yUOuh > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__yUOuh > :global(.__wab_flex-container) > picture > img,
-.freeBox__yUOuh
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 24px;
 }
 .freeBox__b4JBz {
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__b4JBz > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  margin-top: calc(0px - 24px);
-  height: calc(100% + 24px);
-}
-.freeBox__b4JBz > :global(.__wab_flex-container) > *,
-.freeBox__b4JBz > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__b4JBz > :global(.__wab_flex-container) > picture > img,
-.freeBox__b4JBz
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 24px;
+  row-gap: 24px;
 }
 .priceTierChip:global(.__wab_instance) {
   height: 100%;
@@ -113,23 +83,9 @@
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__z6QD > :global(.__wab_flex-container) {
-  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.freeBox__z6QD > :global(.__wab_flex-container) > *,
-.freeBox__z6QD > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__z6QD > :global(.__wab_flex-container) > picture > img,
-.freeBox__z6QD
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  row-gap: 8px;
 }
 .freeBox__mvWXh {
   display: flex;
@@ -188,41 +144,12 @@
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__hzol5 > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 16px);
-  height: calc(100% + 16px);
-}
-.freeBox__hzol5 > :global(.__wab_flex-container) > *,
-.freeBox__hzol5 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__hzol5 > :global(.__wab_flex-container) > picture > img,
-.freeBox__hzol5
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 16px;
+  row-gap: 16px;
 }
 @media (min-width: 0px) and (max-width: 768px) {
-  .freeBox__hzol5 > :global(.__wab_flex-container) {
-    margin-left: calc(0px - 0px);
-    width: calc(100% + 0px);
-    margin-top: calc(0px - 12px);
-    height: calc(100% + 12px);
-  }
-}
-@media (min-width: 0px) and (max-width: 768px) {
-  .freeBox__hzol5 > :global(.__wab_flex-container) > *,
-  .freeBox__hzol5 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-  .freeBox__hzol5 > :global(.__wab_flex-container) > picture > img,
-  .freeBox__hzol5
-    > :global(.__wab_flex-container)
-    > :global(.__wab_slot)
-    > picture
-    > img {
-    margin-left: 0px;
-    margin-top: 12px;
+  .freeBox__hzol5 {
+    row-gap: 12px;
+    column-gap: 0px;
   }
 }
 .slotTargetValueProps {
@@ -257,25 +184,11 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  padding: 24px 0px 0px;
-  margin: 0px 0px 24px;
-}
-.freeBox__ix8VU > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-top: calc(0px - 12px);
-  height: calc(100% + 12px);
-}
-.freeBox__ix8VU > :global(.__wab_flex-container) > *,
-.freeBox__ix8VU > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__ix8VU > :global(.__wab_flex-container) > picture > img,
-.freeBox__ix8VU
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 12px;
+  row-gap: 12px;
+  padding: 24px 0px 0px;
+  margin: 0px 0px 24px;
 }
 .freeBox__dSuWk {
   position: absolute;

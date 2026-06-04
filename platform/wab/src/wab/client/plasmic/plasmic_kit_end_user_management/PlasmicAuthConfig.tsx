@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,29 +13,28 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicAuthConfig.module.css"; // plasmic-import: ratDJT6SAx/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import UserssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import UsersSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
 
 createPlasmicElementProxy;
 
@@ -55,9 +54,9 @@ export const PlasmicAuthConfig__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicAuthConfig__OverridesType = {
-  root?: p.Flex<"div">;
-  gearIcon?: p.Flex<typeof IconButton>;
-  closeIcon?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  gearIcon?: Flex__<typeof IconButton>;
+  closeIcon?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultAuthConfigProps {
@@ -66,13 +65,7 @@ export interface DefaultAuthConfigProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicAuthConfig__RenderFunc(props: {
   variants: PlasmicAuthConfig__VariantsArgs;
@@ -86,9 +79,11 @@ function PlasmicAuthConfig__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          selected: "permissions" as const,
+          selected: "permissions",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -98,11 +93,11 @@ function PlasmicAuthConfig__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -111,94 +106,65 @@ function PlasmicAuthConfig__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      {true ? (
-        <div className={classNames(projectcss.all, sty.freeBox__uhnCt)}>
-          {true ? (
-            <p.Stack
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___6V7Vy)}
-            >
-              {true ? (
-                <div
-                  className={classNames(projectcss.all, sty.freeBox___7Okys)}
-                >
-                  <UserssvgIcon
-                    className={classNames(projectcss.all, sty.svg__mmDs)}
-                    role={"img"}
-                  />
-                </div>
-              ) : null}
-              {true ? (
-                <div className={classNames(projectcss.all, sty.freeBox__v1Vh)}>
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__bpYhI
-                    )}
-                  >
-                    {"Authentication"}
-                  </div>
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__ipbcz
-                    )}
-                  >
-                    {"Configure how users login to your app"}
-                  </div>
-                </div>
-              ) : null}
-              <IconButton
-                data-plasmic-name={"gearIcon"}
-                data-plasmic-override={overrides.gearIcon}
-                children2={
-                  <ChevronDownsvgIcon
-                    className={classNames(projectcss.all, sty.svg__s2FEd)}
-                    role={"img"}
-                  />
-                }
-                className={classNames("__wab_instance", sty.gearIcon)}
-              >
-                <GearIcon
-                  className={classNames(projectcss.all, sty.svg__uFlKb)}
-                  role={"img"}
-                />
-              </IconButton>
-              <IconButton
-                data-plasmic-name={"closeIcon"}
-                data-plasmic-override={overrides.closeIcon}
-                children2={
-                  <ChevronDownsvgIcon
-                    className={classNames(projectcss.all, sty.svg__btrAi)}
-                    role={"img"}
-                  />
-                }
-                className={classNames("__wab_instance", sty.closeIcon)}
-              >
-                <ClosesvgIcon
-                  className={classNames(projectcss.all, sty.svg__pj7NT)}
-                  role={"img"}
-                />
-              </IconButton>
-            </p.Stack>
-          ) : null}
+      <div className={classNames("all", sty.freeBox__uhnCt)}>
+        <div className={classNames("all", sty.freeBox___6V7Vy)}>
+          <div className={classNames("all", sty.freeBox___7Okys)}>
+            <UsersSvgIcon
+              className={classNames("all", sty.svg__mmDs)}
+              role={"img"}
+            />
+          </div>
+          <div className={classNames("all", sty.freeBox__v1Vh)}>
+            <div className={classNames("all", "__wab_text", sty.text__bpYhI)}>
+              {"Authentication"}
+            </div>
+            <div className={classNames("all", "__wab_text", sty.text__ipbcz)}>
+              {"Configure how users login to your app"}
+            </div>
+          </div>
+          <IconButton
+            data-plasmic-name={"gearIcon"}
+            data-plasmic-override={overrides.gearIcon}
+            children2={
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__s2FEd)}
+                role={"img"}
+              />
+            }
+            className={classNames("__wab_instance", sty.gearIcon)}
+          >
+            <GearIcon
+              className={classNames("all", sty.svg__uFlKb)}
+              role={"img"}
+            />
+          </IconButton>
+          <IconButton
+            data-plasmic-name={"closeIcon"}
+            data-plasmic-override={overrides.closeIcon}
+            children2={
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__btrAi)}
+                role={"img"}
+              />
+            }
+            className={classNames("__wab_instance", sty.closeIcon)}
+          >
+            <CloseSvgIcon
+              className={classNames("all", sty.svg__pj7NT)}
+              role={"img"}
+            />
+          </IconButton>
         </div>
-      ) : null}
-      {p.renderPlasmicSlot({
+      </div>
+      {renderPlasmicSlot({
         defaultContents: null,
         value: args.children,
       })}
@@ -225,23 +191,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAuthConfig__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicAuthConfig__VariantsArgs;
     args?: PlasmicAuthConfig__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAuthConfig__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAuthConfig__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicAuthConfig__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicAuthConfig__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -255,7 +221,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAuthConfig__ArgProps,
           internalVariantPropNames: PlasmicAuthConfig__VariantProps,
         }),

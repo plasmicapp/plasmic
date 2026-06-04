@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicColorTokenControl.module.css"; // plasmic-import: JyqCOl0Ccj/css
 
 import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
@@ -110,10 +110,10 @@ function PlasmicColorTokenControl__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -130,7 +130,7 @@ function PlasmicColorTokenControl__RenderFunc(props: {
         icon={renderPlasmicSlot({
           defaultContents: (
             <ComponentsSvgIcon
-              className={classNames(projectcss.all, sty.svg__wDxJ4)}
+              className={classNames("all", sty.svg__wDxJ4)}
               role={"img"}
             />
           ),

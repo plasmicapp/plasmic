@@ -14,22 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicViewButton.module.css"; // plasmic-import: -r2DBYss6/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -97,17 +98,21 @@ function PlasmicViewButton__RenderFunc(props: {
         path: "mode",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.mode,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.mode,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     (hasVariant($state, "mode", "live") ? false : true) ? (
@@ -121,7 +126,7 @@ function PlasmicViewButton__RenderFunc(props: {
         })}
         endIcon={
           <ChevronDownSvgIcon
-            className={classNames(projectcss.all, sty.svg__l31Mh)}
+            className={classNames("all", sty.svg__l31Mh)}
             role={"img"}
           />
         }
@@ -129,7 +134,7 @@ function PlasmicViewButton__RenderFunc(props: {
         size={"small"}
         startIcon={
           <ArrowRightSvgIcon
-            className={classNames(projectcss.all, sty.svg__bDFt4)}
+            className={classNames("all", sty.svg__bDFt4)}
             role={"img"}
           />
         }
@@ -163,7 +168,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicViewButton__VariantsArgs;
     args?: PlasmicViewButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicViewButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicViewButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicViewButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

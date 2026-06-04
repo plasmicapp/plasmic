@@ -33,7 +33,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicDefaultStylesPanel.module.css"; // plasmic-import: nmt_YiclQJk/css
 
 import GlobeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GlobeSvg"; // plasmic-import: gcxY0Mwvj/icon
@@ -111,40 +111,43 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
         path: "showPseudoClass",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showPseudoClass,
       },
       {
         path: "isTargeting",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isTargeting,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isTargeting,
       },
       {
         path: "globalVariantSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "",
       },
       {
         path: "tagSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "pseudoClassSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -157,10 +160,10 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -172,13 +175,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
         }
       )}
     >
-      <div
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.text__iGLd
-        )}
-      >
+      <div className={classNames("all", "__wab_text", sty.text__iGLd)}>
         {
           "Define default typography styles; you can define different styles for different tags and responsive breakpoints."
         }
@@ -186,7 +183,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"selector"}
         data-plasmic-override={overrides.selector}
-        className={classNames(projectcss.all, sty.selector, {
+        className={classNames("all", sty.selector, {
           [sty.selectorisTargeting]: hasVariant(
             $state,
             "isTargeting",
@@ -197,7 +194,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
+          className={classNames("all", sty.freeBox, {
             [sty.freeBoxshowPseudoClass]: hasVariant(
               $state,
               "showPseudoClass",
@@ -205,36 +202,22 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__amsGc
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__amsGc)}>
             {"Tag"}
           </div>
           <div
             data-plasmic-name={"globalVariantSelectorContainer"}
             data-plasmic-override={overrides.globalVariantSelectorContainer}
-            className={classNames(
-              projectcss.all,
-              sty.globalVariantSelectorContainer
-            )}
+            className={classNames("all", sty.globalVariantSelectorContainer)}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___1UBnM,
-                {
-                  [sty.textisTargeting___1UBnMog7Mw]: hasVariant(
-                    $state,
-                    "isTargeting",
-                    "isTargeting"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___1UBnM, {
+                [sty.textisTargeting___1UBnMog7Mw]: hasVariant(
+                  $state,
+                  "isTargeting",
+                  "isTargeting"
+                ),
+              })}
             >
               {"Target:"}
             </div>
@@ -244,7 +227,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               hasIcon={true}
               icon={
                 <GlobeSvgIcon
-                  className={classNames(projectcss.all, sty.svg__qOj9X)}
+                  className={classNames("all", sty.svg__qOj9X)}
                   role={"img"}
                 />
               }
@@ -267,11 +250,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               }}
               placeholder={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__oqmBw
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__oqmBw)}
                 >
                   {"Base"}
                 </div>
@@ -289,11 +268,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
                 value={"base"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__jSaSm
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__jSaSm)}
                 >
                   {"Base"}
                 </div>
@@ -313,7 +288,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
           })}
           icon={
             <PlusSvgIcon
-              className={classNames(projectcss.all, sty.svg__kRhm1)}
+              className={classNames("all", sty.svg__kRhm1)}
               role={"img"}
             />
           }
@@ -362,7 +337,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
             })}
             icon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg__iMz8C)}
+                className={classNames("all", sty.svg__iMz8C)}
                 role={"img"}
               />
             }
@@ -398,7 +373,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content, {
+        className={classNames("all", sty.content, {
           [sty.contentisTargeting]: hasVariant(
             $state,
             "isTargeting",

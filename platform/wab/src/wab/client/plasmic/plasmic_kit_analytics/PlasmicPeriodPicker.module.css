@@ -1,23 +1,12 @@
 .root {
-  flex-direction: column;
   display: flex;
   position: relative;
-  width: 100%;
-  min-width: 0;
-  padding: 1.5rem;
-}
-.root > :global(.__wab_flex-container) {
   flex-direction: column;
   justify-content: flex-end;
+  width: 100%;
+  row-gap: 8px;
   min-width: 0;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 8px;
+  padding: 1.5rem;
 }
 .text {
   font-size: 14px;
@@ -52,7 +41,7 @@
   padding: 2px;
 }
 .animationboxmonth {
-  transform: translateX(100%) translateY(0px) translateZ(0px);
+  transform: translate3d(100%, 0px, 0px);
 }
 .highlighter {
   display: block;
@@ -108,9 +97,9 @@
   font-weight: 500;
   cursor: auto;
 }
-.root .monthOption:hover {
-  background: var(--token-Ik3bdE1e1Uy);
-}
 .root .monthOption:active {
   background: var(--token-hoA5qaM-91G);
+}
+.root .monthOption:hover {
+  background: var(--token-Ik3bdE1e1Uy);
 }

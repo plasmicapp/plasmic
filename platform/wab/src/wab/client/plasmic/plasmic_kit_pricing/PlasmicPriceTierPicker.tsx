@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,39 +14,34 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
+  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import CollaboratorsHoverContent from "../../components/pricing/CollaboratorsHoverContent"; // plasmic-import: DHHU9E4NuTqC/component
 import HoverableIcon from "../../components/pricing/HoverableIcon"; // plasmic-import: 1T4UNMYLSC7u/component
 import HoverableText from "../../components/pricing/HoverableText"; // plasmic-import: aVJYhoS8iDMR/component
 import PriceTier from "../../components/pricing/PriceTier"; // plasmic-import: P7E8qtNzKrbM/component
 import PriceTierFeatureItem from "../../components/pricing/PriceTierFeatureItem"; // plasmic-import: Z40kBWC-Knbn/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
-
-import { useScreenVariants as useScreenVariantspbV7Vw3AiD6M } from "../plasmic_kit_responsive_breakpoints/PlasmicGlobalVariant__Screen"; // plasmic-import: PbV7vw3AiD6M/globalVariant
-import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import "./plasmic_plasmic_kit_pricing.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicPriceTierPicker.module.css"; // plasmic-import: Xx_WsdQKli-S/css
 
 createPlasmicElementProxy;
@@ -77,9 +72,7 @@ export const PlasmicPriceTierPicker__VariantProps = new Array<VariantPropType>(
   "noScrolling"
 );
 
-export type PlasmicPriceTierPicker__ArgsType = {
-  teamName?: React.ReactNode;
-};
+export type PlasmicPriceTierPicker__ArgsType = { teamName?: React.ReactNode };
 type ArgPropType = keyof PlasmicPriceTierPicker__ArgsType;
 export const PlasmicPriceTierPicker__ArgProps = new Array<ArgPropType>(
   "teamName"
@@ -119,7 +112,16 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -130,95 +132,85 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "showOutdatedTier",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showOutdatedTier,
       },
       {
         path: "billingFrequency",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.billingFrequency,
       },
       {
         path: "showTitle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showTitle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showTitle,
       },
       {
         path: "showGrandfatheredTier",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showGrandfatheredTier,
       },
       {
         path: "showBillingFrequency",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showBillingFrequency,
       },
       {
         path: "noScrolling",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noScrolling,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.noScrolling,
       },
       {
         path: "billingFrequencyToggle.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "isChecked",
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-    screen: useScreenVariantspbV7Vw3AiD6M(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_ehckhYnyDHgCBbV47m9bkf",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [projectcss.global_environment_website]: hasVariant(
-            globalVariants,
-            "environment",
-            "website"
-          ),
           [sty.rootglobal_environment_website]: hasVariant(
             globalVariants,
             "environment",
@@ -244,7 +236,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__ru3Bl, {
+        className={classNames("all", sty.freeBox__ru3Bl, {
           [sty.freeBoxshowGrandfatheredTier__ru3BlIBuS4]: hasVariant(
             $state,
             "showGrandfatheredTier",
@@ -257,10 +249,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___5QXt7, {
+        <div
+          className={classNames("all", sty.freeBox___5QXt7, {
             [sty.freeBoxshowGrandfatheredTier___5QXt7IBuS4]: hasVariant(
               $state,
               "showGrandfatheredTier",
@@ -268,25 +258,19 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__u9Ppd
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__u9Ppd)}>
             {"Upgrade "}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__pSqi)}>
+          <div className={classNames("all", sty.freeBox__pSqi)}>
             {renderPlasmicSlot({
               defaultContents: "TEAM NAME",
               value: args.teamName,
               className: classNames(sty.slotTargetTeamName),
             })}
           </div>
-        </Stack__>
+        </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox___8Z6, {
+          className={classNames("all", sty.freeBox___8Z6, {
             [sty.freeBoxshowGrandfatheredTier___8Z6IBuS4]: hasVariant(
               $state,
               "showGrandfatheredTier",
@@ -294,13 +278,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__gc5Ft
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__gc5Ft)}>
             <React.Fragment>
               <React.Fragment>
                 {"Select a new plan to upgrade. "}
@@ -310,10 +288,11 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   data-plasmic-name={"link"}
                   data-plasmic-override={overrides.link}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.a,
-                    projectcss.__wab_text,
-                    projectcss.plasmic_default__inline,
+                    "all",
+                    "a",
+                    "a__ehckh",
+                    "__wab_text",
+                    "plasmic_default__inline",
                     sty.link
                   )}
                   href={"https://www.plasmic.app/pricing/"}
@@ -323,14 +302,13 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   {"Learn more."}
                 </PlasmicLink__>
               }
-
               <React.Fragment>{""}</React.Fragment>
             </React.Fragment>
           </div>
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__zlCvn, {
+        className={classNames("all", sty.freeBox__zlCvn, {
           [sty.freeBoxshowBillingFrequency__zlCvnAgbEi]: hasVariant(
             $state,
             "showBillingFrequency",
@@ -348,20 +326,24 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               "isChecked",
             ]) ?? false
           }
-          onChange={(...eventArgs) => {
-            generateStateOnChangeProp($state, [
-              "billingFrequencyToggle",
-              "isChecked",
-            ])(eventArgs[0]);
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, [
+                "billingFrequencyToggle",
+                "isChecked",
+              ])(eventArgs[0]);
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
           }}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__b6Uf2
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__b6Uf2)}>
             {"Annual Billing (Save 20%)"}
           </div>
         </Switch>
@@ -391,10 +373,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
         }
       />
 
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__uhZsz, {
+      <div
+        className={classNames("all", sty.freeBox__uhZsz, {
           [sty.freeBoxbillingFrequency_month__uhZsZb25Ec]: hasVariant(
             $state,
             "billingFrequency",
@@ -440,13 +420,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           tier={"legacy"}
           valueProps={
             <React.Fragment>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__jjbWy
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__jjbWy)}>
                 {"Includes:"}
               </div>
               <PriceTierFeatureItem
@@ -491,11 +465,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           expandableBody={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___7NhFa
-                )}
+                className={classNames("all", "__wab_text", sty.text___7NhFa)}
               >
                 {"Free includes (monthly):"}
               </div>
@@ -543,11 +513,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__l2Try
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__l2Try)}
                 >
                   {"Component library"}
                 </div>
@@ -570,11 +536,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___8XziC
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___8XziC)}
                 >
                   {"Integration library"}
                 </div>
@@ -596,11 +558,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__e4Jg5
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__e4Jg5)}
                 >
                   {"Template library"}
                 </div>
@@ -614,13 +572,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__ikC
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__ikC)}>
                 {"Hosting"}
               </div>
               <PriceTierFeatureItem
@@ -631,11 +583,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cob6F
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__cob6F)}
                 >
                   {"Custom domains"}
                 </div>
@@ -657,11 +605,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__nLScj
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__nLScj)}
                 >
                   {"Plasmic hosting"}
                 </div>
@@ -675,13 +619,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dj5IP
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__dj5IP)}>
                 {"Building"}
               </div>
               <PriceTierFeatureItem
@@ -692,11 +630,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__oa3WG
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__oa3WG)}
                 >
                   {"Components"}
                 </div>
@@ -718,11 +652,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gjk9I
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__gjk9I)}
                 >
                   {"Interactions"}
                 </div>
@@ -744,11 +674,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gwmOh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__gwmOh)}
                 >
                   {"Style tokens"}
                 </div>
@@ -770,11 +696,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6J4UO
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6J4UO)}
                 >
                   {"Image optimization"}
                 </div>
@@ -796,11 +718,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___3X0P
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___3X0P)}
                 >
                   {"Figma import"}
                 </div>
@@ -822,11 +740,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___1Zzc
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___1Zzc)}
                 >
                   {"Theming & branding"}
                 </div>
@@ -840,13 +754,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___1RAR
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text___1RAR)}>
                 {"Customization"}
               </div>
               <PriceTierFeatureItem
@@ -857,11 +765,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__sEjW
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__sEjW)}
                 >
                   {"Code components"}
                 </div>
@@ -883,11 +787,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__zXlnn
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__zXlnn)}
                 >
                   {"Integrate with codebase"}
                 </div>
@@ -909,11 +809,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6Uuqs
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6Uuqs)}
                 >
                   {"Extensions"}
                 </div>
@@ -927,13 +823,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__hIjo
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__hIjo)}>
                 {"CMS"}
               </div>
               <PriceTierFeatureItem
@@ -944,11 +834,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gg6Me
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__gg6Me)}
                 >
                   {"Headless CMS"}
                 </div>
@@ -988,11 +874,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__eWym3
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__eWym3)}
                 >
                   {"Image optimization"}
                 </div>
@@ -1006,13 +888,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__lZFm5
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__lZFm5)}>
                 {"Collaboration"}
               </div>
               <PriceTierFeatureItem
@@ -1023,11 +899,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__k2XXh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__k2XXh)}
                 >
                   {"Multiplayer"}
                 </div>
@@ -1041,13 +913,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dNqyn
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__dNqyn)}>
                 {"Growth & Optimization"}
               </div>
               <PriceTierFeatureItem
@@ -1058,11 +924,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__meilQ
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__meilQ)}
                 >
                   {"Analytics"}
                 </div>
@@ -1075,11 +937,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 />
               </PriceTierFeatureItem>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___7OLdd
-                )}
+                className={classNames("all", "__wab_text", sty.text___7OLdd)}
               >
                 {"Security & Controls"}
               </div>
@@ -1091,11 +949,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ruEvu
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ruEvu)}
                 >
                   {"Backup & export"}
                 </div>
@@ -1117,11 +971,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___5MMsk
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___5MMsk)}
                 >
                   {"Code generation"}
                 </div>
@@ -1143,11 +993,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mId4R
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mId4R)}
                 >
                   {"Transfer ownership"}
                 </div>
@@ -1170,13 +1016,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               >
                 {"14-day version history"}
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__qmDdm
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__qmDdm)}>
                 {"Resources"}
               </div>
               <PriceTierFeatureItem
@@ -1193,23 +1033,18 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           price={"$0"}
           subprice={
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__fu7Tc,
-                {
-                  [sty.textbillingFrequency_month__fu7Tcb25Ec]: hasVariant(
-                    $state,
-                    "billingFrequency",
-                    "month"
-                  ),
-                  [sty.textbillingFrequency_year__fu7TcgSc2D]: hasVariant(
-                    $state,
-                    "billingFrequency",
-                    "year"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__fu7Tc, {
+                [sty.textbillingFrequency_month__fu7Tcb25Ec]: hasVariant(
+                  $state,
+                  "billingFrequency",
+                  "month"
+                ),
+                [sty.textbillingFrequency_year__fu7TcgSc2D]: hasVariant(
+                  $state,
+                  "billingFrequency",
+                  "year"
+                ),
+              })}
             >
               {hasVariant($state, "billingFrequency", "year")
                 ? "Free forever"
@@ -1222,49 +1057,21 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           valueProps={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__pryqP,
-                  {
-                    [sty.textbillingFrequency_month__pryqPb25Ec]: hasVariant(
-                      $state,
-                      "billingFrequency",
-                      "month"
-                    ),
-                    [sty.textglobal_environment_website__pryqPmVgSv]:
-                      hasVariant(globalVariants, "environment", "website"),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__pryqP, {
+                  [sty.textbillingFrequency_month__pryqPb25Ec]: hasVariant(
+                    $state,
+                    "billingFrequency",
+                    "month"
+                  ),
+                  [sty.textglobal_environment_website__pryqPmVgSv]: hasVariant(
+                    globalVariants,
+                    "environment",
+                    "website"
+                  ),
+                })}
               >
                 {"Free plan includes:"}
               </div>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__nX2Fw
-                )}
-                tier={"free"}
-              >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__iqpZ8,
-                    {
-                      [sty.textglobal_environment_website__iqpZ8MVgSv]:
-                        hasVariant(globalVariants, "environment", "website"),
-                      [sty.textshowGrandfatheredTier__iqpZ8IBuS4]: hasVariant(
-                        $state,
-                        "showGrandfatheredTier",
-                        "showGrandfatheredTier"
-                      ),
-                    }
-                  )}
-                >
-                  {"Unlimited apps + websites"}
-                </div>
-              </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
@@ -1282,7 +1089,12 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     }
                   )}
                   popover={
-                    "The maximum number of editors that can make changes to your projects"
+                    <CollaboratorsHoverContent
+                      className={classNames(
+                        "__wab_instance",
+                        sty.collaboratorsHoverContent__keBbd
+                      )}
+                    />
                   }
                 >
                   {"3 collaborators"}
@@ -1291,18 +1103,22 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem__aZrZe
+                  sty.priceTierFeatureItem__nX2Fw
                 )}
                 tier={"free"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__j2Zwc
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__iqpZ8, {
+                    [sty.textglobal_environment_website__iqpZ8MVgSv]:
+                      hasVariant(globalVariants, "environment", "website"),
+                    [sty.textshowGrandfatheredTier__iqpZ8IBuS4]: hasVariant(
+                      $state,
+                      "showGrandfatheredTier",
+                      "showGrandfatheredTier"
+                    ),
+                  })}
                 >
-                  {"10k monthly page views"}
+                  {"Unlimited projects"}
                 </div>
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
@@ -1313,11 +1129,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"free"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__sUpik
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__sUpik)}
                 >
                   {"Unlimited headless CMS"}
                 </div>
@@ -1330,11 +1142,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"free"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__urAx
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__urAx)}
                 >
                   {"Community forum support"}
                 </div>
@@ -1347,13 +1155,40 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"free"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__h0QYr
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__h0QYr)}
                 >
-                  {"Plasmic badge on every project"}
+                  {"Use custom domains with Plasmic hosting  "}
+                </div>
+              </PriceTierFeatureItem>
+              <PriceTierFeatureItem
+                className={classNames(
+                  "__wab_instance",
+                  sty.priceTierFeatureItem__jJ4H
+                )}
+                tier={"free"}
+              >
+                <div
+                  className={classNames("all", "__wab_text", sty.text___74Evg)}
+                >
+                  {"Deploy to third-party servers"}
+                </div>
+              </PriceTierFeatureItem>
+              <PriceTierFeatureItem
+                className={classNames(
+                  "__wab_instance",
+                  sty.priceTierFeatureItem___6VpEp
+                )}
+                tier={"free"}
+              >
+                <div
+                  className={classNames("all", "__wab_text", sty.text__xoojq, {
+                    [sty.textglobal_environment_website__xoojqmVgSv]:
+                      hasVariant(globalVariants, "environment", "website"),
+                  })}
+                >
+                  {
+                    "Plasmic badge on every project (only for Plasmic-hosted websites)"
+                  }
                 </div>
               </PriceTierFeatureItem>
             </React.Fragment>
@@ -1378,11 +1213,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           expandableBody={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___94C8F
-                )}
+                className={classNames("all", "__wab_text", sty.text___94C8F)}
               >
                 {hasVariant(globalVariants, "screen", "mobileOnly")
                   ? "Starter includes (monthly):"
@@ -1432,11 +1263,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__u8GPl
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__u8GPl)}
                 >
                   {"Component library"}
                 </div>
@@ -1459,11 +1286,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__eyn4R
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__eyn4R)}
                 >
                   {"Integration library"}
                 </div>
@@ -1485,11 +1308,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mwPp4
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mwPp4)}
                 >
                   {"Template library"}
                 </div>
@@ -1503,13 +1322,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__ntHsg
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__ntHsg)}>
                 {"Hosting"}
               </div>
               <PriceTierFeatureItem
@@ -1519,13 +1332,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   sty.priceTierFeatureItem__oju6W
                 )}
               >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__hSo
-                  )}
-                >
+                <div className={classNames("all", "__wab_text", sty.text__hSo)}>
                   {"Custom domains"}
                 </div>
                 <HoverableIcon
@@ -1546,11 +1353,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cIoxV
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__cIoxV)}
                 >
                   {"Plasmic hosting"}
                 </div>
@@ -1572,11 +1375,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6Yyeu
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6Yyeu)}
                 >
                   {"Remove Plasmic branding"}
                 </div>
@@ -1590,13 +1389,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__igeUt
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__igeUt)}>
                 {"Building"}
               </div>
               <PriceTierFeatureItem
@@ -1607,11 +1400,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__uC1L3
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__uC1L3)}
                 >
                   {"Components"}
                 </div>
@@ -1633,11 +1422,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kVodx
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kVodx)}
                 >
                   {"Interactions"}
                 </div>
@@ -1659,11 +1444,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__jVXwd
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__jVXwd)}
                 >
                   {"Style tokens"}
                 </div>
@@ -1684,13 +1465,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   sty.priceTierFeatureItem__bwZ3O
                 )}
               >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__fcA
-                  )}
-                >
+                <div className={classNames("all", "__wab_text", sty.text__fcA)}>
                   {"Image optimization"}
                 </div>
                 <HoverableIcon
@@ -1711,11 +1486,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__j30Sj
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__j30Sj)}
                 >
                   {"Figma import"}
                 </div>
@@ -1737,11 +1508,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__za1F6
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__za1F6)}
                 >
                   {"Theming & branding"}
                 </div>
@@ -1755,13 +1522,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__lWfh9
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__lWfh9)}>
                 {"Customization"}
               </div>
               <PriceTierFeatureItem
@@ -1772,11 +1533,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___7Moln
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___7Moln)}
                 >
                   {"Code components"}
                 </div>
@@ -1798,11 +1555,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__laRqY
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__laRqY)}
                 >
                   {"Integrate with codebase"}
                 </div>
@@ -1824,11 +1577,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__veThT
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__veThT)}
                 >
                   {"Extensions"}
                 </div>
@@ -1842,13 +1591,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__d2RlD
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__d2RlD)}>
                 {"CMS"}
               </div>
               <PriceTierFeatureItem
@@ -1859,11 +1602,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__qmg3L
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__qmg3L)}
                 >
                   {"Headless CMS"}
                 </div>
@@ -1903,11 +1642,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__tvf0R
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__tvf0R)}
                 >
                   {"Image optimization"}
                 </div>
@@ -1921,13 +1656,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kj2W3
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kj2W3)}>
                 {"Collaboration"}
               </div>
               <PriceTierFeatureItem
@@ -1938,11 +1667,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__tkLn1
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__tkLn1)}
                 >
                   {"Multiplayer"}
                 </div>
@@ -1956,13 +1681,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__jzGgP
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__jzGgP)}>
                 {"Growth & Optimization"}
               </div>
               <PriceTierFeatureItem
@@ -1973,11 +1692,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6MN9
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6MN9)}
                 >
                   {"Analytics"}
                 </div>
@@ -1989,13 +1704,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={"Privacy-first analytics with page views."}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__pNEuB
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__pNEuB)}>
                 {"Security & Controls"}
               </div>
               <PriceTierFeatureItem
@@ -2006,11 +1715,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gjsCn
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__gjsCn)}
                 >
                   {"Backup & export"}
                 </div>
@@ -2032,11 +1737,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__s586
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__s586)}
                 >
                   {"Code generation"}
                 </div>
@@ -2058,11 +1759,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__biz18
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__biz18)}
                 >
                   {"Transfer ownership"}
                 </div>
@@ -2085,13 +1782,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               >
                 {"30-day version history"}
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dbKvl
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__dbKvl)}>
                 {"Resources"}
               </div>
               <PriceTierFeatureItem
@@ -2107,23 +1798,18 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           }
           price={
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__uzeUx,
-                {
-                  [sty.textbillingFrequency_year__uzeUxgSc2D]: hasVariant(
-                    $state,
-                    "billingFrequency",
-                    "year"
-                  ),
-                  [sty.textglobal_environment_website__uzeUxmVgSv]: hasVariant(
-                    globalVariants,
-                    "environment",
-                    "website"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__uzeUx, {
+                [sty.textbillingFrequency_year__uzeUxgSc2D]: hasVariant(
+                  $state,
+                  "billingFrequency",
+                  "year"
+                ),
+                [sty.textglobal_environment_website__uzeUxmVgSv]: hasVariant(
+                  globalVariants,
+                  "environment",
+                  "website"
+                ),
+              })}
             >
               {hasVariant($state, "billingFrequency", "year") ? "$39" : "$49"}
             </div>
@@ -2137,15 +1823,13 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           valueProps={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___9K5Oc,
-                  {
-                    [sty.textglobal_environment_website___9K5OcmVgSv]:
-                      hasVariant(globalVariants, "environment", "website"),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text___9K5Oc, {
+                  [sty.textglobal_environment_website___9K5OcmVgSv]: hasVariant(
+                    globalVariants,
+                    "environment",
+                    "website"
+                  ),
+                })}
               >
                 {"Everything in Free, plus:"}
               </div>
@@ -2163,31 +1847,31 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 <HoverableText
                   className={classNames(
                     "__wab_instance",
-                    sty.hoverableText__tOxj2
+                    sty.hoverableText__tOxj2,
+                    {
+                      [sty.hoverableTextbillingFrequency_month__tOxj2B25Ec]:
+                        hasVariant($state, "billingFrequency", "month"),
+                      [sty.hoverableTextglobal_environment_website__tOxj2MVgSv]:
+                        hasVariant(globalVariants, "environment", "website"),
+                    }
                   )}
-                  popover={
-                    "The maximum number of editors that can make changes to your projects"
-                  }
+                  popover={<CollaboratorsHoverContent />}
                 >
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__rvSe
-                    )}
-                  >
-                    {"3 collaborators"}
-                  </div>
+                  {"3 collaborators"}
                 </HoverableText>
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem__zeLm
+                  sty.priceTierFeatureItem__u0Yby
                 )}
                 tier={"starter"}
               >
-                {"100k monthly page views"}
+                <div
+                  className={classNames("all", "__wab_text", sty.text__vqwlZ)}
+                >
+                  {"Remove Plasmic badge"}
+                </div>
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -2197,13 +1881,22 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"starter"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__igIci
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__igIci)}
                 >
-                  {"Remove Plasmic badge"}
+                  {"Add your custom favicon"}
+                </div>
+              </PriceTierFeatureItem>
+              <PriceTierFeatureItem
+                className={classNames(
+                  "__wab_instance",
+                  sty.priceTierFeatureItem__gUyY
+                )}
+                tier={"starter"}
+              >
+                <div
+                  className={classNames("all", "__wab_text", sty.text__wohWa)}
+                >
+                  {"AI support chat"}
                 </div>
               </PriceTierFeatureItem>
             </React.Fragment>
@@ -2214,6 +1907,11 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           data-plasmic-name={"newProTier"}
           data-plasmic-override={overrides.newProTier}
           className={classNames("__wab_instance", sty.newProTier, {
+            [sty.newProTierbillingFrequency_month]: hasVariant(
+              $state,
+              "billingFrequency",
+              "month"
+            ),
             [sty.newProTierglobal_environment_website]: hasVariant(
               globalVariants,
               "environment",
@@ -2223,11 +1921,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           expandableBody={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___71AdJ
-                )}
+                className={classNames("all", "__wab_text", sty.text___71AdJ)}
               >
                 {hasVariant(globalVariants, "screen", "mobileOnly")
                   ? "Pro includes (monthly):"
@@ -2277,11 +1971,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mdilp
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mdilp)}
                 >
                   {"Component library"}
                 </div>
@@ -2304,11 +1994,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__bW72W
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__bW72W)}
                 >
                   {"Integration library"}
                 </div>
@@ -2330,11 +2016,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cOfLp
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__cOfLp)}
                 >
                   {"Template library"}
                 </div>
@@ -2348,13 +2030,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__rY5Id
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__rY5Id)}>
                 {"Hosting"}
               </div>
               <PriceTierFeatureItem
@@ -2365,11 +2041,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__bdWr9
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__bdWr9)}
                 >
                   {"Custom domains"}
                 </div>
@@ -2391,11 +2063,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___2M9Fy
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___2M9Fy)}
                 >
                   {"Plasmic hosting"}
                 </div>
@@ -2417,11 +2085,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__nZ1JJ
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__nZ1JJ)}
                 >
                   {"Remove Plasmic branding"}
                 </div>
@@ -2436,11 +2100,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 />
               </PriceTierFeatureItem>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___1OdUs
-                )}
+                className={classNames("all", "__wab_text", sty.text___1OdUs)}
               >
                 {"Building"}
               </div>
@@ -2452,11 +2112,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__lAeb
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__lAeb)}
                 >
                   {"Components"}
                 </div>
@@ -2478,11 +2134,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mChN
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mChN)}
                 >
                   {"Interactions"}
                 </div>
@@ -2504,11 +2156,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__yWoWg
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__yWoWg)}
                 >
                   {"Style tokens"}
                 </div>
@@ -2530,11 +2178,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cxRml
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__cxRml)}
                 >
                   {"Image optimization"}
                 </div>
@@ -2556,11 +2200,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__uFrsT
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__uFrsT)}
                 >
                   {"Figma import"}
                 </div>
@@ -2582,11 +2222,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__rYmDb
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__rYmDb)}
                 >
                   {"Theming & branding"}
                 </div>
@@ -2600,13 +2236,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kU1N3
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kU1N3)}>
                 {"Customization"}
               </div>
               <PriceTierFeatureItem
@@ -2617,11 +2247,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__iKkbB
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__iKkbB)}
                 >
                   {"Code components"}
                 </div>
@@ -2643,11 +2269,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__onGl7
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__onGl7)}
                 >
                   {"Integrate with codebase"}
                 </div>
@@ -2669,11 +2291,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__zdMal
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__zdMal)}
                 >
                   {"Extensions"}
                 </div>
@@ -2687,13 +2305,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__bgwde
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__bgwde)}>
                 {"CMS"}
               </div>
               <PriceTierFeatureItem
@@ -2704,11 +2316,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__vmGdm
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__vmGdm)}
                 >
                   {"Headless CMS"}
                 </div>
@@ -2748,11 +2356,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ufb8M
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ufb8M)}
                 >
                   {"Image optimization"}
                 </div>
@@ -2766,13 +2370,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__lKyts
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__lKyts)}>
                 {"Collaboration"}
               </div>
               <PriceTierFeatureItem
@@ -2783,11 +2381,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__eFuYw
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__eFuYw)}
                 >
                   {"Multiplayer"}
                 </div>
@@ -2801,13 +2395,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__clgKr
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__clgKr)}>
                 {"Growth & Optimization"}
               </div>
               <PriceTierFeatureItem
@@ -2818,11 +2406,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__jpqHw
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__jpqHw)}
                 >
                   {"Analytics"}
                 </div>
@@ -2834,13 +2418,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={"Privacy-first analytics with page views."}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kmisn
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kmisn)}>
                 {"Security & Controls"}
               </div>
               <PriceTierFeatureItem
@@ -2851,11 +2429,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ok9SN
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ok9SN)}
                 >
                   {"Backup & export"}
                 </div>
@@ -2877,11 +2451,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__q3Hi1
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__q3Hi1)}
                 >
                   {"Code generation"}
                 </div>
@@ -2903,11 +2473,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__f1Dx0
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__f1Dx0)}
                 >
                   {"Transfer ownership"}
                 </div>
@@ -2930,13 +2496,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               >
                 {"90-day version history"}
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__nOyyf
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__nOyyf)}>
                 {"Resources"}
               </div>
               <PriceTierFeatureItem
@@ -2963,8 +2523,6 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
             hasVariant(globalVariants, "environment", "website") &&
             hasVariant(globalVariants, "screen", "mobileOnly")
               ? undefined
-              : hasVariant(globalVariants, "environment", "website")
-              ? true
               : undefined
           }
           price={
@@ -2978,13 +2536,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           tier={"pro"}
           valueProps={
             <React.Fragment>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__qmzG3
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__qmzG3)}>
                 {"Everything in Starter, plus:"}
               </div>
               <PriceTierFeatureItem
@@ -3008,20 +2560,16 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     }
                   )}
                   popover={
-                    "The maximum number of editors that can make changes to your projects"
+                    <CollaboratorsHoverContent
+                      className={classNames(
+                        "__wab_instance",
+                        sty.collaboratorsHoverContent__cIyo
+                      )}
+                    />
                   }
                 >
-                  {"4 collaborators"}
+                  {"4-10 collaborators"}
                 </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__d9B99
-                )}
-                tier={"starter"}
-              >
-                {"250k monthly page views"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -3035,6 +2583,19 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"pro"}
               >
                 {"Priority support"}
+              </PriceTierFeatureItem>
+              <PriceTierFeatureItem
+                className={classNames(
+                  "__wab_instance",
+                  sty.priceTierFeatureItem__ahJ4J
+                )}
+                tier={"starter"}
+              >
+                <div
+                  className={classNames("all", "__wab_text", sty.text__nsYP)}
+                >
+                  {"Unlimited access to the Plasmic AI (Beta)"}
+                </div>
               </PriceTierFeatureItem>
             </React.Fragment>
           }
@@ -3052,13 +2613,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           })}
           expandableBody={
             <React.Fragment>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__wfssn
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__wfssn)}>
                 {hasVariant(globalVariants, "screen", "mobileOnly")
                   ? "Scale includes (monthly):"
                   : "Free includes (monthly):"}
@@ -3107,11 +2662,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kVomX
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kVomX)}
                 >
                   {"Component library"}
                 </div>
@@ -3134,11 +2685,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__emYts
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__emYts)}
                 >
                   {"Integration library"}
                 </div>
@@ -3160,11 +2707,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gdNzg
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__gdNzg)}
                 >
                   {"Template library"}
                 </div>
@@ -3178,13 +2721,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kx43Y
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kx43Y)}>
                 {"Hosting"}
               </div>
               <PriceTierFeatureItem
@@ -3195,11 +2732,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__lGxPo
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__lGxPo)}
                 >
                   {"Custom domains"}
                 </div>
@@ -3221,11 +2754,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__v4QR
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__v4QR)}
                 >
                   {"Plasmic hosting"}
                 </div>
@@ -3247,11 +2776,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___62QpX
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___62QpX)}
                 >
                   {"Remove Plasmic branding"}
                 </div>
@@ -3266,11 +2791,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 />
               </PriceTierFeatureItem>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___4HWwM
-                )}
+                className={classNames("all", "__wab_text", sty.text___4HWwM)}
               >
                 {"Building"}
               </div>
@@ -3282,11 +2803,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__aIla
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__aIla)}
                 >
                   {"Components"}
                 </div>
@@ -3308,11 +2825,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__dp845
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__dp845)}
                 >
                   {"Interactions"}
                 </div>
@@ -3334,11 +2847,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__si5Jv
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__si5Jv)}
                 >
                   {"Style tokens"}
                 </div>
@@ -3360,11 +2869,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__tzy5P
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__tzy5P)}
                 >
                   {"Image optimization"}
                 </div>
@@ -3386,11 +2891,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__w06Cc
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__w06Cc)}
                 >
                   {"Figma import"}
                 </div>
@@ -3412,11 +2913,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__iwwdS
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__iwwdS)}
                 >
                   {"Theming & branding"}
                 </div>
@@ -3431,11 +2928,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 />
               </PriceTierFeatureItem>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___6Nefj
-                )}
+                className={classNames("all", "__wab_text", sty.text___6Nefj)}
               >
                 {"Customization"}
               </div>
@@ -3447,11 +2940,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gr9Sl
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__gr9Sl)}
                 >
                   {"Code components"}
                 </div>
@@ -3473,11 +2962,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__p5CGx
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__p5CGx)}
                 >
                   {"Integrate with codebase"}
                 </div>
@@ -3499,11 +2984,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___8LkAr
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___8LkAr)}
                 >
                   {"Extensions"}
                 </div>
@@ -3517,13 +2998,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__ekbum
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__ekbum)}>
                 {"CMS"}
               </div>
               <PriceTierFeatureItem
@@ -3534,11 +3009,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ggqhz
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ggqhz)}
                 >
                   {"Headless CMS"}
                 </div>
@@ -3578,11 +3049,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__e4CpE
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__e4CpE)}
                 >
                   {"Image optimization"}
                 </div>
@@ -3596,13 +3063,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__yc5Yq
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__yc5Yq)}>
                 {"Collaboration"}
               </div>
               <PriceTierFeatureItem
@@ -3613,11 +3074,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___1KgmD
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___1KgmD)}
                 >
                   {"Multiplayer"}
                 </div>
@@ -3631,13 +3088,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__nMrPv
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__nMrPv)}>
                 {"Growth & Optimization"}
               </div>
               <PriceTierFeatureItem
@@ -3648,11 +3099,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___2O8V8
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___2O8V8)}
                 >
                   {"Analytics"}
                 </div>
@@ -3672,11 +3119,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__o6Yhr
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__o6Yhr)}
                 >
                   {"A/B Testing"}
                 </div>
@@ -3698,11 +3141,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__opnHh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__opnHh)}
                 >
                   {"Scheduled content"}
                 </div>
@@ -3724,11 +3163,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mYAo7
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mYAo7)}
                 >
                   {"Custom targeting & segmentation"}
                 </div>
@@ -3750,11 +3185,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__lbIQe
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__lbIQe)}
                 >
                   {"Localization"}
                 </div>
@@ -3768,13 +3199,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__r9MkW
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__r9MkW)}>
                 {"Security & Controls"}
               </div>
               <PriceTierFeatureItem
@@ -3785,11 +3210,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__lJfOw
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__lJfOw)}
                 >
                   {"Backup & export"}
                 </div>
@@ -3811,11 +3232,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__xdhCe
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__xdhCe)}
                 >
                   {"Code generation"}
                 </div>
@@ -3837,11 +3254,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___7IZ1
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___7IZ1)}
                 >
                   {"Transfer ownership"}
                 </div>
@@ -3863,11 +3276,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__vXg1J
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__vXg1J)}
                 >
                   {"180-day version history"}
                 </div>
@@ -3880,11 +3289,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cXzp
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__cXzp)}
                 >
                   {"Team roles & permissions"}
                 </div>
@@ -3906,11 +3311,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___5CQg
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___5CQg)}
                 >
                   {"Content creator mode"}
                 </div>
@@ -3922,8 +3323,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__wtzsj
                       )}
                     >
@@ -3934,13 +3335,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__czXsI
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__czXsI)}>
                 {"Resources"}
               </div>
               <PriceTierFeatureItem
@@ -3965,36 +3360,26 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           }
           price={
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___6KKCm,
-                {
-                  [sty.textbillingFrequency_year___6KKCmgSc2D]: hasVariant(
-                    $state,
-                    "billingFrequency",
-                    "year"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___6KKCm, {
+                [sty.textbillingFrequency_year___6KKCmgSc2D]: hasVariant(
+                  $state,
+                  "billingFrequency",
+                  "year"
+                ),
+              })}
             >
               {hasVariant($state, "billingFrequency", "year") ? "$399" : "$499"}
             </div>
           }
           subprice={
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__hNyrb,
-                {
-                  [sty.textbillingFrequency_year__hNyrbgSc2D]: hasVariant(
-                    $state,
-                    "billingFrequency",
-                    "year"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__hNyrb, {
+                [sty.textbillingFrequency_year__hNyrbgSc2D]: hasVariant(
+                  $state,
+                  "billingFrequency",
+                  "year"
+                ),
+              })}
             >
               {hasVariant($state, "billingFrequency", "year")
                 ? "Billed yearly"
@@ -4005,15 +3390,13 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           valueProps={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__lp2Yi,
-                  {
-                    [sty.textglobal_environment_website__lp2YimVgSv]:
-                      hasVariant(globalVariants, "environment", "website"),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__lp2Yi, {
+                  [sty.textglobal_environment_website__lp2YimVgSv]: hasVariant(
+                    globalVariants,
+                    "environment",
+                    "website"
+                  ),
+                })}
               >
                 {"Everything in Pro, plus:"}
               </div>
@@ -4030,20 +3413,16 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     sty.hoverableText___1Ynqj
                   )}
                   popover={
-                    "The maximum number of editors that can make changes to your projects"
+                    <CollaboratorsHoverContent
+                      className={classNames(
+                        "__wab_instance",
+                        sty.collaboratorsHoverContent___45A72
+                      )}
+                    />
                   }
                 >
-                  {"8 collaborators"}
+                  {"8-30 collaborators"}
                 </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__rsp0V
-                )}
-                tier={"starter"}
-              >
-                {"500k monthly page views"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -4053,11 +3432,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"team"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___4Iy2
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___4Iy2)}
                 >
                   {"Content creator mode"}
                 </div>
@@ -4079,11 +3454,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"team"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__a1AFi
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__a1AFi)}
                 >
                   {"Scheduled content"}
                 </div>
@@ -4096,11 +3467,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"team"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__tTk9C
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__tTk9C)}
                 >
                   {"Custom targeting"}
                 </div>
@@ -4127,11 +3494,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           expandableBody={
             <React.Fragment>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___7ZlfK
-                )}
+                className={classNames("all", "__wab_text", sty.text___7ZlfK)}
               >
                 {"Enterprise includes (monthly):"}
               </div>
@@ -4184,11 +3547,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__uIJq
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__uIJq)}
                 >
                   {"Component library"}
                 </div>
@@ -4213,11 +3572,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__hwyPh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__hwyPh)}
                 >
                   {"Integration library"}
                 </div>
@@ -4241,11 +3596,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__dLeQy
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__dLeQy)}
                 >
                   {"Template library"}
                 </div>
@@ -4260,13 +3611,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   white={true}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__sNu1J
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__sNu1J)}>
                 {"Hosting"}
               </div>
               <PriceTierFeatureItem
@@ -4278,11 +3623,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___8N39
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___8N39)}
                 >
                   {"Custom domains"}
                 </div>
@@ -4306,11 +3647,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ytjlI
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ytjlI)}
                 >
                   {"Plasmic hosting"}
                 </div>
@@ -4334,11 +3671,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___8T5Ay
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___8T5Ay)}
                 >
                   {"Remove Plasmic branding"}
                 </div>
@@ -4353,13 +3686,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   white={true}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__zj1O7
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__zj1O7)}>
                 {"Building"}
               </div>
               <PriceTierFeatureItem
@@ -4371,11 +3698,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__fOq7Q
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__fOq7Q)}
                 >
                   {"Components"}
                 </div>
@@ -4399,11 +3722,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__qeIWi
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__qeIWi)}
                 >
                   {"Interactions"}
                 </div>
@@ -4427,11 +3746,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__sOvy
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__sOvy)}
                 >
                   {"Style tokens"}
                 </div>
@@ -4455,11 +3770,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kFfXv
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kFfXv)}
                 >
                   {"Image optimization"}
                 </div>
@@ -4483,11 +3794,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__snMBh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__snMBh)}
                 >
                   {"Figma import"}
                 </div>
@@ -4511,11 +3818,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__s0NLb
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__s0NLb)}
                 >
                   {"Theming & branding"}
                 </div>
@@ -4530,13 +3833,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   white={true}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kyAK
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kyAK)}>
                 {"Customization"}
               </div>
               <PriceTierFeatureItem
@@ -4547,13 +3844,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
                 tier={"enterprise"}
               >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__gQz
-                  )}
-                >
+                <div className={classNames("all", "__wab_text", sty.text__gQz)}>
                   {"Code components"}
                 </div>
                 <HoverableIcon
@@ -4576,11 +3867,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__srlsk
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__srlsk)}
                 >
                   {"Integrate with codebase"}
                 </div>
@@ -4604,11 +3891,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___5Vi55
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___5Vi55)}
                 >
                   {"Extensions"}
                 </div>
@@ -4632,11 +3915,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6ZXoP
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6ZXoP)}
                 >
                   {"White labelling"}
                 </div>
@@ -4658,11 +3937,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___1UF9
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___1UF9)}
                 >
                   {"Embedding"}
                 </div>
@@ -4686,11 +3961,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__jSi7N
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__jSi7N)}
                 >
                   {"Custom integrations priority"}
                 </div>
@@ -4714,11 +3985,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___0MTnT
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___0MTnT)}
                 >
                   {"Custom components priority"}
                 </div>
@@ -4743,13 +4010,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               >
                 {"Extended platform APIs"}
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__ns3Lt
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__ns3Lt)}>
                 {"CMS"}
               </div>
               <PriceTierFeatureItem
@@ -4761,11 +4022,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__yb5K6
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__yb5K6)}
                 >
                   {"Headless CMS"}
                 </div>
@@ -4809,11 +4066,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kNeRw
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kNeRw)}
                 >
                   {"Image optimization"}
                 </div>
@@ -4829,11 +4082,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 />
               </PriceTierFeatureItem>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___08CEc
-                )}
+                className={classNames("all", "__wab_text", sty.text___08CEc)}
               >
                 {"Collaboration"}
               </div>
@@ -4846,11 +4095,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__wJjt
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__wJjt)}
                 >
                   {"Multiplayer"}
                 </div>
@@ -4874,11 +4119,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__u24Oj
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__u24Oj)}
                 >
                   {"Branching (Beta)"}
                 </div>
@@ -4893,13 +4134,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   white={true}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__ij6H9
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__ij6H9)}>
                 {"Growth & Optimization"}
               </div>
               <PriceTierFeatureItem
@@ -4911,11 +4146,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kiaSh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kiaSh)}
                 >
                   {"Analytics"}
                 </div>
@@ -4937,11 +4168,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__c0WRn
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__c0WRn)}
                 >
                   {"A/B Testing"}
                 </div>
@@ -4965,11 +4192,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kMAe
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kMAe)}
                 >
                   {"Scheduled content"}
                 </div>
@@ -4993,11 +4216,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__t2Uez
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__t2Uez)}
                 >
                   {"Custom targeting & segmentation"}
                 </div>
@@ -5021,11 +4240,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___0NLlu
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___0NLlu)}
                 >
                   {"Localization"}
                 </div>
@@ -5040,13 +4255,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   white={true}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__c9DHw
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__c9DHw)}>
                 {"Security & Controls"}
               </div>
               <PriceTierFeatureItem
@@ -5058,11 +4267,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__flqSh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__flqSh)}
                 >
                   {"Backup & export"}
                 </div>
@@ -5086,11 +4291,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__qPzee
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__qPzee)}
                 >
                   {"Code generation"}
                 </div>
@@ -5114,11 +4315,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__auCpe
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__auCpe)}
                 >
                   {"Transfer ownership"}
                 </div>
@@ -5142,11 +4339,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__eYCud
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__eYCud)}
                 >
                   {"Custom version history"}
                 </div>
@@ -5160,11 +4353,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___0UUvh
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___0UUvh)}
                 >
                   {"Team roles & permissions"}
                 </div>
@@ -5188,11 +4377,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__n67Y1
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__n67Y1)}
                 >
                   {"Content creator mode"}
                 </div>
@@ -5204,8 +4389,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__weEuy
                       )}
                     >
@@ -5226,11 +4411,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___37Gge
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___37Gge)}
                 >
                   {"Custom content creator mode"}
                 </div>
@@ -5242,8 +4423,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__cgI8E
                       )}
                     >
@@ -5264,11 +4445,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__nfpPq
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__nfpPq)}
                 >
                   {"Domain capture"}
                 </div>
@@ -5280,8 +4457,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__fbGiY
                       )}
                     >
@@ -5302,11 +4479,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__xo6Ky
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__xo6Ky)}
                 >
                   {"SSO"}
                 </div>
@@ -5318,8 +4491,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text___2FziP
                       )}
                     >
@@ -5338,11 +4511,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__y6T2E
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__y6T2E)}
                 >
                   {"Availability SLAs"}
                 </div>
@@ -5354,8 +4523,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__ksnEv
                       )}
                     >
@@ -5365,13 +4534,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   white={true}
                 />
               </PriceTierFeatureItem>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__oi9Ug
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__oi9Ug)}>
                 {"Resources"}
               </div>
               <PriceTierFeatureItem
@@ -5403,11 +4566,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ceFt
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ceFt)}
                 >
                   {"Response time SLAs"}
                 </div>
@@ -5419,8 +4578,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__r3M3C
                       )}
                     >
@@ -5439,11 +4598,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kp70J
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__kp70J)}
                 >
                   {"Onboarding"}
                 </div>
@@ -5455,8 +4610,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__tlfXa
                       )}
                     >
@@ -5477,11 +4632,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mxLXz
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mxLXz)}
                 >
                   {"Private Slack channel"}
                 </div>
@@ -5493,8 +4644,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   popover={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__x7HK
                       )}
                     >
@@ -5512,13 +4663,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           tier={"enterprise"}
           valueProps={
             <React.Fragment>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__u9AGd
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__u9AGd)}>
                 {"Everything in Scale, plus:"}
               </div>
               <PriceTierFeatureItem
@@ -5529,15 +4674,6 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 {"Custom collaborators"}
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__eqk5
-                )}
-                tier={"enterprise"}
-              >
-                {"Custom page views"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -5556,11 +4692,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__brufQ
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__brufQ)}
                 >
                   {"Custom roles & permissions"}
                 </div>
@@ -5573,11 +4705,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__taizU
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__taizU)}
                 >
                   {"SSO & domain capture"}
                 </div>
@@ -5599,11 +4727,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__rsSYq
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__rsSYq)}
                 >
                   {"Availability & response time SLAs"}
                 </div>
@@ -5616,11 +4740,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___0VqYr
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___0VqYr)}
                 >
                   {"Dedicated support & onboarding"}
                 </div>
@@ -5628,8 +4748,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
             </React.Fragment>
           }
         />
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -5646,7 +4766,6 @@ const PlasmicDescendants = {
     "newTeamTier",
     "newEnterpriseTier",
   ],
-
   link: ["link"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
   newGrandfatheredTier: ["newGrandfatheredTier"],
@@ -5678,7 +4797,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTierPicker__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -5686,15 +4804,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicPriceTierPicker__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicPriceTierPicker__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPriceTierPicker__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicPriceTierPicker__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

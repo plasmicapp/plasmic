@@ -36,7 +36,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
+import "./plasmic_plasmic_kit_variants.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantSection.module.css"; // plasmic-import: PDpx0GMKsd/css
 
 import CodeIcon from "../plasmic_kit/PlasmicIcon__Code"; // plasmic-import: sVrc1aLRLGQtV/icon
@@ -180,6 +180,7 @@ function PlasmicVariantSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -202,10 +203,10 @@ function PlasmicVariantSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_wT5BWZPEc2fYxyqbTLXMt2",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisQuiet]: hasVariant($state, "isQuiet", "isQuiet") }
@@ -215,7 +216,7 @@ function PlasmicVariantSection__RenderFunc(props: {
       <div
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        className={classNames(projectcss.all, sty.header, {
+        className={classNames("all", sty.header, {
           [sty.headerisQuiet]: hasVariant($state, "isQuiet", "isQuiet"),
           [sty.headershowIcon]: hasVariant($state, "showIcon", "showIcon"),
           [sty.headerstate_empty]: hasVariant($state, "state", "empty"),
@@ -227,7 +228,7 @@ function PlasmicVariantSection__RenderFunc(props: {
         <div
           data-plasmic-name={"iconContainer"}
           data-plasmic-override={overrides.iconContainer}
-          className={classNames(projectcss.all, sty.iconContainer, {
+          className={classNames("all", sty.iconContainer, {
             [sty.iconContainershowIcon]: hasVariant(
               $state,
               "showIcon",
@@ -243,7 +244,7 @@ function PlasmicVariantSection__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <VariantGroupIcon
-                className={classNames(projectcss.all, sty.svg__gJ4Xi)}
+                className={classNames("all", sty.svg__gJ4Xi)}
                 role={"img"}
               />
             ),
@@ -261,7 +262,7 @@ function PlasmicVariantSection__RenderFunc(props: {
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          className={classNames(projectcss.all, sty.labelContainer, {
+          className={classNames("all", sty.labelContainer, {
             [sty.labelContainerhasCodeExpression]: hasVariant(
               $state,
               "hasCodeExpression",
@@ -317,7 +318,7 @@ function PlasmicVariantSection__RenderFunc(props: {
         <div
           data-plasmic-name={"actionsContainer"}
           data-plasmic-override={overrides.actionsContainer}
-          className={classNames(projectcss.all, sty.actionsContainer, {
+          className={classNames("all", sty.actionsContainer, {
             [sty.actionsContainerhasCodeExpression]: hasVariant(
               $state,
               "hasCodeExpression",
@@ -348,7 +349,7 @@ function PlasmicVariantSection__RenderFunc(props: {
               data-plasmic-override={overrides.settingsButton}
               children2={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__w4Qxv)}
+                  className={classNames("all", sty.svg__w4Qxv)}
                   role={"img"}
                 />
               }
@@ -374,7 +375,7 @@ function PlasmicVariantSection__RenderFunc(props: {
               })}
             >
               <GearIcon
-                className={classNames(projectcss.all, sty.svg__uGhUb)}
+                className={classNames("all", sty.svg__uGhUb)}
                 role={"img"}
               />
             </IconButton>
@@ -394,7 +395,7 @@ function PlasmicVariantSection__RenderFunc(props: {
             type={["seamless"]}
           >
             <CodeIcon
-              className={classNames(projectcss.all, sty.svg__wGxvY, {
+              className={classNames("all", sty.svg__wGxvY, {
                 [sty.svghasCodeExpression__wGxvYqVc3M]: hasVariant(
                   $state,
                   "hasCodeExpression",
@@ -417,7 +418,7 @@ function PlasmicVariantSection__RenderFunc(props: {
               data-plasmic-override={overrides.addButton}
               children2={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__vxfGq)}
+                  className={classNames("all", sty.svg__vxfGq)}
                   role={"img"}
                 />
               }
@@ -438,7 +439,7 @@ function PlasmicVariantSection__RenderFunc(props: {
               })}
             >
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg__rh6GJ, {
+                className={classNames("all", sty.svg__rh6GJ, {
                   [sty.svghasCodeExpression__rh6GJqVc3M]: hasVariant(
                     $state,
                     "hasCodeExpression",
@@ -477,7 +478,7 @@ function PlasmicVariantSection__RenderFunc(props: {
               })}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__wQfgt)}
+                  className={classNames("all", sty.svg__wQfgt)}
                   role={"img"}
                 />
               }
@@ -487,7 +488,7 @@ function PlasmicVariantSection__RenderFunc(props: {
               size={"small"}
               startIcon={
                 <PlusIcon
-                  className={classNames(projectcss.all, sty.svg__ypiQa)}
+                  className={classNames("all", sty.svg__ypiQa)}
                   role={"img"}
                 />
               }
@@ -509,12 +510,12 @@ function PlasmicVariantSection__RenderFunc(props: {
         <div
           data-plasmic-name={"dragHandle"}
           data-plasmic-override={overrides.dragHandle}
-          className={classNames(projectcss.all, sty.dragHandle, {
+          className={classNames("all", sty.dragHandle, {
             [sty.dragHandlestate_empty]: hasVariant($state, "state", "empty"),
           })}
         >
           <GripSvgIcon
-            className={classNames(projectcss.all, sty.svg__srcvf)}
+            className={classNames("all", sty.svg__srcvf)}
             role={"img"}
           />
         </div>
@@ -523,7 +524,7 @@ function PlasmicVariantSection__RenderFunc(props: {
         <div
           data-plasmic-name={"body"}
           data-plasmic-override={overrides.body}
-          className={classNames(projectcss.all, sty.body, {
+          className={classNames("all", sty.body, {
             [sty.bodyisQuiet]: hasVariant($state, "isQuiet", "isQuiet"),
             [sty.bodystate_empty]: hasVariant($state, "state", "empty"),
             [sty.bodystate_empty_isQuiet]:
@@ -534,7 +535,7 @@ function PlasmicVariantSection__RenderFunc(props: {
           <div
             data-plasmic-name={"variantsContainer"}
             data-plasmic-override={overrides.variantsContainer}
-            className={classNames(projectcss.all, sty.variantsContainer, {
+            className={classNames("all", sty.variantsContainer, {
               [sty.variantsContainerstate_empty]: hasVariant(
                 $state,
                 "state",

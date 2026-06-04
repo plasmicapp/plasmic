@@ -33,7 +33,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicDomainCard.module.css"; // plasmic-import: eqF_n5a1-6b/css
 
 import CheckCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg"; // plasmic-import: h7sB2KeL-/icon
@@ -125,27 +125,29 @@ function PlasmicDomainCard__RenderFunc(props: {
         path: "refreshing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.refreshing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.refreshing,
       },
       {
         path: "error",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.error,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.error,
       },
       {
         path: "secondary",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.secondary,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.secondary,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -158,10 +160,10 @@ function PlasmicDomainCard__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -173,7 +175,7 @@ function PlasmicDomainCard__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox___7Vjq, {
+        className={classNames("all", sty.freeBox___7Vjq, {
           [sty.freeBoxerror_apex_secondary___7VjqWIbN7ZeL6W]:
             hasVariant($state, "secondary", "secondary") &&
             hasVariant($state, "error", "apex"),
@@ -187,36 +189,28 @@ function PlasmicDomainCard__RenderFunc(props: {
         <div
           data-plasmic-name={"label"}
           data-plasmic-override={overrides.label}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.label,
-            { [sty.labelerror_apex]: hasVariant($state, "error", "apex") }
-          )}
+          className={classNames("all", "__wab_text", sty.label, {
+            [sty.labelerror_apex]: hasVariant($state, "error", "apex"),
+          })}
         >
           {"Custom domain"}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__iNuFl)}>
+        <div className={classNames("all", sty.freeBox__iNuFl)}>
           <div
             data-plasmic-name={"customDomainLabel"}
             data-plasmic-override={overrides.customDomainLabel}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.customDomainLabel,
-              {
-                [sty.customDomainLabelerror_success]: hasVariant(
-                  $state,
-                  "error",
-                  "success"
-                ),
-                [sty.customDomainLabelrefreshing]: hasVariant(
-                  $state,
-                  "refreshing",
-                  "refreshing"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.customDomainLabel, {
+              [sty.customDomainLabelerror_success]: hasVariant(
+                $state,
+                "error",
+                "success"
+              ),
+              [sty.customDomainLabelrefreshing]: hasVariant(
+                $state,
+                "refreshing",
+                "refreshing"
+              ),
+            })}
           >
             {"www.foobarfoobarfoobarfoobar.com"}
           </div>
@@ -233,14 +227,14 @@ function PlasmicDomainCard__RenderFunc(props: {
             withBackgroundHover={true}
           >
             <ShareSvgIcon
-              className={classNames(projectcss.all, sty.svg__eIAp)}
+              className={classNames("all", sty.svg__eIAp)}
               role={"img"}
             />
           </IconButton>
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__gsDpH, {
+        className={classNames("all", sty.freeBox__gsDpH, {
           [sty.freeBoxerror_apex__gsDpHwIbN7]: hasVariant(
             $state,
             "error",
@@ -289,8 +283,8 @@ function PlasmicDomainCard__RenderFunc(props: {
             data-plasmic-name={"domainErrorMessage4"}
             data-plasmic-override={overrides.domainErrorMessage4}
             className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
+              "all",
+              "__wab_text",
               sty.domainErrorMessage4,
               {
                 [sty.domainErrorMessage4error_apex]: hasVariant(
@@ -323,7 +317,9 @@ function PlasmicDomainCard__RenderFunc(props: {
                   {"{yoursite.com} is already owned by another team. "}
                 </React.Fragment>
                 <span
-                  className={"plasmic_default__all plasmic_default__span"}
+                  className={
+                    "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                  }
                   style={{ textDecorationLine: "underline" }}
                 >
                   {"Click here to request access"}
@@ -334,7 +330,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           </div>
         </ErrorFeedback>
         <div
-          className={classNames(projectcss.all, sty.freeBox__nPfIi, {
+          className={classNames("all", sty.freeBox__nPfIi, {
             [sty.freeBoxerror_apex__nPfIiWIbN7]: hasVariant(
               $state,
               "error",
@@ -353,29 +349,24 @@ function PlasmicDomainCard__RenderFunc(props: {
           })}
         >
           <CheckCircleSvgIcon
-            className={classNames(projectcss.all, sty.svg__t0WGq)}
+            className={classNames("all", sty.svg__t0WGq)}
             role={"img"}
           />
 
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__wBhQf,
-              {
-                [sty.texterror_cname__wBhQfFiouZ]: hasVariant(
-                  $state,
-                  "error",
-                  "cname"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__wBhQf, {
+              [sty.texterror_cname__wBhQfFiouZ]: hasVariant(
+                $state,
+                "error",
+                "cname"
+              ),
+            })}
           >
             {"Correctly configured!"}
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__j4DNt, {
+          className={classNames("all", sty.freeBox__j4DNt, {
             [sty.freeBoxerror_cname__j4DNtFiouZ]: hasVariant(
               $state,
               "error",
@@ -397,14 +388,14 @@ function PlasmicDomainCard__RenderFunc(props: {
             }
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__dbKe3)}
+                className={classNames("all", sty.svg__dbKe3)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <RefreshSvgIcon
-                className={classNames(projectcss.all, sty.svg__fkj25, {
+                className={classNames("all", sty.svg__fkj25, {
                   [sty.svgerror_error__fkj25ByfXx]: hasVariant(
                     $state,
                     "error",
@@ -433,34 +424,28 @@ function PlasmicDomainCard__RenderFunc(props: {
             color={"red"}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__vkHmm)}
+                className={classNames("all", sty.svg__vkHmm)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <Trash2SvgIcon
-                className={classNames(projectcss.all, sty.svg__xhMx)}
+                className={classNames("all", sty.svg__xhMx)}
                 role={"img"}
               />
             }
             type={["clear"]}
             withIcons={["startIcon"]}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__oH9Ce
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__oH9Ce)}>
               {"Remove"}
             </div>
           </Button>
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__v8YX, {
+        className={classNames("all", sty.freeBox__v8YX, {
           [sty.freeBoxerror_apex__v8YXWIbN7]: hasVariant(
             $state,
             "error",
@@ -484,49 +469,45 @@ function PlasmicDomainCard__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__mVvws,
-            {
-              [sty.texterror_apex__mVvwswIbN7]: hasVariant(
-                $state,
-                "error",
-                "apex"
-              ),
-              [sty.texterror_cname__mVvwsFiouZ]: hasVariant(
-                $state,
-                "error",
-                "cname"
-              ),
-              [sty.texterror_error__mVvwsByfXx]: hasVariant(
-                $state,
-                "error",
-                "error"
-              ),
-              [sty.texterror_success__mVvwssUyAh]: hasVariant(
-                $state,
-                "error",
-                "success"
-              ),
-              [sty.textsecondary__mVvwSzeL6W]: hasVariant(
-                $state,
-                "secondary",
-                "secondary"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text__mVvws, {
+            [sty.texterror_apex__mVvwswIbN7]: hasVariant(
+              $state,
+              "error",
+              "apex"
+            ),
+            [sty.texterror_cname__mVvwsFiouZ]: hasVariant(
+              $state,
+              "error",
+              "cname"
+            ),
+            [sty.texterror_error__mVvwsByfXx]: hasVariant(
+              $state,
+              "error",
+              "error"
+            ),
+            [sty.texterror_success__mVvwssUyAh]: hasVariant(
+              $state,
+              "error",
+              "success"
+            ),
+            [sty.textsecondary__mVvwSzeL6W]: hasVariant(
+              $state,
+              "secondary",
+              "secondary"
+            ),
+          })}
         >
           {"Set the following records on your DNS provider to continue:"}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__jmREj)}>
+        <div className={classNames("all", sty.freeBox__jmREj)}>
           <button
             data-plasmic-name={"cnameTab"}
             data-plasmic-override={overrides.cnameTab}
             className={classNames(
-              projectcss.all,
-              projectcss.button,
-              projectcss.__wab_text,
+              "all",
+              "button",
+              "button__fpbcK",
+              "__wab_text",
               sty.cnameTab,
               {
                 [sty.cnameTaberror_apex]: hasVariant($state, "error", "apex"),
@@ -540,7 +521,9 @@ function PlasmicDomainCard__RenderFunc(props: {
             <React.Fragment>
               <React.Fragment>{"CNAME Record "}</React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                }
                 style={{ fontWeight: 400 }}
               >
                 {"(subdomains)"}
@@ -551,9 +534,10 @@ function PlasmicDomainCard__RenderFunc(props: {
             data-plasmic-name={"apexTab"}
             data-plasmic-override={overrides.apexTab}
             className={classNames(
-              projectcss.all,
-              projectcss.button,
-              projectcss.__wab_text,
+              "all",
+              "button",
+              "button__fpbcK",
+              "__wab_text",
               sty.apexTab,
               {
                 [sty.apexTaberror_apex]: hasVariant($state, "error", "apex"),
@@ -567,7 +551,9 @@ function PlasmicDomainCard__RenderFunc(props: {
             <React.Fragment>
               <React.Fragment>{"A Record "}</React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                }
                 style={{ fontWeight: 400 }}
               >
                 {"(apex domain)"}
@@ -576,7 +562,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           </button>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox___7NWq, {
+          className={classNames("all", sty.freeBox___7NWq, {
             [sty.freeBoxerror_apex___7NWqWIbN7]: hasVariant(
               $state,
               "error",
@@ -598,7 +584,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox___1H9CF, {
+            className={classNames("all", sty.freeBox___1H9CF, {
               [sty.freeBoxerror_apex___1H9CFwIbN7]: hasVariant(
                 $state,
                 "error",
@@ -612,44 +598,27 @@ function PlasmicDomainCard__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__o1F3S,
-                {
-                  [sty.texterror_cname__o1F3SFiouZ]: hasVariant(
-                    $state,
-                    "error",
-                    "cname"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__o1F3S, {
+                [sty.texterror_cname__o1F3SFiouZ]: hasVariant(
+                  $state,
+                  "error",
+                  "cname"
+                ),
+              })}
             >
               {"Type"}
             </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__eXNr
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__eXNr)}>
               {"Name"}
             </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__o16H
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__o16H)}>
               {"Value"}
             </div>
           </div>
           <div
             data-plasmic-name={"apexRow"}
             data-plasmic-override={overrides.apexRow}
-            className={classNames(projectcss.all, sty.apexRow, {
+            className={classNames("all", sty.apexRow, {
               [sty.apexRowerror_apex]: hasVariant($state, "error", "apex"),
               [sty.apexRowerror_apex_secondary]:
                 hasVariant($state, "secondary", "secondary") &&
@@ -659,48 +628,33 @@ function PlasmicDomainCard__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__nkp3X,
-                {
-                  [sty.texterror_apex__nkp3XWIbN7]: hasVariant(
-                    $state,
-                    "error",
-                    "apex"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__nkp3X, {
+                [sty.texterror_apex__nkp3XWIbN7]: hasVariant(
+                  $state,
+                  "error",
+                  "apex"
+                ),
+              })}
             >
               {hasVariant($state, "error", "apex") ? "A" : "CNAME"}
             </div>
             <div
               data-plasmic-name={"name"}
               data-plasmic-override={overrides.name}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.name,
-                {
-                  [sty.nameerror_apex]: hasVariant($state, "error", "apex"),
-                  [sty.nameerror_cname]: hasVariant($state, "error", "cname"),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.name, {
+                [sty.nameerror_apex]: hasVariant($state, "error", "apex"),
+                [sty.nameerror_cname]: hasVariant($state, "error", "cname"),
+              })}
             >
               {hasVariant($state, "error", "apex") ? "@" : "www"}
             </div>
             <div
               data-plasmic-name={"value"}
               data-plasmic-override={overrides.value}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.value,
-                {
-                  [sty.valueerror_apex]: hasVariant($state, "error", "apex"),
-                  [sty.valueerror_cname]: hasVariant($state, "error", "cname"),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.value, {
+                [sty.valueerror_apex]: hasVariant($state, "error", "apex"),
+                [sty.valueerror_cname]: hasVariant($state, "error", "cname"),
+              })}
             >
               {hasVariant($state, "error", "apex")
                 ? "76.76.21.21"
@@ -710,75 +664,60 @@ function PlasmicDomainCard__RenderFunc(props: {
           <div
             data-plasmic-name={"cnameRow"}
             data-plasmic-override={overrides.cnameRow}
-            className={classNames(projectcss.all, sty.cnameRow, {
+            className={classNames("all", sty.cnameRow, {
               [sty.cnameRowerror_apex]: hasVariant($state, "error", "apex"),
               [sty.cnameRowerror_cname]: hasVariant($state, "error", "cname"),
               [sty.cnameRowerror_error]: hasVariant($state, "error", "error"),
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___3Uvi0,
-                {
-                  [sty.texterror_apex___3Uvi0WIbN7]: hasVariant(
-                    $state,
-                    "error",
-                    "apex"
-                  ),
-                  [sty.texterror_apex_secondary___3Uvi0WIbN7ZeL6W]:
-                    hasVariant($state, "secondary", "secondary") &&
-                    hasVariant($state, "error", "apex"),
-                  [sty.texterror_cname___3Uvi0FiouZ]: hasVariant(
-                    $state,
-                    "error",
-                    "cname"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___3Uvi0, {
+                [sty.texterror_apex___3Uvi0WIbN7]: hasVariant(
+                  $state,
+                  "error",
+                  "apex"
+                ),
+                [sty.texterror_apex_secondary___3Uvi0WIbN7ZeL6W]:
+                  hasVariant($state, "secondary", "secondary") &&
+                  hasVariant($state, "error", "apex"),
+                [sty.texterror_cname___3Uvi0FiouZ]: hasVariant(
+                  $state,
+                  "error",
+                  "cname"
+                ),
+              })}
             >
               {hasVariant($state, "error", "apex") ? "A" : "APEX"}
             </div>
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__jnhOs,
-                {
-                  [sty.texterror_apex__jnhOswIbN7]: hasVariant(
-                    $state,
-                    "error",
-                    "apex"
-                  ),
-                  [sty.texterror_cname__jnhOsFiouZ]: hasVariant(
-                    $state,
-                    "error",
-                    "cname"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__jnhOs, {
+                [sty.texterror_apex__jnhOswIbN7]: hasVariant(
+                  $state,
+                  "error",
+                  "apex"
+                ),
+                [sty.texterror_cname__jnhOsFiouZ]: hasVariant(
+                  $state,
+                  "error",
+                  "cname"
+                ),
+              })}
             >
               {hasVariant($state, "error", "apex") ? "@" : "@"}
             </div>
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___709Ap,
-                {
-                  [sty.texterror_apex___709ApwIbN7]: hasVariant(
-                    $state,
-                    "error",
-                    "apex"
-                  ),
-                  [sty.texterror_cname___709ApFiouZ]: hasVariant(
-                    $state,
-                    "error",
-                    "cname"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___709Ap, {
+                [sty.texterror_apex___709ApwIbN7]: hasVariant(
+                  $state,
+                  "error",
+                  "apex"
+                ),
+                [sty.texterror_cname___709ApFiouZ]: hasVariant(
+                  $state,
+                  "error",
+                  "cname"
+                ),
+              })}
             >
               {hasVariant($state, "error", "apex")
                 ? "76.76.21.21"

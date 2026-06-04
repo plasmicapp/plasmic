@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPostForm.module.css"; // plasmic-import: qi3Y1X2qZ7/css
 
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: _-_PqTBs1dWd/icon
@@ -115,28 +115,31 @@ function PlasmicCommentPostForm__RenderFunc(props: {
         path: "isEditing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEditing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isEditing,
       },
       {
         path: "bodyInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props["defaultValue"],
       },
       {
         path: "isPreviewing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isPreviewing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isPreviewing,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -149,17 +152,17 @@ function PlasmicCommentPostForm__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisEditing]: hasVariant($state, "isEditing", "isEditing") }
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__njtN0, {
+        className={classNames("all", sty.freeBox__njtN0, {
           [sty.freeBoxisEditing__njtN0ZsQtK]: hasVariant(
             $state,
             "isEditing",
@@ -207,24 +210,19 @@ function PlasmicCommentPostForm__RenderFunc(props: {
         <div
           data-plasmic-name={"body"}
           data-plasmic-override={overrides.body}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.body,
-            {
-              [sty.bodyisPreviewing]: hasVariant(
-                $state,
-                "isPreviewing",
-                "isPreviewing"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.body, {
+            [sty.bodyisPreviewing]: hasVariant(
+              $state,
+              "isPreviewing",
+              "isPreviewing"
+            ),
+          })}
         >
           {"body"}
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__ekXz, {
+        className={classNames("all", sty.freeBox__ekXz, {
           [sty.freeBoxisEditing__ekXzZsQtK]: hasVariant(
             $state,
             "isEditing",
@@ -233,7 +231,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__rndZx, {
+          className={classNames("all", sty.freeBox__rndZx, {
             [sty.freeBoxisEditing__rndZxZsQtK]: hasVariant(
               $state,
               "isEditing",
@@ -265,7 +263,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
             withBackgroundHover={true}
           >
             <IconIcon
-              className={classNames(projectcss.all, sty.svg__wnixe)}
+              className={classNames("all", sty.svg__wnixe)}
               role={"img"}
             />
           </IconButton>
@@ -283,7 +281,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
             withBackgroundHover={true}
           >
             <Icon2Icon
-              className={classNames(projectcss.all, sty.svg__t3Ip6)}
+              className={classNames("all", sty.svg__t3Ip6)}
               role={"img"}
             />
           </IconButton>
@@ -301,13 +299,13 @@ function PlasmicCommentPostForm__RenderFunc(props: {
             withBackgroundHover={true}
           >
             <Icon3Icon
-              className={classNames(projectcss.all, sty.svg__kDvAo)}
+              className={classNames("all", sty.svg__kDvAo)}
               role={"img"}
             />
           </IconButton>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__jbqOp, {
+          className={classNames("all", sty.freeBox__jbqOp, {
             [sty.freeBoxisEditing__jbqOpZsQtK]: hasVariant(
               $state,
               "isEditing",
@@ -333,18 +331,13 @@ function PlasmicCommentPostForm__RenderFunc(props: {
             color={"muted"}
             label={
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__geIt,
-                  {
-                    [sty.textisPreviewing__geItZvkP]: hasVariant(
-                      $state,
-                      "isPreviewing",
-                      "isPreviewing"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__geIt, {
+                  [sty.textisPreviewing__geItZvkP]: hasVariant(
+                    $state,
+                    "isPreviewing",
+                    "isPreviewing"
+                  ),
+                })}
               >
                 {hasVariant($state, "isPreviewing", "isPreviewing")
                   ? "Edit"
@@ -367,11 +360,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
             color={"muted"}
             label={
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___9U10X
-                )}
+                className={classNames("all", "__wab_text", sty.text___9U10X)}
               >
                 {"Cancel"}
               </div>
@@ -391,18 +380,13 @@ function PlasmicCommentPostForm__RenderFunc(props: {
             })}
             label={
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__zljgi,
-                  {
-                    [sty.textisEditing__zljgiZsQtK]: hasVariant(
-                      $state,
-                      "isEditing",
-                      "isEditing"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__zljgi, {
+                  [sty.textisEditing__zljgiZsQtK]: hasVariant(
+                    $state,
+                    "isEditing",
+                    "isEditing"
+                  ),
+                })}
               >
                 {hasVariant($state, "isEditing", "isEditing") ? "Save" : "Send"}
               </div>
@@ -461,7 +445,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentPostForm__VariantsArgs;
     args?: PlasmicCommentPostForm__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentPostForm__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentPostForm__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentPostForm__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

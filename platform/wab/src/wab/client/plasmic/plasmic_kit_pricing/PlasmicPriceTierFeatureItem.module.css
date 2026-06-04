@@ -3,21 +3,10 @@
   flex-direction: row;
   position: relative;
   width: 100%;
-  min-width: 0;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+  column-gap: 4px;
   min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootspecialSectionHeading {
   padding-top: 16px;
@@ -28,38 +17,17 @@
   color: var(--token-mlyauzeAvywY);
   width: 16px;
   height: 16px;
-  margin-top: 1px;
-  margin-right: 0px;
-  margin-bottom: 0px;
-  margin-left: calc(0px + 4px) !important;
   flex-shrink: 0;
+  margin: 1px 0px 0px;
 }
 .svgglobal_environment_website {
   margin-top: 4px;
-  margin-left: calc(0px + 4px) !important;
-}
-.svgtier_free {
-  margin-left: calc(0px + 4px) !important;
-}
-.svgtier_starter {
-  margin-left: calc(0px + 4px) !important;
-}
-.svgtier_pro {
-  margin-left: calc(0px + 4px) !important;
-}
-.svgtier_team {
-  margin-left: calc(0px + 4px) !important;
 }
 .svgtier_enterprise {
   color: var(--token-N1gO6v-RIEn);
-  margin-left: calc(0px + 4px) !important;
 }
 .svgspecialSectionHeading {
   opacity: 0;
-  margin-left: calc(0px + 4px) !important;
-}
-.svgcheckIcon {
-  margin-left: calc(0px + 4px) !important;
 }
 .freeBox {
   position: relative;

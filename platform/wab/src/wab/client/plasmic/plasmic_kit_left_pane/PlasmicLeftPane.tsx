@@ -45,7 +45,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftPane.module.css"; // plasmic-import: avrERxAp81S/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
@@ -197,15 +197,17 @@ function PlasmicLeftPane__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -218,10 +220,10 @@ function PlasmicLeftPane__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -245,7 +247,7 @@ function PlasmicLeftPane__RenderFunc(props: {
             className={classNames("__wab_instance", sty.helpGroup)}
             icon={
               <HelpCircleSvgIcon
-                className={classNames(projectcss.all, sty.svg__zDP)}
+                className={classNames("all", sty.svg__zDP)}
                 role={"img"}
               />
             }
@@ -259,7 +261,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               className={classNames("__wab_instance", sty.lint)}
               icon={
                 <WarningTriangleSvgIcon
-                  className={classNames(projectcss.all, sty.svg__zOfU0)}
+                  className={classNames("all", sty.svg__zOfU0)}
                   role={"img"}
                 />
               }
@@ -271,7 +273,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               className={classNames("__wab_instance", sty.outline)}
               icon={
                 <TreeIcon
-                  className={classNames(projectcss.all, sty.svg__sSj6U)}
+                  className={classNames("all", sty.svg__sSj6U)}
                   role={"img"}
                 />
               }
@@ -283,7 +285,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               className={classNames("__wab_instance", sty.assets)}
               icon={
                 <ComponentsSvgIcon
-                  className={classNames(projectcss.all, sty.svg___2I0R2)}
+                  className={classNames("all", sty.svg___2I0R2)}
                   role={"img"}
                 />
               }
@@ -295,7 +297,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               className={classNames("__wab_instance", sty.settingsGroup)}
               icon={
                 <GearIcon
-                  className={classNames(projectcss.all, sty.svg__otRy1)}
+                  className={classNames("all", sty.svg__otRy1)}
                   role={"img"}
                 />
               }
@@ -307,7 +309,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               className={classNames("__wab_instance", sty.more)}
               icon={
                 <DotsHorizontalCircleSvgIcon
-                  className={classNames(projectcss.all, sty.svg___52RoI)}
+                  className={classNames("all", sty.svg___52RoI)}
                   role={"img"}
                 />
               }
@@ -350,7 +352,7 @@ function PlasmicLeftPane__RenderFunc(props: {
       <div
         data-plasmic-name={"paneContainer"}
         data-plasmic-override={overrides.paneContainer}
-        className={classNames(projectcss.all, sty.paneContainer, {
+        className={classNames("all", sty.paneContainer, {
           [sty.paneContainertype_components]: hasVariant(
             $state,
             "type",
@@ -387,7 +389,7 @@ function PlasmicLeftPane__RenderFunc(props: {
         <div
           data-plasmic-name={"paneContent"}
           data-plasmic-override={overrides.paneContent}
-          className={classNames(projectcss.all, sty.paneContent, {
+          className={classNames("all", sty.paneContent, {
             [sty.paneContenttype_animationSequences]: hasVariant(
               $state,
               "type",

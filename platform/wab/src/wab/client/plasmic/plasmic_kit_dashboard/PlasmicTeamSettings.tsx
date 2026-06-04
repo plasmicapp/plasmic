@@ -20,7 +20,6 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -32,15 +31,12 @@ import TeamBilling from "../../components/dashboard/TeamBilling"; // plasmic-imp
 import TeamMemberList from "../../components/dashboard/TeamMemberList"; // plasmic-import: 3jXSiWKc1-/component
 import TeamMemberListItem from "../../components/dashboard/TeamMemberListItem"; // plasmic-import: gdLJj97tYt/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicTeamSettings.module.css"; // plasmic-import: zRIUpVU0Cm8/css
 
 createPlasmicElementProxy;
@@ -119,21 +115,24 @@ function PlasmicTeamSettings__RenderFunc(props: {
         path: "hideNewButton",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideNewButton,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hideNewButton,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -142,41 +141,18 @@ function PlasmicTeamSettings__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root,
-        {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-        }
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
+        sty.root
       )}
     >
       <header
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        className={classNames(projectcss.all, sty.header, {
+        className={classNames("all", sty.header, {
           [sty.headerhideNewButton]: hasVariant(
             $state,
             "hideNewButton",
@@ -187,7 +163,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
+          className={classNames("all", sty.freeBox)}
         >
           {renderPlasmicSlot({
             defaultContents: "Team Name",
@@ -226,13 +202,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
             sty.teamMemberListItem__nbSwk
           )}
           name={
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__ahUvf
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__ahUvf)}>
               {"Carl Sagan"}
             </div>
           }
@@ -244,13 +214,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
             sty.teamMemberListItem___9Njm9
           )}
           name={
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__dtMjE
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__dtMjE)}>
               {"Rosa Diaz"}
             </div>
           }
@@ -262,13 +226,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
             sty.teamMemberListItem__ngOos
           )}
           name={
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__iTfFq
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__iTfFq)}>
               {"Jared Dunn"}
             </div>
           }
@@ -343,7 +301,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTeamSettings__VariantsArgs;
     args?: PlasmicTeamSettings__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTeamSettings__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTeamSettings__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTeamSettings__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

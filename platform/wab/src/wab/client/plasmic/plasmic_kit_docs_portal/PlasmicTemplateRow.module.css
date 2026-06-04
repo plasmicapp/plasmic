@@ -14,7 +14,7 @@
 .rootisActive {
   background: var(--token-pryzRkTNOFd);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-7bUFmc-GkpN);
 }
 .freeBox {
@@ -32,7 +32,5 @@
   max-width: 100%;
   align-self: center;
   margin-right: 5px;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }

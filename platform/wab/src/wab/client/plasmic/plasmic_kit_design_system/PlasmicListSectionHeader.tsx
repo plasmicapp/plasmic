@@ -33,7 +33,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListSectionHeader.module.css"; // plasmic-import: wNvxk7eOak/css
 
 import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
@@ -142,6 +142,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -159,10 +160,10 @@ function PlasmicListSectionHeader__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -189,7 +190,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
         <div
           data-plasmic-name={"iconContainer"}
           data-plasmic-override={overrides.iconContainer}
-          className={classNames(projectcss.all, sty.iconContainer, {
+          className={classNames("all", sty.iconContainer, {
             [sty.iconContainercollapseState_collapsed]: hasVariant(
               $state,
               "collapseState",
@@ -205,7 +206,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <VariantGroupIcon
-                className={classNames(projectcss.all, sty.svg__yXeE)}
+                className={classNames("all", sty.svg__yXeE)}
                 role={"img"}
               />
             ),
@@ -224,7 +225,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
       <div
         data-plasmic-name={"titleContainer"}
         data-plasmic-override={overrides.titleContainer}
-        className={classNames(projectcss.all, sty.titleContainer, {
+        className={classNames("all", sty.titleContainer, {
           [sty.titleContainercollapseState_collapsed]: hasVariant(
             $state,
             "collapseState",
@@ -258,7 +259,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
         <div
           data-plasmic-name={"actionsContainer"}
           data-plasmic-override={overrides.actionsContainer}
-          className={classNames(projectcss.all, sty.actionsContainer, {
+          className={classNames("all", sty.actionsContainer, {
             [sty.actionsContainershowActions]: hasVariant(
               $state,
               "showActions",
@@ -271,7 +272,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
               <IconButton
                 children2={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__pXkgq)}
+                    className={classNames("all", sty.svg__pXkgq)}
                     role={"img"}
                   />
                 }
@@ -279,7 +280,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
                 size={"small"}
               >
                 <PlusCircleSvgIcon
-                  className={classNames(projectcss.all, sty.svg__priNb)}
+                  className={classNames("all", sty.svg__priNb)}
                   role={"img"}
                 />
               </IconButton>
@@ -298,7 +299,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
         <div
           data-plasmic-name={"collapseIndicator"}
           data-plasmic-override={overrides.collapseIndicator}
-          className={classNames(projectcss.all, sty.collapseIndicator, {
+          className={classNames("all", sty.collapseIndicator, {
             [sty.collapseIndicatorcollapseState_collapsed]: hasVariant(
               $state,
               "collapseState",

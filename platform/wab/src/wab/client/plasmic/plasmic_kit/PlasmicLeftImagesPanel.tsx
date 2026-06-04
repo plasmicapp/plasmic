@@ -33,7 +33,7 @@ import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProv
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftImagesPanel.module.css"; // plasmic-import: ECu8FUyP0f3/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -110,15 +110,17 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
         path: "compact",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.compact,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.compact,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -131,10 +133,10 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootcompact]: hasVariant($state, "compact", "compact") }
@@ -162,14 +164,14 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newIconButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__tPc16)}
+                className={classNames("all", sty.svg__tPc16)}
                 role={"img"}
               />
             }
             size={hasVariant($state, "compact", "compact") ? "small" : "wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg__rksSt)}
+                className={classNames("all", sty.svg__rksSt)}
                 role={"img"}
               />
             }
@@ -192,18 +194,13 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__k0Tq1,
-                {
-                  [sty.textcompact__k0Tq1HgWq9]: hasVariant(
-                    $state,
-                    "compact",
-                    "compact"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__k0Tq1, {
+                [sty.textcompact__k0Tq1HgWq9]: hasVariant(
+                  $state,
+                  "compact",
+                  "compact"
+                ),
+              })}
             >
               {hasVariant($state, "compact", "compact")
                 ? "Icons"
@@ -221,7 +218,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"iconsContent"}
         data-plasmic-override={overrides.iconsContent}
-        className={classNames(projectcss.all, sty.iconsContent, {
+        className={classNames("all", sty.iconsContent, {
           [sty.iconsContentcompact]: hasVariant($state, "compact", "compact"),
         })}
       />
@@ -235,14 +232,14 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newImageButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg___0VoGg)}
+                className={classNames("all", sty.svg___0VoGg)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg___5CEB)}
+                className={classNames("all", sty.svg___5CEB)}
                 role={"img"}
               />
             }
@@ -265,18 +262,13 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__hnR4J,
-                {
-                  [sty.textcompact__hnR4JHgWq9]: hasVariant(
-                    $state,
-                    "compact",
-                    "compact"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__hnR4J, {
+                [sty.textcompact__hnR4JHgWq9]: hasVariant(
+                  $state,
+                  "compact",
+                  "compact"
+                ),
+              })}
             >
               {hasVariant($state, "compact", "compact")
                 ? "Images"
@@ -296,7 +288,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"imagesContent"}
         data-plasmic-override={overrides.imagesContent}
-        className={classNames(projectcss.all, sty.imagesContent, {
+        className={classNames("all", sty.imagesContent, {
           [sty.imagesContentcompact]: hasVariant($state, "compact", "compact"),
         })}
       />
@@ -354,7 +346,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftImagesPanel__VariantsArgs;
     args?: PlasmicLeftImagesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftImagesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftImagesPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftImagesPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

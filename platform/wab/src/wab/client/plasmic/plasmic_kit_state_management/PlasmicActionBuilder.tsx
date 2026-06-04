@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,20 +14,18 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -40,23 +38,21 @@ import StyleToggleButtonGroup from "../../components/style-controls/StyleToggleB
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicActionBuilder.module.css"; // plasmic-import: YP664uas0Q/css
 
-import PlaysvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
+import PlaySvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
 import ResetIcon from "../plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import EditsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
-import ForbidsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ForbidSvg"; // plasmic-import: zGZ5m7RLu/icon
-import GripsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
-import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import EditSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
+import ForbidSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ForbidSvg"; // plasmic-import: zGZ5m7RLu/icon
+import GripSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -142,7 +138,16 @@ function PlasmicActionBuilder__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -153,68 +158,70 @@ function PlasmicActionBuilder__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isCollapsed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isCollapsed,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isCollapsed,
       },
       {
         path: "isAdding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isAdding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isAdding,
       },
       {
         path: "isConditional",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isConditional,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isConditional,
       },
       {
         path: "isEditingActionName",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isEditingActionName,
       },
       {
         path: "isDragging",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDragging,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDragging,
       },
       {
         path: "alwaysShowDragHandle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.alwaysShowDragHandle,
       },
       {
         path: "actionType.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "previewSteps",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.previewSteps,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.previewSteps,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -223,6 +230,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -230,20 +239,17 @@ function PlasmicActionBuilder__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__vLqy, {
+        className={classNames("all", sty.freeBox__vLqy, {
           [sty.freeBoxisCollapsed__vLqyzAjJ]: hasVariant(
             $state,
             "isCollapsed",
@@ -257,7 +263,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox___6ONc8, {
+          className={classNames("all", sty.freeBox___6ONc8, {
             [sty.freeBoxisAdding___6ONc8GmcNf]: hasVariant(
               $state,
               "isAdding",
@@ -286,7 +292,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__shMo5, {
+            className={classNames("all", sty.freeBox__shMo5, {
               [sty.freeBoxalwaysShowDragHandle__shMo5XiQpD]: hasVariant(
                 $state,
                 "alwaysShowDragHandle",
@@ -307,7 +313,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
             <div
               data-plasmic-name={"dragHandle"}
               data-plasmic-override={overrides.dragHandle}
-              className={classNames(projectcss.all, sty.dragHandle, {
+              className={classNames("all", sty.dragHandle, {
                 [sty.dragHandlealwaysShowDragHandle]: hasVariant(
                   $state,
                   "alwaysShowDragHandle",
@@ -325,8 +331,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
                 ),
               })}
             >
-              <GripsvgIcon
-                className={classNames(projectcss.all, sty.svg__jk4SW, {
+              <GripSvgIcon
+                className={classNames("all", sty.svg__jk4SW, {
                   [sty.svgalwaysShowDragHandle__jk4SWxiQpD]: hasVariant(
                     $state,
                     "alwaysShowDragHandle",
@@ -352,10 +358,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
               />
             </div>
           </div>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__zbGVe, {
+          <div
+            className={classNames("all", sty.freeBox__zbGVe, {
               [sty.freeBoxisCollapsed__zbGVezAjJ]: hasVariant(
                 $state,
                 "isCollapsed",
@@ -374,7 +378,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__hNogq, {
+              className={classNames("all", sty.freeBox__hNogq, {
                 [sty.freeBoxisCollapsed__hNogQzAjJ]: hasVariant(
                   $state,
                   "isCollapsed",
@@ -445,15 +449,15 @@ function PlasmicActionBuilder__RenderFunc(props: {
                     ),
                   })}
                   prefixIcon={
-                    <SearchsvgIcon
-                      className={classNames(projectcss.all, sty.svg___5TaU)}
+                    <SearchSvgIcon
+                      className={classNames("all", sty.svg___5TaU)}
                       role={"img"}
                     />
                   }
                   styleType={["bordered", "white"]}
                   suffixIcon={
-                    <ClosesvgIcon
-                      className={classNames(projectcss.all, sty.svg___3MpFo)}
+                    <CloseSvgIcon
+                      className={classNames("all", sty.svg___3MpFo)}
                       role={"img"}
                     />
                   }
@@ -466,12 +470,12 @@ function PlasmicActionBuilder__RenderFunc(props: {
               data-plasmic-override={overrides.play}
               PlasmicIconType={
                 hasVariant($state, "previewSteps", "unable")
-                  ? ForbidsvgIcon
+                  ? ForbidSvgIcon
                   : hasVariant($state, "previewSteps", "finished")
                   ? ResetIcon
-                  : PlaysvgIcon
+                  : PlaySvgIcon
               }
-              className={classNames(projectcss.all, sty.play, {
+              className={classNames("all", sty.play, {
                 [sty.playisAdding]: hasVariant($state, "isAdding", "isAdding"),
                 [sty.playisConditional]: hasVariant(
                   $state,
@@ -502,10 +506,10 @@ function PlasmicActionBuilder__RenderFunc(props: {
               role={"img"}
             />
 
-            <EditsvgIcon
+            <EditSvgIcon
               data-plasmic-name={"edit"}
               data-plasmic-override={overrides.edit}
-              className={classNames(projectcss.all, sty.edit, {
+              className={classNames("all", sty.edit, {
                 [sty.editisAdding]: hasVariant($state, "isAdding", "isAdding"),
                 [sty.editisConditional]: hasVariant(
                   $state,
@@ -521,11 +525,11 @@ function PlasmicActionBuilder__RenderFunc(props: {
               role={"img"}
             />
 
-            <div className={classNames(projectcss.all, sty.freeBox___38C0J)}>
-              <ChevronDownsvgIcon
+            <div className={classNames("all", sty.freeBox___38C0J)}>
+              <ChevronDownSvgIcon
                 data-plasmic-name={"collapse"}
                 data-plasmic-override={overrides.collapse}
-                className={classNames(projectcss.all, sty.collapse, {
+                className={classNames("all", sty.collapse, {
                   [sty.collapseisCollapsed]: hasVariant(
                     $state,
                     "isCollapsed",
@@ -540,9 +544,9 @@ function PlasmicActionBuilder__RenderFunc(props: {
                 role={"img"}
               />
             </div>
-          </Stack__>
+          </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__uRyt, {
+            className={classNames("all", sty.freeBox__uRyt, {
               [sty.freeBoxisAdding__uRytgmcNf]: hasVariant(
                 $state,
                 "isAdding",
@@ -550,7 +554,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__hpc)}>
+            <div className={classNames("all", sty.freeBox__hpc)}>
               <MenuButton
                 data-plasmic-name={"menuButton"}
                 data-plasmic-override={overrides.menuButton}
@@ -561,7 +565,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
         </div>
         {(hasVariant($state, "isCollapsed", "isCollapsed") ? false : true) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__hepWb, {
+            className={classNames("all", sty.freeBox__hepWb, {
               [sty.freeBoxisCollapsed__hepWbzAjJ]: hasVariant(
                 $state,
                 "isCollapsed",
@@ -569,10 +573,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__uIig9, {
+            <div
+              className={classNames("all", sty.freeBox__uIig9, {
                 [sty.freeBoxisAdding__uIig9GmcNf]: hasVariant(
                   $state,
                   "isAdding",
@@ -591,7 +593,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(projectcss.all, sty.freeBox__gi2U, {
+                className={classNames("all", sty.freeBox__gi2U, {
                   [sty.freeBoxisAdding__gi2UGmcNf]: hasVariant(
                     $state,
                     "isAdding",
@@ -605,8 +607,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
                   label={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__f4LVu
                       )}
                     >
@@ -625,11 +627,21 @@ function PlasmicActionBuilder__RenderFunc(props: {
                           "isAdding"
                         ),
                       })}
-                      onChange={(...eventArgs) => {
-                        generateStateOnChangeProp($state, [
-                          "actionType",
-                          "value",
-                        ])(eventArgs[0]);
+                      onChange={async (...eventArgs: any) => {
+                        ((...eventArgs) => {
+                          generateStateOnChangeProp($state, [
+                            "actionType",
+                            "value",
+                          ])(eventArgs[0]);
+                        }).apply(null, eventArgs);
+
+                        if (
+                          eventArgs.length > 1 &&
+                          eventArgs[1] &&
+                          eventArgs[1]._plasmic_state_init_
+                        ) {
+                          return;
+                        }
                       }}
                       placeholder={"Select..."}
                       value={generateStateValueProp($state, [
@@ -641,11 +653,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
                   }
                 />
               </div>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__ozxrn)}
-              >
+              <div className={classNames("all", sty.freeBox__ozxrn)}>
                 {renderPlasmicSlot({
                   defaultContents: (
                     <React.Fragment>
@@ -657,8 +665,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
                         label={
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__iBtM5
                             )}
                           >
@@ -673,21 +681,15 @@ function PlasmicActionBuilder__RenderFunc(props: {
                               sty.textbox__q2VOf
                             )}
                             prefixIcon={
-                              <SearchsvgIcon
-                                className={classNames(
-                                  projectcss.all,
-                                  sty.svg___5Gx3L
-                                )}
+                              <SearchSvgIcon
+                                className={classNames("all", sty.svg___5Gx3L)}
                                 role={"img"}
                               />
                             }
                             styleType={["bordered"]}
                             suffixIcon={
-                              <ClosesvgIcon
-                                className={classNames(
-                                  projectcss.all,
-                                  sty.svg__ws8Js
-                                )}
+                              <CloseSvgIcon
+                                className={classNames("all", sty.svg__ws8Js)}
                                 role={"img"}
                               />
                             }
@@ -703,8 +705,8 @@ function PlasmicActionBuilder__RenderFunc(props: {
                         label={
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__a8Ca9
                             )}
                           >
@@ -719,21 +721,15 @@ function PlasmicActionBuilder__RenderFunc(props: {
                               sty.textbox__qc4J9
                             )}
                             prefixIcon={
-                              <SearchsvgIcon
-                                className={classNames(
-                                  projectcss.all,
-                                  sty.svg__z1F4E
-                                )}
+                              <SearchSvgIcon
+                                className={classNames("all", sty.svg__z1F4E)}
                                 role={"img"}
                               />
                             }
                             styleType={["bordered"]}
                             suffixIcon={
-                              <ClosesvgIcon
-                                className={classNames(
-                                  projectcss.all,
-                                  sty.svg__tyYYz
-                                )}
+                              <CloseSvgIcon
+                                className={classNames("all", sty.svg__tyYYz)}
                                 role={"img"}
                               />
                             }
@@ -742,18 +738,13 @@ function PlasmicActionBuilder__RenderFunc(props: {
                       />
                     </React.Fragment>
                   ),
-
                   value: args.children,
                 })}
-              </Stack__>
-            </Stack__>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__gEkwk)}
-            >
+              </div>
+            </div>
+            <div className={classNames("all", sty.freeBox__gEkwk)}>
               <div
-                className={classNames(projectcss.all, sty.freeBox__p0Zpy, {
+                className={classNames("all", sty.freeBox__p0Zpy, {
                   [sty.freeBoxisAdding__p0ZpyGmcNf]: hasVariant(
                     $state,
                     "isAdding",
@@ -767,12 +758,10 @@ function PlasmicActionBuilder__RenderFunc(props: {
                 value: args.label,
                 className: classNames(sty.slotTargetLabel),
               })}
-              <div className={classNames(projectcss.all, sty.freeBox__j9J79)} />
-            </Stack__>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__y1CVo, {
+              <div className={classNames("all", sty.freeBox__j9J79)} />
+            </div>
+            <div
+              className={classNames("all", sty.freeBox__y1CVo, {
                 [sty.freeBoxisConditional__y1CVodg9Bs]: hasVariant(
                   $state,
                   "isConditional",
@@ -786,11 +775,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___1QIqN
-                )}
+                className={classNames("all", "__wab_text", sty.text___1QIqN)}
               >
                 {"Run this step"}
               </div>
@@ -822,11 +807,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
                   }
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__zKDe6
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__zKDe6)}
                   >
                     {"Always"}
                   </div>
@@ -843,11 +824,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
                   styleValue={"never"}
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__rTcr
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__rTcr)}
                   >
                     {"Never"}
                   </div>
@@ -869,11 +846,7 @@ function PlasmicActionBuilder__RenderFunc(props: {
                   }
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__rQi9K
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__rQi9K)}
                   >
                     {"When..."}
                   </div>
@@ -903,29 +876,27 @@ function PlasmicActionBuilder__RenderFunc(props: {
                       ),
                     })}
                     prefixIcon={
-                      <SearchsvgIcon
-                        className={classNames(projectcss.all, sty.svg__mxU6)}
+                      <SearchSvgIcon
+                        className={classNames("all", sty.svg__mxU6)}
                         role={"img"}
                       />
                     }
                     styleType={["bordered"]}
                     suffixIcon={
-                      <ClosesvgIcon
-                        className={classNames(projectcss.all, sty.svg__e28Tm)}
+                      <CloseSvgIcon
+                        className={classNames("all", sty.svg__e28Tm)}
                         role={"img"}
                       />
                     }
                   />
                 }
               />
-            </Stack__>
+            </div>
           </div>
         ) : null}
         {(hasVariant($state, "isCollapsed", "isCollapsed") ? false : false) ? (
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__leznJ, {
+          <div
+            className={classNames("all", sty.freeBox__leznJ, {
               [sty.freeBoxisAdding__leznJgmcNf]: hasVariant(
                 $state,
                 "isAdding",
@@ -949,14 +920,14 @@ function PlasmicActionBuilder__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__cyV10)}
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__cyV10)}
                   role={"img"}
                 />
               }
               startIcon={
                 <svg
-                  className={classNames(projectcss.all, sty.svg___072Fr, {
+                  className={classNames("all", sty.svg___072Fr, {
                     [sty.svgisCollapsed___072FRzAjJ]: hasVariant(
                       $state,
                       "isCollapsed",
@@ -980,14 +951,14 @@ function PlasmicActionBuilder__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__cF9Sm)}
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__cF9Sm)}
                   role={"img"}
                 />
               }
               startIcon={
                 <svg
-                  className={classNames(projectcss.all, sty.svg__tyTTc)}
+                  className={classNames("all", sty.svg__tyTTc)}
                   role={"img"}
                 />
               }
@@ -995,11 +966,11 @@ function PlasmicActionBuilder__RenderFunc(props: {
             >
               {"Save"}
             </Button>
-          </Stack__>
+          </div>
         ) : null}
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__zhpXc)}>
-        <div className={classNames(projectcss.all, sty.freeBox__gDmD8)} />
+      <div className={classNames("all", sty.freeBox__zhpXc)}>
+        <div className={classNames("all", sty.freeBox__gDmD8)} />
       </div>
     </div>
   ) as React.ReactElement | null;
@@ -1022,7 +993,6 @@ const PlasmicDescendants = {
     "cancelBtn",
     "saveBtn",
   ],
-
   dragHandle: ["dragHandle"],
   editActionName: ["editActionName"],
   play: ["play"],
@@ -1062,23 +1032,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicActionBuilder__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicActionBuilder__VariantsArgs;
     args?: PlasmicActionBuilder__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicActionBuilder__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicActionBuilder__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicActionBuilder__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicActionBuilder__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

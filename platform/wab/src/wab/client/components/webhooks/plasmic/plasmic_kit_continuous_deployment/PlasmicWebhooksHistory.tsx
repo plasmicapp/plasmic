@@ -31,7 +31,7 @@ import WebhookEvent from "../../WebhookEvent"; // plasmic-import: MtBpr4iNob/com
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksHistory.module.css"; // plasmic-import: Ynwp30ZgYk/css
 
 createPlasmicElementProxy;
@@ -101,15 +101,17 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.loading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -122,10 +124,10 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootloading]: hasVariant($state, "loading", "loading") }
@@ -135,7 +137,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
+          className={classNames("all", sty.freeBox, {
             [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
           })}
         >
@@ -182,8 +184,8 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
                   url={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__yOarX
                       )}
                     >
@@ -201,12 +203,9 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text,
-            { [sty.textloading]: hasVariant($state, "loading", "loading") }
-          )}
+          className={classNames("all", "__wab_text", sty.text, {
+            [sty.textloading]: hasVariant($state, "loading", "loading"),
+          })}
         >
           {hasVariant($state, "loading", "loading")
             ? "Loading\u2026"

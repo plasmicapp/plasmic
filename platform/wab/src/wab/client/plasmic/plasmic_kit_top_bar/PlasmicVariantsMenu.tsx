@@ -14,20 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicVariantsMenu.module.css"; // plasmic-import: cwS3NAy41ya/css
 
 import SearchIcon from "../plasmic_kit/PlasmicIcon__Search"; // plasmic-import: sjONHoK61vpSz/icon
@@ -86,6 +86,8 @@ function PlasmicVariantsMenu__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -93,25 +95,23 @@ function PlasmicVariantsMenu__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_6CrqkTcB6gSAHoA8c8zpNz",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <SearchIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
 
@@ -119,8 +119,9 @@ function PlasmicVariantsMenu__RenderFunc(props: {
           data-plasmic-name={"searchInput"}
           data-plasmic-override={overrides.searchInput}
           className={classNames(
-            projectcss.all,
-            projectcss.input,
+            "all",
+            "input",
+            "input__6Crqk",
             sty.searchInput
           )}
           placeholder={"Search variants…"}
@@ -135,7 +136,7 @@ function PlasmicVariantsMenu__RenderFunc(props: {
       <div
         data-plasmic-name={"variantsList"}
         data-plasmic-override={overrides.variantsList}
-        className={classNames(projectcss.all, sty.variantsList)}
+        className={classNames("all", sty.variantsList)}
       >
         {renderPlasmicSlot({
           defaultContents: null,
@@ -175,7 +176,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicVariantsMenu__VariantsArgs;
     args?: PlasmicVariantsMenu__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicVariantsMenu__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantsMenu__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicVariantsMenu__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

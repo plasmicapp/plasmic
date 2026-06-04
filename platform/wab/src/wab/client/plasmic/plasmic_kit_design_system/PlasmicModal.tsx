@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicModal.module.css"; // plasmic-import: rD0wOVzSnE/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
@@ -116,6 +116,7 @@ function PlasmicModal__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -133,10 +134,10 @@ function PlasmicModal__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -149,7 +150,7 @@ function PlasmicModal__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__uYvb1, {
+        className={classNames("all", sty.freeBox__uYvb1, {
           [sty.freeBoxtintBackground__uYvb1RjRan]: hasVariant(
             $state,
             "tintBackground",
@@ -157,7 +158,7 @@ function PlasmicModal__RenderFunc(props: {
           ),
         })}
       >
-        <div className={classNames(projectcss.all, sty.freeBox__x9WX)}>
+        <div className={classNames("all", sty.freeBox__x9WX)}>
           {renderPlasmicSlot({
             defaultContents: "Modal name",
             value: args.title,
@@ -166,7 +167,7 @@ function PlasmicModal__RenderFunc(props: {
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__tdctO, {
+        className={classNames("all", sty.freeBox__tdctO, {
           [sty.freeBoxtintBackground__tdctOrjRan]: hasVariant(
             $state,
             "tintBackground",
@@ -181,7 +182,7 @@ function PlasmicModal__RenderFunc(props: {
         })}
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__j7Tdg, {
+        className={classNames("all", sty.freeBox__j7Tdg, {
           [sty.freeBoxtintBackground__j7TdgrjRan]: hasVariant(
             $state,
             "tintBackground",
@@ -189,7 +190,7 @@ function PlasmicModal__RenderFunc(props: {
           ),
         })}
       >
-        <div className={classNames(projectcss.all, sty.freeBox__mjiJn)}>
+        <div className={classNames("all", sty.freeBox__mjiJn)}>
           {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
@@ -197,25 +198,21 @@ function PlasmicModal__RenderFunc(props: {
                   className={classNames("__wab_instance", sty.button__ciksZ)}
                   endIcon={
                     <TriangleBottomIcon
-                      className={classNames(projectcss.all, sty.svg___5DaTk)}
+                      className={classNames("all", sty.svg___5DaTk)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <TrashIcon
-                      className={classNames(projectcss.all, sty.svg__r7Pk)}
+                      className={classNames("all", sty.svg__r7Pk)}
                       role={"img"}
                     />
                   }
                   type={["clear"]}
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text___1X6U
-                    )}
+                    className={classNames("all", "__wab_text", sty.text___1X6U)}
                   >
                     {"Cancel"}
                   </div>
@@ -224,14 +221,14 @@ function PlasmicModal__RenderFunc(props: {
                   className={classNames("__wab_instance", sty.button___8Swrs)}
                   endIcon={
                     <TriangleBottomIcon
-                      className={classNames(projectcss.all, sty.svg__oS3Cs)}
+                      className={classNames("all", sty.svg__oS3Cs)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <TrashIcon
-                      className={classNames(projectcss.all, sty.svg__eycPc)}
+                      className={classNames("all", sty.svg__eycPc)}
                       role={"img"}
                     />
                   }

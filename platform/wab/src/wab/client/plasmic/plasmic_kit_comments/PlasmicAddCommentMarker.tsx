@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicAddCommentMarker.module.css"; // plasmic-import: b0TlBn4m87ta/css
 
 import SpeechBubblePlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubblePlusSvg"; // plasmic-import: g2gTPsRaJ/icon
@@ -99,15 +99,18 @@ function PlasmicAddCommentMarker__RenderFunc(props: {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -125,7 +128,7 @@ function PlasmicAddCommentMarker__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxisRecording]: hasVariant(
             $state,
             "isRecording",
@@ -136,7 +139,7 @@ function PlasmicAddCommentMarker__RenderFunc(props: {
         <SpeechBubblePlusSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
       </div>
@@ -169,7 +172,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAddCommentMarker__VariantsArgs;
     args?: PlasmicAddCommentMarker__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAddCommentMarker__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicAddCommentMarker__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAddCommentMarker__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

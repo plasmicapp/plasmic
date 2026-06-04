@@ -15,27 +15,13 @@
   position: relative;
 }
 .freeBox {
-  flex-direction: row;
   position: relative;
   display: flex;
-  padding: 1.5rem;
-}
-.freeBox > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-end;
   align-items: flex-end;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox > :global(.__wab_flex-container) > *,
-.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox > :global(.__wab_flex-container) > picture > img,
-.freeBox
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  justify-content: flex-end;
+  column-gap: 8px;
+  padding: 1.5rem;
 }
 .exportBtn:global(.__wab_instance) {
   position: relative;
@@ -44,14 +30,12 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__zAmqT {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .shareBtn:global(.__wab_instance) {
@@ -61,7 +45,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .text {
@@ -71,6 +54,5 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

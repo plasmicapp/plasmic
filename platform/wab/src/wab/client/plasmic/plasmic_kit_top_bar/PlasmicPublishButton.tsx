@@ -14,25 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicPublishButton.module.css"; // plasmic-import: yXRcEjTceQ/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -103,17 +102,22 @@ function PlasmicPublishButton__RenderFunc(props: {
         path: "withMenuButton",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withMenuButton,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withMenuButton,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -122,13 +126,11 @@ function PlasmicPublishButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_6CrqkTcB6gSAHoA8c8zpNz",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootwithMenuButton]: hasVariant(
@@ -144,14 +146,14 @@ function PlasmicPublishButton__RenderFunc(props: {
         data-plasmic-override={overrides.button}
         endIcon={
           <ChevronDownSvgIcon
-            className={classNames(projectcss.all, sty.svg__omiHo)}
+            className={classNames("all", sty.svg__omiHo)}
             role={"img"}
           />
         }
         size={"small"}
         startIcon={
           <ArrowRightSvgIcon
-            className={classNames(projectcss.all, sty.svg__pOu3R)}
+            className={classNames("all", sty.svg__pOu3R)}
             role={"img"}
           />
         }
@@ -171,7 +173,7 @@ function PlasmicPublishButton__RenderFunc(props: {
         })}
         icon={
           <PlusSvgIcon
-            className={classNames(projectcss.all, sty.svg__ayoeb)}
+            className={classNames("all", sty.svg__ayoeb)}
             role={"img"}
           />
         }
@@ -209,7 +211,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPublishButton__VariantsArgs;
     args?: PlasmicPublishButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPublishButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPublishButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPublishButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftComponentsPanel.module.css"; // plasmic-import: 7Wsvgu6cRd/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -98,10 +98,10 @@ function PlasmicLeftComponentsPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -121,14 +121,14 @@ function PlasmicLeftComponentsPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newComponentButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__fs072)}
+                className={classNames("all", sty.svg__fs072)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg__ao8JE)}
+                className={classNames("all", sty.svg__ao8JE)}
                 role={"img"}
               />
             }
@@ -148,7 +148,7 @@ function PlasmicLeftComponentsPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       />
     </div>
   ) as React.ReactElement | null;

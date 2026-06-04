@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicChatMessage.module.css"; // plasmic-import: 6Cb3e8nRgrBg/css
 
 createPlasmicElementProxy;
@@ -105,6 +105,7 @@ function PlasmicChatMessage__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -122,10 +123,10 @@ function PlasmicChatMessage__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -137,7 +138,7 @@ function PlasmicChatMessage__RenderFunc(props: {
       <div
         data-plasmic-name={"message"}
         data-plasmic-override={overrides.message}
-        className={classNames(projectcss.all, sty.message, {
+        className={classNames("all", sty.message, {
           [sty.messagetype_assistant]: hasVariant($state, "type", "assistant"),
           [sty.messagetype_user]: hasVariant($state, "type", "user"),
         })}
@@ -145,7 +146,7 @@ function PlasmicChatMessage__RenderFunc(props: {
         <div
           data-plasmic-name={"content"}
           data-plasmic-override={overrides.content}
-          className={classNames(projectcss.all, sty.content, {
+          className={classNames("all", sty.content, {
             [sty.contenttype_assistant]: hasVariant(
               $state,
               "type",
@@ -156,13 +157,7 @@ function PlasmicChatMessage__RenderFunc(props: {
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__eCdm
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__eCdm)}>
                 {
                   "Sure!\nThis feature helps you understand what\u2019s happening at each step. It gives you clear feedback, highlights important actions, and makes it easier to move forward without getting stuck."
                 }

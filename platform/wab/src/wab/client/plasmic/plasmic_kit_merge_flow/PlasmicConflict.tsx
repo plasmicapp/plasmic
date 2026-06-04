@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,27 +14,25 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import ToggleButtonSwitch from "../../components/merge/ToggleButtonSwitch"; // plasmic-import: LCAZOUPfDDB/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
+import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicConflict.module.css"; // plasmic-import: RM-Ya_c-mv/css
 
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: eV4_yyuiy3/icon
@@ -134,40 +132,40 @@ function PlasmicConflict__RenderFunc(props: {
         path: "hasSubtext",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasSubtext,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasSubtext,
       },
       {
         path: "merged",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.merged,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.merged,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_p8FkKgCnyuat1kHSEYAKfW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothasSubtext]: hasVariant($state, "hasSubtext", "hasSubtext"),
@@ -175,12 +173,10 @@ function PlasmicConflict__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"button10"}
         data-plasmic-override={overrides.button10}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.button10, {
+        className={classNames("all", sty.button10, {
           [sty.button10hasSubtext]: hasVariant(
             $state,
             "hasSubtext",
@@ -188,29 +184,27 @@ function PlasmicConflict__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"startIconsContainer10"}
           data-plasmic-override={overrides.startIconsContainer10}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.startIconsContainer10)}
+          className={classNames("all", sty.startIconsContainer10)}
         >
           <HomeIcon
             data-plasmic-name={"icon"}
             data-plasmic-override={overrides.icon}
-            className={classNames(projectcss.all, sty.icon)}
+            className={classNames("all", sty.icon)}
             role={"img"}
           />
-        </Stack__>
+        </div>
         <div
           data-plasmic-name={"labelsContainer10"}
           data-plasmic-override={overrides.labelsContainer10}
-          className={classNames(projectcss.all, sty.labelsContainer10)}
+          className={classNames("all", sty.labelsContainer10)}
         >
           <div
             data-plasmic-name={"labelText10"}
             data-plasmic-override={overrides.labelText10}
-            className={classNames(projectcss.all, sty.labelText10, {
+            className={classNames("all", sty.labelText10, {
               [sty.labelText10hasSubtext]: hasVariant(
                 $state,
                 "hasSubtext",
@@ -221,11 +215,7 @@ function PlasmicConflict__RenderFunc(props: {
             {renderPlasmicSlot({
               defaultContents: (
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__rp81Z
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__rp81Z)}
                 >
                   {"Homepage"}
                 </div>
@@ -242,7 +232,7 @@ function PlasmicConflict__RenderFunc(props: {
             <div
               data-plasmic-name={"subtext"}
               data-plasmic-override={overrides.subtext}
-              className={classNames(projectcss.all, sty.subtext, {
+              className={classNames("all", sty.subtext, {
                 [sty.subtexthasSubtext]: hasVariant(
                   $state,
                   "hasSubtext",
@@ -270,22 +260,20 @@ function PlasmicConflict__RenderFunc(props: {
             <div
               data-plasmic-name={"labelIconsContainer10"}
               data-plasmic-override={overrides.labelIconsContainer10}
-              className={classNames(projectcss.all, sty.labelIconsContainer10)}
+              className={classNames("all", sty.labelIconsContainer10)}
             >
               <ChevronDownIcon
-                className={classNames(projectcss.all, sty.svg__eSbfn)}
+                className={classNames("all", sty.svg__eSbfn)}
                 role={"img"}
               />
             </div>
           ) : null}
         </div>
         {false ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"endIconsContainer10"}
             data-plasmic-override={overrides.endIconsContainer10}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.endIconsContainer10)}
+            className={classNames("all", sty.endIconsContainer10)}
           >
             <PlasmicImg__
               alt={""}
@@ -304,9 +292,9 @@ function PlasmicConflict__RenderFunc(props: {
                 aspectRatio: 1,
               }}
             />
-          </Stack__>
+          </div>
         ) : null}
-      </Stack__>
+      </div>
       <ToggleButtonSwitch
         data-plasmic-name={"_switch"}
         data-plasmic-override={overrides._switch}
@@ -321,12 +309,10 @@ function PlasmicConflict__RenderFunc(props: {
       />
 
       {(hasVariant($state, "merged", "merged") ? true : false) ? (
-        <Stack__
-          as={"button"}
+        <button
           data-plasmic-name={"right"}
           data-plasmic-override={overrides.right}
-          hasGap={true}
-          className={classNames(projectcss.all, projectcss.button, sty.right, {
+          className={classNames("all", "button", "button__p8FkK", sty.right, {
             [sty.rightmerged]: hasVariant($state, "merged", "merged"),
           })}
           ref={(ref) => {
@@ -334,37 +320,31 @@ function PlasmicConflict__RenderFunc(props: {
           }}
         >
           {false ? (
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"startIconsContainer12"}
               data-plasmic-override={overrides.startIconsContainer12}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.startIconsContainer12)}
+              className={classNames("all", sty.startIconsContainer12)}
             >
               <SquareIcon
-                className={classNames(projectcss.all, sty.svg___08H1Q)}
+                className={classNames("all", sty.svg___08H1Q)}
                 role={"img"}
               />
-            </Stack__>
+            </div>
           ) : null}
           <div
             data-plasmic-name={"labelsContainer12"}
             data-plasmic-override={overrides.labelsContainer12}
-            className={classNames(projectcss.all, sty.labelsContainer12)}
+            className={classNames("all", sty.labelsContainer12)}
           >
             <div
               data-plasmic-name={"labelText12"}
               data-plasmic-override={overrides.labelText12}
-              className={classNames(projectcss.all, sty.labelText12)}
+              className={classNames("all", sty.labelText12)}
             >
               <div
                 data-plasmic-name={"label14"}
                 data-plasmic-override={overrides.label14}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.label14
-                )}
+                className={classNames("all", "__wab_text", sty.label14)}
               >
                 {"Auto merged"}
               </div>
@@ -372,11 +352,7 @@ function PlasmicConflict__RenderFunc(props: {
                 <div
                   data-plasmic-name={"text"}
                   data-plasmic-override={overrides.text}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text
-                  )}
+                  className={classNames("all", "__wab_text", sty.text)}
                 >
                   {"Label"}
                 </div>
@@ -386,25 +362,20 @@ function PlasmicConflict__RenderFunc(props: {
               <div
                 data-plasmic-name={"labelIconsContainer12"}
                 data-plasmic-override={overrides.labelIconsContainer12}
-                className={classNames(
-                  projectcss.all,
-                  sty.labelIconsContainer12
-                )}
+                className={classNames("all", sty.labelIconsContainer12)}
               >
                 <ChevronDownIcon
-                  className={classNames(projectcss.all, sty.svg__d7Kpt)}
+                  className={classNames("all", sty.svg__d7Kpt)}
                   role={"img"}
                 />
               </div>
             ) : null}
           </div>
           {false ? (
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"endIconsContainer12"}
               data-plasmic-override={overrides.endIconsContainer12}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.endIconsContainer12)}
+              className={classNames("all", sty.endIconsContainer12)}
             >
               <PlasmicImg__
                 alt={""}
@@ -423,11 +394,11 @@ function PlasmicConflict__RenderFunc(props: {
                   aspectRatio: 1,
                 }}
               />
-            </Stack__>
+            </div>
           ) : null}
-        </Stack__>
+        </button>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -534,7 +505,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicConflict__VariantsArgs;
     args?: PlasmicConflict__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicConflict__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicConflict__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicConflict__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -14,22 +14,21 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicShareButton.module.css"; // plasmic-import: BOKmukuncx/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -84,9 +83,9 @@ function PlasmicShareButton__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const globalVariants = _useGlobalVariants();
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Button
@@ -97,13 +96,13 @@ function PlasmicShareButton__RenderFunc(props: {
       className={classNames("__wab_instance", sty.root)}
       endIcon={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg__rUr3X)}
+          className={classNames("all", sty.svg__rUr3X)}
           role={"img"}
         />
       }
       startIcon={
         <ArrowRightSvgIcon
-          className={classNames(projectcss.all, sty.svg__lh32G)}
+          className={classNames("all", sty.svg__lh32G)}
           role={"img"}
         />
       }
@@ -135,7 +134,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicShareButton__VariantsArgs;
     args?: PlasmicShareButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicShareButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

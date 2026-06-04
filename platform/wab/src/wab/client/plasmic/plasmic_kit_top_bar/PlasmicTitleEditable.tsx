@@ -14,24 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicTitleEditable.module.css"; // plasmic-import: MAl3yYpW3c/css
 
 import EditSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
@@ -106,15 +106,17 @@ function PlasmicTitleEditable__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -123,6 +125,8 @@ function PlasmicTitleEditable__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -130,13 +134,11 @@ function PlasmicTitleEditable__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_6CrqkTcB6gSAHoA8c8zpNz",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         { [sty.rootdisabled]: hasVariant($state, "disabled", "disabled") }
       )}
@@ -150,7 +152,7 @@ function PlasmicTitleEditable__RenderFunc(props: {
         ? renderPlasmicSlot({
             defaultContents: (
               <EditSvgIcon
-                className={classNames(projectcss.all, sty.svg__uFjIs)}
+                className={classNames("all", sty.svg__uFjIs)}
                 role={"img"}
               />
             ),
@@ -183,7 +185,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTitleEditable__VariantsArgs;
     args?: PlasmicTitleEditable__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTitleEditable__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTitleEditable__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTitleEditable__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

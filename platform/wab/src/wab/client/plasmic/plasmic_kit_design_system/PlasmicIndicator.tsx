@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicIndicator.module.css"; // plasmic-import: KRNHR6lpj1/css
 
 createPlasmicElementProxy;
@@ -100,6 +100,7 @@ function PlasmicIndicator__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -117,10 +118,10 @@ function PlasmicIndicator__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -132,7 +133,7 @@ function PlasmicIndicator__RenderFunc(props: {
       <div
         data-plasmic-name={"dot"}
         data-plasmic-override={overrides.dot}
-        className={classNames(projectcss.all, sty.dot, {
+        className={classNames("all", sty.dot, {
           [sty.dotcolor_gray]: hasVariant($state, "color", "gray"),
           [sty.dotcolor_green]: hasVariant($state, "color", "green"),
           [sty.dotcolor_purple]: hasVariant($state, "color", "purple"),

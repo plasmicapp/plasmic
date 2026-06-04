@@ -35,7 +35,7 @@ import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleToken
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLabeledListItem.module.css"; // plasmic-import: -L2zZ5Mvmr/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
@@ -344,6 +344,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -361,10 +362,10 @@ function PlasmicLabeledListItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -429,7 +430,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"dragHandle"}
         data-plasmic-override={overrides.dragHandle}
-        className={classNames(projectcss.all, sty.dragHandle, {
+        className={classNames("all", sty.dragHandle, {
           [sty.dragHandledraggable]: hasVariant(
             $state,
             "draggable",
@@ -445,7 +446,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         <GripSvgIcon
           data-plasmic-name={"grip"}
           data-plasmic-override={overrides.grip}
-          className={classNames(projectcss.all, sty.grip, {
+          className={classNames("all", sty.grip, {
             [sty.gripdraggable]: hasVariant($state, "draggable", "draggable"),
             [sty.griplayout_vertical]: hasVariant($state, "layout", "vertical"),
           })}
@@ -456,7 +457,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          className={classNames(projectcss.all, sty.labelContainer, {
+          className={classNames("all", sty.labelContainer, {
             [sty.labelContaineralignment_center]: hasVariant(
               $state,
               "alignment",
@@ -547,7 +548,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"spacer"}
             data-plasmic-override={overrides.spacer}
-            className={classNames(projectcss.all, sty.spacer, {
+            className={classNames("all", sty.spacer, {
               [sty.spacerlayout_vertical]: hasVariant(
                 $state,
                 "layout",
@@ -559,7 +560,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
-            className={classNames(projectcss.all, sty.freeBox, {
+            className={classNames("all", sty.freeBox, {
               [sty.freeBoxlabelSize_half]: hasVariant(
                 $state,
                 "labelSize",
@@ -588,7 +589,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
                 data-plasmic-name={"iconContainer"}
                 data-plasmic-override={overrides.iconContainer}
                 className={classNames(
-                  projectcss.all,
+                  "all",
                   sty.iconContainer,
                   "baseline-friendly-centered-block-container",
                   {
@@ -603,7 +604,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
                 {renderPlasmicSlot({
                   defaultContents: (
                     <WildcardIcon
-                      className={classNames(projectcss.all, sty.svg__k5Ltc)}
+                      className={classNames("all", sty.svg__k5Ltc)}
                       role={"img"}
                     />
                   ),
@@ -615,7 +616,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             <div
               data-plasmic-name={"labelTextContainer"}
               data-plasmic-override={overrides.labelTextContainer}
-              className={classNames(projectcss.all, sty.labelTextContainer, {
+              className={classNames("all", sty.labelTextContainer, {
                 [sty.labelTextContainerlabelSize_auto]: hasVariant(
                   $state,
                   "labelSize",
@@ -713,11 +714,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             ? renderPlasmicSlot({
                 defaultContents: (
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__u1Jb1
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__u1Jb1)}
                   >
                     {"Enter some text"}
                   </div>
@@ -735,7 +732,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"spacer2"}
             data-plasmic-override={overrides.spacer2}
-            className={classNames(projectcss.all, sty.spacer2, {
+            className={classNames("all", sty.spacer2, {
               [sty.spacer2labelSize_half]: hasVariant(
                 $state,
                 "labelSize",
@@ -754,7 +751,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"contentContainer"}
           data-plasmic-override={overrides.contentContainer}
-          className={classNames(projectcss.all, sty.contentContainer, {
+          className={classNames("all", sty.contentContainer, {
             [sty.contentContaineralignment_top]: hasVariant(
               $state,
               "alignment",
@@ -819,13 +816,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__xVFjy
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__xVFjy)}>
                 {"One line"}
               </div>
             ),
@@ -836,7 +827,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"actionsContainer"}
         data-plasmic-override={overrides.actionsContainer}
-        className={classNames(projectcss.all, sty.actionsContainer, {
+        className={classNames("all", sty.actionsContainer, {
           [sty.actionsContainerdeletable]: hasVariant(
             $state,
             "deletable",
@@ -880,7 +871,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             data-plasmic-override={overrides.deleteButton}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg___9TaH7)}
+                className={classNames("all", sty.svg___9TaH7)}
                 role={"img"}
               />
             }
@@ -900,7 +891,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             type={["seamless"]}
           >
             <TrashIcon
-              className={classNames(projectcss.all, sty.svg__dp5Pt, {
+              className={classNames("all", sty.svg__dp5Pt, {
                 [sty.svgwithMenu__dp5PtXDsyq]: hasVariant(
                   $state,
                   "withMenu",
@@ -928,7 +919,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"indicatorContainer"}
           data-plasmic-override={overrides.indicatorContainer}
-          className={classNames(projectcss.all, sty.indicatorContainer, {
+          className={classNames("all", sty.indicatorContainer, {
             [sty.indicatorContainerlayout_vertical]: hasVariant(
               $state,
               "layout",

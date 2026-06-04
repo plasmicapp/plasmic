@@ -33,7 +33,7 @@ import IconButton from "../../../widgets/IconButton"; // plasmic-import: LPry-TF
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhookEvent.module.css"; // plasmic-import: MtBpr4iNob/css
 
 import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -124,21 +124,23 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
       {
         path: "expanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.expanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.expanded,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -151,10 +153,10 @@ function PlasmicWebhookEvent__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -164,7 +166,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__ty2Le, {
+        className={classNames("all", sty.freeBox__ty2Le, {
           [sty.freeBoxexpanded__ty2Le8Ak7G]: hasVariant(
             $state,
             "expanded",
@@ -178,7 +180,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__awMIm, {
+          className={classNames("all", sty.freeBox__awMIm, {
             [sty.freeBoxstate_loading__awMIm6DxTv]: hasVariant(
               $state,
               "state",
@@ -187,7 +189,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__h1XF, {
+            className={classNames("all", sty.freeBox__h1XF, {
               [sty.freeBoxstate_loading__h1XF6DxTv]: hasVariant(
                 $state,
                 "state",
@@ -198,7 +200,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
             <div
               data-plasmic-name={"indicator"}
               data-plasmic-override={overrides.indicator}
-              className={classNames(projectcss.all, sty.indicator, {
+              className={classNames("all", sty.indicator, {
                 [sty.indicatorstate_failed]: hasVariant(
                   $state,
                   "state",
@@ -231,14 +233,14 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                 })
               : null}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__wnEpm)}>
+          <div className={classNames("all", sty.freeBox__wnEpm)}>
             {renderPlasmicSlot({
               defaultContents: "POST",
               value: args.method,
               className: classNames(sty.slotTargetMethod),
             })}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox___5UJ68)}>
+          <div className={classNames("all", sty.freeBox___5UJ68)}>
             {renderPlasmicSlot({
               defaultContents: "https://plasmic.app/",
               value: args.url,
@@ -262,7 +264,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
           data-plasmic-override={overrides.viewButton}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__k4Czc)}
+              className={classNames("all", sty.svg__k4Czc)}
               role={"img"}
             />
           }
@@ -288,7 +290,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                 ? ChevronDownSvgIcon
                 : ChevronLeftSvgIcon
             }
-            className={classNames(projectcss.all, sty.svg__edv0Q, {
+            className={classNames("all", sty.svg__edv0Q, {
               [sty.svgexpanded__edv0Q8Ak7G]: hasVariant(
                 $state,
                 "expanded",
@@ -311,7 +313,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
       </div>
       {(hasVariant($state, "expanded", "expanded") ? true : false) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox___99Mh, {
+          className={classNames("all", sty.freeBox___99Mh, {
             [sty.freeBoxexpanded___99Mh8Ak7G]: hasVariant(
               $state,
               "expanded",

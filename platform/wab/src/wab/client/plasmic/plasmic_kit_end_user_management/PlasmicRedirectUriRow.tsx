@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,30 +13,28 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicRedirectUriRow.module.css"; // plasmic-import: Wx1WB4BUap/css
 
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import MinussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__MinusSvg"; // plasmic-import: WzWOZWGul/icon
-import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import MinusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__MinusSvg"; // plasmic-import: WzWOZWGul/icon
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -50,22 +48,16 @@ type ArgPropType = keyof PlasmicRedirectUriRow__ArgsType;
 export const PlasmicRedirectUriRow__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicRedirectUriRow__OverridesType = {
-  root?: p.Flex<"div">;
-  textBox?: p.Flex<typeof Textbox>;
-  removeBtn?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  textBox?: Flex__<typeof Textbox>;
+  removeBtn?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultRedirectUriRowProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicRedirectUriRow__RenderFunc(props: {
   variants: PlasmicRedirectUriRow__VariantsArgs;
@@ -75,18 +67,27 @@ function PlasmicRedirectUriRow__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -95,53 +96,50 @@ function PlasmicRedirectUriRow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.column__zZ9L)} />
+      <div className={classNames("all", sty.column__zZ9L)} />
 
-      <div className={classNames(projectcss.all, sty.column__goo7U)}>
+      <div className={classNames("all", sty.column__goo7U)}>
         <Textbox
           data-plasmic-name={"textBox"}
           data-plasmic-override={overrides.textBox}
           className={classNames("__wab_instance", sty.textBox)}
           prefixIcon={
-            <SearchsvgIcon
-              className={classNames(projectcss.all, sty.svg___9Kc2D)}
+            <SearchSvgIcon
+              className={classNames("all", sty.svg___9Kc2D)}
               role={"img"}
             />
           }
           styleType={["bordered"]}
           suffixIcon={
-            <ClosesvgIcon
-              className={classNames(projectcss.all, sty.svg__vNrjo)}
+            <CloseSvgIcon
+              className={classNames("all", sty.svg__vNrjo)}
               role={"img"}
             />
           }
         />
       </div>
-      <div className={classNames(projectcss.all, sty.column___9EOlC)}>
+      <div className={classNames("all", sty.column___9EOlC)}>
         <IconButton
           data-plasmic-name={"removeBtn"}
           data-plasmic-override={overrides.removeBtn}
           children2={
-            <ChevronDownsvgIcon
-              className={classNames(projectcss.all, sty.svg__lP6T)}
+            <ChevronDownSvgIcon
+              className={classNames("all", sty.svg__lP6T)}
               role={"img"}
             />
           }
           className={classNames("__wab_instance", sty.removeBtn)}
         >
-          <MinussvgIcon
-            className={classNames(projectcss.all, sty.svg__r5B4K)}
+          <MinusSvgIcon
+            className={classNames("all", sty.svg__r5B4K)}
             role={"img"}
           />
         </IconButton>
@@ -169,23 +167,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicRedirectUriRow__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicRedirectUriRow__VariantsArgs;
     args?: PlasmicRedirectUriRow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicRedirectUriRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicRedirectUriRow__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicRedirectUriRow__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicRedirectUriRow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -199,7 +197,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicRedirectUriRow__ArgProps,
           internalVariantPropNames: PlasmicRedirectUriRow__VariantProps,
         }),

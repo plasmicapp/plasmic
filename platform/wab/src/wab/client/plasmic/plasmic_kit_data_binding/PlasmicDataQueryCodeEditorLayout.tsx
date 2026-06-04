@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataQueryCodeEditorLayout.module.css"; // plasmic-import: Z4n6NebjkHpR/css
 
 createPlasmicElementProxy;
@@ -121,6 +121,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -138,10 +139,10 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootcopilot]: hasVariant($state, "copilot", "copilot") }
@@ -150,7 +151,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
       <div
         data-plasmic-name={"codePanel"}
         data-plasmic-override={overrides.codePanel}
-        className={classNames(projectcss.all, sty.codePanel, {
+        className={classNames("all", sty.codePanel, {
           [sty.codePanelcopilot]: hasVariant($state, "copilot", "copilot"),
           [sty.codePanelhidePreview]: hasVariant(
             $state,
@@ -162,26 +163,21 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text,
-            {
-              [sty.textcopilot]: hasVariant($state, "copilot", "copilot"),
-              [sty.texthidePreview]: hasVariant(
-                $state,
-                "hidePreview",
-                "hidePreview"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text, {
+            [sty.textcopilot]: hasVariant($state, "copilot", "copilot"),
+            [sty.texthidePreview]: hasVariant(
+              $state,
+              "hidePreview",
+              "hidePreview"
+            ),
+          })}
         >
           {
             "Write your custom code below. Available variables are listed in the data context section."
           }
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__lslrH, {
+          className={classNames("all", sty.freeBox__lslrH, {
             [sty.freeBoxcopilot__lslrHtz8OZ]: hasVariant(
               $state,
               "copilot",
@@ -191,13 +187,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__ibXjf
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__ibXjf)}>
                 {"Monaco Editor here"}
               </div>
             ),
@@ -208,7 +198,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
       <div
         data-plasmic-name={"envPreviewContainer"}
         data-plasmic-override={overrides.envPreviewContainer}
-        className={classNames(projectcss.all, sty.envPreviewContainer, {
+        className={classNames("all", sty.envPreviewContainer, {
           [sty.envPreviewContainercopilot]: hasVariant(
             $state,
             "copilot",
@@ -222,7 +212,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__cUvYc, {
+          className={classNames("all", sty.freeBox__cUvYc, {
             [sty.freeBoxcopilot__cUvYctz8OZ]: hasVariant(
               $state,
               "copilot",
@@ -234,10 +224,10 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
             data-plasmic-name={"h4"}
             data-plasmic-override={overrides.h4}
             className={classNames(
-              projectcss.all,
-              projectcss.h4,
-              projectcss.h4__w2GXN,
-              projectcss.__wab_text,
+              "all",
+              "h4",
+              "h4__w2GXN",
+              "__wab_text",
               sty.h4,
               {
                 [sty.h4copilot]: hasVariant($state, "copilot", "copilot"),
@@ -266,7 +256,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
           ) : null}
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__vjwQ, {
+          className={classNames("all", sty.freeBox__vjwQ, {
             [sty.freeBoxcopilot__vjwQTz8OZ]: hasVariant(
               $state,
               "copilot",
@@ -277,11 +267,7 @@ function PlasmicDataQueryCodeEditorLayout__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___2Eu4D
-                )}
+                className={classNames("all", "__wab_text", sty.text___2Eu4D)}
               >
                 {"Env preview here..."}
               </div>

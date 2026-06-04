@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftAnimationSequencesPanel.module.css"; // plasmic-import: ORzNrJx0uEH6/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -104,10 +104,10 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -126,7 +126,7 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
-            className={classNames(projectcss.all, sty.freeBox)}
+            className={classNames("all", sty.freeBox)}
           >
             <Button
               data-plasmic-name={"importAnimationSequenceButton"}
@@ -137,13 +137,13 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
               )}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__bq139)}
+                  className={classNames("all", sty.svg__bq139)}
                   role={"img"}
                 />
               }
               startIcon={
                 <DownloadSvgIcon
-                  className={classNames(projectcss.all, sty.svg__xjmAq)}
+                  className={classNames("all", sty.svg__xjmAq)}
                   role={"img"}
                 />
               }
@@ -151,11 +151,7 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
               withIcons={["startIcon"]}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___5M3E9
-                )}
+                className={classNames("all", "__wab_text", sty.text___5M3E9)}
               >
                 {"Import Plasmic animations"}
               </div>
@@ -165,13 +161,13 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
               data-plasmic-override={overrides.newAnimationSequenceButton}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__uxN86)}
+                  className={classNames("all", sty.svg__uxN86)}
                   role={"img"}
                 />
               }
               startIcon={
                 <PlusIcon
-                  className={classNames(projectcss.all, sty.svg__vTvci)}
+                  className={classNames("all", sty.svg__vTvci)}
                   role={"img"}
                 />
               }
@@ -184,13 +180,7 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
         }
         className={classNames("__wab_instance", sty.animationSequencesHeader)}
         description={
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__af2Ee
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__af2Ee)}>
             <React.Fragment>
               <React.Fragment>
                 {
@@ -202,10 +192,11 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
                   data-plasmic-name={"link"}
                   data-plasmic-override={overrides.link}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.a,
-                    projectcss.__wab_text,
-                    projectcss.plasmic_default__inline,
+                    "all",
+                    "a",
+                    "a__aukbr",
+                    "__wab_text",
+                    "plasmic_default__inline",
                     sty.link
                   )}
                   href={
@@ -229,7 +220,7 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       />
     </div>
   ) as React.ReactElement | null;

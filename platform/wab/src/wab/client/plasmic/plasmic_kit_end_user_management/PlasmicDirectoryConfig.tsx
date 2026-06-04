@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,35 +13,33 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import DirectoryUserRow from "../../components/app-auth/DirectoryUserRow"; // plasmic-import: _c0HP8vrOTq/component
 import GroupItem from "../../components/app-auth/GroupItem"; // plasmic-import: rF43GtStPO/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicDirectoryConfig.module.css"; // plasmic-import: wx3bEfvj7g/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
-import ArrowLeftsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
-import UserssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
+import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import UsersSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
 
 createPlasmicElementProxy;
 
@@ -51,27 +49,25 @@ type VariantPropType = keyof PlasmicDirectoryConfig__VariantsArgs;
 export const PlasmicDirectoryConfig__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicDirectoryConfig__ArgsType = {
-  selected?: string;
-};
+export type PlasmicDirectoryConfig__ArgsType = { selected?: string };
 type ArgPropType = keyof PlasmicDirectoryConfig__ArgsType;
 export const PlasmicDirectoryConfig__ArgProps = new Array<ArgPropType>(
   "selected"
 );
 
 export type PlasmicDirectoryConfig__OverridesType = {
-  root?: p.Flex<"div">;
-  directoryName?: p.Flex<"div">;
-  backBtn?: p.Flex<typeof Button>;
-  gearIcon?: p.Flex<typeof IconButton>;
-  closeIcon?: p.Flex<typeof IconButton>;
-  groupsLabel?: p.Flex<"div">;
-  groupsList?: p.Flex<"div">;
-  addGroupBtn?: p.Flex<typeof IconButton>;
-  addUserBtn?: p.Flex<typeof IconButton>;
-  directoryUsers?: p.Flex<"div">;
-  importFromBtn?: p.Flex<typeof Button>;
-  uploadCsvBtn?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  directoryName?: Flex__<"div">;
+  backBtn?: Flex__<typeof Button>;
+  gearIcon?: Flex__<typeof IconButton>;
+  closeIcon?: Flex__<typeof IconButton>;
+  groupsLabel?: Flex__<"div">;
+  groupsList?: Flex__<"div">;
+  addGroupBtn?: Flex__<typeof IconButton>;
+  addUserBtn?: Flex__<typeof IconButton>;
+  directoryUsers?: Flex__<"div">;
+  importFromBtn?: Flex__<typeof Button>;
+  uploadCsvBtn?: Flex__<typeof Button>;
 };
 
 export interface DefaultDirectoryConfigProps {
@@ -79,13 +75,7 @@ export interface DefaultDirectoryConfigProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicDirectoryConfig__RenderFunc(props: {
   variants: PlasmicDirectoryConfig__VariantsArgs;
@@ -99,9 +89,11 @@ function PlasmicDirectoryConfig__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          selected: "permissions" as const,
+          selected: "permissions",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -111,11 +103,11 @@ function PlasmicDirectoryConfig__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -124,147 +116,100 @@ function PlasmicDirectoryConfig__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      {true ? (
-        <div className={classNames(projectcss.all, sty.freeBox__aPkY1)}>
-          {true ? (
-            <p.Stack
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__pAaNl)}
+      <div className={classNames("all", sty.freeBox__aPkY1)}>
+        <div className={classNames("all", sty.freeBox__pAaNl)}>
+          <div className={classNames("all", sty.freeBox__a8N8Y)}>
+            <UsersSvgIcon
+              className={classNames("all", sty.svg__xWqqk)}
+              role={"img"}
+            />
+          </div>
+          <div className={classNames("all", sty.freeBox__xzqUp)}>
+            <div className={classNames("all", sty.freeBox__yjXtP)}>
+              <div
+                data-plasmic-name={"directoryName"}
+                data-plasmic-override={overrides.directoryName}
+                className={classNames("all", "__wab_text", sty.directoryName)}
+              >
+                {"Main users"}
+              </div>
+              <div className={classNames("all", "__wab_text", sty.text__fzVhc)}>
+                {"Directory"}
+              </div>
+            </div>
+            <Button
+              data-plasmic-name={"backBtn"}
+              data-plasmic-override={overrides.backBtn}
+              className={classNames("__wab_instance", sty.backBtn)}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__lMtRk)}
+                  role={"img"}
+                />
+              }
+              startIcon={
+                <ArrowLeftSvgIcon
+                  className={classNames("all", sty.svg___3KoJa)}
+                  role={"img"}
+                />
+              }
+              type={["clear"]}
+              withIcons={["startIcon"]}
             >
-              {true ? (
-                <div className={classNames(projectcss.all, sty.freeBox__a8N8Y)}>
-                  <UserssvgIcon
-                    className={classNames(projectcss.all, sty.svg__xWqqk)}
-                    role={"img"}
-                  />
-                </div>
-              ) : null}
-              {true ? (
-                <p.Stack
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__xzqUp)}
-                >
-                  {true ? (
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__yjXtP)}
-                    >
-                      <div
-                        data-plasmic-name={"directoryName"}
-                        data-plasmic-override={overrides.directoryName}
-                        className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
-                          sty.directoryName
-                        )}
-                      >
-                        {"Main users"}
-                      </div>
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
-                          sty.text__fzVhc
-                        )}
-                      >
-                        {"Directory"}
-                      </div>
-                    </div>
-                  ) : null}
-                  <Button
-                    data-plasmic-name={"backBtn"}
-                    data-plasmic-override={overrides.backBtn}
-                    className={classNames("__wab_instance", sty.backBtn)}
-                    endIcon={
-                      <ChevronDownsvgIcon
-                        className={classNames(projectcss.all, sty.svg__lMtRk)}
-                        role={"img"}
-                      />
-                    }
-                    startIcon={
-                      <ArrowLeftsvgIcon
-                        className={classNames(projectcss.all, sty.svg___3KoJa)}
-                        role={"img"}
-                      />
-                    }
-                    type={["clear"]}
-                    withIcons={["startIcon"]}
-                  >
-                    <div
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.text__qKaok
-                      )}
-                    >
-                      {"Back"}
-                    </div>
-                  </Button>
-                  <IconButton
-                    data-plasmic-name={"gearIcon"}
-                    data-plasmic-override={overrides.gearIcon}
-                    children2={
-                      <ChevronDownsvgIcon
-                        className={classNames(projectcss.all, sty.svg__f8Xzc)}
-                        role={"img"}
-                      />
-                    }
-                    className={classNames("__wab_instance", sty.gearIcon)}
-                  >
-                    <GearIcon
-                      className={classNames(projectcss.all, sty.svg___8ANhE)}
-                      role={"img"}
-                    />
-                  </IconButton>
-                  <IconButton
-                    data-plasmic-name={"closeIcon"}
-                    data-plasmic-override={overrides.closeIcon}
-                    children2={
-                      <ChevronDownsvgIcon
-                        className={classNames(projectcss.all, sty.svg__rMqOv)}
-                        role={"img"}
-                      />
-                    }
-                    className={classNames("__wab_instance", sty.closeIcon)}
-                  >
-                    <ClosesvgIcon
-                      className={classNames(projectcss.all, sty.svg__kddJ9)}
-                      role={"img"}
-                    />
-                  </IconButton>
-                </p.Stack>
-              ) : null}
-            </p.Stack>
-          ) : null}
+              <div className={classNames("all", "__wab_text", sty.text__qKaok)}>
+                {"Back"}
+              </div>
+            </Button>
+            <IconButton
+              data-plasmic-name={"gearIcon"}
+              data-plasmic-override={overrides.gearIcon}
+              children2={
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__f8Xzc)}
+                  role={"img"}
+                />
+              }
+              className={classNames("__wab_instance", sty.gearIcon)}
+            >
+              <GearIcon
+                className={classNames("all", sty.svg___8ANhE)}
+                role={"img"}
+              />
+            </IconButton>
+            <IconButton
+              data-plasmic-name={"closeIcon"}
+              data-plasmic-override={overrides.closeIcon}
+              children2={
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg__rMqOv)}
+                  role={"img"}
+                />
+              }
+              className={classNames("__wab_instance", sty.closeIcon)}
+            >
+              <CloseSvgIcon
+                className={classNames("all", sty.svg__kddJ9)}
+                role={"img"}
+              />
+            </IconButton>
+          </div>
         </div>
-      ) : null}
-      <p.Stack
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__nqev0)}
-      >
-        <div className={classNames(projectcss.all, sty.columns__vM8D)}>
-          <div className={classNames(projectcss.all, sty.column__m8Fe)}>
+      </div>
+      <div className={classNames("all", sty.freeBox__nqev0)}>
+        <div className={classNames("all", sty.columns__vM8D)}>
+          <div className={classNames("all", sty.column__m8Fe)}>
             <div
               data-plasmic-name={"groupsLabel"}
               data-plasmic-override={overrides.groupsLabel}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.groupsLabel
-              )}
+              className={classNames("all", "__wab_text", sty.groupsLabel)}
             >
               {"Groups"}
             </div>
@@ -272,172 +217,142 @@ function PlasmicDirectoryConfig__RenderFunc(props: {
           <div
             data-plasmic-name={"groupsList"}
             data-plasmic-override={overrides.groupsList}
-            className={classNames(projectcss.all, sty.groupsList)}
+            className={classNames("all", sty.groupsList)}
           >
-            {true ? (
-              <GroupItem
-                className={classNames("__wab_instance", sty.groupItem__oqv16)}
-                group={
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__qQuGf
-                    )}
-                  >
-                    {"mgmt"}
-                  </div>
-                }
-              />
-            ) : null}
-            {true ? (
-              <GroupItem
-                className={classNames("__wab_instance", sty.groupItem__yNoEv)}
-                group={"dev"}
-              />
-            ) : null}
-            {true ? (
-              <GroupItem
-                className={classNames("__wab_instance", sty.groupItem__hRmkw)}
-                group={"ops"}
-                withoutBorder={true}
-              />
-            ) : null}
+            <GroupItem
+              className={classNames("__wab_instance", sty.groupItem__oqv16)}
+              group={
+                <div
+                  className={classNames("all", "__wab_text", sty.text__qQuGf)}
+                >
+                  {"mgmt"}
+                </div>
+              }
+            />
+
+            <GroupItem
+              className={classNames("__wab_instance", sty.groupItem__yNoEv)}
+              group={"dev"}
+            />
+
+            <GroupItem
+              className={classNames("__wab_instance", sty.groupItem__hRmkw)}
+              group={"ops"}
+              withoutBorder={true}
+            />
           </div>
-          <div className={classNames(projectcss.all, sty.column__fDzpJ)}>
+          <div className={classNames("all", sty.column__fDzpJ)}>
             <IconButton
               data-plasmic-name={"addGroupBtn"}
               data-plasmic-override={overrides.addGroupBtn}
               children2={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg___8CaSi)}
+                <ChevronDownSvgIcon
+                  className={classNames("all", sty.svg___8CaSi)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.addGroupBtn)}
             >
-              <PlussvgIcon
-                className={classNames(projectcss.all, sty.svg___5HCdy)}
+              <PlusSvgIcon
+                className={classNames("all", sty.svg___5HCdy)}
                 role={"img"}
               />
             </IconButton>
           </div>
         </div>
-        <div className={classNames(projectcss.all, sty.columns__dfy35)}>
-          <div className={classNames(projectcss.all, sty.column__f6Uis)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__x4J25
-              )}
-            >
+        <div className={classNames("all", sty.columns__dfy35)}>
+          <div className={classNames("all", sty.column__f6Uis)}>
+            <div className={classNames("all", "__wab_text", sty.text__x4J25)}>
               {"Users"}
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.column___2OR5)}>
-            {true ? (
-              <div className={classNames(projectcss.all, sty.freeBox__ixFOn)}>
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__kYzzB
-                  )}
-                >
-                  {"Group(s)"}
-                </div>
-                <IconButton
-                  data-plasmic-name={"addUserBtn"}
-                  data-plasmic-override={overrides.addUserBtn}
-                  children2={
-                    <ChevronDownsvgIcon
-                      className={classNames(projectcss.all, sty.svg__ipTRx)}
-                      role={"img"}
-                    />
-                  }
-                  className={classNames("__wab_instance", sty.addUserBtn)}
-                >
-                  <PlussvgIcon
-                    className={classNames(projectcss.all, sty.svg__dFnT)}
+          <div className={classNames("all", sty.column___2OR5)}>
+            <div className={classNames("all", sty.freeBox__ixFOn)}>
+              <div className={classNames("all", "__wab_text", sty.text__kYzzB)}>
+                {"Group(s)"}
+              </div>
+              <IconButton
+                data-plasmic-name={"addUserBtn"}
+                data-plasmic-override={overrides.addUserBtn}
+                children2={
+                  <ChevronDownSvgIcon
+                    className={classNames("all", sty.svg__ipTRx)}
                     role={"img"}
                   />
-                </IconButton>
-              </div>
-            ) : null}
+                }
+                className={classNames("__wab_instance", sty.addUserBtn)}
+              >
+                <PlusSvgIcon
+                  className={classNames("all", sty.svg__dFnT)}
+                  role={"img"}
+                />
+              </IconButton>
+            </div>
           </div>
         </div>
-        {true ? (
-          <div
-            data-plasmic-name={"directoryUsers"}
-            data-plasmic-override={overrides.directoryUsers}
-            className={classNames(projectcss.all, sty.directoryUsers)}
-          >
-            <DirectoryUserRow
-              className={classNames(
-                "__wab_instance",
-                sty.directoryUserRow__qxSga
-              )}
-              userEmail={"user@plasmic.app"}
-            />
+        <div
+          data-plasmic-name={"directoryUsers"}
+          data-plasmic-override={overrides.directoryUsers}
+          className={classNames("all", sty.directoryUsers)}
+        >
+          <DirectoryUserRow
+            className={classNames(
+              "__wab_instance",
+              sty.directoryUserRow__qxSga
+            )}
+            userEmail={"user@plasmic.app"}
+          />
 
-            <DirectoryUserRow
-              className={classNames(
-                "__wab_instance",
-                sty.directoryUserRow__fBjDj
-              )}
-            />
-          </div>
-        ) : null}
-        {true ? (
-          <p.Stack
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__xI8F)}
+          <DirectoryUserRow
+            className={classNames(
+              "__wab_instance",
+              sty.directoryUserRow__fBjDj
+            )}
+          />
+        </div>
+        <div className={classNames("all", sty.freeBox__xI8F)}>
+          <Button
+            data-plasmic-name={"importFromBtn"}
+            data-plasmic-override={overrides.importFromBtn}
+            className={classNames("__wab_instance", sty.importFromBtn)}
+            endIcon={
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__k7KhP)}
+                role={"img"}
+              />
+            }
+            startIcon={
+              <ArrowRightSvgIcon
+                className={classNames("all", sty.svg__sRb6)}
+                role={"img"}
+              />
+            }
+            type={["clear"]}
           >
-            <Button
-              data-plasmic-name={"importFromBtn"}
-              data-plasmic-override={overrides.importFromBtn}
-              className={classNames("__wab_instance", sty.importFromBtn)}
-              endIcon={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__k7KhP)}
-                  role={"img"}
-                />
-              }
-              startIcon={
-                <ArrowRightsvgIcon
-                  className={classNames(projectcss.all, sty.svg__sRb6)}
-                  role={"img"}
-                />
-              }
-              type={["clear"]}
-            >
-              {"Import from..."}
-            </Button>
-            <Button
-              data-plasmic-name={"uploadCsvBtn"}
-              data-plasmic-override={overrides.uploadCsvBtn}
-              className={classNames("__wab_instance", sty.uploadCsvBtn)}
-              endIcon={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__k6ZBk)}
-                  role={"img"}
-                />
-              }
-              startIcon={
-                <ArrowRightsvgIcon
-                  className={classNames(projectcss.all, sty.svg__hWoV3)}
-                  role={"img"}
-                />
-              }
-              type={["clear"]}
-            >
-              {"Upload CSV..."}
-            </Button>
-          </p.Stack>
-        ) : null}
-      </p.Stack>
+            {"Import from..."}
+          </Button>
+          <Button
+            data-plasmic-name={"uploadCsvBtn"}
+            data-plasmic-override={overrides.uploadCsvBtn}
+            className={classNames("__wab_instance", sty.uploadCsvBtn)}
+            endIcon={
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__k6ZBk)}
+                role={"img"}
+              />
+            }
+            startIcon={
+              <ArrowRightSvgIcon
+                className={classNames("all", sty.svg__hWoV3)}
+                role={"img"}
+              />
+            }
+            type={["clear"]}
+          >
+            {"Upload CSV..."}
+          </Button>
+        </div>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -457,7 +372,6 @@ const PlasmicDescendants = {
     "importFromBtn",
     "uploadCsvBtn",
   ],
-
   directoryName: ["directoryName"],
   backBtn: ["backBtn"],
   gearIcon: ["gearIcon"],
@@ -493,23 +407,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDirectoryConfig__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicDirectoryConfig__VariantsArgs;
     args?: PlasmicDirectoryConfig__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDirectoryConfig__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDirectoryConfig__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicDirectoryConfig__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicDirectoryConfig__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -523,7 +437,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDirectoryConfig__ArgProps,
           internalVariantPropNames: PlasmicDirectoryConfig__VariantProps,
         }),

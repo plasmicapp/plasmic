@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsModelDetails.module.css"; // plasmic-import: pLQf-lY112u/css
 
 createPlasmicElementProxy;
@@ -102,19 +102,19 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox___2Vfpj)}>
+      <div className={classNames("all", sty.freeBox___2Vfpj)}>
         <div
           data-plasmic-name={"left"}
           data-plasmic-override={overrides.left}
-          className={classNames(projectcss.all, sty.left)}
+          className={classNames("all", sty.left)}
         >
           <InlineEditable
             data-plasmic-name={"modelName"}
@@ -124,11 +124,7 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
             <div
               data-plasmic-name={"modelNameValue"}
               data-plasmic-override={overrides.modelNameValue}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.modelNameValue
-              )}
+              className={classNames("all", "__wab_text", sty.modelNameValue)}
             >
               {"Enter some text"}
             </div>
@@ -136,11 +132,7 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text
-            )}
+            className={classNames("all", "__wab_text", sty.text)}
           >
             {"Model schema"}
           </div>
@@ -148,7 +140,7 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
         <div
           data-plasmic-name={"right"}
           data-plasmic-override={overrides.right}
-          className={classNames(projectcss.all, sty.right)}
+          className={classNames("all", sty.right)}
         >
           <Button
             data-plasmic-name={"saveButton"}
@@ -166,8 +158,8 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
           />
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__qDko6)}>
-        <div className={classNames(projectcss.all, sty.freeBox__lCBih)}>
+      <div className={classNames("all", sty.freeBox__qDko6)}>
+        <div className={classNames("all", sty.freeBox__lCBih)}>
           {renderPlasmicSlot({
             defaultContents: null,
             value: args.children,

@@ -29,12 +29,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import PasswordStrengthBar from "../../components/PasswordStrengthBar"; // plasmic-import: m5hJqED4tX/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../PP__plasmickit_settings.module.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_settings.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
 import sty from "./PlasmicChangePasswordModal.module.css"; // plasmic-import: 61Ev5d6FaD/css
 
 createPlasmicElementProxy;
@@ -111,23 +110,27 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
         path: "isFeedback",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFeedback,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFeedback,
       },
       {
         path: "hasError",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasError,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasError,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -136,13 +139,11 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_aaggSgVS8yYsAwQffVQB4p",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothasError]: hasVariant($state, "hasError", "hasError"),
@@ -150,20 +151,14 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
         }
       )}
     >
-      <div
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.text__xFwGm
-        )}
-      >
+      <div className={classNames("all", "__wab_text", sty.text__xFwGm)}>
         {"Change password"}
       </div>
       {(hasVariant($state, "isFeedback", "isFeedback") ? false : true) ? (
         <form
           data-plasmic-name={"form"}
           data-plasmic-override={overrides.form}
-          className={classNames(projectcss.all, sty.form, {
+          className={classNames("all", sty.form, {
             [sty.formhasError]: hasVariant($state, "hasError", "hasError"),
             [sty.formisFeedback]: hasVariant(
               $state,
@@ -172,14 +167,8 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
             ),
           })}
         >
-          <label className={classNames(projectcss.all, sty.label__z95AF)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__otKoM
-              )}
-            >
+          <label className={classNames("all", sty.label__z95AF)}>
+            <div className={classNames("all", "__wab_text", sty.text__otKoM)}>
               {"Old password"}
             </div>
             <Textbox
@@ -188,15 +177,9 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
               styleType={["bordered"]}
             />
           </label>
-          <div className={classNames(projectcss.all, sty.freeBox__wJrGa)}>
-            <label className={classNames(projectcss.all, sty.label__cfedi)}>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__nfn3B
-                )}
-              >
+          <div className={classNames("all", sty.freeBox__wJrGa)}>
+            <label className={classNames("all", sty.label__cfedi)}>
+              <div className={classNames("all", "__wab_text", sty.text__nfn3B)}>
                 {"New password"}
               </div>
               <Textbox
@@ -205,8 +188,8 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
                 styleType={["bordered"]}
               />
             </label>
-            <label className={classNames(projectcss.all, sty.label__tGq6R)}>
-              <div className={classNames(projectcss.all, sty.freeBox__ssBqb)} />
+            <label className={classNames("all", sty.label__tGq6R)}>
+              <div className={classNames("all", sty.freeBox__ssBqb)} />
 
               <PasswordStrengthBar
                 data-plasmic-name={"passwordStrengthBar"}
@@ -218,14 +201,8 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
               />
             </label>
           </div>
-          <label className={classNames(projectcss.all, sty.label__gCzX2)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__pG1Hs
-              )}
-            >
+          <label className={classNames("all", sty.label__gCzX2)}>
+            <div className={classNames("all", "__wab_text", sty.text__pG1Hs)}>
               {"Confirm new password"}
             </div>
             <Textbox
@@ -246,13 +223,7 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
             })}
             type={["primary"]}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__ftmVc
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__ftmVc)}>
               {"Change password"}
             </div>
           </Button>
@@ -260,11 +231,7 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
             ? renderPlasmicSlot({
                 defaultContents: (
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__xa4AX
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__xa4AX)}
                   >
                     {"The passwords do not match."}
                   </div>
@@ -285,7 +252,7 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
         <div
           data-plasmic-name={"feedback"}
           data-plasmic-override={overrides.feedback}
-          className={classNames(projectcss.all, sty.feedback, {
+          className={classNames("all", sty.feedback, {
             [sty.feedbackisFeedback]: hasVariant(
               $state,
               "isFeedback",
@@ -293,13 +260,7 @@ function PlasmicChangePasswordModal__RenderFunc(props: {
             ),
           })}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__cVxa0
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__cVxa0)}>
             {"Your password has been changed successfully."}
           </div>
         </div>
@@ -359,7 +320,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicChangePasswordModal__VariantsArgs;
     args?: PlasmicChangePasswordModal__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicChangePasswordModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicChangePasswordModal__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicChangePasswordModal__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

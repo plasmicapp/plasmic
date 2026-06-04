@@ -6,7 +6,7 @@
   flex-direction: column;
   cursor: pointer;
 }
-.root:hover {
+.root:hover:hover {
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
 .freeBox {

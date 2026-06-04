@@ -20,7 +20,6 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -29,15 +28,12 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
-
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicHostProtocolSelect__Overlay.module.css"; // plasmic-import: WAelYWWWRyr/css
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider";
+import { _useGlobalVariants } from "./plasmic";
 
 import SUPER__PlasmicHostProtocolSelect from "./PlasmicHostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/render
 
@@ -115,6 +111,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
           $props.relativePlacement,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -130,9 +127,9 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
     ),
   };
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const globalVariants = _useGlobalVariants();
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -141,34 +138,13 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootrelativePlacement_bottom]: hasVariant(
             $state,
             "relativePlacement",
@@ -186,7 +162,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
         <div
           data-plasmic-name={"top"}
           data-plasmic-override={overrides.top}
-          className={classNames(projectcss.all, sty.top, {
+          className={classNames("all", sty.top, {
             [sty.toprelativePlacement_bottom]: hasVariant(
               $state,
               "relativePlacement",
@@ -208,7 +184,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
       <div
         data-plasmic-name={"middle"}
         data-plasmic-override={overrides.middle}
-        className={classNames(projectcss.all, sty.middle, {
+        className={classNames("all", sty.middle, {
           [sty.middlerelativePlacement_top]: hasVariant(
             $state,
             "relativePlacement",
@@ -220,7 +196,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
           <div
             data-plasmic-name={"left"}
             data-plasmic-override={overrides.left}
-            className={classNames(projectcss.all, sty.left, {
+            className={classNames("all", sty.left, {
               [sty.leftrelativePlacement_right]: hasVariant(
                 $state,
                 "relativePlacement",
@@ -237,7 +213,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
         <div
           data-plasmic-name={"main"}
           data-plasmic-override={overrides.main}
-          className={classNames(projectcss.all, sty.main)}
+          className={classNames("all", sty.main)}
         >
           {renderPlasmicSlot({
             defaultContents: null,
@@ -248,7 +224,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
           <div
             data-plasmic-name={"right"}
             data-plasmic-override={overrides.right}
-            className={classNames(projectcss.all, sty.right, {
+            className={classNames("all", sty.right, {
               [sty.rightrelativePlacement_left]: hasVariant(
                 $state,
                 "relativePlacement",
@@ -267,7 +243,7 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
         <div
           data-plasmic-name={"bottom"}
           data-plasmic-override={overrides.bottom}
-          className={classNames(projectcss.all, sty.bottom, {
+          className={classNames("all", sty.bottom, {
             [sty.bottomrelativePlacement_bottom]: hasVariant(
               $state,
               "relativePlacement",
@@ -331,6 +307,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHostProtocolSelect__Overlay__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

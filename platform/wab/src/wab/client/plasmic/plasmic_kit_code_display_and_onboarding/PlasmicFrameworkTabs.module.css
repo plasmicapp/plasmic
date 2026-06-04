@@ -1,30 +1,17 @@
 .root {
   display: flex;
   flex-direction: row;
-  overflow: auto;
-  flex-shrink: 0;
-  position: relative;
-  width: 100%;
-  min-width: 0;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: unset;
   justify-content: center;
   align-content: center;
+  overflow: auto;
+  flex-shrink: 0;
+  position: relative;
   flex-wrap: wrap;
+  width: 100%;
+  column-gap: 2px;
+  row-gap: 24px;
   min-width: 0;
-  margin-left: calc(0px - 2px);
-  width: calc(100% + 2px);
-  margin-top: calc(0px - 24px);
-  height: calc(100% + 24px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 2px;
-  margin-top: 24px;
 }
 .react:global(.__wab_instance) {
   position: relative;

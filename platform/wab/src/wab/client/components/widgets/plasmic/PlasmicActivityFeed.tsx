@@ -27,7 +27,7 @@ import ActivityFeedItem from "./ActivityFeedItem"; // plasmic-import: kkbHZ8nmgG
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../plasmic/PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../../../plasmic/PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicActivityFeed.module.css"; // plasmic-import: DdZ3EM2HFAD/css
 
 createPlasmicElementProxy;
@@ -88,10 +88,10 @@ function PlasmicActivityFeed__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.feedContainer
       )}
@@ -155,7 +155,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicActivityFeed__VariantsArgs;
     args?: PlasmicActivityFeed__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicActivityFeed__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicActivityFeed__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicActivityFeed__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

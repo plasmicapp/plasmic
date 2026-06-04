@@ -1,34 +1,23 @@
 .root {
-  flex-direction: row;
   display: flex;
+  flex-direction: row;
+  align-items: center;
   position: relative;
   width: 100%;
   cursor: pointer;
+  column-gap: 4px;
   min-width: 0;
   border-radius: 6px;
   padding: 0.5rem;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootselected {
   background: var(--token-dqEx_KxIoYV);
   pointer-events: none;
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.root:active {
+.root:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
 .svg {

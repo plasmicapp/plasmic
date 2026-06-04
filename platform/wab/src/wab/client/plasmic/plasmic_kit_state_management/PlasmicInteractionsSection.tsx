@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,26 +14,22 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
-  useCurrentUser,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import ActionChip from "../../components/sidebar-tabs/StateManagement/ActionChip"; // plasmic-import: _uEitkIFZr/component
 import HandlerRow from "../../components/sidebar-tabs/StateManagement/HandlerRow"; // plasmic-import: VYbagtLCKV/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicInteractionsSection.module.css"; // plasmic-import: S0KtszELh-/css
 
 createPlasmicElementProxy;
@@ -72,7 +68,16 @@ function PlasmicInteractionsSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -83,7 +88,7 @@ function PlasmicInteractionsSection__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -92,23 +97,18 @@ function PlasmicInteractionsSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
           defaultContents: (
@@ -136,10 +136,9 @@ function PlasmicInteractionsSection__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-
           value: args.children,
         })}
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -161,23 +160,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicInteractionsSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicInteractionsSection__VariantsArgs;
     args?: PlasmicInteractionsSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicInteractionsSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicInteractionsSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicInteractionsSection__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicInteractionsSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

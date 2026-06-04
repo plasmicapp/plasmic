@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,17 +14,16 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -34,12 +33,11 @@ import LineItem from "../../components/merge/LineItem"; // plasmic-import: VgvN9
 import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
+import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicMergeFlow.module.css"; // plasmic-import: A4VINgKjc8/css
 
 import ArrowRightIcon from "./icons/PlasmicIcon__ArrowRight"; // plasmic-import: b32FQsRIZF/icon
@@ -138,41 +136,45 @@ function PlasmicMergeFlow__RenderFunc(props: {
         path: "empty",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.empty,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.empty,
       },
       {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.loading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
       },
       {
         path: "showAllSwitch.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "blocked",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.blocked,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.blocked,
       },
       {
         path: "description.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "",
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -181,13 +183,11 @@ function PlasmicMergeFlow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_p8FkKgCnyuat1kHSEYAKfW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootblocked]: hasVariant($state, "blocked", "blocked"),
@@ -196,10 +196,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox___5XViU, {
+      <div
+        className={classNames("all", sty.freeBox___5XViU, {
           [sty.freeBoxblocked___5XViU1MFev]: hasVariant(
             $state,
             "blocked",
@@ -213,7 +211,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__ng1Mz, {
+          className={classNames("all", sty.freeBox__ng1Mz, {
             [sty.freeBoxblocked__ng1Mz1MFev]: hasVariant(
               $state,
               "blocked",
@@ -226,10 +224,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__qjcS0, {
+          <div
+            className={classNames("all", sty.freeBox__qjcS0, {
               [sty.freeBoxblocked__qjcS01MFev]: hasVariant(
                 $state,
                 "blocked",
@@ -242,32 +238,22 @@ function PlasmicMergeFlow__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__d9Waw)}>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__eDeVh)}
-              >
+            <div className={classNames("all", sty.freeBox__d9Waw)}>
+              <div className={classNames("all", sty.freeBox__eDeVh)}>
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox___0E0Sg)}
-                  >
+                  <div className={classNames("all", sty.freeBox___0E0Sg)}>
                     <FramePlusIcon
-                      className={classNames(projectcss.all, sty.svg__pv5KQ)}
+                      className={classNames("all", sty.svg__pv5KQ)}
                       role={"img"}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-                <div className={classNames(projectcss.all, sty.freeBox__kggB)}>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__r9Bdd)}
-                  >
+                <div className={classNames("all", sty.freeBox__kggB)}>
+                  <div className={classNames("all", sty.freeBox__r9Bdd)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__lUvMr
                       )}
                     >
@@ -276,8 +262,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     {false ? (
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__gZfMj
                         )}
                       >
@@ -286,22 +272,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     ) : null}
                   </div>
                   {false ? (
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__iwyI7)}
-                    >
+                    <div className={classNames("all", sty.freeBox__iwyI7)}>
                       <ChevronDownIcon
-                        className={classNames(projectcss.all, sty.svg__oMQg)}
+                        className={classNames("all", sty.svg__oMQg)}
                         role={"img"}
                       />
                     </div>
                   ) : null}
                 </div>
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox___6YdgV)}
-                  >
+                  <div className={classNames("all", sty.freeBox___6YdgV)}>
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img___88CXy)}
@@ -319,35 +299,23 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-              </Stack__>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__jd4MV)}
-              >
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox___4K6Q6)}
-                >
+              </div>
+              <div className={classNames("all", sty.freeBox__jd4MV)}>
+                <div className={classNames("all", sty.freeBox___4K6Q6)}>
                   <CloseIcon
-                    className={classNames(projectcss.all, sty.svg__r3Owl)}
+                    className={classNames("all", sty.svg__r3Owl)}
                     role={"img"}
                   />
-                </Stack__>
+                </div>
                 {false ? (
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__vfrFn)}
-                  >
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__lJhL1)}
-                    >
+                  <div className={classNames("all", sty.freeBox__vfrFn)}>
+                    <div className={classNames("all", sty.freeBox__lJhL1)}>
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__sy7Wj
                         )}
                       >
@@ -356,8 +324,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       {false ? (
                         <div
                           className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
+                            "all",
+                            "__wab_text",
                             sty.text__qJa9R
                           )}
                         >
@@ -366,17 +334,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       ) : null}
                     </div>
                     {false ? (
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__rx9Cd
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox__rx9Cd)}>
                         <ChevronDownIcon
-                          className={classNames(
-                            projectcss.all,
-                            sty.svg___51BzZ
-                          )}
+                          className={classNames("all", sty.svg___51BzZ)}
                           role={"img"}
                         />
                       </div>
@@ -384,11 +344,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   </div>
                 ) : null}
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__qrpge)}
-                  >
+                  <div className={classNames("all", sty.freeBox__qrpge)}>
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img__bfIyh)}
@@ -406,14 +362,12 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-              </Stack__>
+              </div>
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__tiUf4, {
+            <div
+              className={classNames("all", sty.freeBox__tiUf4, {
                 [sty.freeBoxblocked__tiUf41MFev]: hasVariant(
                   $state,
                   "blocked",
@@ -421,14 +375,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 ),
               })}
             >
-              <Stack__
-                as={"button"}
+              <button
                 data-plasmic-name={"sourceBranchChanges"}
                 data-plasmic-override={overrides.sourceBranchChanges}
-                hasGap={true}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.button,
+                  "all",
+                  "button",
+                  "button__p8FkK",
                   sty.sourceBranchChanges,
                   {
                     [sty.sourceBranchChangesblocked]: hasVariant(
@@ -443,25 +396,19 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 }}
               >
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox___5Fo1K)}
-                  >
+                  <div className={classNames("all", sty.freeBox___5Fo1K)}>
                     <FramePlusIcon
-                      className={classNames(projectcss.all, sty.svg__rwequ)}
+                      className={classNames("all", sty.svg__rwequ)}
                       role={"img"}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-                <div className={classNames(projectcss.all, sty.freeBox__fMyi7)}>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__fUtGh)}
-                  >
+                <div className={classNames("all", sty.freeBox__fMyi7)}>
+                  <div className={classNames("all", sty.freeBox__fUtGh)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__kp5Wz
                       )}
                     >
@@ -470,8 +417,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     {false ? (
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__x53Vz
                         )}
                       >
@@ -480,35 +427,28 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     ) : null}
                   </div>
                   {false ? (
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__rDMa)}
-                    >
+                    <div className={classNames("all", sty.freeBox__rDMa)}>
                       <ChevronDownIcon
-                        className={classNames(projectcss.all, sty.svg__rHMaH)}
+                        className={classNames("all", sty.svg__rHMaH)}
                         role={"img"}
                       />
                     </div>
                   ) : null}
                 </div>
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__dwEzg)}
-                >
+                <div className={classNames("all", sty.freeBox__dwEzg)}>
                   <ArrowRightIcon
-                    className={classNames(projectcss.all, sty.svg__qeCf)}
+                    className={classNames("all", sty.svg__qeCf)}
                     role={"img"}
                   />
-                </Stack__>
-              </Stack__>
-              <Stack__
-                as={"button"}
+                </div>
+              </button>
+              <button
                 data-plasmic-name={"destinationBranchChanges"}
                 data-plasmic-override={overrides.destinationBranchChanges}
-                hasGap={true}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.button,
+                  "all",
+                  "button",
+                  "button__p8FkK",
                   sty.destinationBranchChanges
                 )}
                 ref={(ref) => {
@@ -516,23 +456,19 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 }}
               >
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__iWcvc)}
-                  >
+                  <div className={classNames("all", sty.freeBox__iWcvc)}>
                     <FramePlusIcon
-                      className={classNames(projectcss.all, sty.svg__igbUt)}
+                      className={classNames("all", sty.svg__igbUt)}
                       role={"img"}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-                <div className={classNames(projectcss.all, sty.freeBox__deRok)}>
-                  <div className={classNames(projectcss.all, sty.freeBox__eJE)}>
+                <div className={classNames("all", sty.freeBox__deRok)}>
+                  <div className={classNames("all", sty.freeBox__eJE)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text___8FduF
                       )}
                     >
@@ -541,8 +477,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     {false ? (
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__nvNxw
                         )}
                       >
@@ -554,35 +490,26 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     <div
                       data-plasmic-name={"labelIconsContainer4"}
                       data-plasmic-override={overrides.labelIconsContainer4}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelIconsContainer4
-                      )}
+                      className={classNames("all", sty.labelIconsContainer4)}
                     >
                       <ChevronDownIcon
-                        className={classNames(projectcss.all, sty.svg__rtsiL)}
+                        className={classNames("all", sty.svg__rtsiL)}
                         role={"img"}
                       />
                     </div>
                   ) : null}
                 </div>
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__frmUb)}
-                >
+                <div className={classNames("all", sty.freeBox__frmUb)}>
                   <ArrowRightIcon
-                    className={classNames(projectcss.all, sty.svg__mAv6V)}
+                    className={classNames("all", sty.svg__mAv6V)}
                     role={"img"}
                   />
-                </Stack__>
-              </Stack__>
-            </Stack__>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__hyDgo, {
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            className={classNames("all", sty.freeBox__hyDgo, {
               [sty.freeBoxblocked__hyDgo1MFev]: hasVariant(
                 $state,
                 "blocked",
@@ -590,12 +517,10 @@ function PlasmicMergeFlow__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__omzv8)} />
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__ulNmQ, {
+            <div className={classNames("all", sty.freeBox__omzv8)} />
+          </div>
+          <div
+            className={classNames("all", sty.freeBox__ulNmQ, {
               [sty.freeBoxblocked__ulNmQ1MFev]: hasVariant(
                 $state,
                 "blocked",
@@ -603,34 +528,22 @@ function PlasmicMergeFlow__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__bsiUw)}>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__bRbRl)}
-              >
+            <div className={classNames("all", sty.freeBox__bsiUw)}>
+              <div className={classNames("all", sty.freeBox__bRbRl)}>
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox___7Y1W)}
-                  >
+                  <div className={classNames("all", sty.freeBox___7Y1W)}>
                     <FramePlusIcon
-                      className={classNames(projectcss.all, sty.svg__b5Ju)}
+                      className={classNames("all", sty.svg__b5Ju)}
                       role={"img"}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-                <div className={classNames(projectcss.all, sty.freeBox__tWrBp)}>
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__fsfy0)}
-                  >
+                <div className={classNames("all", sty.freeBox__tWrBp)}>
+                  <div className={classNames("all", sty.freeBox__fsfy0)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__uH8Hs
                       )}
                     >
@@ -638,31 +551,25 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     </div>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__knemq
                       )}
                     >
                       {"Pick the branch to keep changes from."}
                     </div>
-                  </Stack__>
+                  </div>
                   {false ? (
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__lXxKw)}
-                    >
+                    <div className={classNames("all", sty.freeBox__lXxKw)}>
                       <ChevronDownIcon
-                        className={classNames(projectcss.all, sty.svg__qtac)}
+                        className={classNames("all", sty.svg__qtac)}
                         role={"img"}
                       />
                     </div>
                   ) : null}
                 </div>
                 {false ? (
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__wFkmb)}
-                  >
+                  <div className={classNames("all", sty.freeBox__wFkmb)}>
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img___0MvkB)}
@@ -680,18 +587,15 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-              </Stack__>
+              </div>
               <div
                 data-plasmic-name={"showAllSwitchContainer"}
                 data-plasmic-override={overrides.showAllSwitchContainer}
-                className={classNames(
-                  projectcss.all,
-                  sty.showAllSwitchContainer
-                )}
+                className={classNames("all", sty.showAllSwitchContainer)}
               >
-                <div className={classNames(projectcss.all, sty.freeBox__e62Vb)}>
+                <div className={classNames("all", sty.freeBox__e62Vb)}>
                   <Switch
                     data-plasmic-name={"showAllSwitch"}
                     data-plasmic-override={overrides.showAllSwitch}
@@ -721,8 +625,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   >
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__haM4A
                       )}
                     >
@@ -732,10 +636,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 </div>
               </div>
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__iM7TU, {
+            <div
+              className={classNames("all", sty.freeBox__iM7TU, {
                 [sty.freeBoxempty__iM7TUk797E]: hasVariant(
                   $state,
                   "empty",
@@ -743,10 +645,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 ),
               })}
             >
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__dcTi7, {
+              <div
+                className={classNames("all", sty.freeBox__dcTi7, {
                   [sty.freeBoxempty__dcTi7K797E]: hasVariant(
                     $state,
                     "empty",
@@ -754,10 +654,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   ),
                 })}
               >
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__vW2G2, {
+                <div
+                  className={classNames("all", sty.freeBox__vW2G2, {
                     [sty.freeBoxblocked__vW2G21MFev]: hasVariant(
                       $state,
                       "blocked",
@@ -766,27 +664,19 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   })}
                 >
                   {false ? (
-                    <Stack__
-                      as={"div"}
-                      hasGap={true}
-                      className={classNames(projectcss.all, sty.freeBox__fFhWx)}
-                    >
+                    <div className={classNames("all", sty.freeBox__fFhWx)}>
                       <FramePlusIcon
-                        className={classNames(projectcss.all, sty.svg__zuEam)}
+                        className={classNames("all", sty.svg__zuEam)}
                         role={"img"}
                       />
-                    </Stack__>
+                    </div>
                   ) : null}
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox___2NNJ)}
-                  >
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__l8H0)}
-                    >
+                  <div className={classNames("all", sty.freeBox___2NNJ)}>
+                    <div className={classNames("all", sty.freeBox__l8H0)}>
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text___8D6Zw
                         )}
                       >
@@ -795,8 +685,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       {false ? (
                         <div
                           className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
+                            "all",
+                            "__wab_text",
                             sty.text__ipYnc
                           )}
                         >
@@ -805,28 +695,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       ) : null}
                     </div>
                     {false ? (
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__iu7Ph
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox__iu7Ph)}>
                         <ChevronDownIcon
-                          className={classNames(
-                            projectcss.all,
-                            sty.svg___5AnHa
-                          )}
+                          className={classNames("all", sty.svg___5AnHa)}
                           role={"img"}
                         />
                       </div>
                     ) : null}
                   </div>
                   {false ? (
-                    <Stack__
-                      as={"div"}
-                      hasGap={true}
-                      className={classNames(projectcss.all, sty.freeBox__uJ5Wf)}
-                    >
+                    <div className={classNames("all", sty.freeBox__uJ5Wf)}>
                       <PlasmicImg__
                         alt={""}
                         className={classNames(sty.img__qp40P)}
@@ -844,47 +722,25 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           aspectRatio: 1,
                         }}
                       />
-                    </Stack__>
+                    </div>
                   ) : null}
-                </Stack__>
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox___9XHyG)}
-                >
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__yl1Mo)}
-                  >
+                </div>
+                <div className={classNames("all", sty.freeBox___9XHyG)}>
+                  <div className={classNames("all", sty.freeBox__yl1Mo)}>
                     {false ? (
-                      <Stack__
-                        as={"div"}
-                        hasGap={true}
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__e9Ghe
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox__e9Ghe)}>
                         <FramePlusIcon
-                          className={classNames(projectcss.all, sty.svg__tad73)}
+                          className={classNames("all", sty.svg__tad73)}
                           role={"img"}
                         />
-                      </Stack__>
+                      </div>
                     ) : null}
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__a4BLq)}
-                    >
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__ziNtG
-                        )}
-                      >
+                    <div className={classNames("all", sty.freeBox__a4BLq)}>
+                      <div className={classNames("all", sty.freeBox__ziNtG)}>
                         <div
                           className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
+                            "all",
+                            "__wab_text",
                             sty.text__iXNhU
                           )}
                         >
@@ -893,8 +749,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         {false ? (
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__pbYbl
                             )}
                           >
@@ -903,31 +759,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         ) : null}
                       </div>
                       {false ? (
-                        <div
-                          className={classNames(
-                            projectcss.all,
-                            sty.freeBox__mnDjo
-                          )}
-                        >
+                        <div className={classNames("all", sty.freeBox__mnDjo)}>
                           <ChevronDownIcon
-                            className={classNames(
-                              projectcss.all,
-                              sty.svg__ajIg
-                            )}
+                            className={classNames("all", sty.svg__ajIg)}
                             role={"img"}
                           />
                         </div>
                       ) : null}
                     </div>
                     {false ? (
-                      <Stack__
-                        as={"div"}
-                        hasGap={true}
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox___7Swbw
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox___7Swbw)}>
                         <PlasmicImg__
                           alt={""}
                           className={classNames(sty.img__p8Jv0)}
@@ -945,42 +786,24 @@ function PlasmicMergeFlow__RenderFunc(props: {
                             aspectRatio: 1,
                           }}
                         />
-                      </Stack__>
+                      </div>
                     ) : null}
-                  </Stack__>
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__zsNEo)}
-                  >
+                  </div>
+                  <div className={classNames("all", sty.freeBox__zsNEo)}>
                     {false ? (
-                      <Stack__
-                        as={"div"}
-                        hasGap={true}
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox___6DxoJ
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox___6DxoJ)}>
                         <FramePlusIcon
-                          className={classNames(projectcss.all, sty.svg__hub8L)}
+                          className={classNames("all", sty.svg__hub8L)}
                           role={"img"}
                         />
-                      </Stack__>
+                      </div>
                     ) : null}
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__oajyO)}
-                    >
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__muFrq
-                        )}
-                      >
+                    <div className={classNames("all", sty.freeBox__oajyO)}>
+                      <div className={classNames("all", sty.freeBox__muFrq)}>
                         <div
                           className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
+                            "all",
+                            "__wab_text",
                             sty.text__qtmHr
                           )}
                         >
@@ -989,8 +812,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         {false ? (
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__yDyvZ
                             )}
                           >
@@ -999,31 +822,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         ) : null}
                       </div>
                       {false ? (
-                        <div
-                          className={classNames(
-                            projectcss.all,
-                            sty.freeBox__yc4Gp
-                          )}
-                        >
+                        <div className={classNames("all", sty.freeBox__yc4Gp)}>
                           <ChevronDownIcon
-                            className={classNames(
-                              projectcss.all,
-                              sty.svg__hlnrc
-                            )}
+                            className={classNames("all", sty.svg__hlnrc)}
                             role={"img"}
                           />
                         </div>
                       ) : null}
                     </div>
                     {false ? (
-                      <Stack__
-                        as={"div"}
-                        hasGap={true}
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__sKs4
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox__sKs4)}>
                         <PlasmicImg__
                           alt={""}
                           className={classNames(sty.img__t922V)}
@@ -1041,26 +849,18 @@ function PlasmicMergeFlow__RenderFunc(props: {
                             aspectRatio: 1,
                           }}
                         />
-                      </Stack__>
+                      </div>
                     ) : null}
-                  </Stack__>
-                </Stack__>
-              </Stack__>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__miviq)}
-              >
-                <div
-                  className={classNames(projectcss.all, sty.freeBox__kWgE9)}
-                />
-              </Stack__>
-              <Stack__
-                as={"div"}
+                  </div>
+                </div>
+              </div>
+              <div className={classNames("all", sty.freeBox__miviq)}>
+                <div className={classNames("all", sty.freeBox__kWgE9)} />
+              </div>
+              <div
                 data-plasmic-name={"pairedChanges"}
                 data-plasmic-override={overrides.pairedChanges}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.pairedChanges, {
+                className={classNames("all", sty.pairedChanges, {
                   [sty.pairedChangesempty]: hasVariant(
                     $state,
                     "empty",
@@ -1106,29 +906,22 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   name={"Homepage"}
                   subtext={"Some changes were auto merged"}
                 />
-              </Stack__>
+              </div>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___7NgIv,
-                  {
-                    [sty.textempty___7NgIvk797E]: hasVariant(
-                      $state,
-                      "empty",
-                      "empty"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text___7NgIv, {
+                  [sty.textempty___7NgIvk797E]: hasVariant(
+                    $state,
+                    "empty",
+                    "empty"
+                  ),
+                })}
               >
                 {"No conflicting changes!"}
               </div>
-            </Stack__>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__iXqLb, {
+            </div>
+          </div>
+          <div
+            className={classNames("all", sty.freeBox__iXqLb, {
               [sty.freeBoxblocked__iXqLb1MFev]: hasVariant(
                 $state,
                 "blocked",
@@ -1137,7 +930,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__ewyyN, {
+              className={classNames("all", sty.freeBox__ewyyN, {
                 [sty.freeBoxempty__ewyyNk797E]: hasVariant(
                   $state,
                   "empty",
@@ -1145,60 +938,43 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 ),
               })}
             />
-          </Stack__>
-          <Stack__
-            as={"div"}
+          </div>
+          <div
             data-plasmic-name={"reconciliationsContainer"}
             data-plasmic-override={overrides.reconciliationsContainer}
-            hasGap={true}
-            className={classNames(
-              projectcss.all,
-              sty.reconciliationsContainer,
-              {
-                [sty.reconciliationsContainerblocked]: hasVariant(
-                  $state,
-                  "blocked",
-                  "blocked"
-                ),
-                [sty.reconciliationsContainerempty]: hasVariant(
-                  $state,
-                  "empty",
-                  "empty"
-                ),
-              }
-            )}
+            className={classNames("all", sty.reconciliationsContainer, {
+              [sty.reconciliationsContainerblocked]: hasVariant(
+                $state,
+                "blocked",
+                "blocked"
+              ),
+              [sty.reconciliationsContainerempty]: hasVariant(
+                $state,
+                "empty",
+                "empty"
+              ),
+            })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__pBIaG)}>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__kw1KW)}
-              >
+            <div className={classNames("all", sty.freeBox__pBIaG)}>
+              <div className={classNames("all", sty.freeBox__kw1KW)}>
                 {false ? (
-                  <Stack__
-                    as={"div"}
+                  <div
                     data-plasmic-name={"startIconsContainer13"}
                     data-plasmic-override={overrides.startIconsContainer13}
-                    hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.startIconsContainer13
-                    )}
+                    className={classNames("all", sty.startIconsContainer13)}
                   >
                     <FramePlusIcon
-                      className={classNames(projectcss.all, sty.svg__hgECr)}
+                      className={classNames("all", sty.svg__hgECr)}
                       role={"img"}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-                <div className={classNames(projectcss.all, sty.freeBox__x8BCz)}>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__ctAYm)}
-                  >
+                <div className={classNames("all", sty.freeBox__x8BCz)}>
+                  <div className={classNames("all", sty.freeBox__ctAYm)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__ifdJl
                       )}
                     >
@@ -1207,8 +983,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     {false ? (
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__uKa6G
                         )}
                       >
@@ -1220,28 +996,20 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     <div
                       data-plasmic-name={"labelIconsContainer13"}
                       data-plasmic-override={overrides.labelIconsContainer13}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelIconsContainer13
-                      )}
+                      className={classNames("all", sty.labelIconsContainer13)}
                     >
                       <ChevronDownIcon
-                        className={classNames(projectcss.all, sty.svg__gtQk1)}
+                        className={classNames("all", sty.svg__gtQk1)}
                         role={"img"}
                       />
                     </div>
                   ) : null}
                 </div>
                 {false ? (
-                  <Stack__
-                    as={"div"}
+                  <div
                     data-plasmic-name={"endIconsContainer13"}
                     data-plasmic-override={overrides.endIconsContainer13}
-                    hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.endIconsContainer13
-                    )}
+                    className={classNames("all", sty.endIconsContainer13)}
                   >
                     <PlasmicImg__
                       alt={""}
@@ -1260,16 +1028,14 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </Stack__>
+                  </div>
                 ) : null}
-              </Stack__>
+              </div>
             </div>
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"reconciliations"}
               data-plasmic-override={overrides.reconciliations}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.reconciliations)}
+              className={classNames("all", sty.reconciliations)}
             >
               <LineItem
                 className={classNames("__wab_instance", sty.lineItem__dIr7Y, {
@@ -1291,8 +1057,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   "Component \u201cListItem\u201d deleted in this branch, but got used in the main branch, so we deleted those new usages."
                 }
               </LineItem>
-            </Stack__>
-          </Stack__>
+            </div>
+          </div>
           {(
             hasVariant($state, "blocked", "blocked")
               ? true
@@ -1303,7 +1069,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
             <div
               data-plasmic-name={"blockedContainer"}
               data-plasmic-override={overrides.blockedContainer}
-              className={classNames(projectcss.all, sty.blockedContainer, {
+              className={classNames("all", sty.blockedContainer, {
                 [sty.blockedContainerblocked]: hasVariant(
                   $state,
                   "blocked",
@@ -1319,7 +1085,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <div
                 data-plasmic-name={"mergeBlockedTitle"}
                 data-plasmic-override={overrides.mergeBlockedTitle}
-                className={classNames(projectcss.all, sty.mergeBlockedTitle, {
+                className={classNames("all", sty.mergeBlockedTitle, {
                   [sty.mergeBlockedTitleblocked]: hasVariant(
                     $state,
                     "blocked",
@@ -1333,23 +1099,18 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ujPpp,
-                    {
-                      [sty.textblocked__ujPpp1MFev]: hasVariant(
-                        $state,
-                        "blocked",
-                        "blocked"
-                      ),
-                      [sty.textloading__ujPppjPjj]: hasVariant(
-                        $state,
-                        "loading",
-                        "loading"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ujPpp, {
+                    [sty.textblocked__ujPpp1MFev]: hasVariant(
+                      $state,
+                      "blocked",
+                      "blocked"
+                    ),
+                    [sty.textloading__ujPppjPjj]: hasVariant(
+                      $state,
+                      "loading",
+                      "loading"
+                    ),
+                  })}
                 >
                   {"Cannot merge branches"}
                 </div>
@@ -1357,7 +1118,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <div
                 data-plasmic-name={"mergeBlockedMsg"}
                 data-plasmic-override={overrides.mergeBlockedMsg}
-                className={classNames(projectcss.all, sty.mergeBlockedMsg, {
+                className={classNames("all", sty.mergeBlockedMsg, {
                   [sty.mergeBlockedMsgblocked]: hasVariant(
                     $state,
                     "blocked",
@@ -1371,18 +1132,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___9XgRb,
-                    {
-                      [sty.textblocked___9XgRb1MFev]: hasVariant(
-                        $state,
-                        "blocked",
-                        "blocked"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___9XgRb, {
+                    [sty.textblocked___9XgRb1MFev]: hasVariant(
+                      $state,
+                      "blocked",
+                      "blocked"
+                    ),
+                  })}
                 >
                   {
                     "The branches cannot be merged because: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa."
@@ -1391,22 +1147,12 @@ function PlasmicMergeFlow__RenderFunc(props: {
               </div>
             </div>
           ) : null}
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___7ZvWs)}
-          >
-            <div className={classNames(projectcss.all, sty.freeBox__sq5KK)} />
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___8VwQ3)}
-          >
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___6AaCb, {
+          <div className={classNames("all", sty.freeBox___7ZvWs)}>
+            <div className={classNames("all", sty.freeBox__sq5KK)} />
+          </div>
+          <div className={classNames("all", sty.freeBox___8VwQ3)}>
+            <div
+              className={classNames("all", sty.freeBox___6AaCb, {
                 [sty.freeBoxblocked___6AaCb1MFev]: hasVariant(
                   $state,
                   "blocked",
@@ -1414,29 +1160,17 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 ),
               })}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__tPwaU
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__tPwaU)}>
                 {"Merge and save version"}
               </div>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__uUu0C
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__uUu0C)}>
                 {
                   "Merging will cause a new version to be saved. Publish actions will not be run."
                 }
               </div>
-            </Stack__>
+            </div>
             <div
-              className={classNames(projectcss.all, sty.freeBox__tBNhD, {
+              className={classNames("all", sty.freeBox__tBNhD, {
                 [sty.freeBoxblocked__tBNhD1MFev]: hasVariant(
                   $state,
                   "blocked",
@@ -1445,18 +1179,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__wsqMx,
-                  {
-                    [sty.textblocked__wsqMx1MFev]: hasVariant(
-                      $state,
-                      "blocked",
-                      "blocked"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__wsqMx, {
+                  [sty.textblocked__wsqMx1MFev]: hasVariant(
+                    $state,
+                    "blocked",
+                    "blocked"
+                  ),
+                })}
               >
                 {"Description"}
               </div>
@@ -1464,8 +1193,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 data-plasmic-name={"description"}
                 data-plasmic-override={overrides.description}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.textarea,
+                  "all",
+                  "textarea",
+                  "textarea__p8FkK",
                   sty.description
                 )}
                 onChange={async (...eventArgs: any) => {
@@ -1486,7 +1216,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               />
             </div>
             <div
-              className={classNames(projectcss.all, sty.freeBox__d3QkI, {
+              className={classNames("all", sty.freeBox__d3QkI, {
                 [sty.freeBoxblocked__d3QkI1MFev]: hasVariant(
                   $state,
                   "blocked",
@@ -1494,13 +1224,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 ),
               })}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dd2Qx
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__dd2Qx)}>
                 {"Tags"}
               </div>
               <Select
@@ -1510,10 +1234,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 type={"bordered"}
               />
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__sZadF, {
+            <div
+              className={classNames("all", sty.freeBox__sZadF, {
                 [sty.freeBoxempty__sZadFk797E]: hasVariant(
                   $state,
                   "empty",
@@ -1548,12 +1270,12 @@ function PlasmicMergeFlow__RenderFunc(props: {
               >
                 {"Merge"}
               </Button>
-            </Stack__>
-          </Stack__>
+            </div>
+          </div>
         </div>
-      </Stack__>
+      </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__tFpp, {
+        className={classNames("all", sty.freeBox__tFpp, {
           [sty.freeBoxblocked__tFpp1MFev]: hasVariant(
             $state,
             "blocked",
@@ -1567,30 +1289,25 @@ function PlasmicMergeFlow__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__yZmul,
-            {
-              [sty.textblocked__yZmul1MFev]: hasVariant(
-                $state,
-                "blocked",
-                "blocked"
-              ),
-              [sty.textloading__yZmuLjPjj]: hasVariant(
-                $state,
-                "loading",
-                "loading"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text__yZmul, {
+            [sty.textblocked__yZmul1MFev]: hasVariant(
+              $state,
+              "blocked",
+              "blocked"
+            ),
+            [sty.textloading__yZmuLjPjj]: hasVariant(
+              $state,
+              "loading",
+              "loading"
+            ),
+          })}
         >
           {"Please wait, determining conflicting changes..."}
         </div>
         <div
           data-plasmic-name={"spinnerContainer"}
           data-plasmic-override={overrides.spinnerContainer}
-          className={classNames(projectcss.all, sty.spinnerContainer, {
+          className={classNames("all", sty.spinnerContainer, {
             [sty.spinnerContainerblocked]: hasVariant(
               $state,
               "blocked",
@@ -1701,7 +1418,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMergeFlow__VariantsArgs;
     args?: PlasmicMergeFlow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicMergeFlow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicMergeFlow__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMergeFlow__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

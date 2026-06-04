@@ -26,7 +26,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicThemeLayoutPanel.module.css"; // plasmic-import: hudLjkQJbU/css
 
 createPlasmicElementProxy;
@@ -89,10 +89,10 @@ function PlasmicThemeLayoutPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -100,7 +100,7 @@ function PlasmicThemeLayoutPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"text"}
         data-plasmic-override={overrides.text}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
+        className={classNames("all", "__wab_text", sty.text)}
       >
         {"Here be layout stuff"}
       </div>
@@ -131,7 +131,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThemeLayoutPanel__VariantsArgs;
     args?: PlasmicThemeLayoutPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThemeLayoutPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThemeLayoutPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThemeLayoutPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

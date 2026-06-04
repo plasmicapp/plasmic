@@ -162,112 +162,112 @@
   border-style: solid;
   border-color: var(--token-yUAjM3D7ZnY);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.root:focus {
+.root:focus:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.root:active {
+.root:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.roottype_primary:hover {
+.roottype_primary:hover:hover {
   background: var(--token-mu3x63xzJRW);
 }
-.roottype_primary:focus {
+.roottype_primary:focus:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.roottype_primary:active {
+.roottype_primary:active:active {
   background: var(--token-VUsIDivgUss);
 }
-.roottype_link:hover {
+.roottype_link:hover:hover {
   background: #ffffff00;
 }
-.roottype_link:focus {
+.roottype_link:focus:focus {
   outline: none;
 }
-.roottype_link:active {
+.roottype_link:active:active {
   background: none;
 }
-.roottype_backlitError:hover {
+.roottype_backlitError:hover:hover {
   background: var(--token-HKVCQ5ZKovK);
 }
-.roottype_backlitError:active {
+.roottype_backlitError:active:active {
   background: var(--token-5kjtdCiiOPB);
 }
-.roottype_backlitInfo:active {
+.roottype_backlitInfo:active:active {
   background: var(--token-RhvOnhv_xIi);
 }
-.roottype_backlitInfo:hover {
+.roottype_backlitInfo:hover:hover {
   background: var(--token-dqEx_KxIoYV);
 }
-.roottype_toggleOn:hover {
+.roottype_toggleOn:hover:hover {
   border-style: solid;
   border-color: #dbdbd7;
 }
-.roottype_toggleOff:hover {
+.roottype_toggleOff:hover:hover {
   background: var(--token-bV4cCeIniS6);
   border-style: solid;
   border-color: #dbdbd7;
 }
-.roottype_clearPrimary:hover {
+.roottype_clearPrimary:hover:hover {
   background: var(--token-dqEx_KxIoYV);
 }
-.roottype_clearPrimary:focus {
+.roottype_clearPrimary:focus:focus {
   outline: none;
 }
-.roottype_clearPrimary:active {
+.roottype_clearPrimary:active:active {
   background: var(--token-RhvOnhv_xIi);
 }
-.roottype_seamless:hover {
+.roottype_seamless:hover:hover {
   background: none;
 }
-.roottype_seamless:active {
+.roottype_seamless:active:active {
   background: none;
 }
-.roottype_noPressed:active {
+.roottype_noPressed:active:active {
   background: none;
 }
-.rootwithIcons_endIconOnHover:hover {
+.rootwithIcons_endIconOnHover:hover:hover {
   padding-right: 6px;
   background: none;
   column-gap: 0px;
   row-gap: 0px;
 }
-.rootwithIcons_endIconOnHover:focus {
+.rootwithIcons_endIconOnHover:focus:focus {
   box-shadow: none;
   outline: none;
 }
-.rootcolor_blue:hover {
+.rootcolor_blue:hover:hover {
   background: var(--token-dqEx_KxIoYV);
 }
-.rootcolor_blue:active {
+.rootcolor_blue:active:active {
   background: var(--token-RhvOnhv_xIi);
 }
-.rootcolor_green:hover {
+.rootcolor_green:hover:hover {
   background: var(--token-dv0BWWyaHl7H);
 }
-.rootcolor_green:active {
+.rootcolor_green:active:active {
   background: var(--token-3AptjBfMqvPS);
 }
-.rootcolor_red:hover {
+.rootcolor_red:hover:hover {
   background: var(--token-HKVCQ5ZKovK);
 }
-.rootcolor_red:active {
+.rootcolor_red:active:active {
   background: var(--token-5kjtdCiiOPB);
 }
-.rootcolor_purple:hover {
+.rootcolor_purple:hover:hover {
   background: var(--token-oPrqrxbKHqk);
 }
-.rootcolor_purple:active {
+.rootcolor_purple:active:active {
   background: var(--token-I2zAJ678hbp);
 }
-.rootcolor_darkRed:hover {
+.rootcolor_darkRed:hover:hover {
   background: var(--token-Y2CWh0ci95a);
 }
-.rootcolor_darkRed:active {
+.rootcolor_darkRed:active:active {
   background: var(--token-Y2CWh0ci95a);
 }
 .startIconContainer {

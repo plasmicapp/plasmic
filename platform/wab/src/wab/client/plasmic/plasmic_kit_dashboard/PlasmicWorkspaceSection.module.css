@@ -28,6 +28,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    column-gap: 0px;
   }
 }
 .headerinTeamPage {
@@ -53,22 +54,8 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox__jiCaG > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-content: unset;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__jiCaG > :global(.__wab_flex-container) > *,
-.freeBox__jiCaG > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__jiCaG > :global(.__wab_flex-container) > picture > img,
-.freeBox__jiCaG
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  column-gap: 4px;
 }
 .freeBoxpersonalWorkspace__jiCaGqx7R {
   display: none;
@@ -84,20 +71,7 @@
 .freeBox__gydIl {
   display: flex;
   position: relative;
-}
-.freeBox__gydIl > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__gydIl > :global(.__wab_flex-container) > *,
-.freeBox__gydIl > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__gydIl > :global(.__wab_flex-container) > picture > img,
-.freeBox__gydIl
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  column-gap: 4px;
 }
 .slotTargetNumMembers {
   color: var(--token-UunsGa2Y3t3);
@@ -106,27 +80,13 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.actions > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   align-content: unset;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.actions > :global(.__wab_flex-container) > *,
-.actions > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.actions > :global(.__wab_flex-container) > picture > img,
-.actions
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 @media (min-width: 0px) and (max-width: 768px) {
-  .actions > :global(.__wab_flex-container) {
+  .actions {
     flex-wrap: wrap;
     align-items: unset;
   }
@@ -191,63 +151,33 @@
 .projectsSection {
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-}
-.projectsSection > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  margin-top: calc(0px - 12px);
-  height: calc(100% + 12px);
+  row-gap: 12px;
+  padding: 2rem;
 }
-.projectsSection > :global(.__wab_flex-container) > *,
-.projectsSection > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.projectsSection > :global(.__wab_flex-container) > picture > img,
-.projectsSection
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 12px;
-}
-.projectsSectionnoProjects > :global(.__wab_flex-container) {
+.projectsSectionnoProjects {
   justify-content: flex-start;
   align-items: center;
 }
 .projectsSectioninTeamPage {
   padding-top: 0px;
 }
-.projectsSectioncanUseCmsAndDataSources_dataSources
-  > :global(.__wab_flex-container) {
+.projectsSectioncanUseCmsAndDataSources_dataSources {
   justify-content: flex-start;
   align-items: flex-start;
 }
 .freeBox__mMquk {
   position: relative;
   flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
   display: none;
-}
-.freeBox__mMquk > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__mMquk > :global(.__wab_flex-container) > *,
-.freeBox__mMquk > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__mMquk > :global(.__wab_flex-container) > picture > img,
-.freeBox__mMquk
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .freeBoxcanUseCmsAndDataSources_projects__mMqukz3NM3 {
   display: flex;
@@ -376,24 +306,10 @@
   position: relative;
   flex-direction: column;
   background: var(--token-9jh0BkCENS);
+  row-gap: 16px;
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid var(--token-hoA5qaM-91G);
-}
-.freeBox__pxyYv > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 16px);
-  height: calc(100% + 16px);
-}
-.freeBox__pxyYv > :global(.__wab_flex-container) > *,
-.freeBox__pxyYv > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__pxyYv > :global(.__wab_flex-container) > picture > img,
-.freeBox__pxyYv
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 16px;
 }
 .freeBox__fhW6O {
   display: flex;

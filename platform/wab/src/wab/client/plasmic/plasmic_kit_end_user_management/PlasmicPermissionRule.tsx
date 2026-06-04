@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,34 +13,37 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicPermissionRule.module.css"; // plasmic-import: OKf_hhc2Skl/css
 
 import LockIcon from "../plasmic_kit_design_system/PlasmicIcon__Lock"; // plasmic-import: xWjo2JPAc6/icon
-import InformationsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
-import UserssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
-import UsersvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
+import InformationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import UsersSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
+import UserSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
 
 createPlasmicElementProxy;
 
@@ -64,19 +67,17 @@ export const PlasmicPermissionRule__VariantProps = new Array<VariantPropType>(
   "isGeneralAccess"
 );
 
-export type PlasmicPermissionRule__ArgsType = {
-  ruleName?: React.ReactNode;
-};
+export type PlasmicPermissionRule__ArgsType = { ruleName?: React.ReactNode };
 type ArgPropType = keyof PlasmicPermissionRule__ArgsType;
 export const PlasmicPermissionRule__ArgProps = new Array<ArgPropType>(
   "ruleName"
 );
 
 export type PlasmicPermissionRule__OverridesType = {
-  root?: p.Flex<"div">;
-  infoIcon?: p.Flex<"svg">;
-  permissionSelect?: p.Flex<typeof Select>;
-  menuBtn?: p.Flex<typeof MenuButton>;
+  root?: Flex__<"div">;
+  infoIcon?: Flex__<"svg">;
+  permissionSelect?: Flex__<typeof Select>;
+  menuBtn?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultPermissionRuleProps {
@@ -88,13 +89,7 @@ export interface DefaultPermissionRuleProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicPermissionRule__RenderFunc(props: {
   variants: PlasmicPermissionRule__VariantsArgs;
@@ -104,54 +99,69 @@ function PlasmicPermissionRule__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isGroup",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isGroup,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isGroup,
       },
       {
         path: "hasMenu",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasMenu,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasMenu,
       },
       {
         path: "withoutBorder",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withoutBorder,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withoutBorder,
       },
       {
         path: "isGeneralAccess",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isGeneralAccess,
       },
+      {
+        path: "permissionSelect.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -160,6 +170,8 @@ function PlasmicPermissionRule__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -167,14 +179,11 @@ function PlasmicPermissionRule__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothasMenu]: hasVariant($state, "hasMenu", "hasMenu"),
@@ -194,7 +203,7 @@ function PlasmicPermissionRule__RenderFunc(props: {
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <div
-        className={classNames(projectcss.all, sty.column__jfo1K, {
+        className={classNames("all", sty.column__jfo1K, {
           [sty.columnhasMenu__jfo1K8Gjcf]: hasVariant(
             $state,
             "hasMenu",
@@ -212,75 +221,61 @@ function PlasmicPermissionRule__RenderFunc(props: {
           ),
         })}
       >
-        {true ? (
-          <p.Stack
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__xxViF)}
+        <div className={classNames("all", sty.freeBox__xxViF)}>
+          <PlasmicIcon__
+            PlasmicIconType={
+              hasVariant($state, "isGeneralAccess", "isGeneralAccess")
+                ? LockIcon
+                : hasVariant($state, "isGroup", "isGroup")
+                ? UsersSvgIcon
+                : UserSvgIcon
+            }
+            className={classNames("all", sty.svg__hcvJq, {
+              [sty.svgisGeneralAccess__hcvJq2XHMe]: hasVariant(
+                $state,
+                "isGeneralAccess",
+                "isGeneralAccess"
+              ),
+              [sty.svgisGroup__hcvJqX7CpY]: hasVariant(
+                $state,
+                "isGroup",
+                "isGroup"
+              ),
+            })}
+            role={"img"}
+          />
+
+          <div
+            className={classNames("all", sty.freeBox__j4Sj, {
+              [sty.freeBoxisGeneralAccess__j4Sj2XHMe]: hasVariant(
+                $state,
+                "isGeneralAccess",
+                "isGeneralAccess"
+              ),
+            })}
           >
-            <p.PlasmicIcon
-              PlasmicIconType={
-                hasVariant($state, "isGeneralAccess", "isGeneralAccess")
-                  ? LockIcon
-                  : hasVariant($state, "isGroup", "isGroup")
-                  ? UserssvgIcon
-                  : UsersvgIcon
-              }
-              className={classNames(projectcss.all, sty.svg__hcvJq, {
-                [sty.svgisGeneralAccess__hcvJq2XHMe]: hasVariant(
+            {renderPlasmicSlot({
+              defaultContents: "Anonymous visitors",
+              value: args.ruleName,
+              className: classNames(sty.slotTargetRuleName),
+            })}
+            <InformationSvgIcon
+              data-plasmic-name={"infoIcon"}
+              data-plasmic-override={overrides.infoIcon}
+              className={classNames("all", sty.infoIcon, {
+                [sty.infoIconisGeneralAccess]: hasVariant(
                   $state,
                   "isGeneralAccess",
                   "isGeneralAccess"
-                ),
-                [sty.svgisGroup__hcvJqX7CpY]: hasVariant(
-                  $state,
-                  "isGroup",
-                  "isGroup"
                 ),
               })}
               role={"img"}
             />
-
-            <p.Stack
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__j4Sj, {
-                [sty.freeBoxisGeneralAccess__j4Sj2XHMe]: hasVariant(
-                  $state,
-                  "isGeneralAccess",
-                  "isGeneralAccess"
-                ),
-              })}
-            >
-              {p.renderPlasmicSlot({
-                defaultContents: "Anonymous visitors",
-                value: args.ruleName,
-                className: classNames(sty.slotTargetRuleName),
-              })}
-              {(
-                hasVariant($state, "isGeneralAccess", "isGeneralAccess")
-                  ? true
-                  : true
-              ) ? (
-                <InformationsvgIcon
-                  data-plasmic-name={"infoIcon"}
-                  data-plasmic-override={overrides.infoIcon}
-                  className={classNames(projectcss.all, sty.infoIcon, {
-                    [sty.infoIconisGeneralAccess]: hasVariant(
-                      $state,
-                      "isGeneralAccess",
-                      "isGeneralAccess"
-                    ),
-                  })}
-                  role={"img"}
-                />
-              ) : null}
-            </p.Stack>
-          </p.Stack>
-        ) : null}
+          </div>
+        </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.column__ab9P, {
+        className={classNames("all", sty.column__ab9P, {
           [sty.columnhasMenu__ab9P8Gjcf]: hasVariant(
             $state,
             "hasMenu",
@@ -288,76 +283,80 @@ function PlasmicPermissionRule__RenderFunc(props: {
           ),
         })}
       >
-        {(hasVariant($state, "hasMenu", "hasMenu") ? true : true) ? (
-          <div
-            className={classNames(projectcss.all, sty.freeBox__e95EI, {
-              [sty.freeBoxhasMenu__e95EI8Gjcf]: hasVariant(
+        <div
+          className={classNames("all", sty.freeBox__e95EI, {
+            [sty.freeBoxhasMenu__e95EI8Gjcf]: hasVariant(
+              $state,
+              "hasMenu",
+              "hasMenu"
+            ),
+          })}
+        >
+          <Select
+            data-plasmic-name={"permissionSelect"}
+            data-plasmic-override={overrides.permissionSelect}
+            className={classNames("__wab_instance", sty.permissionSelect, {
+              [sty.permissionSelecthasMenu]: hasVariant(
                 $state,
                 "hasMenu",
                 "hasMenu"
               ),
+              [sty.permissionSelectisGeneralAccess]: hasVariant(
+                $state,
+                "isGeneralAccess",
+                "isGeneralAccess"
+              ),
+              [sty.permissionSelectisGroup]: hasVariant(
+                $state,
+                "isGroup",
+                "isGroup"
+              ),
+              [sty.permissionSelectwithoutBorder]: hasVariant(
+                $state,
+                "withoutBorder",
+                "withoutBorder"
+              ),
             })}
-          >
-            <Select
-              data-plasmic-name={"permissionSelect"}
-              data-plasmic-override={overrides.permissionSelect}
-              className={classNames("__wab_instance", sty.permissionSelect, {
-                [sty.permissionSelecthasMenu]: hasVariant(
-                  $state,
-                  "hasMenu",
-                  "hasMenu"
-                ),
-                [sty.permissionSelectisGeneralAccess]: hasVariant(
-                  $state,
-                  "isGeneralAccess",
-                  "isGeneralAccess"
-                ),
-                [sty.permissionSelectisGroup]: hasVariant(
-                  $state,
-                  "isGroup",
-                  "isGroup"
-                ),
-                [sty.permissionSelectwithoutBorder]: hasVariant(
-                  $state,
-                  "withoutBorder",
-                  "withoutBorder"
-                ),
-              })}
-              icon={
-                <PlussvgIcon
-                  className={classNames(projectcss.all, sty.svg__boPRj)}
-                  role={"img"}
-                />
-              }
-              size={"small" as const}
-              type={
-                hasVariant($state, "isGroup", "isGroup")
-                  ? ("seamless" as const)
-                  : ("seamless" as const)
-              }
-            />
-
-            {(
-              hasVariant($state, "hasMenu", "hasMenu") && triggers.hover_root
-                ? true
-                : hasVariant($state, "hasMenu", "hasMenu")
-                ? true
-                : true
-            ) ? (
-              <MenuButton
-                data-plasmic-name={"menuBtn"}
-                data-plasmic-override={overrides.menuBtn}
-                className={classNames("__wab_instance", sty.menuBtn, {
-                  [sty.menuBtnhasMenu]: hasVariant(
-                    $state,
-                    "hasMenu",
-                    "hasMenu"
-                  ),
-                })}
+            icon={
+              <PlusSvgIcon
+                className={classNames("all", sty.svg__boPRj)}
+                role={"img"}
               />
-            ) : null}
-          </div>
-        ) : null}
+            }
+            onChange={async (...eventArgs: any) => {
+              ((...eventArgs) => {
+                generateStateOnChangeProp($state, [
+                  "permissionSelect",
+                  "value",
+                ])(eventArgs[0]);
+              }).apply(null, eventArgs);
+
+              if (
+                eventArgs.length > 1 &&
+                eventArgs[1] &&
+                eventArgs[1]._plasmic_state_init_
+              ) {
+                return;
+              }
+            }}
+            size={"small"}
+            type={
+              hasVariant($state, "isGroup", "isGroup") ? "seamless" : "seamless"
+            }
+            value={generateStateValueProp($state, [
+              "permissionSelect",
+              "value",
+            ])}
+          />
+
+          <MenuButton
+            data-plasmic-name={"menuBtn"}
+            data-plasmic-override={overrides.menuBtn}
+            className={classNames("__wab_instance", sty.menuBtn, {
+              [sty.menuBtnhasMenu]: hasVariant($state, "hasMenu", "hasMenu"),
+            })}
+          />
+        </div>
       </div>
     </div>
   ) as React.ReactElement | null;
@@ -384,23 +383,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPermissionRule__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicPermissionRule__VariantsArgs;
     args?: PlasmicPermissionRule__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPermissionRule__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPermissionRule__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicPermissionRule__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicPermissionRule__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -414,7 +413,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPermissionRule__ArgProps,
           internalVariantPropNames: PlasmicPermissionRule__VariantProps,
         }),

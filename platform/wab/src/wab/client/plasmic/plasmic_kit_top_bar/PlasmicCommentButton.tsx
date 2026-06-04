@@ -14,22 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicCommentButton.module.css"; // plasmic-import: JnxWw8hitac/css
 
 import SpeechBubbleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg"; // plasmic-import: nkJ1joJAv/icon
@@ -97,17 +98,21 @@ function PlasmicCommentButton__RenderFunc(props: {
         path: "active",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.active,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.active,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <IconButton
@@ -125,7 +130,7 @@ function PlasmicCommentButton__RenderFunc(props: {
       <SpeechBubbleSvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg)}
+        className={classNames("all", sty.svg)}
         role={"img"}
       />
     </IconButton>
@@ -155,7 +160,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentButton__VariantsArgs;
     args?: PlasmicCommentButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

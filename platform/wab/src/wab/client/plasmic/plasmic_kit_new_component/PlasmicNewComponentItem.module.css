@@ -4,24 +4,23 @@
   align-items: stretch;
   justify-content: flex-start;
   position: relative;
-  width: 250px;
   cursor: pointer;
   overflow: hidden;
-  border-radius: 8px;
+  width: 100%;
+  max-width: 256px;
+  min-width: 0;
+  border-radius: 6px;
   padding: 0px;
-  border: 1px solid var(--token-bV4cCeIniS6);
-}
-.rootisSelected {
-  box-shadow: 0px 0px 0px 2px var(--token-JfSQu2FXX0v);
+  border: 1px solid var(--token-hoA5qaM-91G);
 }
 .rootlarge {
-  width: 370px;
+  max-width: 360px;
 }
-.root:hover {
-  box-shadow: 0px 0px 0px 2px var(--token-JfSQu2FXX0v);
+.root:hover:hover {
+  border-color: var(--token-eBt2ZgqRUCz);
 }
-.root___focusVisibleWithin {
-  box-shadow: 0px 0px 0px 2px var(--token-JfSQu2FXX0v);
+.root:focus:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
 .image {
@@ -33,53 +32,57 @@
   height: 120px;
   overflow: hidden;
   flex-shrink: 0;
-  border-bottom: 1px solid var(--token-bV4cCeIniS6);
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .imagelarge {
   height: 210px;
   flex-shrink: 0;
 }
-.root .image___focusVisibleWithin {
+.root:focus .image {
   outline: none;
 }
 .freeBox__bTp1S {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
+  padding: 1rem;
+}
+.freeBoxisSelected__bTp1SkSSyv {
+  background: var(--token-bV4cCeIniS6);
 }
 .freeBoxshowControls__bTp1Sz2I0H {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  flex-row-gap: 0px;
+  row-gap: 0px;
 }
-.root .freeBox___focusVisibleWithin__bTp1SiyX {
+.root:hover .freeBox__bTp1S {
+  background: var(--token-bV4cCeIniS6);
+}
+.root:focus .freeBox__bTp1S {
   outline: none;
 }
 .slotTargetTitle {
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 12px;
+  font-size: 12px;
+  line-height: 1.25;
 }
-.img__wePel {
+.slotTargetTitleisSelected {
+  font-weight: 500;
+}
+.svg__x9Bqd {
   position: relative;
   object-fit: cover;
-  max-width: 100%;
-  display: inline-block !important;
-}
-.img__wePel > picture > img {
-  object-fit: cover;
-}
-.img__wePel > .__wab_img-spacer > img {
-  object-fit: cover;
+  width: 24px;
+  height: 24px;
+  color: var(--token-UunsGa2Y3t3);
+  flex-shrink: 0;
 }
 .freeBox__uUyA {
   display: block;
   position: relative;
 }
-.root .freeBox___focusVisibleWithin__uUyAiyX {
+.root:focus .freeBox__uUyA {
   position: absolute;
   bottom: -5px;
   top: -5px;

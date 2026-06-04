@@ -66,6 +66,8 @@
   align-items: center;
   justify-content: flex-start;
   padding-right: 0.5rem;
+  font-size: 11px;
+  line-height: 14px;
   width: 100%;
   cursor: text;
   min-width: 0;

@@ -30,7 +30,7 @@ import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokens
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSearchbox.module.css"; // plasmic-import: po7gr0PX4_gWo/css
 
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
@@ -157,6 +157,7 @@ function PlasmicSearchbox__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -198,7 +199,7 @@ function PlasmicSearchbox__RenderFunc(props: {
       placeholder={args.placeholder}
       prefixIcon={
         <SearchSvgIcon
-          className={classNames(projectcss.all, sty.svg__unKzu, {
+          className={classNames("all", sty.svg__unKzu, {
             [sty.svghasValue__unKzuuzQ8L]: hasVariant(
               $state,
               "hasValue",
@@ -219,7 +220,7 @@ function PlasmicSearchbox__RenderFunc(props: {
       suffixIcon={
         (hasVariant($state, "hasValue", "hasValue") ? true : false) ? (
           <CloseSvgIcon
-            className={classNames(projectcss.all, sty.svg___2K8R, {
+            className={classNames("all", sty.svg___2K8R, {
               [sty.svghasValue___2K8RuzQ8L]: hasVariant(
                 $state,
                 "hasValue",

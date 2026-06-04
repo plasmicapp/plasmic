@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,12 +14,11 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -33,13 +32,12 @@ import Separator from "../../components/insert-panel/Separator"; // plasmic-impo
 import Spacer from "../../components/insert-panel/Spacer"; // plasmic-import: ae4tx4K7hb/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "./plasmic_plasmic_kit_insert_panel.css"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/projectcss
 import sty from "./PlasmicInsertPanel.module.css"; // plasmic-import: OwugJe7uVc/css
-import projectcss from "./plasmic_plasmic_kit_insert_panel.module.css"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/projectcss
 
 import ButtonInputIcon from "../plasmic_kit/PlasmicIcon__ButtonInput"; // plasmic-import: _bmaLjOFc6A0c/icon
 import HStackBlockIcon from "../plasmic_kit/PlasmicIcon__HStackBlock"; // plasmic-import: vrE0GHgUiSGkm/icon
@@ -89,7 +87,16 @@ function PlasmicInsertPanel__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -100,6 +107,8 @@ function PlasmicInsertPanel__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -107,22 +116,18 @@ function PlasmicInsertPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_4B48dRthR8uGgyaBYpWthR",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"searchContainer"}
         data-plasmic-override={overrides.searchContainer}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.searchContainer)}
+        className={classNames("all", sty.searchContainer)}
       >
         <Textbox
           data-plasmic-name={"leftSearchPanel"}
@@ -140,13 +145,13 @@ function PlasmicInsertPanel__RenderFunc(props: {
           hoverText={"Create a new component"}
           type={["clear"]}
         />
-      </Stack__>
-      <div className={classNames(projectcss.all, sty.freeBox__sdIgo)}>
+      </div>
+      <div className={classNames("all", sty.freeBox__sdIgo)}>
         <QuickInsertItem
           className={classNames("__wab_instance", sty.quickInsertItem__r7Whu)}
           icon={
             <TextBlockIcon
-              className={classNames(projectcss.all, sty.svg__m6Qwg)}
+              className={classNames("all", sty.svg__m6Qwg)}
               role={"img"}
             />
           }
@@ -156,7 +161,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
           className={classNames("__wab_instance", sty.quickInsertItem__otjDh)}
           icon={
             <ImageBlockIcon
-              className={classNames(projectcss.all, sty.svg___1EdOy)}
+              className={classNames("all", sty.svg___1EdOy)}
               role={"img"}
             />
           }
@@ -167,18 +172,12 @@ function PlasmicInsertPanel__RenderFunc(props: {
           className={classNames("__wab_instance", sty.quickInsertItem__m1Xj6)}
           icon={
             <IconIcon
-              className={classNames(projectcss.all, sty.svg__nvHjv)}
+              className={classNames("all", sty.svg__nvHjv)}
               role={"img"}
             />
           }
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___9JjeM
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___9JjeM)}>
             {"Icon"}
           </div>
         </QuickInsertItem>
@@ -186,7 +185,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
           className={classNames("__wab_instance", sty.quickInsertItem__g4RJj)}
           icon={
             <ButtonInputIcon
-              className={classNames(projectcss.all, sty.svg__xmk82)}
+              className={classNames("all", sty.svg__xmk82)}
               role={"img"}
             />
           }
@@ -197,7 +196,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
           className={classNames("__wab_instance", sty.quickInsertItem__jvd3S)}
           icon={
             <VStackBlockIcon
-              className={classNames(projectcss.all, sty.svg___6X0Aa)}
+              className={classNames("all", sty.svg___6X0Aa)}
               role={"img"}
             />
           }
@@ -208,34 +207,26 @@ function PlasmicInsertPanel__RenderFunc(props: {
           className={classNames("__wab_instance", sty.quickInsertItem___8WyL)}
           icon={
             <HStackBlockIcon
-              className={classNames(projectcss.all, sty.svg__lzApe)}
+              className={classNames("all", sty.svg__lzApe)}
               role={"img"}
             />
           }
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__qZI
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__qZI)}>
             {"Responsive Columns"}
           </div>
         </QuickInsertItem>
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__ocvSo)}>
+      <div className={classNames("all", sty.freeBox__ocvSo)}>
         <div
           data-plasmic-name={"sectionsContainer"}
           data-plasmic-override={overrides.sectionsContainer}
-          className={classNames(projectcss.all, sty.sectionsContainer)}
+          className={classNames("all", sty.sectionsContainer)}
         >
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"sections"}
             data-plasmic-override={overrides.sections}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.sections)}
+            className={classNames("all", sty.sections)}
           >
             <InsertPanelTabItem
               className={classNames(
@@ -354,7 +345,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
               hasIcon={true}
               icon={
                 <StoreIcon
-                  className={classNames(projectcss.all, sty.svg___4Xt31)}
+                  className={classNames("all", sty.svg___4Xt31)}
                   role={"img"}
                 />
               }
@@ -364,7 +355,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
             <Spacer
               className={classNames("__wab_instance", sty.spacer___3Clt5)}
             />
-          </Stack__>
+          </div>
           <ListBottomFade
             className={classNames("__wab_instance", sty.listBottomFade__ftvvL)}
           />
@@ -372,14 +363,12 @@ function PlasmicInsertPanel__RenderFunc(props: {
         <div
           data-plasmic-name={"contentContainer"}
           data-plasmic-override={overrides.contentContainer}
-          className={classNames(projectcss.all, sty.contentContainer)}
+          className={classNames("all", sty.contentContainer)}
         >
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"content"}
             data-plasmic-override={overrides.content}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.content)}
+            className={classNames("all", sty.content)}
           >
             {((_par) => (!_par ? [] : Array.isArray(_par) ? _par : [_par]))(
               (() => {
@@ -1259,7 +1248,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
                   }
                 >
                   <div
-                    className={classNames(projectcss.all, sty.freeBox__wvcPn)}
+                    className={classNames("all", sty.freeBox__wvcPn)}
                     style={(() => {
                       try {
                         return {
@@ -1325,7 +1314,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
             <Spacer
               className={classNames("__wab_instance", sty.spacer__hWzOw)}
             />
-          </Stack__>
+          </div>
           <ListBottomFade
             className={classNames("__wab_instance", sty.listBottomFade__vcBh0)}
           />
@@ -1350,7 +1339,6 @@ const PlasmicDescendants = {
     "section",
     "card",
   ],
-
   searchContainer: ["searchContainer", "leftSearchPanel", "addButton"],
   leftSearchPanel: ["leftSearchPanel"],
   addButton: ["addButton"],
@@ -1360,7 +1348,6 @@ const PlasmicDescendants = {
     "insertPanelTabGroup",
     "separator",
   ],
-
   sections: ["sections", "insertPanelTabGroup", "separator"],
   insertPanelTabGroup: ["insertPanelTabGroup"],
   separator: ["separator"],
@@ -1392,23 +1379,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicInsertPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicInsertPanel__VariantsArgs;
     args?: PlasmicInsertPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicInsertPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicInsertPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicInsertPanel__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicInsertPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

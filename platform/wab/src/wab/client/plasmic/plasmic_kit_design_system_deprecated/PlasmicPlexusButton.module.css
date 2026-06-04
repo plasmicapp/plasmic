@@ -14,13 +14,13 @@
   padding: 0rem;
   border-width: 0px;
 }
-.root[data-focus-visible]:global(.__wab_instance) {
+.root[data-focus-visible][data-focus-visible]:global(.__wab_instance) {
   outline-style: solid;
   outline-width: var(--token-vhXSTyxt_gU9);
   outline-offset: 1px;
   outline-color: var(--token-qP8a3gYPq7fd);
 }
-.root[data-disabled]:global(.__wab_instance) {
+.root[data-disabled][data-disabled]:global(.__wab_instance) {
   cursor: not-allowed;
 }
 .rootcolor_neutral:global(.__wab_instance) {

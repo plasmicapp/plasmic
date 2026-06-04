@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,19 +14,17 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -37,19 +35,17 @@ import StyleSelect__Option from "../../components/style-controls/StyleSelect__Op
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicNewVariable.module.css"; // plasmic-import: Coj9xtPv-Oc/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -116,7 +112,16 @@ function PlasmicNewVariable__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -127,48 +132,46 @@ function PlasmicNewVariable__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isExternal",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExternal,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExternal,
       },
       {
         path: "isImplicitState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isImplicitState,
       },
       {
         path: "accessType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.accessType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.accessType,
       },
       {
         path: "withFormButtons",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withFormButtons,
       },
       {
         path: "isPageComponent",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isPageComponent,
       },
       {
         path: "allowExternalAccess.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           hasVariant($state, "isExternal", "isExternal")
             ? "isChecked"
             : undefined,
@@ -177,42 +180,40 @@ function PlasmicNewVariable__RenderFunc(props: {
         path: "variableType.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "accessTypeSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootaccessType__private]: hasVariant(
@@ -256,7 +257,7 @@ function PlasmicNewVariable__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__wMgtQ, {
+        className={classNames("all", sty.freeBox__wMgtQ, {
           [sty.freeBoxaccessType_readonly_isImplicitState__wMgtQ4ApxWWs6WV]:
             hasVariant($state, "isImplicitState", "isImplicitState") &&
             hasVariant($state, "accessType", "readonly"),
@@ -281,11 +282,7 @@ function PlasmicNewVariable__RenderFunc(props: {
               className={classNames("__wab_instance", sty.labeledItem___92BR)}
               label={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___7B2Br
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___7B2Br)}
                 >
                   {"Variable name"}
                 </div>
@@ -295,15 +292,15 @@ function PlasmicNewVariable__RenderFunc(props: {
                 <Textbox
                   className={classNames("__wab_instance", sty.textbox__bThkw)}
                   prefixIcon={
-                    <SearchsvgIcon
-                      className={classNames(projectcss.all, sty.svg__pIVjv)}
+                    <SearchSvgIcon
+                      className={classNames("all", sty.svg__pIVjv)}
                       role={"img"}
                     />
                   }
                   styleType={["bordered"]}
                   suffixIcon={
-                    <ClosesvgIcon
-                      className={classNames(projectcss.all, sty.svg__sEuY3)}
+                    <CloseSvgIcon
+                      className={classNames("all", sty.svg__sEuY3)}
                       role={"img"}
                     />
                   }
@@ -336,10 +333,20 @@ function PlasmicNewVariable__RenderFunc(props: {
                 "isExternal"
               ),
             })}
-            onChange={(...eventArgs) => {
-              generateStateOnChangeProp($state, ["variableType", "value"])(
-                eventArgs[0]
-              );
+            onChange={async (...eventArgs: any) => {
+              ((...eventArgs) => {
+                generateStateOnChangeProp($state, ["variableType", "value"])(
+                  eventArgs[0]
+                );
+              }).apply(null, eventArgs);
+
+              if (
+                eventArgs.length > 1 &&
+                eventArgs[1] &&
+                eventArgs[1]._plasmic_state_init_
+              ) {
+                return;
+              }
             }}
             placeholder={"Placeholder\u2026"}
             value={generateStateValueProp($state, ["variableType", "value"])}
@@ -362,7 +369,7 @@ function PlasmicNewVariable__RenderFunc(props: {
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__ndf1U, {
+        className={classNames("all", sty.freeBox__ndf1U, {
           [sty.freeBoxisExternal__ndf1UdBoOy]: hasVariant(
             $state,
             "isExternal",
@@ -385,15 +392,15 @@ function PlasmicNewVariable__RenderFunc(props: {
                 <Textbox
                   className={classNames("__wab_instance", sty.textbox___3LE7F)}
                   prefixIcon={
-                    <SearchsvgIcon
-                      className={classNames(projectcss.all, sty.svg___0EDqL)}
+                    <SearchSvgIcon
+                      className={classNames("all", sty.svg___0EDqL)}
                       role={"img"}
                     />
                   }
                   styleType={["bordered"]}
                   suffixIcon={
-                    <ClosesvgIcon
-                      className={classNames(projectcss.all, sty.svg__riKvv)}
+                    <CloseSvgIcon
+                      className={classNames("all", sty.svg__riKvv)}
                       role={"img"}
                     />
                   }
@@ -405,10 +412,8 @@ function PlasmicNewVariable__RenderFunc(props: {
           value: args.variableInitVal,
         })}
       </div>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__knZkb, {
+      <div
+        className={classNames("all", sty.freeBox__knZkb, {
           [sty.freeBoxaccessType__private__knZkb3AJj2]: hasVariant(
             $state,
             "accessType",
@@ -473,11 +478,21 @@ function PlasmicNewVariable__RenderFunc(props: {
               "isChecked",
             ]) ?? false
           }
-          onChange={(...eventArgs) => {
-            generateStateOnChangeProp($state, [
-              "allowExternalAccess",
-              "isChecked",
-            ])(eventArgs[0]);
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, [
+                "allowExternalAccess",
+                "isChecked",
+              ])(eventArgs[0]);
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
           }}
         >
           {"Allow external access"}
@@ -513,11 +528,21 @@ function PlasmicNewVariable__RenderFunc(props: {
                   "isExternal"
                 ),
               })}
-              onChange={(...eventArgs) => {
-                generateStateOnChangeProp($state, [
-                  "accessTypeSelect",
-                  "value",
-                ])(eventArgs[0]);
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, [
+                    "accessTypeSelect",
+                    "value",
+                  ])(eventArgs[0]);
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
               }}
               placeholder={"Placeholder\u2026"}
               value={generateStateValueProp($state, [
@@ -541,11 +566,9 @@ function PlasmicNewVariable__RenderFunc(props: {
             </StyleSelect>
           }
         />
-      </Stack__>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__uirV1, {
+      </div>
+      <div
+        className={classNames("all", sty.freeBox__uirV1, {
           [sty.freeBoxwithFormButtons__uirV1FjzBe]: hasVariant(
             $state,
             "withFormButtons",
@@ -559,14 +582,14 @@ function PlasmicNewVariable__RenderFunc(props: {
           caption={"Caption"}
           className={classNames("__wab_instance", sty.cancelButton)}
           endIcon={
-            <ChevronDownsvgIcon
-              className={classNames(projectcss.all, sty.svg__iifqa)}
+            <ChevronDownSvgIcon
+              className={classNames("all", sty.svg__iifqa)}
               role={"img"}
             />
           }
           startIcon={
-            <ArrowRightsvgIcon
-              className={classNames(projectcss.all, sty.svg___5Ghrl)}
+            <ArrowRightSvgIcon
+              className={classNames("all", sty.svg___5Ghrl)}
               role={"img"}
             />
           }
@@ -579,14 +602,14 @@ function PlasmicNewVariable__RenderFunc(props: {
           caption={"Caption"}
           className={classNames("__wab_instance", sty.confirmButton)}
           endIcon={
-            <ChevronDownsvgIcon
-              className={classNames(projectcss.all, sty.svg___4Tkj)}
+            <ChevronDownSvgIcon
+              className={classNames("all", sty.svg___4Tkj)}
               role={"img"}
             />
           }
           startIcon={
-            <ArrowRightsvgIcon
-              className={classNames(projectcss.all, sty.svg___3JWvy)}
+            <ArrowRightSvgIcon
+              className={classNames("all", sty.svg___3JWvy)}
               role={"img"}
             />
           }
@@ -594,8 +617,8 @@ function PlasmicNewVariable__RenderFunc(props: {
         >
           {"Confirm"}
         </Button>
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -608,7 +631,6 @@ const PlasmicDescendants = {
     "cancelButton",
     "confirmButton",
   ],
-
   variableType: ["variableType"],
   allowExternalAccess: ["allowExternalAccess"],
   accessTypeSelect: ["accessTypeSelect"],
@@ -632,23 +654,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNewVariable__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicNewVariable__VariantsArgs;
     args?: PlasmicNewVariable__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicNewVariable__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicNewVariable__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicNewVariable__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicNewVariable__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

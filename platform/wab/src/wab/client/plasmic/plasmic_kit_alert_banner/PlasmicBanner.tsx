@@ -14,26 +14,25 @@
 import * as React from "react";
 
 import {
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
   Flex as Flex__,
+  hasVariant,
   PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   StrictProps,
-  classNames,
-  createPlasmicElementProxy,
-  deriveRenderOpts,
-  hasVariant,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_alert_banner.module.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_alert_banner.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import sty from "./PlasmicBanner.module.css"; // plasmic-import: LlDTs6h34ISG/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -147,35 +146,39 @@ function PlasmicBanner__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
       },
       {
         path: "block",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.block,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.block,
       },
       {
         path: "iconType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.iconType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconType,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -184,13 +187,11 @@ function PlasmicBanner__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_29njzcsBEPR4koRddw4knF",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootblock]: hasVariant($state, "block", "block"),
@@ -201,8 +202,8 @@ function PlasmicBanner__RenderFunc(props: {
         }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__xDsa)}>
-        <div className={classNames(projectcss.all, sty.freeBox__qiaUx)}>
+      <div className={classNames("all", sty.freeBox__xDsa)}>
+        <div className={classNames("all", sty.freeBox__qiaUx)}>
           <PlasmicIcon__
             data-plasmic-name={"icon"}
             data-plasmic-override={overrides.icon}
@@ -211,7 +212,7 @@ function PlasmicBanner__RenderFunc(props: {
                 ? EyeExclamationSvgIcon
                 : WarningTriangleSvgIcon
             }
-            className={classNames(projectcss.all, sty.icon, {
+            className={classNames("all", sty.icon, {
               [sty.iconiconType_autoOpen]: hasVariant(
                 $state,
                 "iconType",
@@ -225,7 +226,7 @@ function PlasmicBanner__RenderFunc(props: {
           />
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__gl9VT, {
+          className={classNames("all", sty.freeBox__gl9VT, {
             [sty.freeBoxtype_error__gl9VTAyvH7]: hasVariant(
               $state,
               "type",
@@ -234,23 +235,18 @@ function PlasmicBanner__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__wYq26,
-              {
-                [sty.texttype_error__wYq26AyvH7]: hasVariant(
-                  $state,
-                  "type",
-                  "error"
-                ),
-                [sty.texttype_info__wYq26Cq87W]: hasVariant(
-                  $state,
-                  "type",
-                  "info"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__wYq26, {
+              [sty.texttype_error__wYq26AyvH7]: hasVariant(
+                $state,
+                "type",
+                "error"
+              ),
+              [sty.texttype_info__wYq26Cq87W]: hasVariant(
+                $state,
+                "type",
+                "info"
+              ),
+            })}
           >
             <React.Fragment>
               {(() => {
@@ -269,23 +265,18 @@ function PlasmicBanner__RenderFunc(props: {
             </React.Fragment>
           </div>
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___0Krq3,
-              {
-                [sty.texttype_error___0Krq3AyvH7]: hasVariant(
-                  $state,
-                  "type",
-                  "error"
-                ),
-                [sty.texttype_info___0Krq3Cq87W]: hasVariant(
-                  $state,
-                  "type",
-                  "info"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text___0Krq3, {
+              [sty.texttype_error___0Krq3AyvH7]: hasVariant(
+                $state,
+                "type",
+                "error"
+              ),
+              [sty.texttype_info___0Krq3Cq87W]: hasVariant(
+                $state,
+                "type",
+                "info"
+              ),
+            })}
           >
             <React.Fragment>
               {(() => {
@@ -306,7 +297,7 @@ function PlasmicBanner__RenderFunc(props: {
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__fMtNr, {
+        className={classNames("all", sty.freeBox__fMtNr, {
           [sty.freeBoxtype__default__fMtNrMyqB3]: hasVariant(
             $state,
             "type",
@@ -351,11 +342,7 @@ function PlasmicBanner__RenderFunc(props: {
             <div
               data-plasmic-name={"visit2"}
               data-plasmic-override={overrides.visit2}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.visit2
-              )}
+              className={classNames("all", "__wab_text", sty.visit2)}
             >
               <React.Fragment>
                 {(() => {
@@ -407,11 +394,7 @@ function PlasmicBanner__RenderFunc(props: {
             <div
               data-plasmic-name={"visit"}
               data-plasmic-override={overrides.visit}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.visit
-              )}
+              className={classNames("all", "__wab_text", sty.visit)}
             >
               <React.Fragment>
                 {(() => {
@@ -447,12 +430,12 @@ function PlasmicBanner__RenderFunc(props: {
           <div
             data-plasmic-name={"dismissBtn"}
             data-plasmic-override={overrides.dismissBtn}
-            className={classNames(projectcss.all, sty.dismissBtn)}
+            className={classNames("all", sty.dismissBtn)}
           >
             <CloseIcon
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg, {
+              className={classNames("all", sty.svg, {
                 [sty.svgsize_small]: hasVariant($state, "size", "small"),
                 [sty.svgtype_error]: hasVariant($state, "type", "error"),
                 [sty.svgtype_info]: hasVariant($state, "type", "info"),
@@ -510,7 +493,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicBanner__VariantsArgs;
     args?: PlasmicBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicBanner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

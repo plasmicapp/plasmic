@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsSettingsPage.module.css"; // plasmic-import: a5viGetjMi/css
 
 createPlasmicElementProxy;
@@ -100,15 +100,17 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
         path: "noModels",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noModels,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noModels,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -121,38 +123,28 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__q86AV)}>
-        <div className={classNames(projectcss.all, sty.freeBox__iAyOg)}>
+      <div className={classNames("all", sty.freeBox__q86AV)}>
+        <div className={classNames("all", sty.freeBox__iAyOg)}>
           <div
             data-plasmic-name={"left"}
             data-plasmic-override={overrides.left}
-            className={classNames(projectcss.all, sty.left)}
+            className={classNames("all", sty.left)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___6B6St
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text___6B6St)}>
               {"Settings"}
             </div>
             <div
               data-plasmic-name={"details"}
               data-plasmic-override={overrides.details}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.details
-              )}
+              className={classNames("all", "__wab_text", sty.details)}
             >
               {"X models"}
             </div>
@@ -160,7 +152,7 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
           <div
             data-plasmic-name={"right"}
             data-plasmic-override={overrides.right}
-            className={classNames(projectcss.all, sty.right)}
+            className={classNames("all", sty.right)}
           >
             <Button
               data-plasmic-name={"duplicateButton"}
@@ -170,13 +162,7 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
               size={"compact"}
               type={["bordered"]}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__luZtw
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__luZtw)}>
                 {"Duplicate CMS Database"}
               </div>
             </Button>
@@ -191,11 +177,11 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
             </Button>
           </div>
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__zo006)}>
+        <div className={classNames("all", sty.freeBox__zo006)}>
           <div
             data-plasmic-name={"content"}
             data-plasmic-override={overrides.content}
-            className={classNames(projectcss.all, sty.content)}
+            className={classNames("all", sty.content)}
           />
         </div>
       </div>

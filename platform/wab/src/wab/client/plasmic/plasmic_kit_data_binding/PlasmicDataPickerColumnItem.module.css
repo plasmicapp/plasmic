@@ -14,10 +14,10 @@
 .rootisSelected {
   background: var(--token-dqEx_KxIoYV);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.rootisSelected:hover {
+.rootisSelected:hover:hover {
   background: var(--token-RhvOnhv_xIi);
 }
 .freeBox__qdAAo {

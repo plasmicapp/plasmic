@@ -9,13 +9,12 @@ import { createUseStyleTokens } from "@plasmicapp/react-web";
 
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectModule
 
-import projectcss from "./plasmic_plasmic_kit_component_props_section.module.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
-
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "./plasmic_plasmic_kit_component_props_section.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 
 const data = {
-  base: `${projectcss.plasmic_tokens} ${plasmic_plasmic_kit_design_system_css.plasmic_tokens} ${plasmic_plasmic_kit_color_tokens_css.plasmic_tokens}`,
+  base: `${"plasmic_tokens_783YKJdyRRPxZbx3qiNi5Q"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,
   varianted: [],
 };
 

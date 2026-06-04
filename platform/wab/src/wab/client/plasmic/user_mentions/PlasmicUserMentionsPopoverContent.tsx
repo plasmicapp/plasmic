@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,22 +14,21 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import UserList from "../../components/user-mentions/UserList"; // plasmic-import: l-sEnd6egOHM/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "../plasmic_kit_user_mentions/PlasmicStyleTokensProvider"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic.module.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
+import "./plasmic.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
 import sty from "./PlasmicUserMentionsPopoverContent.module.css"; // plasmic-import: Gc2UoCN4xKJL/css
 
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: 9tHnrDLYFnPe/icon
@@ -90,6 +89,8 @@ function PlasmicUserMentionsPopoverContent__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -97,13 +98,11 @@ function PlasmicUserMentionsPopoverContent__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_kTSMroKPFv65RRTb44SCtk",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
@@ -116,12 +115,12 @@ function PlasmicUserMentionsPopoverContent__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <div
           data-plasmic-name={"separator"}
           data-plasmic-override={overrides.separator}
-          className={classNames(projectcss.all, sty.separator)}
+          className={classNames("all", sty.separator)}
         />
       </div>
       <Button
@@ -133,7 +132,7 @@ function PlasmicUserMentionsPopoverContent__RenderFunc(props: {
           <IconIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
           />
         }
@@ -171,14 +170,14 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUserMentionsPopoverContent__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicUserMentionsPopoverContent__VariantsArgs;
     args?: PlasmicUserMentionsPopoverContent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicUserMentionsPopoverContent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicUserMentionsPopoverContent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicUserMentionsPopoverContent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

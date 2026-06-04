@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsModelsList.module.css"; // plasmic-import: M3aa84scyXT/css
 
 createPlasmicElementProxy;
@@ -118,28 +118,31 @@ function PlasmicCmsModelsList__RenderFunc(props: {
         path: "isEmpty",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEmpty,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isEmpty,
       },
       {
         path: "isSchemaMode",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSchemaMode,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isSchemaMode,
       },
       {
         path: "hasArchivedModels",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasArchivedModels,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -152,10 +155,10 @@ function PlasmicCmsModelsList__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -174,7 +177,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__dprWy, {
+        className={classNames("all", sty.freeBox__dprWy, {
           [sty.freeBoxhasArchivedModels__dprWyIc983]: hasVariant(
             $state,
             "hasArchivedModels",
@@ -193,7 +196,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__mh5S4, {
+          className={classNames("all", sty.freeBox__mh5S4, {
             [sty.freeBoxisSchemaMode__mh5S4V4Otj]: hasVariant(
               $state,
               "isSchemaMode",
@@ -202,18 +205,13 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__li4C4,
-              {
-                [sty.textisSchemaMode__li4C4V4Otj]: hasVariant(
-                  $state,
-                  "isSchemaMode",
-                  "isSchemaMode"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__li4C4, {
+              [sty.textisSchemaMode__li4C4V4Otj]: hasVariant(
+                $state,
+                "isSchemaMode",
+                "isSchemaMode"
+              ),
+            })}
           >
             {hasVariant($state, "isSchemaMode", "isSchemaMode")
               ? "Edit Models"
@@ -241,7 +239,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
             />
           ) : null}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox___73Lo)}>
+        <div className={classNames("all", sty.freeBox___73Lo)}>
           <Searchbox
             data-plasmic-name={"searchInput"}
             data-plasmic-override={overrides.searchInput}
@@ -251,7 +249,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
         </div>
         {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__tBrpA, {
+            className={classNames("all", sty.freeBox__tBrpA, {
               [sty.freeBoxisEmpty__tBrpA6X5Ho]: hasVariant(
                 $state,
                 "isEmpty",
@@ -282,18 +280,13 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           </div>
         ) : null}
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__vg3D3,
-            {
-              [sty.textisEmpty__vg3D36X5Ho]: hasVariant(
-                $state,
-                "isEmpty",
-                "isEmpty"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text__vg3D3, {
+            [sty.textisEmpty__vg3D36X5Ho]: hasVariant(
+              $state,
+              "isEmpty",
+              "isEmpty"
+            ),
+          })}
         >
           {"No models have been created."}
         </div>
@@ -321,19 +314,13 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           collapseState={"expanded"}
           isLast={true}
           title={
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__r8NEf
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__r8NEf)}>
               {"Archived models"}
             </div>
           }
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox___0Dez, {
+            className={classNames("all", sty.freeBox___0Dez, {
               [sty.freeBoxisEmpty___0Dez6X5Ho]: hasVariant(
                 $state,
                 "isEmpty",
@@ -348,7 +335,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           >
             {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
               <div
-                className={classNames(projectcss.all, sty.freeBox__rIsR7, {
+                className={classNames("all", sty.freeBox__rIsR7, {
                   [sty.freeBoxisEmpty__rIsR76X5Ho]: hasVariant(
                     $state,
                     "isEmpty",
@@ -379,18 +366,13 @@ function PlasmicCmsModelsList__RenderFunc(props: {
               </div>
             ) : null}
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__tFwPn,
-                {
-                  [sty.textisEmpty__tFwPn6X5Ho]: hasVariant(
-                    $state,
-                    "isEmpty",
-                    "isEmpty"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__tFwPn, {
+                [sty.textisEmpty__tFwPn6X5Ho]: hasVariant(
+                  $state,
+                  "isEmpty",
+                  "isEmpty"
+                ),
+              })}
             >
               {"No models have been created."}
             </div>

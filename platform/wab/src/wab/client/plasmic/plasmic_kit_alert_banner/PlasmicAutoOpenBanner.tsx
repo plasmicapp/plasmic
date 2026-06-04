@@ -14,18 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Banner from "../../components/Banner"; // plasmic-import: LlDTs6h34ISG/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import "../PP__plasmickit_alert_banner.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import sty from "./PlasmicAutoOpenBanner.module.css"; // plasmic-import: ETj0D1AzSHQn/css
 
 createPlasmicElementProxy;
@@ -78,6 +80,8 @@ function PlasmicAutoOpenBanner__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <Banner
       data-plasmic-name={"root"}
@@ -116,7 +120,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAutoOpenBanner__VariantsArgs;
     args?: PlasmicAutoOpenBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAutoOpenBanner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicAutoOpenBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAutoOpenBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

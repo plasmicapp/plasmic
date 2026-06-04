@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_component_props_section.module.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
+import "./plasmic_plasmic_kit_component_props_section.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 import sty from "./PlasmicCardPickerModal.module.css"; // plasmic-import: 6ODOBecfUs5/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
@@ -123,6 +123,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -148,14 +149,14 @@ function PlasmicCardPickerModal__RenderFunc(props: {
             className={classNames("__wab_instance", sty.cancelButton)}
             endIcon={
               <TriangleBottomIcon
-                className={classNames(projectcss.all, sty.svg__qszen)}
+                className={classNames("all", sty.svg__qszen)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <TrashIcon
-                className={classNames(projectcss.all, sty.svg__srP7)}
+                className={classNames("all", sty.svg__srP7)}
                 role={"img"}
               />
             }
@@ -164,11 +165,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text
-              )}
+              className={classNames("all", "__wab_text", sty.text)}
             >
               {"Cancel"}
             </div>
@@ -179,14 +176,14 @@ function PlasmicCardPickerModal__RenderFunc(props: {
             className={classNames("__wab_instance", sty.saveButton)}
             endIcon={
               <TriangleBottomIcon
-                className={classNames(projectcss.all, sty.svg__ovm4)}
+                className={classNames("all", sty.svg__ovm4)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <TrashIcon
-                className={classNames(projectcss.all, sty.svg__vKndu)}
+                className={classNames("all", sty.svg__vKndu)}
                 role={"img"}
               />
             }
@@ -199,7 +196,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
       title={"Card Picker"}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__bJFoi, {
+        className={classNames("all", sty.freeBox__bJFoi, {
           [sty.freeBoxshowInput__bJFoi6TmFq]: hasVariant(
             $state,
             "showInput",
@@ -222,7 +219,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
         />
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox___05Thu, {
+        className={classNames("all", sty.freeBox___05Thu, {
           [sty.freeBoxshowInput___05Thu6TmFq]: hasVariant(
             $state,
             "showInput",
@@ -233,7 +230,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
         <div
           data-plasmic-name={"items"}
           data-plasmic-override={overrides.items}
-          className={classNames(projectcss.all, sty.items)}
+          className={classNames("all", sty.items)}
           style={(() => {
             try {
               return {
@@ -265,8 +262,9 @@ function PlasmicCardPickerModal__RenderFunc(props: {
                     <img
                       alt={""}
                       className={classNames(
-                        projectcss.all,
-                        projectcss.img,
+                        "all",
+                        "img",
+                        "img__783YK",
                         sty.img__u6EpR
                       )}
                       loading={"lazy"}
@@ -284,8 +282,9 @@ function PlasmicCardPickerModal__RenderFunc(props: {
                     <img
                       alt={""}
                       className={classNames(
-                        projectcss.all,
-                        projectcss.img,
+                        "all",
+                        "img",
+                        "img__783YK",
                         sty.img__kKlF
                       )}
                       loading={"lazy"}
@@ -303,8 +302,9 @@ function PlasmicCardPickerModal__RenderFunc(props: {
                     <img
                       alt={""}
                       className={classNames(
-                        projectcss.all,
-                        projectcss.img,
+                        "all",
+                        "img",
+                        "img__783YK",
                         sty.img__i57Px
                       )}
                       loading={"lazy"}
@@ -322,8 +322,9 @@ function PlasmicCardPickerModal__RenderFunc(props: {
                     <img
                       alt={""}
                       className={classNames(
-                        projectcss.all,
-                        projectcss.img,
+                        "all",
+                        "img",
+                        "img__783YK",
                         sty.img__cnMyC
                       )}
                       loading={"lazy"}

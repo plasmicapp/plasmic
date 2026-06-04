@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicWrapRepeatedElementModal.module.css"; // plasmic-import: VDe4OfA0wv/css
 
 createPlasmicElementProxy;
@@ -97,10 +97,10 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -108,36 +108,24 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
       <div
         data-plasmic-name={"modalWrapRepeatedElement"}
         data-plasmic-override={overrides.modalWrapRepeatedElement}
-        className={classNames(projectcss.all, sty.modalWrapRepeatedElement)}
+        className={classNames("all", sty.modalWrapRepeatedElement)}
       >
         <div
           data-plasmic-name={"frame28"}
           data-plasmic-override={overrides.frame28}
-          className={classNames(projectcss.all, sty.frame28)}
+          className={classNames("all", sty.frame28)}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__qjHi
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__qjHi)}>
             {"Wrap element"}
           </div>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___6V3Kb
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___6V3Kb)}>
             {"This is a repeated element, how do you want to wrap it?"}
           </div>
         </div>
         <div
           data-plasmic-name={"frame27"}
           data-plasmic-override={overrides.frame27}
-          className={classNames(projectcss.all, sty.frame27)}
+          className={classNames("all", sty.frame27)}
         >
           <WrapRepeatedElementOption
             className={classNames(
@@ -156,24 +144,24 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
               <div
                 data-plasmic-name={"frame25"}
                 data-plasmic-override={overrides.frame25}
-                className={classNames(projectcss.all, sty.frame25)}
+                className={classNames("all", sty.frame25)}
               >
                 <div
                   data-plasmic-name={"rectangle16"}
                   data-plasmic-override={overrides.rectangle16}
-                  className={classNames(projectcss.all, sty.rectangle16)}
+                  className={classNames("all", sty.rectangle16)}
                 />
 
                 <div
                   data-plasmic-name={"rectangle17"}
                   data-plasmic-override={overrides.rectangle17}
-                  className={classNames(projectcss.all, sty.rectangle17)}
+                  className={classNames("all", sty.rectangle17)}
                 />
 
                 <div
                   data-plasmic-name={"rectangle18"}
                   data-plasmic-override={overrides.rectangle18}
-                  className={classNames(projectcss.all, sty.rectangle18)}
+                  className={classNames("all", sty.rectangle18)}
                 />
               </div>
             }

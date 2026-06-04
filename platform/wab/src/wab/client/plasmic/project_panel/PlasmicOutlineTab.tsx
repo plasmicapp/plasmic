@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,15 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -30,12 +29,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import FolderItem from "../../components/sidebar-tabs/ProjectPanel/FolderItem"; // plasmic-import: iWeSjEMdI3/component
 import SearchInput from "../../components/sidebar-tabs/ProjectPanel/SearchInput"; // plasmic-import: CHoUJxFMpo/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "../plasmic_kit_project_panel/PlasmicStyleTokensProvider"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_project_panel.module.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
+import "./plasmic_project_panel.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicOutlineTab.module.css"; // plasmic-import: BSjTPez6aCjk/css
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
@@ -116,18 +114,21 @@ function PlasmicOutlineTab__RenderFunc(props: {
         path: "noHeader",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noHeader,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noHeader,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -136,21 +137,17 @@ function PlasmicOutlineTab__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_m8VxGcigeLAEXFe8c12w5Q",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         { [sty.rootnoHeader]: hasVariant($state, "noHeader", "noHeader") }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__i3J1M, {
+      <div
+        className={classNames("all", sty.freeBox__i3J1M, {
           [sty.freeBoxnoHeader__i3J1MRfMki]: hasVariant(
             $state,
             "noHeader",
@@ -158,13 +155,11 @@ function PlasmicOutlineTab__RenderFunc(props: {
           ),
         })}
       >
-        <div className={classNames(projectcss.all, sty.freeBox__k743O)}>
-          <Stack__
-            as={"div"}
+        <div className={classNames("all", sty.freeBox__k743O)}>
+          <div
             data-plasmic-name={"headerFilter"}
             data-plasmic-override={overrides.headerFilter}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.headerFilter, {
+            className={classNames("all", sty.headerFilter, {
               [sty.headerFilternoHeader]: hasVariant(
                 $state,
                 "noHeader",
@@ -175,21 +170,16 @@ function PlasmicOutlineTab__RenderFunc(props: {
             {renderPlasmicSlot({
               defaultContents: (
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___3DWbJ
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___3DWbJ)}
                 >
                   {"Everything"}
                 </div>
               ),
-
               value: args.filterLabel,
               className: classNames(sty.slotTargetFilterLabel),
             })}
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__fE6EN, {
+              className={classNames("all", sty.svg__fE6EN, {
                 [sty.svgnoHeader__fE6ENRfMki]: hasVariant(
                   $state,
                   "noHeader",
@@ -198,13 +188,9 @@ function PlasmicOutlineTab__RenderFunc(props: {
               })}
               role={"img"}
             />
-          </Stack__>
+          </div>
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__qdVl)}
-        >
+        <div className={classNames("all", sty.freeBox__qdVl)}>
           <SearchInput
             data-plasmic-name={"searchInput"}
             data-plasmic-override={overrides.searchInput}
@@ -220,7 +206,7 @@ function PlasmicOutlineTab__RenderFunc(props: {
             withBackgroundHover={true}
           >
             <ExpandAllIcon
-              className={classNames(projectcss.all, sty.svg__lDxU0)}
+              className={classNames("all", sty.svg__lDxU0)}
               role={"img"}
             />
           </IconButton>
@@ -233,13 +219,13 @@ function PlasmicOutlineTab__RenderFunc(props: {
             withBackgroundHover={true}
           >
             <CollapseAllIcon
-              className={classNames(projectcss.all, sty.svg___3CdCg)}
+              className={classNames("all", sty.svg___3CdCg)}
               role={"img"}
             />
           </IconButton>
-        </Stack__>
-      </Stack__>
-      <div className={classNames(projectcss.all, sty.freeBox__c0PO)}>
+        </div>
+      </div>
+      <div className={classNames("all", sty.freeBox__c0PO)}>
         {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
@@ -276,7 +262,6 @@ function PlasmicOutlineTab__RenderFunc(props: {
               </FolderItem>
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </div>
@@ -292,7 +277,6 @@ const PlasmicDescendants = {
     "expandAllButton",
     "collapseAllButton",
   ],
-
   headerFilter: ["headerFilter"],
   searchInput: ["searchInput"],
   expandAllButton: ["expandAllButton"],
@@ -314,23 +298,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOutlineTab__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicOutlineTab__VariantsArgs;
     args?: PlasmicOutlineTab__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicOutlineTab__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicOutlineTab__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicOutlineTab__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicOutlineTab__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

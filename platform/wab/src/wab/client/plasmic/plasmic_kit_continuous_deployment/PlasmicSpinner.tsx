@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSpinner.module.css"; // plasmic-import: oo-lLDZ5qnA/css
 
 import Spinner1S200PxSvgIcon from "./icons/PlasmicIcon__Spinner1S200PxSvg"; // plasmic-import: mwpa_Gia6i/icon
@@ -100,15 +100,18 @@ function PlasmicSpinner__RenderFunc(props: {
         path: "customDomain",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.customDomain,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.customDomain,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -121,10 +124,10 @@ function PlasmicSpinner__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {

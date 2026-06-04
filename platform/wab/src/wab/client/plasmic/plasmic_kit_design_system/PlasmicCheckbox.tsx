@@ -35,7 +35,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCheckbox.module.css"; // plasmic-import: W-rO7NZqPjZ/css
 
 import CheckTrueIcon from "../plasmic_kit/PlasmicIcon__CheckTrue"; // plasmic-import: ckLkdbD6DMjvM/icon
@@ -176,6 +176,7 @@ function PlasmicCheckbox__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -206,10 +207,10 @@ function PlasmicCheckbox__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -324,7 +325,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             ? CheckTrueIcon
             : SquareSvgIcon
         }
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svg___focusWithin__notFocusVisibleWithin]:
             triggers.focusWithinNotFocusVisibleWithin_root,
           [sty.svgcolor_blue_medium]:
@@ -377,7 +378,7 @@ function PlasmicCheckbox__RenderFunc(props: {
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          className={classNames(projectcss.all, sty.labelContainer, {
+          className={classNames("all", sty.labelContainer, {
             [sty.labelContainer___focusWithin__notFocusVisibleWithin]:
               triggers.focusWithinNotFocusVisibleWithin_root,
             [sty.labelContainermedium]: hasVariant($state, "medium", "medium"),

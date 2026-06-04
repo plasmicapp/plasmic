@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,14 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -29,11 +29,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
+import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicSwitch.module.css"; // plasmic-import: AJepyKzS-T-/css
 
 createPlasmicElementProxy;
@@ -123,13 +123,13 @@ function PlasmicSwitch__RenderFunc(props: {
         path: "noLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLabel,
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
       },
       {
         path: "isChecked",
@@ -142,10 +142,12 @@ function PlasmicSwitch__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -157,6 +159,8 @@ function PlasmicSwitch__RenderFunc(props: {
     focusVisibleWithin_root: isRootFocusVisibleWithin,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -164,13 +168,11 @@ function PlasmicSwitch__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_p8FkKgCnyuat1kHSEYAKfW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.root___focusVisibleWithin]: triggers.focusVisibleWithin_root,
@@ -184,7 +186,7 @@ function PlasmicSwitch__RenderFunc(props: {
       <div
         data-plasmic-name={"toggle"}
         data-plasmic-override={overrides.toggle}
-        className={classNames(projectcss.all, sty.toggle, {
+        className={classNames("all", sty.toggle, {
           [sty.toggle___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.toggleisChecked]: hasVariant($state, "isChecked", "isChecked"),
           [sty.toggleisDisabled]: hasVariant(
@@ -197,7 +199,7 @@ function PlasmicSwitch__RenderFunc(props: {
         <div
           data-plasmic-name={"track"}
           data-plasmic-override={overrides.track}
-          className={classNames(projectcss.all, sty.track, {
+          className={classNames("all", sty.track, {
             [sty.track___focusVisibleWithin]: triggers.focusVisibleWithin_root,
             [sty.trackisChecked]: hasVariant($state, "isChecked", "isChecked"),
             [sty.trackisDisabled]: hasVariant(
@@ -211,7 +213,7 @@ function PlasmicSwitch__RenderFunc(props: {
         <div
           data-plasmic-name={"thumb"}
           data-plasmic-override={overrides.thumb}
-          className={classNames(projectcss.all, sty.thumb, {
+          className={classNames("all", sty.thumb, {
             [sty.thumb___focusVisibleWithin]: triggers.focusVisibleWithin_root,
             [sty.thumbisChecked]: hasVariant($state, "isChecked", "isChecked"),
           })}
@@ -221,7 +223,7 @@ function PlasmicSwitch__RenderFunc(props: {
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          className={classNames(projectcss.all, sty.labelContainer, {
+          className={classNames("all", sty.labelContainer, {
             [sty.labelContainer___focusVisibleWithin]:
               triggers.focusVisibleWithin_root,
             [sty.labelContainernoLabel]: hasVariant(
@@ -306,7 +308,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSwitch__VariantsArgs;
     args?: PlasmicSwitch__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSwitch__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSwitch__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSwitch__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

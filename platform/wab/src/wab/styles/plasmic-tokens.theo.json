@@ -4411,26 +4411,6 @@
       }
     },
     {
-      "name": "panel border",
-      "type": "color",
-      "value": "rgb(228,230,235)",
-      "category": "color",
-      "meta": {
-        "projectId": "dyzP6dbCdycwJpqiR2zkwe",
-        "id": "pzmB25Csye"
-      }
-    },
-    {
-      "name": "panel border",
-      "type": "color",
-      "value": "#E4E6EB",
-      "category": "color",
-      "meta": {
-        "projectId": "gtUDvxG6cmBbSzqLikNzoP",
-        "id": "7fxNxEWkSsK"
-      }
-    },
-    {
       "name": "pink1",
       "type": "color",
       "value": "#FFFCFE",

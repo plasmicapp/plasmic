@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftSplitsPanel.module.css"; // plasmic-import: OzaoSbFLbl/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -103,10 +103,10 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -120,14 +120,14 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newTestButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__wnOv)}
+                className={classNames("all", sty.svg__wnOv)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg__va03F)}
+                className={classNames("all", sty.svg__va03F)}
                 role={"img"}
               />
             }
@@ -145,7 +145,7 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"abContent"}
         data-plasmic-override={overrides.abContent}
-        className={classNames(projectcss.all, sty.abContent)}
+        className={classNames("all", sty.abContent)}
       />
 
       <LeftPaneHeader
@@ -157,14 +157,14 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newSegmentButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__bnPy)}
+                className={classNames("all", sty.svg__bnPy)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg__eacMt)}
+                className={classNames("all", sty.svg__eacMt)}
                 role={"img"}
               />
             }
@@ -174,11 +174,7 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text
-              )}
+              className={classNames("all", "__wab_text", sty.text)}
             >
               {"New targeted content"}
             </div>
@@ -194,7 +190,7 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"segmentsContent"}
         data-plasmic-override={overrides.segmentsContent}
-        className={classNames(projectcss.all, sty.segmentsContent)}
+        className={classNames("all", sty.segmentsContent)}
       />
 
       <LeftPaneHeader
@@ -206,14 +202,14 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newScheduleButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__uEtw)}
+                className={classNames("all", sty.svg__uEtw)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg__j3MPs)}
+                className={classNames("all", sty.svg__j3MPs)}
                 role={"img"}
               />
             }
@@ -233,7 +229,7 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"scheduledContent"}
         data-plasmic-override={overrides.scheduledContent}
-        className={classNames(projectcss.all, sty.scheduledContent)}
+        className={classNames("all", sty.scheduledContent)}
       />
     </div>
   ) as React.ReactElement | null;

@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicListSeperator.module.css"; // plasmic-import: 3J9TqoTau-2m/css
 
 createPlasmicElementProxy;
@@ -92,10 +92,10 @@ function PlasmicListSeperator__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -103,22 +103,20 @@ function PlasmicListSeperator__RenderFunc(props: {
       <div
         data-plasmic-name={"separatorLine"}
         data-plasmic-override={overrides.separatorLine}
-        className={classNames(projectcss.all, sty.separatorLine)}
+        className={classNames("all", sty.separatorLine)}
       >
-        <div className={classNames(projectcss.all, sty.freeBox__i2Yzw)}>
-          <div className={classNames(projectcss.all, sty.freeBox__oQdia)}>
+        <div className={classNames("all", sty.freeBox__i2Yzw)}>
+          <div className={classNames("all", sty.freeBox__oQdia)}>
             {renderPlasmicSlot({
               defaultContents: (
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ofb4W
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ofb4W)}
                 >
                   <React.Fragment>
                     <span
-                      className={"plasmic_default__all plasmic_default__span"}
+                      className={
+                        "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                      }
                       style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
                     >
                       {"Separator Label"}
@@ -159,7 +157,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicListSeperator__VariantsArgs;
     args?: PlasmicListSeperator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicListSeperator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicListSeperator__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicListSeperator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

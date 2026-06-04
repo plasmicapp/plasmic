@@ -18,12 +18,10 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -34,15 +32,12 @@ import CmsListItem from "../../components/CmsListItem"; // plasmic-import: DEllw
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicCmsSection.module.css"; // plasmic-import: 54ykx6A8G6T/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -157,57 +152,63 @@ function PlasmicCmsSection__RenderFunc(props: {
         path: "noProjects",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noProjects,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noProjects,
       },
       {
         path: "accessLevel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.accessLevel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.accessLevel,
       },
       {
         path: "inTeamPage",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.inTeamPage,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.inTeamPage,
       },
       {
         path: "showControls",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showControls,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showControls,
       },
       {
         path: "isReadonlyName",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isReadonlyName,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isReadonlyName,
       },
       {
         path: "showBackNav",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showBackNav,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showBackNav,
       },
       {
         path: "subHeader",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.subHeader,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.subHeader,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -216,34 +217,13 @@ function PlasmicCmsSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootaccessLevel_cantEdit]: hasVariant(
             $state,
             "accessLevel",
@@ -262,7 +242,7 @@ function PlasmicCmsSection__RenderFunc(props: {
     >
       {(hasVariant($state, "inTeamPage", "inTeamPage") ? true : false) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__xLos, {
+          className={classNames("all", sty.freeBox__xLos, {
             [sty.freeBoxinTeamPage__xLosjMkVm]: hasVariant(
               $state,
               "inTeamPage",
@@ -274,7 +254,7 @@ function PlasmicCmsSection__RenderFunc(props: {
       <header
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        className={classNames(projectcss.all, sty.header, {
+        className={classNames("all", sty.header, {
           [sty.headeraccessLevel_cantEdit]: hasVariant(
             $state,
             "accessLevel",
@@ -304,7 +284,7 @@ function PlasmicCmsSection__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__nj2Zz, {
+          className={classNames("all", sty.freeBox__nj2Zz, {
             [sty.freeBoxshowBackNav__nj2ZzV99Ez]: hasVariant(
               $state,
               "showBackNav",
@@ -319,7 +299,7 @@ function PlasmicCmsSection__RenderFunc(props: {
               })
             : null}
           <div
-            className={classNames(projectcss.all, sty.freeBox__arPdT, {
+            className={classNames("all", sty.freeBox__arPdT, {
               [sty.freeBoxaccessLevel_cantEdit__arPdTtwf47]: hasVariant(
                 $state,
                 "accessLevel",
@@ -336,9 +316,10 @@ function PlasmicCmsSection__RenderFunc(props: {
               data-plasmic-name={"backNav"}
               data-plasmic-override={overrides.backNav}
               className={classNames(
-                projectcss.all,
-                projectcss.a,
-                projectcss.__wab_text,
+                "all",
+                "a",
+                "a__ooL7E",
+                "__wab_text",
                 sty.backNav,
                 {
                   [sty.backNavshowBackNav]: hasVariant(
@@ -387,32 +368,21 @@ function PlasmicCmsSection__RenderFunc(props: {
             <div
               data-plasmic-name={"readonlyName"}
               data-plasmic-override={overrides.readonlyName}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.readonlyName,
-                {
-                  [sty.readonlyNameisReadonlyName]: hasVariant(
-                    $state,
-                    "isReadonlyName",
-                    "isReadonlyName"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.readonlyName, {
+                [sty.readonlyNameisReadonlyName]: hasVariant(
+                  $state,
+                  "isReadonlyName",
+                  "isReadonlyName"
+                ),
+              })}
             >
               {"Read-only"}
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__qR4PO)}
-            >
-              <Stack__
-                as={"div"}
+            <div className={classNames("all", sty.freeBox__qR4PO)}>
+              <div
                 data-plasmic-name={"subtext"}
                 data-plasmic-override={overrides.subtext}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.subtext)}
+                className={classNames("all", sty.subtext)}
               >
                 {renderPlasmicSlot({
                   defaultContents: "6",
@@ -422,31 +392,24 @@ function PlasmicCmsSection__RenderFunc(props: {
                 <div
                   data-plasmic-name={"text"}
                   data-plasmic-override={overrides.text}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text,
-                    {
-                      [sty.textinTeamPage]: hasVariant(
-                        $state,
-                        "inTeamPage",
-                        "inTeamPage"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text, {
+                    [sty.textinTeamPage]: hasVariant(
+                      $state,
+                      "inTeamPage",
+                      "inTeamPage"
+                    ),
+                  })}
                 >
                   {"models"}
                 </div>
-              </Stack__>
-            </Stack__>
+              </div>
+            </div>
           </div>
         </div>
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.actions, {
+          className={classNames("all", sty.actions, {
             [sty.actionsaccessLevel_cantEdit]: hasVariant(
               $state,
               "accessLevel",
@@ -471,7 +434,7 @@ function PlasmicCmsSection__RenderFunc(props: {
             })}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__fAdgg)}
+                className={classNames("all", sty.svg__fAdgg)}
                 role={"img"}
               />
             }
@@ -479,7 +442,7 @@ function PlasmicCmsSection__RenderFunc(props: {
             size={"wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg___1Slo4)}
+                className={classNames("all", sty.svg___1Slo4)}
                 role={"img"}
               />
             }
@@ -501,17 +464,13 @@ function PlasmicCmsSection__RenderFunc(props: {
             hoverText={"More…"}
             withBackgroundHover={true}
           />
-        </Stack__>
+        </div>
       </header>
       {(hasVariant($state, "noProjects", "noProjects") ? true : false)
         ? renderPlasmicSlot({
             defaultContents: (
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___5CnRl
-                )}
+                className={classNames("all", "__wab_text", sty.text___5CnRl)}
               >
                 {"This workspace has no projects."}
               </div>
@@ -527,7 +486,7 @@ function PlasmicCmsSection__RenderFunc(props: {
           })
         : null}
       <div
-        className={classNames(projectcss.all, sty.freeBox__euDr, {
+        className={classNames("all", sty.freeBox__euDr, {
           [sty.freeBoxaccessLevel_cantEdit__euDrtwf47]: hasVariant(
             $state,
             "accessLevel",
@@ -542,7 +501,7 @@ function PlasmicCmsSection__RenderFunc(props: {
       >
         {(hasVariant($state, "noProjects", "noProjects") ? false : true) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__glVzk, {
+            className={classNames("all", sty.freeBox__glVzk, {
               [sty.freeBoxnoProjects__glVzkSrNyP]: hasVariant(
                 $state,
                 "noProjects",
@@ -646,7 +605,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCmsSection__VariantsArgs;
     args?: PlasmicCmsSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsSection__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCmsSection__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

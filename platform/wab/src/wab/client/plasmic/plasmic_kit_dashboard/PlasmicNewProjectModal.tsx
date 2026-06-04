@@ -14,14 +14,12 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -29,12 +27,12 @@ import Modal from "../../components/Modal"; // plasmic-import: rD0wOVzSnE/compon
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicNewProjectModal.module.css"; // plasmic-import: s87vSHZpzQ/css
 
 import CheckIcon from "../plasmic_kit/PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
@@ -99,9 +97,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const globalVariants = _useGlobalVariants();
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Modal
@@ -117,14 +115,14 @@ function PlasmicNewProjectModal__RenderFunc(props: {
           className={classNames("__wab_instance", sty.cancelButton)}
           endIcon={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__uqGta)}
+              className={classNames("all", sty.svg__uqGta)}
               role={"img"}
             />
           }
           size={"wide"}
           startIcon={
             <ArrowRightSvgIcon
-              className={classNames(projectcss.all, sty.svg__trEgf)}
+              className={classNames("all", sty.svg__trEgf)}
               role={"img"}
             />
           }
@@ -133,11 +131,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text
-            )}
+            className={classNames("all", "__wab_text", sty.text)}
           >
             {"Cancel"}
           </div>
@@ -146,12 +140,10 @@ function PlasmicNewProjectModal__RenderFunc(props: {
       tintBackground={true}
       title={"New Project"}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
           defaultContents: (
@@ -175,8 +167,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__pgne4
                           )}
                           src={image3YherfIxkolNxf}
@@ -186,8 +179,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__fwvOk
                           )}
                           loading={"lazy"}
@@ -197,7 +191,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       withDescrip={true}
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg___51Z9I)}
+                        className={classNames("all", sty.svg___51Z9I)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -213,8 +207,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__bRo9U
                           )}
                           src={image3YherfIxkolNxf}
@@ -224,8 +219,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__dtEk7
                           )}
                           loading={"lazy"}
@@ -234,7 +230,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__xCbYe)}
+                        className={classNames("all", sty.svg__xCbYe)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -250,8 +246,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img___7SyGv
                           )}
                           src={image3YherfIxkolNxf}
@@ -261,8 +258,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__cx8F
                           )}
                           loading={"lazy"}
@@ -271,7 +269,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__sJyVa)}
+                        className={classNames("all", sty.svg__sJyVa)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -287,8 +285,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__d0J3B
                           )}
                           src={image3YherfIxkolNxf}
@@ -298,8 +297,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__euz0C
                           )}
                           loading={"lazy"}
@@ -308,7 +308,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__ca4Uy)}
+                        className={classNames("all", sty.svg__ca4Uy)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -336,8 +336,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__hT9Mo
                           )}
                           src={image3YherfIxkolNxf}
@@ -347,8 +348,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__sDgWf
                           )}
                           loading={"lazy"}
@@ -357,7 +359,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__nrPcn)}
+                        className={classNames("all", sty.svg__nrPcn)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -373,8 +375,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__uwg1C
                           )}
                           src={image3YherfIxkolNxf}
@@ -384,8 +387,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__lfZxl
                           )}
                           loading={"lazy"}
@@ -394,7 +398,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg___7Jzx0)}
+                        className={classNames("all", sty.svg___7Jzx0)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -410,8 +414,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__pVq7
                           )}
                           src={image3YherfIxkolNxf}
@@ -421,8 +426,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__tcYhV
                           )}
                           loading={"lazy"}
@@ -431,7 +437,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__hVww)}
+                        className={classNames("all", sty.svg__hVww)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -447,8 +453,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__hRe87
                           )}
                           src={image3YherfIxkolNxf}
@@ -458,8 +465,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__eYdKv
                           )}
                           loading={"lazy"}
@@ -468,7 +476,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__onpnI)}
+                        className={classNames("all", sty.svg__onpnI)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -496,8 +504,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__s0Rca
                           )}
                           src={image3YherfIxkolNxf}
@@ -507,8 +516,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__jk8H
                           )}
                           loading={"lazy"}
@@ -517,7 +527,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__wqVlD)}
+                        className={classNames("all", sty.svg__wqVlD)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -533,8 +543,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__pRlIb
                           )}
                           src={image3YherfIxkolNxf}
@@ -544,8 +555,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__rVwBb
                           )}
                           loading={"lazy"}
@@ -554,7 +566,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__huUsm)}
+                        className={classNames("all", sty.svg__huUsm)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -570,8 +582,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__b27Fl
                           )}
                           src={image3YherfIxkolNxf}
@@ -581,8 +594,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__h16Z
                           )}
                           loading={"lazy"}
@@ -591,7 +605,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg___05KJ9)}
+                        className={classNames("all", sty.svg___05KJ9)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -607,8 +621,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__qDVqU
                           )}
                           src={image3YherfIxkolNxf}
@@ -618,8 +633,9 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__uu28E
                           )}
                           loading={"lazy"}
@@ -628,7 +644,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__wvMj9)}
+                        className={classNames("all", sty.svg__wvMj9)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -640,7 +656,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
           ),
           value: args.children,
         })}
-      </Stack__>
+      </div>
     </Modal>
   ) as React.ReactElement | null;
 }
@@ -672,7 +688,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicNewProjectModal__VariantsArgs;
     args?: PlasmicNewProjectModal__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicNewProjectModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicNewProjectModal__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicNewProjectModal__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

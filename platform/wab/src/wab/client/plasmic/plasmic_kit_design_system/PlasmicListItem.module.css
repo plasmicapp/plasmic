@@ -28,22 +28,22 @@
   background: var(--token-HKVCQ5ZKovK);
   border-left-color: var(--token-Le11TVejD2x2);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.root:active {
+.root:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.rootisSelected:hover {
+.rootisSelected:hover:hover {
   background: var(--token-dqEx_KxIoYV);
 }
-.rootisSelected:active {
+.rootisSelected:active:active {
   background: var(--token-dqEx_KxIoYV);
 }
-.rootcolor_variant:hover {
+.rootcolor_variant:hover:hover {
   background: var(--token-HKVCQ5ZKovK);
 }
-.rootcolor_variant:active {
+.rootcolor_variant:active:active {
   background: var(--token-5kjtdCiiOPB);
 }
 .main {

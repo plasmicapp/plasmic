@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicMessagePartPopoverContent.module.css"; // plasmic-import: cdd2zPdEWaRL/css
 
 createPlasmicElementProxy;
@@ -96,10 +96,10 @@ function PlasmicMessagePartPopoverContent__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -107,7 +107,7 @@ function PlasmicMessagePartPopoverContent__RenderFunc(props: {
       <div
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        className={classNames(projectcss.all, sty.header)}
+        className={classNames("all", sty.header)}
       >
         {renderPlasmicSlot({
           defaultContents: "Title",
@@ -118,7 +118,7 @@ function PlasmicMessagePartPopoverContent__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       >
         <MessagePartPopoverContentBlock
           className={classNames(

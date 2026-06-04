@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftTabStrip.module.css"; // plasmic-import: l7y_rhJyMt2/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
@@ -128,15 +128,17 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         path: "showAvatar",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAvatar,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAvatar,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -149,10 +151,10 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootshowAvatar]: hasVariant($state, "showAvatar", "showAvatar") }
@@ -171,7 +173,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__s2Zn2, {
+        className={classNames("all", sty.freeBox__s2Zn2, {
           [sty.freeBoxshowAvatar__s2Zn29NVfe]: hasVariant(
             $state,
             "showAvatar",
@@ -179,7 +181,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
       >
-        <div className={classNames(projectcss.all, sty.freeBox___5Ah7Y)}>
+        <div className={classNames("all", sty.freeBox___5Ah7Y)}>
           {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
@@ -190,7 +192,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   )}
                   icon={
                     <WarningTriangleSvgIcon
-                      className={classNames(projectcss.all, sty.svg__fJuLy)}
+                      className={classNames("all", sty.svg__fJuLy)}
                       role={"img"}
                     />
                   }
@@ -203,7 +205,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   )}
                   icon={
                     <TreeIcon
-                      className={classNames(projectcss.all, sty.svg__rJYem)}
+                      className={classNames("all", sty.svg__rJYem)}
                       role={"img"}
                     />
                   }
@@ -216,7 +218,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   )}
                   icon={
                     <ComponentsSvgIcon
-                      className={classNames(projectcss.all, sty.svg__p2MgB)}
+                      className={classNames("all", sty.svg__p2MgB)}
                       role={"img"}
                     />
                   }
@@ -229,7 +231,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   )}
                   icon={
                     <GearIcon
-                      className={classNames(projectcss.all, sty.svg__qPkMk)}
+                      className={classNames("all", sty.svg__qPkMk)}
                       role={"img"}
                     />
                   }
@@ -242,7 +244,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   )}
                   icon={
                     <DotsHorizontalCircleSvgIcon
-                      className={classNames(projectcss.all, sty.svg___7Cd9B)}
+                      className={classNames("all", sty.svg___7Cd9B)}
                       role={"img"}
                     />
                   }
@@ -252,7 +254,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             value: args.buttons,
           })}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__qcGiE)}>
+        <div className={classNames("all", sty.freeBox__qcGiE)}>
           {renderPlasmicSlot({
             defaultContents: (
               <LeftTabButton
@@ -262,7 +264,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                 )}
                 icon={
                   <HelpCircleSvgIcon
-                    className={classNames(projectcss.all, sty.svg__bhbR5)}
+                    className={classNames("all", sty.svg__bhbR5)}
                     role={"img"}
                   />
                 }
@@ -276,11 +278,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       <div
         data-plasmic-name={"divider"}
         data-plasmic-override={overrides.divider}
-        className={classNames(projectcss.all, sty.divider)}
+        className={classNames("all", sty.divider)}
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox___3AubH, {
+        className={classNames("all", sty.freeBox___3AubH, {
           [sty.freeBoxshowAvatar___3AubH9NVfe]: hasVariant(
             $state,
             "showAvatar",
@@ -293,7 +295,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-override={overrides.figma}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__gjOa1)}
+              className={classNames("all", sty.svg__gjOa1)}
               role={"img"}
             />
           }
@@ -307,7 +309,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           size={"large"}
         >
           <FigmaSvgIcon
-            className={classNames(projectcss.all, sty.svg__r87Op, {
+            className={classNames("all", sty.svg__r87Op, {
               [sty.svgshowAvatar__r87Op9NVfe]: hasVariant(
                 $state,
                 "showAvatar",
@@ -322,7 +324,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-override={overrides.keyboard}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__zTmmf)}
+              className={classNames("all", sty.svg__zTmmf)}
               role={"img"}
             />
           }
@@ -336,7 +338,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           size={"large"}
         >
           <KeyboardIcon
-            className={classNames(projectcss.all, sty.svg__isDmf)}
+            className={classNames("all", sty.svg__isDmf)}
             role={"img"}
           />
         </IconButton>
@@ -345,7 +347,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-override={overrides.slack}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__rPpbx)}
+              className={classNames("all", sty.svg__rPpbx)}
               role={"img"}
             />
           }
@@ -358,9 +360,9 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           })}
           size={"large"}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__hJJr6)}>
+          <div className={classNames("all", sty.freeBox__hJJr6)}>
             <SpeechBubbleSvgIcon
-              className={classNames(projectcss.all, sty.svg__pqmVd)}
+              className={classNames("all", sty.svg__pqmVd)}
               role={"img"}
             />
           </div>
@@ -370,7 +372,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-override={overrides.help}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__t8IHm)}
+              className={classNames("all", sty.svg__t8IHm)}
               role={"img"}
             />
           }
@@ -384,7 +386,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           size={"large"}
         >
           <HelpCircleSvgIcon
-            className={classNames(projectcss.all, sty.svg__tlcC1, {
+            className={classNames("all", sty.svg__tlcC1, {
               [sty.svgshowAvatar__tlcC19NVfe]: hasVariant(
                 $state,
                 "showAvatar",
@@ -396,7 +398,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         </IconButton>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__igmvF, {
+        className={classNames("all", sty.freeBox__igmvF, {
           [sty.freeBoxshowAvatar__igmvF9NVfe]: hasVariant(
             $state,
             "showAvatar",
@@ -407,7 +409,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         <div
           data-plasmic-name={"players"}
           data-plasmic-override={overrides.players}
-          className={classNames(projectcss.all, sty.players, {
+          className={classNames("all", sty.players, {
             [sty.playersshowAvatar]: hasVariant(
               $state,
               "showAvatar",
@@ -440,7 +442,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ) : null}
           {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
             <UserSvgIcon
-              className={classNames(projectcss.all, sty.svg__jFq8B, {
+              className={classNames("all", sty.svg__jFq8B, {
                 [sty.svgshowAvatar__jFq8B9NVfe]: hasVariant(
                   $state,
                   "showAvatar",

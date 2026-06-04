@@ -15,7 +15,7 @@
 .listItemContainerisSelected {
   box-shadow: inset 0px 0px 0px 1px var(--token-qP8a3gYPq7fd);
 }
-.listItemContainer:hover {
+.listItemContainer:hover:hover {
   box-shadow: inset 0px 0px 0px 1px var(--token-qP8a3gYPq7fd);
   cursor: pointer;
 }

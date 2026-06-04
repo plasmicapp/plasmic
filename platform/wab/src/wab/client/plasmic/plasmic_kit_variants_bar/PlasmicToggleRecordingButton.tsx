@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,35 +13,35 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
+import "./plasmic_plasmic_kit_variants_bar.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicToggleRecordingButton.module.css"; // plasmic-import: j_Jdg2E_a5/css
+
+createPlasmicElementProxy;
 
 export type PlasmicToggleRecordingButton__VariantMembers = {
   isRecording: "isRecording";
   contained: "contained";
 };
-
 export type PlasmicToggleRecordingButton__VariantsArgs = {
   isRecording?: SingleBooleanChoiceArg<"isRecording">;
   contained?: SingleBooleanChoiceArg<"contained">;
 };
-
 type VariantPropType = keyof PlasmicToggleRecordingButton__VariantsArgs;
 export const PlasmicToggleRecordingButton__VariantProps =
   new Array<VariantPropType>("isRecording", "contained");
@@ -51,8 +51,8 @@ type ArgPropType = keyof PlasmicToggleRecordingButton__ArgsType;
 export const PlasmicToggleRecordingButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicToggleRecordingButton__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultToggleRecordingButtonProps {
@@ -61,13 +61,7 @@ export interface DefaultToggleRecordingButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicToggleRecordingButton__RenderFunc(props: {
   variants: PlasmicToggleRecordingButton__VariantsArgs;
@@ -77,13 +71,13 @@ function PlasmicToggleRecordingButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -93,31 +87,38 @@ function PlasmicToggleRecordingButton__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
-
       {
         path: "contained",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.contained,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.contained,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -126,13 +127,11 @@ function PlasmicToggleRecordingButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_kdj5vahTyUKxznuR6rrtt6",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootcontained]: hasVariant($state, "contained", "contained"),
@@ -147,7 +146,7 @@ function PlasmicToggleRecordingButton__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxisRecording]: hasVariant(
             $state,
             "isRecording",
@@ -176,25 +175,26 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicToggleRecordingButton__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicToggleRecordingButton__VariantsArgs;
-  args?: PlasmicToggleRecordingButton__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicToggleRecordingButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicToggleRecordingButton__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicToggleRecordingButton__VariantsArgs;
+    args?: PlasmicToggleRecordingButton__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & // Specify variants directly as props
+  Omit<PlasmicToggleRecordingButton__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicToggleRecordingButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -205,7 +205,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicToggleRecordingButton__ArgProps,
           internalVariantPropNames: PlasmicToggleRecordingButton__VariantProps,
         }),

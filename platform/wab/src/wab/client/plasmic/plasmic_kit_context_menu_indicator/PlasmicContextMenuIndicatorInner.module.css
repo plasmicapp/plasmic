@@ -10,7 +10,7 @@
   left: 100%;
   top: auto;
   transform-origin: 50% 50%;
-  transform: translateX(0%) translateY(25%) translateZ(0px);
+  transform: translate3d(0%, 25%, 0px);
   right: auto;
   opacity: 0;
   transition-property: all;
@@ -21,15 +21,15 @@
 }
 .menuIndicatorinteractive:global(.__wab_instance) {
   opacity: 0.3;
-  transform: translateX(0%) translateY(0%) translateZ(0px);
+  transform: translate3d(0%, 0%, 0px);
 }
 .menuIndicatoractive:global(.__wab_instance) {
   opacity: 1;
-  transform: translateX(0%) translateY(0%) translateZ(0px);
+  transform: translate3d(0%, 0%, 0px);
 }
 .root:hover .menuIndicator:global(.__wab_instance) {
   opacity: 1;
-  transform: translateX(0%) translateY(0%) translateZ(0px);
+  transform: translate3d(0%, 0%, 0px);
 }
 .freeBox {
   display: block;

@@ -2,17 +2,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 8px;
+  row-gap: 8px;
 }
 .freeBox__pv2In {
   display: flex;
@@ -25,23 +15,9 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox__vZxO3 > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - 2px);
-  width: calc(100% + 2px);
-}
-.freeBox__vZxO3 > :global(.__wab_flex-container) > *,
-.freeBox__vZxO3 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__vZxO3 > :global(.__wab_flex-container) > picture > img,
-.freeBox__vZxO3
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 2px;
+  column-gap: 2px;
 }
 .slotTargetHeading {
   font-size: 14px;
@@ -62,20 +38,7 @@
 .freeBox__irp33 {
   display: flex;
   position: relative;
-}
-.freeBox__irp33 > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__irp33 > :global(.__wab_flex-container) > *,
-.freeBox__irp33 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__irp33 > :global(.__wab_flex-container) > picture > img,
-.freeBox__irp33
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .viewDocs:global(.__wab_instance) {
   position: relative;

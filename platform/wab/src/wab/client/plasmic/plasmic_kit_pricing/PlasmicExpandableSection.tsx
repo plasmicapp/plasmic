@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -16,33 +16,29 @@ import * as React from "react";
 import {
   get as $stateGet,
   set as $stateSet,
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import "./plasmic_plasmic_kit_pricing.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicExpandableSection.module.css"; // plasmic-import: IzGvUfmCzHyO/css
 
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronUpsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg"; // plasmic-import: i9D87DzsX/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronUpSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg"; // plasmic-import: i9D87DzsX/icon
 
 createPlasmicElementProxy;
 
@@ -93,7 +89,16 @@ function PlasmicExpandableSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -104,36 +109,35 @@ function PlasmicExpandableSection__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "open",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.open,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.open,
       },
       {
         path: "dark",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.dark,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.dark,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -142,31 +146,22 @@ function PlasmicExpandableSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_ehckhYnyDHgCBbV47m9bkf",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [projectcss.global_environment_website]: hasVariant(
-            globalVariants,
-            "environment",
-            "website"
-          ),
           [sty.rootdark]: hasVariant($state, "dark", "dark"),
           [sty.rootopen]: hasVariant($state, "open", "open"),
         }
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.header, {
+        className={classNames("all", sty.header, {
           [sty.headerdark]: hasVariant($state, "dark", "dark"),
           [sty.headeropen]: hasVariant($state, "open", "open"),
         })}
@@ -197,18 +192,18 @@ function PlasmicExpandableSection__RenderFunc(props: {
         }}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__i5DdO, {
+          className={classNames("all", sty.freeBox__i5DdO, {
             [sty.freeBoxdark__i5DdOzRgRj]: hasVariant($state, "dark", "dark"),
             [sty.freeBoxopen__i5DdOnflii]: hasVariant($state, "open", "open"),
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__eNnlX, {
+            className={classNames("all", sty.freeBox__eNnlX, {
               [sty.freeBoxopen__eNnlXnflii]: hasVariant($state, "open", "open"),
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__x0N39, {
+              className={classNames("all", sty.freeBox__x0N39, {
                 [sty.freeBoxopen__x0N39Nflii]: hasVariant(
                   $state,
                   "open",
@@ -231,35 +226,31 @@ function PlasmicExpandableSection__RenderFunc(props: {
             data-plasmic-override={overrides.svg}
             PlasmicIconType={
               hasVariant($state, "open", "open")
-                ? ChevronUpsvgIcon
-                : ChevronDownsvgIcon
+                ? ChevronUpSvgIcon
+                : ChevronDownSvgIcon
             }
-            className={classNames(projectcss.all, sty.svg, {
+            className={classNames("all", sty.svg, {
               [sty.svgdark]: hasVariant($state, "dark", "dark"),
               [sty.svgopen]: hasVariant($state, "open", "open"),
             })}
             role={"img"}
           />
         </div>
-      </Stack__>
+      </div>
       {(hasVariant($state, "open", "open") ? true : false) ? (
         <div
           data-plasmic-name={"content"}
           data-plasmic-override={overrides.content}
-          className={classNames(projectcss.all, sty.content, {
+          className={classNames("all", sty.content, {
             [sty.contentdark]: hasVariant($state, "dark", "dark"),
             [sty.contentopen]: hasVariant($state, "open", "open"),
           })}
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <div className={classNames(projectcss.all, sty.freeBox__k1Ze5)}>
+              <div className={classNames("all", sty.freeBox__k1Ze5)}>
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___8C9RY
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___8C9RY)}
                 >
                   {
                     "A workspace is an organizational unit within an organization. Organizations can contain multiple workspaces, and each workspace can house numerous Plasmic projects. Organization members can be added to workspaces or individual projects. For example, you could have an organization for your agency with separate workspaces for each client, or an organization for your company with workspaces for each department."
@@ -267,7 +258,6 @@ function PlasmicExpandableSection__RenderFunc(props: {
                 </div>
               </div>
             ),
-
             value: args.body,
             className: classNames(sty.slotTargetBody, {
               [sty.slotTargetBodydark]: hasVariant($state, "dark", "dark"),
@@ -301,23 +291,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicExpandableSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicExpandableSection__VariantsArgs;
     args?: PlasmicExpandableSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicExpandableSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicExpandableSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicExpandableSection__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicExpandableSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

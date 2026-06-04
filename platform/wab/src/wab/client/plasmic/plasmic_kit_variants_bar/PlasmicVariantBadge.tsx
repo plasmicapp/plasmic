@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,40 +13,42 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
+import "./plasmic_plasmic_kit_variants_bar.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicVariantBadge.module.css"; // plasmic-import: 4OLKnpGnTY/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicVariantBadge__VariantMembers = {
   isRecording: "isRecording";
   isUnpinnable: "isUnpinnable";
   isFocused: "isFocused";
 };
-
 export type PlasmicVariantBadge__VariantsArgs = {
   isRecording?: SingleBooleanChoiceArg<"isRecording">;
   isUnpinnable?: SingleBooleanChoiceArg<"isUnpinnable">;
   isFocused?: SingleBooleanChoiceArg<"isFocused">;
 };
-
 type VariantPropType = keyof PlasmicVariantBadge__VariantsArgs;
 export const PlasmicVariantBadge__VariantProps = new Array<VariantPropType>(
   "isRecording",
@@ -54,17 +56,14 @@ export const PlasmicVariantBadge__VariantProps = new Array<VariantPropType>(
   "isFocused"
 );
 
-export type PlasmicVariantBadge__ArgsType = {
-  children?: React.ReactNode;
-};
-
+export type PlasmicVariantBadge__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicVariantBadge__ArgsType;
 export const PlasmicVariantBadge__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicVariantBadge__OverridesType = {
-  root?: p.Flex<"div">;
-  removeIcon?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  removeIcon?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultVariantBadgeProps {
@@ -75,13 +74,7 @@ export interface DefaultVariantBadgeProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicVariantBadge__RenderFunc(props: {
   variants: PlasmicVariantBadge__VariantsArgs;
@@ -91,13 +84,13 @@ function PlasmicVariantBadge__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -107,38 +100,45 @@ function PlasmicVariantBadge__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
-
       {
         path: "isUnpinnable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isUnpinnable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isUnpinnable,
       },
-
       {
         path: "isFocused",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFocused,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFocused,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -147,13 +147,11 @@ function PlasmicVariantBadge__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_kdj5vahTyUKxznuR6rrtt6",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootisFocused]: hasVariant($state, "isFocused", "isFocused"),
@@ -183,7 +181,7 @@ function PlasmicVariantBadge__RenderFunc(props: {
         }
       )}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "hello world",
         value: args.children,
         className: classNames(sty.slotTargetChildren, {
@@ -211,7 +209,6 @@ function PlasmicVariantBadge__RenderFunc(props: {
           ),
         }),
       })}
-
       {(
         hasVariant($state, "isFocused", "isFocused") &&
         hasVariant($state, "isUnpinnable", "isUnpinnable")
@@ -223,7 +220,7 @@ function PlasmicVariantBadge__RenderFunc(props: {
         <div
           data-plasmic-name={"removeIcon"}
           data-plasmic-override={overrides.removeIcon}
-          className={classNames(projectcss.all, sty.removeIcon, {
+          className={classNames("all", sty.removeIcon, {
             [sty.removeIconisFocused]: hasVariant(
               $state,
               "isFocused",
@@ -251,17 +248,17 @@ function PlasmicVariantBadge__RenderFunc(props: {
             ),
           })}
         >
-          <p.PlasmicIcon
+          <PlasmicIcon__
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
             PlasmicIconType={
               hasVariant($state, "isFocused", "isFocused") &&
               hasVariant($state, "isUnpinnable", "isUnpinnable") &&
               hasVariant($state, "isRecording", "isRecording")
-                ? ClosesvgIcon
+                ? CloseSvgIcon
                 : CloseIcon
             }
-            className={classNames(projectcss.all, sty.svg, {
+            className={classNames("all", sty.svg, {
               [sty.svgisFocused]: hasVariant($state, "isFocused", "isFocused"),
               [sty.svgisFocused_isUnpinnable]:
                 hasVariant($state, "isFocused", "isFocused") &&
@@ -303,25 +300,26 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantBadge__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicVariantBadge__VariantsArgs;
-  args?: PlasmicVariantBadge__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicVariantBadge__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicVariantBadge__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicVariantBadge__VariantsArgs;
+    args?: PlasmicVariantBadge__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantBadge__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantBadge__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -332,7 +330,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantBadge__ArgProps,
           internalVariantPropNames: PlasmicVariantBadge__VariantProps,
         }),

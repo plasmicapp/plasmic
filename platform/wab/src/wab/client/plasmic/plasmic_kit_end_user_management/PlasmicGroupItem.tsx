@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,30 +13,30 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicGroupItem.module.css"; // plasmic-import: rF43GtStPO/css
 
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -51,16 +51,14 @@ export const PlasmicGroupItem__VariantProps = new Array<VariantPropType>(
   "withoutBorder"
 );
 
-export type PlasmicGroupItem__ArgsType = {
-  group?: React.ReactNode;
-};
+export type PlasmicGroupItem__ArgsType = { group?: React.ReactNode };
 type ArgPropType = keyof PlasmicGroupItem__ArgsType;
 export const PlasmicGroupItem__ArgProps = new Array<ArgPropType>("group");
 
 export type PlasmicGroupItem__OverridesType = {
-  root?: p.Flex<"div">;
-  listItem?: p.Flex<typeof ListItem>;
-  iconButton?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  listItem?: Flex__<typeof ListItem>;
+  iconButton?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultGroupItemProps {
@@ -69,13 +67,7 @@ export interface DefaultGroupItemProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicGroupItem__RenderFunc(props: {
   variants: PlasmicGroupItem__VariantsArgs;
@@ -85,105 +77,111 @@ function PlasmicGroupItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "withoutBorder",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withoutBorder,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withoutBorder,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    true ? (
-      <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-          plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
-          sty.root,
-          {
-            [sty.rootwithoutBorder]: hasVariant(
-              $state,
-              "withoutBorder",
-              "withoutBorder"
-            ),
-          }
-        )}
-      >
-        <ListItem
-          data-plasmic-name={"listItem"}
-          data-plasmic-override={overrides.listItem}
-          actions={
-            <IconButton
-              data-plasmic-name={"iconButton"}
-              data-plasmic-override={overrides.iconButton}
-              children2={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__plrDw)}
-                  role={"img"}
-                />
-              }
-              className={classNames("__wab_instance", sty.iconButton)}
-              size={"vertical" as const}
-              type={["seamless"]}
-            >
-              <EyeIcon
-                className={classNames(projectcss.all, sty.svg__j2HoQ)}
+    <div
+      data-plasmic-name={"root"}
+      data-plasmic-override={overrides.root}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames(
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
+        sty.root,
+        {
+          [sty.rootwithoutBorder]: hasVariant(
+            $state,
+            "withoutBorder",
+            "withoutBorder"
+          ),
+        }
+      )}
+    >
+      <ListItem
+        data-plasmic-name={"listItem"}
+        data-plasmic-override={overrides.listItem}
+        actions={
+          <IconButton
+            data-plasmic-name={"iconButton"}
+            data-plasmic-override={overrides.iconButton}
+            children2={
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__plrDw)}
                 role={"img"}
               />
-            </IconButton>
-          }
-          className={classNames("__wab_instance", sty.listItem, {
-            [sty.listItemwithoutBorder]: hasVariant(
-              $state,
-              "withoutBorder",
-              "withoutBorder"
-            ),
-          })}
-          hasMenu={true}
-          hideIcon={true}
-        >
-          {p.renderPlasmicSlot({
-            defaultContents: "mgmt",
-            value: args.group,
-            className: classNames(sty.slotTargetGroup),
-          })}
-        </ListItem>
-      </div>
-    ) : null
+            }
+            className={classNames("__wab_instance", sty.iconButton)}
+            size={"vertical"}
+            type={["seamless"]}
+          >
+            <EyeIcon
+              className={classNames("all", sty.svg__j2HoQ)}
+              role={"img"}
+            />
+          </IconButton>
+        }
+        className={classNames("__wab_instance", sty.listItem, {
+          [sty.listItemwithoutBorder]: hasVariant(
+            $state,
+            "withoutBorder",
+            "withoutBorder"
+          ),
+        })}
+        hasMenu={true}
+        hideIcon={true}
+      >
+        {renderPlasmicSlot({
+          defaultContents: "mgmt",
+          value: args.group,
+          className: classNames(sty.slotTargetGroup),
+        })}
+      </ListItem>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -206,23 +204,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicGroupItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicGroupItem__VariantsArgs;
     args?: PlasmicGroupItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicGroupItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicGroupItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicGroupItem__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicGroupItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -236,7 +234,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicGroupItem__ArgProps,
           internalVariantPropNames: PlasmicGroupItem__VariantProps,
         }),

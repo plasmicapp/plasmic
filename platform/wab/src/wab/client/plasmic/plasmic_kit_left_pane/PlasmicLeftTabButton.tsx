@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftTabButton.module.css"; // plasmic-import: 1q_JapBg7U/css
 
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
@@ -118,27 +118,29 @@ function PlasmicLeftTabButton__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
       {
         path: "showAlert",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAlert,
       },
       {
         path: "hasLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasLabel,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -151,11 +153,12 @@ function PlasmicLeftTabButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "button",
+        "button__aukbr",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -174,11 +177,11 @@ function PlasmicLeftTabButton__RenderFunc(props: {
         }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__b5WN)}>
+      <div className={classNames("all", sty.freeBox__b5WN)}>
         {renderPlasmicSlot({
           defaultContents: (
             <TreeIcon
-              className={classNames(projectcss.all, sty.svg__zvJof)}
+              className={classNames("all", sty.svg__zvJof)}
               role={"img"}
             />
           ),
@@ -213,7 +216,7 @@ function PlasmicLeftTabButton__RenderFunc(props: {
               ? WarningTriangleSvgIcon
               : CircleSvgIcon
           }
-          className={classNames(projectcss.all, sty.svg, {
+          className={classNames("all", sty.svg, {
             [sty.svghasLabel]: hasVariant($state, "hasLabel", "hasLabel"),
             [sty.svgshowAlert_showAlert]: hasVariant(
               $state,
@@ -230,7 +233,7 @@ function PlasmicLeftTabButton__RenderFunc(props: {
         />
       ) : null}
       <div
-        className={classNames(projectcss.all, sty.freeBox__t4REh, {
+        className={classNames("all", sty.freeBox__t4REh, {
           [sty.freeBoxhasLabel__t4REhrO5Dz]: hasVariant(
             $state,
             "hasLabel",
@@ -277,7 +280,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftTabButton__VariantsArgs;
     args?: PlasmicLeftTabButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftTabButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftTabButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftTabButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

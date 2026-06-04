@@ -27,7 +27,7 @@
   .freeBox___65UDq {
     display: flex;
     flex-direction: column;
-    flex-column-gap: 0px;
+    column-gap: 0px;
   }
 }
 .teamFilters:global(.__wab_instance) {

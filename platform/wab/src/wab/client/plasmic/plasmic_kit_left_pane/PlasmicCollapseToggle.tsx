@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicCollapseToggle.module.css"; // plasmic-import: bobcNPtaTq/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -97,15 +97,18 @@ function PlasmicCollapseToggle__RenderFunc(props: {
         path: "collapseState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.collapseState,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -118,10 +121,10 @@ function PlasmicCollapseToggle__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -134,7 +137,7 @@ function PlasmicCollapseToggle__RenderFunc(props: {
       )}
     >
       <ChevronDownSvgIcon
-        className={classNames(projectcss.all, sty.svg__tRn5M, {
+        className={classNames("all", sty.svg__tRn5M, {
           [sty.svgcollapseState_expanded__tRn5M4HqP]: hasVariant(
             $state,
             "collapseState",
@@ -145,7 +148,7 @@ function PlasmicCollapseToggle__RenderFunc(props: {
       />
 
       <ChevronUpSvgIcon
-        className={classNames(projectcss.all, sty.svg__fDuU1, {
+        className={classNames("all", sty.svg__fDuU1, {
           [sty.svgcollapseState_expanded__fDuU14HqP]: hasVariant(
             $state,
             "collapseState",
@@ -179,7 +182,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCollapseToggle__VariantsArgs;
     args?: PlasmicCollapseToggle__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCollapseToggle__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCollapseToggle__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCollapseToggle__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

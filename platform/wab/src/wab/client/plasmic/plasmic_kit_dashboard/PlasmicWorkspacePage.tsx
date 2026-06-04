@@ -19,25 +19,51 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  hasVariant,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import WorkspaceSection from "../../components/dashboard/WorkspaceSection"; // plasmic-import: 5cdjGaqBQ4/component
-import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicWorkspacePage.module.css"; // plasmic-import: ohP9gHR_8Wi/css
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  },
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    },
+  });
+}
+
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
+  return {
+    openGraph: {},
+    twitter: {
+      card: "summary" as const,
+    },
+  };
+}
 
 createPlasmicElementProxy;
 
@@ -91,48 +117,25 @@ function PlasmicWorkspacePage__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const globalVariants = _useGlobalVariants();
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <React.Fragment>
-      <div className={projectcss.plasmic_page_wrapper}>
+      <div className={"plasmic_page_wrapper"}>
         <div
           data-plasmic-name={"root"}
           data-plasmic-override={overrides.root}
           data-plasmic-root={true}
           data-plasmic-for-node={forNode}
           className={classNames(
-            projectcss.all,
-            projectcss.root_reset,
-            projectcss.plasmic_default_styles,
-            projectcss.plasmic_mixins,
-            projectcss.plasmic_tokens,
-            plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-            plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-            plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-            sty.root,
-            {
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-            }
+            "all",
+            "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+            "plasmic_default_styles",
+            "plasmic_mixins",
+            styleTokensClassNames,
+            sty.root
           )}
         >
           <DefaultLayout
@@ -231,7 +234,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWorkspacePage__VariantsArgs;
     args?: PlasmicWorkspacePage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWorkspacePage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicWorkspacePage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWorkspacePage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -288,13 +292,12 @@ export const PlasmicWorkspacePage = Object.assign(
     internalVariantProps: PlasmicWorkspacePage__VariantProps,
     internalArgProps: PlasmicWorkspacePage__ArgProps,
 
-    // Page metadata
-    pageMetadata: {
-      title: "",
-      description: "",
-      ogImageSrc: "",
-      canonical: "",
-    },
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/workspaces/[id]",
+      pagePath: "/workspaces/[id]",
+      params: {},
+      query: {},
+    }),
   }
 );
 

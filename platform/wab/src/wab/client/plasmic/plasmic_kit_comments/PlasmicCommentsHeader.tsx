@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentsHeader.module.css"; // plasmic-import: PTsdlYdahZ76/css
 
 createPlasmicElementProxy;
@@ -108,21 +108,23 @@ function PlasmicCommentsHeader__RenderFunc(props: {
         path: "showCount",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showCount,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showCount,
       },
       {
         path: "nameOnly",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.nameOnly,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.nameOnly,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -135,24 +137,24 @@ function PlasmicCommentsHeader__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootshowCount]: hasVariant($state, "showCount", "showCount") }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__wQlN)}>
-        <div className={classNames(projectcss.all, sty.freeBox__hBgUl)}>
+      <div className={classNames("all", sty.freeBox__wQlN)}>
+        <div className={classNames("all", sty.freeBox__hBgUl)}>
           {renderPlasmicSlot({
             defaultContents: "Name",
             value: args.name,
             className: classNames(sty.slotTargetName),
           })}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox___0PdRk)}>
+        <div className={classNames("all", sty.freeBox___0PdRk)}>
           {(hasVariant($state, "nameOnly", "nameOnly") ? false : true)
             ? renderPlasmicSlot({
                 defaultContents: "Type",
@@ -169,7 +171,7 @@ function PlasmicCommentsHeader__RenderFunc(props: {
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__tSY, {
+        className={classNames("all", sty.freeBox__tSY, {
           [sty.freeBoxshowCount__tSYhm8I9]: hasVariant(
             $state,
             "showCount",
@@ -180,11 +182,7 @@ function PlasmicCommentsHeader__RenderFunc(props: {
         <div
           data-plasmic-name={"count"}
           data-plasmic-override={overrides.count}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.count
-          )}
+          className={classNames("all", "__wab_text", sty.count)}
         >
           {"4"}
         </div>
@@ -216,7 +214,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsHeader__VariantsArgs;
     args?: PlasmicCommentsHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentsHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentsHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentsHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

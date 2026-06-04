@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerGlobalSearchResultsItem.module.css"; // plasmic-import: nD2Ql_rEk6/css
 
 createPlasmicElementProxy;
@@ -118,6 +118,7 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -135,10 +136,10 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -168,7 +169,7 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxvariableType_array]: hasVariant(
             $state,
             "variableType",
@@ -190,48 +191,43 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
       <div
         data-plasmic-name={"previewValue"}
         data-plasmic-override={overrides.previewValue}
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.previewValue,
-          {
-            [sty.previewValuevariableType_array]: hasVariant(
-              $state,
-              "variableType",
-              "array"
-            ),
-            [sty.previewValuevariableType_boolean]: hasVariant(
-              $state,
-              "variableType",
-              "boolean"
-            ),
-            [sty.previewValuevariableType_func]: hasVariant(
-              $state,
-              "variableType",
-              "func"
-            ),
-            [sty.previewValuevariableType_number]: hasVariant(
-              $state,
-              "variableType",
-              "number"
-            ),
-            [sty.previewValuevariableType_object]: hasVariant(
-              $state,
-              "variableType",
-              "object"
-            ),
-            [sty.previewValuevariableType_string]: hasVariant(
-              $state,
-              "variableType",
-              "string"
-            ),
-            [sty.previewValuevariableType_undefined]: hasVariant(
-              $state,
-              "variableType",
-              "undefined"
-            ),
-          }
-        )}
+        className={classNames("all", "__wab_text", sty.previewValue, {
+          [sty.previewValuevariableType_array]: hasVariant(
+            $state,
+            "variableType",
+            "array"
+          ),
+          [sty.previewValuevariableType_boolean]: hasVariant(
+            $state,
+            "variableType",
+            "boolean"
+          ),
+          [sty.previewValuevariableType_func]: hasVariant(
+            $state,
+            "variableType",
+            "func"
+          ),
+          [sty.previewValuevariableType_number]: hasVariant(
+            $state,
+            "variableType",
+            "number"
+          ),
+          [sty.previewValuevariableType_object]: hasVariant(
+            $state,
+            "variableType",
+            "object"
+          ),
+          [sty.previewValuevariableType_string]: hasVariant(
+            $state,
+            "variableType",
+            "string"
+          ),
+          [sty.previewValuevariableType_undefined]: hasVariant(
+            $state,
+            "variableType",
+            "undefined"
+          ),
+        })}
       >
         {hasVariant($state, "variableType", "func")
           ? "function"

@@ -8,10 +8,10 @@
 .root___focusVisibleWithin {
   outline: none;
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   outline: none;
 }
-.root:hover:not(:focus-within) {
+.root:hover:not(:focus-within):hover:not(:focus-within) {
   outline: none;
 }
 .button:global(.__wab_instance) {

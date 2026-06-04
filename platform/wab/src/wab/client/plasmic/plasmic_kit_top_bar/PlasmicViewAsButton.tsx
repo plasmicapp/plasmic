@@ -14,18 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicViewAsButton.module.css"; // plasmic-import: MJoB9g7giNL/css
 
 createPlasmicElementProxy;
@@ -77,6 +79,8 @@ function PlasmicViewAsButton__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <Button
       data-plasmic-name={"root"}
@@ -116,7 +120,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicViewAsButton__VariantsArgs;
     args?: PlasmicViewAsButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicViewAsButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicViewAsButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicViewAsButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

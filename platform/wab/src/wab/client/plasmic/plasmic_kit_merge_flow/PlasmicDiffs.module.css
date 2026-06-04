@@ -15,29 +15,13 @@
   display: flex;
   overflow: hidden;
   flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
   height: 100%;
+  column-gap: 8px;
   min-width: 0;
   min-height: 0;
   border-radius: 8px;
-}
-.freeBox__bU0WY > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  min-width: 0;
-  min-height: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__bU0WY > :global(.__wab_flex-container) > *,
-.freeBox__bU0WY > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__bU0WY > :global(.__wab_flex-container) > picture > img,
-.freeBox__bU0WY
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .freeBox__kZmf4 {
   height: auto;
@@ -54,24 +38,10 @@
   position: relative;
   align-self: stretch;
   flex-direction: column;
-  padding: 24px;
-}
-.freeBox___7C2QV > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.freeBox___7C2QV > :global(.__wab_flex-container) > *,
-.freeBox___7C2QV > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox___7C2QV > :global(.__wab_flex-container) > picture > img,
-.freeBox___7C2QV
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  row-gap: 8px;
+  padding: 24px;
 }
 .backButton:global(.__wab_instance) {
   max-width: 100%;
@@ -105,25 +75,11 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  border-radius: 6px;
-  padding: 8px;
-}
-.freeBox__xCi3C > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__xCi3C > :global(.__wab_flex-container) > *,
-.freeBox__xCi3C > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__xCi3C > :global(.__wab_flex-container) > picture > img,
-.freeBox__xCi3C
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  column-gap: 4px;
+  border-radius: 6px;
+  padding: 8px;
 }
 .freeBox__ue9L3 {
   width: auto;

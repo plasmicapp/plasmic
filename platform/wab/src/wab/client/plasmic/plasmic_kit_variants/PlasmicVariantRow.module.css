@@ -7,7 +7,7 @@
   width: 100%;
   min-width: 0;
 }
-.roottype_baseVariant:hover {
+.roottype_baseVariant:hover:hover {
   border-color: var(--token-LmrMFZok-p9);
 }
 .listItem:global(.__wab_instance) {

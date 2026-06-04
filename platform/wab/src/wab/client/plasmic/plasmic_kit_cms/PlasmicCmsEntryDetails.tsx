@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsEntryDetails.module.css"; // plasmic-import: 9vM3ZFGR4eV/css
 
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
@@ -107,19 +107,19 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__yjd67)}>
+      <div className={classNames("all", sty.freeBox__yjd67)}>
         <div
           data-plasmic-name={"left"}
           data-plasmic-override={overrides.left}
-          className={classNames(projectcss.all, sty.left)}
+          className={classNames("all", sty.left)}
         >
           <InlineEditable
             data-plasmic-name={"entryName"}
@@ -130,11 +130,7 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
             <div
               data-plasmic-name={"entryNameValue"}
               data-plasmic-override={overrides.entryNameValue}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.entryNameValue
-              )}
+              className={classNames("all", "__wab_text", sty.entryNameValue)}
             >
               {"Enter some text"}
             </div>
@@ -142,11 +138,7 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
           <div
             data-plasmic-name={"saveStatus"}
             data-plasmic-override={overrides.saveStatus}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.saveStatus
-            )}
+            className={classNames("all", "__wab_text", sty.saveStatus)}
           >
             {"Auto-saved"}
           </div>
@@ -154,7 +146,7 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
         <div
           data-plasmic-name={"right"}
           data-plasmic-override={overrides.right}
-          className={classNames(projectcss.all, sty.right)}
+          className={classNames("all", sty.right)}
         >
           <Button
             data-plasmic-name={"historyButton"}
@@ -163,20 +155,14 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
             size={"wide"}
             startIcon={
               <HistoryIcon
-                className={classNames(projectcss.all, sty.svg__xNuI)}
+                className={classNames("all", sty.svg__xNuI)}
                 role={"img"}
               />
             }
             type={["clear"]}
             withIcons={["startIcon"]}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__hLvhX
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__hLvhX)}>
               {"History"}
             </div>
           </Button>
@@ -187,20 +173,14 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
             size={"wide"}
             startIcon={
               <ShareSvgIcon
-                className={classNames(projectcss.all, sty.svg__r3VpA)}
+                className={classNames("all", sty.svg__r3VpA)}
                 role={"img"}
               />
             }
             type={["clear"]}
             withIcons={["startIcon"]}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___8Mqz6
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text___8Mqz6)}>
               {"Preview"}
             </div>
           </Button>
@@ -220,8 +200,8 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
           />
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__rFHa)}>
-        <div className={classNames(projectcss.all, sty.freeBox___1VH9Z)}>
+      <div className={classNames("all", sty.freeBox__rFHa)}>
+        <div className={classNames("all", sty.freeBox___1VH9Z)}>
           {renderPlasmicSlot({
             defaultContents: null,
             value: args.children,

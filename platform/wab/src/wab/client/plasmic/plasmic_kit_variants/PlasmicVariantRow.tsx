@@ -38,7 +38,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
+import "./plasmic_plasmic_kit_variants.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantRow.module.css"; // plasmic-import: ZAqVPmZmi-/css
 
 import CodeIcon from "../plasmic_kit/PlasmicIcon__Code"; // plasmic-import: sVrc1aLRLGQtV/icon
@@ -203,6 +203,7 @@ function PlasmicVariantRow__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -225,10 +226,10 @@ function PlasmicVariantRow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_wT5BWZPEc2fYxyqbTLXMt2",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -276,7 +277,7 @@ function PlasmicVariantRow__RenderFunc(props: {
         data-plasmic-override={overrides.listItem}
         actions={
           <div
-            className={classNames(projectcss.all, sty.freeBox__t0Gv2, {
+            className={classNames("all", sty.freeBox__t0Gv2, {
               [sty.freeBoxisReadOnly__t0Gv2Iu48P]: hasVariant(
                 $state,
                 "isReadOnly",
@@ -336,7 +337,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                 data-plasmic-override={overrides.recordButton}
                 children2={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__lyXlx)}
+                    className={classNames("all", sty.svg__lyXlx)}
                     role={"img"}
                   />
                 }
@@ -356,7 +357,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                       ? Recording2Icon
                       : PlusCircleSvgIcon
                   }
-                  className={classNames(projectcss.all, sty.svg__ct2Fs, {
+                  className={classNames("all", sty.svg__ct2Fs, {
                     [sty.svgisIndicated__ct2Fs7Jjf7]: hasVariant(
                       $state,
                       "isIndicated",
@@ -493,7 +494,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                 type={["seamless"]}
               >
                 <CodeIcon
-                  className={classNames(projectcss.all, sty.svg__hMptI)}
+                  className={classNames("all", sty.svg__hMptI)}
                   role={"img"}
                 />
               </IconButton>
@@ -507,24 +508,16 @@ function PlasmicVariantRow__RenderFunc(props: {
               <div
                 data-plasmic-name={"previewAnimationContainer"}
                 data-plasmic-override={overrides.previewAnimationContainer}
-                className={classNames(
-                  projectcss.all,
-                  sty.previewAnimationContainer,
-                  {
-                    [sty.previewAnimationContainerpinState_selected_showAddAnimation]:
-                      hasVariant($state, "pinState", "selected") &&
-                      hasVariant(
-                        $state,
-                        "showAddAnimation",
-                        "showAddAnimation"
-                      ),
-                    [sty.previewAnimationContainershowAddAnimation]: hasVariant(
-                      $state,
-                      "showAddAnimation",
-                      "showAddAnimation"
-                    ),
-                  }
-                )}
+                className={classNames("all", sty.previewAnimationContainer, {
+                  [sty.previewAnimationContainerpinState_selected_showAddAnimation]:
+                    hasVariant($state, "pinState", "selected") &&
+                    hasVariant($state, "showAddAnimation", "showAddAnimation"),
+                  [sty.previewAnimationContainershowAddAnimation]: hasVariant(
+                    $state,
+                    "showAddAnimation",
+                    "showAddAnimation"
+                  ),
+                })}
               >
                 <PlexusButton
                   data-plasmic-name={"previewAnimation"}
@@ -565,7 +558,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                   color={"neutral"}
                   end={
                     <PlusSvgIcon
-                      className={classNames(projectcss.all, sty.svg__sGUw)}
+                      className={classNames("all", sty.svg__sGUw)}
                       role={"img"}
                     />
                   }
@@ -573,7 +566,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                   label={null}
                   start={
                     <PlaySvgIcon
-                      className={classNames(projectcss.all, sty.svg__edSho, {
+                      className={classNames("all", sty.svg__edSho, {
                         [sty.svgshowAddAnimation__edShOnTmg2]: hasVariant(
                           $state,
                           "showAddAnimation",
@@ -623,7 +616,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                 color={"neutral"}
                 end={
                   <PlusSvgIcon
-                    className={classNames(projectcss.all, sty.svg___5NsPa)}
+                    className={classNames("all", sty.svg___5NsPa)}
                     role={"img"}
                   />
                 }
@@ -716,7 +709,7 @@ function PlasmicVariantRow__RenderFunc(props: {
         }
         icon={
           <div
-            className={classNames(projectcss.all, sty.freeBox__qnsp, {
+            className={classNames("all", sty.freeBox__qnsp, {
               [sty.freeBoxpinState_pinnedTrue__qnspAyG15]: hasVariant(
                 $state,
                 "pinState",
@@ -747,7 +740,7 @@ function PlasmicVariantRow__RenderFunc(props: {
                   ? SplitSvgIcon
                   : BaseSvgIcon
               }
-              className={classNames(projectcss.all, sty.icon, {
+              className={classNames("all", sty.icon, {
                 [sty.icontype_splitVariant]: hasVariant(
                   $state,
                   "type",
@@ -776,7 +769,7 @@ function PlasmicVariantRow__RenderFunc(props: {
         }
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__vSe8B, {
+          className={classNames("all", sty.freeBox__vSe8B, {
             [sty.freeBoxhasCodeExpression__vSe8BezONc]: hasVariant(
               $state,
               "hasCodeExpression",

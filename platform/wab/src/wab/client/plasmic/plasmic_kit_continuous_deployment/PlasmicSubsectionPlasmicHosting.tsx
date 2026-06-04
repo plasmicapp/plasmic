@@ -40,7 +40,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionPlasmicHosting.module.css"; // plasmic-import: aeDQsBfp-eA/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -139,33 +139,35 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "pushAs.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -178,19 +180,19 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootcollapse]: hasVariant($state, "collapse", "collapse") }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox___9QCvn)} />
+      <div className={classNames("all", sty.freeBox___9QCvn)} />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox___9MQmz, {
+        className={classNames("all", sty.freeBox___9MQmz, {
           [sty.freeBoxview_status___9MQmz2JIHl]: hasVariant(
             $state,
             "view",
@@ -199,7 +201,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__qZ5J8, {
+          className={classNames("all", sty.freeBox__qZ5J8, {
             [sty.freeBoxcollapse__qZ5J8ShwF8]: hasVariant(
               $state,
               "collapse",
@@ -207,7 +209,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             ),
           })}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__hq1LL)}>
+          <div className={classNames("all", sty.freeBox__hq1LL)}>
             <Checkbox
               data-plasmic-name={"checkbox"}
               data-plasmic-override={overrides.checkbox}
@@ -256,60 +258,47 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             ) : null}
           </div>
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__oARo5,
-              {
-                [sty.textcollapse__oARo5ShwF8]: hasVariant(
-                  $state,
-                  "collapse",
-                  "collapse"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__oARo5, {
+              [sty.textcollapse__oARo5ShwF8]: hasVariant(
+                $state,
+                "collapse",
+                "collapse"
+              ),
+            })}
           >
             {"Publish to Plasmic Hosting"}
           </div>
           {false ? (
-            <svg
-              className={classNames(projectcss.all, sty.svg___1TkF4)}
-              role={"img"}
-            />
+            <svg className={classNames("all", sty.svg___1TkF4)} role={"img"} />
           ) : null}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__pzVnq)}>
+        <div className={classNames("all", sty.freeBox__pzVnq)}>
           <Button
             data-plasmic-name={"removeButton"}
             data-plasmic-override={overrides.removeButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__sAuG)}
+                className={classNames("all", sty.svg__sAuG)}
                 role={"img"}
               />
             }
             size={"small"}
             startIcon={
               <ArrowRightSvgIcon
-                className={classNames(projectcss.all, sty.svg__kbdb)}
+                className={classNames("all", sty.svg__kbdb)}
                 role={"img"}
               />
             }
             type={["clear"]}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__uXdi,
-                {
-                  [sty.textcollapse__uXdIshwF8]: hasVariant(
-                    $state,
-                    "collapse",
-                    "collapse"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__uXdi, {
+                [sty.textcollapse__uXdIshwF8]: hasVariant(
+                  $state,
+                  "collapse",
+                  "collapse"
+                ),
+              })}
             >
               {hasVariant($state, "collapse", "collapse") ? "Show" : "Remove"}
             </div>
@@ -321,23 +310,19 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               className={classNames("__wab_instance", sty.viewGithubButton)}
               endIcon={
                 <TriangleBottomIcon
-                  className={classNames(projectcss.all, sty.svg__rOsJo)}
+                  className={classNames("all", sty.svg__rOsJo)}
                   role={"img"}
                 />
               }
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__t3Mr3)}
+                  className={classNames("all", sty.svg__t3Mr3)}
                   role={"img"}
                 />
               }
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___43JWs
-                )}
+                className={classNames("all", "__wab_text", sty.text___43JWs)}
               >
                 {"Button"}
               </div>
@@ -353,7 +338,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
           : true
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__xJMn, {
+          className={classNames("all", sty.freeBox__xJMn, {
             [sty.freeBoxcollapse__xJMnshwF8]: hasVariant(
               $state,
               "collapse",
@@ -367,7 +352,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__ndh, {
+            className={classNames("all", sty.freeBox__ndh, {
               [sty.freeBoxview_status__ndh2JIHl]: hasVariant(
                 $state,
                 "view",
@@ -375,13 +360,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               ),
             })}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__wYnuA
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__wYnuA)}>
               {
                 "Publish your app or website to Plasmic's built-in hosting platform."
               }
@@ -390,9 +369,10 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               data-plasmic-name={"learnMoreLink"}
               data-plasmic-override={overrides.learnMoreLink}
               className={classNames(
-                projectcss.all,
-                projectcss.a,
-                projectcss.__wab_text,
+                "all",
+                "a",
+                "a__fpbcK",
+                "__wab_text",
                 sty.learnMoreLink
               )}
               href={
@@ -406,18 +386,14 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             <div
               data-plasmic-name={"warning"}
               data-plasmic-override={overrides.warning}
-              className={classNames(projectcss.all, sty.warning)}
+              className={classNames("all", sty.warning)}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__jDjSw
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__jDjSw)}>
                 <React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                    }
                     style={{ fontWeight: 700 }}
                   >
                     {"Warning"}
@@ -430,7 +406,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 </React.Fragment>
               </div>
               {false ? (
-                <div className={classNames(projectcss.all, sty.freeBox__pnvxx)}>
+                <div className={classNames("all", sty.freeBox__pnvxx)}>
                   {renderPlasmicSlot({
                     defaultContents: "",
                     value: args.changesSummary,
@@ -448,14 +424,14 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   )}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg___6Rgi)}
+                      className={classNames("all", sty.svg___6Rgi)}
                       role={"img"}
                     />
                   }
                   size={"small"}
                   startIcon={
                     <ArrowRightSvgIcon
-                      className={classNames(projectcss.all, sty.svg__fhc3P)}
+                      className={classNames("all", sty.svg__fhc3P)}
                       role={"img"}
                     />
                   }
@@ -466,9 +442,9 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               ) : null}
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__usSde)}>
+          <div className={classNames("all", sty.freeBox__usSde)}>
             <div
-              className={classNames(projectcss.all, sty.freeBox___9NuEy, {
+              className={classNames("all", sty.freeBox___9NuEy, {
                 [sty.freeBoxview_status___9NuEy2JIHl]: hasVariant(
                   $state,
                   "view",
@@ -477,7 +453,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(projectcss.all, sty.freeBox__whjUu, {
+                className={classNames("all", sty.freeBox__whjUu, {
                   [sty.freeBoxview_status__whjUu2JIHl]: hasVariant(
                     $state,
                     "view",
@@ -486,7 +462,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 })}
               >
                 <GlobeSvgIcon
-                  className={classNames(projectcss.all, sty.svg__gwk1, {
+                  className={classNames("all", sty.svg__gwk1, {
                     [sty.svgview_setup__gwk1JswHi]: hasVariant(
                       $state,
                       "view",
@@ -500,9 +476,10 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   data-plasmic-name={"domain"}
                   data-plasmic-override={overrides.domain}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.a,
-                    projectcss.__wab_text,
+                    "all",
+                    "a",
+                    "a__fpbcK",
+                    "__wab_text",
                     sty.domain,
                     {
                       [sty.domaincollapse]: hasVariant(
@@ -524,14 +501,14 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   className={classNames("__wab_instance", sty.retryButton)}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__neiw)}
+                      className={classNames("all", sty.svg__neiw)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <ArrowRightSvgIcon
-                      className={classNames(projectcss.all, sty.svg__x8NOs)}
+                      className={classNames("all", sty.svg__x8NOs)}
                       role={"img"}
                     />
                   }
@@ -551,13 +528,13 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   )}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__qpbxf)}
+                      className={classNames("all", sty.svg__qpbxf)}
                       role={"img"}
                     />
                   }
                   startIcon={
                     <CloseIcon
-                      className={classNames(projectcss.all, sty.svg__fdyfh)}
+                      className={classNames("all", sty.svg__fdyfh)}
                       role={"img"}
                     />
                   }
@@ -579,57 +556,47 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 })}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__dB19)}
+                    className={classNames("all", sty.svg__dB19)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <OpenIcon
-                    className={classNames(projectcss.all, sty.svg__w5QLi)}
+                    className={classNames("all", sty.svg__w5QLi)}
                     role={"img"}
                   />
                 }
                 type={["primary"]}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__wx7K8
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__wx7K8)}
                 >
                   {"Configure"}
                 </div>
               </Button>
             </div>
             {false ? (
-              <div className={classNames(projectcss.all, sty.freeBox__av8T2)}>
-                <div className={classNames(projectcss.all, sty.freeBox__ePpd)}>
+              <div className={classNames("all", sty.freeBox__av8T2)}>
+                <div className={classNames("all", sty.freeBox__ePpd)}>
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__q3S4W
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__q3S4W)}
                   >
                     {"Push options"}
                   </div>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__sTqXg)}
-                  >
+                  <div className={classNames("all", sty.freeBox__sTqXg)}>
                     <Button
                       data-plasmic-name={"showOptionsButton"}
                       data-plasmic-override={overrides.showOptionsButton}
                       endIcon={
                         <ChevronDownSvgIcon
-                          className={classNames(projectcss.all, sty.svg__oGuul)}
+                          className={classNames("all", sty.svg__oGuul)}
                           role={"img"}
                         />
                       }
                       startIcon={
                         <ArrowRightSvgIcon
-                          className={classNames(projectcss.all, sty.svg__sgEkn)}
+                          className={classNames("all", sty.svg__sgEkn)}
                           role={"img"}
                         />
                       }
@@ -637,8 +604,8 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     >
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__flkoU
                         )}
                       >
@@ -656,14 +623,12 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     />
                   </div>
                 </div>
-                <div className={classNames(projectcss.all, sty.freeBox__p2Og6)}>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__eKj17)}
-                  >
+                <div className={classNames("all", sty.freeBox__p2Og6)}>
+                  <div className={classNames("all", sty.freeBox__eKj17)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__kz772
                       )}
                     >
@@ -675,7 +640,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                       className={classNames("__wab_instance", sty.pushAs)}
                       icon={
                         <PlusSvgIcon
-                          className={classNames(projectcss.all, sty.svg__qtaBp)}
+                          className={classNames("all", sty.svg__qtaBp)}
                           role={"img"}
                         />
                       }
@@ -702,16 +667,12 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                       ])}
                     />
                   </div>
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__fzd2)}
-                  >
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__iPgR7)}
-                    >
+                  <div className={classNames("all", sty.freeBox__fzd2)}>
+                    <div className={classNames("all", sty.freeBox__iPgR7)}>
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__fMrn6
                         )}
                       >
@@ -721,8 +682,9 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         data-plasmic-name={"title"}
                         data-plasmic-override={overrides.title}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.input,
+                          "all",
+                          "input",
+                          "input__fpbcK",
                           sty.title
                         )}
                         placeholder={"Title (optional)"}
@@ -734,13 +696,11 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         value={""}
                       />
                     </div>
-                    <div
-                      className={classNames(projectcss.all, sty.freeBox__gakKe)}
-                    >
+                    <div className={classNames("all", sty.freeBox__gakKe)}>
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__eYbzm
                         )}
                       >
@@ -750,8 +710,9 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         data-plasmic-name={"description"}
                         data-plasmic-override={overrides.description}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.textarea,
+                          "all",
+                          "textarea",
+                          "textarea__fpbcK",
                           sty.description
                         )}
                         placeholder={"Description (optional)"}
@@ -771,7 +732,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
       ) : null}
       {(hasVariant($state, "view", "status") ? true : false) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__daTyt, {
+          className={classNames("all", sty.freeBox__daTyt, {
             [sty.freeBoxview_status__daTyt2JIHl]: hasVariant(
               $state,
               "view",
@@ -782,7 +743,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
           <ul
             data-plasmic-name={"steps"}
             data-plasmic-override={overrides.steps}
-            className={classNames(projectcss.all, projectcss.ul, sty.steps)}
+            className={classNames("all", "ul", "ul__fpbcK", sty.steps)}
           >
             <GitJobStep
               className={classNames("__wab_instance", sty.gitJobStep__u7Srv)}
@@ -816,13 +777,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             <GitJobStep
               className={classNames("__wab_instance", sty.gitJobStep__nxWc0)}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kGJg
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kGJg)}>
                 {"Commit changes"}
               </div>
             </GitJobStep>
@@ -844,8 +799,8 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
           data-plasmic-name={"githubPagesDelayNotice"}
           data-plasmic-override={overrides.githubPagesDelayNotice}
           className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
+            "all",
+            "__wab_text",
             sty.githubPagesDelayNotice
           )}
         >

@@ -37,7 +37,7 @@ import WebhookHeader from "../../WebhookHeader"; // plasmic-import: OkB-fXuJPc/c
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksItem.module.css"; // plasmic-import: mSgnlB96I5A/css
 
 import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
@@ -118,33 +118,35 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         path: "expanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.expanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.expanded,
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "method.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "sendPlasmicDataSwitch.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -157,17 +159,17 @@ function PlasmicWebhooksItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootexpanded]: hasVariant($state, "expanded", "expanded") }
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__simNc, {
+        className={classNames("all", sty.freeBox__simNc, {
           [sty.freeBoxexpanded__simNcaCjOc]: hasVariant(
             $state,
             "expanded",
@@ -176,7 +178,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox___0Jy6H, {
+          className={classNames("all", sty.freeBox___0Jy6H, {
             [sty.freeBoxexpanded___0Jy6HaCjOc]: hasVariant(
               $state,
               "expanded",
@@ -184,7 +186,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             ),
           })}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__ptuDx)}>
+          <div className={classNames("all", sty.freeBox__ptuDx)}>
             <Checkbox
               data-plasmic-name={"checkbox"}
               data-plasmic-override={overrides.checkbox}
@@ -219,7 +221,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                 <PlusSvgIcon
                   data-plasmic-name={"svg"}
                   data-plasmic-override={overrides.svg}
-                  className={classNames(projectcss.all, sty.svg)}
+                  className={classNames("all", sty.svg)}
                   role={"img"}
                 />
               }
@@ -244,7 +246,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
           <input
             data-plasmic-name={"url"}
             data-plasmic-override={overrides.url}
-            className={classNames(projectcss.all, projectcss.input, sty.url)}
+            className={classNames("all", "input", "input__fpbcK", sty.url)}
             placeholder={"URL…"}
             ref={(ref) => {
               $refs["url"] = ref;
@@ -265,7 +267,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         <div
           data-plasmic-name={"expandedContent"}
           data-plasmic-override={overrides.expandedContent}
-          className={classNames(projectcss.all, sty.expandedContent, {
+          className={classNames("all", sty.expandedContent, {
             [sty.expandedContentexpanded]: hasVariant(
               $state,
               "expanded",
@@ -276,7 +278,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
           <div
             data-plasmic-name={"headerField"}
             data-plasmic-override={overrides.headerField}
-            className={classNames(projectcss.all, sty.headerField)}
+            className={classNames("all", sty.headerField)}
           >
             {renderPlasmicSlot({
               defaultContents: (
@@ -292,7 +294,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
           <div
             data-plasmic-name={"payloadField"}
             data-plasmic-override={overrides.payloadField}
-            className={classNames(projectcss.all, sty.payloadField, {
+            className={classNames("all", sty.payloadField, {
               [sty.payloadFieldexpanded]: hasVariant(
                 $state,
                 "expanded",
@@ -301,18 +303,13 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___0EkOd,
-                {
-                  [sty.textexpanded___0EkOdaCjOc]: hasVariant(
-                    $state,
-                    "expanded",
-                    "expanded"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___0EkOd, {
+                [sty.textexpanded___0EkOdaCjOc]: hasVariant(
+                  $state,
+                  "expanded",
+                  "expanded"
+                ),
+              })}
             >
               {"Payload"}
             </div>
@@ -320,8 +317,9 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               data-plasmic-name={"payload"}
               data-plasmic-override={overrides.payload}
               className={classNames(
-                projectcss.all,
-                projectcss.textarea,
+                "all",
+                "textarea",
+                "textarea__fpbcK",
                 sty.payload,
                 {
                   [sty.payloadexpanded]: hasVariant(
@@ -342,7 +340,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
           <div
             data-plasmic-name={"sendDataField"}
             data-plasmic-override={overrides.sendDataField}
-            className={classNames(projectcss.all, sty.sendDataField, {
+            className={classNames("all", sty.sendDataField, {
               [sty.sendDataFieldexpanded]: hasVariant(
                 $state,
                 "expanded",
@@ -350,27 +348,22 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox___5X7VS)}>
+            <div className={classNames("all", sty.freeBox___5X7VS)}>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___1YZlP,
-                  {
-                    [sty.textexpanded___1YZlPaCjOc]: hasVariant(
-                      $state,
-                      "expanded",
-                      "expanded"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text___1YZlP, {
+                  [sty.textexpanded___1YZlPaCjOc]: hasVariant(
+                    $state,
+                    "expanded",
+                    "expanded"
+                  ),
+                })}
               >
                 {"Send Data?"}
               </div>
               <InfoIcon
                 data-plasmic-name={"sendDataInfo"}
                 data-plasmic-override={overrides.sendDataInfo}
-                className={classNames(projectcss.all, sty.sendDataInfo)}
+                className={classNames("all", sty.sendDataInfo)}
                 role={"img"}
               />
             </div>
@@ -408,7 +401,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
           </div>
         </div>
       ) : null}
-      <div className={classNames(projectcss.all, sty.freeBox__uuv93)} />
+      <div className={classNames("all", sty.freeBox__uuv93)} />
     </div>
   ) as React.ReactElement | null;
 }

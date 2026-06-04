@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,26 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  PlasmicImg as PlasmicImg__,
+  StrictProps,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "./plasmic_plasmic_kit_insert_panel.css"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/projectcss
 import sty from "./PlasmicCard.module.css"; // plasmic-import: qqXViGcFWb/css
-import projectcss from "./plasmic_plasmic_kit_insert_panel.module.css"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/projectcss
 
 import AfterIcon from "../plasmic_kit/PlasmicIcon__After"; // plasmic-import: yzAFS1IyVvChx/icon
 import BeforeIcon from "../plasmic_kit/PlasmicIcon__Before"; // plasmic-import: VU26fT14NQttw/icon
@@ -76,7 +74,16 @@ function PlasmicCard__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -92,6 +99,8 @@ function PlasmicCard__RenderFunc(props: {
     active_root: isRootActive,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -99,19 +108,17 @@ function PlasmicCard__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_4B48dRthR8uGgyaBYpWthR",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
       data-plasmic-trigger-props={[triggerRootActiveProps]}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__ydQqe)}
+        className={classNames("all", sty.freeBox__ydQqe)}
         style={
           triggers.active_root
             ? (() => {
@@ -160,36 +167,28 @@ function PlasmicCard__RenderFunc(props: {
         <div
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
-          className={classNames(projectcss.all, sty.actions)}
+          className={classNames("all", sty.actions)}
         >
           <div
             data-plasmic-name={"overlayBackground"}
             data-plasmic-override={overrides.overlayBackground}
-            className={classNames(projectcss.all, sty.overlayBackground)}
+            className={classNames("all", sty.overlayBackground)}
           />
 
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text
-            )}
+            className={classNames("all", "__wab_text", sty.text)}
           >
             {"Insert component"}
           </div>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__yIvsa)}
-          >
+          <div className={classNames("all", sty.freeBox__yIvsa)}>
             <Button
               className={classNames("__wab_instance", sty.button__qotwg)}
               pointerCursor={true}
               startIcon={
                 <BeforeIcon
-                  className={classNames(projectcss.all, sty.svg__hjKoR)}
+                  className={classNames("all", sty.svg__hjKoR)}
                   role={"img"}
                 />
               }
@@ -203,7 +202,7 @@ function PlasmicCard__RenderFunc(props: {
               pointerCursor={true}
               startIcon={
                 <PlusIcon
-                  className={classNames(projectcss.all, sty.svg__gTDeQ)}
+                  className={classNames("all", sty.svg__gTDeQ)}
                   role={"img"}
                 />
               }
@@ -217,7 +216,7 @@ function PlasmicCard__RenderFunc(props: {
               pointerCursor={true}
               startIcon={
                 <AfterIcon
-                  className={classNames(projectcss.all, sty.svg__aKTt)}
+                  className={classNames("all", sty.svg__aKTt)}
                   role={"img"}
                 />
               }
@@ -226,7 +225,7 @@ function PlasmicCard__RenderFunc(props: {
             >
               {"After"}
             </Button>
-          </Stack__>
+          </div>
           <ActionMenuButton
             data-plasmic-name={"actionMenuButton"}
             data-plasmic-override={overrides.actionMenuButton}
@@ -252,7 +251,6 @@ const PlasmicDescendants = {
     "text",
     "actionMenuButton",
   ],
-
   img: ["img"],
   actions: ["actions", "overlayBackground", "text", "actionMenuButton"],
   overlayBackground: ["overlayBackground"],
@@ -276,23 +274,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCard__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCard__VariantsArgs;
     args?: PlasmicCard__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCard__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCard__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCard__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCard__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

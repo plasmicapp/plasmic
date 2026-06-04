@@ -17,33 +17,28 @@ import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
 import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
 import ProjectListSection from "../../components/ProjectListSection"; // plasmic-import: diKNfA_-roE/component
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
+import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "../plasmic_kit_dashboard/PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "../plasmic_kit_dashboard/plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicProjectList.module.css"; // plasmic-import: -k-p1OXXphn/css
 
 import ClockIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Clock"; // plasmic-import: Y08w-xNMit/icon
@@ -154,88 +149,64 @@ function PlasmicProjectList__RenderFunc(props: {
         path: "mode",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.mode,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.mode,
       },
       {
         path: "showNewProjectButton",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showNewProjectButton,
       },
       {
         path: "noProjects",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noProjects,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noProjects,
       },
       {
         path: "hideStarters",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideStarters,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hideStarters,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
-        {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [sty.rootmode_demo]: hasVariant($state, "mode", "demo"),
-        }
+        { [sty.rootmode_demo]: hasVariant($state, "mode", "demo") }
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"frame321"}
         data-plasmic-override={overrides.frame321}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.frame321, {
+        className={classNames("all", sty.frame321, {
           [sty.frame321showNewProjectButton]: hasVariant(
             $state,
             "showNewProjectButton",
@@ -249,7 +220,7 @@ function PlasmicProjectList__RenderFunc(props: {
             : false
         ) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__b3Bi4, {
+            className={classNames("all", sty.freeBox__b3Bi4, {
               [sty.freeBoxshowNewProjectButton__b3Bi4R7FzF]: hasVariant(
                 $state,
                 "showNewProjectButton",
@@ -261,9 +232,10 @@ function PlasmicProjectList__RenderFunc(props: {
               data-plasmic-name={"h1"}
               data-plasmic-override={overrides.h1}
               className={classNames(
-                projectcss.all,
-                projectcss.h1,
-                projectcss.__wab_text,
+                "all",
+                "h1",
+                "h1__ooL7E",
+                "__wab_text",
                 sty.h1,
                 {
                   [sty.h1showNewProjectButton]: hasVariant(
@@ -288,13 +260,13 @@ function PlasmicProjectList__RenderFunc(props: {
               })}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__opS5Z)}
+                  className={classNames("all", sty.svg__opS5Z)}
                   role={"img"}
                 />
               }
               startIcon={
                 <PlusIcon
-                  className={classNames(projectcss.all, sty.svg__fDUq)}
+                  className={classNames("all", sty.svg__fDUq)}
                   role={"img"}
                 />
               }
@@ -341,8 +313,9 @@ function PlasmicProjectList__RenderFunc(props: {
                             data-plasmic-override={overrides.preview22}
                             alt={""}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.img,
+                              "all",
+                              "img",
+                              "img__ooL7E",
                               sty.preview22
                             )}
                             src={image3YherfIxkolNxf}
@@ -352,8 +325,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           <img
                             alt={""}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.img,
+                              "all",
+                              "img",
+                              "img__ooL7E",
                               sty.img__gHpLe
                             )}
                             loading={"lazy"}
@@ -362,7 +336,7 @@ function PlasmicProjectList__RenderFunc(props: {
                         }
                       >
                         <CheckIcon
-                          className={classNames(projectcss.all, sty.svg__by7Ek)}
+                          className={classNames("all", sty.svg__by7Ek)}
                           role={"img"}
                         />
                       </StarterProject>
@@ -378,8 +352,9 @@ function PlasmicProjectList__RenderFunc(props: {
                             data-plasmic-override={overrides.preview223}
                             alt={""}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.img,
+                              "all",
+                              "img",
+                              "img__ooL7E",
                               sty.preview223
                             )}
                             src={image3YherfIxkolNxf}
@@ -389,8 +364,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           <img
                             alt={""}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.img,
+                              "all",
+                              "img",
+                              "img__ooL7E",
                               sty.img__nWagV
                             )}
                             loading={"lazy"}
@@ -399,7 +375,7 @@ function PlasmicProjectList__RenderFunc(props: {
                         }
                       >
                         <CheckIcon
-                          className={classNames(projectcss.all, sty.svg__mwqWs)}
+                          className={classNames("all", sty.svg__mwqWs)}
                           role={"img"}
                         />
                       </StarterProject>
@@ -415,8 +391,9 @@ function PlasmicProjectList__RenderFunc(props: {
                             data-plasmic-override={overrides.preview222}
                             alt={""}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.img,
+                              "all",
+                              "img",
+                              "img__ooL7E",
                               sty.preview222
                             )}
                             src={image3YherfIxkolNxf}
@@ -426,8 +403,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           <img
                             alt={""}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.img,
+                              "all",
+                              "img",
+                              "img__ooL7E",
                               sty.img__owx0H
                             )}
                             loading={"lazy"}
@@ -436,10 +414,7 @@ function PlasmicProjectList__RenderFunc(props: {
                         }
                       >
                         <CheckIcon
-                          className={classNames(
-                            projectcss.all,
-                            sty.svg___8WEqf
-                          )}
+                          className={classNames("all", sty.svg___8WEqf)}
                           role={"img"}
                         />
                       </StarterProject>
@@ -455,8 +430,8 @@ function PlasmicProjectList__RenderFunc(props: {
                         <React.Fragment>
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__v4GJv
                             )}
                           >
@@ -464,8 +439,8 @@ function PlasmicProjectList__RenderFunc(props: {
                           </div>
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__c5V
                             )}
                           >
@@ -473,8 +448,8 @@ function PlasmicProjectList__RenderFunc(props: {
                           </div>
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__m8Chg
                             )}
                           >
@@ -488,8 +463,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview34}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview34
                           )}
                           src={image3YherfIxkolNxf}
@@ -499,8 +475,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__qMBcL
                           )}
                           loading={"lazy"}
@@ -510,7 +487,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       type={"first"}
                     >
                       <JoystickIcon
-                        className={classNames(projectcss.all, sty.svg__hf1MI)}
+                        className={classNames("all", sty.svg__hf1MI)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -528,8 +505,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview32}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview32
                           )}
                           src={image3YherfIxkolNxf}
@@ -539,8 +517,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__v8GHj
                           )}
                           loading={"lazy"}
@@ -550,7 +529,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       type={"second"}
                     >
                       <ClockIcon
-                        className={classNames(projectcss.all, sty.svg__laDb)}
+                        className={classNames("all", sty.svg__laDb)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -568,8 +547,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview33}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview33
                           )}
                           src={image3YherfIxkolNxf}
@@ -579,8 +559,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img___4Azhf
                           )}
                           loading={"lazy"}
@@ -590,7 +571,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       type={"third"}
                     >
                       <HatchIcon
-                        className={classNames(projectcss.all, sty.svg__ekBhK)}
+                        className={classNames("all", sty.svg__ekBhK)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -621,8 +602,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview352}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview352
                           )}
                           src={image3YherfIxkolNxf}
@@ -632,8 +614,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__j6ORt
                           )}
                           loading={"lazy"}
@@ -642,7 +625,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__kTsVu)}
+                        className={classNames("all", sty.svg__kTsVu)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -660,8 +643,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview3524}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview3524
                           )}
                           src={image3YherfIxkolNxf}
@@ -671,8 +655,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__mog7Q
                           )}
                           loading={"lazy"}
@@ -681,7 +666,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__bbSn5)}
+                        className={classNames("all", sty.svg__bbSn5)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -699,8 +684,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview3525}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview3525
                           )}
                           src={image3YherfIxkolNxf}
@@ -710,8 +696,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__rchQz
                           )}
                           loading={"lazy"}
@@ -720,7 +707,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__evM1Z)}
+                        className={classNames("all", sty.svg__evM1Z)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -732,7 +719,7 @@ function PlasmicProjectList__RenderFunc(props: {
           }
           icon={
             <LightBulbIcon
-              className={classNames(projectcss.all, sty.svg__vsz6K)}
+              className={classNames("all", sty.svg__vsz6K)}
               role={"img"}
             />
           }
@@ -741,7 +728,7 @@ function PlasmicProjectList__RenderFunc(props: {
         />
 
         <div
-          className={classNames(projectcss.all, sty.freeBox__miuC3, {
+          className={classNames("all", sty.freeBox__miuC3, {
             [sty.freeBoxhideStarters__miuC3T8RVy]: hasVariant(
               $state,
               "hideStarters",
@@ -764,13 +751,13 @@ function PlasmicProjectList__RenderFunc(props: {
             })}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__jK9HY)}
+                className={classNames("all", sty.svg__jK9HY)}
                 role={"img"}
               />
             }
             startIcon={
               <BoltPlusIcon
-                className={classNames(projectcss.all, sty.svg__bsji2)}
+                className={classNames("all", sty.svg__bsji2)}
                 role={"img"}
               />
             }
@@ -780,12 +767,10 @@ function PlasmicProjectList__RenderFunc(props: {
             {"Upload"}
           </Button>
         ) : null}
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"mainList"}
           data-plasmic-override={overrides.mainList}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.mainList, {
+          className={classNames("all", sty.mainList, {
             [sty.mainListmode_demo]: hasVariant($state, "mode", "demo"),
             [sty.mainListnoProjects]: hasVariant(
               $state,
@@ -838,16 +823,12 @@ function PlasmicProjectList__RenderFunc(props: {
             explorations={["moreInfoOnHover"]}
             timestamp={"updated 1h ago"}
           />
-        </Stack__>
+        </div>
         {(hasVariant($state, "noProjects", "noProjects") ? true : false)
           ? renderPlasmicSlot({
               defaultContents: (
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__aTmMe
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__aTmMe)}
                 >
                   {
                     'You have no projects. Create a new one by hitting "New project" in the top bar.'
@@ -880,8 +861,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview2}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview2
                           )}
                           src={image3YherfIxkolNxf}
@@ -891,8 +873,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__pP5S5
                           )}
                           loading={"lazy"}
@@ -901,7 +884,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__epZ7H)}
+                        className={classNames("all", sty.svg__epZ7H)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -919,8 +902,9 @@ function PlasmicProjectList__RenderFunc(props: {
                           data-plasmic-override={overrides.preview3}
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.preview3
                           )}
                           src={image3YherfIxkolNxf}
@@ -930,8 +914,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img___8UU2Y
                           )}
                           loading={"lazy"}
@@ -940,7 +925,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__pEw7)}
+                        className={classNames("all", sty.svg__pEw7)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -963,8 +948,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__qgkiq
                           )}
                           src={image3YherfIxkolNxf}
@@ -974,8 +960,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__olWvG
                           )}
                           loading={"lazy"}
@@ -984,7 +971,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__jHE)}
+                        className={classNames("all", sty.svg__jHE)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -1000,8 +987,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__acfiy
                           )}
                           src={image3YherfIxkolNxf}
@@ -1011,8 +999,9 @@ function PlasmicProjectList__RenderFunc(props: {
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img___60YkE
                           )}
                           loading={"lazy"}
@@ -1021,7 +1010,7 @@ function PlasmicProjectList__RenderFunc(props: {
                       }
                     >
                       <CheckIcon
-                        className={classNames(projectcss.all, sty.svg__zwJRf)}
+                        className={classNames("all", sty.svg__zwJRf)}
                         role={"img"}
                       />
                     </StarterProject>
@@ -1032,15 +1021,15 @@ function PlasmicProjectList__RenderFunc(props: {
           }
           icon={
             <TrashIcon
-              className={classNames(projectcss.all, sty.svg__xdg9O)}
+              className={classNames("all", sty.svg__xdg9O)}
               role={"img"}
             />
           }
           name={"Deleted"}
           states={"collapsed"}
         />
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -1155,7 +1144,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicProjectList__VariantsArgs;
     args?: PlasmicProjectList__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicProjectList__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicProjectList__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicProjectList__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

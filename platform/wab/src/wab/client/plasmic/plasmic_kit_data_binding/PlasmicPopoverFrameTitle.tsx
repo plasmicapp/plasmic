@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicPopoverFrameTitle.module.css"; // plasmic-import: _qAXa8aqLB77/css
 
 import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
@@ -106,10 +106,10 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.popoverFrameTitle
       )}
@@ -133,7 +133,7 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
           className={classNames("__wab_instance", sty.back)}
         >
           <ArrowLeftSvgIcon
-            className={classNames(projectcss.all, sty.svg__kv0Et)}
+            className={classNames("all", sty.svg__kv0Et)}
             role={"img"}
           />
         </IconButton>
@@ -141,7 +141,7 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
       <div
         data-plasmic-name={"titleWrap"}
         data-plasmic-override={overrides.titleWrap}
-        className={classNames(projectcss.all, sty.titleWrap)}
+        className={classNames("all", sty.titleWrap)}
       >
         {renderPlasmicSlot({
           defaultContents: "Edit Object",
@@ -155,7 +155,7 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
         className={classNames("__wab_instance", sty.close)}
       >
         <CloseSvgIcon
-          className={classNames(projectcss.all, sty.svg___8TSbt)}
+          className={classNames("all", sty.svg___8TSbt)}
           role={"img"}
         />
       </IconButton>

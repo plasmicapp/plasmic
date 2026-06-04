@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicDimTokenSelector.module.css"; // plasmic-import: s1ridHP4Z3T/css
 
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
@@ -177,6 +177,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -194,10 +195,10 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -235,7 +236,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
         <div
           data-plasmic-name={"existingTokensContainer"}
           data-plasmic-override={overrides.existingTokensContainer}
-          className={classNames(projectcss.all, sty.existingTokensContainer, {
+          className={classNames("all", sty.existingTokensContainer, {
             [sty.existingTokensContainershowCurrentTokens]: hasVariant(
               $state,
               "showCurrentTokens",
@@ -253,22 +254,14 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
               <React.Fragment>
                 <Chip className={classNames("__wab_instance", sty.chip__c3Yjo)}>
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__uSn5B
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__uSn5B)}
                   >
                     {"Token1"}
                   </div>
                 </Chip>
                 <Chip className={classNames("__wab_instance", sty.chip__rwgrE)}>
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__kSfz
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__kSfz)}
                   >
                     {"Token2"}
                   </div>
@@ -289,51 +282,45 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
       <input
         data-plasmic-name={"textbox"}
         data-plasmic-override={overrides.textbox}
-        className={classNames(
-          projectcss.all,
-          projectcss.input,
-          projectcss.input__gYEVv,
-          sty.textbox,
-          {
-            [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
-            [sty.textboxerror]: hasVariant($state, "error", "error"),
-            [sty.textboxshowCurrentTokens]: hasVariant(
-              $state,
-              "showCurrentTokens",
-              "showCurrentTokens"
-            ),
-            [sty.textboxshowDropdownArrow]: hasVariant(
-              $state,
-              "showDropdownArrow",
-              "showDropdownArrow"
-            ),
-            [sty.textboxstyleType_bordered]: hasVariant(
-              $state,
-              "styleType",
-              "bordered"
-            ),
-            [sty.textboxstyleType_white]: hasVariant(
-              $state,
-              "styleType",
-              "white"
-            ),
-            [sty.textboxvalueSetState_isInherited]: hasVariant(
-              $state,
-              "valueSetState",
-              "isInherited"
-            ),
-            [sty.textboxvalueSetState_isSet]: hasVariant(
-              $state,
-              "valueSetState",
-              "isSet"
-            ),
-            [sty.textboxvalueSetState_isUnset]: hasVariant(
-              $state,
-              "valueSetState",
-              "isUnset"
-            ),
-          }
-        )}
+        className={classNames("all", "input", "input__gYEVv", sty.textbox, {
+          [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
+          [sty.textboxerror]: hasVariant($state, "error", "error"),
+          [sty.textboxshowCurrentTokens]: hasVariant(
+            $state,
+            "showCurrentTokens",
+            "showCurrentTokens"
+          ),
+          [sty.textboxshowDropdownArrow]: hasVariant(
+            $state,
+            "showDropdownArrow",
+            "showDropdownArrow"
+          ),
+          [sty.textboxstyleType_bordered]: hasVariant(
+            $state,
+            "styleType",
+            "bordered"
+          ),
+          [sty.textboxstyleType_white]: hasVariant(
+            $state,
+            "styleType",
+            "white"
+          ),
+          [sty.textboxvalueSetState_isInherited]: hasVariant(
+            $state,
+            "valueSetState",
+            "isInherited"
+          ),
+          [sty.textboxvalueSetState_isSet]: hasVariant(
+            $state,
+            "valueSetState",
+            "isSet"
+          ),
+          [sty.textboxvalueSetState_isUnset]: hasVariant(
+            $state,
+            "valueSetState",
+            "isUnset"
+          ),
+        })}
         placeholder={args.placeholder}
         ref={(ref) => {
           $refs["textbox"] = ref;
@@ -351,7 +338,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
         <div
           data-plasmic-name={"suffixContainer"}
           data-plasmic-override={overrides.suffixContainer}
-          className={classNames(projectcss.all, sty.suffixContainer, {
+          className={classNames("all", sty.suffixContainer, {
             [sty.suffixContainerdisabled]: hasVariant(
               $state,
               "disabled",
@@ -379,7 +366,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
             data-plasmic-override={overrides.dropdownToggle}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__womfz)}
+                className={classNames("all", sty.svg__womfz)}
                 role={"img"}
               />
             }
@@ -393,7 +380,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
             type={["seamless"]}
           >
             <TriangleBottomIcon
-              className={classNames(projectcss.all, sty.svg__wtzSg, {
+              className={classNames("all", sty.svg__wtzSg, {
                 [sty.svgshowDropdownArrow__wtzSgvlUf7]: hasVariant(
                   $state,
                   "showDropdownArrow",

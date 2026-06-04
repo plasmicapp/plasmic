@@ -14,30 +14,26 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
+  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicNavButton.module.css"; // plasmic-import: 82ZzbE4hazN/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -151,51 +147,56 @@ function PlasmicNavButton__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
       {
         path: "selected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected,
       },
       {
         path: "withEndIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withEndIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withEndIcon,
       },
       {
         path: "blue",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.blue,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.blue,
       },
       {
         path: "violet",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.violet,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.violet,
       },
       {
         path: "bold",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.bold,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.bold,
       },
       {
         path: "smallIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.smallIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.smallIcon,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -214,48 +215,24 @@ function PlasmicNavButton__RenderFunc(props: {
     focusVisible_root: isRootFocusVisible,
   };
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={PlasmicLink__}
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.a,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "a",
+        "a__ooL7E",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.root___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.root___focusVisible]: triggers.focusVisible_root,
           [sty.rootblue]: hasVariant($state, "blue", "blue"),
@@ -291,7 +268,7 @@ function PlasmicNavButton__RenderFunc(props: {
       <div
         data-plasmic-name={"startIconContainer"}
         data-plasmic-override={overrides.startIconContainer}
-        className={classNames(projectcss.all, sty.startIconContainer, {
+        className={classNames("all", sty.startIconContainer, {
           [sty.startIconContainer___focusVisibleWithin]:
             triggers.focusVisibleWithin_root,
           [sty.startIconContainer___focusVisible]: triggers.focusVisible_root,
@@ -316,7 +293,7 @@ function PlasmicNavButton__RenderFunc(props: {
         {renderPlasmicSlot({
           defaultContents: (
             <ArrowRightSvgIcon
-              className={classNames(projectcss.all, sty.svg__qik2M)}
+              className={classNames("all", sty.svg__qik2M)}
               role={"img"}
             />
           ),
@@ -351,12 +328,10 @@ function PlasmicNavButton__RenderFunc(props: {
           }),
         })}
       </div>
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxblue]: hasVariant($state, "blue", "blue"),
           [sty.freeBoxviolet]: hasVariant($state, "violet", "violet"),
           [sty.freeBoxwithEndIcon]: hasVariant(
@@ -401,7 +376,7 @@ function PlasmicNavButton__RenderFunc(props: {
           <div
             data-plasmic-name={"endIconContainer"}
             data-plasmic-override={overrides.endIconContainer}
-            className={classNames(projectcss.all, sty.endIconContainer, {
+            className={classNames("all", sty.endIconContainer, {
               [sty.endIconContainerblue]: hasVariant($state, "blue", "blue"),
               [sty.endIconContainerviolet]: hasVariant(
                 $state,
@@ -418,7 +393,7 @@ function PlasmicNavButton__RenderFunc(props: {
             {renderPlasmicSlot({
               defaultContents: (
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__siHw5)}
+                  className={classNames("all", sty.svg__siHw5)}
                   role={"img"}
                 />
               ),
@@ -440,8 +415,8 @@ function PlasmicNavButton__RenderFunc(props: {
             })}
           </div>
         ) : null}
-      </Stack__>
-    </Stack__>
+      </div>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 
@@ -472,7 +447,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicNavButton__VariantsArgs;
     args?: PlasmicNavButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicNavButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicNavButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicNavButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

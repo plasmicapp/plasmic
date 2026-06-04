@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicPreset.module.css"; // plasmic-import: eS_Bw5U3wr/css
 
 createPlasmicElementProxy;
@@ -98,10 +98,10 @@ function PlasmicPreset__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -109,7 +109,7 @@ function PlasmicPreset__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
           defaultContents: null,
@@ -120,7 +120,7 @@ function PlasmicPreset__RenderFunc(props: {
         <div
           data-plasmic-name={"nameContainer"}
           data-plasmic-override={overrides.nameContainer}
-          className={classNames(projectcss.all, sty.nameContainer)}
+          className={classNames("all", sty.nameContainer)}
         >
           {renderPlasmicSlot({
             defaultContents: "Name",
@@ -158,7 +158,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPreset__VariantsArgs;
     args?: PlasmicPreset__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPreset__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPreset__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPreset__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

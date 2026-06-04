@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftLintIssuesPanel.module.css"; // plasmic-import: xymZo1AIeU/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -97,10 +97,10 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -114,14 +114,14 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newComponentButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg___9O6Tw)}
+                className={classNames("all", sty.svg___9O6Tw)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg__cxuNo)}
+                className={classNames("all", sty.svg__cxuNo)}
                 role={"img"}
               />
             }
@@ -136,11 +136,7 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
           <div
             data-plasmic-name={"description"}
             data-plasmic-override={overrides.description}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.description
-            )}
+            className={classNames("all", "__wab_text", sty.description)}
           >
             {
               "Some issues have been identified with your project.  Please fix them to avoid problems."
@@ -154,7 +150,7 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       />
     </div>
   ) as React.ReactElement | null;

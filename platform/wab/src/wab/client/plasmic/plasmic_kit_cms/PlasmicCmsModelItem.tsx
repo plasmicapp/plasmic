@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsModelItem.module.css"; // plasmic-import: FpZFUfiTA6/css
 
 import BoxSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoxSvg"; // plasmic-import: 0qLNxfRGB/icon
@@ -100,15 +100,17 @@ function PlasmicCmsModelItem__RenderFunc(props: {
         path: "isActive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isActive,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -121,10 +123,10 @@ function PlasmicCmsModelItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisActive]: hasVariant($state, "isActive", "isActive") }
@@ -133,7 +135,7 @@ function PlasmicCmsModelItem__RenderFunc(props: {
       <BoxSvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svgisActive]: hasVariant($state, "isActive", "isActive"),
         })}
         role={"img"}
@@ -142,7 +144,7 @@ function PlasmicCmsModelItem__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxisActive]: hasVariant($state, "isActive", "isActive"),
         })}
       >

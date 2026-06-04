@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,24 +13,23 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicAuthTabNavigation.module.css"; // plasmic-import: 1lRaedKrFR/css
 
 createPlasmicElementProxy;
@@ -50,10 +49,10 @@ type ArgPropType = keyof PlasmicAuthTabNavigation__ArgsType;
 export const PlasmicAuthTabNavigation__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicAuthTabNavigation__OverridesType = {
-  root?: p.Flex<"div">;
-  permissions?: p.Flex<"div">;
-  settings?: p.Flex<"div">;
-  activity?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  permissions?: Flex__<"div">;
+  settings?: Flex__<"div">;
+  activity?: Flex__<"div">;
 };
 
 export interface DefaultAuthTabNavigationProps {
@@ -61,13 +60,7 @@ export interface DefaultAuthTabNavigationProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicAuthTabNavigation__RenderFunc(props: {
   variants: PlasmicAuthTabNavigation__VariantsArgs;
@@ -77,118 +70,108 @@ function PlasmicAuthTabNavigation__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "selected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <p.Stack
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"permissions"}
         data-plasmic-override={overrides.permissions}
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.permissions,
-          {
-            [sty.permissionsselected_permissions]: hasVariant(
-              $state,
-              "selected",
-              "permissions"
-            ),
-          }
-        )}
+        className={classNames("all", "__wab_text", sty.permissions, {
+          [sty.permissionsselected_permissions]: hasVariant(
+            $state,
+            "selected",
+            "permissions"
+          ),
+        })}
       >
         {"Permissions"}
       </div>
       <div
         data-plasmic-name={"settings"}
         data-plasmic-override={overrides.settings}
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.settings,
-          {
-            [sty.settingsselected_settings]: hasVariant(
-              $state,
-              "selected",
-              "settings"
-            ),
-          }
-        )}
+        className={classNames("all", "__wab_text", sty.settings, {
+          [sty.settingsselected_settings]: hasVariant(
+            $state,
+            "selected",
+            "settings"
+          ),
+        })}
       >
         {"Settings"}
       </div>
       <div
         data-plasmic-name={"activity"}
         data-plasmic-override={overrides.activity}
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.activity,
-          {
-            [sty.activityselected_activity]: hasVariant(
-              $state,
-              "selected",
-              "activity"
-            ),
-            [sty.activityselected_settings]: hasVariant(
-              $state,
-              "selected",
-              "settings"
-            ),
-          }
-        )}
+        className={classNames("all", "__wab_text", sty.activity, {
+          [sty.activityselected_activity]: hasVariant(
+            $state,
+            "selected",
+            "activity"
+          ),
+          [sty.activityselected_settings]: hasVariant(
+            $state,
+            "selected",
+            "settings"
+          ),
+        })}
       >
         {"Activity"}
       </div>
-    </p.Stack>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -213,23 +196,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAuthTabNavigation__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicAuthTabNavigation__VariantsArgs;
     args?: PlasmicAuthTabNavigation__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAuthTabNavigation__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAuthTabNavigation__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicAuthTabNavigation__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicAuthTabNavigation__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -243,7 +226,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAuthTabNavigation__ArgProps,
           internalVariantPropNames: PlasmicAuthTabNavigation__VariantProps,
         }),

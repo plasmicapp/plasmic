@@ -2,28 +2,17 @@
   height: auto;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   position: relative;
   border-bottom-width: 1px;
   width: 100%;
+  column-gap: 4px;
   min-width: 0;
   border-radius: 0px;
   padding: 10px 6px;
   border-style: dashed;
   border-color: var(--token-hoA5qaM-91G);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .startIconsContainer14 {
   width: auto;
@@ -31,27 +20,10 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  flex-shrink: 0;
-}
-.startIconsContainer14 > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.startIconsContainer14 > :global(.__wab_flex-container) > *,
-.startIconsContainer14
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.startIconsContainer14 > :global(.__wab_flex-container) > picture > img,
-.startIconsContainer14
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  flex-shrink: 0;
+  column-gap: 4px;
 }
 .icon {
   position: relative;
@@ -130,26 +102,9 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.endIconsContainer14 > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.endIconsContainer14 > :global(.__wab_flex-container) > *,
-.endIconsContainer14
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.endIconsContainer14 > :global(.__wab_flex-container) > picture > img,
-.endIconsContainer14
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  column-gap: 4px;
 }
 .img {
   position: relative;
@@ -157,7 +112,7 @@
   max-width: 100%;
   width: 20px;
   height: 20px;
-  display: block !important;
+  display: block;
   overflow: hidden;
   flex-shrink: 0;
 }

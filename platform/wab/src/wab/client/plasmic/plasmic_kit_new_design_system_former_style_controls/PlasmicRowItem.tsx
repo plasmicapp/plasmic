@@ -34,7 +34,7 @@ import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleToken
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicRowItem.module.css"; // plasmic-import: gkx-PRZnjFPo/css
 
 import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
@@ -168,6 +168,7 @@ function PlasmicRowItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -190,10 +191,10 @@ function PlasmicRowItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -211,7 +212,7 @@ function PlasmicRowItem__RenderFunc(props: {
         <div
           data-plasmic-name={"iconContainer"}
           data-plasmic-override={overrides.iconContainer}
-          className={classNames(projectcss.all, sty.iconContainer, {
+          className={classNames("all", sty.iconContainer, {
             [sty.iconContainerhideIcon]: hasVariant(
               $state,
               "hideIcon",
@@ -222,7 +223,7 @@ function PlasmicRowItem__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <ComponentsSvgIcon
-                className={classNames(projectcss.all, sty.svg___5Mr7N)}
+                className={classNames("all", sty.svg___5Mr7N)}
                 role={"img"}
               />
             ),
@@ -241,7 +242,7 @@ function PlasmicRowItem__RenderFunc(props: {
       <div
         data-plasmic-name={"labelContainer"}
         data-plasmic-override={overrides.labelContainer}
-        className={classNames(projectcss.all, sty.labelContainer, {
+        className={classNames("all", sty.labelContainer, {
           [sty.labelContainermenuSize_small]: hasVariant(
             $state,
             "menuSize",
@@ -263,7 +264,7 @@ function PlasmicRowItem__RenderFunc(props: {
       <div
         data-plasmic-name={"addendumContainer"}
         data-plasmic-override={overrides.addendumContainer}
-        className={classNames(projectcss.all, sty.addendumContainer, {
+        className={classNames("all", sty.addendumContainer, {
           [sty.addendumContainershowAddendum]: hasVariant(
             $state,
             "showAddendum",
@@ -273,13 +274,7 @@ function PlasmicRowItem__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__kNu3S
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__kNu3S)}>
               {"Big  Addendum"}
             </div>
           ),
@@ -296,13 +291,13 @@ function PlasmicRowItem__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {(hasVariant($state, "showActions", "showActions") ? true : false) ? (
           <div
             data-plasmic-name={"actionsContainer"}
             data-plasmic-override={overrides.actionsContainer}
-            className={classNames(projectcss.all, sty.actionsContainer, {
+            className={classNames("all", sty.actionsContainer, {
               [sty.actionsContainershowActions]: hasVariant(
                 $state,
                 "showActions",

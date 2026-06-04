@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPostFormDialog.module.css"; // plasmic-import: bGnXEIS7pS-Y/css
 
 createPlasmicElementProxy;
@@ -99,7 +99,7 @@ function PlasmicCommentPostFormDialog__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
+          className={classNames("all", sty.freeBox)}
         >
           <CommentPostForm
             data-plasmic-name={"commentPostForm"}
@@ -147,7 +147,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentPostFormDialog__VariantsArgs;
     args?: PlasmicCommentPostFormDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentPostFormDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentPostFormDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentPostFormDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

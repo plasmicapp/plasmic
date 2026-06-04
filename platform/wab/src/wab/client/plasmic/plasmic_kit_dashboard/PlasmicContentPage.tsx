@@ -16,35 +16,60 @@ import * as React from "react";
 import {
   Flex as Flex__,
   PlasmicLink as PlasmicLink__,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  hasVariant,
   renderPlasmicSlot,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import CmsListItem from "../../components/CmsListItem"; // plasmic-import: DEllwXrn27Q/component
 import CmsSection from "../../components/CmsSection"; // plasmic-import: 54ykx6A8G6T/component
+import MenuItem from "../../components/MenuItem"; // plasmic-import: Ts79yZbRFG/component
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
-import MenuItem from "../../components/MenuItem"; // plasmic-import: Ts79yZbRFG/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicContentPage.module.css"; // plasmic-import: A4UIAN_FGs/css
 
 import SettingsSlidersSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SettingsSlidersSvg"; // plasmic-import: Y1oJwH9hP/icon
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  },
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    },
+  });
+}
+
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
+  return {
+    openGraph: {},
+    twitter: {
+      card: "summary" as const,
+    },
+  };
+}
 
 createPlasmicElementProxy;
 
@@ -103,48 +128,25 @@ function PlasmicContentPage__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const globalVariants = _useGlobalVariants();
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <React.Fragment>
-      <div className={projectcss.plasmic_page_wrapper}>
+      <div className={"plasmic_page_wrapper"}>
         <div
           data-plasmic-name={"root"}
           data-plasmic-override={overrides.root}
           data-plasmic-root={true}
           data-plasmic-for-node={forNode}
           className={classNames(
-            projectcss.all,
-            projectcss.root_reset,
-            projectcss.plasmic_default_styles,
-            projectcss.plasmic_mixins,
-            projectcss.plasmic_tokens,
-            plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-            plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-            plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-            sty.root,
-            {
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-                hasVariant(globalVariants, "environment", "website"),
-            }
+            "all",
+            "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+            "plasmic_default_styles",
+            "plasmic_mixins",
+            styleTokensClassNames,
+            sty.root
           )}
         >
           <DefaultLayout
@@ -159,14 +161,8 @@ function PlasmicContentPage__RenderFunc(props: {
               />
             }
           >
-            <div className={classNames(projectcss.all, sty.freeBox__zQtUe)}>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__crDwU
-                )}
-              >
+            <div className={classNames("all", sty.freeBox__zQtUe)}>
+              <div className={classNames("all", "__wab_text", sty.text__crDwU)}>
                 {"Content"}
               </div>
               <MenuButton
@@ -177,24 +173,18 @@ function PlasmicContentPage__RenderFunc(props: {
                 stepUp={true}
               />
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox___0HLou)}>
+            <div className={classNames("all", sty.freeBox___0HLou)}>
               <div
                 data-plasmic-name={"modelNav"}
                 data-plasmic-override={overrides.modelNav}
-                className={classNames(projectcss.all, sty.modelNav)}
+                className={classNames("all", sty.modelNav)}
               >
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__qpmBb)}
-                >
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__jpMzn)}
-                  >
+                <div className={classNames("all", sty.freeBox__qpmBb)}>
+                  <div className={classNames("all", sty.freeBox__jpMzn)}>
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__o1YhO
                       )}
                     >
@@ -204,8 +194,9 @@ function PlasmicContentPage__RenderFunc(props: {
                       data-plasmic-name={"editModelsButton"}
                       data-plasmic-override={overrides.editModelsButton}
                       className={classNames(
-                        projectcss.all,
-                        projectcss.a,
+                        "all",
+                        "a",
+                        "a__ooL7E",
                         sty.editModelsButton
                       )}
                       platform={"react"}
@@ -214,16 +205,12 @@ function PlasmicContentPage__RenderFunc(props: {
                       <SettingsSlidersSvgIcon
                         data-plasmic-name={"svg"}
                         data-plasmic-override={overrides.svg}
-                        className={classNames(projectcss.all, sty.svg)}
+                        className={classNames("all", sty.svg)}
                         role={"img"}
                       />
                     </PlasmicLink__>
                   </div>
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.freeBox__d2EH)}
-                  >
+                  <div className={classNames("all", sty.freeBox__d2EH)}>
                     {renderPlasmicSlot({
                       defaultContents: (
                         <React.Fragment>
@@ -236,8 +223,8 @@ function PlasmicContentPage__RenderFunc(props: {
                       ),
                       value: args.modelList,
                     })}
-                  </Stack__>
-                </Stack__>
+                  </div>
+                </div>
               </div>
               <CmsSection
                 data-plasmic-name={"cmsSection"}
@@ -363,7 +350,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicContentPage__VariantsArgs;
     args?: PlasmicContentPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicContentPage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicContentPage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicContentPage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -424,13 +412,12 @@ export const PlasmicContentPage = Object.assign(
     internalVariantProps: PlasmicContentPage__VariantProps,
     internalArgProps: PlasmicContentPage__ArgProps,
 
-    // Page metadata
-    pageMetadata: {
-      title: "",
-      description: "",
-      ogImageSrc: "",
-      canonical: "",
-    },
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/content/[id]",
+      pagePath: "/content/[id]",
+      params: {},
+      query: {},
+    }),
   }
 );
 

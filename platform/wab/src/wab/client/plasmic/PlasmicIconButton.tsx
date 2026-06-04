@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./plasmic_kit_design_system/PlasmicStyleTokensP
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
-import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "./PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 
 import DotsHorizontalIcon from "./plasmic_kit_design_system/PlasmicIcon__DotsHorizontal"; // plasmic-import: GkkhQuMH0/icon
 import ChevronDownSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -263,6 +263,7 @@ function PlasmicIconButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -291,12 +292,12 @@ function PlasmicIconButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.button__tXkSR,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "button",
+        "button__tXkSR",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -401,7 +402,7 @@ function PlasmicIconButton__RenderFunc(props: {
       {renderPlasmicSlot({
         defaultContents: (
           <PlusSvgIcon
-            className={classNames(projectcss.all, sty.svg__vKQk)}
+            className={classNames("all", sty.svg__vKQk)}
             role={"img"}
           />
         ),
@@ -559,7 +560,7 @@ function PlasmicIconButton__RenderFunc(props: {
         ? renderPlasmicSlot({
             defaultContents: (
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__vDdFm)}
+                className={classNames("all", sty.svg__vDdFm)}
                 role={"img"}
               />
             ),
@@ -659,7 +660,7 @@ function PlasmicIconButton__RenderFunc(props: {
         <DotsHorizontalIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg, {
+          className={classNames("all", sty.svg, {
             [sty.svgisActive]: hasVariant($state, "isActive", "isActive"),
             [sty.svgisLoading]: hasVariant($state, "isLoading", "isLoading"),
             [sty.svgshowAlert]: hasVariant($state, "showAlert", "showAlert"),

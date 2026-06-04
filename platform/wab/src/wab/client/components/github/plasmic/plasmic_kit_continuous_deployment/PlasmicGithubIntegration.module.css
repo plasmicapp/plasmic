@@ -877,6 +877,8 @@
   align-items: center;
   justify-content: flex-start;
   padding-right: 8px;
+  font-size: 11px;
+  line-height: 14px;
   width: 100%;
   cursor: text;
   min-width: 0;

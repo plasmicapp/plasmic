@@ -19,10 +19,14 @@
 .docsPortalHeaderactiveTab_intro:global(.__wab_instance) {
   flex-shrink: 0;
 }
-.docsPortalHeaderglobal_codegenType_loader_activeTab_intro:global(.__wab_instance) {
+.docsPortalHeaderglobal_codegenType_loader_activeTab_intro:global(
+    .__wab_instance
+  ) {
   flex-shrink: 0;
 }
-.docsPortalHeaderglobal_codegenType_codegen_activeTab_intro:global(.__wab_instance) {
+.docsPortalHeaderglobal_codegenType_codegen_activeTab_intro:global(
+    .__wab_instance
+  ) {
   flex-shrink: 0;
 }
 .docsPortalHeaderactiveTab_images:global(.__wab_instance) {
@@ -49,7 +53,7 @@
   justify-content: flex-start;
   width: 200px;
   flex-shrink: 0;
-  border-right: 1px solid var(--token-pzmB25Csye);
+  border-right: 1px solid var(--token-hoA5qaM-91G);
 }
 .docsPortalTabs:global(.__wab_instance) {
   position: relative;

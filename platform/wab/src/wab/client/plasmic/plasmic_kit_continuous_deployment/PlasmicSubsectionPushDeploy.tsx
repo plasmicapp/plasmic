@@ -40,7 +40,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionPushDeploy.module.css"; // plasmic-import: 0HHLsxeAqF8/css
 
 import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmic-import: gU-8UYs9RllyJ/icon
@@ -153,58 +153,60 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
       },
       {
         path: "connection",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.connection,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.connection,
       },
       {
         path: "collapseOptions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.collapseOptions,
       },
       {
         path: "repoState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.repoState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.repoState,
       },
       {
         path: "result",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.result,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.result,
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "pushAs.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -217,10 +219,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -232,10 +234,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
         }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox___3XSbn)} />
+      <div className={classNames("all", sty.freeBox___3XSbn)} />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__lnWi5, {
+        className={classNames("all", sty.freeBox__lnWi5, {
           [sty.freeBoxview_setup__lnWi5SMuCj]: hasVariant(
             $state,
             "view",
@@ -258,7 +260,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__jgbTr, {
+          className={classNames("all", sty.freeBox__jgbTr, {
             [sty.freeBoxcollapse__jgbTr3BfnV]: hasVariant(
               $state,
               "collapse",
@@ -272,7 +274,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__hdOhB, {
+            className={classNames("all", sty.freeBox__hdOhB, {
               [sty.freeBoxview_status__hdOhBwsXz9]: hasVariant(
                 $state,
                 "view",
@@ -344,32 +346,27 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             ) : null}
           </div>
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__o4IEu,
-              {
-                [sty.textcollapse__o4IEu3BfnV]: hasVariant(
-                  $state,
-                  "collapse",
-                  "collapse"
-                ),
-                [sty.textview_status__o4IEuwsXz9]: hasVariant(
-                  $state,
-                  "view",
-                  "status"
-                ),
-                [sty.textview_status_result_failure__o4IEuwsXz9XcibJ]:
-                  hasVariant($state, "view", "status") &&
-                  hasVariant($state, "result", "failure"),
-                [sty.textview_status_result_publishing__o4IEuwsXz9ZYtqX]:
-                  hasVariant($state, "view", "status") &&
-                  hasVariant($state, "result", "publishing"),
-                [sty.textview_status_result_success__o4IEuwsXz9YnSik]:
-                  hasVariant($state, "view", "status") &&
-                  hasVariant($state, "result", "success"),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__o4IEu, {
+              [sty.textcollapse__o4IEu3BfnV]: hasVariant(
+                $state,
+                "collapse",
+                "collapse"
+              ),
+              [sty.textview_status__o4IEuwsXz9]: hasVariant(
+                $state,
+                "view",
+                "status"
+              ),
+              [sty.textview_status_result_failure__o4IEuwsXz9XcibJ]:
+                hasVariant($state, "view", "status") &&
+                hasVariant($state, "result", "failure"),
+              [sty.textview_status_result_publishing__o4IEuwsXz9ZYtqX]:
+                hasVariant($state, "view", "status") &&
+                hasVariant($state, "result", "publishing"),
+              [sty.textview_status_result_success__o4IEuwsXz9YnSik]:
+                hasVariant($state, "view", "status") &&
+                hasVariant($state, "result", "success"),
+            })}
           >
             {"Push to GitHub"}
           </div>
@@ -392,7 +389,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   ? CheckCircleIcon
                   : "div"
               }
-              className={classNames(projectcss.all, sty.svg___6DFCg, {
+              className={classNames("all", sty.svg___6DFCg, {
                 [sty.svgview_status_result_failure___6DFCgWsXz9XcibJ]:
                   hasVariant($state, "view", "status") &&
                   hasVariant($state, "result", "failure"),
@@ -405,7 +402,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           ) : null}
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__pgu3B, {
+          className={classNames("all", sty.freeBox__pgu3B, {
             [sty.freeBoxview_status__pgu3BWsXz9]: hasVariant(
               $state,
               "view",
@@ -419,32 +416,27 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               data-plasmic-override={overrides.removeButton}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__yFjH5)}
+                  className={classNames("all", sty.svg__yFjH5)}
                   role={"img"}
                 />
               }
               size={"small"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__lmys9)}
+                  className={classNames("all", sty.svg__lmys9)}
                   role={"img"}
                 />
               }
               type={["clear"]}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__thhNj,
-                  {
-                    [sty.textcollapse__thhNj3BfnV]: hasVariant(
-                      $state,
-                      "collapse",
-                      "collapse"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__thhNj, {
+                  [sty.textcollapse__thhNj3BfnV]: hasVariant(
+                    $state,
+                    "collapse",
+                    "collapse"
+                  ),
+                })}
               >
                 {hasVariant($state, "collapse", "collapse") ? "Show" : "Remove"}
               </div>
@@ -476,7 +468,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       ? OpenIcon
                       : TriangleBottomIcon
                   }
-                  className={classNames(projectcss.all, sty.svg___1Omka, {
+                  className={classNames("all", sty.svg___1Omka, {
                     [sty.svgview_status___1OmkawsXz9]: hasVariant(
                       $state,
                       "view",
@@ -492,7 +484,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               size={hasVariant($state, "view", "status") ? "wide" : undefined}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg___5EXnj)}
+                  className={classNames("all", sty.svg___5EXnj)}
                   role={"img"}
                 />
               }
@@ -501,21 +493,16 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               }
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___9VjHy,
-                  {
-                    [sty.textview_status___9VjHyWsXz9]: hasVariant(
-                      $state,
-                      "view",
-                      "status"
-                    ),
-                    [sty.textview_status_result_success___9VjHyWsXz9YnSik]:
-                      hasVariant($state, "view", "status") &&
-                      hasVariant($state, "result", "success"),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text___9VjHy, {
+                  [sty.textview_status___9VjHyWsXz9]: hasVariant(
+                    $state,
+                    "view",
+                    "status"
+                  ),
+                  [sty.textview_status_result_success___9VjHyWsXz9YnSik]:
+                    hasVariant($state, "view", "status") &&
+                    hasVariant($state, "result", "success"),
+                })}
               >
                 {hasVariant($state, "view", "status")
                   ? "View on GitHub"
@@ -533,7 +520,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           : true
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__juaWs, {
+          className={classNames("all", sty.freeBox__juaWs, {
             [sty.freeBoxcollapse__juaWs3BfnV]: hasVariant(
               $state,
               "collapse",
@@ -547,7 +534,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__o9AxH, {
+            className={classNames("all", sty.freeBox__o9AxH, {
               [sty.freeBoxview_setup__o9AxHsMuCj]: hasVariant(
                 $state,
                 "view",
@@ -556,18 +543,13 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__cEom,
-                {
-                  [sty.textconnection_connected__cEomX7Cr]: hasVariant(
-                    $state,
-                    "connection",
-                    "connected"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__cEom, {
+                [sty.textconnection_connected__cEomX7Cr]: hasVariant(
+                  $state,
+                  "connection",
+                  "connected"
+                ),
+              })}
             >
               {"Publish to a new or existing GitHub repo."}
             </div>
@@ -575,9 +557,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               data-plasmic-name={"learnMoreLink"}
               data-plasmic-override={overrides.learnMoreLink}
               className={classNames(
-                projectcss.all,
-                projectcss.a,
-                projectcss.__wab_text,
+                "all",
+                "a",
+                "a__fpbcK",
+                "__wab_text",
                 sty.learnMoreLink
               )}
               href={
@@ -590,7 +573,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             </PlasmicLink__>
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox___6XpMr, {
+            className={classNames("all", sty.freeBox___6XpMr, {
               [sty.freeBoxrepoState_existingLoader___6XpMrBuuMb]: hasVariant(
                 $state,
                 "repoState",
@@ -599,7 +582,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__mwi6W, {
+              className={classNames("all", sty.freeBox__mwi6W, {
                 [sty.freeBoxconnection_connected__mwi6WX7Cr]: hasVariant(
                   $state,
                   "connection",
@@ -623,7 +606,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(projectcss.all, sty.freeBox__cVqn, {
+                className={classNames("all", sty.freeBox__cVqn, {
                   [sty.freeBoxconnection_error__cVqnkj8F1]: hasVariant(
                     $state,
                     "connection",
@@ -637,7 +620,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       ? WarningTriangleSvgIcon
                       : IconIcon
                   }
-                  className={classNames(projectcss.all, sty.svg__ab0X, {
+                  className={classNames("all", sty.svg__ab0X, {
                     [sty.svgconnection_connected__ab0XX7Cr]: hasVariant(
                       $state,
                       "connection",
@@ -656,9 +639,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   data-plasmic-name={"repoName"}
                   data-plasmic-override={overrides.repoName}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.a,
-                    projectcss.__wab_text,
+                    "all",
+                    "a",
+                    "a__fpbcK",
+                    "__wab_text",
                     sty.repoName,
                     {
                       [sty.repoNamecollapse]: hasVariant(
@@ -712,14 +696,14 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   })}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__mbTsu)}
+                      className={classNames("all", sty.svg__mbTsu)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <ArrowRightSvgIcon
-                      className={classNames(projectcss.all, sty.svg__pxPO)}
+                      className={classNames("all", sty.svg__pxPO)}
                       role={"img"}
                     />
                   }
@@ -750,13 +734,13 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   )}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__bhlx2)}
+                      className={classNames("all", sty.svg__bhlx2)}
                       role={"img"}
                     />
                   }
                   startIcon={
                     <CloseIcon
-                      className={classNames(projectcss.all, sty.svg__abY3)}
+                      className={classNames("all", sty.svg__abY3)}
                       role={"img"}
                     />
                   }
@@ -801,14 +785,14 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   )}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__jy95V)}
+                      className={classNames("all", sty.svg__jy95V)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <OpenIcon
-                      className={classNames(projectcss.all, sty.svg___7VlNz)}
+                      className={classNames("all", sty.svg___7VlNz)}
                       role={"img"}
                     />
                   }
@@ -816,8 +800,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 >
                   <div
                     className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
+                      "all",
+                      "__wab_text",
                       sty.text___3T8E1,
                       {
                         [sty.textconnection_error___3T8E1Kj8F1]: hasVariant(
@@ -849,7 +833,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 : false
             ) ? (
               <div
-                className={classNames(projectcss.all, sty.freeBox__cDl4U, {
+                className={classNames("all", sty.freeBox__cDl4U, {
                   [sty.freeBoxconnection_connected__cDl4UX7Cr]: hasVariant(
                     $state,
                     "connection",
@@ -871,7 +855,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     : true
                 ) ? (
                   <div
-                    className={classNames(projectcss.all, sty.freeBox__vcnnM, {
+                    className={classNames("all", sty.freeBox__vcnnM, {
                       [sty.freeBoxcollapseOptions__vcnnMvyO8S]: hasVariant(
                         $state,
                         "collapseOptions",
@@ -886,8 +870,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   >
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__qOcy,
                         {
                           [sty.textrepoState_existingLoader__qOcyBuuMb]:
@@ -903,36 +887,26 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         : true
                     ) ? (
                       <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox___5W1XO,
-                          {
-                            [sty.freeBoxrepoState_existingLoader___5W1XOBuuMb]:
-                              hasVariant($state, "repoState", "existingLoader"),
-                            [sty.freeBoxrepoState_newRepo_connection_connected___5W1XOimcQtX7Cr]:
-                              hasVariant($state, "repoState", "newRepo") &&
-                              hasVariant($state, "connection", "connected"),
-                          }
-                        )}
+                        className={classNames("all", sty.freeBox___5W1XO, {
+                          [sty.freeBoxrepoState_existingLoader___5W1XOBuuMb]:
+                            hasVariant($state, "repoState", "existingLoader"),
+                          [sty.freeBoxrepoState_newRepo_connection_connected___5W1XOimcQtX7Cr]:
+                            hasVariant($state, "repoState", "newRepo") &&
+                            hasVariant($state, "connection", "connected"),
+                        })}
                       >
                         <Button
                           data-plasmic-name={"showOptionsButton"}
                           data-plasmic-override={overrides.showOptionsButton}
                           endIcon={
                             <ChevronDownSvgIcon
-                              className={classNames(
-                                projectcss.all,
-                                sty.svg___9W1Yg
-                              )}
+                              className={classNames("all", sty.svg___9W1Yg)}
                               role={"img"}
                             />
                           }
                           startIcon={
                             <ArrowRightSvgIcon
-                              className={classNames(
-                                projectcss.all,
-                                sty.svg__ptDuP
-                              )}
+                              className={classNames("all", sty.svg__ptDuP)}
                               role={"img"}
                             />
                           }
@@ -940,8 +914,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         >
                           <div
                             className={classNames(
-                              projectcss.all,
-                              projectcss.__wab_text,
+                              "all",
+                              "__wab_text",
                               sty.text__zdFC,
                               {
                                 [sty.textcollapseOptions__zdFCvyO8S]:
@@ -1000,7 +974,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   </div>
                 ) : null}
                 <div
-                  className={classNames(projectcss.all, sty.freeBox___3TC, {
+                  className={classNames("all", sty.freeBox___3TC, {
                     [sty.freeBoxrepoState_existingLoader___3TCBuuMb]:
                       hasVariant($state, "repoState", "existingLoader"),
                     [sty.freeBoxrepoState_existingLoader_connection_connected___3TCBuuMbX7Cr]:
@@ -1012,7 +986,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     hasVariant($state, "repoState", "newRepo") ? false : true
                   ) ? (
                     <div
-                      className={classNames(projectcss.all, sty.freeBox__pY6F, {
+                      className={classNames("all", sty.freeBox__pY6F, {
                         [sty.freeBoxconnection_connected__pY6FX7Cr]: hasVariant(
                           $state,
                           "connection",
@@ -1032,8 +1006,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     >
                       <div
                         className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
+                          "all",
+                          "__wab_text",
                           sty.text__vbjsr,
                           {
                             [sty.textrepoState_existingLoader_connection_connected__vbjsrBuuMbX7Cr]:
@@ -1050,10 +1024,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         className={classNames("__wab_instance", sty.pushAs)}
                         icon={
                           <PlusSvgIcon
-                            className={classNames(
-                              projectcss.all,
-                              sty.svg__gJa2F
-                            )}
+                            className={classNames("all", sty.svg__gJa2F)}
                             role={"img"}
                           />
                         }
@@ -1089,53 +1060,48 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       : true
                   ) ? (
                     <div
-                      className={classNames(
-                        projectcss.all,
-                        sty.freeBox__nrItu,
-                        {
-                          [sty.freeBoxcollapseOptions__nrItuvyO8S]: hasVariant(
-                            $state,
-                            "collapseOptions",
-                            "collapseOptions"
-                          ),
-                          [sty.freeBoxconnection_connected__nrItuX7Cr]:
-                            hasVariant($state, "connection", "connected"),
-                          [sty.freeBoxrepoState_existingLoader__nrItuBuuMb]:
-                            hasVariant($state, "repoState", "existingLoader"),
-                          [sty.freeBoxrepoState_existingLoader_connection_connected__nrItuBuuMbX7Cr]:
-                            hasVariant($state, "connection", "connected") &&
-                            hasVariant($state, "repoState", "existingLoader"),
-                          [sty.freeBoxrepoState_newRepo__nrItuImcQt]:
-                            hasVariant($state, "repoState", "newRepo"),
-                        }
-                      )}
+                      className={classNames("all", sty.freeBox__nrItu, {
+                        [sty.freeBoxcollapseOptions__nrItuvyO8S]: hasVariant(
+                          $state,
+                          "collapseOptions",
+                          "collapseOptions"
+                        ),
+                        [sty.freeBoxconnection_connected__nrItuX7Cr]:
+                          hasVariant($state, "connection", "connected"),
+                        [sty.freeBoxrepoState_existingLoader__nrItuBuuMb]:
+                          hasVariant($state, "repoState", "existingLoader"),
+                        [sty.freeBoxrepoState_existingLoader_connection_connected__nrItuBuuMbX7Cr]:
+                          hasVariant($state, "connection", "connected") &&
+                          hasVariant($state, "repoState", "existingLoader"),
+                        [sty.freeBoxrepoState_newRepo__nrItuImcQt]: hasVariant(
+                          $state,
+                          "repoState",
+                          "newRepo"
+                        ),
+                      })}
                     >
                       <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__vUo8Z,
-                          {
-                            [sty.freeBoxconnection_connected__vUo8ZX7Cr]:
-                              hasVariant($state, "connection", "connected"),
-                            [sty.freeBoxconnection_connected_collapseOptions__vUo8ZX7CrVyO8S]:
-                              hasVariant($state, "connection", "connected") &&
-                              hasVariant(
-                                $state,
-                                "collapseOptions",
-                                "collapseOptions"
-                              ),
-                            [sty.freeBoxrepoState_newRepo__vUo8ZimcQt]:
-                              hasVariant($state, "repoState", "newRepo"),
-                            [sty.freeBoxrepoState_newRepo_connection_connected__vUo8ZimcQtX7Cr]:
-                              hasVariant($state, "connection", "connected") &&
-                              hasVariant($state, "repoState", "newRepo"),
-                          }
-                        )}
+                        className={classNames("all", sty.freeBox__vUo8Z, {
+                          [sty.freeBoxconnection_connected__vUo8ZX7Cr]:
+                            hasVariant($state, "connection", "connected"),
+                          [sty.freeBoxconnection_connected_collapseOptions__vUo8ZX7CrVyO8S]:
+                            hasVariant($state, "connection", "connected") &&
+                            hasVariant(
+                              $state,
+                              "collapseOptions",
+                              "collapseOptions"
+                            ),
+                          [sty.freeBoxrepoState_newRepo__vUo8ZimcQt]:
+                            hasVariant($state, "repoState", "newRepo"),
+                          [sty.freeBoxrepoState_newRepo_connection_connected__vUo8ZimcQtX7Cr]:
+                            hasVariant($state, "connection", "connected") &&
+                            hasVariant($state, "repoState", "newRepo"),
+                        })}
                       >
                         <div
                           className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
+                            "all",
+                            "__wab_text",
                             sty.text__zUeWf
                           )}
                         >
@@ -1145,8 +1111,9 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           data-plasmic-name={"title"}
                           data-plasmic-override={overrides.title}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.input,
+                            "all",
+                            "input",
+                            "input__fpbcK",
                             sty.title,
                             {
                               [sty.titleconnection_connected]: hasVariant(
@@ -1165,16 +1132,11 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           value={""}
                         />
                       </div>
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          sty.freeBox__futMf
-                        )}
-                      >
+                      <div className={classNames("all", sty.freeBox__futMf)}>
                         <div
                           className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
+                            "all",
+                            "__wab_text",
                             sty.text__ug7Xy
                           )}
                         >
@@ -1184,8 +1146,9 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           data-plasmic-name={"description"}
                           data-plasmic-override={overrides.description}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.textarea,
+                            "all",
+                            "textarea",
+                            "textarea__fpbcK",
                             sty.description
                           )}
                           placeholder={"Description (optional)"}
@@ -1206,7 +1169,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
       ) : null}
       {(hasVariant($state, "view", "status") ? true : false) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__s2NHx, {
+          className={classNames("all", sty.freeBox__s2NHx, {
             [sty.freeBoxview_status__s2NHxWsXz9]: hasVariant(
               $state,
               "view",
@@ -1223,7 +1186,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           <ul
             data-plasmic-name={"steps"}
             data-plasmic-override={overrides.steps}
-            className={classNames(projectcss.all, projectcss.ul, sty.steps, {
+            className={classNames("all", "ul", "ul__fpbcK", sty.steps, {
               [sty.stepsview_status]: hasVariant($state, "view", "status"),
             })}
           >
@@ -1280,13 +1243,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             <GitJobStep
               className={classNames("__wab_instance", sty.gitJobStep__vWw1D)}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__aqa8U
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__aqa8U)}>
                 {"Commit changes"}
               </div>
             </GitJobStep>
@@ -1319,8 +1276,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           data-plasmic-name={"githubPagesDelayNotice"}
           data-plasmic-override={overrides.githubPagesDelayNotice}
           className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
+            "all",
+            "__wab_text",
             sty.githubPagesDelayNotice,
             {
               [sty.githubPagesDelayNoticeview_status]: hasVariant(

@@ -9,13 +9,15 @@
   width: 100%;
   min-width: 0;
 }
-.root:hover {
+.root:hover:hover {
   display: flex;
   flex-direction: column;
+  column-gap: 0px;
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   display: flex;
   flex-direction: column;
+  column-gap: 0px;
   outline: none;
 }
 .menuIndicator:global(.__wab_instance) {

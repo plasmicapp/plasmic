@@ -21,8 +21,10 @@
   white-space: pre;
 }
 .slotTargetChildren > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_expr_html_text),
 .slotTargetChildren > :global(.__wab_slot-string-wrapper),
 .slotTargetChildren > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_expr_html_text),
 .slotTargetChildren
   > :global(.__wab_slot)
   > :global(.__wab_slot-string-wrapper),
@@ -33,12 +35,21 @@
 .slotTargetChildren
   > :global(.__wab_slot)
   > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
   > :global(.__wab_slot-string-wrapper),
 .slotTargetChildren
   > :global(.__wab_slot)
   > :global(.__wab_slot)
   > :global(.__wab_slot)
   > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
 .slotTargetChildren
   > :global(.__wab_slot)
   > :global(.__wab_slot)

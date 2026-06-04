@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicPublishWizard.module.css"; // plasmic-import: JhFt3V1Imn/css
 
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
@@ -100,15 +100,15 @@ function PlasmicPublishWizard__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__nOs1D)}>
+      <div className={classNames("all", sty.freeBox__nOs1D)}>
         <PlasmicImg__
           data-plasmic-name={"img"}
           data-plasmic-override={overrides.img}
@@ -129,25 +129,13 @@ function PlasmicPublishWizard__RenderFunc(props: {
           }}
         />
 
-        <div className={classNames(projectcss.all, sty.freeBox__ybcji)}>
-          <div className={classNames(projectcss.all, sty.freeBox__q75N)}>
-            <div className={classNames(projectcss.all, sty.freeBox__nblJd)}>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__qzEe
-                )}
-              >
+        <div className={classNames("all", sty.freeBox__ybcji)}>
+          <div className={classNames("all", sty.freeBox__q75N)}>
+            <div className={classNames("all", sty.freeBox__nblJd)}>
+              <div className={classNames("all", "__wab_text", sty.text__qzEe)}>
                 {"Welcome to your new project!"}
               </div>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__xWr3
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__xWr3)}>
                 {"Publish to a GitHub repo and JAMstack website."}
               </div>
             </div>
@@ -156,7 +144,7 @@ function PlasmicPublishWizard__RenderFunc(props: {
               data-plasmic-override={overrides.closeButton}
               children2={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__rgZf)}
+                  className={classNames("all", sty.svg__rgZf)}
                   role={"img"}
                 />
               }
@@ -164,38 +152,32 @@ function PlasmicPublishWizard__RenderFunc(props: {
               size={"small"}
             >
               <CloseSvgIcon
-                className={classNames(projectcss.all, sty.svg__ldxfz)}
+                className={classNames("all", sty.svg__ldxfz)}
                 role={"img"}
               />
             </IconButton>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox___7H4GJ)}>
+          <div className={classNames("all", sty.freeBox___7H4GJ)}>
             <Button
               data-plasmic-name={"laterButton"}
               data-plasmic-override={overrides.laterButton}
               className={classNames("__wab_instance", sty.laterButton)}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__lexrD)}
+                  className={classNames("all", sty.svg__lexrD)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__wi8N)}
+                  className={classNames("all", sty.svg__wi8N)}
                   role={"img"}
                 />
               }
               type={["clear"]}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___0QRy
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text___0QRy)}>
                 {"Do this later"}
               </div>
             </Button>
@@ -205,14 +187,14 @@ function PlasmicPublishWizard__RenderFunc(props: {
               className={classNames("__wab_instance", sty.connectButton)}
               endIcon={
                 <OpenIcon
-                  className={classNames(projectcss.all, sty.svg__dqvOq)}
+                  className={classNames("all", sty.svg__dqvOq)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__sijl)}
+                  className={classNames("all", sty.svg__sijl)}
                   role={"img"}
                 />
               }

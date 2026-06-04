@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,28 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import "./plasmic_plasmic_kit_pricing.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicPriceTierChip.module.css"; // plasmic-import: UwHbCO-1rFrq/css
 
 createPlasmicElementProxy;
@@ -89,7 +85,16 @@ function PlasmicPriceTierChip__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -100,60 +105,50 @@ function PlasmicPriceTierChip__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "current",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.current,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.current,
       },
       {
         path: "simplified",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.simplified,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.simplified,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_ehckhYnyDHgCBbV47m9bkf",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [projectcss.global_environment_website]: hasVariant(
-            globalVariants,
-            "environment",
-            "website"
-          ),
           [sty.rootcurrent]: hasVariant($state, "current", "current"),
           [sty.rootsimplified]: hasVariant($state, "simplified", "simplified"),
         }
@@ -162,23 +157,16 @@ function PlasmicPriceTierChip__RenderFunc(props: {
       <h5
         data-plasmic-name={"h5"}
         data-plasmic-override={overrides.h5}
-        className={classNames(projectcss.all, projectcss.h5, sty.h5, {
+        className={classNames("all", "h5", "h5__ehckh", sty.h5, {
           [sty.h5simplified]: hasVariant($state, "simplified", "simplified"),
         })}
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___4TEmb
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text___4TEmb)}>
               {"Free"}
             </div>
           ),
-
           value: args.tier,
           className: classNames(sty.slotTargetTier, {
             [sty.slotTargetTiercurrent]: hasVariant(
@@ -193,7 +181,7 @@ function PlasmicPriceTierChip__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
+          className={classNames("all", sty.freeBox, {
             [sty.freeBoxsimplified]: hasVariant(
               $state,
               "simplified",
@@ -221,19 +209,16 @@ function PlasmicPriceTierChip__RenderFunc(props: {
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text,
-                { [sty.textcurrent]: hasVariant($state, "current", "current") }
-              )}
+              className={classNames("all", "__wab_text", sty.text, {
+                [sty.textcurrent]: hasVariant($state, "current", "current"),
+              })}
             >
               {"Current plan"}
             </div>
           ) : null}
         </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -258,23 +243,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTierChip__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicPriceTierChip__VariantsArgs;
     args?: PlasmicPriceTierChip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPriceTierChip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPriceTierChip__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicPriceTierChip__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicPriceTierChip__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

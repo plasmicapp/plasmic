@@ -18,12 +18,10 @@ import {
   MultiChoiceArg,
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -36,15 +34,12 @@ import EditableResourceName from "../../components/EditableResourceName"; // pla
 import PanelDivider from "../../components/PanelDivider"; // plasmic-import: 0NaTcyuAGK2dN/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicCmsListItem.module.css"; // plasmic-import: DEllwXrn27Q/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -130,27 +125,34 @@ function PlasmicCmsListItem__RenderFunc(props: {
         path: "explorations",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.explorations,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.explorations,
       },
       {
         path: "showWorkspace",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showWorkspace,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showWorkspace,
       },
       {
         path: "isFirstItem",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirstItem,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isFirstItem,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -171,48 +173,24 @@ function PlasmicCmsListItem__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={PlasmicLink__}
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.a,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "a",
+        "a__ooL7E",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.root___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.root___focusVisible]: triggers.focusVisible_root,
           [sty.rootexplorations_idOnHover]: hasVariant(
@@ -243,7 +221,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
-        className={classNames(projectcss.all, sty.left, {
+        className={classNames("all", sty.left, {
           [sty.left___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.left___focusVisible]: triggers.focusVisible_root,
           [sty.leftexplorations_idOnHover]: hasVariant(
@@ -259,7 +237,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__tl6E4, {
+          className={classNames("all", sty.freeBox__tl6E4, {
             [sty.freeBoxshowWorkspace__tl6E4NHlC]: hasVariant(
               $state,
               "showWorkspace",
@@ -283,7 +261,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
           />
 
           <div
-            className={classNames(projectcss.all, sty.freeBox__l7Uld, {
+            className={classNames("all", sty.freeBox__l7Uld, {
               [sty.freeBoxshowWorkspace__l7UldNHlC]: hasVariant(
                 $state,
                 "showWorkspace",
@@ -353,13 +331,13 @@ function PlasmicCmsListItem__RenderFunc(props: {
                 })}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__oN43J)}
+                    className={classNames("all", sty.svg__oN43J)}
                     role={"img"}
                   />
                 }
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__qLwj0)}
+                    className={classNames("all", sty.svg__qLwj0)}
                     role={"img"}
                   />
                 }
@@ -372,11 +350,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
                 <div
                   data-plasmic-name={"text"}
                   data-plasmic-override={overrides.text}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text
-                  )}
+                  className={classNames("all", "__wab_text", sty.text)}
                 >
                   {"PlasmicKit"}
                 </div>
@@ -411,7 +385,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
-        className={classNames(projectcss.all, sty.right)}
+        className={classNames("all", sty.right)}
       >
         <MenuButton
           data-plasmic-name={"menuButton"}
@@ -435,15 +409,11 @@ function PlasmicCmsListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"updatedJustNow"}
         data-plasmic-override={overrides.updatedJustNow}
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.updatedJustNow
-        )}
+        className={classNames("all", "__wab_text", sty.updatedJustNow)}
       >
         {"updated just now"}
       </div>
-    </Stack__>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 
@@ -504,7 +474,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCmsListItem__VariantsArgs;
     args?: PlasmicCmsListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsListItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCmsListItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

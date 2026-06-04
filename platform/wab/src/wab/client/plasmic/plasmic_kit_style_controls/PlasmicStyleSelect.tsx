@@ -36,7 +36,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleSelect.module.css"; // plasmic-import: E0bKgamUEin/css
 
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
@@ -196,6 +196,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -214,10 +215,10 @@ function PlasmicStyleSelect__RenderFunc(props: {
         data-plasmic-root={true}
         data-plasmic-for-node={forNode}
         className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
+          "all",
+          "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+          "plasmic_default_styles",
+          "plasmic_mixins",
           styleTokensClassNames,
           sty.root,
           {
@@ -238,35 +239,29 @@ function PlasmicStyleSelect__RenderFunc(props: {
         <button
           data-plasmic-name={"trigger"}
           data-plasmic-override={overrides.trigger}
-          className={classNames(
-            projectcss.all,
-            projectcss.button,
-            projectcss.button__gYEVv,
-            sty.trigger,
-            {
-              [sty.triggerisDisabled]: hasVariant(
-                $state,
-                "isDisabled",
-                "isDisabled"
-              ),
-              [sty.triggerisOpen]: hasVariant($state, "isOpen", "isOpen"),
-              [sty.triggershowPlaceholder]: hasVariant(
-                $state,
-                "showPlaceholder",
-                "showPlaceholder"
-              ),
-              [sty.triggervalueSetState_isInherited]: hasVariant(
-                $state,
-                "valueSetState",
-                "isInherited"
-              ),
-              [sty.triggervalueSetState_isSet]: hasVariant(
-                $state,
-                "valueSetState",
-                "isSet"
-              ),
-            }
-          )}
+          className={classNames("all", "button", "button__gYEVv", sty.trigger, {
+            [sty.triggerisDisabled]: hasVariant(
+              $state,
+              "isDisabled",
+              "isDisabled"
+            ),
+            [sty.triggerisOpen]: hasVariant($state, "isOpen", "isOpen"),
+            [sty.triggershowPlaceholder]: hasVariant(
+              $state,
+              "showPlaceholder",
+              "showPlaceholder"
+            ),
+            [sty.triggervalueSetState_isInherited]: hasVariant(
+              $state,
+              "valueSetState",
+              "isInherited"
+            ),
+            [sty.triggervalueSetState_isSet]: hasVariant(
+              $state,
+              "valueSetState",
+              "isSet"
+            ),
+          })}
           ref={(ref) => {
             $refs["trigger"] = ref;
           }}
@@ -274,7 +269,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
           <div
             data-plasmic-name={"contentContainer"}
             data-plasmic-override={overrides.contentContainer}
-            className={classNames(projectcss.all, sty.contentContainer, {
+            className={classNames("all", sty.contentContainer, {
               [sty.contentContainerisOpen]: hasVariant(
                 $state,
                 "isOpen",
@@ -365,7 +360,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
                 ? TriangleTopIcon
                 : TriangleBottomIcon
             }
-            className={classNames(projectcss.all, sty.dropdownIcon, {
+            className={classNames("all", sty.dropdownIcon, {
               [sty.dropdownIconisOpen]: hasVariant($state, "isOpen", "isOpen"),
               [sty.dropdownIconshowPlaceholder]: hasVariant(
                 $state,
@@ -393,7 +388,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
             <div
               data-plasmic-name={"optionsContainer"}
               data-plasmic-override={overrides.optionsContainer}
-              className={classNames(projectcss.all, sty.optionsContainer, {
+              className={classNames("all", sty.optionsContainer, {
                 [sty.optionsContainerisOpen]: hasVariant(
                   $state,
                   "isOpen",

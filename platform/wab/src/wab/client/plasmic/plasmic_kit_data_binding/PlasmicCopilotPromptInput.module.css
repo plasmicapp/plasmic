@@ -11,7 +11,7 @@
   min-width: 0;
   border-radius: 4px;
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   outline: none;
 }
 .freeBox__oqfh7 {

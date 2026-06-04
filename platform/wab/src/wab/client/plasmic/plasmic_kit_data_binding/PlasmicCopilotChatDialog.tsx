@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotChatDialog.module.css"; // plasmic-import: zXJ41ZVTz7ne/css
 
 import CloseIcon from "./icons/PlasmicIcon__Close"; // plasmic-import: q7EuAkDIhNK0/icon
@@ -102,11 +102,11 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
         <div
           data-plasmic-name={"chatContent"}
           data-plasmic-override={overrides.chatContent}
-          className={classNames(projectcss.all, sty.chatContent)}
+          className={classNames("all", sty.chatContent)}
         />
       }
       footer={
-        <div className={classNames(projectcss.all, sty.freeBox__knEax)}>
+        <div className={classNames("all", sty.freeBox__knEax)}>
           <CopilotPromptInput
             data-plasmic-name={"copilotPromptInput"}
             data-plasmic-override={overrides.copilotPromptInput}
@@ -117,15 +117,15 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
         </div>
       }
       heading={
-        <div className={classNames(projectcss.all, sty.freeBox__oh2N9)}>
+        <div className={classNames("all", sty.freeBox__oh2N9)}>
           <h3
             data-plasmic-name={"h3"}
             data-plasmic-override={overrides.h3}
             className={classNames(
-              projectcss.all,
-              projectcss.h3,
-              projectcss.h3__w2GXN,
-              projectcss.__wab_text,
+              "all",
+              "h3",
+              "h3__w2GXN",
+              "__wab_text",
               sty.h3
             )}
           >
@@ -140,7 +140,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
             <CloseIcon
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg)}
+              className={classNames("all", sty.svg)}
               role={"img"}
             />
           </IconButton>

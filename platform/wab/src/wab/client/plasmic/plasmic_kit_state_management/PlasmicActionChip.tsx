@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,29 +14,25 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
-  useCurrentUser,
+  StrictProps,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicActionChip.module.css"; // plasmic-import: _uEitkIFZr/css
 
-import BoltsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoltSvg"; // plasmic-import: IRA31HnIa/icon
+import BoltSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoltSvg"; // plasmic-import: IRA31HnIa/icon
 
 createPlasmicElementProxy;
 
@@ -45,9 +41,7 @@ export type PlasmicActionChip__VariantsArgs = {};
 type VariantPropType = keyof PlasmicActionChip__VariantsArgs;
 export const PlasmicActionChip__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicActionChip__ArgsType = {
-  actionName?: React.ReactNode;
-};
+export type PlasmicActionChip__ArgsType = { actionName?: React.ReactNode };
 type ArgPropType = keyof PlasmicActionChip__ArgsType;
 export const PlasmicActionChip__ArgProps = new Array<ArgPropType>("actionName");
 
@@ -73,7 +67,16 @@ function PlasmicActionChip__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -84,12 +87,12 @@ function PlasmicActionChip__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
     hover_root: isRootHover,
   };
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -98,52 +101,41 @@ function PlasmicActionChip__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__zcpRw)}
-      >
-        <div className={classNames(projectcss.all, sty.freeBox__fJmat)}>
-          <div className={classNames(projectcss.all, sty.freeBox___4W5Bn)}>
+      <div className={classNames("all", sty.freeBox__zcpRw)}>
+        <div className={classNames("all", sty.freeBox__fJmat)}>
+          <div className={classNames("all", sty.freeBox___4W5Bn)}>
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text
-              )}
+              className={classNames("all", "__wab_text", sty.text)}
             >
               {"-"}
             </div>
           </div>
-          <BoltsvgIcon
+          <BoltSvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
           />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__lWbe1)}>
+        <div className={classNames("all", sty.freeBox__lWbe1)}>
           {renderPlasmicSlot({
             defaultContents: "Action Name",
             value: args.actionName,
           })}
         </div>
-      </Stack__>
-      <div className={classNames(projectcss.all, sty.freeBox__yakOm)}>
+      </div>
+      <div className={classNames("all", sty.freeBox__yakOm)}>
         <MenuButton
           data-plasmic-name={"menuButton"}
           data-plasmic-override={overrides.menuButton}
@@ -175,23 +167,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicActionChip__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicActionChip__VariantsArgs;
     args?: PlasmicActionChip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicActionChip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicActionChip__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicActionChip__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicActionChip__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

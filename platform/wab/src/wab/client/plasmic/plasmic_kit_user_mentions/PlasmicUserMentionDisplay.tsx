@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,20 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../user_mentions/plasmic.module.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
+import "../user_mentions/plasmic.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
 import sty from "./PlasmicUserMentionDisplay.module.css"; // plasmic-import: HSPuw3LccxMD/css
 
 createPlasmicElementProxy;
@@ -85,6 +85,8 @@ function PlasmicUserMentionDisplay__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <span
       data-plasmic-name={"root"}
@@ -92,30 +94,22 @@ function PlasmicUserMentionDisplay__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.span,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "span",
+        "span__kTSMr",
+        "root_reset_kTSMroKPFv65RRTb44SCtk",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       {renderPlasmicSlot({
         defaultContents: (
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__gSlk
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__gSlk)}>
             {"User name"}
           </div>
         ),
-
         value: args.children,
         className: classNames(sty.slotTargetChildren),
       })}
@@ -138,14 +132,14 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUserMentionDisplay__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicUserMentionDisplay__VariantsArgs;
     args?: PlasmicUserMentionDisplay__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicUserMentionDisplay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicUserMentionDisplay__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicUserMentionDisplay__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

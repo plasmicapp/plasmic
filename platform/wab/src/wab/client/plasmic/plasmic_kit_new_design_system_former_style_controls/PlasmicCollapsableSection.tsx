@@ -34,7 +34,7 @@ import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleToken
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicCollapsableSection.module.css"; // plasmic-import: OW_7AtJANr/css
 
 createPlasmicElementProxy;
@@ -110,6 +110,7 @@ function PlasmicCollapsableSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -127,10 +128,10 @@ function PlasmicCollapsableSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -196,7 +197,7 @@ function PlasmicCollapsableSection__RenderFunc(props: {
       <div
         data-plasmic-name={"contentContainer"}
         data-plasmic-override={overrides.contentContainer}
-        className={classNames(projectcss.all, sty.contentContainer, {
+        className={classNames("all", sty.contentContainer, {
           [sty.contentContainerisExpanded]: hasVariant(
             $state,
             "isExpanded",
@@ -206,13 +207,7 @@ function PlasmicCollapsableSection__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___2OyO6
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text___2OyO6)}>
               {"Section content here and there and everywhere!!  Yup okay!"}
             </div>
           ),

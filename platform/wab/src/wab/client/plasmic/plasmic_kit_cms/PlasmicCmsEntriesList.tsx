@@ -33,7 +33,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsEntriesList.module.css"; // plasmic-import: k2vc2stl18/css
 
 import SortSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SortSvg"; // plasmic-import: tzSml-ZqphbQ/icon
@@ -113,15 +113,17 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
         path: "isEmpty",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEmpty,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isEmpty,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -134,17 +136,17 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisEmpty]: hasVariant($state, "isEmpty", "isEmpty") }
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox___7Bhda, {
+        className={classNames("all", sty.freeBox___7Bhda, {
           [sty.freeBoxisEmpty___7BhdaGHc56]: hasVariant(
             $state,
             "isEmpty",
@@ -152,7 +154,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
           ),
         })}
       >
-        <div className={classNames(projectcss.all, sty.freeBox___0Ic4Y)}>
+        <div className={classNames("all", sty.freeBox___0Ic4Y)}>
           {renderPlasmicSlot({
             defaultContents: "FAQs",
             value: args.modelName,
@@ -168,7 +170,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
           withBackgroundHover={true}
         />
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__hQjfP)}>
+      <div className={classNames("all", sty.freeBox__hQjfP)}>
         <Searchbox
           data-plasmic-name={"searchInput"}
           data-plasmic-override={overrides.searchInput}
@@ -187,14 +189,14 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
           <SortSvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
           />
         </IconButton>
       </div>
       {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__zdChF, {
+          className={classNames("all", sty.freeBox__zdChF, {
             [sty.freeBoxisEmpty__zdChFgHc56]: hasVariant(
               $state,
               "isEmpty",
@@ -227,7 +229,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
       <div
         data-plasmic-name={"text"}
         data-plasmic-override={overrides.text}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.text, {
+        className={classNames("all", "__wab_text", sty.text, {
           [sty.textisEmpty]: hasVariant($state, "isEmpty", "isEmpty"),
         })}
       >

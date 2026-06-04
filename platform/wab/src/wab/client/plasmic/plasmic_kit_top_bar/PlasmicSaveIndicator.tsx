@@ -14,22 +14,22 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicSaveIndicator.module.css"; // plasmic-import: HYPZr2nWSgs/css
 
 createPlasmicElementProxy;
@@ -95,17 +95,21 @@ function PlasmicSaveIndicator__RenderFunc(props: {
         path: "saveState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.saveState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.saveState,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -114,13 +118,11 @@ function PlasmicSaveIndicator__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_6CrqkTcB6gSAHoA8c8zpNz",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootsaveState_dirty]: hasVariant($state, "saveState", "dirty"),
@@ -135,7 +137,7 @@ function PlasmicSaveIndicator__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxsaveState_dirty]: hasVariant(
             $state,
             "saveState",
@@ -175,7 +177,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSaveIndicator__VariantsArgs;
     args?: PlasmicSaveIndicator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSaveIndicator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSaveIndicator__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSaveIndicator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

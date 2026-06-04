@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,39 +13,40 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
+import "./plasmic_plasmic_kit_variants_bar.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicVariantRow.module.css"; // plasmic-import: 0Rv3wK0NN-/css
 
 import ComponentBaseIcon from "../plasmic_kit/PlasmicIcon__ComponentBase"; // plasmic-import: FMSGLwXiQt0qP/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicVariantRow__VariantMembers = {
   isBase: "isBase";
   isRecording: "isRecording";
   highlight: "highlight";
 };
-
 export type PlasmicVariantRow__VariantsArgs = {
   isBase?: SingleBooleanChoiceArg<"isBase">;
   isRecording?: SingleBooleanChoiceArg<"isRecording">;
   highlight?: SingleBooleanChoiceArg<"highlight">;
 };
-
 type VariantPropType = keyof PlasmicVariantRow__VariantsArgs;
 export const PlasmicVariantRow__VariantProps = new Array<VariantPropType>(
   "isBase",
@@ -53,16 +54,13 @@ export const PlasmicVariantRow__VariantProps = new Array<VariantPropType>(
   "highlight"
 );
 
-export type PlasmicVariantRow__ArgsType = {
-  children?: React.ReactNode;
-};
-
+export type PlasmicVariantRow__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicVariantRow__ArgsType;
 export const PlasmicVariantRow__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicVariantRow__OverridesType = {
-  root?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultVariantRowProps {
@@ -73,13 +71,7 @@ export interface DefaultVariantRowProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicVariantRow__RenderFunc(props: {
   variants: PlasmicVariantRow__VariantsArgs;
@@ -89,13 +81,13 @@ function PlasmicVariantRow__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -105,38 +97,44 @@ function PlasmicVariantRow__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isBase",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isBase,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isBase,
       },
-
       {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
-
       {
         path: "highlight",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.highlight,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.highlight,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -145,13 +143,11 @@ function PlasmicVariantRow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_kdj5vahTyUKxznuR6rrtt6",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothighlight]: hasVariant($state, "highlight", "highlight"),
@@ -174,13 +170,13 @@ function PlasmicVariantRow__RenderFunc(props: {
         <ComponentBaseIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg, {
+          className={classNames("all", sty.svg, {
             [sty.svgisBase]: hasVariant($state, "isBase", "isBase"),
           })}
           role={"img"}
         />
       ) : null}
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "Enter some text",
         value: args.children,
         className: classNames(sty.slotTargetChildren, {
@@ -217,25 +213,26 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantRow__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicVariantRow__VariantsArgs;
-  args?: PlasmicVariantRow__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicVariantRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicVariantRow__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicVariantRow__VariantsArgs;
+    args?: PlasmicVariantRow__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantRow__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantRow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -246,7 +243,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantRow__ArgProps,
           internalVariantPropNames: PlasmicVariantRow__VariantProps,
         }),

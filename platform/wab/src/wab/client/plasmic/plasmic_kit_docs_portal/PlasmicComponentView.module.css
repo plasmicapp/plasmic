@@ -129,22 +129,18 @@
   flex-wrap: nowrap;
   min-width: 0;
   display: none;
+  --plsmc-rc-col-gap: 0px;
   padding: 8px;
 }
 .columns > :nth-child(2n + 1) {
-  width: calc((100% - 2 * 0px) * 6 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 6 / 12);
 }
 .columns > :nth-child(2n + 2) {
-  width: calc((100% - 2 * 0px) * 6 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 6 / 12);
 }
 .columnscomponentType_code {
   display: none;
-}
-.columnscomponentType_code > :nth-child(2n + 1) {
-  width: calc((100% - 2 * 0px) * 6 / 12);
-}
-.columnscomponentType_code > :nth-child(2n + 2) {
-  width: calc((100% - 2 * 0px) * 6 / 12);
+  --plsmc-rc-col-gap: 0px;
 }
 .column__isLor {
   position: relative;
@@ -177,27 +173,13 @@
   display: flex;
 }
 .examples {
-  flex-direction: column;
   display: flex;
   position: relative;
-  margin-bottom: 24px;
-}
-.examples > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
-  margin-top: calc(0px - 16px);
-  height: calc(100% + 16px);
-}
-.examples > :global(.__wab_flex-container) > *,
-.examples > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.examples > :global(.__wab_flex-container) > picture > img,
-.examples
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 16px;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+  row-gap: 16px;
 }
 .examplescomponentType_code {
   display: none;
@@ -241,19 +223,15 @@
 }
 .docsPropsTableRow___7OuBz:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .docsPropsTableRow___4Gv5U:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .docsPropsTableRow__kgZjM:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .docsPropsTableRow__drijt:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .text__w9A9 {
   position: relative;
@@ -261,7 +239,6 @@
   line-height: 1.2;
   font-size: 18px;
   margin-bottom: 16px;
-  display: block;
 }
 .textcomponentType_code__w9A9LzWtc {
   display: none;
@@ -272,7 +249,6 @@
 .customProps:global(.__wab_instance) {
   position: relative;
   margin-bottom: 24px;
-  display: flex;
 }
 .customPropscomponentType_code:global(.__wab_instance) {
   display: none;
@@ -288,19 +264,15 @@
 }
 .docsPropsTableRow__g7Gtw:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .docsPropsTableRow__vYLs:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .docsPropsTableRow__sY5Lb:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .docsPropsTableRow__b2Oap:global(.__wab_instance) {
   position: relative;
-  display: flex;
 }
 .freeBox__z6TZh {
   position: relative;

@@ -18,7 +18,7 @@
 .rootisActive {
   background: var(--token-mu3x63xzJRW);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-mu3x63xzJRW);
 }
 .root___focusVisible {

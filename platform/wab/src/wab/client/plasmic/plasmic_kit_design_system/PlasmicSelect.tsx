@@ -38,7 +38,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSelect.module.css"; // plasmic-import: j_4IQyOWK2b/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -227,6 +227,7 @@ function PlasmicSelect__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -253,10 +254,10 @@ function PlasmicSelect__RenderFunc(props: {
         data-plasmic-root={true}
         data-plasmic-for-node={forNode}
         className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
+          "all",
+          "root_reset_tXkSR39sgCDWSitZxC5xFV",
+          "plasmic_default_styles",
+          "plasmic_mixins",
           styleTokensClassNames,
           sty.root,
           {
@@ -288,52 +289,38 @@ function PlasmicSelect__RenderFunc(props: {
         <button
           data-plasmic-name={"trigger"}
           data-plasmic-override={overrides.trigger}
-          className={classNames(
-            projectcss.all,
-            projectcss.button,
-            projectcss.button__tXkSR,
-            sty.trigger,
-            {
-              [sty.trigger___focusVisibleWithin]:
-                triggers.focusVisibleWithin_root,
-              [sty.triggerfont_bold]: hasVariant($state, "font", "bold"),
-              [sty.triggerhasIcon]: hasVariant($state, "hasIcon", "hasIcon"),
-              [sty.triggerhasIcon_isOpen]:
-                hasVariant($state, "isOpen", "isOpen") &&
-                hasVariant($state, "hasIcon", "hasIcon"),
-              [sty.triggerisDisabled]: hasVariant(
-                $state,
-                "isDisabled",
-                "isDisabled"
-              ),
-              [sty.triggerisOpen]: hasVariant($state, "isOpen", "isOpen"),
-              [sty.triggershowPlaceholder]: hasVariant(
-                $state,
-                "showPlaceholder",
-                "showPlaceholder"
-              ),
-              [sty.triggersize_small]: hasVariant($state, "size", "small"),
-              [sty.triggersize_tiny]: hasVariant($state, "size", "tiny"),
-              [sty.triggertextAlign_right]: hasVariant(
-                $state,
-                "textAlign",
-                "right"
-              ),
-              [sty.triggertype_bordered]: hasVariant(
-                $state,
-                "type",
-                "bordered"
-              ),
-              [sty.triggertype_hugging]: hasVariant($state, "type", "hugging"),
-              [sty.triggertype_medium]: hasVariant($state, "type", "medium"),
-              [sty.triggertype_seamless]: hasVariant(
-                $state,
-                "type",
-                "seamless"
-              ),
-              [sty.triggertype_wide]: hasVariant($state, "type", "wide"),
-            }
-          )}
+          className={classNames("all", "button", "button__tXkSR", sty.trigger, {
+            [sty.trigger___focusVisibleWithin]:
+              triggers.focusVisibleWithin_root,
+            [sty.triggerfont_bold]: hasVariant($state, "font", "bold"),
+            [sty.triggerhasIcon]: hasVariant($state, "hasIcon", "hasIcon"),
+            [sty.triggerhasIcon_isOpen]:
+              hasVariant($state, "isOpen", "isOpen") &&
+              hasVariant($state, "hasIcon", "hasIcon"),
+            [sty.triggerisDisabled]: hasVariant(
+              $state,
+              "isDisabled",
+              "isDisabled"
+            ),
+            [sty.triggerisOpen]: hasVariant($state, "isOpen", "isOpen"),
+            [sty.triggershowPlaceholder]: hasVariant(
+              $state,
+              "showPlaceholder",
+              "showPlaceholder"
+            ),
+            [sty.triggersize_small]: hasVariant($state, "size", "small"),
+            [sty.triggersize_tiny]: hasVariant($state, "size", "tiny"),
+            [sty.triggertextAlign_right]: hasVariant(
+              $state,
+              "textAlign",
+              "right"
+            ),
+            [sty.triggertype_bordered]: hasVariant($state, "type", "bordered"),
+            [sty.triggertype_hugging]: hasVariant($state, "type", "hugging"),
+            [sty.triggertype_medium]: hasVariant($state, "type", "medium"),
+            [sty.triggertype_seamless]: hasVariant($state, "type", "seamless"),
+            [sty.triggertype_wide]: hasVariant($state, "type", "wide"),
+          })}
           ref={(ref) => {
             $refs["trigger"] = ref;
           }}
@@ -341,7 +328,7 @@ function PlasmicSelect__RenderFunc(props: {
           <div
             data-plasmic-name={"contentContainer"}
             data-plasmic-override={overrides.contentContainer}
-            className={classNames(projectcss.all, sty.contentContainer, {
+            className={classNames("all", sty.contentContainer, {
               [sty.contentContainerhasIcon]: hasVariant(
                 $state,
                 "hasIcon",
@@ -368,7 +355,7 @@ function PlasmicSelect__RenderFunc(props: {
               ? renderPlasmicSlot({
                   defaultContents: (
                     <PlusSvgIcon
-                      className={classNames(projectcss.all, sty.svg__dx11)}
+                      className={classNames("all", sty.svg__dx11)}
                       role={"img"}
                     />
                   ),
@@ -464,7 +451,7 @@ function PlasmicSelect__RenderFunc(props: {
                 ? ChevronUpSvgIcon
                 : ChevronDownSvgIcon
             }
-            className={classNames(projectcss.all, sty.dropdownIcon, {
+            className={classNames("all", sty.dropdownIcon, {
               [sty.dropdownIcon___focusVisibleWithin]:
                 triggers.focusVisibleWithin_root,
               [sty.dropdownIconisOpen]: hasVariant($state, "isOpen", "isOpen"),
@@ -509,7 +496,7 @@ function PlasmicSelect__RenderFunc(props: {
             <div
               data-plasmic-name={"optionsContainer"}
               data-plasmic-override={overrides.optionsContainer}
-              className={classNames(projectcss.all, sty.optionsContainer, {
+              className={classNames("all", sty.optionsContainer, {
                 [sty.optionsContainerisOpen]: hasVariant(
                   $state,
                   "isOpen",

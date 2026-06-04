@@ -82,46 +82,18 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox__qR4PO > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   align-content: unset;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__qR4PO > :global(.__wab_flex-container) > *,
-.freeBox__qR4PO > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__qR4PO > :global(.__wab_flex-container) > picture > img,
-.freeBox__qR4PO
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .subtext {
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.subtext > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  margin-left: calc(0px - 2px);
-  width: calc(100% + 2px);
-}
-.subtext > :global(.__wab_flex-container) > *,
-.subtext > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.subtext > :global(.__wab_flex-container) > picture > img,
-.subtext
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 2px;
+  column-gap: 2px;
 }
 .slotTargetNumMembers {
   font-size: 11px;
@@ -136,23 +108,10 @@
 .actions {
   display: flex;
   position: relative;
-}
-.actions > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.actions > :global(.__wab_flex-container) > *,
-.actions > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.actions > :global(.__wab_flex-container) > picture > img,
-.actions
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 @media (min-width: 0px) and (max-width: 768px) {
-  .actions > :global(.__wab_flex-container) {
+  .actions {
     flex-wrap: wrap;
     align-items: unset;
   }

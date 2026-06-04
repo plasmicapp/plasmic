@@ -14,21 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import FrameworkTabs from "../../components/studio/code-quickstart/FrameworkTabs"; // plasmic-import: tf_fQvs5kI8/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_code_display_and_onboarding.module.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
+import "./plasmic_plasmic_kit_code_display_and_onboarding.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
 import sty from "./PlasmicCodeQuickstartDisplay.module.css"; // plasmic-import: jLDeDF206V/css
 
 createPlasmicElementProxy;
@@ -84,6 +83,8 @@ function PlasmicCodeQuickstartDisplay__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -91,20 +92,18 @@ function PlasmicCodeQuickstartDisplay__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        "all",
+        "root_reset_pTmuho7nuNtDcvZAf2kJgx",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"frameworkTabsContainer"}
         data-plasmic-override={overrides.frameworkTabsContainer}
-        className={classNames(projectcss.all, sty.frameworkTabsContainer)}
+        className={classNames("all", sty.frameworkTabsContainer)}
       >
         <FrameworkTabs
           data-plasmic-name={"frameworkTabs"}
@@ -115,7 +114,7 @@ function PlasmicCodeQuickstartDisplay__RenderFunc(props: {
       <div
         data-plasmic-name={"iframeContainer"}
         data-plasmic-override={overrides.iframeContainer}
-        className={classNames(projectcss.all, sty.iframeContainer)}
+        className={classNames("all", sty.iframeContainer)}
       />
     </div>
   ) as React.ReactElement | null;
@@ -148,7 +147,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCodeQuickstartDisplay__VariantsArgs;
     args?: PlasmicCodeQuickstartDisplay__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCodeQuickstartDisplay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCodeQuickstartDisplay__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCodeQuickstartDisplay__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

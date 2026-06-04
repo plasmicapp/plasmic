@@ -16,7 +16,7 @@
 .rootincludesSelf {
   background: var(--token-G18pc1ITl);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-G18pc1ITl);
 }
 .emoji {

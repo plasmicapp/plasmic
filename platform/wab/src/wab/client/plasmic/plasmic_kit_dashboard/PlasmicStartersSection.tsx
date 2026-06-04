@@ -14,29 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  hasVariant,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicStartersSection.module.css"; // plasmic-import: DWsPKkiyzx1/css
 
 import CheckIcon from "../plasmic_kit/PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
@@ -96,48 +90,23 @@ function PlasmicStartersSection__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const globalVariants = _useGlobalVariants();
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root,
-        {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-        }
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
+        sty.root
       )}
     >
       {renderPlasmicSlot({
@@ -159,8 +128,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__oJ8Q
                         )}
                         src={image3YherfIxkolNxf}
@@ -170,8 +140,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___6U014
                         )}
                         loading={"lazy"}
@@ -181,7 +152,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     withDescrip={true}
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__t5DxM)}
+                      className={classNames("all", sty.svg__t5DxM)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -197,8 +168,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___2Tmh8
                         )}
                         src={image3YherfIxkolNxf}
@@ -208,8 +180,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__eGzqG
                         )}
                         loading={"lazy"}
@@ -218,7 +191,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__jHibf)}
+                      className={classNames("all", sty.svg__jHibf)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -234,8 +207,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__lvJoZ
                         )}
                         src={image3YherfIxkolNxf}
@@ -245,8 +219,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__w8Krl
                         )}
                         loading={"lazy"}
@@ -255,7 +230,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__zZsjC)}
+                      className={classNames("all", sty.svg__zZsjC)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -271,8 +246,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__koA9T
                         )}
                         src={image3YherfIxkolNxf}
@@ -282,8 +258,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___2Cdv5
                         )}
                         loading={"lazy"}
@@ -292,7 +269,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__fTm1S)}
+                      className={classNames("all", sty.svg__fTm1S)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -317,8 +294,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___1HdDz
                         )}
                         src={image3YherfIxkolNxf}
@@ -328,8 +306,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__thVVe
                         )}
                         loading={"lazy"}
@@ -338,7 +317,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg___0Zos5)}
+                      className={classNames("all", sty.svg___0Zos5)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -354,8 +333,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__cutZp
                         )}
                         src={image3YherfIxkolNxf}
@@ -365,8 +345,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___1IG3
                         )}
                         loading={"lazy"}
@@ -375,7 +356,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg___070Je)}
+                      className={classNames("all", sty.svg___070Je)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -391,8 +372,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__xaDzf
                         )}
                         src={image3YherfIxkolNxf}
@@ -402,8 +384,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__f2WkY
                         )}
                         loading={"lazy"}
@@ -412,7 +395,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__kEw4)}
+                      className={classNames("all", sty.svg__kEw4)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -428,8 +411,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__wmze0
                         )}
                         src={image3YherfIxkolNxf}
@@ -439,8 +423,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___9GgMs
                         )}
                         loading={"lazy"}
@@ -449,7 +434,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__aKr8I)}
+                      className={classNames("all", sty.svg__aKr8I)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -474,8 +459,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__hiMth
                         )}
                         src={image3YherfIxkolNxf}
@@ -485,8 +471,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__gk2R
                         )}
                         loading={"lazy"}
@@ -495,7 +482,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__cptvr)}
+                      className={classNames("all", sty.svg__cptvr)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -511,8 +498,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__p2H9Q
                         )}
                         src={image3YherfIxkolNxf}
@@ -522,8 +510,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__kjFld
                         )}
                         loading={"lazy"}
@@ -532,7 +521,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__hpn6R)}
+                      className={classNames("all", sty.svg__hpn6R)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -548,8 +537,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__qaj6Z
                         )}
                         src={image3YherfIxkolNxf}
@@ -559,8 +549,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__fxH0D
                         )}
                         loading={"lazy"}
@@ -569,7 +560,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__x3Dp4)}
+                      className={classNames("all", sty.svg__x3Dp4)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -585,8 +576,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img___9PkWj
                         )}
                         src={image3YherfIxkolNxf}
@@ -596,8 +588,9 @@ function PlasmicStartersSection__RenderFunc(props: {
                       <img
                         alt={""}
                         className={classNames(
-                          projectcss.all,
-                          projectcss.img,
+                          "all",
+                          "img",
+                          "img__ooL7E",
                           sty.img__ugUu
                         )}
                         loading={"lazy"}
@@ -606,7 +599,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                     }
                   >
                     <CheckIcon
-                      className={classNames(projectcss.all, sty.svg__zoKwa)}
+                      className={classNames("all", sty.svg__zoKwa)}
                       role={"img"}
                     />
                   </StarterProject>
@@ -618,7 +611,7 @@ function PlasmicStartersSection__RenderFunc(props: {
         ),
         value: args.children,
       })}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -643,7 +636,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicStartersSection__VariantsArgs;
     args?: PlasmicStartersSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicStartersSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicStartersSection__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicStartersSection__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

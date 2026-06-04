@@ -5,19 +5,9 @@
   position: relative;
   flex-direction: column;
   background: var(--token-9jh0BkCENS);
+  row-gap: 0px;
   border-radius: 1rem;
   border: 1px solid var(--token-hoA5qaM-91G);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 0px;
 }
 .rootstates_collapsed {
   padding-bottom: 0px;
@@ -29,26 +19,12 @@
   display: flex;
   flex-direction: row;
   cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 8px;
   border-radius: 16px 16px 0px 0px;
   padding: 1rem;
   border-style: none;
-}
-.header > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.header > :global(.__wab_flex-container) > *,
-.header > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.header > :global(.__wab_flex-container) > picture > img,
-.header
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .headerstates_collapsed {
   border-radius: 16px;
@@ -101,21 +77,7 @@
   padding-right: 1rem;
   padding-bottom: 1rem;
   padding-left: 1rem;
-}
-.freeBox___3C2Jp > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 16px);
-  height: calc(100% + 16px);
-}
-.freeBox___3C2Jp > :global(.__wab_flex-container) > *,
-.freeBox___3C2Jp > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox___3C2Jp > :global(.__wab_flex-container) > picture > img,
-.freeBox___3C2Jp
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 16px;
+  row-gap: 16px;
 }
 .starterGroup__gEj3J:global(.__wab_instance) {
   position: relative;

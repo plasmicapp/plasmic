@@ -4,22 +4,11 @@
   position: relative;
   width: 100%;
   height: auto;
-  min-width: 0;
-  padding: 16px 24px 16px 16px;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  row-gap: var(--token-NCc1lDy9R);
   min-width: 0;
-  margin-top: calc(0px - var(--token-NCc1lDy9R));
-  height: calc(100% + var(--token-NCc1lDy9R));
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: var(--token-NCc1lDy9R);
+  padding: 16px 24px 16px 16px;
 }
 .labeledItem___92Vd:global(.__wab_instance) {
   width: 100%;
@@ -123,29 +112,14 @@
 .freeBox__dmbqJ {
   position: relative;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  row-gap: var(--token-uzWT6AFCY);
   min-width: 0;
   display: none;
-}
-.freeBox__dmbqJ > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-top: calc(0px - var(--token-uzWT6AFCY));
-  height: calc(100% + var(--token-uzWT6AFCY));
-}
-.freeBox__dmbqJ > :global(.__wab_flex-container) > *,
-.freeBox__dmbqJ > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__dmbqJ > :global(.__wab_flex-container) > picture > img,
-.freeBox__dmbqJ
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: var(--token-uzWT6AFCY);
 }
 .freeBoxspecialParamType_eventHandler__dmbqJmsWcM {
   display: flex;
@@ -183,54 +157,24 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  row-gap: var(--token-uzWT6AFCY);
   min-width: 0;
-}
-.freeBox__zeXjI > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-top: calc(0px - var(--token-uzWT6AFCY));
-  height: calc(100% + var(--token-uzWT6AFCY));
-}
-.freeBox__zeXjI > :global(.__wab_flex-container) > *,
-.freeBox__zeXjI > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__zeXjI > :global(.__wab_flex-container) > picture > img,
-.freeBox__zeXjI
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: var(--token-uzWT6AFCY);
 }
 .freeBox__obrQc {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  row-gap: var(--token-uzWT6AFCY);
   min-width: 0;
-}
-.freeBox__obrQc > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-top: calc(0px - var(--token-uzWT6AFCY));
-  height: calc(100% + var(--token-uzWT6AFCY));
-}
-.freeBox__obrQc > :global(.__wab_flex-container) > *,
-.freeBox__obrQc > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__obrQc > :global(.__wab_flex-container) > picture > img,
-.freeBox__obrQc
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: var(--token-uzWT6AFCY);
 }
 .labeledItem__abrAb:global(.__wab_instance) {
   max-width: 100%;
@@ -405,29 +349,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
   height: auto;
   max-width: 100%;
   padding-top: 8px;
+  column-gap: 8px;
   min-width: 0;
-}
-.freeBox__j1TSc > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__j1TSc > :global(.__wab_flex-container) > *,
-.freeBox__j1TSc > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__j1TSc > :global(.__wab_flex-container) > picture > img,
-.freeBox__j1TSc
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .cancelBtn:global(.__wab_instance) {
   max-width: 100%;

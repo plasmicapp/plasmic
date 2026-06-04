@@ -23,12 +23,14 @@
   flex-direction: row;
   transition-property: all;
   transition-duration: 0.3s;
-  transform: translateX(0px) translateY(0px) translateZ(0px);
+  transform: skew(0deg, 0deg);
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 0.3s;
   border-radius: 4px;
   padding: 2px;
 }
 .selectionIndicatorchecked {
-  transform: translateX(100%) translateY(0px) translateZ(0px);
+  transform: translate3d(100%, 0px, 0px);
 }
 .freeBox {
   display: block;

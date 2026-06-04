@@ -1,30 +1,19 @@
 .root {
-  flex-direction: row;
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   position: relative;
   width: 100%;
+  column-gap: 12px;
   min-width: 0;
   border-radius: 4px;
   padding: 10px 12px;
 }
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 12px);
-  width: calc(100% + 12px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 12px;
-}
 .rootisActive {
   background: var(--token-7bUFmc-GkpN);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-pryzRkTNOFd);
 }
 .slotTargetIcon {

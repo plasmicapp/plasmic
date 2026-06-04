@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,22 +13,23 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_context_menu_indicator.module.css"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/projectcss
+import "./plasmic_plasmic_kit_context_menu_indicator.css"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/projectcss
 import sty from "./PlasmicBoundingBoxHighlighter.module.css"; // plasmic-import: iKmOjRERju/css
 
 createPlasmicElementProxy;
@@ -48,10 +49,10 @@ type ArgPropType = keyof PlasmicBoundingBoxHighlighter__ArgsType;
 export const PlasmicBoundingBoxHighlighter__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicBoundingBoxHighlighter__OverridesType = {
-  root?: p.Flex<"div">;
-  outerBorder?: p.Flex<"div">;
-  outerBorder2?: p.Flex<"div">;
-  innerBorder?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  outerBorder?: Flex__<"div">;
+  outerBorder2?: Flex__<"div">;
+  innerBorder?: Flex__<"div">;
 };
 
 export interface DefaultBoundingBoxHighlighterProps {
@@ -69,37 +70,48 @@ function PlasmicBoundingBoxHighlighter__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -108,25 +120,24 @@ function PlasmicBoundingBoxHighlighter__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_fuzE93KTc4ZKNBYf3LAfy",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"outerBorder"}
         data-plasmic-override={overrides.outerBorder}
-        className={classNames(projectcss.all, sty.outerBorder)}
+        className={classNames("all", sty.outerBorder)}
       />
 
       <div
         data-plasmic-name={"outerBorder2"}
         data-plasmic-override={overrides.outerBorder2}
-        className={classNames(projectcss.all, sty.outerBorder2, {
+        className={classNames("all", sty.outerBorder2, {
           [sty.outerBorder2isRecording]: hasVariant(
             $state,
             "isRecording",
@@ -138,7 +149,7 @@ function PlasmicBoundingBoxHighlighter__RenderFunc(props: {
       <div
         data-plasmic-name={"innerBorder"}
         data-plasmic-override={overrides.innerBorder}
-        className={classNames(projectcss.all, sty.innerBorder)}
+        className={classNames("all", sty.innerBorder)}
       />
     </div>
   ) as React.ReactElement | null;
@@ -165,23 +176,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicBoundingBoxHighlighter__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicBoundingBoxHighlighter__VariantsArgs;
     args?: PlasmicBoundingBoxHighlighter__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicBoundingBoxHighlighter__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicBoundingBoxHighlighter__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicBoundingBoxHighlighter__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicBoundingBoxHighlighter__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -195,7 +206,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicBoundingBoxHighlighter__ArgProps,
           internalVariantPropNames: PlasmicBoundingBoxHighlighter__VariantProps,
         }),

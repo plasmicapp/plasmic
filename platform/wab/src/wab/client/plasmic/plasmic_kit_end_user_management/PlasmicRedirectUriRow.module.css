@@ -1,7 +1,4 @@
 .root {
-  --plsmc-rc-col-gap: 0px;
-}
-.root {
   display: flex;
   width: 100%;
   height: auto;
@@ -11,16 +8,17 @@
   flex-wrap: nowrap;
   position: relative;
   min-width: 0;
+  --plsmc-rc-col-gap: 0px;
   padding: 0px;
 }
 .root > :nth-child(3n + 1) {
-  width: calc((100% - 3 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
+  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
 }
 .root > :nth-child(3n + 2) {
-  width: calc((100% - 3 * var(--plsmc-rc-col-gap, 0px)) * 7 / 12);
+  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 7 / 12);
 }
 .root > :nth-child(3n + 3) {
-  width: calc((100% - 3 * var(--plsmc-rc-col-gap, 0px)) * 1 / 12);
+  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 1 / 12);
 }
 .column__zZ9L {
   display: flex;
@@ -84,13 +82,11 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__lP6T {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

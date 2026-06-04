@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftGeneralDataTokensPanel.module.css"; // plasmic-import: WwK9TyWdjIfT/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -104,15 +104,18 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
         path: "isTargeting",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isTargeting,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isTargeting,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -125,10 +128,10 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -162,14 +165,14 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
             data-plasmic-override={overrides.newTokenButton}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__kbY8E)}
+                className={classNames("all", sty.svg__kbY8E)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
               <PlusIcon
-                className={classNames(projectcss.all, sty.svg__fp1Os)}
+                className={classNames("all", sty.svg__fp1Os)}
                 role={"img"}
               />
             }
@@ -195,7 +198,7 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       />
     </div>
   ) as React.ReactElement | null;

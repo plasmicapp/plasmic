@@ -39,7 +39,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicPlasmicHostingSettings.module.css"; // plasmic-import: aFapl-YUjv9/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -143,27 +143,30 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
         path: "customDomain",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.customDomain,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.customDomain,
       },
       {
         path: "subdomain",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.subdomain,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.subdomain,
       },
       {
         path: "showBadge.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -176,10 +179,10 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -192,7 +195,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__spuop, {
+        className={classNames("all", sty.freeBox__spuop, {
           [sty.freeBoxcustomDomain_added__spuopqFnX7]: hasVariant(
             $state,
             "customDomain",
@@ -223,7 +226,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
         <form
           data-plasmic-name={"subdomainForm"}
           data-plasmic-override={overrides.subdomainForm}
-          className={classNames(projectcss.all, sty.subdomainForm, {
+          className={classNames("all", sty.subdomainForm, {
             [sty.subdomainFormcustomDomain_added]: hasVariant(
               $state,
               "customDomain",
@@ -242,7 +245,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__vElBp, {
+            className={classNames("all", sty.freeBox__vElBp, {
               [sty.freeBoxcustomDomain_preliminaryError__vElBp7Zc9L]:
                 hasVariant($state, "customDomain", "preliminaryError"),
               [sty.freeBoxsubdomain_error__vElBpJZbv6]: hasVariant(
@@ -253,18 +256,13 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__r1Gc,
-                {
-                  [sty.textsubdomain_error__r1GcJZbv6]: hasVariant(
-                    $state,
-                    "subdomain",
-                    "error"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__r1Gc, {
+                [sty.textsubdomain_error__r1GcJZbv6]: hasVariant(
+                  $state,
+                  "subdomain",
+                  "error"
+                ),
+              })}
             >
               {"Subdomain"}
             </div>
@@ -272,18 +270,13 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               <div
                 data-plasmic-name={"subdomainLabel"}
                 data-plasmic-override={overrides.subdomainLabel}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.subdomainLabel,
-                  {
-                    [sty.subdomainLabelsubdomain_success]: hasVariant(
-                      $state,
-                      "subdomain",
-                      "success"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.subdomainLabel, {
+                  [sty.subdomainLabelsubdomain_success]: hasVariant(
+                    $state,
+                    "subdomain",
+                    "success"
+                  ),
+                })}
               >
                 {"foobar.plasmic.website"}
               </div>
@@ -302,13 +295,13 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 withBackgroundHover={true}
               >
                 <ShareSvgIcon
-                  className={classNames(projectcss.all, sty.svg__itTbv)}
+                  className={classNames("all", sty.svg__itTbv)}
                   role={"img"}
                 />
               </IconButton>
             ) : null}
             <div
-              className={classNames(projectcss.all, sty.freeBox___0TBzB, {
+              className={classNames("all", sty.freeBox___0TBzB, {
                 [sty.freeBoxsubdomain_success___0TBzB2P0Cq]: hasVariant(
                   $state,
                   "subdomain",
@@ -320,8 +313,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 data-plasmic-name={"subdomainInput"}
                 data-plasmic-override={overrides.subdomainInput}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.input,
+                  "all",
+                  "input",
+                  "input__fpbcK",
                   sty.subdomainInput,
                   {
                     [sty.subdomainInputcustomDomain_added]: hasVariant(
@@ -356,8 +350,8 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 data-plasmic-name={"subdomainSuffix"}
                 data-plasmic-override={overrides.subdomainSuffix}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
+                  "all",
+                  "__wab_text",
                   sty.subdomainSuffix,
                   {
                     [sty.subdomainSuffixsubdomain_success]: hasVariant(
@@ -382,7 +376,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             <div
               data-plasmic-name={"messageActions4"}
               data-plasmic-override={overrides.messageActions4}
-              className={classNames(projectcss.all, sty.messageActions4, {
+              className={classNames("all", sty.messageActions4, {
                 [sty.messageActions4customDomain_preliminaryError]: hasVariant(
                   $state,
                   "customDomain",
@@ -411,8 +405,8 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   data-plasmic-name={"domainErrorMessage7"}
                   data-plasmic-override={overrides.domainErrorMessage7}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
+                    "all",
+                    "__wab_text",
                     sty.domainErrorMessage7
                   )}
                 >
@@ -422,7 +416,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             </div>
           ) : null}
           <div
-            className={classNames(projectcss.all, sty.freeBox__j9GqN, {
+            className={classNames("all", sty.freeBox__j9GqN, {
               [sty.freeBoxcustomDomain_loading__j9GqNo257B]: hasVariant(
                 $state,
                 "customDomain",
@@ -486,14 +480,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               }
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__zyJq4)}
+                  className={classNames("all", sty.svg__zyJq4)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__wqrFn)}
+                  className={classNames("all", sty.svg__wqrFn)}
                   role={"img"}
                 />
               }
@@ -506,7 +500,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             <div
               data-plasmic-name={"messageActions5"}
               data-plasmic-override={overrides.messageActions5}
-              className={classNames(projectcss.all, sty.messageActions5, {
+              className={classNames("all", sty.messageActions5, {
                 [sty.messageActions5subdomain_success]: hasVariant(
                   $state,
                   "subdomain",
@@ -531,8 +525,8 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     data-plasmic-name={"domainErrorMessage8"}
                     data-plasmic-override={overrides.domainErrorMessage8}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
+                      "all",
+                      "__wab_text",
                       sty.domainErrorMessage8
                     )}
                   >
@@ -541,7 +535,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                         {"{yoursite.com} is already owned by another team. "}
                       </React.Fragment>
                       <span
-                        className={"plasmic_default__all plasmic_default__span"}
+                        className={
+                          "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                        }
                         style={{ textDecorationLine: "underline" }}
                       >
                         {"Click here to request access"}
@@ -551,21 +547,21 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   </div>
                 </ErrorFeedback>
               ) : null}
-              <div className={classNames(projectcss.all, sty.freeBox__av12)}>
+              <div className={classNames("all", sty.freeBox__av12)}>
                 <Button
                   data-plasmic-name={"refreshButton7"}
                   data-plasmic-override={overrides.refreshButton7}
                   caption={"Caption"}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__vFRdg)}
+                      className={classNames("all", sty.svg__vFRdg)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <EditSvgIcon
-                      className={classNames(projectcss.all, sty.svg__onUd8)}
+                      className={classNames("all", sty.svg__onUd8)}
                       role={"img"}
                     />
                   }
@@ -581,14 +577,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   color={"red"}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__aAjVi)}
+                      className={classNames("all", sty.svg__aAjVi)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <Trash2SvgIcon
-                      className={classNames(projectcss.all, sty.svg__by8Za)}
+                      className={classNames("all", sty.svg__by8Za)}
                       role={"img"}
                     />
                   }
@@ -596,11 +592,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   withIcons={["startIcon"]}
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__iHfQr
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__iHfQr)}
                   >
                     {"Remove"}
                   </div>
@@ -610,7 +602,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           ) : null}
         </form>
         <div
-          className={classNames(projectcss.all, sty.freeBox__nRjqO, {
+          className={classNames("all", sty.freeBox__nRjqO, {
             [sty.freeBoxcustomDomain_preliminaryError__nRjqO7Zc9L]: hasVariant(
               $state,
               "customDomain",
@@ -622,7 +614,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
         <form
           data-plasmic-name={"customDomainForm"}
           data-plasmic-override={overrides.customDomainForm}
-          className={classNames(projectcss.all, sty.customDomainForm, {
+          className={classNames("all", sty.customDomainForm, {
             [sty.customDomainFormcustomDomain_added]: hasVariant(
               $state,
               "customDomain",
@@ -646,21 +638,16 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__usp8U, {
+            className={classNames("all", sty.freeBox__usp8U, {
               [sty.freeBoxcustomDomain_preliminaryError__usp8U7Zc9L]:
                 hasVariant($state, "customDomain", "preliminaryError"),
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___0D1Dl,
-                {
-                  [sty.textcustomDomain_preliminaryError___0D1Dl7Zc9L]:
-                    hasVariant($state, "customDomain", "preliminaryError"),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___0D1Dl, {
+                [sty.textcustomDomain_preliminaryError___0D1Dl7Zc9L]:
+                  hasVariant($state, "customDomain", "preliminaryError"),
+              })}
             >
               {"Custom domain"}
             </div>
@@ -668,8 +655,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               data-plasmic-name={"customDomainInput"}
               data-plasmic-override={overrides.customDomainInput}
               className={classNames(
-                projectcss.all,
-                projectcss.input,
+                "all",
+                "input",
+                "input__fpbcK",
                 sty.customDomainInput,
                 {
                   [sty.customDomainInputcustomDomain_preliminaryError]:
@@ -713,8 +701,8 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 data-plasmic-name={"domainErrorMessage9"}
                 data-plasmic-override={overrides.domainErrorMessage9}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
+                  "all",
+                  "__wab_text",
                   sty.domainErrorMessage9
                 )}
               >
@@ -723,7 +711,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     {"{yoursite.com} is already owned by another team. "}
                   </React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                    }
                     style={{ textDecorationLine: "underline" }}
                   >
                     {"Click here to request access"}
@@ -734,7 +724,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             </ErrorFeedback>
           ) : null}
           <div
-            className={classNames(projectcss.all, sty.freeBox__m52, {
+            className={classNames("all", sty.freeBox__m52, {
               [sty.freeBoxcustomDomain_invalid__m52Vm3Gj]: hasVariant(
                 $state,
                 "customDomain",
@@ -791,14 +781,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               }
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__v6ZT7)}
+                  className={classNames("all", sty.svg__v6ZT7)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg___5Gb8V)}
+                  className={classNames("all", sty.svg___5Gb8V)}
                   role={"img"}
                 />
               }
@@ -815,7 +805,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           />
         ) : null}
         <div
-          className={classNames(projectcss.all, sty.freeBox__nUd8P, {
+          className={classNames("all", sty.freeBox__nUd8P, {
             [sty.freeBoxcustomDomain_preliminaryError__nUd8P7Zc9L]: hasVariant(
               $state,
               "customDomain",
@@ -824,19 +814,13 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           })}
         />
 
-        <div className={classNames(projectcss.all, sty.freeBox__a7Yu5)}>
+        <div className={classNames("all", sty.freeBox__a7Yu5)}>
           <div
             data-plasmic-name={"paidFeaturesInfoText"}
             data-plasmic-override={overrides.paidFeaturesInfoText}
-            className={classNames(projectcss.all, sty.paidFeaturesInfoText)}
+            className={classNames("all", sty.paidFeaturesInfoText)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__arLZl
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__arLZl)}>
               <React.Fragment>
                 <React.Fragment>
                   {"Below features are exclusive to paid plans. "}
@@ -846,10 +830,11 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     data-plasmic-name={"link"}
                     data-plasmic-override={overrides.link}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__fpbcK",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.link
                     )}
                     href={"https://www.plasmic.app/pricing#pricing-table"}
@@ -858,7 +843,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   >
                     <React.Fragment>
                       <span
-                        className={"plasmic_default__all plasmic_default__span"}
+                        className={
+                          "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                        }
                         style={{ textDecorationLine: "underline" }}
                       >
                         {"Learn more"}
@@ -872,17 +859,20 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     data-plasmic-name={"upgradeNowLink"}
                     data-plasmic-override={overrides.upgradeNowLink}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__fpbcK",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.upgradeNowLink
                     )}
                     platform={"react"}
                   >
                     <React.Fragment>
                       <span
-                        className={"plasmic_default__all plasmic_default__span"}
+                        className={
+                          "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                        }
                         style={{ textDecorationLine: "underline" }}
                       >
                         {"upgrade now"}
@@ -897,7 +887,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           <div
             data-plasmic-name={"badgeForm"}
             data-plasmic-override={overrides.badgeForm}
-            className={classNames(projectcss.all, sty.badgeForm, {
+            className={classNames("all", sty.badgeForm, {
               [sty.badgeFormcustomDomain_added]: hasVariant(
                 $state,
                 "customDomain",
@@ -921,23 +911,18 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__t6S3E,
-                {
-                  [sty.textcustomDomain_added__t6S3EqFnX7]: hasVariant(
-                    $state,
-                    "customDomain",
-                    "added"
-                  ),
-                  [sty.textsubdomain_error__t6S3EJZbv6]: hasVariant(
-                    $state,
-                    "subdomain",
-                    "error"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__t6S3E, {
+                [sty.textcustomDomain_added__t6S3EqFnX7]: hasVariant(
+                  $state,
+                  "customDomain",
+                  "added"
+                ),
+                [sty.textsubdomain_error__t6S3EJZbv6]: hasVariant(
+                  $state,
+                  "subdomain",
+                  "error"
+                ),
+              })}
             >
               {'Show "Made in Plasmic" badge?'}
             </div>
@@ -970,7 +955,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           <div
             data-plasmic-name={"faviconForm"}
             data-plasmic-override={overrides.faviconForm}
-            className={classNames(projectcss.all, sty.faviconForm, {
+            className={classNames("all", sty.faviconForm, {
               [sty.faviconFormcustomDomain_added]: hasVariant(
                 $state,
                 "customDomain",
@@ -989,47 +974,34 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__weJ2D,
-                {
-                  [sty.textcustomDomain_added__weJ2DqFnX7]: hasVariant(
-                    $state,
-                    "customDomain",
-                    "added"
-                  ),
-                  [sty.textsubdomain_error__weJ2DjZbv6]: hasVariant(
-                    $state,
-                    "subdomain",
-                    "error"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__weJ2D, {
+                [sty.textcustomDomain_added__weJ2DqFnX7]: hasVariant(
+                  $state,
+                  "customDomain",
+                  "added"
+                ),
+                [sty.textsubdomain_error__weJ2DjZbv6]: hasVariant(
+                  $state,
+                  "subdomain",
+                  "error"
+                ),
+              })}
             >
               {"Favicon"}
             </div>
             <div
               data-plasmic-name={"faviconControlContainer"}
               data-plasmic-override={overrides.faviconControlContainer}
-              className={classNames(
-                projectcss.all,
-                sty.faviconControlContainer,
-                {
-                  [sty.faviconControlContainersubdomain_success]: hasVariant(
-                    $state,
-                    "subdomain",
-                    "success"
-                  ),
-                }
-              )}
+              className={classNames("all", sty.faviconControlContainer, {
+                [sty.faviconControlContainersubdomain_success]: hasVariant(
+                  $state,
+                  "subdomain",
+                  "success"
+                ),
+              })}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___6BGaf
-                )}
+                className={classNames("all", "__wab_text", sty.text___6BGaf)}
               >
                 {"hi"}
               </div>

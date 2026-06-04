@@ -47,87 +47,87 @@
 .rootwhiteBackground {
   background: #ffffff;
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.rootstyleType_gray:focus-within {
+.rootstyleType_gray:focus-within:focus-within {
   background: var(--token-iR8SeEwQZ);
   outline: none;
 }
-.rootstyleType_gray:active {
+.rootstyleType_gray:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.rootstyleType_red:focus-within {
+.rootstyleType_red:focus-within:focus-within {
   background: var(--token-iR8SeEwQZ);
   outline: none;
 }
-.rootstyleType_red:active {
+.rootstyleType_red:active:active {
   background: var(--token-5kjtdCiiOPB);
 }
-.rootstyleType_green:focus-within {
+.rootstyleType_green:focus-within:focus-within {
   background: var(--token-iR8SeEwQZ);
   outline: none;
 }
-.rootstyleType_green:active {
+.rootstyleType_green:active:active {
   background: var(--token-Tc_ZOUnBuGQ_);
 }
-.rootstyleType_blue:focus-within {
+.rootstyleType_blue:focus-within:focus-within {
   background: var(--token-iR8SeEwQZ);
   outline: none;
 }
-.rootstyleType_blue:active {
+.rootstyleType_blue:active:active {
   background: var(--token-RhvOnhv_xIi);
 }
-.rootstyleType_purple:focus-within {
+.rootstyleType_purple:focus-within:focus-within {
   background: var(--token-iR8SeEwQZ);
   outline: none;
 }
-.rootstyleType_purple:active {
+.rootstyleType_purple:active:active {
   background: var(--token-I2zAJ678hbp);
 }
-.rootnoOutline:focus-within {
+.rootnoOutline:focus-within:focus-within {
   box-shadow: none;
   outline: none;
 }
-.rootextraPadding:focus-within {
+.rootextraPadding:focus-within:focus-within {
   box-shadow: none;
   outline: none;
 }
-.root:hover:not(:focus-within) {
+.root:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: inset 0px 0px 0px 1px var(--token-eBt2ZgqRUCz);
   outline: none;
 }
-.rootstyleType_gray:hover:not(:focus-within) {
+.rootstyleType_gray:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-bV4cCeIniS6);
   outline: none;
 }
-.rootstyleType_red:hover:not(:focus-within) {
+.rootstyleType_red:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-HKVCQ5ZKovK);
   outline: none;
 }
-.rootstyleType_green:hover:not(:focus-within) {
+.rootstyleType_green:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-5TSkL5SqnvBt);
   outline: none;
 }
-.rootstyleType_blue:hover:not(:focus-within) {
+.rootstyleType_blue:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-dqEx_KxIoYV);
   outline: none;
 }
-.rootstyleType_purple:hover:not(:focus-within) {
+.rootstyleType_purple:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-oPrqrxbKHqk);
   outline: none;
 }
-.rootnoOutline:hover:not(:focus-within) {
+.rootnoOutline:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   outline: none;
 }
-.rootextraPadding:hover:not(:focus-within) {
+.rootextraPadding:hover:not(:focus-within):hover:not(:focus-within) {
   box-shadow: none;
   outline: none;
 }

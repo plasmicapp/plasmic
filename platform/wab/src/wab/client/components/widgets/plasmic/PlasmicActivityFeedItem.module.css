@@ -13,7 +13,7 @@
 .rootselected {
   background: var(--token-bV4cCeIniS6);
 }
-.root:hover {
+.root:hover:hover {
   border-right-style: solid;
   border-bottom-style: solid;
   border-left-style: solid;

@@ -14,7 +14,7 @@
   padding: 16px;
   border: 1px solid var(--token-sBh7BFhgAybb);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-G18pc1ITl);
 }
 .wrapRepeatedContainer {

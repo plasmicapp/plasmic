@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,18 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -34,16 +31,12 @@ import ExpandableSection from "../../components/pricing/ExpandableSection"; // p
 import PriceTierChip from "../../components/pricing/PriceTierChip"; // plasmic-import: UwHbCO-1rFrq/component
 import PriceTierFeatureItem from "../../components/pricing/PriceTierFeatureItem"; // plasmic-import: Z40kBWC-Knbn/component
 import PricingButton from "../../components/pricing/PricingButton"; // plasmic-import: NqVzp6p_r1Wa/component
-
-import { useScreenVariants as useScreenVariantspbV7Vw3AiD6M } from "../plasmic_kit_responsive_breakpoints/PlasmicGlobalVariant__Screen"; // plasmic-import: PbV7vw3AiD6M/globalVariant
-import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
-import { useScreenVariants as useScreenVariantsb61LAyP8VHu7 } from "./PlasmicGlobalVariant__Screen"; // plasmic-import: B61LAyP8VHu7/globalVariant
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import "./plasmic_plasmic_kit_pricing.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicPriceTier.module.css"; // plasmic-import: P7E8qtNzKrbM/css
 
 createPlasmicElementProxy;
@@ -77,7 +70,6 @@ export type PlasmicPriceTier__VariantsArgs = {
     | "startFreeTrial"
     | "freeTrialCurrent"
   >;
-
   tier?: SingleChoiceArg<
     | "free"
     | "starter"
@@ -87,7 +79,6 @@ export type PlasmicPriceTier__VariantsArgs = {
     | "legacy"
     | "grandfathered"
   >;
-
   mostPopular?: SingleBooleanChoiceArg<"mostPopular">;
 };
 type VariantPropType = keyof PlasmicPriceTier__VariantsArgs;
@@ -139,7 +130,6 @@ export interface DefaultPriceTierProps {
     | "startFreeTrial"
     | "freeTrialCurrent"
   >;
-
   tier?: SingleChoiceArg<
     | "free"
     | "starter"
@@ -149,7 +139,6 @@ export interface DefaultPriceTierProps {
     | "legacy"
     | "grandfathered"
   >;
-
   mostPopular?: SingleBooleanChoiceArg<"mostPopular">;
   className?: string;
 }
@@ -170,7 +159,9 @@ function PlasmicPriceTier__RenderFunc(props: {
         {
           openSection: false,
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -184,44 +175,42 @@ function PlasmicPriceTier__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "status",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.status,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.status,
       },
       {
         path: "tier",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.tier,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.tier,
       },
       {
         path: "mostPopular",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.mostPopular,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.mostPopular,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-    screen: useScreenVariantspbV7Vw3AiD6M(),
-    screen: useScreenVariantsb61LAyP8VHu7(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -230,13 +219,11 @@ function PlasmicPriceTier__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_ehckhYnyDHgCBbV47m9bkf",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         hasVariant($state, "tier", "team")
           ? "price-grandient-global white-bg bdr-gradient-3"
@@ -246,11 +233,6 @@ function PlasmicPriceTier__RenderFunc(props: {
           ? "price-grandient-global white-bg bdr-gradient-1"
           : undefined,
         {
-          [projectcss.global_environment_website]: hasVariant(
-            globalVariants,
-            "environment",
-            "website"
-          ),
           [sty.rootglobal_environment_website]: hasVariant(
             globalVariants,
             "environment",
@@ -312,10 +294,8 @@ function PlasmicPriceTier__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__yUOuh, {
+      <div
+        className={classNames("all", sty.freeBox__yUOuh, {
           [sty.freeBoxmostPopular__yUOuhyLsnd]: hasVariant(
             $state,
             "mostPopular",
@@ -374,10 +354,8 @@ function PlasmicPriceTier__RenderFunc(props: {
             hasVariant($state, "tier", "team"),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__b4JBz, {
+        <div
+          className={classNames("all", sty.freeBox__b4JBz, {
             [sty.freeBoxtier_enterprise__b4JBz8TtOs]: hasVariant(
               $state,
               "tier",
@@ -450,50 +428,48 @@ function PlasmicPriceTier__RenderFunc(props: {
             }
             description={
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__nlEez,
-                  {
-                    [sty.textglobal_environment_website__nlEeZmVgSv]:
-                      hasVariant(globalVariants, "environment", "website"),
-                    [sty.textstatus_current__nlEeZi3Xzy]: hasVariant(
-                      $state,
-                      "status",
-                      "current"
-                    ),
-                    [sty.textstatus_upgrade__nlEeZqoOgM]: hasVariant(
-                      $state,
-                      "status",
-                      "upgrade"
-                    ),
-                    [sty.texttier_enterprise__nlEez8TtOs]: hasVariant(
-                      $state,
-                      "tier",
-                      "enterprise"
-                    ),
-                    [sty.texttier_legacy__nlEezoDxgc]: hasVariant(
-                      $state,
-                      "tier",
-                      "legacy"
-                    ),
-                    [sty.texttier_pro__nlEez8F7ZG]: hasVariant(
-                      $state,
-                      "tier",
-                      "pro"
-                    ),
-                    [sty.texttier_starter__nlEeZzUNp]: hasVariant(
-                      $state,
-                      "tier",
-                      "starter"
-                    ),
-                    [sty.texttier_team__nlEezn3W]: hasVariant(
-                      $state,
-                      "tier",
-                      "team"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__nlEez, {
+                  [sty.textglobal_environment_website__nlEeZmVgSv]: hasVariant(
+                    globalVariants,
+                    "environment",
+                    "website"
+                  ),
+                  [sty.textstatus_current__nlEeZi3Xzy]: hasVariant(
+                    $state,
+                    "status",
+                    "current"
+                  ),
+                  [sty.textstatus_upgrade__nlEeZqoOgM]: hasVariant(
+                    $state,
+                    "status",
+                    "upgrade"
+                  ),
+                  [sty.texttier_enterprise__nlEez8TtOs]: hasVariant(
+                    $state,
+                    "tier",
+                    "enterprise"
+                  ),
+                  [sty.texttier_legacy__nlEezoDxgc]: hasVariant(
+                    $state,
+                    "tier",
+                    "legacy"
+                  ),
+                  [sty.texttier_pro__nlEez8F7ZG]: hasVariant(
+                    $state,
+                    "tier",
+                    "pro"
+                  ),
+                  [sty.texttier_starter__nlEeZzUNp]: hasVariant(
+                    $state,
+                    "tier",
+                    "starter"
+                  ),
+                  [sty.texttier_team__nlEezn3W]: hasVariant(
+                    $state,
+                    "tier",
+                    "team"
+                  ),
+                })}
               >
                 {hasVariant($state, "tier", "legacy")
                   ? "Legacy plan "
@@ -510,53 +486,48 @@ function PlasmicPriceTier__RenderFunc(props: {
             }
             tier={
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__gWCn,
-                  {
-                    [sty.textmostPopular__gWCnyLsnd]: hasVariant(
-                      $state,
-                      "mostPopular",
-                      "mostPopular"
-                    ),
-                    [sty.textstatus_current__gWCni3Xzy]: hasVariant(
-                      $state,
-                      "status",
-                      "current"
-                    ),
-                    [sty.texttier_enterprise__gWCn8TtOs]: hasVariant(
-                      $state,
-                      "tier",
-                      "enterprise"
-                    ),
-                    [sty.texttier_grandfathered__gWCnGMgSw]: hasVariant(
-                      $state,
-                      "tier",
-                      "grandfathered"
-                    ),
-                    [sty.texttier_legacy__gWCnODxgc]: hasVariant(
-                      $state,
-                      "tier",
-                      "legacy"
-                    ),
-                    [sty.texttier_pro__gWCn8F7ZG]: hasVariant(
-                      $state,
-                      "tier",
-                      "pro"
-                    ),
-                    [sty.texttier_starter__gWCnzUNp]: hasVariant(
-                      $state,
-                      "tier",
-                      "starter"
-                    ),
-                    [sty.texttier_team__gWCnN3W]: hasVariant(
-                      $state,
-                      "tier",
-                      "team"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__gWCn, {
+                  [sty.textmostPopular__gWCnyLsnd]: hasVariant(
+                    $state,
+                    "mostPopular",
+                    "mostPopular"
+                  ),
+                  [sty.textstatus_current__gWCni3Xzy]: hasVariant(
+                    $state,
+                    "status",
+                    "current"
+                  ),
+                  [sty.texttier_enterprise__gWCn8TtOs]: hasVariant(
+                    $state,
+                    "tier",
+                    "enterprise"
+                  ),
+                  [sty.texttier_grandfathered__gWCnGMgSw]: hasVariant(
+                    $state,
+                    "tier",
+                    "grandfathered"
+                  ),
+                  [sty.texttier_legacy__gWCnODxgc]: hasVariant(
+                    $state,
+                    "tier",
+                    "legacy"
+                  ),
+                  [sty.texttier_pro__gWCn8F7ZG]: hasVariant(
+                    $state,
+                    "tier",
+                    "pro"
+                  ),
+                  [sty.texttier_starter__gWCnzUNp]: hasVariant(
+                    $state,
+                    "tier",
+                    "starter"
+                  ),
+                  [sty.texttier_team__gWCnN3W]: hasVariant(
+                    $state,
+                    "tier",
+                    "team"
+                  ),
+                })}
               >
                 {hasVariant($state, "tier", "legacy")
                   ? "Legacy"
@@ -573,10 +544,8 @@ function PlasmicPriceTier__RenderFunc(props: {
             }
           />
 
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__z6QD, {
+          <div
+            className={classNames("all", sty.freeBox__z6QD, {
               [sty.freeBoxstatus_current__z6QDi3Xzy]: hasVariant(
                 $state,
                 "status",
@@ -611,7 +580,7 @@ function PlasmicPriceTier__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__mvWXh, {
+              className={classNames("all", sty.freeBox__mvWXh, {
                 [sty.freeBoxtier_enterprise__mvWXh8TtOs]: hasVariant(
                   $state,
                   "tier",
@@ -622,7 +591,7 @@ function PlasmicPriceTier__RenderFunc(props: {
               <h3
                 data-plasmic-name={"h3"}
                 data-plasmic-override={overrides.h3}
-                className={classNames(projectcss.all, projectcss.h3, sty.h3)}
+                className={classNames("all", "h3", "h3__ehckh", sty.h3)}
               >
                 {renderPlasmicSlot({
                   defaultContents: "Price",
@@ -637,23 +606,18 @@ function PlasmicPriceTier__RenderFunc(props: {
                 })}
               </h3>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dVq4A,
-                  {
-                    [sty.texttier_enterprise__dVq4A8TtOs]: hasVariant(
-                      $state,
-                      "tier",
-                      "enterprise"
-                    ),
-                    [sty.texttier_free__dVq4A5PWy8]: hasVariant(
-                      $state,
-                      "tier",
-                      "free"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__dVq4A, {
+                  [sty.texttier_enterprise__dVq4A8TtOs]: hasVariant(
+                    $state,
+                    "tier",
+                    "enterprise"
+                  ),
+                  [sty.texttier_free__dVq4A5PWy8]: hasVariant(
+                    $state,
+                    "tier",
+                    "free"
+                  ),
+                })}
               >
                 {"/month"}
               </div>
@@ -712,7 +676,7 @@ function PlasmicPriceTier__RenderFunc(props: {
                 ),
               }),
             })}
-          </Stack__>
+          </div>
           <PricingButton
             data-plasmic-name={"normalButton"}
             data-plasmic-override={overrides.normalButton}
@@ -883,63 +847,58 @@ function PlasmicPriceTier__RenderFunc(props: {
             withIcon={hasVariant($state, "status", "goback") ? true : undefined}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___31Nb,
-                {
-                  [sty.textglobal_environment_website___31NBmVgSv]: hasVariant(
-                    globalVariants,
-                    "environment",
-                    "website"
-                  ),
-                  [sty.textstatus_current___31NBi3Xzy]: hasVariant(
-                    $state,
-                    "status",
-                    "current"
-                  ),
-                  [sty.textstatus_goback___31NBrDsgd]: hasVariant(
-                    $state,
-                    "status",
-                    "goback"
-                  ),
-                  [sty.textstatus_manual___31Nb0CL90]: hasVariant(
-                    $state,
-                    "status",
-                    "manual"
-                  ),
-                  [sty.textstatus_startFreeTrial___31Nbj1BVs]: hasVariant(
-                    $state,
-                    "status",
-                    "startFreeTrial"
-                  ),
-                  [sty.textstatus_unavailable___31Nb3AaVi]: hasVariant(
-                    $state,
-                    "status",
-                    "unavailable"
-                  ),
-                  [sty.textstatus_upgrade___31NBqoOgM]: hasVariant(
-                    $state,
-                    "status",
-                    "upgrade"
-                  ),
-                  [sty.texttier_enterprise___31Nb8TtOs]: hasVariant(
-                    $state,
-                    "tier",
-                    "enterprise"
-                  ),
-                  [sty.texttier_grandfathered___31NbgMgSw]: hasVariant(
-                    $state,
-                    "tier",
-                    "grandfathered"
-                  ),
-                  [sty.texttier_legacy___31NboDxgc]: hasVariant(
-                    $state,
-                    "tier",
-                    "legacy"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text___31Nb, {
+                [sty.textglobal_environment_website___31NBmVgSv]: hasVariant(
+                  globalVariants,
+                  "environment",
+                  "website"
+                ),
+                [sty.textstatus_current___31NBi3Xzy]: hasVariant(
+                  $state,
+                  "status",
+                  "current"
+                ),
+                [sty.textstatus_goback___31NBrDsgd]: hasVariant(
+                  $state,
+                  "status",
+                  "goback"
+                ),
+                [sty.textstatus_manual___31Nb0CL90]: hasVariant(
+                  $state,
+                  "status",
+                  "manual"
+                ),
+                [sty.textstatus_startFreeTrial___31Nbj1BVs]: hasVariant(
+                  $state,
+                  "status",
+                  "startFreeTrial"
+                ),
+                [sty.textstatus_unavailable___31Nb3AaVi]: hasVariant(
+                  $state,
+                  "status",
+                  "unavailable"
+                ),
+                [sty.textstatus_upgrade___31NBqoOgM]: hasVariant(
+                  $state,
+                  "status",
+                  "upgrade"
+                ),
+                [sty.texttier_enterprise___31Nb8TtOs]: hasVariant(
+                  $state,
+                  "tier",
+                  "enterprise"
+                ),
+                [sty.texttier_grandfathered___31NbgMgSw]: hasVariant(
+                  $state,
+                  "tier",
+                  "grandfathered"
+                ),
+                [sty.texttier_legacy___31NboDxgc]: hasVariant(
+                  $state,
+                  "tier",
+                  "legacy"
+                ),
+              })}
             >
               {hasVariant($state, "tier", "grandfathered")
                 ? "Selected"
@@ -960,11 +919,9 @@ function PlasmicPriceTier__RenderFunc(props: {
                 : "Select plan"}
             </div>
           </PricingButton>
-        </Stack__>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__hzol5, {
+        </div>
+        <div
+          className={classNames("all", sty.freeBox__hzol5, {
             [sty.freeBoxstatus_freeTrialCurrent_tier_starter__hzol5DLvr1ZUNp]:
               hasVariant($state, "status", "freeTrialCurrent") &&
               hasVariant($state, "tier", "starter"),
@@ -997,11 +954,7 @@ function PlasmicPriceTier__RenderFunc(props: {
             defaultContents: (
               <React.Fragment>
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__yXzLz
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__yXzLz)}
                 >
                   {"Includes:"}
                 </div>
@@ -1027,7 +980,6 @@ function PlasmicPriceTier__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
-
             value: args.valueProps,
             className: classNames(sty.slotTargetValueProps, {
               [sty.slotTargetValuePropsstatus_unavailable]: hasVariant(
@@ -1057,22 +1009,18 @@ function PlasmicPriceTier__RenderFunc(props: {
               ),
             }),
           })}
-        </Stack__>
+        </div>
         <ExpandableSection
           data-plasmic-name={"expandableSection"}
           data-plasmic-override={overrides.expandableSection}
           body={
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__ix8VU)}
-            >
+            <div className={classNames("all", sty.freeBox__ix8VU)}>
               {renderPlasmicSlot({
                 defaultContents:
                   "A workspace is an organizational unit within an organization. Organizations can contain multiple workspaces, and each workspace can house numerous Plasmic projects. Organization members can be added to workspaces or individual projects. For example, you could have an organization for your agency with separate workspaces for each client, or an organization for your company with workspaces for each department.",
                 value: args.expandableBody,
               })}
-            </Stack__>
+            </div>
           }
           className={classNames("__wab_instance", sty.expandableSection, {
             [sty.expandableSectiontier_enterprise]: hasVariant(
@@ -1103,9 +1051,9 @@ function PlasmicPriceTier__RenderFunc(props: {
             value: args.expandableTitle,
           })}
         />
-      </Stack__>
+      </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__dSuWk, {
+        className={classNames("all", sty.freeBox__dSuWk, {
           [sty.freeBoxmostPopular__dSuWkyLsnd]: hasVariant(
             $state,
             "mostPopular",
@@ -1114,18 +1062,13 @@ function PlasmicPriceTier__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text___35HJi,
-            {
-              [sty.textmostPopular___35HJIyLsnd]: hasVariant(
-                $state,
-                "mostPopular",
-                "mostPopular"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text___35HJi, {
+            [sty.textmostPopular___35HJIyLsnd]: hasVariant(
+              $state,
+              "mostPopular",
+              "mostPopular"
+            ),
+          })}
         >
           {"Most popular"}
         </div>
@@ -1157,23 +1100,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTier__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicPriceTier__VariantsArgs;
     args?: PlasmicPriceTier__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPriceTier__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPriceTier__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicPriceTier__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicPriceTier__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

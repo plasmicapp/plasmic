@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicReactionButton.module.css"; // plasmic-import: FOzDmFDbWm/css
 
 createPlasmicElementProxy;
@@ -96,15 +96,18 @@ function PlasmicReactionButton__RenderFunc(props: {
         path: "includesSelf",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.includesSelf,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.includesSelf,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -117,11 +120,12 @@ function PlasmicReactionButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "button",
+        "button__BP7V3",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -136,14 +140,14 @@ function PlasmicReactionButton__RenderFunc(props: {
       <div
         data-plasmic-name={"emoji"}
         data-plasmic-override={overrides.emoji}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.emoji)}
+        className={classNames("all", "__wab_text", sty.emoji)}
       >
         {"\ud83d\udc4d"}
       </div>
       <div
         data-plasmic-name={"count"}
         data-plasmic-override={overrides.count}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.count)}
+        className={classNames("all", "__wab_text", sty.count)}
       >
         {"1"}
       </div>
@@ -176,7 +180,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicReactionButton__VariantsArgs;
     args?: PlasmicReactionButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicReactionButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicReactionButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicReactionButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

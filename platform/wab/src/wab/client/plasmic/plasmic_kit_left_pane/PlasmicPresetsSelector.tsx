@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicPresetsSelector.module.css"; // plasmic-import: neIW4UOiRU/css
 
 createPlasmicElementProxy;
@@ -97,10 +97,10 @@ function PlasmicPresetsSelector__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -108,7 +108,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <LeftSearchPanel
           data-plasmic-name={"search"}
@@ -119,11 +119,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text
-          )}
+          className={classNames("all", "__wab_text", sty.text)}
         >
           {"All Presets"}
         </div>
@@ -131,7 +127,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
       <div
         data-plasmic-name={"groups"}
         data-plasmic-override={overrides.groups}
-        className={classNames(projectcss.all, sty.groups)}
+        className={classNames("all", sty.groups)}
       >
         <PresetGroup
           className={classNames("__wab_instance", sty.presetGroup__u3B9Z)}
@@ -142,11 +138,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
               <div
                 data-plasmic-name={"example16"}
                 data-plasmic-override={overrides.example16}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.example16
-                )}
+                className={classNames("all", "__wab_text", sty.example16)}
               >
                 {"Screenshot1"}
               </div>
@@ -159,11 +151,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
               <div
                 data-plasmic-name={"example162"}
                 data-plasmic-override={overrides.example162}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.example162
-                )}
+                className={classNames("all", "__wab_text", sty.example162)}
               >
                 {"Screenshot"}
               </div>
@@ -176,13 +164,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
           <Preset
             className={classNames("__wab_instance", sty.preset__v9F1P)}
             screenshot={
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__xg93C
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__xg93C)}>
                 {"Screenshot1"}
               </div>
             }
@@ -192,11 +174,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
             className={classNames("__wab_instance", sty.preset__xvSNl)}
             screenshot={
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___0Pi7O
-                )}
+                className={classNames("all", "__wab_text", sty.text___0Pi7O)}
               >
                 {"Screenshot1"}
               </div>
@@ -249,7 +227,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPresetsSelector__VariantsArgs;
     args?: PlasmicPresetsSelector__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPresetsSelector__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPresetsSelector__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPresetsSelector__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentsTab.module.css"; // plasmic-import: bV6LLO0B3Y/css
 
 import BellSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BellSvg"; // plasmic-import: eCJ0k221t/icon
@@ -101,10 +101,10 @@ function PlasmicCommentsTab__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -112,16 +112,16 @@ function PlasmicCommentsTab__RenderFunc(props: {
       <div
         data-plasmic-name={"currentSelectionSection"}
         data-plasmic-override={overrides.currentSelectionSection}
-        className={classNames(projectcss.all, sty.currentSelectionSection)}
+        className={classNames("all", sty.currentSelectionSection)}
       >
-        <div className={classNames(projectcss.all, sty.freeBox__uwLXj)}>
+        <div className={classNames("all", sty.freeBox__uwLXj)}>
           <Button
             data-plasmic-name={"filterButton"}
             data-plasmic-override={overrides.filterButton}
             className={classNames("__wab_instance", sty.filterButton)}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__tbr0E)}
+                className={classNames("all", sty.svg__tbr0E)}
                 role={"img"}
               />
             }
@@ -140,7 +140,7 @@ function PlasmicCommentsTab__RenderFunc(props: {
             type={["clear"]}
           >
             <BellSvgIcon
-              className={classNames(projectcss.all, sty.svg__vlq5B)}
+              className={classNames("all", sty.svg__vlq5B)}
               role={"img"}
             />
           </Button>
@@ -152,7 +152,7 @@ function PlasmicCommentsTab__RenderFunc(props: {
           )}
         />
 
-        <div className={classNames(projectcss.all, sty.freeBox__vqCBj)}>
+        <div className={classNames("all", sty.freeBox__vqCBj)}>
           <CommentsHeader
             data-plasmic-name={"currentHeader"}
             data-plasmic-override={overrides.currentHeader}
@@ -173,7 +173,7 @@ function PlasmicCommentsTab__RenderFunc(props: {
         )}
       />
 
-      <div className={classNames(projectcss.all, sty.freeBox__kdUo2)}>
+      <div className={classNames("all", sty.freeBox__kdUo2)}>
         <CommentsHeader
           data-plasmic-name={"restHeader"}
           data-plasmic-override={overrides.restHeader}
@@ -242,7 +242,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsTab__VariantsArgs;
     args?: PlasmicCommentsTab__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentsTab__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentsTab__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentsTab__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

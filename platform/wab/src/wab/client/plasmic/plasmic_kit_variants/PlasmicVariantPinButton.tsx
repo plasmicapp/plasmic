@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
+import "./plasmic_plasmic_kit_variants.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantPinButton.module.css"; // plasmic-import: iPC_skyaMh/css
 
 import CheckSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
@@ -111,6 +111,7 @@ function PlasmicVariantPinButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -129,7 +130,7 @@ function PlasmicVariantPinButton__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       children2={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg__dl131)}
+          className={classNames("all", sty.svg__dl131)}
           role={"img"}
         />
       }
@@ -154,7 +155,7 @@ function PlasmicVariantPinButton__RenderFunc(props: {
             ? EyeSvgIcon
             : EyeOffSvgIcon
         }
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svgpinState_evaluatedTrue]: hasVariant(
             $state,
             "pinState",

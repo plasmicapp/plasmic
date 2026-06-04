@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,31 +14,27 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ElevatedCard from "../../components/pricing/ElevatedCard"; // plasmic-import: OOKbAz_EJ7Rm/component
-import Popout from "../../components/pricing/Popout"; // plasmic-import: XvpbI4g-IJWK/component
-import { PricingTooltip } from "../../components/pricing/Tooltip"; // plasmic-import: eAE4YEj_YxMC/codeComponent
-
-import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import Tooltip from "../../components/pricing/Tooltip"; // plasmic-import: 31iPGD-XvzCj/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import "./plasmic_plasmic_kit_pricing.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicHoverableText.module.css"; // plasmic-import: aVJYhoS8iDMR/css
 
 createPlasmicElementProxy;
@@ -55,28 +51,26 @@ export const PlasmicHoverableText__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicHoverableText__ArgsType = {
+  forceOverlay?: boolean;
   children?: React.ReactNode;
   popover?: React.ReactNode;
-  forceOverlay?: boolean;
 };
 type ArgPropType = keyof PlasmicHoverableText__ArgsType;
 export const PlasmicHoverableText__ArgProps = new Array<ArgPropType>(
+  "forceOverlay",
   "children",
-  "popover",
-  "forceOverlay"
+  "popover"
 );
 
 export type PlasmicHoverableText__OverridesType = {
-  root?: Flex__<"div">;
-  tooltip?: Flex__<typeof PricingTooltip>;
-  popout?: Flex__<typeof Popout>;
-  elevatedCard?: Flex__<typeof ElevatedCard>;
+  tooltip?: Flex__<typeof Tooltip>;
+  dottedUnderlineBorder?: Flex__<"div">;
 };
 
 export interface DefaultHoverableTextProps {
+  forceOverlay?: boolean;
   children?: React.ReactNode;
   popover?: React.ReactNode;
-  forceOverlay?: boolean;
   above?: SingleBooleanChoiceArg<"above">;
   className?: string;
 }
@@ -97,7 +91,9 @@ function PlasmicHoverableText__RenderFunc(props: {
         {
           forceOverlay: false,
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -111,123 +107,99 @@ function PlasmicHoverableText__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "above",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.above,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.above,
+      },
+      {
+        path: "tooltip.isOpen",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => false,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <div
-      data-plasmic-name={"root"}
-      data-plasmic-override={overrides.root}
+    <Tooltip
+      data-plasmic-name={"tooltip"}
+      data-plasmic-override={overrides.tooltip}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        sty.root,
-        {
-          [projectcss.global_environment_website]: hasVariant(
-            globalVariants,
-            "environment",
-            "website"
-          ),
-          [sty.rootabove]: hasVariant($state, "above", "above"),
-        }
-      )}
-    >
-      <PricingTooltip
-        data-plasmic-name={"tooltip"}
-        data-plasmic-override={overrides.tooltip}
-        className={classNames("__wab_instance", sty.tooltip, {
-          [sty.tooltipabove]: hasVariant($state, "above", "above"),
-        })}
-        overlay={
-          <Popout
-            data-plasmic-name={"popout"}
-            data-plasmic-override={overrides.popout}
-            above={hasVariant($state, "above", "above") ? true : undefined}
-            className={classNames("__wab_instance", sty.popout, {
-              [sty.popoutabove]: hasVariant($state, "above", "above"),
-            })}
-            noArrow={true}
-          >
-            <ElevatedCard
-              data-plasmic-name={"elevatedCard"}
-              data-plasmic-override={overrides.elevatedCard}
-              className={classNames("__wab_instance", sty.elevatedCard)}
-              menuContainer2={
-                <div className={classNames(projectcss.all, sty.freeBox__rS50D)}>
-                  {renderPlasmicSlot({
-                    defaultContents: "Some description",
-                    value: args.popover,
-                    className: classNames(sty.slotTargetPopover, {
-                      [sty.slotTargetPopoverabove]: hasVariant(
-                        $state,
-                        "above",
-                        "above"
-                      ),
-                    }),
-                  })}
-                </div>
-              }
-            />
-          </Popout>
-        }
-        placement={hasVariant($state, "above", "above") ? "top" : undefined}
-        trigger={
-          <div className={classNames(projectcss.all, sty.freeBox___0Wi8O)}>
-            {renderPlasmicSlot({
-              defaultContents: "4 collaborators",
-              value: args.children,
-              className: classNames(sty.slotTargetChildren),
-            })}
+      className={classNames("__wab_instance", sty.tooltip)}
+      content={renderPlasmicSlot({
+        defaultContents: (
+          <div className={classNames("all", "__wab_text", sty.text___26Bq)}>
+            {"Some description"}
           </div>
+        ),
+        value: args.popover,
+      })}
+      isOpen={generateStateValueProp($state, ["tooltip", "isOpen"])}
+      onOpenChange={async (...eventArgs: any) => {
+        generateStateOnChangeProp($state, ["tooltip", "isOpen"]).apply(
+          null,
+          eventArgs
+        );
+
+        if (
+          eventArgs.length > 1 &&
+          eventArgs[1] &&
+          eventArgs[1]._plasmic_state_init_
+        ) {
+          return;
         }
-      />
-    </div>
+      }}
+      trigger={
+        <div
+          data-plasmic-name={"dottedUnderlineBorder"}
+          data-plasmic-override={overrides.dottedUnderlineBorder}
+          className={classNames("all", sty.dottedUnderlineBorder, {
+            [sty.dottedUnderlineBorderglobal_environment_website]: hasVariant(
+              globalVariants,
+              "environment",
+              "website"
+            ),
+          })}
+        >
+          {renderPlasmicSlot({
+            defaultContents: "4 collaborators",
+            value: args.children,
+            className: classNames(sty.slotTargetChildren),
+          })}
+        </div>
+      }
+    />
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "tooltip", "popout", "elevatedCard"],
-  tooltip: ["tooltip", "popout", "elevatedCard"],
-  popout: ["popout", "elevatedCard"],
-  elevatedCard: ["elevatedCard"],
+  tooltip: ["tooltip", "dottedUnderlineBorder"],
+  dottedUnderlineBorder: ["dottedUnderlineBorder"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
-  tooltip: typeof PricingTooltip;
-  popout: typeof Popout;
-  elevatedCard: typeof ElevatedCard;
+  tooltip: typeof Tooltip;
+  dottedUnderlineBorder: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -235,7 +207,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHoverableText__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -243,15 +214,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicHoverableText__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicHoverableText__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicHoverableText__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicHoverableText__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -278,7 +249,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       forNode: nodeName,
     });
   };
-  if (nodeName === "root") {
+  if (nodeName === "tooltip") {
     func.displayName = "PlasmicHoverableText";
   } else {
     func.displayName = `PlasmicHoverableText.${nodeName}`;
@@ -288,12 +259,10 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
 
 export const PlasmicHoverableText = Object.assign(
   // Top-level PlasmicHoverableText renders the root element
-  makeNodeComponent("root"),
+  makeNodeComponent("tooltip"),
   {
     // Helper components rendering sub-elements
-    tooltip: makeNodeComponent("tooltip"),
-    popout: makeNodeComponent("popout"),
-    elevatedCard: makeNodeComponent("elevatedCard"),
+    dottedUnderlineBorder: makeNodeComponent("dottedUnderlineBorder"),
 
     // Metadata about props expected for PlasmicHoverableText
     internalVariantProps: PlasmicHoverableText__VariantProps,

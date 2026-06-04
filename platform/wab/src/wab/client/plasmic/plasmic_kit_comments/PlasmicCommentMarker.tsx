@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentMarker.module.css"; // plasmic-import: hxUVoCIPsT_h/css
 
 import _69B43A437055B398Eff90A515Ed4F551Svg2AijDeIx4X from "./images/_69B43A437055B398Eff90A515Ed4F551Svg.svg"; // plasmic-import: 2aijDEIx4x/picture
@@ -94,10 +94,10 @@ function PlasmicCommentMarker__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -150,7 +150,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentMarker__VariantsArgs;
     args?: PlasmicCommentMarker__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentMarker__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentMarker__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentMarker__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

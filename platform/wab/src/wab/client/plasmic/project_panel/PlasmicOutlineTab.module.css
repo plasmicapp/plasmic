@@ -11,60 +11,29 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  padding: 8px 0px;
-}
-.freeBox__i3J1M > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox__i3J1M > :global(.__wab_flex-container) > *,
-.freeBox__i3J1M > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__i3J1M > :global(.__wab_flex-container) > picture > img,
-.freeBox__i3J1M
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
+  row-gap: 4px;
+  padding: 8px 0px;
 }
 .freeBox__k743O {
   display: flex;
   position: relative;
-  margin-top: calc(0px + 4px) !important;
-  margin-right: 16px;
-  margin-bottom: 0px;
-  margin-left: 16px;
+  margin: 0px 16px;
 }
 .headerFilter {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   transition-property: all;
   transition-duration: 200ms;
   cursor: pointer;
+  column-gap: 4px;
   -webkit-transition-property: all;
   -webkit-transition-duration: 200ms;
   border-radius: 4px;
   padding: 8px 0px;
-}
-.headerFilter > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.headerFilter > :global(.__wab_flex-container) > *,
-.headerFilter > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.headerFilter > :global(.__wab_flex-container) > picture > img,
-.headerFilter
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
 }
 .headerFilternoHeader {
   display: none;
@@ -86,27 +55,10 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  margin-top: calc(0px + 4px) !important;
-  margin-right: 8px;
-  margin-bottom: 0px;
-  margin-left: 16px;
-}
-.freeBox__qdVl > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__qdVl > :global(.__wab_flex-container) > *,
-.freeBox__qdVl > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__qdVl > :global(.__wab_flex-container) > picture > img,
-.freeBox__qdVl
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  column-gap: 4px;
+  margin: 0px 8px 0px 16px;
 }
 .searchInput:global(.__wab_instance) {
   width: 100%;

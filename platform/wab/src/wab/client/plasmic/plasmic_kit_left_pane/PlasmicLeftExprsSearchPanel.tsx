@@ -29,7 +29,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftExprsSearchPanel.module.css"; // plasmic-import: TcSQ7HIQUWt9/css
 
 import RefreshSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg"; // plasmic-import: PEaq_S7gQ/icon
@@ -115,10 +115,10 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -132,44 +132,32 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"exprsFilter"}
         data-plasmic-override={overrides.exprsFilter}
-        className={classNames(projectcss.all, sty.exprsFilter)}
+        className={classNames("all", sty.exprsFilter)}
       >
-        <div className={classNames(projectcss.all, sty.freeBox___0U0Rm)}>
-          <div className={classNames(projectcss.all, sty.freeBox__hAVe)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__krNmH
-              )}
-            >
+        <div className={classNames("all", sty.freeBox___0U0Rm)}>
+          <div className={classNames("all", sty.freeBox__hAVe)}>
+            <div className={classNames("all", "__wab_text", sty.text__krNmH)}>
               {"Expression Type"}
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox__dPZaC)}>
+            <div className={classNames("all", sty.freeBox__dPZaC)}>
               {renderPlasmicSlot({
                 defaultContents: null,
                 value: args.typeFilter,
               })}
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__x3LJf)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__mcRf7
-              )}
-            >
+          <div className={classNames("all", sty.freeBox__x3LJf)}>
+            <div className={classNames("all", "__wab_text", sty.text__mcRf7)}>
               {"Group By"}
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox__z3H89)}>
+            <div className={classNames("all", sty.freeBox__z3H89)}>
               {renderPlasmicSlot({
                 defaultContents: null,
                 value: args.groupBy,
               })}
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__sJUjo)}>
+          <div className={classNames("all", sty.freeBox__sJUjo)}>
             {renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
@@ -196,7 +184,7 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
                 <IconButton
                   children2={
                     <svg
-                      className={classNames(projectcss.all, sty.svg__jj8Qm)}
+                      className={classNames("all", sty.svg__jj8Qm)}
                       role={"img"}
                     />
                   }
@@ -207,7 +195,7 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
                   type={["seamless"]}
                 >
                   <RefreshSvgIcon
-                    className={classNames(projectcss.all, sty.svg__qgd5)}
+                    className={classNames("all", sty.svg__qgd5)}
                     onClick={async (event) => {
                       const $steps = {};
                     }}
@@ -223,7 +211,7 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       />
     </div>
   ) as React.ReactElement | null;
@@ -256,7 +244,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftExprsSearchPanel__VariantsArgs;
     args?: PlasmicLeftExprsSearchPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftExprsSearchPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftExprsSearchPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftExprsSearchPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

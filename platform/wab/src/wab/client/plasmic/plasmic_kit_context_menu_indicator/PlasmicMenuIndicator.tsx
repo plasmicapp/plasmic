@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,25 +13,26 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_context_menu_indicator.module.css"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/projectcss
+import "./plasmic_plasmic_kit_context_menu_indicator.css"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/projectcss
 import sty from "./PlasmicMenuIndicator.module.css"; // plasmic-import: 5RLoIE7-j5/css
 
-import DownloadsvgIcon from "./icons/PlasmicIcon__Downloadsvg"; // plasmic-import: s7v30LEVvl/icon
+import DownloadSvgIcon from "./icons/PlasmicIcon__DownloadSvg"; // plasmic-import: s7v30LEVvl/icon
 
 createPlasmicElementProxy;
 
@@ -54,9 +55,9 @@ type ArgPropType = keyof PlasmicMenuIndicator__ArgsType;
 export const PlasmicMenuIndicator__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicMenuIndicator__OverridesType = {
-  root?: p.Flex<"button">;
-  dropSmoothCorners?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"button">;
+  dropSmoothCorners?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultMenuIndicatorProps {
@@ -75,43 +76,55 @@ function PlasmicMenuIndicator__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "interactive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.interactive,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.interactive,
       },
       {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <button
@@ -120,13 +133,13 @@ function PlasmicMenuIndicator__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "button",
+        "button__fuzE9",
+        "root_reset_fuzE93KTc4ZKNBYf3LAfy",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootinteractive]: hasVariant(
@@ -141,7 +154,7 @@ function PlasmicMenuIndicator__RenderFunc(props: {
       <div
         data-plasmic-name={"dropSmoothCorners"}
         data-plasmic-override={overrides.dropSmoothCorners}
-        className={classNames(projectcss.all, sty.dropSmoothCorners, {
+        className={classNames("all", sty.dropSmoothCorners, {
           [sty.dropSmoothCornersinteractive]: hasVariant(
             $state,
             "interactive",
@@ -154,10 +167,10 @@ function PlasmicMenuIndicator__RenderFunc(props: {
           ),
         })}
       >
-        <DownloadsvgIcon
+        <DownloadSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
       </div>
@@ -184,23 +197,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMenuIndicator__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicMenuIndicator__VariantsArgs;
     args?: PlasmicMenuIndicator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicMenuIndicator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicMenuIndicator__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicMenuIndicator__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicMenuIndicator__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -214,7 +227,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMenuIndicator__ArgProps,
           internalVariantPropNames: PlasmicMenuIndicator__VariantProps,
         }),

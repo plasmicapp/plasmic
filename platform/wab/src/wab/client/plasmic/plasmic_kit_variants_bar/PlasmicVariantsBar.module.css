@@ -8,6 +8,7 @@
 }
 .rootcontained {
   flex-direction: row;
+  row-gap: 0px;
 }
 .recordingButton:global(.__wab_instance) {
   position: relative;
@@ -39,18 +40,8 @@
 .recordingButtoncontained_isEditable_isFocused:global(.__wab_instance) {
   flex-shrink: 0;
 }
-.freeBox {
-  display: flex;
-  flex-direction: row;
-  width: auto;
-  height: auto;
-  border-radius: 4px;
-  padding: 5px;
-}
-.freeBox > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+.recordingButtoncontained_isEditable_isEmpty_isFocused:global(.__wab_instance) {
+  flex-shrink: 0;
 }
 .freeBox {
   display: flex;
@@ -65,32 +56,8 @@
 .freeBoxisFocused {
   box-shadow: 0px 0px 0px 1px #0000001a, 0px 2px 5px 0px #00000033;
   background: #ffffff;
-}
-.freeBoxisFocused > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.freeBoxisFocused > :global(.__wab_flex-container) > *,
-.freeBoxisFocused > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBoxisFocused > :global(.__wab_flex-container) > picture > img,
-.freeBoxisFocused
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-  margin-top: 0px;
-}
-.freeBoxisFocused {
-  box-shadow: 0px 0px 0px 1px #0000001a, 0px 2px 5px 0px #00000033;
-  background: #ffffff;
-}
-.freeBoxcontained {
-  box-shadow: none;
-  background: var(--token-7aKAiXanMe);
-  padding: 0px;
+  column-gap: 4px;
+  row-gap: 0px;
 }
 .freeBoxcontained {
   box-shadow: none;
@@ -101,30 +68,9 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.variantsList > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.variantsList > :global(.__wab_flex-container) > *,
-.variantsList > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.variantsList > :global(.__wab_flex-container) > picture > img,
-.variantsList
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-}
-.variantsList {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
+  column-gap: 4px;
 }
 .variantBadge__ns9NY:global(.__wab_instance) {
   position: relative;
@@ -136,46 +82,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  padding-left: 5px;
-  padding-right: 5px;
-  height: 24px;
-  background: #ffffff;
-  border-radius: 3px;
-}
-.dropdownTrigger > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-}
-.dropdownTrigger > :global(.__wab_flex-container) > *,
-.dropdownTrigger > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.dropdownTrigger > :global(.__wab_flex-container) > picture > img,
-.dropdownTrigger
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
-}
-.dropdownTrigger {
-  display: flex;
-  position: relative;
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   padding-left: 5px;
   padding-right: 5px;
   height: 24px;
   background: #ffffff;
+  column-gap: 0px;
   border-radius: 3px;
-}
-.dropdownTriggerisFocused {
-  height: 24px;
-}
-.dropdownTriggerisFocused > :global(.__wab_flex-container) {
-  align-items: center;
 }
 .dropdownTriggerisFocused {
   height: 24px;
@@ -184,18 +98,8 @@
 .dropdownTriggercontained_isEditable_isEmpty_isFocused {
   background: var(--token-p-rw5DRJTx);
 }
-.dropdownTriggercontained_isEditable_isEmpty_isFocused {
-  background: var(--token-p-rw5DRJTx);
-}
 .root .dropdownTrigger:hover {
   background: linear-gradient(#0000000d, #0000000d), #ffffff;
-}
-.root .dropdownTrigger:hover {
-  background: linear-gradient(#0000000d, #0000000d), #ffffff;
-}
-.rootcontained_isEditable_isEmpty_isFocused
-  .dropdownTriggercontained_isEditable_isEmpty_isFocused:hover {
-  background: var(--token-bV4cCeIniS6);
 }
 .rootcontained_isEditable_isEmpty_isFocused
   .dropdownTriggercontained_isEditable_isEmpty_isFocused:hover {

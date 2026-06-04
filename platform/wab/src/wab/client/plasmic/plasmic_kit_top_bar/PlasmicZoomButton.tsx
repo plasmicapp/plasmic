@@ -14,20 +14,21 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicZoomButton.module.css"; // plasmic-import: UsJCR-Jtn5/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -83,6 +84,8 @@ function PlasmicZoomButton__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <Button
       data-plasmic-name={"root"}
@@ -92,7 +95,7 @@ function PlasmicZoomButton__RenderFunc(props: {
       className={classNames("__wab_instance", sty.root)}
       endIcon={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg___5FCws)}
+          className={classNames("all", sty.svg___5FCws)}
           role={"img"}
         />
       }
@@ -100,7 +103,7 @@ function PlasmicZoomButton__RenderFunc(props: {
       size={"small"}
       startIcon={
         <ArrowRightSvgIcon
-          className={classNames(projectcss.all, sty.svg___336LD)}
+          className={classNames("all", sty.svg___336LD)}
           role={"img"}
         />
       }
@@ -136,7 +139,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicZoomButton__VariantsArgs;
     args?: PlasmicZoomButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicZoomButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicZoomButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicZoomButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

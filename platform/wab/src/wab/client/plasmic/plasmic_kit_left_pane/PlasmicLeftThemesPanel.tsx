@@ -40,7 +40,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftThemesPanel.module.css"; // plasmic-import: 9I47RGPv62/css
 
 createPlasmicElementProxy;
@@ -125,47 +125,51 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         path: "notOwnedBySite",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.notOwnedBySite,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.notOwnedBySite,
       },
       {
         path: "hiliteTabs.selectedTabKey",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           hasVariant($state, "noLayout", "noLayout") ? "styles" : $state.tab,
       },
       {
         path: "themeSelector.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "tab",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           "styles" ?? $props.tab,
       },
       {
         path: "noThemePicker",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noThemePicker,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.noThemePicker,
       },
       {
         path: "noLayout",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLayout,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLayout,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -178,10 +182,10 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -203,15 +207,9 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
-            className={classNames(projectcss.all, sty.freeBox)}
+            className={classNames("all", sty.freeBox)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__rgfqo
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__rgfqo)}>
               {"Active theme"}
             </div>
             <StyleSelect
@@ -267,13 +265,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
             data-plasmic-override={overrides.textWithInfo}
             className={classNames("__wab_instance", sty.textWithInfo)}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__sLPev
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__sLPev)}>
               {"Theme"}
             </div>
           </TextWithInfo>
@@ -508,7 +500,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftThemesPanel__VariantsArgs;
     args?: PlasmicLeftThemesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftThemesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftThemesPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftThemesPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

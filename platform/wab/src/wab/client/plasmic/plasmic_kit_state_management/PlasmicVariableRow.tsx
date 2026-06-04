@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,16 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -31,13 +29,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import VariableType from "../../components/sidebar-tabs/StateManagement/VariableType"; // plasmic-import: sHz-uchOcJ/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicVariableRow.module.css"; // plasmic-import: jiD9NQWVHe/css
 
 import ArrowTopRightIcon from "../plasmic_kit/PlasmicIcon__ArrowTopRight"; // plasmic-import: fs4_EBy1h8PAh/icon
@@ -109,7 +105,9 @@ function PlasmicVariableRow__RenderFunc(props: {
         {
           variableType: "number",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -123,36 +121,35 @@ function PlasmicVariableRow__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isExternal",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExternal,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExternal,
       },
       {
         path: "hideValue",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideValue,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideValue,
       },
       {
         path: "hideMenu",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideMenu,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideMenu,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -161,23 +158,20 @@ function PlasmicVariableRow__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothideValue]: hasVariant($state, "hideValue", "hideValue"),
@@ -213,7 +207,7 @@ function PlasmicVariableRow__RenderFunc(props: {
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__vYiqk, {
+        className={classNames("all", sty.freeBox__vYiqk, {
           [sty.freeBoxhideValue__vYiqkIc4Vi]: hasVariant(
             $state,
             "hideValue",
@@ -222,7 +216,7 @@ function PlasmicVariableRow__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox___7S0Wf, {
+          className={classNames("all", sty.freeBox___7S0Wf, {
             [sty.freeBoxhideMenu___7S0WfDmEuf]: hasVariant(
               $state,
               "hideMenu",
@@ -246,7 +240,7 @@ function PlasmicVariableRow__RenderFunc(props: {
           })}
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__mOc9Q, {
+          className={classNames("all", sty.freeBox__mOc9Q, {
             [sty.freeBoxhideMenu__mOc9QDmEuf]: hasVariant(
               $state,
               "hideMenu",
@@ -274,7 +268,7 @@ function PlasmicVariableRow__RenderFunc(props: {
       <ArrowTopRightIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svghideMenu]: hasVariant($state, "hideMenu", "hideMenu"),
           [sty.svgisExternal]: hasVariant($state, "isExternal", "isExternal"),
         })}
@@ -282,7 +276,7 @@ function PlasmicVariableRow__RenderFunc(props: {
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__pRutb, {
+        className={classNames("all", sty.freeBox__pRutb, {
           [sty.freeBoxhideMenu__pRutbDmEuf]: hasVariant(
             $state,
             "hideMenu",
@@ -296,7 +290,7 @@ function PlasmicVariableRow__RenderFunc(props: {
           className={classNames("__wab_instance", sty.menuButton)}
         />
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -321,23 +315,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariableRow__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicVariableRow__VariantsArgs;
     args?: PlasmicVariableRow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicVariableRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicVariableRow__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicVariableRow__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariableRow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

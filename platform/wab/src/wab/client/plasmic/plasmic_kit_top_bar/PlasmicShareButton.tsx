@@ -14,19 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicShareButton.module.css"; // plasmic-import: mnPFthIw2I/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -81,6 +82,8 @@ function PlasmicShareButton__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <Button
       data-plasmic-name={"share"}
@@ -90,14 +93,14 @@ function PlasmicShareButton__RenderFunc(props: {
       className={classNames("__wab_instance", sty.share)}
       endIcon={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg__yOKuT)}
+          className={classNames("all", sty.svg__yOKuT)}
           role={"img"}
         />
       }
       size={"small"}
       startIcon={
         <ArrowRightSvgIcon
-          className={classNames(projectcss.all, sty.svg__ogjiq)}
+          className={classNames("all", sty.svg__ogjiq)}
           role={"img"}
         />
       }
@@ -129,7 +132,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicShareButton__VariantsArgs;
     args?: PlasmicShareButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicShareButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

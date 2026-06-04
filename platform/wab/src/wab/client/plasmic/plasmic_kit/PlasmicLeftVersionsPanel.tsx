@@ -35,7 +35,7 @@ import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProv
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftVersionsPanel.module.css"; // plasmic-import: YldGgVsq6N/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -113,21 +113,23 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         path: "showAlert",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAlert,
       },
       {
         path: "list",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.list,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.list,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -140,10 +142,10 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootshowAlert]: hasVariant($state, "showAlert", "showAlert") }
@@ -165,20 +167,20 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         data-plasmic-name={"versionsHeader"}
         data-plasmic-override={overrides.versionsHeader}
         actions={
-          <div className={classNames(projectcss.all, sty.freeBox__wkEck)}>
+          <div className={classNames("all", sty.freeBox__wkEck)}>
             <Button
               data-plasmic-name={"publishButton"}
               data-plasmic-override={overrides.publishButton}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__mRQha)}
+                  className={classNames("all", sty.svg__mRQha)}
                   role={"img"}
                 />
               }
               size={"small"}
               startIcon={
                 <StampSvgIcon
-                  className={classNames(projectcss.all, sty.svg__g3KFb)}
+                  className={classNames("all", sty.svg__g3KFb)}
                   role={"img"}
                 />
               }
@@ -192,14 +194,14 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
               data-plasmic-override={overrides.filterButton}
               endIcon={
                 <FilterSvgIcon
-                  className={classNames(projectcss.all, sty.svg__hd6XZ)}
+                  className={classNames("all", sty.svg__hd6XZ)}
                   role={"img"}
                 />
               }
               size={"small"}
               startIcon={
                 <StampSvgIcon
-                  className={classNames(projectcss.all, sty.svg__l36Lq)}
+                  className={classNames("all", sty.svg__l36Lq)}
                   role={"img"}
                 />
               }
@@ -219,17 +221,13 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
           ),
         })}
         description={
-          <div className={classNames(projectcss.all, sty.freeBox__vx2S3)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__f5Bbe
-              )}
-            >
+          <div className={classNames("all", sty.freeBox__vx2S3)}>
+            <div className={classNames("all", "__wab_text", sty.text__f5Bbe)}>
               <React.Fragment>
                 <span
-                  className={"plasmic_default__all plasmic_default__span"}
+                  className={
+                    "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                  }
                   style={{ fontWeight: 500 }}
                 >
                   {"Autosaved Versions"}
@@ -241,16 +239,12 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
                 </React.Fragment>
               </React.Fragment>
             </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__huG
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__huG)}>
               <React.Fragment>
                 <span
-                  className={"plasmic_default__all plasmic_default__span"}
+                  className={
+                    "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                  }
                   style={{ fontWeight: 500 }}
                 >
                   {"Published Versions"}
@@ -273,7 +267,7 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       >
         <ListSeperator
           className={classNames("__wab_instance", sty.listSeperator__n6Keb, {
@@ -285,22 +279,19 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___3Qahe,
-              {
-                [sty.textlist_versions___3QaheGn82F]: hasVariant(
-                  $state,
-                  "list",
-                  "versions"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text___3Qahe, {
+              [sty.textlist_versions___3QaheGn82F]: hasVariant(
+                $state,
+                "list",
+                "versions"
+              ),
+            })}
           >
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Autosaved Versions"}
@@ -311,7 +302,7 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         <div
           data-plasmic-name={"revisionsContainer"}
           data-plasmic-override={overrides.revisionsContainer}
-          className={classNames(projectcss.all, sty.revisionsContainer, {
+          className={classNames("all", sty.revisionsContainer, {
             [sty.revisionsContainerlist_versions]: hasVariant(
               $state,
               "list",
@@ -350,22 +341,19 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__vHt7M,
-              {
-                [sty.textlist_revisions__vHt7Ma9Nlu]: hasVariant(
-                  $state,
-                  "list",
-                  "revisions"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__vHt7M, {
+              [sty.textlist_revisions__vHt7Ma9Nlu]: hasVariant(
+                $state,
+                "list",
+                "revisions"
+              ),
+            })}
           >
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__aukbr"
+                }
                 style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
               >
                 {"Published Versions"}
@@ -376,7 +364,7 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         <div
           data-plasmic-name={"versionsContainer"}
           data-plasmic-override={overrides.versionsContainer}
-          className={classNames(projectcss.all, sty.versionsContainer, {
+          className={classNames("all", sty.versionsContainer, {
             [sty.versionsContainerlist_revisions]: hasVariant(
               $state,
               "list",

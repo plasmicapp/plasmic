@@ -7,7 +7,7 @@
   min-width: 0;
   padding: 16px;
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
 .freeBox {

@@ -17,12 +17,10 @@ import {
   Flex as Flex__,
   PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -31,16 +29,12 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import DataSource from "../../components/dashboard/DataSource"; // plasmic-import: B2dxgzfI6E/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
-import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicWorkspaceDataSources.module.css"; // plasmic-import: O5AxABt3WN/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -118,66 +112,45 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
         path: "viewer",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.viewer,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.viewer,
       },
       {
         path: "showApiKeys",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showApiKeys,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showApiKeys,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    screen: useScreenVariants_2DzYbdw5Xtx(),
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootshowApiKeys]: hasVariant(
             $state,
             "showApiKeys",
@@ -190,20 +163,15 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
         }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__bnqn6)}>
+      <div className={classNames("all", sty.freeBox__bnqn6)}>
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__aqvnZ,
-            {
-              [sty.textviewer__aqvnZka1Nj]: hasVariant(
-                $state,
-                "viewer",
-                "viewer"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text__aqvnZ, {
+            [sty.textviewer__aqvnZka1Nj]: hasVariant(
+              $state,
+              "viewer",
+              "viewer"
+            ),
+          })}
         >
           {"Integrations"}
         </div>
@@ -215,7 +183,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
           })}
           endIcon={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__gDqeH)}
+              className={classNames("all", sty.svg__gDqeH)}
               role={"img"}
             />
           }
@@ -226,7 +194,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
                   ? PlusIcon
                   : PlusIcon
               }
-              className={classNames(projectcss.all, sty.svg__cIasM)}
+              className={classNames("all", sty.svg__cIasM)}
               role={"img"}
             />
           }
@@ -249,7 +217,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
       <div
         data-plasmic-name={"sources"}
         data-plasmic-override={overrides.sources}
-        className={classNames(projectcss.all, sty.sources, {
+        className={classNames("all", sty.sources, {
           [sty.sourcesviewer]: hasVariant($state, "viewer", "viewer"),
         })}
       >
@@ -280,7 +248,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
           : false
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__sgxeZ, {
+          className={classNames("all", sty.freeBox__sgxeZ, {
             [sty.freeBoxshowApiKeys__sgxeZ0NBw]: hasVariant(
               $state,
               "showApiKeys",
@@ -297,18 +265,13 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___8Xwoc,
-              {
-                [sty.textviewer___8Xwocka1Nj]: hasVariant(
-                  $state,
-                  "viewer",
-                  "viewer"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text___8Xwoc, {
+              [sty.textviewer___8Xwocka1Nj]: hasVariant(
+                $state,
+                "viewer",
+                "viewer"
+              ),
+            })}
           >
             {"API keys\n"}
           </div>
@@ -320,7 +283,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
             })}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__pMpmB)}
+                className={classNames("all", sty.svg__pMpmB)}
                 role={"img"}
               />
             }
@@ -331,7 +294,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
                     ? PlusIcon
                     : PlusIcon
                 }
-                className={classNames(projectcss.all, sty.svg__h7RPf)}
+                className={classNames("all", sty.svg__h7RPf)}
                 role={"img"}
               />
             }
@@ -346,13 +309,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
                 : ["startIcon"]
             }
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___2VnNh
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text___2VnNh)}>
               {hasVariant(globalVariants, "screen", "mobile")
                 ? "New member"
                 : "New API key"}
@@ -368,7 +325,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
           : false
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__zi9Y9, {
+          className={classNames("all", sty.freeBox__zi9Y9, {
             [sty.freeBoxshowApiKeys__zi9Y90NBw]: hasVariant(
               $state,
               "showApiKeys",
@@ -394,7 +351,7 @@ function PlasmicWorkspaceDataSources__RenderFunc(props: {
             : null}
         </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -425,7 +382,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWorkspaceDataSources__VariantsArgs;
     args?: PlasmicWorkspaceDataSources__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWorkspaceDataSources__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicWorkspaceDataSources__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWorkspaceDataSources__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

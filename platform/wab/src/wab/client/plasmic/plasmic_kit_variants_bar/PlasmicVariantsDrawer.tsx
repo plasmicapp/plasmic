@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,49 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import VariantRow from "../../components/canvas/VariantsBar/VariantRow"; // plasmic-import: 0Rv3wK0NN-/component
 import VariantsGroupLabel from "../../components/canvas/VariantsBar/VariantsGroupLabel"; // plasmic-import: 73fZB1b9iN/component
 import VariantsSectionDivider from "../../components/canvas/VariantsBar/VariantsSectionDivider"; // plasmic-import: GPePwGKSYX/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
+import "./plasmic_plasmic_kit_variants_bar.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicVariantsDrawer.module.css"; // plasmic-import: 8q06bNJu0e/css
 
 import SearchIcon from "../plasmic_kit/PlasmicIcon__Search"; // plasmic-import: sjONHoK61vpSz/icon
 
-export type PlasmicVariantsDrawer__VariantMembers = {};
+createPlasmicElementProxy;
 
+export type PlasmicVariantsDrawer__VariantMembers = {};
 export type PlasmicVariantsDrawer__VariantsArgs = {};
 type VariantPropType = keyof PlasmicVariantsDrawer__VariantsArgs;
 export const PlasmicVariantsDrawer__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicVariantsDrawer__ArgsType = {
-  children?: React.ReactNode;
-};
-
+export type PlasmicVariantsDrawer__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicVariantsDrawer__ArgsType;
 export const PlasmicVariantsDrawer__ArgProps = new Array<ArgPropType>(
   "children"
 );
 
 export type PlasmicVariantsDrawer__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  searchInput?: p.Flex<"input">;
-  variantsList?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  searchInput?: Flex__<"input">;
+  variantsList?: Flex__<"div">;
 };
 
 export interface DefaultVariantsDrawerProps {
@@ -63,13 +61,7 @@ export interface DefaultVariantsDrawerProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicVariantsDrawer__RenderFunc(props: {
   variants: PlasmicVariantsDrawer__VariantsArgs;
@@ -79,13 +71,13 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -95,11 +87,11 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -108,25 +100,23 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_kdj5vahTyUKxznuR6rrtt6",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <SearchIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
 
@@ -134,25 +124,26 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
           data-plasmic-name={"searchInput"}
           data-plasmic-override={overrides.searchInput}
           className={classNames(
-            projectcss.all,
-            projectcss.input,
+            "all",
+            "input",
+            "input__kdj5v",
             sty.searchInput
           )}
-          placeholder={"Search variants" as const}
+          placeholder={"Search variants"}
           ref={(ref) => {
             $refs["searchInput"] = ref;
           }}
-          size={1 as const}
-          type={"text" as const}
-          value={"" as const}
+          size={1}
+          type={"text"}
+          value={""}
         />
       </div>
       <div
         data-plasmic-name={"variantsList"}
         data-plasmic-override={overrides.variantsList}
-        className={classNames(projectcss.all, sty.variantsList)}
+        className={classNames("all", sty.variantsList)}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
               <VariantRow
@@ -161,11 +152,7 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
                 isBase={true}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__xsPjs
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__xsPjs)}
                 >
                   {"Base"}
                 </div>
@@ -181,11 +168,7 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.variantRow__aIt)}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__wrKaW
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__wrKaW)}
                 >
                   {"Enter some text"}
                 </div>
@@ -195,11 +178,7 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
                 isRecording={true}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__mCOb
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__mCOb)}
                 >
                   {"Enter some text"}
                 </div>
@@ -223,11 +202,7 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.variantRow__ij1KE)}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__pBdts
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__pBdts)}
                 >
                   {"Enter some text"}
                 </div>
@@ -251,11 +226,7 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
                 isRecording={true}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__s6JqC
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__s6JqC)}
                 >
                   {"Enter some text"}
                 </div>
@@ -264,18 +235,13 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.variantRow___7OQs5)}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__j9Dww
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__j9Dww)}
                 >
                   {"Enter some text"}
                 </div>
               </VariantRow>
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </div>
@@ -306,25 +272,26 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantsDrawer__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicVariantsDrawer__VariantsArgs;
-  args?: PlasmicVariantsDrawer__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicVariantsDrawer__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicVariantsDrawer__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicVariantsDrawer__VariantsArgs;
+    args?: PlasmicVariantsDrawer__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantsDrawer__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantsDrawer__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -335,7 +302,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantsDrawer__ArgProps,
           internalVariantPropNames: PlasmicVariantsDrawer__VariantProps,
         }),

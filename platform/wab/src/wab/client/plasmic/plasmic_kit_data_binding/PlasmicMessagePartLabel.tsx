@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicMessagePartLabel.module.css"; // plasmic-import: Ht1M6qhEEAnx/css
 
 import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmic-import: gU-8UYs9RllyJ/icon
@@ -110,6 +110,7 @@ function PlasmicMessagePartLabel__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -127,10 +128,10 @@ function PlasmicMessagePartLabel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -152,7 +153,7 @@ function PlasmicMessagePartLabel__RenderFunc(props: {
             ? SpinnerIcon
             : SparklesIcon
         }
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svgstate_done]: hasVariant($state, "state", "done"),
           [sty.svgstate_error]: hasVariant($state, "state", "error"),
           [sty.svgstate_loading]: hasVariant($state, "state", "loading"),
@@ -162,13 +163,7 @@ function PlasmicMessagePartLabel__RenderFunc(props: {
 
       {renderPlasmicSlot({
         defaultContents: (
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___7ZkKz
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___7ZkKz)}>
             {"Text"}
           </div>
         ),

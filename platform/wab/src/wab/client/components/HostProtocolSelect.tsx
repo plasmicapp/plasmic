@@ -1,11 +1,11 @@
 import Option from "@/wab/client/components/HostProtocolSelect__Option";
 import OptionGroup from "@/wab/client/components/HostProtocolSelect__OptionGroup";
-import { SelectRef } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultHostProtocolSelectProps,
   PlasmicHostProtocolSelect,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect";
+import { SelectRef } from "@plasmicapp/react-web";
+import * as React from "react";
 
 type HostProtocolSelectProps = DefaultHostProtocolSelectProps;
 

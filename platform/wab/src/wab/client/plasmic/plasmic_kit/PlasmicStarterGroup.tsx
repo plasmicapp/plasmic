@@ -14,32 +14,27 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Link from "../../components/Link"; // plasmic-import: IQU7DmjqUs/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useGlobalVariants } from "../plasmic_kit_dashboard/plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "../plasmic_kit_dashboard/PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicStarterGroup.module.css"; // plasmic-import: u6dq5eydCj/css
 
 import eyeSvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
@@ -130,71 +125,52 @@ function PlasmicStarterGroup__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "twoColumnGrid",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.twoColumnGrid,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.twoColumnGrid,
       },
       {
         path: "gridColumns",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.gridColumns,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.gridColumns,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.roottwoColumnGrid]: hasVariant(
             $state,
             "twoColumnGrid",
@@ -210,7 +186,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
     >
       {(hasVariant($state, "type", "withoutHeader") ? false : true) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__pv2In, {
+          className={classNames("all", sty.freeBox__pv2In, {
             [sty.freeBoxtype_withoutHeader__pv2InwU6Kq]: hasVariant(
               $state,
               "type",
@@ -218,11 +194,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__vZxO3)}
-          >
+          <div className={classNames("all", sty.freeBox__vZxO3)}>
             {renderPlasmicSlot({
               defaultContents: "Subheading",
               value: args.heading,
@@ -231,22 +203,18 @@ function PlasmicStarterGroup__RenderFunc(props: {
             <InformationSvgIcon
               data-plasmic-name={"infoIcon"}
               data-plasmic-override={overrides.infoIcon}
-              className={classNames(projectcss.all, sty.infoIcon)}
+              className={classNames("all", sty.infoIcon)}
               role={"img"}
             />
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__irp33)}
-          >
+          </div>
+          <div className={classNames("all", sty.freeBox__irp33)}>
             <Link
               data-plasmic-name={"viewDocs"}
               data-plasmic-override={overrides.viewDocs}
               className={classNames("__wab_instance", sty.viewDocs)}
               icon={
                 <ArrowUpRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__cWp3N)}
+                  className={classNames("all", sty.svg__cWp3N)}
                   role={"img"}
                 />
               }
@@ -259,17 +227,17 @@ function PlasmicStarterGroup__RenderFunc(props: {
               className={classNames("__wab_instance", sty.more)}
               icon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__opADb)}
+                  className={classNames("all", sty.svg__opADb)}
                   role={"img"}
                 />
               }
               text={"See all\u2026"}
             />
-          </Stack__>
+          </div>
         </div>
       ) : null}
       <div
-        className={classNames(projectcss.all, sty.freeBox__dDcq, {
+        className={classNames("all", sty.freeBox__dDcq, {
           [sty.freeBoxgridColumns__2__dDcqwJdyT]: hasVariant(
             $state,
             "gridColumns",
@@ -306,8 +274,9 @@ function PlasmicStarterGroup__RenderFunc(props: {
                   <img
                     alt={""}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.img,
+                      "all",
+                      "img",
+                      "img__ooL7E",
                       sty.img__bP7Ph
                     )}
                     src={image3YherfIxkolNxf}
@@ -317,8 +286,9 @@ function PlasmicStarterGroup__RenderFunc(props: {
                   <img
                     alt={""}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.img,
+                      "all",
+                      "img",
+                      "img__ooL7E",
                       sty.img__zkh64
                     )}
                     loading={"lazy"}
@@ -327,7 +297,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
                 }
               >
                 <CheckIcon
-                  className={classNames(projectcss.all, sty.svg__gFtv)}
+                  className={classNames("all", sty.svg__gFtv)}
                   role={"img"}
                 />
               </StarterProject>
@@ -343,8 +313,9 @@ function PlasmicStarterGroup__RenderFunc(props: {
                   <img
                     alt={""}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.img,
+                      "all",
+                      "img",
+                      "img__ooL7E",
                       sty.img___9FOdj
                     )}
                     src={image3YherfIxkolNxf}
@@ -354,8 +325,9 @@ function PlasmicStarterGroup__RenderFunc(props: {
                   <img
                     alt={""}
                     className={classNames(
-                      projectcss.all,
-                      projectcss.img,
+                      "all",
+                      "img",
+                      "img__ooL7E",
                       sty.img__q6GP
                     )}
                     loading={"lazy"}
@@ -364,7 +336,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
                 }
               >
                 <CheckIcon
-                  className={classNames(projectcss.all, sty.svg__go0Gq)}
+                  className={classNames("all", sty.svg__go0Gq)}
                   role={"img"}
                 />
               </StarterProject>
@@ -373,7 +345,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
           value: args.container,
         })}
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -404,7 +376,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicStarterGroup__VariantsArgs;
     args?: PlasmicStarterGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicStarterGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicStarterGroup__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicStarterGroup__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

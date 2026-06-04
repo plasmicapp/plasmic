@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,16 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -32,19 +30,17 @@ import ActionBuilder from "../../components/sidebar-tabs/StateManagement/ActionB
 import LabeledItem from "../../components/sidebar-tabs/StateManagement/LabeledItem"; // plasmic-import: EmZVqVuGE1/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicHandlerSection.module.css"; // plasmic-import: s6ZC9dnvK9A/css
 
 import BoltPlusIcon from "../plasmic_kit/PlasmicIcon__BoltPlus"; // plasmic-import: -RXQcn1QrTqlQ/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -68,9 +64,7 @@ export const PlasmicHandlerSection__VariantProps = new Array<VariantPropType>(
   "isEditingActionName"
 );
 
-export type PlasmicHandlerSection__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicHandlerSection__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicHandlerSection__ArgsType;
 export const PlasmicHandlerSection__ArgProps = new Array<ArgPropType>(
   "children"
@@ -100,7 +94,16 @@ function PlasmicHandlerSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -111,45 +114,48 @@ function PlasmicHandlerSection__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isCollapsed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isCollapsed,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isCollapsed,
       },
       {
         path: "isAdding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isAdding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isAdding,
       },
       {
         path: "isConditional",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isConditional,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isConditional,
       },
       {
         path: "isEditingActionName",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isEditingActionName,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -158,14 +164,11 @@ function PlasmicHandlerSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootisCollapsed]: hasVariant(
@@ -176,11 +179,7 @@ function PlasmicHandlerSection__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__dynXd)}
-      >
+      <div className={classNames("all", sty.freeBox__dynXd)}>
         {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
@@ -198,8 +197,8 @@ function PlasmicHandlerSection__RenderFunc(props: {
                   label={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__ojzWh
                       )}
                     >
@@ -214,15 +213,15 @@ function PlasmicHandlerSection__RenderFunc(props: {
                         sty.textbox___0TYrx
                       )}
                       prefixIcon={
-                        <SearchsvgIcon
-                          className={classNames(projectcss.all, sty.svg__wQVr8)}
+                        <SearchSvgIcon
+                          className={classNames("all", sty.svg__wQVr8)}
                           role={"img"}
                         />
                       }
                       styleType={["bordered"]}
                       suffixIcon={
-                        <ClosesvgIcon
-                          className={classNames(projectcss.all, sty.svg__zrbyP)}
+                        <CloseSvgIcon
+                          className={classNames("all", sty.svg__zrbyP)}
                           role={"img"}
                         />
                       }
@@ -238,8 +237,8 @@ function PlasmicHandlerSection__RenderFunc(props: {
                   label={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__u4N46
                       )}
                     >
@@ -254,18 +253,15 @@ function PlasmicHandlerSection__RenderFunc(props: {
                         sty.textbox__uOqP3
                       )}
                       prefixIcon={
-                        <SearchsvgIcon
-                          className={classNames(projectcss.all, sty.svg__zpTmz)}
+                        <SearchSvgIcon
+                          className={classNames("all", sty.svg__zpTmz)}
                           role={"img"}
                         />
                       }
                       styleType={["bordered"]}
                       suffixIcon={
-                        <ClosesvgIcon
-                          className={classNames(
-                            projectcss.all,
-                            sty.svg___5HQcx
-                          )}
+                        <CloseSvgIcon
+                          className={classNames("all", sty.svg___5HQcx)}
                           role={"img"}
                         />
                       }
@@ -288,8 +284,8 @@ function PlasmicHandlerSection__RenderFunc(props: {
                   label={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__uZ7AV
                       )}
                     >
@@ -304,15 +300,15 @@ function PlasmicHandlerSection__RenderFunc(props: {
                         sty.textbox___3Vq4V
                       )}
                       prefixIcon={
-                        <SearchsvgIcon
-                          className={classNames(projectcss.all, sty.svg__kuax4)}
+                        <SearchSvgIcon
+                          className={classNames("all", sty.svg__kuax4)}
                           role={"img"}
                         />
                       }
                       styleType={["bordered"]}
                       suffixIcon={
-                        <ClosesvgIcon
-                          className={classNames(projectcss.all, sty.svg__amz4U)}
+                        <CloseSvgIcon
+                          className={classNames("all", sty.svg__amz4U)}
                           role={"img"}
                         />
                       }
@@ -328,8 +324,8 @@ function PlasmicHandlerSection__RenderFunc(props: {
                   label={
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__x8QxG
                       )}
                     >
@@ -344,15 +340,15 @@ function PlasmicHandlerSection__RenderFunc(props: {
                         sty.textbox__nz0Dz
                       )}
                       prefixIcon={
-                        <SearchsvgIcon
-                          className={classNames(projectcss.all, sty.svg__v3ZzK)}
+                        <SearchSvgIcon
+                          className={classNames("all", sty.svg__v3ZzK)}
                           role={"img"}
                         />
                       }
                       styleType={["bordered"]}
                       suffixIcon={
-                        <ClosesvgIcon
-                          className={classNames(projectcss.all, sty.svg__f9CcU)}
+                        <CloseSvgIcon
+                          className={classNames("all", sty.svg__f9CcU)}
                           role={"img"}
                         />
                       }
@@ -362,13 +358,10 @@ function PlasmicHandlerSection__RenderFunc(props: {
               </ActionBuilder>
             </React.Fragment>
           ),
-
           value: args.children,
         })}
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__ysQx6, {
+        <div
+          className={classNames("all", sty.freeBox__ysQx6, {
             [sty.freeBoxisAdding__ysQx6SAn5Z]: hasVariant(
               $state,
               "isAdding",
@@ -381,14 +374,14 @@ function PlasmicHandlerSection__RenderFunc(props: {
             data-plasmic-override={overrides.addBtn}
             className={classNames("__wab_instance", sty.addBtn)}
             endIcon={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg__thuje)}
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__thuje)}
                 role={"img"}
               />
             }
             startIcon={
               <BoltPlusIcon
-                className={classNames(projectcss.all, sty.svg__u5Wg1)}
+                className={classNames("all", sty.svg__u5Wg1)}
                 role={"img"}
               />
             }
@@ -397,8 +390,8 @@ function PlasmicHandlerSection__RenderFunc(props: {
           >
             {"Add new action"}
           </Button>
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -420,23 +413,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHandlerSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicHandlerSection__VariantsArgs;
     args?: PlasmicHandlerSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicHandlerSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicHandlerSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicHandlerSection__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicHandlerSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

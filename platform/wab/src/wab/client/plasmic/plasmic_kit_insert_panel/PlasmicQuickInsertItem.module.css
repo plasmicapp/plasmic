@@ -3,38 +3,27 @@
   transition-duration: 0.15s;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: auto;
   max-width: 100%;
   position: relative;
   cursor: pointer;
+  row-gap: 4px;
   min-width: 0;
   -webkit-transition-property: all;
   -webkit-transition-duration: 0.15s;
   border-radius: 4px;
   padding: 8px;
 }
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 4px;
-}
 .rootisSelected {
   background: var(--token-ixk0760-E);
 }
-.root:hover {
+.root:hover:hover {
   background: #f0f0f0;
 }
-.rootisSelected:hover {
+.rootisSelected:hover:hover {
   background: var(--token-ixk0760-E);
 }
 .freeBox {

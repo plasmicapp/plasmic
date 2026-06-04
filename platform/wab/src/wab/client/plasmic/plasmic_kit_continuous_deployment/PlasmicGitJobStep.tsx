@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicGitJobStep.module.css"; // plasmic-import: JzpEJAQTjPX/css
 
 import CheckSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
@@ -103,15 +103,17 @@ function PlasmicGitJobStep__RenderFunc(props: {
         path: "status",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.status,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.status,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -124,11 +126,12 @@ function PlasmicGitJobStep__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.li,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "li",
+        "li__fpbcK",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -147,7 +150,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
             ? WarningTriangleSvgIcon
             : ChevronRightSvgIcon
         }
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svgstatus_failed]: hasVariant($state, "status", "failed"),
           [sty.svgstatus_finished]: hasVariant($state, "status", "finished"),
           [sty.svgstatus_started]: hasVariant($state, "status", "started"),
@@ -159,7 +162,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
           defaultContents: "Step description",

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,27 +13,27 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicActivityRow.module.css"; // plasmic-import: jfBLn3a3U6/css
 
-import UsersvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
+import UserSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
 
 createPlasmicElementProxy;
 
@@ -61,9 +61,9 @@ export const PlasmicActivityRow__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicActivityRow__OverridesType = {
-  root?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  columns?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  columns?: Flex__<"div">;
 };
 
 export interface DefaultActivityRowProps {
@@ -74,13 +74,7 @@ export interface DefaultActivityRowProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicActivityRow__RenderFunc(props: {
   variants: PlasmicActivityRow__VariantsArgs;
@@ -90,55 +84,61 @@ function PlasmicActivityRow__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "withoutBorder",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withoutBorder,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withoutBorder,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <p.Stack
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootwithoutBorder]: hasVariant(
@@ -149,20 +149,20 @@ function PlasmicActivityRow__RenderFunc(props: {
         }
       )}
     >
-      <UsersvgIcon
+      <UserSvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg)}
+        className={classNames("all", sty.svg)}
         role={"img"}
       />
 
       <div
         data-plasmic-name={"columns"}
         data-plasmic-override={overrides.columns}
-        className={classNames(projectcss.all, sty.columns)}
+        className={classNames("all", sty.columns)}
       >
         <div
-          className={classNames(projectcss.all, sty.column__mF7Q8, {
+          className={classNames("all", sty.column__mF7Q8, {
             [sty.columnwithoutBorder__mF7Q8YPo7C]: hasVariant(
               $state,
               "withoutBorder",
@@ -170,24 +170,24 @@ function PlasmicActivityRow__RenderFunc(props: {
             ),
           })}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__eySi)}>
-            {p.renderPlasmicSlot({
+          <div className={classNames("all", sty.freeBox__eySi)}>
+            {renderPlasmicSlot({
               defaultContents: "user@plasmic.app",
               value: args.user,
               className: classNames(sty.slotTargetUser),
             })}
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__jnPaY)}>
-            {p.renderPlasmicSlot({
+          <div className={classNames("all", sty.freeBox__jnPaY)}>
+            {renderPlasmicSlot({
               defaultContents: "Logged in",
               value: args.status,
               className: classNames(sty.slotTargetStatus),
             })}
           </div>
         </div>
-        <div className={classNames(projectcss.all, sty.column__h1Htb)}>
-          <div className={classNames(projectcss.all, sty.freeBox__iC1)}>
-            {p.renderPlasmicSlot({
+        <div className={classNames("all", sty.column__h1Htb)}>
+          <div className={classNames("all", sty.freeBox__iC1)}>
+            {renderPlasmicSlot({
               defaultContents: "5m ago",
               value: args.updatedAt,
               className: classNames(sty.slotTargetUpdatedAt),
@@ -195,7 +195,7 @@ function PlasmicActivityRow__RenderFunc(props: {
           </div>
         </div>
       </div>
-    </p.Stack>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -218,23 +218,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicActivityRow__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicActivityRow__VariantsArgs;
     args?: PlasmicActivityRow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicActivityRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicActivityRow__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicActivityRow__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicActivityRow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -248,7 +248,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicActivityRow__ArgProps,
           internalVariantPropNames: PlasmicActivityRow__VariantProps,
         }),

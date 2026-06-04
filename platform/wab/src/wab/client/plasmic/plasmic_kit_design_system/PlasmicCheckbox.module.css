@@ -30,36 +30,36 @@
 .rootmedium_color_purple {
   background: var(--token-Cr1odk81N3Y);
 }
-.rootmedium_color_red:hover {
+.rootmedium_color_red:hover:hover {
   background: var(--token-HKVCQ5ZKovK);
 }
-.rootmedium_color_red:active {
+.rootmedium_color_red:active:active {
   background: var(--token-5kjtdCiiOPB);
 }
-.rootmedium_color_green:active {
+.rootmedium_color_green:active:active {
   background: var(--token-3AptjBfMqvPS);
 }
-.rootmedium_color_green:hover {
+.rootmedium_color_green:hover:hover {
   background: var(--token-dv0BWWyaHl7H);
 }
-.rootcolor_blue_medium:hover {
+.rootcolor_blue_medium:hover:hover {
   background: var(--token-dqEx_KxIoYV);
 }
-.rootcolor_blue_medium:active {
+.rootcolor_blue_medium:active:active {
   background: var(--token-RhvOnhv_xIi);
 }
-.rootmedium_color_purple:active {
+.rootmedium_color_purple:active:active {
   background: var(--token-I2zAJ678hbp);
 }
-.rootmedium_color_purple:hover {
+.rootmedium_color_purple:hover:hover {
   background: var(--token-oPrqrxbKHqk);
   cursor: pointer;
 }
-.root___focusWithin__notFocusVisibleWithin:focus-within {
+.root___focusWithin__notFocusVisibleWithin:focus-within:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.rootmedium____focusWithin__notFocusVisibleWithin:focus-within {
+.rootmedium____focusWithin__notFocusVisibleWithin:focus-within:focus-within {
   outline: none;
 }
 .svg {

@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSelect__OptionGroup.module.css"; // plasmic-import: _qMm1mtrqOi/css
 
 import SUPER__PlasmicSelect from "./PlasmicSelect"; // plasmic-import: j_4IQyOWK2b/render
@@ -130,6 +130,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -151,10 +152,10 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -168,7 +169,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         <div
           data-plasmic-name={"titleContainer"}
           data-plasmic-override={overrides.titleContainer}
-          className={classNames(projectcss.all, sty.titleContainer, {
+          className={classNames("all", sty.titleContainer, {
             [sty.titleContainerisFirst]: hasVariant(
               $state,
               "isFirst",
@@ -192,7 +193,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
       <div
         data-plasmic-name={"optionsContainer"}
         data-plasmic-override={overrides.optionsContainer}
-        className={classNames(projectcss.all, sty.optionsContainer)}
+        className={classNames("all", sty.optionsContainer)}
       >
         {renderPlasmicSlot({
           defaultContents: (
@@ -215,7 +216,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
       <div
         data-plasmic-name={"separator2"}
         data-plasmic-override={overrides.separator2}
-        className={classNames(projectcss.all, sty.separator2, {
+        className={classNames("all", sty.separator2, {
           [sty.separator2isFirst]: hasVariant($state, "isFirst", "isFirst"),
           [sty.separator2isLast]: hasVariant($state, "isLast", "isLast"),
         })}

@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleToggleButtonGroup.module.css"; // plasmic-import: OcKjGNdq-h/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -118,6 +118,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -135,10 +136,10 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         "baseline-friendly-centered-block-container",
@@ -151,7 +152,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
       <div
         data-plasmic-name={"buttonsContainer"}
         data-plasmic-override={overrides.buttonsContainer}
-        className={classNames(projectcss.all, sty.buttonsContainer, {
+        className={classNames("all", sty.buttonsContainer, {
           [sty.buttonsContainerautoWidth]: hasVariant(
             $state,
             "autoWidth",
@@ -179,7 +180,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
                 )}
               >
                 <CloseIcon
-                  className={classNames(projectcss.all, sty.svg__rsFgI)}
+                  className={classNames("all", sty.svg__rsFgI)}
                   role={"img"}
                 />
               </StyleToggleButton>
@@ -191,7 +192,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
                 valueSetState={"isSet"}
               >
                 <CloseIcon
-                  className={classNames(projectcss.all, sty.svg__pKot)}
+                  className={classNames("all", sty.svg__pKot)}
                   role={"img"}
                 />
               </StyleToggleButton>

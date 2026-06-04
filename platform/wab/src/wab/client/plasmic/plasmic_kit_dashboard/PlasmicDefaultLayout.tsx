@@ -18,12 +18,10 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -35,16 +33,12 @@ import NavButton from "../../components/dashboard/NavButton"; // plasmic-import:
 import NavSeparator from "../../components/dashboard/NavSeparator"; // plasmic-import: cOUHQYmbvX/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
-import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicDefaultLayout.module.css"; // plasmic-import: nSkQWLjK-B/css
 
 import HelpIcon from "../plasmic_kit/PlasmicIcon__Help"; // plasmic-import: -9-68IGPdLG-5/icon
@@ -169,48 +163,50 @@ function PlasmicDefaultLayout__RenderFunc(props: {
         path: "navigation",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.navigation,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.navigation,
       },
       {
         path: "hideStarters",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideStarters,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hideStarters,
       },
       {
         path: "hideTeams",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideTeams,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideTeams,
       },
       {
         path: "hideNewProjectButton",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hideNewProjectButton,
       },
       {
         path: "newProjectButtonAsDropdown",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.newProjectButtonAsDropdown,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    screen: useScreenVariants_2DzYbdw5Xtx(),
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -219,47 +215,24 @@ function PlasmicDefaultLayout__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
-        {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [sty.roothideTeams]: hasVariant($state, "hideTeams", "hideTeams"),
-        }
+        { [sty.roothideTeams]: hasVariant($state, "hideTeams", "hideTeams") }
       )}
     >
       <header
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        className={classNames(projectcss.all, sty.header)}
+        className={classNames("all", sty.header)}
       >
         <div
           data-plasmic-name={"headerWrapper"}
           data-plasmic-override={overrides.headerWrapper}
-          className={classNames(projectcss.all, sty.headerWrapper, {
+          className={classNames("all", sty.headerWrapper, {
             [sty.headerWrapperhideNewProjectButton]: hasVariant(
               $state,
               "hideNewProjectButton",
@@ -270,30 +243,24 @@ function PlasmicDefaultLayout__RenderFunc(props: {
           <PlasmicLink__
             data-plasmic-name={"headerLogoLink"}
             data-plasmic-override={overrides.headerLogoLink}
-            className={classNames(
-              projectcss.all,
-              projectcss.a,
-              sty.headerLogoLink
-            )}
+            className={classNames("all", "a", "a__ooL7E", sty.headerLogoLink)}
             href={"/"}
             platform={"react"}
           >
             <MarkFullColorIcon
               data-plasmic-name={"headerLogo"}
               data-plasmic-override={overrides.headerLogo}
-              className={classNames(projectcss.all, sty.headerLogo)}
+              className={classNames("all", sty.headerLogo)}
               role={"img"}
             />
           </PlasmicLink__>
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"headerActions"}
             data-plasmic-override={overrides.headerActions}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.headerActions)}
+            className={classNames("all", sty.headerActions)}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox___8H74X, {
+              className={classNames("all", sty.freeBox___8H74X, {
                 [sty.freeBoxhideNewProjectButton___8H74X7VyVs]: hasVariant(
                   $state,
                   "hideNewProjectButton",
@@ -313,7 +280,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 })}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__iw3P2, {
+                    className={classNames("all", sty.svg__iw3P2, {
                       [sty.svgnewProjectButtonAsDropdown__iw3P2LewDp]:
                         hasVariant(
                           $state,
@@ -327,7 +294,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 size={"wide"}
                 startIcon={
                   <PlusIcon
-                    className={classNames(projectcss.all, sty.svg__pMrgf)}
+                    className={classNames("all", sty.svg__pMrgf)}
                     role={"img"}
                   />
                 }
@@ -345,18 +312,13 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 <div
                   data-plasmic-name={"text"}
                   data-plasmic-override={overrides.text}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text,
-                    {
-                      [sty.texthideNewProjectButton]: hasVariant(
-                        $state,
-                        "hideNewProjectButton",
-                        "hideNewProjectButton"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text, {
+                    [sty.texthideNewProjectButton]: hasVariant(
+                      $state,
+                      "hideNewProjectButton",
+                      "hideNewProjectButton"
+                    ),
+                  })}
                 >
                   {"New project"}
                 </div>
@@ -369,14 +331,14 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               className={classNames("__wab_instance", sty.upgradeButton)}
               endIcon={
                 <TriangleBottomIcon
-                  className={classNames(projectcss.all, sty.svg__uSFd)}
+                  className={classNames("all", sty.svg__uSFd)}
                   role={"img"}
                 />
               }
               smallIcon={true}
               startIcon={
                 <RocketSvgIcon
-                  className={classNames(projectcss.all, sty.svg__vF1)}
+                  className={classNames("all", sty.svg__vF1)}
                   role={"img"}
                 />
               }
@@ -394,11 +356,11 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   : undefined
               }
             />
-          </Stack__>
+          </div>
         </div>
       </header>
       <div
-        className={classNames(projectcss.all, sty.freeBox__g4Hbj, {
+        className={classNames("all", sty.freeBox__g4Hbj, {
           [sty.freeBoxhideTeams__g4Hbj5Ktlm]: hasVariant(
             $state,
             "hideTeams",
@@ -409,12 +371,12 @@ function PlasmicDefaultLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"wrapper"}
           data-plasmic-override={overrides.wrapper}
-          className={classNames(projectcss.all, sty.wrapper)}
+          className={classNames("all", sty.wrapper)}
         >
           <aside
             data-plasmic-name={"sidebar"}
             data-plasmic-override={overrides.sidebar}
-            className={classNames(projectcss.all, sty.sidebar, {
+            className={classNames("all", sty.sidebar, {
               [sty.sidebarhideTeams]: hasVariant(
                 $state,
                 "hideTeams",
@@ -427,12 +389,10 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"nav"}
+            <nav
               data-plasmic-name={"nav"}
               data-plasmic-override={overrides.nav}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.nav, {
+              className={classNames("all", sty.nav, {
                 [sty.navhideTeams]: hasVariant(
                   $state,
                   "hideTeams",
@@ -452,7 +412,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 })}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg__ti7An)}
+                    className={classNames("all", sty.svg__ti7An)}
                     role={"img"}
                   />
                 }
@@ -464,7 +424,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
                 startIcon={
                   <UnorderedListSvgIcon
-                    className={classNames(projectcss.all, sty.svg__suQ4M)}
+                    className={classNames("all", sty.svg__suQ4M)}
                     role={"img"}
                   />
                 }
@@ -488,7 +448,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 })}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg__ebJx)}
+                    className={classNames("all", sty.svg__ebJx)}
                     role={"img"}
                   />
                 }
@@ -500,7 +460,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
                 startIcon={
                   <GolfSvgIcon
-                    className={classNames(projectcss.all, sty.svg__gluGf)}
+                    className={classNames("all", sty.svg__gluGf)}
                     role={"img"}
                   />
                 }
@@ -531,10 +491,8 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
               />
 
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox___1I5Dl, {
+              <div
+                className={classNames("all", sty.freeBox___1I5Dl, {
                   [sty.freeBoxhideTeams___1I5Dl5Ktlm]: hasVariant(
                     $state,
                     "hideTeams",
@@ -554,7 +512,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
 
                   value: args.teams,
                 })}
-              </Stack__>
+              </div>
               <NavSeparator
                 className={classNames(
                   "__wab_instance",
@@ -601,7 +559,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 })}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg__tkcPl)}
+                    className={classNames("all", sty.svg__tkcPl)}
                     role={"img"}
                   />
                 }
@@ -613,7 +571,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
                 startIcon={
                   <SparklesSvgIcon
-                    className={classNames(projectcss.all, sty.svg__cyyvY)}
+                    className={classNames("all", sty.svg__cyyvY)}
                     role={"img"}
                   />
                 }
@@ -622,13 +580,11 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   ? "Starters"
                   : "Starters"}
               </NavButton>
-            </Stack__>
-            <Stack__
-              as={"footer"}
+            </nav>
+            <footer
               data-plasmic-name={"navFooter"}
               data-plasmic-override={overrides.navFooter}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.navFooter)}
+              className={classNames("all", sty.navFooter)}
             >
               <NavButton
                 data-plasmic-name={"newTeamButton"}
@@ -636,13 +592,13 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.newTeamButton)}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg__fmNan)}
+                    className={classNames("all", sty.svg__fmNan)}
                     role={"img"}
                   />
                 }
                 startIcon={
                   <UsersPlusSvgIcon
-                    className={classNames(projectcss.all, sty.svg___9DbPc)}
+                    className={classNames("all", sty.svg___9DbPc)}
                     role={"img"}
                   />
                 }
@@ -658,14 +614,14 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 )}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg__qc8Uw)}
+                    className={classNames("all", sty.svg__qc8Uw)}
                     role={"img"}
                   />
                 }
                 href={"https://docs.plasmic.app/"}
                 startIcon={
                   <BookSvgIcon
-                    className={classNames(projectcss.all, sty.svg___2Eo9K)}
+                    className={classNames("all", sty.svg___2Eo9K)}
                     role={"img"}
                   />
                 }
@@ -679,14 +635,14 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.helpButton)}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg___9PUi)}
+                    className={classNames("all", sty.svg___9PUi)}
                     role={"img"}
                   />
                 }
                 href={"https://forum.plasmic.app/c/5"}
                 startIcon={
                   <HelpIcon
-                    className={classNames(projectcss.all, sty.svg__lkX6)}
+                    className={classNames("all", sty.svg__lkX6)}
                     role={"img"}
                   />
                 }
@@ -700,21 +656,20 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.userButton)}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__dvFlL)}
+                    className={classNames("all", sty.svg__dvFlL)}
                     role={"img"}
                   />
                 }
                 startIcon={
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__hmXkw)}
-                  >
+                  <div className={classNames("all", sty.freeBox__hmXkw)}>
                     {renderPlasmicSlot({
                       defaultContents: (
                         <img
                           alt={""}
                           className={classNames(
-                            projectcss.all,
-                            projectcss.img,
+                            "all",
+                            "img",
+                            "img__ooL7E",
                             sty.img__xzqEi
                           )}
                         />
@@ -728,12 +683,12 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               >
                 {"kim23"}
               </NavButton>
-            </Stack__>
+            </footer>
           </aside>
           <main
             data-plasmic-name={"main"}
             data-plasmic-override={overrides.main}
-            className={classNames(projectcss.all, sty.main, {
+            className={classNames("all", sty.main, {
               [sty.mainhideTeams]: hasVariant($state, "hideTeams", "hideTeams"),
               [sty.mainnavigation_allProjects]: hasVariant(
                 $state,
@@ -894,7 +849,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDefaultLayout__VariantsArgs;
     args?: PlasmicDefaultLayout__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDefaultLayout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDefaultLayout__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDefaultLayout__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

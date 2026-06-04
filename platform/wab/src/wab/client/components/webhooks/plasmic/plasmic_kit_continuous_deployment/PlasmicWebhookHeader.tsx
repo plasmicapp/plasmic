@@ -30,7 +30,7 @@ import IconButton from "../../../widgets/IconButton"; // plasmic-import: LPry-TF
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhookHeader.module.css"; // plasmic-import: OkB-fXuJPc/css
 
 import PlusIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -108,21 +108,23 @@ function PlasmicWebhookHeader__RenderFunc(props: {
         path: "showAdd",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAdd,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAdd,
       },
       {
         path: "hideDelete",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideDelete,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideDelete,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -135,10 +137,10 @@ function PlasmicWebhookHeader__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -152,15 +154,15 @@ function PlasmicWebhookHeader__RenderFunc(props: {
       <div
         data-plasmic-name={"text"}
         data-plasmic-override={overrides.text}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
+        className={classNames("all", "__wab_text", sty.text)}
       >
         {"Header"}
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__ynHvD)}>
+      <div className={classNames("all", sty.freeBox__ynHvD)}>
         <input
           data-plasmic-name={"keyInput"}
           data-plasmic-override={overrides.keyInput}
-          className={classNames(projectcss.all, projectcss.input, sty.keyInput)}
+          className={classNames("all", "input", "input__fpbcK", sty.keyInput)}
           placeholder={"Enter key…"}
           ref={(ref) => {
             $refs["keyInput"] = ref;
@@ -173,11 +175,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
         <input
           data-plasmic-name={"valueInput"}
           data-plasmic-override={overrides.valueInput}
-          className={classNames(
-            projectcss.all,
-            projectcss.input,
-            sty.valueInput
-          )}
+          className={classNames("all", "input", "input__fpbcK", sty.valueInput)}
           placeholder={"Enter value…"}
           ref={(ref) => {
             $refs["valueInput"] = ref;
@@ -188,7 +186,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
         />
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__pVez5, {
+        className={classNames("all", sty.freeBox__pVez5, {
           [sty.freeBoxhideDelete__pVez5OQpov]: hasVariant(
             $state,
             "hideDelete",
@@ -210,7 +208,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
             data-plasmic-override={overrides.addButton}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__k0Jtn)}
+                className={classNames("all", sty.svg__k0Jtn)}
                 role={"img"}
               />
             }
@@ -220,7 +218,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
             size={"vertical"}
           >
             <PlusIcon
-              className={classNames(projectcss.all, sty.svg__wtQm)}
+              className={classNames("all", sty.svg__wtQm)}
               role={"img"}
             />
           </IconButton>
@@ -231,7 +229,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
             data-plasmic-override={overrides.deleteButton}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__sAyTq)}
+                className={classNames("all", sty.svg__sAyTq)}
                 role={"img"}
               />
             }
@@ -248,7 +246,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
             size={"vertical"}
           >
             <TrashIcon
-              className={classNames(projectcss.all, sty.svg__jTAbX)}
+              className={classNames("all", sty.svg__jTAbX)}
               role={"img"}
             />
           </IconButton>

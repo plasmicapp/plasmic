@@ -8,6 +8,7 @@
 .roothideMenu {
   display: flex;
   flex-direction: row;
+  row-gap: 0px;
 }
 .svg__h87Hm {
   position: relative;

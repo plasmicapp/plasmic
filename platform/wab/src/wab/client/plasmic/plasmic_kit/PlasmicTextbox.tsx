@@ -32,7 +32,7 @@ import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokens
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTextbox.module.css"; // plasmic-import: pA22NEzDCsn_/css
 
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
@@ -256,6 +256,7 @@ function PlasmicTextbox__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -273,10 +274,10 @@ function PlasmicTextbox__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -359,7 +360,7 @@ function PlasmicTextbox__RenderFunc(props: {
         <div
           data-plasmic-name={"prefixContainer"}
           data-plasmic-override={overrides.prefixContainer}
-          className={classNames(projectcss.all, sty.prefixContainer, {
+          className={classNames("all", sty.prefixContainer, {
             [sty.prefixContainerextraPadding]: hasVariant(
               $state,
               "extraPadding",
@@ -414,7 +415,7 @@ function PlasmicTextbox__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <SearchSvgIcon
-                className={classNames(projectcss.all, sty.svg__soWu)}
+                className={classNames("all", sty.svg__soWu)}
                 role={"img"}
               />
             ),
@@ -466,136 +467,110 @@ function PlasmicTextbox__RenderFunc(props: {
       <input
         data-plasmic-name={"textbox"}
         data-plasmic-override={overrides.textbox}
-        className={classNames(
-          projectcss.all,
-          projectcss.input,
-          projectcss.input__tXkSR,
-          sty.textbox,
-          {
-            [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
-            [sty.textboxerror]: hasVariant($state, "error", "error"),
-            [sty.textboxextraPadding]: hasVariant(
-              $state,
-              "extraPadding",
-              "extraPadding"
-            ),
-            [sty.textboxextraPadding_withIcons_withPrefix]:
-              hasVariant($state, "extraPadding", "extraPadding") &&
-              hasVariant($state, "withIcons", "withPrefix"),
-            [sty.textboxfontSize_xlarge]: hasVariant(
-              $state,
-              "fontSize",
-              "xlarge"
-            ),
-            [sty.textboxfontStyle_bold]: hasVariant(
-              $state,
-              "fontStyle",
-              "bold"
-            ),
-            [sty.textboxnoOutline]: hasVariant(
-              $state,
-              "noOutline",
-              "noOutline"
-            ),
-            [sty.textboxstyleType_autoheight]: hasVariant(
-              $state,
-              "styleType",
-              "autoheight"
-            ),
-            [sty.textboxstyleType_blue]: hasVariant(
-              $state,
-              "styleType",
-              "blue"
-            ),
-            [sty.textboxstyleType_bordered]: hasVariant(
-              $state,
-              "styleType",
-              "bordered"
-            ),
-            [sty.textboxstyleType_gray]: hasVariant(
-              $state,
-              "styleType",
-              "gray"
-            ),
-            [sty.textboxstyleType_green]: hasVariant(
-              $state,
-              "styleType",
-              "green"
-            ),
-            [sty.textboxstyleType_inverted]: hasVariant(
-              $state,
-              "styleType",
-              "inverted"
-            ),
-            [sty.textboxstyleType_medium]: hasVariant(
-              $state,
-              "styleType",
-              "medium"
-            ),
-            [sty.textboxstyleType_medium_withIcons_withPrefix]:
-              hasVariant($state, "styleType", "medium") &&
-              hasVariant($state, "withIcons", "withPrefix"),
-            [sty.textboxstyleType_mono]: hasVariant(
-              $state,
-              "styleType",
-              "mono"
-            ),
-            [sty.textboxstyleType_purple]: hasVariant(
-              $state,
-              "styleType",
-              "purple"
-            ),
-            [sty.textboxstyleType_rectangular]: hasVariant(
-              $state,
-              "styleType",
-              "rectangular"
-            ),
-            [sty.textboxstyleType_red]: hasVariant($state, "styleType", "red"),
-            [sty.textboxstyleType_right]: hasVariant(
-              $state,
-              "styleType",
-              "right"
-            ),
-            [sty.textboxstyleType_seamless]: hasVariant(
-              $state,
-              "styleType",
-              "seamless"
-            ),
-            [sty.textboxstyleType_topLayout]: hasVariant(
-              $state,
-              "styleType",
-              "topLayout"
-            ),
-            [sty.textboxstyleType_unset]: hasVariant(
-              $state,
-              "styleType",
-              "unset"
-            ),
-            [sty.textboxstyleType_white]: hasVariant(
-              $state,
-              "styleType",
-              "white"
-            ),
-            [sty.textboxwhiteBackground]: hasVariant(
-              $state,
-              "whiteBackground",
-              "whiteBackground"
-            ),
-            [sty.textboxwithIcons_withPrefix]: hasVariant(
-              $state,
-              "withIcons",
-              "withPrefix"
-            ),
-            [sty.textboxwithIcons_withSuffix]: hasVariant(
-              $state,
-              "withIcons",
-              "withSuffix"
-            ),
-            [sty.textboxwithIcons_withSuffix_styleType_medium]:
-              hasVariant($state, "withIcons", "withSuffix") &&
-              hasVariant($state, "styleType", "medium"),
-          }
-        )}
+        className={classNames("all", "input", "input__tXkSR", sty.textbox, {
+          [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
+          [sty.textboxerror]: hasVariant($state, "error", "error"),
+          [sty.textboxextraPadding]: hasVariant(
+            $state,
+            "extraPadding",
+            "extraPadding"
+          ),
+          [sty.textboxextraPadding_withIcons_withPrefix]:
+            hasVariant($state, "extraPadding", "extraPadding") &&
+            hasVariant($state, "withIcons", "withPrefix"),
+          [sty.textboxfontSize_xlarge]: hasVariant(
+            $state,
+            "fontSize",
+            "xlarge"
+          ),
+          [sty.textboxfontStyle_bold]: hasVariant($state, "fontStyle", "bold"),
+          [sty.textboxnoOutline]: hasVariant($state, "noOutline", "noOutline"),
+          [sty.textboxstyleType_autoheight]: hasVariant(
+            $state,
+            "styleType",
+            "autoheight"
+          ),
+          [sty.textboxstyleType_blue]: hasVariant($state, "styleType", "blue"),
+          [sty.textboxstyleType_bordered]: hasVariant(
+            $state,
+            "styleType",
+            "bordered"
+          ),
+          [sty.textboxstyleType_gray]: hasVariant($state, "styleType", "gray"),
+          [sty.textboxstyleType_green]: hasVariant(
+            $state,
+            "styleType",
+            "green"
+          ),
+          [sty.textboxstyleType_inverted]: hasVariant(
+            $state,
+            "styleType",
+            "inverted"
+          ),
+          [sty.textboxstyleType_medium]: hasVariant(
+            $state,
+            "styleType",
+            "medium"
+          ),
+          [sty.textboxstyleType_medium_withIcons_withPrefix]:
+            hasVariant($state, "styleType", "medium") &&
+            hasVariant($state, "withIcons", "withPrefix"),
+          [sty.textboxstyleType_mono]: hasVariant($state, "styleType", "mono"),
+          [sty.textboxstyleType_purple]: hasVariant(
+            $state,
+            "styleType",
+            "purple"
+          ),
+          [sty.textboxstyleType_rectangular]: hasVariant(
+            $state,
+            "styleType",
+            "rectangular"
+          ),
+          [sty.textboxstyleType_red]: hasVariant($state, "styleType", "red"),
+          [sty.textboxstyleType_right]: hasVariant(
+            $state,
+            "styleType",
+            "right"
+          ),
+          [sty.textboxstyleType_seamless]: hasVariant(
+            $state,
+            "styleType",
+            "seamless"
+          ),
+          [sty.textboxstyleType_topLayout]: hasVariant(
+            $state,
+            "styleType",
+            "topLayout"
+          ),
+          [sty.textboxstyleType_unset]: hasVariant(
+            $state,
+            "styleType",
+            "unset"
+          ),
+          [sty.textboxstyleType_white]: hasVariant(
+            $state,
+            "styleType",
+            "white"
+          ),
+          [sty.textboxwhiteBackground]: hasVariant(
+            $state,
+            "whiteBackground",
+            "whiteBackground"
+          ),
+          [sty.textboxwithIcons_withPrefix]: hasVariant(
+            $state,
+            "withIcons",
+            "withPrefix"
+          ),
+          [sty.textboxwithIcons_withSuffix]: hasVariant(
+            $state,
+            "withIcons",
+            "withSuffix"
+          ),
+          [sty.textboxwithIcons_withSuffix_styleType_medium]:
+            hasVariant($state, "withIcons", "withSuffix") &&
+            hasVariant($state, "styleType", "medium"),
+        })}
         placeholder={args.placeholder}
         ref={(ref) => {
           $refs["textbox"] = ref;
@@ -609,7 +584,7 @@ function PlasmicTextbox__RenderFunc(props: {
         <div
           data-plasmic-name={"suffixContainer"}
           data-plasmic-override={overrides.suffixContainer}
-          className={classNames(projectcss.all, sty.suffixContainer, {
+          className={classNames("all", sty.suffixContainer, {
             [sty.suffixContainerdisabled]: hasVariant(
               $state,
               "disabled",
@@ -684,7 +659,7 @@ function PlasmicTextbox__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <CloseSvgIcon
-                className={classNames(projectcss.all, sty.svg__nNaeY)}
+                className={classNames("all", sty.svg__nNaeY)}
                 role={"img"}
               />
             ),

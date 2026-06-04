@@ -1,25 +1,14 @@
 .root {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
   height: auto;
-  min-width: 0;
-  padding: 8px;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  row-gap: 8px;
   min-width: 0;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 8px;
+  padding: 8px;
 }
 .text {
   position: relative;
@@ -70,7 +59,7 @@
 .option___2PVtb:global(.__wab_instance) {
   position: relative;
 }
-.option___1IiGb:global(.__wab_instance) {
+.option__cKtUq:global(.__wab_instance) {
   position: relative;
 }
 .option__gniIa:global(.__wab_instance) {

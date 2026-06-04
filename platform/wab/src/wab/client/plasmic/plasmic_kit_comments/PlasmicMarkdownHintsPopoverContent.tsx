@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicMarkdownHintsPopoverContent.module.css"; // plasmic-import: pTr2lSrGWq8O/css
 
 import ArrowUpRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
@@ -97,10 +97,10 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -108,38 +108,26 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__o9Ye
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text__o9Ye)}>
           {"Markdown hints"}
         </div>
         <PlasmicLink__
           data-plasmic-name={"link"}
           data-plasmic-override={overrides.link}
-          className={classNames(projectcss.all, projectcss.a, sty.link)}
+          className={classNames("all", "a", "a__BP7V3", sty.link)}
           href={"https://commonmark.org/help/"}
           platform={"react"}
           target={"_blank"}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__mEhd3
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__mEhd3)}>
             {"More"}
           </div>
           <ArrowUpRightSvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
           />
         </PlasmicLink__>
@@ -147,7 +135,7 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       >
         <MarkdownHintRow
           className={classNames("__wab_instance", sty.markdownHintRow__ofIdB)}
@@ -190,10 +178,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMarkdownHintsPopoverContent__VariantsArgs;
     args?: PlasmicMarkdownHintsPopoverContent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit< // Specify variants directly as props
-    PlasmicMarkdownHintsPopoverContent__VariantsArgs,
-    ReservedPropsType
-  > &
+  } & // Specify variants directly as props
+  Omit<PlasmicMarkdownHintsPopoverContent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMarkdownHintsPopoverContent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

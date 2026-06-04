@@ -38,7 +38,7 @@ import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/c
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
+import "../../../plasmic/PP__plasmickit_share_dialog.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
 
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
@@ -124,27 +124,29 @@ function PlasmicPermissionItem__RenderFunc(props: {
         path: "role",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.role,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.role,
       },
       {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.loading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
       },
       {
         path: "roleDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "viewer",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "viewer",
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -162,10 +164,10 @@ function PlasmicPermissionItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_kA1Hysr5ZeimtATHTDJz5B",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -182,7 +184,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
           [sty.freeBoxrole_owner]: hasVariant($state, "role", "owner"),
         })}
@@ -191,12 +193,9 @@ function PlasmicPermissionItem__RenderFunc(props: {
           <div
             data-plasmic-name={"owner"}
             data-plasmic-override={overrides.owner}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.owner,
-              { [sty.ownerrole_owner]: hasVariant($state, "role", "owner") }
-            )}
+            className={classNames("all", "__wab_text", sty.owner, {
+              [sty.ownerrole_owner]: hasVariant($state, "role", "owner"),
+            })}
           >
             {hasVariant($state, "role", "owner") ? "Owner" : "Enter some text"}
           </div>
@@ -205,7 +204,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
           ? renderPlasmicSlot({
               defaultContents: (
                 <ResetIcon
-                  className={classNames(projectcss.all, sty.svg__vmeQb)}
+                  className={classNames("all", sty.svg__vmeQb)}
                   role={"img"}
                 />
               ),
@@ -218,7 +217,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
           data-plasmic-override={overrides.deleteBtn}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg___2OKoH)}
+              className={classNames("all", sty.svg___2OKoH)}
               role={"img"}
             />
           }
@@ -229,7 +228,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         >
           <PlasmicIcon__
             PlasmicIconType={triggers.hover_root ? Trash2SvgIcon : PlusSvgIcon}
-            className={classNames(projectcss.all, sty.svg__oRYw)}
+            className={classNames("all", sty.svg__oRYw)}
             role={"img"}
           />
         </IconButton>
@@ -247,7 +246,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
             })}
             icon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg__ijqCo)}
+                className={classNames("all", sty.svg__ijqCo)}
                 role={"img"}
               />
             }

@@ -28,7 +28,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotPromptImage.module.css"; // plasmic-import: MmbJYtYh-0Eh/css
 
 import CircleCloseIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__CircleClose"; // plasmic-import: 5kR2BNf5c2/icon
@@ -101,10 +101,10 @@ function PlasmicCopilotPromptImage__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -133,12 +133,12 @@ function PlasmicCopilotPromptImage__RenderFunc(props: {
       <div
         data-plasmic-name={"closeIconContainer"}
         data-plasmic-override={overrides.closeIconContainer}
-        className={classNames(projectcss.all, sty.closeIconContainer)}
+        className={classNames("all", sty.closeIconContainer)}
       >
         <CircleCloseIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
       </div>

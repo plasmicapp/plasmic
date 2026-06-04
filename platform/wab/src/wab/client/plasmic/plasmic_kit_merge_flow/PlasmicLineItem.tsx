@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,22 +14,21 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  PlasmicImg as PlasmicImg__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
+import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicLineItem.module.css"; // plasmic-import: VgvN9iOqwZ/css
 
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: eV4_yyuiy3/icon
@@ -96,53 +95,49 @@ function PlasmicLineItem__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_p8FkKgCnyuat1kHSEYAKfW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"startIconsContainer14"}
         data-plasmic-override={overrides.startIconsContainer14}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.startIconsContainer14)}
+        className={classNames("all", sty.startIconsContainer14)}
       >
         <DiamondsIcon
           data-plasmic-name={"icon"}
           data-plasmic-override={overrides.icon}
-          className={classNames(projectcss.all, sty.icon)}
+          className={classNames("all", sty.icon)}
           role={"img"}
         />
-      </Stack__>
+      </div>
       <div
         data-plasmic-name={"labelsContainer14"}
         data-plasmic-override={overrides.labelsContainer14}
-        className={classNames(projectcss.all, sty.labelsContainer14)}
+        className={classNames("all", sty.labelsContainer14)}
       >
         <div
           data-plasmic-name={"labelText14"}
           data-plasmic-override={overrides.labelText14}
-          className={classNames(projectcss.all, sty.labelText14)}
+          className={classNames("all", sty.labelText14)}
         >
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
-            className={classNames(projectcss.all, sty.freeBox)}
+            className={classNames("all", sty.freeBox)}
           >
             {renderPlasmicSlot({
               defaultContents:
@@ -155,11 +150,7 @@ function PlasmicLineItem__RenderFunc(props: {
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text
-              )}
+              className={classNames("all", "__wab_text", sty.text)}
             >
               {"Label"}
             </div>
@@ -169,24 +160,22 @@ function PlasmicLineItem__RenderFunc(props: {
           <div
             data-plasmic-name={"labelIconsContainer14"}
             data-plasmic-override={overrides.labelIconsContainer14}
-            className={classNames(projectcss.all, sty.labelIconsContainer14)}
+            className={classNames("all", sty.labelIconsContainer14)}
           >
             <ChevronDownIcon
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg)}
+              className={classNames("all", sty.svg)}
               role={"img"}
             />
           </div>
         ) : null}
       </div>
       {false ? (
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"endIconsContainer14"}
           data-plasmic-override={overrides.endIconsContainer14}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.endIconsContainer14)}
+          className={classNames("all", sty.endIconsContainer14)}
         >
           <PlasmicImg__
             data-plasmic-name={"img"}
@@ -207,9 +196,9 @@ function PlasmicLineItem__RenderFunc(props: {
               aspectRatio: 1,
             }}
           />
-        </Stack__>
+        </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -273,7 +262,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLineItem__VariantsArgs;
     args?: PlasmicLineItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLineItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLineItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLineItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

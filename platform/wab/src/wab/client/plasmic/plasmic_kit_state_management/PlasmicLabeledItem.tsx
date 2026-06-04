@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,33 +14,29 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicLabeledItem.module.css"; // plasmic-import: EmZVqVuGE1/css
 
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -106,7 +102,9 @@ function PlasmicLabeledItem__RenderFunc(props: {
         {
           gap: 8,
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -120,57 +118,53 @@ function PlasmicLabeledItem__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "layout",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.layout,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.layout,
       },
       {
         path: "labelSize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.labelSize,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.labelSize,
       },
       {
         path: "withRightExtras",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           !!$props.rightExtras ?? $props.withRightExtras,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootlabelSize_half]: hasVariant($state, "labelSize", "half"),
@@ -183,10 +177,8 @@ function PlasmicLabeledItem__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__bXw82, {
+      <div
+        className={classNames("all", sty.freeBox__bXw82, {
           [sty.freeBoxlayout_horizontal__bXw82EsXmk]: hasVariant(
             $state,
             "layout",
@@ -199,10 +191,8 @@ function PlasmicLabeledItem__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___0Gerh, {
+        <div
+          className={classNames("all", sty.freeBox___0Gerh, {
             [sty.freeBoxlabelSize_half___0GerhhH4Fv]: hasVariant(
               $state,
               "labelSize",
@@ -229,9 +219,9 @@ function PlasmicLabeledItem__RenderFunc(props: {
             defaultContents: "Label",
             value: args.label,
           })}
-        </Stack__>
+        </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__wrYhU, {
+          className={classNames("all", sty.freeBox__wrYhU, {
             [sty.freeBoxlabelSize_half__wrYhUhH4Fv]: hasVariant(
               $state,
               "labelSize",
@@ -250,15 +240,15 @@ function PlasmicLabeledItem__RenderFunc(props: {
                   ),
                 })}
                 prefixIcon={
-                  <SearchsvgIcon
-                    className={classNames(projectcss.all, sty.svg__oazkb)}
+                  <SearchSvgIcon
+                    className={classNames("all", sty.svg__oazkb)}
                     role={"img"}
                   />
                 }
                 styleType={["bordered"]}
                 suffixIcon={
-                  <ClosesvgIcon
-                    className={classNames(projectcss.all, sty.svg__hkE1G)}
+                  <CloseSvgIcon
+                    className={classNames("all", sty.svg__hkE1G)}
                     role={"img"}
                   />
                 }
@@ -268,9 +258,9 @@ function PlasmicLabeledItem__RenderFunc(props: {
             value: args.value,
           })}
         </div>
-      </Stack__>
+      </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__oh2X, {
+        className={classNames("all", sty.freeBox__oh2X, {
           [sty.freeBoxlayout_vertical__oh2X1KxsP]: hasVariant(
             $state,
             "layout",
@@ -288,7 +278,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
           value: args.rightExtras,
         })}
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -307,23 +297,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLabeledItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicLabeledItem__VariantsArgs;
     args?: PlasmicLabeledItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLabeledItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLabeledItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicLabeledItem__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicLabeledItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

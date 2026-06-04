@@ -32,7 +32,7 @@ import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProv
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftSearchPanel.module.css"; // plasmic-import: TqAPn0srTq/css
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
@@ -107,15 +107,18 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
         path: "rightOptions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.rightOptions,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.rightOptions,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -128,10 +131,10 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.searchPanel,
         {
@@ -168,7 +171,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <Button
           data-plasmic-name={"expandButton"}
@@ -182,7 +185,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
           })}
           endIcon={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg___0R83)}
+              className={classNames("all", sty.svg___0R83)}
               role={"img"}
             />
           }
@@ -190,14 +193,14 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
           size={"compact"}
           startIcon={
             <ArrowRightSvgIcon
-              className={classNames(projectcss.all, sty.svg__pHvlx)}
+              className={classNames("all", sty.svg__pHvlx)}
               role={"img"}
             />
           }
           type={["clear"]}
         >
           <ExpandAllIcon
-            className={classNames(projectcss.all, sty.svg__uzldM, {
+            className={classNames("all", sty.svg__uzldM, {
               [sty.svgrightOptions_groupingControls__uzldMwWi]: hasVariant(
                 $state,
                 "rightOptions",
@@ -222,7 +225,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
             })}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__zxCn1)}
+                className={classNames("all", sty.svg__zxCn1)}
                 role={"img"}
               />
             }
@@ -230,14 +233,14 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
             size={"compact"}
             startIcon={
               <ArrowRightSvgIcon
-                className={classNames(projectcss.all, sty.svg__stOqr)}
+                className={classNames("all", sty.svg__stOqr)}
                 role={"img"}
               />
             }
             type={["clear"]}
           >
             <CollapseAllIcon
-              className={classNames(projectcss.all, sty.svg___65HqT, {
+              className={classNames("all", sty.svg___65HqT, {
                 [sty.svgrightOptions_groupingControls___65HqTwWi]: hasVariant(
                   $state,
                   "rightOptions",
@@ -306,7 +309,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftSearchPanel__VariantsArgs;
     args?: PlasmicLeftSearchPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftSearchPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftSearchPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftSearchPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

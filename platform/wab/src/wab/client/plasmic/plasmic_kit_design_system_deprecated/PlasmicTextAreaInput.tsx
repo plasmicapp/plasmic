@@ -39,7 +39,7 @@ import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokens
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTextAreaInput.module.css"; // plasmic-import: 0wwbx9l7LS5I/css
 
 createPlasmicElementProxy;
@@ -192,6 +192,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -231,9 +232,9 @@ function PlasmicTextAreaInput__RenderFunc(props: {
         : undefined,
       className: classNames(
         "__wab_instance",
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.ariaTextArea,
         {

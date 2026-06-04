@@ -14,19 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicLivePopOutButton.module.css"; // plasmic-import: ND5ZuEZMUe/css
 
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
@@ -82,6 +83,8 @@ function PlasmicLivePopOutButton__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <IconButton
       data-plasmic-name={"root"}
@@ -90,17 +93,14 @@ function PlasmicLivePopOutButton__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       children2={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg__mMk8Z)}
+          className={classNames("all", sty.svg__mMk8Z)}
           role={"img"}
         />
       }
       className={classNames("__wab_instance", sty.root)}
       withBackgroundHover={true}
     >
-      <OpenIcon
-        className={classNames(projectcss.all, sty.svg___30FS)}
-        role={"img"}
-      />
+      <OpenIcon className={classNames("all", sty.svg___30FS)} role={"img"} />
     </IconButton>
   ) as React.ReactElement | null;
 }
@@ -126,7 +126,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLivePopOutButton__VariantsArgs;
     args?: PlasmicLivePopOutButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLivePopOutButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLivePopOutButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLivePopOutButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

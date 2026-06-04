@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicSplitRow.module.css"; // plasmic-import: ho6fjXelhV/css
 
 createPlasmicElementProxy;
@@ -98,10 +98,10 @@ function PlasmicSplitRow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -109,7 +109,7 @@ function PlasmicSplitRow__RenderFunc(props: {
       <div
         data-plasmic-name={"leftContainer"}
         data-plasmic-override={overrides.leftContainer}
-        className={classNames(projectcss.all, sty.leftContainer)}
+        className={classNames("all", sty.leftContainer)}
       >
         {renderPlasmicSlot({
           defaultContents: null,
@@ -119,7 +119,7 @@ function PlasmicSplitRow__RenderFunc(props: {
       <div
         data-plasmic-name={"rightContainer"}
         data-plasmic-override={overrides.rightContainer}
-        className={classNames(projectcss.all, sty.rightContainer)}
+        className={classNames("all", sty.rightContainer)}
       >
         {renderPlasmicSlot({
           defaultContents: null,

@@ -12,9 +12,6 @@
   padding: 16px;
 }
 .columns__kx3Gs {
-  --plsmc-rc-col-gap: 0px;
-}
-.columns__kx3Gs {
   display: flex;
   position: relative;
   width: 100%;
@@ -24,13 +21,14 @@
   flex-direction: row;
   flex-wrap: nowrap;
   min-width: 0;
+  --plsmc-rc-col-gap: 0px;
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .columns__kx3Gs > :nth-child(2n + 1) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
 }
 .columns__kx3Gs > :nth-child(2n + 2) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
 }
 .column__udGuw {
   display: flex;
@@ -88,9 +86,6 @@
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .columns__dm2Yt {
-  --plsmc-rc-col-gap: 0px;
-}
-.columns__dm2Yt {
   display: flex;
   width: 100%;
   height: auto;
@@ -99,14 +94,15 @@
   flex-direction: row;
   flex-wrap: nowrap;
   min-width: 0;
+  --plsmc-rc-col-gap: 0px;
   padding: 0px;
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .columns__dm2Yt > :nth-child(2n + 1) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
 }
 .columns__dm2Yt > :nth-child(2n + 2) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
 }
 .column__oCxJ {
   display: flex;
@@ -144,29 +140,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
   padding: 8px 0px;
-}
-.freeBox__j41Mv > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__j41Mv > :global(.__wab_flex-container) > *,
-.freeBox__j41Mv > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__j41Mv > :global(.__wab_flex-container) > picture > img,
-.freeBox__j41Mv
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .directorySelect:global(.__wab_instance) {
   max-width: 100%;
@@ -179,18 +160,13 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__o1Em8 {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
-}
-.columns__xu0Xg {
-  --plsmc-rc-col-gap: 0px;
 }
 .columns__xu0Xg {
   display: flex;
@@ -201,17 +177,18 @@
   flex-direction: row;
   flex-wrap: nowrap;
   min-width: 0;
+  --plsmc-rc-col-gap: 0px;
   padding: 8px 0px;
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .columns__xu0Xg > :nth-child(3n + 1) {
-  width: calc((100% - 3 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
+  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
 }
 .columns__xu0Xg > :nth-child(3n + 2) {
-  width: calc((100% - 3 * var(--plsmc-rc-col-gap, 0px)) * 7 / 12);
+  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 7 / 12);
 }
 .columns__xu0Xg > :nth-child(3n + 3) {
-  width: calc((100% - 3 * var(--plsmc-rc-col-gap, 0px)) * 1 / 12);
+  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 1 / 12);
 }
 .column__b3BAv {
   display: flex;
@@ -278,14 +255,12 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__qDk5 {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .freeBox__kvqUw {
@@ -302,9 +277,6 @@
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .roleNeededRow {
-  --plsmc-rc-col-gap: 0px;
-}
-.roleNeededRow {
   display: flex;
   position: relative;
   width: 100%;
@@ -314,12 +286,13 @@
   flex-direction: row;
   flex-wrap: nowrap;
   min-width: 0;
+  --plsmc-rc-col-gap: 0px;
 }
 .roleNeededRow > :nth-child(2n + 1) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
 }
 .roleNeededRow > :nth-child(2n + 2) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
 }
 .column__oO9R2 {
   display: flex;

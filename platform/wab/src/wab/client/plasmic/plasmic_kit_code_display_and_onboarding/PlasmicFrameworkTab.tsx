@@ -14,25 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_code_display_and_onboarding.module.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
+import "./plasmic_plasmic_kit_code_display_and_onboarding.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
 import sty from "./PlasmicFrameworkTab.module.css"; // plasmic-import: aSLlLoswhi/css
 
 createPlasmicElementProxy;
@@ -52,7 +51,7 @@ export type PlasmicFrameworkTab__ArgsType = {
   name?: React.ReactNode;
   logo?: React.ReactNode;
   destination?: string;
-  openInNewTab?: Target;
+  openInNewTab?: string;
 };
 type ArgPropType = keyof PlasmicFrameworkTab__ArgsType;
 export const PlasmicFrameworkTab__ArgProps = new Array<ArgPropType>(
@@ -71,7 +70,7 @@ export interface DefaultFrameworkTabProps {
   name?: React.ReactNode;
   logo?: React.ReactNode;
   destination?: string;
-  openInNewTab?: Target;
+  openInNewTab?: string;
   active?: SingleBooleanChoiceArg<"active">;
   className?: string;
 }
@@ -112,35 +111,36 @@ function PlasmicFrameworkTab__RenderFunc(props: {
         path: "active",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.active,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.active,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={PlasmicLink__}
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.a,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        "all",
+        "a",
+        "a__pTmuh",
+        "root_reset_pTmuho7nuNtDcvZAf2kJgx",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         { [sty.rootactive]: hasVariant($state, "active", "active") }
       )}
@@ -151,7 +151,7 @@ function PlasmicFrameworkTab__RenderFunc(props: {
       <div
         data-plasmic-name={"fixIconHeight"}
         data-plasmic-override={overrides.fixIconHeight}
-        className={classNames(projectcss.all, sty.fixIconHeight, {
+        className={classNames("all", sty.fixIconHeight, {
           [sty.fixIconHeightactive]: hasVariant($state, "active", "active"),
         })}
       >
@@ -167,7 +167,7 @@ function PlasmicFrameworkTab__RenderFunc(props: {
           [sty.slotTargetNameactive]: hasVariant($state, "active", "active"),
         }),
       })}
-    </Stack__>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 
@@ -194,7 +194,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFrameworkTab__VariantsArgs;
     args?: PlasmicFrameworkTab__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicFrameworkTab__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicFrameworkTab__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicFrameworkTab__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

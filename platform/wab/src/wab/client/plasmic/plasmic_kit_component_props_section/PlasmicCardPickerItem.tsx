@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_component_props_section.module.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
+import "./plasmic_plasmic_kit_component_props_section.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 import sty from "./PlasmicCardPickerItem.module.css"; // plasmic-import: -ZWJykIq5V-3F/css
 
 import EyeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeSvg"; // plasmic-import: oFYcZi8LU/icon
@@ -124,6 +124,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -146,11 +147,12 @@ function PlasmicCardPickerItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "button",
+        "button__783YK",
+        "root_reset_783YKJdyRRPxZbx3qiNi5Q",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -161,7 +163,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
       data-plasmic-trigger-props={[triggerRootFocusProps]}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__mWjoK, {
+        className={classNames("all", sty.freeBox__mWjoK, {
           [sty.freeBoxisSelected__mWjoK5OaEf]: hasVariant(
             $state,
             "isSelected",
@@ -176,7 +178,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
         })}
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__sxDqT, {
+        className={classNames("all", sty.freeBox__sxDqT, {
           [sty.freeBoxisSelected__sxDqT5OaEf]: hasVariant(
             $state,
             "isSelected",
@@ -199,7 +201,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
           ? renderPlasmicSlot({
               defaultContents: (
                 <EyeSvgIcon
-                  className={classNames(projectcss.all, sty.svg__es6UG)}
+                  className={classNames("all", sty.svg__es6UG)}
                   role={"img"}
                 />
               ),
@@ -209,7 +211,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
           : null}
       </div>
       {(triggers.focus_root ? true : false) ? (
-        <div className={classNames(projectcss.all, sty.freeBox__rbX2U)} />
+        <div className={classNames("all", sty.freeBox__rbX2U)} />
       ) : null}
     </button>
   ) as React.ReactElement | null;

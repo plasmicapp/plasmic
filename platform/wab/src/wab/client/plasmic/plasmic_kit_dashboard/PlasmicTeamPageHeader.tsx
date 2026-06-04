@@ -16,12 +16,10 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -31,16 +29,12 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
-import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicTeamPageHeader.module.css"; // plasmic-import: pcPdf_yULU3/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
@@ -121,22 +115,24 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
         path: "accessLevel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.accessLevel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.accessLevel,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    screen: useScreenVariants_2DzYbdw5Xtx(),
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -145,39 +141,18 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootaccessLevel_none]: hasVariant($state, "accessLevel", "none"),
         }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__nhPk)}>
+      <div className={classNames("all", sty.freeBox__nhPk)}>
         <EditableResourceName
           data-plasmic-name={"editableName"}
           data-plasmic-override={overrides.editableName}
@@ -203,10 +178,8 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
           name={"Untitled organization"}
         />
 
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__k3C1, {
+        <div
+          className={classNames("all", sty.freeBox__k3C1, {
             [sty.freeBoxaccessLevel_none__k3C1WoEqv]: hasVariant(
               $state,
               "accessLevel",
@@ -215,32 +188,21 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__onsFf,
-              {
-                [sty.textaccessLevel_none__onsFfwoEqv]: hasVariant(
-                  $state,
-                  "accessLevel",
-                  "none"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__onsFf, {
+              [sty.textaccessLevel_none__onsFfwoEqv]: hasVariant(
+                $state,
+                "accessLevel",
+                "none"
+              ),
+            })}
           >
             {"Organization"}
           </div>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__wGb9A
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__wGb9A)}>
             {"\u2022"}
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox___7MQa1, {
+            className={classNames("all", sty.freeBox___7MQa1, {
               [sty.freeBoxaccessLevel_none___7MQa1WoEqv]: hasVariant(
                 $state,
                 "accessLevel",
@@ -254,22 +216,19 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
               className: classNames(sty.slotTargetNumMembers),
             })}
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__pZMa1,
-                {
-                  [sty.textaccessLevel_none__pZMa1WoEqv]: hasVariant(
-                    $state,
-                    "accessLevel",
-                    "none"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__pZMa1, {
+                [sty.textaccessLevel_none__pZMa1WoEqv]: hasVariant(
+                  $state,
+                  "accessLevel",
+                  "none"
+                ),
+              })}
             >
               <React.Fragment>
                 <span
-                  className={"plasmic_default__all plasmic_default__span"}
+                  className={
+                    "plasmic_default__all plasmic_default__span plasmic_default__span__ooL7E"
+                  }
                   style={{ color: "#706F6C" }}
                 >
                   {"members"}
@@ -277,17 +236,11 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
               </React.Fragment>
             </div>
           </div>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__btKYk
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__btKYk)}>
             {"\u2022"}
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__amFi8, {
+            className={classNames("all", sty.freeBox__amFi8, {
               [sty.freeBoxaccessLevel_none__amFi8WoEqv]: hasVariant(
                 $state,
                 "accessLevel",
@@ -300,16 +253,12 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
               value: args.numProjects,
               className: classNames(sty.slotTargetNumProjects),
             })}
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__vivl7
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__vivl7)}>
               <React.Fragment>
                 <span
-                  className={"plasmic_default__all plasmic_default__span"}
+                  className={
+                    "plasmic_default__all plasmic_default__span plasmic_default__span__ooL7E"
+                  }
                   style={{ color: "#706F6C" }}
                 >
                   {"projects"}
@@ -317,13 +266,9 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
               </React.Fragment>
             </div>
           </div>
-        </Stack__>
+        </div>
       </div>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__hp5G2)}
-      >
+      <div className={classNames("all", sty.freeBox__hp5G2)}>
         <Button
           data-plasmic-name={"newWorkspaceButton"}
           data-plasmic-override={overrides.newWorkspaceButton}
@@ -341,14 +286,14 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
           })}
           endIcon={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__lPle9)}
+              className={classNames("all", sty.svg__lPle9)}
               role={"img"}
             />
           }
           font={"bold"}
           startIcon={
             <AppsSvgIcon
-              className={classNames(projectcss.all, sty.svg___0Naz)}
+              className={classNames("all", sty.svg___0Naz)}
               role={"img"}
             />
           }
@@ -374,14 +319,14 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
           })}
           endIcon={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__pt2Ru)}
+              className={classNames("all", sty.svg__pt2Ru)}
               role={"img"}
             />
           }
           font={"bold"}
           startIcon={
             <GearIcon
-              className={classNames(projectcss.all, sty.svg__ptiqv)}
+              className={classNames("all", sty.svg__ptiqv)}
               role={"img"}
             />
           }
@@ -389,18 +334,13 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
           withIcons={["startIcon"]}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__c3Zy,
-              {
-                [sty.textaccessLevel_cantEdit__c3Zy2LLy]: hasVariant(
-                  $state,
-                  "accessLevel",
-                  "cantEdit"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__c3Zy, {
+              [sty.textaccessLevel_cantEdit__c3Zy2LLy]: hasVariant(
+                $state,
+                "accessLevel",
+                "cantEdit"
+              ),
+            })}
           >
             {"Manage organization"}
           </div>
@@ -421,7 +361,7 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
             ),
           })}
         />
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -461,7 +401,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTeamPageHeader__VariantsArgs;
     args?: PlasmicTeamPageHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTeamPageHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTeamPageHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTeamPageHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -30,7 +30,7 @@ import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleToken
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicHiliteTabButton.module.css"; // plasmic-import: lHRivspQeB/css
 
 createPlasmicElementProxy;
@@ -111,6 +111,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -131,12 +132,12 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
         hasVariant($state, "isSelected", "isSelected") ? "true" : "false"
       }
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.button__gYEVv,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "button",
+        "button__gYEVv",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisSelected]: hasVariant($state, "isSelected", "isSelected") }

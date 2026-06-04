@@ -25,10 +25,10 @@
   padding: var(--token-XnnXV8YSKg9w);
   border: 1px solid var(--token-JpKJ41ZaDWOC);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-9jh0BkCENS);
 }
-.rootthread:hover {
+.rootthread:hover:hover {
   background: var(--token-G18pc1ITl);
   cursor: pointer;
 }

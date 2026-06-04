@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,24 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
+import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicToggleButtonSwitch.module.css"; // plasmic-import: LCAZOUPfDDB/css
 
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: eV4_yyuiy3/icon
@@ -114,34 +113,34 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
         path: "side",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.side,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.side,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_p8FkKgCnyuat1kHSEYAKfW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootside_left]: hasVariant($state, "side", "left"),
@@ -149,27 +148,23 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"button"}
+      <button
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
-        hasGap={true}
-        className={classNames(projectcss.all, projectcss.button, sty.left, {
+        className={classNames("all", "button", "button__p8FkK", sty.left, {
           [sty.leftside_left]: hasVariant($state, "side", "left"),
         })}
         ref={(ref) => {
           $refs["left"] = ref;
         }}
       >
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"startIconsContainer11"}
           data-plasmic-override={overrides.startIconsContainer11}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.startIconsContainer11)}
+          className={classNames("all", sty.startIconsContainer11)}
         >
           <SquareCheckFilledIcon
-            className={classNames(projectcss.all, sty.svg__kkC6D, {
+            className={classNames("all", sty.svg__kkC6D, {
               [sty.svgside_left__kkC6DKxWfo]: hasVariant(
                 $state,
                 "side",
@@ -178,36 +173,29 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
             })}
             role={"img"}
           />
-        </Stack__>
+        </div>
         <div
           data-plasmic-name={"labelsContainer11"}
           data-plasmic-override={overrides.labelsContainer11}
-          className={classNames(projectcss.all, sty.labelsContainer11)}
+          className={classNames("all", sty.labelsContainer11)}
         >
           <div
             data-plasmic-name={"labelText11"}
             data-plasmic-override={overrides.labelText11}
-            className={classNames(projectcss.all, sty.labelText11)}
+            className={classNames("all", sty.labelText11)}
           >
             <div
               data-plasmic-name={"label13"}
               data-plasmic-override={overrides.label13}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.label13,
-                { [sty.label13side_left]: hasVariant($state, "side", "left") }
-              )}
+              className={classNames("all", "__wab_text", sty.label13, {
+                [sty.label13side_left]: hasVariant($state, "side", "left"),
+              })}
             >
               {"Keep"}
             </div>
             {false ? (
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___3V0UF
-                )}
+                className={classNames("all", "__wab_text", sty.text___3V0UF)}
               >
                 {"Label"}
               </div>
@@ -217,22 +205,20 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
             <div
               data-plasmic-name={"labelIconsContainer11"}
               data-plasmic-override={overrides.labelIconsContainer11}
-              className={classNames(projectcss.all, sty.labelIconsContainer11)}
+              className={classNames("all", sty.labelIconsContainer11)}
             >
               <ChevronDownIcon
-                className={classNames(projectcss.all, sty.svg__sJOr)}
+                className={classNames("all", sty.svg__sJOr)}
                 role={"img"}
               />
             </div>
           ) : null}
         </div>
         {false ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"endIconsContainer11"}
             data-plasmic-override={overrides.endIconsContainer11}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.endIconsContainer11)}
+            className={classNames("all", sty.endIconsContainer11)}
           >
             <PlasmicImg__
               alt={""}
@@ -251,15 +237,13 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
                 aspectRatio: 1,
               }}
             />
-          </Stack__>
+          </div>
         ) : null}
-      </Stack__>
-      <Stack__
-        as={"button"}
+      </button>
+      <button
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
-        hasGap={true}
-        className={classNames(projectcss.all, projectcss.button, sty.right, {
+        className={classNames("all", "button", "button__p8FkK", sty.right, {
           [sty.rightside_left]: hasVariant($state, "side", "left"),
           [sty.rightside_right]: hasVariant($state, "side", "right"),
         })}
@@ -268,48 +252,36 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
         }}
       >
         {false ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"startIconsContainer12"}
             data-plasmic-override={overrides.startIconsContainer12}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.startIconsContainer12)}
+            className={classNames("all", sty.startIconsContainer12)}
           >
             <SquareIcon
-              className={classNames(projectcss.all, sty.svg___28Q7C)}
+              className={classNames("all", sty.svg___28Q7C)}
               role={"img"}
             />
-          </Stack__>
+          </div>
         ) : null}
         <div
           data-plasmic-name={"labelsContainer12"}
           data-plasmic-override={overrides.labelsContainer12}
-          className={classNames(projectcss.all, sty.labelsContainer12)}
+          className={classNames("all", sty.labelsContainer12)}
         >
           <div
             data-plasmic-name={"labelText12"}
             data-plasmic-override={overrides.labelText12}
-            className={classNames(projectcss.all, sty.labelText12)}
+            className={classNames("all", sty.labelText12)}
           >
             <div
               data-plasmic-name={"label14"}
               data-plasmic-override={overrides.label14}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.label14
-              )}
+              className={classNames("all", "__wab_text", sty.label14)}
             >
               {"Keep"}
             </div>
             {false ? (
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__nsOzi
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__nsOzi)}>
                 {"Label"}
               </div>
             ) : null}
@@ -318,22 +290,20 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
             <div
               data-plasmic-name={"labelIconsContainer12"}
               data-plasmic-override={overrides.labelIconsContainer12}
-              className={classNames(projectcss.all, sty.labelIconsContainer12)}
+              className={classNames("all", sty.labelIconsContainer12)}
             >
               <ChevronDownIcon
-                className={classNames(projectcss.all, sty.svg___9WnGr)}
+                className={classNames("all", sty.svg___9WnGr)}
                 role={"img"}
               />
             </div>
           ) : null}
         </div>
         {false ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"endIconsContainer12"}
             data-plasmic-override={overrides.endIconsContainer12}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.endIconsContainer12)}
+            className={classNames("all", sty.endIconsContainer12)}
           >
             <PlasmicImg__
               alt={""}
@@ -352,10 +322,10 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
                 aspectRatio: 1,
               }}
             />
-          </Stack__>
+          </div>
         ) : null}
-      </Stack__>
-    </Stack__>
+      </button>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -450,7 +420,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicToggleButtonSwitch__VariantsArgs;
     args?: PlasmicToggleButtonSwitch__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicToggleButtonSwitch__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicToggleButtonSwitch__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicToggleButtonSwitch__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

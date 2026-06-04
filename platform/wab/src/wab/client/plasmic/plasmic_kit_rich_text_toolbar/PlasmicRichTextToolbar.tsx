@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,14 +14,13 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -30,12 +29,11 @@ import RichTextToolbarDivider from "../../components/canvas/RichText/RichTextToo
 import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: uLddf5fC1aQbF7tmV1WQ1a/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_rich_text_toolbar.module.css"; // plasmic-import: uLddf5fC1aQbF7tmV1WQ1a/projectcss
+import "./plasmic_plasmic_kit_rich_text_toolbar.css"; // plasmic-import: uLddf5fC1aQbF7tmV1WQ1a/projectcss
 import sty from "./PlasmicRichTextToolbar.module.css"; // plasmic-import: GzEy-XDJM8/css
 
 import BoldSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoldSvg"; // plasmic-import: OiX2-qUyR/icon
@@ -120,18 +118,21 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
         path: "hideBlock",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideBlock,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideBlock,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -140,20 +141,18 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        "all",
+        "root_reset_uLddf5fC1aQbF7tmV1WQ1a",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"blockControls"}
         data-plasmic-override={overrides.blockControls}
-        className={classNames(projectcss.all, sty.blockControls, {
+        className={classNames("all", sty.blockControls, {
           [sty.blockControlshideBlock]: hasVariant(
             $state,
             "hideBlock",
@@ -167,35 +166,29 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           className={classNames("__wab_instance", sty.block)}
           icon={
             <PlusSvgIcon
-              className={classNames(projectcss.all, sty.svg__pVkd)}
+              className={classNames("all", sty.svg__pVkd)}
               role={"img"}
             />
           }
           placeholder={
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"freeBox"}
               data-plasmic-override={overrides.freeBox}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox)}
+              className={classNames("all", sty.freeBox)}
             >
               <TextSvgIcon
-                className={classNames(projectcss.all, sty.svg__sk6N)}
+                className={classNames("all", sty.svg__sk6N)}
                 role={"img"}
               />
 
               <div
                 data-plasmic-name={"text"}
                 data-plasmic-override={overrides.text}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text
-                )}
+                className={classNames("all", "__wab_text", sty.text)}
               >
                 {"Default"}
               </div>
-            </Stack__>
+            </div>
           }
         />
       </div>
@@ -213,19 +206,17 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
         )}
       />
 
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"styleControls"}
         data-plasmic-override={overrides.styleControls}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.styleControls)}
+        className={classNames("all", sty.styleControls)}
       >
         <IconButton
           data-plasmic-name={"color"}
           data-plasmic-override={overrides.color}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__vD2V)}
+              className={classNames("all", sty.svg__vD2V)}
               role={"img"}
             />
           }
@@ -235,11 +226,11 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           <div
             data-plasmic-name={"currentColor"}
             data-plasmic-override={overrides.currentColor}
-            className={classNames(projectcss.all, sty.currentColor)}
+            className={classNames("all", sty.currentColor)}
           />
 
           <ChevronDownSvgIcon
-            className={classNames(projectcss.all, sty.svg__yx6RJ)}
+            className={classNames("all", sty.svg__yx6RJ)}
             role={"img"}
           />
         </IconButton>
@@ -250,7 +241,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           hasIcon={true}
           icon={
             <BoldSvgIcon
-              className={classNames(projectcss.all, sty.svg__myNmc)}
+              className={classNames("all", sty.svg__myNmc)}
               role={"img"}
             />
           }
@@ -263,7 +254,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           data-plasmic-override={overrides.fontStyle}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__wlHtu)}
+              className={classNames("all", sty.svg__wlHtu)}
               role={"img"}
             />
           }
@@ -271,7 +262,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           withBackgroundHover={true}
         >
           <ItalicSvgIcon
-            className={classNames(projectcss.all, sty.svg__ium02)}
+            className={classNames("all", sty.svg__ium02)}
             role={"img"}
           />
         </IconButton>
@@ -283,14 +274,14 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           hasIcon={true}
           icon={
             <UnderlineSvgIcon
-              className={classNames(projectcss.all, sty.svg__kB86G)}
+              className={classNames("all", sty.svg__kB86G)}
               role={"img"}
             />
           }
           size={"small"}
           type={["noDivider"]}
         />
-      </Stack__>
+      </div>
       <RichTextToolbarDivider
         className={classNames(
           "__wab_instance",
@@ -301,7 +292,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
       <div
         data-plasmic-name={"inlineControls"}
         data-plasmic-override={overrides.inlineControls}
-        className={classNames(projectcss.all, sty.inlineControls)}
+        className={classNames("all", sty.inlineControls)}
       >
         <ActionMenuButton
           data-plasmic-name={"inline"}
@@ -311,7 +302,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           hasIcon={true}
           icon={
             <LinkSvgIcon
-              className={classNames(projectcss.all, sty.svg__zu5On)}
+              className={classNames("all", sty.svg__zu5On)}
               role={"img"}
             />
           }
@@ -339,7 +330,6 @@ const PlasmicDescendants = {
     "inlineControls",
     "inline",
   ],
-
   blockControls: ["blockControls", "block", "freeBox", "text"],
   block: ["block", "freeBox", "text"],
   freeBox: ["freeBox", "text"],
@@ -352,7 +342,6 @@ const PlasmicDescendants = {
     "fontStyle",
     "textDecoration",
   ],
-
   color: ["color", "currentColor"],
   currentColor: ["currentColor"],
   fontWeight: ["fontWeight"],
@@ -385,23 +374,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicRichTextToolbar__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicRichTextToolbar__VariantsArgs;
     args?: PlasmicRichTextToolbar__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicRichTextToolbar__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicRichTextToolbar__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicRichTextToolbar__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicRichTextToolbar__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

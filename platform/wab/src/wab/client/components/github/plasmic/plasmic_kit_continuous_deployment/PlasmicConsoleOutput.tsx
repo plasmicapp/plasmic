@@ -30,7 +30,7 @@ import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_depl
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicConsoleOutput.module.css"; // plasmic-import: 8dA5vGT9N9E/css
 
 createPlasmicElementProxy;
@@ -97,15 +97,17 @@ function PlasmicConsoleOutput__RenderFunc(props: {
         path: "hidden",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hidden,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hidden,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -119,10 +121,10 @@ function PlasmicConsoleOutput__RenderFunc(props: {
         data-plasmic-root={true}
         data-plasmic-for-node={forNode}
         className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
+          "all",
+          "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+          "plasmic_default_styles",
+          "plasmic_mixins",
           styleTokensClassNames,
           sty.root,
           { [sty.roothidden]: hasVariant($state, "hidden", "hidden") }
@@ -131,17 +133,11 @@ function PlasmicConsoleOutput__RenderFunc(props: {
         <div
           data-plasmic-name={"outputBox"}
           data-plasmic-override={overrides.outputBox}
-          className={classNames(projectcss.all, sty.outputBox)}
+          className={classNames("all", sty.outputBox)}
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__hUYoL
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__hUYoL)}>
                 {
                   '$ plasmic sync --projects "cdwhVWs57jCQsvo9GniSFA@0.0.2" --yes\nNo plasmic.json file found. Initializing plasmic...\nSuccessfully created plasmic.json.\n\n@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add it now? (Y/n): y\nyarn add -W @plasmicapp/react-web\nyarn add v1.22.10\n[1/4] Resolving packages...\n[2/4] Fetching packages...\ninfo fsevents@2.1.3: The platform "linux" is incompatible with this module.\ninfo "fsevents@2.1.3" is an optional dependency and failed compatibility check. Excluding it from installation.\ninfo fsevents@2.3.1: The platform "linux" is incompatible with this module.\ninfo "fsevents@2.3.1" is an optional dependency and failed compatibility check. Excluding it from installation.\ninfo fsevents@1.2.13: The platform "linux" is incompatible with this module.\ninfo "fsevents@1.2.13" is an optional dependency and failed compatibility check. Excluding it from installation.\n[3/4] Linking dependencies...\n[4/4] Building fresh packages...\n\nsuccess Saved 1 new dependency.\ninfo Direct dependencies\n\u2514\u2500 @plasmicapp/react-web@0.2.16\ninfo All dependencies\n\u2514\u2500 @plasmicapp/react-web@0.2.16\nDone in 3.63s.\nSuccessfully added @plasmicapp/react-web dependency.\n\'The real Plasmic project 1 has never been synced before. Syncing...\'\nSyncing component: NewComponent@0.0.2\t[\'The real Plasmic project 1\' cdwhVWs57jCQsvo9GniSFA/K9N6wXetOj >=0.0.0]\nFixing import statements...\n\nYour Plasmic project "The real Plasmic project 1" has now been synced to disk.'
                 }

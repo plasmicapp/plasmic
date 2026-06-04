@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicPublishDialogContent.module.css"; // plasmic-import: V25hk8i--ck/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
@@ -111,15 +111,17 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -132,10 +134,10 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -146,7 +148,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
     >
       {false ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__qwLxK, {
+          className={classNames("all", sty.freeBox__qwLxK, {
             [sty.freeBoxstate_disabled__qwLxKc5URt]: hasVariant(
               $state,
               "state",
@@ -160,23 +162,18 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__wzTni,
-              {
-                [sty.textstate_disabled__wzTnic5URt]: hasVariant(
-                  $state,
-                  "state",
-                  "disabled"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__wzTni, {
+              [sty.textstate_disabled__wzTnic5URt]: hasVariant(
+                $state,
+                "state",
+                "disabled"
+              ),
+            })}
           >
             {"Publish new version"}
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__ad0B7, {
+            className={classNames("all", sty.freeBox__ad0B7, {
               [sty.freeBoxstate_disabled__ad0B7C5URt]: hasVariant(
                 $state,
                 "state",
@@ -209,7 +206,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
         </div>
       ) : null}
       <div
-        className={classNames(projectcss.all, sty.freeBox__hspE3, {
+        className={classNames("all", sty.freeBox__hspE3, {
           [sty.freeBoxstate_disabled__hspE3C5URt]: hasVariant(
             $state,
             "state",
@@ -223,23 +220,18 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__bitqw,
-            {
-              [sty.textstate_disabled__bitqwc5URt]: hasVariant(
-                $state,
-                "state",
-                "disabled"
-              ),
-              [sty.textstate_nochanges__bitqWxcr0E]: hasVariant(
-                $state,
-                "state",
-                "nochanges"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text__bitqw, {
+            [sty.textstate_disabled__bitqwc5URt]: hasVariant(
+              $state,
+              "state",
+              "disabled"
+            ),
+            [sty.textstate_nochanges__bitqWxcr0E]: hasVariant(
+              $state,
+              "state",
+              "nochanges"
+            ),
+          })}
         >
           {hasVariant($state, "state", "nochanges")
             ? "There have been no new changes since your last published version."
@@ -247,7 +239,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
         </div>
         {(hasVariant($state, "state", "nochanges") ? false : true) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__torLq, {
+            className={classNames("all", sty.freeBox__torLq, {
               [sty.freeBoxstate_nochanges__torLqxcr0E]: hasVariant(
                 $state,
                 "state",
@@ -255,17 +247,11 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
               ),
             })}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__pPoTy
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__pPoTy)}>
               {"Version number"}
             </div>
-            <div className={classNames(projectcss.all, sty.freeBox__epD6O)}>
-              <div className={classNames(projectcss.all, sty.freeBox__iv4LQ)}>
+            <div className={classNames("all", sty.freeBox__epD6O)}>
+              <div className={classNames("all", sty.freeBox__iv4LQ)}>
                 {renderPlasmicSlot({
                   defaultContents: "1.0.0",
                   value: args.versionNumber,
@@ -275,18 +261,13 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
               <div
                 data-plasmic-name={"hint"}
                 data-plasmic-override={overrides.hint}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.hint,
-                  {
-                    [sty.hintstate_disabled]: hasVariant(
-                      $state,
-                      "state",
-                      "disabled"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.hint, {
+                  [sty.hintstate_disabled]: hasVariant(
+                    $state,
+                    "state",
+                    "disabled"
+                  ),
+                })}
               >
                 {
                   "Version numbers are automatically calculated using semantic versioning."
@@ -296,7 +277,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
           </div>
         ) : null}
         <div
-          className={classNames(projectcss.all, sty.freeBox___67EiX, {
+          className={classNames("all", sty.freeBox___67EiX, {
             [sty.freeBoxstate_disabled___67EiXc5URt]: hasVariant(
               $state,
               "state",
@@ -310,25 +291,20 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__lY3Fv,
-              {
-                [sty.textstate_nochanges__lY3Fvxcr0E]: hasVariant(
-                  $state,
-                  "state",
-                  "nochanges"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__lY3Fv, {
+              [sty.textstate_nochanges__lY3Fvxcr0E]: hasVariant(
+                $state,
+                "state",
+                "nochanges"
+              ),
+            })}
           >
             {"Description"}
           </div>
           <input
             data-plasmic-name={"title"}
             data-plasmic-override={overrides.title}
-            className={classNames(projectcss.all, projectcss.input, sty.title, {
+            className={classNames("all", "input", "input__aukbr", sty.title, {
               [sty.titlestate_disabled]: hasVariant(
                 $state,
                 "state",
@@ -355,7 +331,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
           <div
             data-plasmic-name={"publishHint"}
             data-plasmic-override={overrides.publishHint}
-            className={classNames(projectcss.all, sty.publishHint, {
+            className={classNames("all", sty.publishHint, {
               [sty.publishHintstate_nochanges]: hasVariant(
                 $state,
                 "state",
@@ -370,7 +346,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.openButton)}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__zwFhP)}
+                    className={classNames("all", sty.svg__zwFhP)}
                     role={"img"}
                   />
                 }
@@ -420,7 +396,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
             }
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__e8G4E)}
+                className={classNames("all", sty.svg__e8G4E)}
                 role={"img"}
               />
             }
@@ -428,7 +404,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
             startIcon={
               false ? (
                 <TrashIcon
-                  className={classNames(projectcss.all, sty.svg__tI9X5)}
+                  className={classNames("all", sty.svg__tI9X5)}
                   role={"img"}
                 />
               ) : null
@@ -487,7 +463,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPublishDialogContent__VariantsArgs;
     args?: PlasmicPublishDialogContent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPublishDialogContent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPublishDialogContent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPublishDialogContent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -2,22 +2,12 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  cursor: pointer;
-  border-radius: 6px;
-  padding: 6px 12px 6px 8px;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   align-content: unset;
-  margin-left: calc(0px - 6px);
-  width: calc(100% + 6px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 6px;
+  cursor: pointer;
+  column-gap: 6px;
+  border-radius: 6px;
+  padding: 6px 12px 6px 8px;
 }
 .rootdisabled {
   opacity: 0.5;
@@ -38,14 +28,14 @@
 .rootselected_blue {
   background: var(--token-dqEx_KxIoYV);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.root:focus {
+.root:focus:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
@@ -57,19 +47,19 @@
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.root:active {
+.root:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.rootblue:hover {
+.rootblue:hover:hover {
   background: var(--token-dqEx_KxIoYV);
 }
-.rootblue:active {
+.rootblue:active:active {
   background: var(--token-RhvOnhv_xIi);
 }
-.rootviolet:hover {
+.rootviolet:hover:hover {
   background: var(--token-oPrqrxbKHqk);
 }
-.rootviolet:active {
+.rootviolet:active:active {
   background: var(--token-I2zAJ678hbp);
 }
 .startIconContainer {
@@ -243,28 +233,12 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
 }
-.freeBoxwithEndIcon > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.freeBoxwithEndIcon > :global(.__wab_flex-container) > *,
-.freeBoxwithEndIcon > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBoxwithEndIcon > :global(.__wab_flex-container) > picture > img,
-.freeBoxwithEndIcon
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
-  margin-top: 0px;
+.freeBoxwithEndIcon {
+  column-gap: 0px;
+  row-gap: 0px;
 }
 .slotTargetChildren {
   color: var(--token-0IloF6TmFvF);

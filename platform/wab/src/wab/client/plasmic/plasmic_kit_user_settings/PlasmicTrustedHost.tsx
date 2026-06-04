@@ -14,22 +14,21 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../PP__plasmickit_settings.module.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_settings.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
 import sty from "./PlasmicTrustedHost.module.css"; // plasmic-import: 0O5nMBdoCe/css
 
 import Trash2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
@@ -87,6 +86,8 @@ function PlasmicTrustedHost__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -94,20 +95,18 @@ function PlasmicTrustedHost__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_aaggSgVS8yYsAwQffVQB4p",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
           defaultContents: "https://my-app.com",
@@ -124,7 +123,7 @@ function PlasmicTrustedHost__RenderFunc(props: {
         <Trash2SvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg)}
+          className={classNames("all", sty.svg)}
           role={"img"}
         />
       </IconButton>
@@ -159,7 +158,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTrustedHost__VariantsArgs;
     args?: PlasmicTrustedHost__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTrustedHost__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTrustedHost__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTrustedHost__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

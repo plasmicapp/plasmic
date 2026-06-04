@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentsDialogHead.module.css"; // plasmic-import: tccr1SFVw_AY/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -106,16 +106,18 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
         path: "canUpdateHistory",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.canUpdateHistory,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -128,10 +130,10 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -139,7 +141,7 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
       <div
         data-plasmic-name={"head"}
         data-plasmic-override={overrides.head}
-        className={classNames(projectcss.all, sty.head)}
+        className={classNames("all", sty.head)}
       >
         <CommentsHeader
           data-plasmic-name={"commentsHeader"}
@@ -154,7 +156,7 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
         />
 
         <div
-          className={classNames(projectcss.all, sty.freeBox__zvXog, {
+          className={classNames("all", sty.freeBox__zvXog, {
             [sty.freeBoxcanUpdateHistory__zvXoGrIxi6]: hasVariant(
               $state,
               "canUpdateHistory",
@@ -175,7 +177,7 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
           />
 
           <div
-            className={classNames(projectcss.all, sty.freeBox__smvQk, {
+            className={classNames("all", sty.freeBox__smvQk, {
               [sty.freeBoxcanUpdateHistory__smvQKrIxi6]: hasVariant(
                 $state,
                 "canUpdateHistory",
@@ -198,7 +200,7 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
                     ? CloseIcon
                     : CloseIcon
                 }
-                className={classNames(projectcss.all, sty.svg, {
+                className={classNames("all", sty.svg, {
                   [sty.svgcanUpdateHistory]: hasVariant(
                     $state,
                     "canUpdateHistory",
@@ -261,7 +263,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsDialogHead__VariantsArgs;
     args?: PlasmicCommentsDialogHead__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentsDialogHead__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -9,14 +9,13 @@ import { createUseStyleTokens } from "@plasmicapp/react-web";
 
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectModule
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
-
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
 const data = {
-  base: `${projectcss.plasmic_tokens} ${plasmic_plasmic_kit_design_system_css.plasmic_tokens} ${plasmic_plasmic_kit_color_tokens_css.plasmic_tokens} ${plasmic_plasmic_kit_style_controls_css.plasmic_tokens}`,
+  base: `${"plasmic_tokens_aukbrhkegRkQ6KizvhdUPT"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"} ${"plasmic_tokens_gYEVvAzCcLMHDVPvuYxkFh"}`,
   varianted: [],
 };
 

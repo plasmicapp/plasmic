@@ -2,35 +2,12 @@
   position: relative;
   display: flex;
   flex-direction: column;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: flex-start;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
+  row-gap: 8px;
 }
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 8px;
-}
-.rootsimplified > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.rootsimplified > :global(.__wab_flex-container) > *,
-.rootsimplified > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.rootsimplified > :global(.__wab_flex-container) > picture > img,
-.rootsimplified
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
-  margin-top: 0px;
+.rootsimplified {
+  row-gap: 0px;
+  column-gap: 0px;
 }
 .h5 {
   display: flex;
@@ -44,10 +21,7 @@
   min-width: 0;
 }
 .h5simplified {
-  margin-top: calc(0px + 0px) !important;
-  margin-right: 0px;
-  margin-bottom: 0px;
-  margin-left: calc(0px + 0px) !important;
+  margin: 0px;
 }
 .slotTargetTier {
   line-height: 1.25rem;

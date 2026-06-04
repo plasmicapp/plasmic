@@ -38,7 +38,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionSaveVersion.module.css"; // plasmic-import: 74wUdEnJhwr/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -139,45 +139,48 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
       },
       {
         path: "changesState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.changesState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.changesState,
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
       },
       {
         path: "failed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.failed,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.failed,
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "tagsSelector.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -190,10 +193,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -203,10 +206,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__hv1F)} />
+      <div className={classNames("all", sty.freeBox__hv1F)} />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__tZuGq, {
+        className={classNames("all", sty.freeBox__tZuGq, {
           [sty.freeBoxchangesState_none__tZuGqerDWt]: hasVariant(
             $state,
             "changesState",
@@ -219,9 +222,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           ),
         })}
       >
-        <div className={classNames(projectcss.all, sty.freeBox__aHwL)}>
+        <div className={classNames("all", sty.freeBox__aHwL)}>
           <div
-            className={classNames(projectcss.all, sty.freeBox__oAx16, {
+            className={classNames("all", sty.freeBox__oAx16, {
               [sty.freeBoxfailed__oAx165ST]: hasVariant(
                 $state,
                 "failed",
@@ -286,13 +289,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               />
             ) : null}
           </div>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__rAFb
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__rAFb)}>
             {"Save a new version"}
           </div>
         </div>
@@ -307,7 +304,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           : true
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox___556M, {
+          className={classNames("all", sty.freeBox___556M, {
             [sty.freeBoxcollapse___556MJ0D6K]: hasVariant(
               $state,
               "collapse",
@@ -326,7 +323,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__oMcN, {
+            className={classNames("all", sty.freeBox__oMcN, {
               [sty.freeBoxfailed__oMcN5ST]: hasVariant(
                 $state,
                 "failed",
@@ -334,13 +331,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               ),
             })}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__dnUmC
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__dnUmC)}>
               {
                 "Publishing a version lets you restore it later, and also lets other projects import this project to use its components/assets."
               }
@@ -349,9 +340,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               data-plasmic-name={"learnMoreLink"}
               data-plasmic-override={overrides.learnMoreLink}
               className={classNames(
-                projectcss.all,
-                projectcss.a,
-                projectcss.__wab_text,
+                "all",
+                "a",
+                "a__fpbcK",
+                "__wab_text",
                 sty.learnMoreLink
               )}
               href={"https://www.plasmic.app/learn/publishing-importing/"}
@@ -361,7 +353,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             </PlasmicLink__>
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__ks1K7, {
+            className={classNames("all", sty.freeBox__ks1K7, {
               [sty.freeBoxchangesState_major__ks1K73In4S]: hasVariant(
                 $state,
                 "changesState",
@@ -380,7 +372,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(projectcss.all, sty.freeBox__h5G6F, {
+              className={classNames("all", sty.freeBox__h5G6F, {
                 [sty.freeBoxchangesState_minor__h5G6FRvh4M]: hasVariant(
                   $state,
                   "changesState",
@@ -393,17 +385,11 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ),
               })}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__kJhMc
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__kJhMc)}>
                 {"Changes"}
               </div>
               <div
-                className={classNames(projectcss.all, sty.freeBox___0H0Cx, {
+                className={classNames("all", sty.freeBox___0H0Cx, {
                   [sty.freeBoxchangesState_loading___0H0Cxckc3O]: hasVariant(
                     $state,
                     "changesState",
@@ -432,43 +418,38 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__dhnm,
-                    {
-                      [sty.textchangesState_first__dhnmvyy0C]: hasVariant(
-                        $state,
-                        "changesState",
-                        "first"
-                      ),
-                      [sty.textchangesState_loading__dhnmckc3O]: hasVariant(
-                        $state,
-                        "changesState",
-                        "loading"
-                      ),
-                      [sty.textchangesState_major__dhnm3In4S]: hasVariant(
-                        $state,
-                        "changesState",
-                        "major"
-                      ),
-                      [sty.textchangesState_minor__dhnmRvh4M]: hasVariant(
-                        $state,
-                        "changesState",
-                        "minor"
-                      ),
-                      [sty.textchangesState_none__dhnmerDWt]: hasVariant(
-                        $state,
-                        "changesState",
-                        "none"
-                      ),
-                      [sty.textchangesState_patch__dhnmOslbo]: hasVariant(
-                        $state,
-                        "changesState",
-                        "patch"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__dhnm, {
+                    [sty.textchangesState_first__dhnmvyy0C]: hasVariant(
+                      $state,
+                      "changesState",
+                      "first"
+                    ),
+                    [sty.textchangesState_loading__dhnmckc3O]: hasVariant(
+                      $state,
+                      "changesState",
+                      "loading"
+                    ),
+                    [sty.textchangesState_major__dhnm3In4S]: hasVariant(
+                      $state,
+                      "changesState",
+                      "major"
+                    ),
+                    [sty.textchangesState_minor__dhnmRvh4M]: hasVariant(
+                      $state,
+                      "changesState",
+                      "minor"
+                    ),
+                    [sty.textchangesState_none__dhnmerDWt]: hasVariant(
+                      $state,
+                      "changesState",
+                      "none"
+                    ),
+                    [sty.textchangesState_patch__dhnmOslbo]: hasVariant(
+                      $state,
+                      "changesState",
+                      "patch"
+                    ),
+                  })}
                 >
                   {hasVariant($state, "changesState", "first")
                     ? "You're publishing for the first time!"
@@ -492,7 +473,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     : false
                 ) ? (
                   <div
-                    className={classNames(projectcss.all, sty.freeBox__hTHvd, {
+                    className={classNames("all", sty.freeBox__hTHvd, {
                       [sty.freeBoxchangesState_major__hTHvd3In4S]: hasVariant(
                         $state,
                         "changesState",
@@ -572,14 +553,14 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     )}
                     endIcon={
                       <ChevronDownSvgIcon
-                        className={classNames(projectcss.all, sty.svg__cgWjM)}
+                        className={classNames("all", sty.svg__cgWjM)}
                         role={"img"}
                       />
                     }
                     size={"small"}
                     startIcon={
                       <ArrowRightSvgIcon
-                        className={classNames(projectcss.all, sty.svg__td7KB)}
+                        className={classNames("all", sty.svg__td7KB)}
                         role={"img"}
                       />
                     }
@@ -600,7 +581,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 : false
             ) ? (
               <div
-                className={classNames(projectcss.all, sty.freeBox__zomOs, {
+                className={classNames("all", sty.freeBox__zomOs, {
                   [sty.freeBoxchangesState_major__zomOs3In4S]: hasVariant(
                     $state,
                     "changesState",
@@ -619,28 +600,23 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__ppYw,
-                    {
-                      [sty.textchangesState_patch__ppYwoslbo]: hasVariant(
-                        $state,
-                        "changesState",
-                        "patch"
-                      ),
-                      [sty.textview_setup__ppYw7XwDp]: hasVariant(
-                        $state,
-                        "view",
-                        "setup"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__ppYw, {
+                    [sty.textchangesState_patch__ppYwoslbo]: hasVariant(
+                      $state,
+                      "changesState",
+                      "patch"
+                    ),
+                    [sty.textview_setup__ppYw7XwDp]: hasVariant(
+                      $state,
+                      "view",
+                      "setup"
+                    ),
+                  })}
                 >
                   {"Version"}
                 </div>
                 <div
-                  className={classNames(projectcss.all, sty.freeBox__kospk, {
+                  className={classNames("all", sty.freeBox__kospk, {
                     [sty.freeBoxchangesState_patch__kospkoslbo]: hasVariant(
                       $state,
                       "changesState",
@@ -648,9 +624,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     ),
                   })}
                 >
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox___0E7Ii)}
-                  >
+                  <div className={classNames("all", sty.freeBox___0E7Ii)}>
                     {renderPlasmicSlot({
                       defaultContents: "v0.0.1",
                       value: args.nextVersion,
@@ -669,14 +643,14 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     )}
                     endIcon={
                       <ChevronDownSvgIcon
-                        className={classNames(projectcss.all, sty.svg__dZ2D)}
+                        className={classNames("all", sty.svg__dZ2D)}
                         role={"img"}
                       />
                     }
                     size={"wide"}
                     startIcon={
                       <ArrowRightSvgIcon
-                        className={classNames(projectcss.all, sty.svg__w1Hb)}
+                        className={classNames("all", sty.svg__w1Hb)}
                         role={"img"}
                       />
                     }
@@ -684,8 +658,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   >
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text___6S6Cr
                       )}
                     >
@@ -705,7 +679,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 : false
             ) ? (
               <div
-                className={classNames(projectcss.all, sty.freeBox__pX75D, {
+                className={classNames("all", sty.freeBox__pX75D, {
                   [sty.freeBoxchangesState_major__pX75D3In4S]: hasVariant(
                     $state,
                     "changesState",
@@ -724,18 +698,13 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__g1WL,
-                    {
-                      [sty.textchangesState_patch__g1WLoslbo]: hasVariant(
-                        $state,
-                        "changesState",
-                        "patch"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__g1WL, {
+                    [sty.textchangesState_patch__g1WLoslbo]: hasVariant(
+                      $state,
+                      "changesState",
+                      "patch"
+                    ),
+                  })}
                 >
                   {"Description"}
                 </div>
@@ -743,8 +712,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   data-plasmic-name={"description"}
                   data-plasmic-override={overrides.description}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.textarea,
+                    "all",
+                    "textarea",
+                    "textarea__fpbcK",
                     sty.description,
                     {
                       [sty.descriptionchangesState_major]: hasVariant(
@@ -780,7 +750,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               <div
                 data-plasmic-name={"tagsStack"}
                 data-plasmic-override={overrides.tagsStack}
-                className={classNames(projectcss.all, sty.tagsStack, {
+                className={classNames("all", sty.tagsStack, {
                   [sty.tagsStackchangesState_major]: hasVariant(
                     $state,
                     "changesState",
@@ -799,18 +769,13 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__l4FT0,
-                    {
-                      [sty.textchangesState_patch__l4FT0Oslbo]: hasVariant(
-                        $state,
-                        "changesState",
-                        "patch"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__l4FT0, {
+                    [sty.textchangesState_patch__l4FT0Oslbo]: hasVariant(
+                      $state,
+                      "changesState",
+                      "patch"
+                    ),
+                  })}
                 >
                   {"Tags"}
                 </div>
@@ -831,7 +796,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   })}
                   icon={
                     <PlusSvgIcon
-                      className={classNames(projectcss.all, sty.svg__db8GA)}
+                      className={classNames("all", sty.svg__db8GA)}
                       role={"img"}
                     />
                   }
@@ -870,7 +835,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           : false
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox___0V80Z, {
+          className={classNames("all", sty.freeBox___0V80Z, {
             [sty.freeBoxchangesState_minor___0V80ZRvh4M]: hasVariant(
               $state,
               "changesState",
@@ -890,17 +855,13 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dkcxx
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__dkcxx)}>
                 <React.Fragment>
                   <React.Fragment>{"Successfully published "}</React.Fragment>
                   <span
-                    className={"plasmic_default__all plasmic_default__span"}
+                    className={
+                      "plasmic_default__all plasmic_default__span plasmic_default__span__fpbcK"
+                    }
                     style={{ fontWeight: 700 }}
                   >
                     {"Project Name v1.0.1"}

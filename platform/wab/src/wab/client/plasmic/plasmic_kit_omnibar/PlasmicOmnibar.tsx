@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,16 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -32,12 +31,11 @@ import OmnibarAddItem from "../../components/omnibar/OmnibarAddItem"; // plasmic
 import OmnibarCommandItem from "../../components/omnibar/OmnibarCommandItem"; // plasmic-import: A2li_iO_iw/component
 import OmnibarGroup from "../../components/omnibar/OmnibarGroup"; // plasmic-import: qx4iENdAfF/component
 import OmnibarTabHeader from "../../components/omnibar/OmnibarTabHeader"; // plasmic-import: hrLkFMfsYv/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
+import "./plasmic_plasmic_kit_omnibar.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
 import sty from "./PlasmicOmnibar.module.css"; // plasmic-import: paIlCoZKcm/css
 
 import AddPageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__AddPage"; // plasmic-import: JuZ41tZRcH/icon
@@ -56,9 +54,7 @@ export const PlasmicOmnibar__VariantProps = new Array<VariantPropType>(
   "tabless"
 );
 
-export type PlasmicOmnibar__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicOmnibar__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicOmnibar__ArgsType;
 export const PlasmicOmnibar__ArgProps = new Array<ArgPropType>("children");
 
@@ -117,18 +113,21 @@ function PlasmicOmnibar__RenderFunc(props: {
         path: "tabless",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.tabless,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.tabless,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -137,30 +136,24 @@ function PlasmicOmnibar__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_fQPf2UiMEMhB52C8QQXwWe",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         { [sty.roottabless]: hasVariant($state, "tabless", "tabless") }
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.header, {
+        className={classNames("all", sty.header, {
           [sty.headertabless]: hasVariant($state, "tabless", "tabless"),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__noWrf, {
+        <div
+          className={classNames("all", sty.freeBox__noWrf, {
             [sty.freeBoxtabless__noWrfcgv56]: hasVariant(
               $state,
               "tabless",
@@ -202,12 +195,12 @@ function PlasmicOmnibar__RenderFunc(props: {
             className={classNames("__wab_instance", sty.runTab)}
             title={"Run"}
           />
-        </Stack__>
-        <div className={classNames(projectcss.all, sty.freeBox__ff5UQ)}>
+        </div>
+        <div className={classNames("all", sty.freeBox__ff5UQ)}>
           <input
             data-plasmic-name={"query"}
             data-plasmic-override={overrides.query}
-            className={classNames(projectcss.all, projectcss.input, sty.query)}
+            className={classNames("all", "input", "input__fQPf2", sty.query)}
             placeholder={"Element, template, component, or image..."}
             ref={(ref) => {
               $refs["query"] = ref;
@@ -217,25 +210,22 @@ function PlasmicOmnibar__RenderFunc(props: {
             value={""}
           />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__tnBh)}>
+        <div className={classNames("all", sty.freeBox__tnBh)}>
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text,
-              { [sty.texttabless]: hasVariant($state, "tabless", "tabless") }
-            )}
+            className={classNames("all", "__wab_text", sty.text, {
+              [sty.texttabless]: hasVariant($state, "tabless", "tabless"),
+            })}
           >
             {"Use Tab to switch commands"}
           </div>
         </div>
-      </Stack__>
+      </div>
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content)}
+        className={classNames("all", sty.content)}
       >
         {renderPlasmicSlot({
           defaultContents: (
@@ -247,7 +237,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                 )}
                 icon={
                   <AddPageIcon
-                    className={classNames(projectcss.all, sty.svg__qZeLr)}
+                    className={classNames("all", sty.svg__qZeLr)}
                     role={"img"}
                   />
                 }
@@ -260,7 +250,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                 )}
                 icon={
                   <AddPageIcon
-                    className={classNames(projectcss.all, sty.svg__v4Zpn)}
+                    className={classNames("all", sty.svg__v4Zpn)}
                     role={"img"}
                   />
                 }
@@ -273,7 +263,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                 )}
                 icon={
                   <AddPageIcon
-                    className={classNames(projectcss.all, sty.svg__qvOcU)}
+                    className={classNames("all", sty.svg__qvOcU)}
                     role={"img"}
                   />
                 }
@@ -426,7 +416,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                       )}
                       icon={
                         <AddPageIcon
-                          className={classNames(projectcss.all, sty.svg__cSYyV)}
+                          className={classNames("all", sty.svg__cSYyV)}
                           role={"img"}
                         />
                       }
@@ -439,7 +429,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                       )}
                       icon={
                         <AddPageIcon
-                          className={classNames(projectcss.all, sty.svg__nQexs)}
+                          className={classNames("all", sty.svg__nQexs)}
                           role={"img"}
                         />
                       }
@@ -595,7 +585,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                       )}
                       icon={
                         <AddPageIcon
-                          className={classNames(projectcss.all, sty.svg__q0WLp)}
+                          className={classNames("all", sty.svg__q0WLp)}
                           role={"img"}
                         />
                       }
@@ -608,10 +598,7 @@ function PlasmicOmnibar__RenderFunc(props: {
                       )}
                       icon={
                         <AddPageIcon
-                          className={classNames(
-                            projectcss.all,
-                            sty.svg___3Uemh
-                          )}
+                          className={classNames("all", sty.svg___3Uemh)}
                           role={"img"}
                         />
                       }
@@ -621,7 +608,6 @@ function PlasmicOmnibar__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </div>
@@ -642,7 +628,6 @@ const PlasmicDescendants = {
     "text",
     "content",
   ],
-
   header: [
     "header",
     "allTab",
@@ -653,7 +638,6 @@ const PlasmicDescendants = {
     "query",
     "text",
   ],
-
   allTab: ["allTab"],
   insertTab: ["insertTab"],
   focusTab: ["focusTab"],
@@ -684,23 +668,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOmnibar__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicOmnibar__VariantsArgs;
     args?: PlasmicOmnibar__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicOmnibar__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicOmnibar__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicOmnibar__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicOmnibar__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

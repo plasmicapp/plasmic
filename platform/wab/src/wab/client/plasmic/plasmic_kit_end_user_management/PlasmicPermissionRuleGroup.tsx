@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,23 +13,22 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import PermissionRule from "../../components/app-auth/PermissionRule"; // plasmic-import: OKf_hhc2Skl/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicPermissionRuleGroup.module.css"; // plasmic-import: 7jCYJVNv9q/css
 
 createPlasmicElementProxy;
@@ -49,7 +48,7 @@ export const PlasmicPermissionRuleGroup__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPermissionRuleGroup__OverridesType = {
-  root?: p.Flex<"div">;
+  root?: Flex__<"div">;
 };
 
 export interface DefaultPermissionRuleGroupProps {
@@ -57,13 +56,7 @@ export interface DefaultPermissionRuleGroupProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicPermissionRuleGroup__RenderFunc(props: {
   variants: PlasmicPermissionRuleGroup__VariantsArgs;
@@ -73,75 +66,75 @@ function PlasmicPermissionRuleGroup__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    true ? (
-      <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-          plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
-          sty.root
-        )}
-      >
-        {p.renderPlasmicSlot({
-          defaultContents: (
-            <React.Fragment>
-              <PermissionRule
-                className={classNames(
-                  "__wab_instance",
-                  sty.permissionRule__rr4E
-                )}
-                ruleName={"Anonymous visitors"}
-              />
+    <div
+      data-plasmic-name={"root"}
+      data-plasmic-override={overrides.root}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames(
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
+        sty.root
+      )}
+    >
+      {renderPlasmicSlot({
+        defaultContents: (
+          <React.Fragment>
+            <PermissionRule
+              className={classNames("__wab_instance", sty.permissionRule__rr4E)}
+              ruleName={"Anonymous visitors"}
+            />
 
-              <PermissionRule
-                className={classNames(
-                  "__wab_instance",
-                  sty.permissionRule__lhnJ2
-                )}
-                isGroup={true}
-                ruleName={"Logged in users"}
-              />
+            <PermissionRule
+              className={classNames(
+                "__wab_instance",
+                sty.permissionRule__lhnJ2
+              )}
+              isGroup={true}
+              ruleName={"Logged in users"}
+            />
 
-              <PermissionRule
-                className={classNames(
-                  "__wab_instance",
-                  sty.permissionRule__nvdAj
-                )}
-                hasMenu={true}
-                isGroup={true}
-                ruleName={"Logged in users"}
-                withoutBorder={true}
-              />
-            </React.Fragment>
-          ),
-
-          value: args.children,
-        })}
-      </div>
-    ) : null
+            <PermissionRule
+              className={classNames(
+                "__wab_instance",
+                sty.permissionRule__nvdAj
+              )}
+              hasMenu={true}
+              isGroup={true}
+              ruleName={"Logged in users"}
+              withoutBorder={true}
+            />
+          </React.Fragment>
+        ),
+        value: args.children,
+      })}
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -160,23 +153,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPermissionRuleGroup__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicPermissionRuleGroup__VariantsArgs;
     args?: PlasmicPermissionRuleGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPermissionRuleGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPermissionRuleGroup__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicPermissionRuleGroup__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicPermissionRuleGroup__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -190,7 +183,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPermissionRuleGroup__ArgProps,
           internalVariantPropNames: PlasmicPermissionRuleGroup__VariantProps,
         }),

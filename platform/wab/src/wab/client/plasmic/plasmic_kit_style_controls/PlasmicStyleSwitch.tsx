@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleSwitch.module.css"; // plasmic-import: 0hwZcM2HAXr/css
 
 createPlasmicElementProxy;
@@ -154,6 +154,7 @@ function PlasmicStyleSwitch__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -179,10 +180,10 @@ function PlasmicStyleSwitch__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_gYEVvAzCcLMHDVPvuYxkFh",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         "baseline-friendly-centered-block-container",
@@ -203,7 +204,7 @@ function PlasmicStyleSwitch__RenderFunc(props: {
       <div
         data-plasmic-name={"toggle"}
         data-plasmic-override={overrides.toggle}
-        className={classNames(projectcss.all, sty.toggle, {
+        className={classNames("all", sty.toggle, {
           [sty.toggle___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.toggleisChecked]: hasVariant($state, "isChecked", "isChecked"),
           [sty.toggleisDisabled]: hasVariant(
@@ -216,7 +217,7 @@ function PlasmicStyleSwitch__RenderFunc(props: {
         <div
           data-plasmic-name={"track"}
           data-plasmic-override={overrides.track}
-          className={classNames(projectcss.all, sty.track, {
+          className={classNames("all", sty.track, {
             [sty.track___focusVisibleWithin]: triggers.focusVisibleWithin_root,
             [sty.trackisChecked]: hasVariant($state, "isChecked", "isChecked"),
             [sty.tracknoLabel]: hasVariant($state, "noLabel", "noLabel"),
@@ -241,7 +242,7 @@ function PlasmicStyleSwitch__RenderFunc(props: {
         <div
           data-plasmic-name={"thumb"}
           data-plasmic-override={overrides.thumb}
-          className={classNames(projectcss.all, sty.thumb, {
+          className={classNames("all", sty.thumb, {
             [sty.thumb___focusVisibleWithin]: triggers.focusVisibleWithin_root,
             [sty.thumbisChecked]: hasVariant($state, "isChecked", "isChecked"),
           })}
@@ -251,7 +252,7 @@ function PlasmicStyleSwitch__RenderFunc(props: {
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          className={classNames(projectcss.all, sty.labelContainer, {
+          className={classNames("all", sty.labelContainer, {
             [sty.labelContainer___focusVisibleWithin]:
               triggers.focusVisibleWithin_root,
             [sty.labelContainernoLabel]: hasVariant(

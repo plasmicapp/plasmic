@@ -20,7 +20,7 @@
 .dropSmoothCorners {
   box-shadow: none;
   background: var(--token-clhN-3CruXgh);
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  transform: rotate3d(0, 0, 1, 90deg);
   width: 18px;
   height: 18px;
   display: flex;
@@ -44,6 +44,6 @@
   display: block;
   left: auto;
   top: auto;
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  transform: rotate3d(0, 0, 1, 90deg);
   flex-shrink: 0;
 }

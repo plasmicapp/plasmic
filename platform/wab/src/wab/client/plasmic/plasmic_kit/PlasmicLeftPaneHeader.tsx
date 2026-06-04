@@ -34,7 +34,7 @@ import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProv
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftPaneHeader.module.css"; // plasmic-import: XLa52PvduIy/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -153,52 +153,56 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
         path: "noActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noActions,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noActions,
       },
       {
         path: "showAlert",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAlert,
       },
       {
         path: "compact",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.compact,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.compact,
       },
       {
         path: "expandState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.expandState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.expandState,
       },
       {
         path: "hasTitleActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasTitleActions,
       },
       {
         path: "noDescription",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noDescription,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.noDescription,
       },
       {
         path: "borderless",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.borderless,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.borderless,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -211,10 +215,10 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.header,
         {
@@ -239,7 +243,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
     >
       {(hasVariant($state, "compact", "compact") ? false : true) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__rhIgq, {
+          className={classNames("all", sty.freeBox__rhIgq, {
             [sty.freeBoxcompact__rhIgqZQlq]: hasVariant(
               $state,
               "compact",
@@ -253,7 +257,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__f9FwI, {
+            className={classNames("all", sty.freeBox__f9FwI, {
               [sty.freeBoxcompact__f9FwIzQlq]: hasVariant(
                 $state,
                 "compact",
@@ -274,7 +278,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
             <div
               data-plasmic-name={"titleContainer"}
               data-plasmic-override={overrides.titleContainer}
-              className={classNames(projectcss.all, sty.titleContainer, {
+              className={classNames("all", sty.titleContainer, {
                 [sty.titleContainercompact]: hasVariant(
                   $state,
                   "compact",
@@ -316,22 +320,18 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
               <div
                 data-plasmic-name={"titleActionsContainer"}
                 data-plasmic-override={overrides.titleActionsContainer}
-                className={classNames(
-                  projectcss.all,
-                  sty.titleActionsContainer,
-                  {
-                    [sty.titleActionsContainercompact]: hasVariant(
-                      $state,
-                      "compact",
-                      "compact"
-                    ),
-                    [sty.titleActionsContainerhasTitleActions]: hasVariant(
-                      $state,
-                      "hasTitleActions",
-                      "hasTitleActions"
-                    ),
-                  }
-                )}
+                className={classNames("all", sty.titleActionsContainer, {
+                  [sty.titleActionsContainercompact]: hasVariant(
+                    $state,
+                    "compact",
+                    "compact"
+                  ),
+                  [sty.titleActionsContainerhasTitleActions]: hasVariant(
+                    $state,
+                    "hasTitleActions",
+                    "hasTitleActions"
+                  ),
+                })}
               >
                 {renderPlasmicSlot({
                   defaultContents: null,
@@ -380,32 +380,28 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
               <div
                 data-plasmic-name={"descriptionContainer"}
                 data-plasmic-override={overrides.descriptionContainer}
-                className={classNames(
-                  projectcss.all,
-                  sty.descriptionContainer,
-                  {
-                    [sty.descriptionContainercompact]: hasVariant(
-                      $state,
-                      "compact",
-                      "compact"
-                    ),
-                    [sty.descriptionContainerexpandState_collapsed]: hasVariant(
-                      $state,
-                      "expandState",
-                      "collapsed"
-                    ),
-                    [sty.descriptionContainernoDescription]: hasVariant(
-                      $state,
-                      "noDescription",
-                      "noDescription"
-                    ),
-                    [sty.descriptionContainershowAlert]: hasVariant(
-                      $state,
-                      "showAlert",
-                      "showAlert"
-                    ),
-                  }
-                )}
+                className={classNames("all", sty.descriptionContainer, {
+                  [sty.descriptionContainercompact]: hasVariant(
+                    $state,
+                    "compact",
+                    "compact"
+                  ),
+                  [sty.descriptionContainerexpandState_collapsed]: hasVariant(
+                    $state,
+                    "expandState",
+                    "collapsed"
+                  ),
+                  [sty.descriptionContainernoDescription]: hasVariant(
+                    $state,
+                    "noDescription",
+                    "noDescription"
+                  ),
+                  [sty.descriptionContainershowAlert]: hasVariant(
+                    $state,
+                    "showAlert",
+                    "showAlert"
+                  ),
+                })}
               >
                 {renderPlasmicSlot({
                   defaultContents:
@@ -425,7 +421,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
             <div
               data-plasmic-name={"alertContainer"}
               data-plasmic-override={overrides.alertContainer}
-              className={classNames(projectcss.all, sty.alertContainer, {
+              className={classNames("all", sty.alertContainer, {
                 [sty.alertContainercompact]: hasVariant(
                   $state,
                   "compact",
@@ -466,7 +462,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
         <div
           data-plasmic-name={"actionsContainer"}
           data-plasmic-override={overrides.actionsContainer}
-          className={classNames(projectcss.all, sty.actionsContainer, {
+          className={classNames("all", sty.actionsContainer, {
             [sty.actionsContainercompact]: hasVariant(
               $state,
               "compact",
@@ -508,8 +504,8 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                   >
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__loEe2
                       )}
                     >
@@ -521,7 +517,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
               })
             : null}
           <div
-            className={classNames(projectcss.all, sty.freeBox___1SjU4, {
+            className={classNames("all", sty.freeBox___1SjU4, {
               [sty.freeBoxborderless___1SjU4Vrr0L]: hasVariant(
                 $state,
                 "borderless",
@@ -534,14 +530,14 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                 <Button
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__ne1Zy)}
+                      className={classNames("all", sty.svg__ne1Zy)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <PlusIcon
-                      className={classNames(projectcss.all, sty.svg__xTd68)}
+                      className={classNames("all", sty.svg__xTd68)}
                       role={"img"}
                     />
                   }
@@ -628,7 +624,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftPaneHeader__VariantsArgs;
     args?: PlasmicLeftPaneHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftPaneHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftPaneHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftPaneHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

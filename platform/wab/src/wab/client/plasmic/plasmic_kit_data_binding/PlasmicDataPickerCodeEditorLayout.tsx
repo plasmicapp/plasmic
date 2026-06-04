@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerCodeEditorLayout.module.css"; // plasmic-import: yN9xaawDlts/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -139,6 +139,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -156,10 +157,10 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -174,7 +175,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"envLabel"}
           data-plasmic-override={overrides.envLabel}
-          className={classNames(projectcss.all, sty.envLabel, {
+          className={classNames("all", sty.envLabel, {
             [sty.envLabelenvPanel_collapsed]: hasVariant(
               $state,
               "envPanel",
@@ -193,7 +194,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
           })}
         >
           <ChevronDownSvgIcon
-            className={classNames(projectcss.all, sty.svg__xgwk8, {
+            className={classNames("all", sty.svg__xgwk8, {
               [sty.svgenvPanel_collapsed__xgwk8Xz9Ol]: hasVariant(
                 $state,
                 "envPanel",
@@ -204,7 +205,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
           />
 
           <Code3SvgIcon
-            className={classNames(projectcss.all, sty.svg__ckpYw, {
+            className={classNames("all", sty.svg__ckpYw, {
               [sty.svghidePreview__ckpYwjDbmv]: hasVariant(
                 $state,
                 "hidePreview",
@@ -217,18 +218,13 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
           <div
             data-plasmic-name={"envLabelText"}
             data-plasmic-override={overrides.envLabelText}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.envLabelText,
-              {
-                [sty.envLabelTextenvPanel_hidden]: hasVariant(
-                  $state,
-                  "envPanel",
-                  "hidden"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.envLabelText, {
+              [sty.envLabelTextenvPanel_hidden]: hasVariant(
+                $state,
+                "envPanel",
+                "hidden"
+              ),
+            })}
           >
             {"Data context"}
           </div>
@@ -238,7 +234,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"envPanelContainer"}
           data-plasmic-override={overrides.envPanelContainer}
-          className={classNames(projectcss.all, sty.envPanelContainer, {
+          className={classNames("all", sty.envPanelContainer, {
             [sty.envPanelContainerenvPanel_collapsed]: hasVariant(
               $state,
               "envPanel",
@@ -261,9 +257,9 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
             data-plasmic-override={overrides.envToggleButton}
             aria-label={"Toggle data context preview"}
             className={classNames(
-              projectcss.all,
-              projectcss.button,
-              projectcss.button__w2GXN,
+              "all",
+              "button",
+              "button__w2GXN",
               sty.envToggleButton,
               {
                 [sty.envToggleButtonenvPanel_collapsed]: hasVariant(
@@ -282,7 +278,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
             <div
               data-plasmic-name={"envPreviewContainer"}
               data-plasmic-override={overrides.envPreviewContainer}
-              className={classNames(projectcss.all, sty.envPreviewContainer, {
+              className={classNames("all", sty.envPreviewContainer, {
                 [sty.envPreviewContainercopilot]: hasVariant(
                   $state,
                   "copilot",
@@ -303,11 +299,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
               {renderPlasmicSlot({
                 defaultContents: (
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__veFdy
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__veFdy)}
                   >
                     {"Env preview here..."}
                   </div>
@@ -321,7 +313,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
       <div
         data-plasmic-name={"codePanel"}
         data-plasmic-override={overrides.codePanel}
-        className={classNames(projectcss.all, sty.codePanel, {
+        className={classNames("all", sty.codePanel, {
           [sty.codePanelcopilot]: hasVariant($state, "copilot", "copilot"),
           [sty.codePanelcopilot_envPanel_collapsed]:
             hasVariant($state, "copilot", "copilot") &&
@@ -335,13 +327,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__lFlPj
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__lFlPj)}>
               {"Monaco Editor here"}
             </div>
           ),
@@ -368,7 +354,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"previewPanel"}
           data-plasmic-override={overrides.previewPanel}
-          className={classNames(projectcss.all, sty.previewPanel, {
+          className={classNames("all", sty.previewPanel, {
             [sty.previewPanelcopilot]: hasVariant($state, "copilot", "copilot"),
             [sty.previewPanelcopilot_envPanel_collapsed]:
               hasVariant($state, "copilot", "copilot") &&
@@ -383,11 +369,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___4Pwuo
-                )}
+                className={classNames("all", "__wab_text", sty.text___4Pwuo)}
               >
                 {'"Value Preview Here..."'}
               </div>

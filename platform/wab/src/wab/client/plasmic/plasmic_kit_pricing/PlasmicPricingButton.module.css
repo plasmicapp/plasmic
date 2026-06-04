@@ -31,16 +31,16 @@
 .rootdark_state_selected {
   background: var(--token-bV4cCeIniS6);
 }
-.root:hover {
+.root:hover:hover {
   background: var(--token-UunsGa2Y3t3);
 }
-.rootdark:hover {
+.rootdark:hover:hover {
   border-width: 0px;
 }
-.rootstate_selected:hover {
+.rootstate_selected:hover:hover {
   background: var(--token-uOl9dOQ3904J);
 }
-.rootnoBorder:hover {
+.rootnoBorder:hover:hover {
   background: none;
 }
 .link {
@@ -63,31 +63,16 @@
 .normalButton {
   display: flex;
   flex-direction: row;
-  cursor: pointer;
-  width: 100%;
-  background: var(--token-iR8SeEwQZ);
-  min-width: 0;
-  border-radius: 24px;
-  padding: 12px;
-}
-.normalButton > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   align-content: unset;
+  cursor: pointer;
+  width: 100%;
+  background: var(--token-iR8SeEwQZ);
+  column-gap: 4px;
   min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.normalButton > :global(.__wab_flex-container) > *,
-.normalButton > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.normalButton > :global(.__wab_flex-container) > picture > img,
-.normalButton
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  border-radius: 24px;
+  padding: 12px;
 }
 .normalButtondark {
   background: var(--token-uOl9dOQ3904J);

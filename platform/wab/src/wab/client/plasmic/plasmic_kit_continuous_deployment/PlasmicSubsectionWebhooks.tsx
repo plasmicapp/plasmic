@@ -39,7 +39,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionWebhooks.module.css"; // plasmic-import: 9EUA-QZFp69/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -122,27 +122,29 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -155,10 +157,10 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_fpbcKyXdMTvY59T4C5fjcC",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -168,7 +170,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__qQdPq, {
+        className={classNames("all", sty.freeBox__qQdPq, {
           [sty.freeBoxcollapse_view_status__qQdPqJe1PNVFkKr]:
             hasVariant($state, "view", "status") &&
             hasVariant($state, "collapse", "collapse"),
@@ -176,7 +178,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__xOmFn, {
+        className={classNames("all", sty.freeBox__xOmFn, {
           [sty.freeBoxcollapse_view_status__xOmFnJe1PNVFkKr]:
             hasVariant($state, "view", "status") &&
             hasVariant($state, "collapse", "collapse"),
@@ -188,13 +190,13 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__iatl5, {
+          className={classNames("all", sty.freeBox__iatl5, {
             [sty.freeBoxcollapse_view_status__iatl5Je1PNVFkKr]:
               hasVariant($state, "view", "status") &&
               hasVariant($state, "collapse", "collapse"),
           })}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__ybU34)}>
+          <div className={classNames("all", sty.freeBox__ybU34)}>
             {(hasVariant($state, "view", "status") ? false : true) ? (
               <Checkbox
                 data-plasmic-name={"checkbox"}
@@ -231,7 +233,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             ) : null}
             {(hasVariant($state, "view", "status") ? true : false) ? (
               <Icon4Icon
-                className={classNames(projectcss.all, sty.svg__nyfUi, {
+                className={classNames("all", sty.svg__nyfUi, {
                   [sty.svgview_status__nyfUivFkKr]: hasVariant(
                     $state,
                     "view",
@@ -242,18 +244,12 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               />
             ) : null}
           </div>
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__oIlvd
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__oIlvd)}>
             {"Call webhooks"}
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__aumpN, {
+          className={classNames("all", sty.freeBox__aumpN, {
             [sty.freeBoxview_status__aumpNvFkKr]: hasVariant(
               $state,
               "view",
@@ -267,37 +263,32 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               data-plasmic-override={overrides.removeButton}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__jp1Mp)}
+                  className={classNames("all", sty.svg__jp1Mp)}
                   role={"img"}
                 />
               }
               size={"small"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__wgXwS)}
+                  className={classNames("all", sty.svg__wgXwS)}
                   role={"img"}
                 />
               }
               type={["clear"]}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__l77Qe,
-                  {
-                    [sty.textcollapse__l77QeJe1PN]: hasVariant(
-                      $state,
-                      "collapse",
-                      "collapse"
-                    ),
-                    [sty.textview_status__l77QeVFkKr]: hasVariant(
-                      $state,
-                      "view",
-                      "status"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__l77Qe, {
+                  [sty.textcollapse__l77QeJe1PN]: hasVariant(
+                    $state,
+                    "collapse",
+                    "collapse"
+                  ),
+                  [sty.textview_status__l77QeVFkKr]: hasVariant(
+                    $state,
+                    "view",
+                    "status"
+                  ),
+                })}
               >
                 {hasVariant($state, "collapse", "collapse") ? "Show" : "Remove"}
               </div>
@@ -313,7 +304,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
           : true
       ) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__jxYbj, {
+          className={classNames("all", sty.freeBox__jxYbj, {
             [sty.freeBoxcollapse__jxYbjJe1PN]: hasVariant(
               $state,
               "collapse",
@@ -327,7 +318,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__hd5L, {
+            className={classNames("all", sty.freeBox__hd5L, {
               [sty.freeBoxview_status__hd5LVFkKr]: hasVariant(
                 $state,
                 "view",
@@ -338,11 +329,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             <div
               data-plasmic-name={"description"}
               data-plasmic-override={overrides.description}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.description
-              )}
+              className={classNames("all", "__wab_text", sty.description)}
             >
               {
                 "Trigger a build in Vercel, Netlify, Jenkins, or any other CI/CD pipeline. You should first [add Plasmic to your codebase]."
@@ -352,9 +339,10 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               data-plasmic-name={"learnMoreLink"}
               data-plasmic-override={overrides.learnMoreLink}
               className={classNames(
-                projectcss.all,
-                projectcss.a,
-                projectcss.__wab_text,
+                "all",
+                "a",
+                "a__fpbcK",
+                "__wab_text",
                 sty.learnMoreLink
               )}
               href={"https://docs.plasmic.app/learn/publishing/#call-webhooks"}
@@ -365,7 +353,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             </PlasmicLink__>
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__qQqjQ, {
+            className={classNames("all", sty.freeBox__qQqjQ, {
               [sty.freeBoxview_status__qQqjQvFkKr]: hasVariant(
                 $state,
                 "view",
@@ -395,7 +383,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             })}
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox___3TmyY, {
+            className={classNames("all", sty.freeBox___3TmyY, {
               [sty.freeBoxview_status___3TmyYvFkKr]: hasVariant(
                 $state,
                 "view",
@@ -403,32 +391,28 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               ),
             })}
           >
-            <div className={classNames(projectcss.all, sty.freeBox__gzP9)}>
+            <div className={classNames("all", sty.freeBox__gzP9)}>
               <Button
                 data-plasmic-name={"viewHistoryButton"}
                 data-plasmic-override={overrides.viewHistoryButton}
                 className={classNames("__wab_instance", sty.viewHistoryButton)}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__eQsdn)}
+                    className={classNames("all", sty.svg__eQsdn)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__aPvi5)}
+                    className={classNames("all", sty.svg__aPvi5)}
                     role={"img"}
                   />
                 }
                 type={["clear"]}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___7CxUe
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___7CxUe)}
                 >
                   {"View history ->"}
                 </div>
@@ -439,14 +423,14 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.addButton)}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg___2JJuo)}
+                    className={classNames("all", sty.svg___2JJuo)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__yoP2)}
+                    className={classNames("all", sty.svg__yoP2)}
                     role={"img"}
                   />
                 }
@@ -537,11 +521,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 method={"GET"}
                 url={
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__gZLqy
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__gZLqy)}
                   >
                     {"https://plasmic.app/"}
                   </div>

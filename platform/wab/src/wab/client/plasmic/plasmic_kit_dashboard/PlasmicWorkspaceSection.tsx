@@ -17,12 +17,10 @@ import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -36,16 +34,12 @@ import ShareButton from "../../components/dashboard/ShareButton"; // plasmic-imp
 import WorkspaceDataSources from "../../components/dashboard/WorkspaceDataSources"; // plasmic-import: O5AxABt3WN/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-
-import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicWorkspaceSection.module.css"; // plasmic-import: 5cdjGaqBQ4/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -167,54 +161,56 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
         path: "noProjects",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noProjects,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noProjects,
       },
       {
         path: "accessLevel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.accessLevel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.accessLevel,
       },
       {
         path: "inTeamPage",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.inTeamPage,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.inTeamPage,
       },
       {
         path: "canUseCms",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.canUseCms,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.canUseCms,
       },
       {
         path: "canUseCmsAndDataSources",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.canUseCmsAndDataSources,
       },
       {
         path: "personalWorkspace",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.personalWorkspace,
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    screen: useScreenVariants_2DzYbdw5Xtx(),
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -223,34 +219,13 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootcanUseCmsAndDataSources_dataSources]: hasVariant(
             $state,
             "canUseCmsAndDataSources",
@@ -268,7 +243,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__numE8, {
+        className={classNames("all", sty.freeBox__numE8, {
           [sty.freeBoxcanUseCms__numE8Kb24A]: hasVariant(
             $state,
             "canUseCms",
@@ -284,7 +259,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
         <header
           data-plasmic-name={"header"}
           data-plasmic-override={overrides.header}
-          className={classNames(projectcss.all, sty.header, {
+          className={classNames("all", sty.header, {
             [sty.headeraccessLevel_cantEdit]: hasVariant(
               $state,
               "accessLevel",
@@ -320,7 +295,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__sKiL, {
+            className={classNames("all", sty.freeBox__sKiL, {
               [sty.freeBoxaccessLevel_cantEdit__sKiL50Z7A]: hasVariant(
                 $state,
                 "accessLevel",
@@ -373,29 +348,22 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               })}
               name={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__jjhMs,
-                    {
-                      [sty.textcanUseCmsAndDataSources_dataSources__jjhMs8X0Kv]:
-                        hasVariant(
-                          $state,
-                          "canUseCmsAndDataSources",
-                          "dataSources"
-                        ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__jjhMs, {
+                    [sty.textcanUseCmsAndDataSources_dataSources__jjhMs8X0Kv]:
+                      hasVariant(
+                        $state,
+                        "canUseCmsAndDataSources",
+                        "dataSources"
+                      ),
+                  })}
                 >
                   {"Untitled workspace"}
                 </div>
               }
             />
 
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__jiCaG, {
+            <div
+              className={classNames("all", sty.freeBox__jiCaG, {
                 [sty.freeBoxpersonalWorkspace__jiCaGqx7R]: hasVariant(
                   $state,
                   "personalWorkspace",
@@ -403,28 +371,14 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 ),
               })}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__fuUz1
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__fuUz1)}>
                 {"Workspace"}
               </div>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__oyPmf
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__oyPmf)}>
                 {"\u2022"}
               </div>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__gydIl, {
+              <div
+                className={classNames("all", sty.freeBox__gydIl, {
                   [sty.freeBoxpersonalWorkspace__gydIlqx7R]: hasVariant(
                     $state,
                     "personalWorkspace",
@@ -438,42 +392,37 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                   className: classNames(sty.slotTargetNumMembers),
                 })}
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text___6XT9N,
-                    {
-                      [sty.textinTeamPage___6XT9N6NXgy]: hasVariant(
-                        $state,
-                        "inTeamPage",
-                        "inTeamPage"
-                      ),
-                      [sty.textpersonalWorkspace___6XT9NQx7R]: hasVariant(
-                        $state,
-                        "personalWorkspace",
-                        "personalWorkspace"
-                      ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text___6XT9N, {
+                    [sty.textinTeamPage___6XT9N6NXgy]: hasVariant(
+                      $state,
+                      "inTeamPage",
+                      "inTeamPage"
+                    ),
+                    [sty.textpersonalWorkspace___6XT9NQx7R]: hasVariant(
+                      $state,
+                      "personalWorkspace",
+                      "personalWorkspace"
+                    ),
+                  })}
                 >
                   <React.Fragment>
                     <span
-                      className={"plasmic_default__all plasmic_default__span"}
+                      className={
+                        "plasmic_default__all plasmic_default__span plasmic_default__span__ooL7E"
+                      }
                       style={{ color: "#706F6C" }}
                     >
                       {"members"}
                     </span>
                   </React.Fragment>
                 </div>
-              </Stack__>
-            </Stack__>
+              </div>
+            </div>
           </div>
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"actions"}
             data-plasmic-override={overrides.actions}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.actions, {
+            className={classNames("all", sty.actions, {
               [sty.actionsaccessLevel_cantEdit]: hasVariant(
                 $state,
                 "accessLevel",
@@ -515,14 +464,14 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               })}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg___4TYeu)}
+                  className={classNames("all", sty.svg___4TYeu)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <PlusIcon
-                  className={classNames(projectcss.all, sty.svg__wt5S5)}
+                  className={classNames("all", sty.svg__wt5S5)}
                   role={"img"}
                 />
               }
@@ -530,11 +479,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               withIcons={["startIcon"]}
             >
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text___4Euis
-                )}
+                className={classNames("all", "__wab_text", sty.text___4Euis)}
               >
                 {"New project"}
               </div>
@@ -606,14 +551,12 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               }
               withBackgroundHover={true}
             />
-          </Stack__>
+          </div>
         </header>
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"projectsSection"}
           data-plasmic-override={overrides.projectsSection}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.projectsSection, {
+          className={classNames("all", sty.projectsSection, {
             [sty.projectsSectioncanUseCmsAndDataSources_dataSources]:
               hasVariant($state, "canUseCmsAndDataSources", "dataSources"),
             [sty.projectsSectioncanUseCmsAndDataSources_dataSources_personalWorkspace]:
@@ -641,10 +584,8 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__mMquk, {
+          <div
+            className={classNames("all", sty.freeBox__mMquk, {
               [sty.freeBoxcanUseCmsAndDataSources_dataSources__mMquk8X0Kv]:
                 hasVariant($state, "canUseCmsAndDataSources", "dataSources"),
               [sty.freeBoxcanUseCmsAndDataSources_projects__mMqukz3NM3]:
@@ -654,45 +595,27 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
             <div
               data-plasmic-name={"projectsTab"}
               data-plasmic-override={overrides.projectsTab}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.projectsTab,
-                {
-                  [sty.projectsTabcanUseCmsAndDataSources_dataSources]:
-                    hasVariant(
-                      $state,
-                      "canUseCmsAndDataSources",
-                      "dataSources"
-                    ),
-                  [sty.projectsTabcanUseCmsAndDataSources_projects]: hasVariant(
-                    $state,
-                    "canUseCmsAndDataSources",
-                    "projects"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.projectsTab, {
+                [sty.projectsTabcanUseCmsAndDataSources_dataSources]:
+                  hasVariant($state, "canUseCmsAndDataSources", "dataSources"),
+                [sty.projectsTabcanUseCmsAndDataSources_projects]: hasVariant(
+                  $state,
+                  "canUseCmsAndDataSources",
+                  "projects"
+                ),
+              })}
             >
               {"Projects"}
             </div>
             <div
               data-plasmic-name={"dataSourcesTab"}
               data-plasmic-override={overrides.dataSourcesTab}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.dataSourcesTab,
-                {
-                  [sty.dataSourcesTabcanUseCmsAndDataSources_dataSources]:
-                    hasVariant(
-                      $state,
-                      "canUseCmsAndDataSources",
-                      "dataSources"
-                    ),
-                  [sty.dataSourcesTabcanUseCmsAndDataSources_projects]:
-                    hasVariant($state, "canUseCmsAndDataSources", "projects"),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.dataSourcesTab, {
+                [sty.dataSourcesTabcanUseCmsAndDataSources_dataSources]:
+                  hasVariant($state, "canUseCmsAndDataSources", "dataSources"),
+                [sty.dataSourcesTabcanUseCmsAndDataSources_projects]:
+                  hasVariant($state, "canUseCmsAndDataSources", "projects"),
+              })}
             >
               {hasVariant($state, "canUseCmsAndDataSources", "dataSources")
                 ? "Integrations"
@@ -700,9 +623,9 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 ? "Integrations"
                 : "Data sources"}
             </div>
-          </Stack__>
+          </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__taBnm, {
+            className={classNames("all", sty.freeBox__taBnm, {
               [sty.freeBoxnoProjects__taBnmPq4Fx]: hasVariant(
                 $state,
                 "noProjects",
@@ -713,11 +636,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
             {renderPlasmicSlot({
               defaultContents: (
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__bQefr
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__bQefr)}
                 >
                   {"This workspace has no projects."}
                 </div>
@@ -738,7 +657,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               : false
           ) ? (
             <div
-              className={classNames(projectcss.all, sty.freeBox__sU2Y8, {
+              className={classNames("all", sty.freeBox__sU2Y8, {
                 [sty.freeBoxcanUseCmsAndDataSources_dataSources__sU2Y88X0Kv]:
                   hasVariant($state, "canUseCmsAndDataSources", "dataSources"),
               })}
@@ -747,9 +666,10 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 data-plasmic-name={"h3"}
                 data-plasmic-override={overrides.h3}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.h3,
-                  projectcss.__wab_text,
+                  "all",
+                  "h3",
+                  "h3__ooL7E",
+                  "__wab_text",
                   sty.h3,
                   {
                     [sty.h3canUseCmsAndDataSources_dataSources]: hasVariant(
@@ -768,13 +688,13 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.newCmsButton2)}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__remgn)}
+                    className={classNames("all", sty.svg__remgn)}
                     role={"img"}
                   />
                 }
                 startIcon={
                   <PlusIcon
-                    className={classNames(projectcss.all, sty.svg__nary)}
+                    className={classNames("all", sty.svg__nary)}
                     role={"img"}
                   />
                 }
@@ -849,12 +769,12 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               })}
             />
           ) : null}
-        </Stack__>
+        </div>
         {(hasVariant($state, "canUseCms", "canUseCms") ? true : false) ? (
           <div
             data-plasmic-name={"cmsSection"}
             data-plasmic-override={overrides.cmsSection}
-            className={classNames(projectcss.all, sty.cmsSection, {
+            className={classNames("all", sty.cmsSection, {
               [sty.cmsSectioncanUseCmsAndDataSources_dataSources]: hasVariant(
                 $state,
                 "canUseCmsAndDataSources",
@@ -872,10 +792,8 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__pxyYv, {
+            <div
+              className={classNames("all", sty.freeBox__pxyYv, {
                 [sty.freeBoxcanUseCmsAndDataSources_dataSources__pxyYv8X0Kv]:
                   hasVariant($state, "canUseCmsAndDataSources", "dataSources"),
                 [sty.freeBoxcanUseCmsAndDataSources_empty__pxyYvosTzO]:
@@ -890,26 +808,21 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               })}
             >
               <div
-                className={classNames(projectcss.all, sty.freeBox__fhW6O, {
+                className={classNames("all", sty.freeBox__fhW6O, {
                   [sty.freeBoxcanUseCmsAndDataSources_empty_canUseCms__fhW6OOsTzOKb24A]:
                     hasVariant($state, "canUseCms", "canUseCms") &&
                     hasVariant($state, "canUseCmsAndDataSources", "empty"),
                 })}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__x0AT1,
-                    {
-                      [sty.textcanUseCmsAndDataSources_dataSources__x0AT18X0Kv]:
-                        hasVariant(
-                          $state,
-                          "canUseCmsAndDataSources",
-                          "dataSources"
-                        ),
-                    }
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__x0AT1, {
+                    [sty.textcanUseCmsAndDataSources_dataSources__x0AT18X0Kv]:
+                      hasVariant(
+                        $state,
+                        "canUseCmsAndDataSources",
+                        "dataSources"
+                      ),
+                  })}
                 >
                   {hasVariant($state, "canUseCmsAndDataSources", "dataSources")
                     ? "Content Management Systems (CMS)"
@@ -933,14 +846,14 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                   })}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__woNvm)}
+                      className={classNames("all", sty.svg__woNvm)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <PlusIcon
-                      className={classNames(projectcss.all, sty.svg__liIIg)}
+                      className={classNames("all", sty.svg__liIIg)}
                       role={"img"}
                     />
                   }
@@ -961,7 +874,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                     hasVariant($state, "canUseCmsAndDataSources", "empty"),
                 }),
               })}
-            </Stack__>
+            </div>
           </div>
         ) : null}
       </div>
@@ -1062,7 +975,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWorkspaceSection__VariantsArgs;
     args?: PlasmicWorkspaceSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWorkspaceSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicWorkspaceSection__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWorkspaceSection__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

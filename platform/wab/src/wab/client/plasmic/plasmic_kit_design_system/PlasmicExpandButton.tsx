@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicExpandButton.module.css"; // plasmic-import: JJhv0MV9DH/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -126,6 +126,7 @@ function PlasmicExpandButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -144,7 +145,7 @@ function PlasmicExpandButton__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       children2={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg__wgw3N)}
+          className={classNames("all", sty.svg__wgw3N)}
           role={"img"}
         />
       }
@@ -166,7 +167,7 @@ function PlasmicExpandButton__RenderFunc(props: {
             ? ChevronRightSvgIcon
             : ChevronLeftSvgIcon
         }
-        className={classNames(projectcss.all, sty.svg__y7QMe, {
+        className={classNames("all", sty.svg__y7QMe, {
           [sty.svgisExpanded__y7QMe5Dg9P]: hasVariant(
             $state,
             "isExpanded",

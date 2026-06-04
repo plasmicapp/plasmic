@@ -33,7 +33,7 @@ import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProv
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftImportsPanel.module.css"; // plasmic-import: MeRxD_0BtJ/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -114,21 +114,24 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
       {
         path: "withUpdateAll",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withUpdateAll,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withUpdateAll,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -141,10 +144,10 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -171,7 +174,7 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
-            className={classNames(projectcss.all, sty.freeBox, {
+            className={classNames("all", sty.freeBox, {
               [sty.freeBoxwithUpdateAll]: hasVariant(
                 $state,
                 "withUpdateAll",
@@ -184,14 +187,14 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
               data-plasmic-override={overrides.importButton}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__loisF)}
+                  className={classNames("all", sty.svg__loisF)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <PlusIcon
-                  className={classNames(projectcss.all, sty.svg__iQt2K)}
+                  className={classNames("all", sty.svg__iQt2K)}
                   role={"img"}
                 />
               }
@@ -208,14 +211,14 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
               }
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__ehFcE)}
+                  className={classNames("all", sty.svg__ehFcE)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ResetIcon
-                  className={classNames(projectcss.all, sty.svg___8RJy, {
+                  className={classNames("all", sty.svg___8RJy, {
                     [sty.svgstate_refreshing___8RJYgHBcw]: hasVariant(
                       $state,
                       "state",
@@ -252,14 +255,14 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
                 }
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__jX552)}
+                    className={classNames("all", sty.svg__jX552)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <FetchIcon
-                    className={classNames(projectcss.all, sty.svg__elSwl, {
+                    className={classNames("all", sty.svg__elSwl, {
                       [sty.svgstate_refreshing__elSwlgHBcw]: hasVariant(
                         $state,
                         "state",
@@ -300,7 +303,7 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        className={classNames(projectcss.all, sty.content, {
+        className={classNames("all", sty.content, {
           [sty.contentstate_refreshing]: hasVariant(
             $state,
             "state",

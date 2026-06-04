@@ -3,37 +3,27 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  padding: 12px 16px;
-  border-top: 1px solid var(--token-hoA5qaM-91G);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 8px;
+  column-gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--token-hoA5qaM-91G);
 }
 .rootisFirstItem {
   border-top-color: var(--token-brSQU2ryS);
 }
-.root:hover {
+.root:hover:hover {
   opacity: 1;
   background: var(--token-bV4cCeIniS6);
 }
-.root:focus {
+.root:focus:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.root:active {
+.root:active:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.root:focus-within {
+.root:focus-within:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }

@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsEntryItem.module.css"; // plasmic-import: girCdMST6R/css
 
 import PencilSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PencilSvg"; // plasmic-import: 540duoJvb/icon
@@ -110,21 +110,23 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
         path: "isActive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isActive,
       },
       {
         path: "hasDraft",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasDraft,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasDraft,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -137,17 +139,17 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisActive]: hasVariant($state, "isActive", "isActive") }
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__ld9Y4, {
+        className={classNames("all", sty.freeBox__ld9Y4, {
           [sty.freeBoxhasDraft__ld9Y4MXg21]: hasVariant(
             $state,
             "hasDraft",
@@ -174,7 +176,7 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
         <PencilSvgIcon
           data-plasmic-name={"hasDraftMarker"}
           data-plasmic-override={overrides.hasDraftMarker}
-          className={classNames(projectcss.all, sty.hasDraftMarker, {
+          className={classNames("all", sty.hasDraftMarker, {
             [sty.hasDraftMarkerhasDraft]: hasVariant(
               $state,
               "hasDraft",
@@ -185,7 +187,7 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
         />
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__cpx2Y, {
+        className={classNames("all", sty.freeBox__cpx2Y, {
           [sty.freeBoxhasDraft__cpx2YmXg21]: hasVariant(
             $state,
             "hasDraft",

@@ -32,7 +32,7 @@ import { _useStyleTokens } from "../../../plasmic/plasmic_kit_left_pane/PlasmicS
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../plasmic/PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../../../plasmic/PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicActivityFeedItem.module.css"; // plasmic-import: kkbHZ8nmgGH/css
 
 createPlasmicElementProxy;
@@ -136,21 +136,23 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
       {
         path: "selected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -163,10 +165,10 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -185,7 +187,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__bGeUh, {
+        className={classNames("all", sty.freeBox__bGeUh, {
           [sty.freeBoxstate_versionPublished__bGeUh9SrPk]: hasVariant(
             $state,
             "state",
@@ -196,48 +198,43 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text,
-            {
-              [sty.textstate_anonymousVisited]: hasVariant(
-                $state,
-                "state",
-                "anonymousVisited"
-              ),
-              [sty.textstate_projectCreated]: hasVariant(
-                $state,
-                "state",
-                "projectCreated"
-              ),
-              [sty.textstate_projectForked]: hasVariant(
-                $state,
-                "state",
-                "projectForked"
-              ),
-              [sty.textstate_projectRenamed]: hasVariant(
-                $state,
-                "state",
-                "projectRenamed"
-              ),
-              [sty.textstate_projectShared]: hasVariant(
-                $state,
-                "state",
-                "projectShared"
-              ),
-              [sty.textstate_userVisited]: hasVariant(
-                $state,
-                "state",
-                "userVisited"
-              ),
-              [sty.textstate_versionPublished]: hasVariant(
-                $state,
-                "state",
-                "versionPublished"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text, {
+            [sty.textstate_anonymousVisited]: hasVariant(
+              $state,
+              "state",
+              "anonymousVisited"
+            ),
+            [sty.textstate_projectCreated]: hasVariant(
+              $state,
+              "state",
+              "projectCreated"
+            ),
+            [sty.textstate_projectForked]: hasVariant(
+              $state,
+              "state",
+              "projectForked"
+            ),
+            [sty.textstate_projectRenamed]: hasVariant(
+              $state,
+              "state",
+              "projectRenamed"
+            ),
+            [sty.textstate_projectShared]: hasVariant(
+              $state,
+              "state",
+              "projectShared"
+            ),
+            [sty.textstate_userVisited]: hasVariant(
+              $state,
+              "state",
+              "userVisited"
+            ),
+            [sty.textstate_versionPublished]: hasVariant(
+              $state,
+              "state",
+              "versionPublished"
+            ),
+          })}
         >
           {hasVariant($state, "state", "versionPublished")
             ? "\ud83d\uddc3\ufe0f"
@@ -256,7 +253,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
             : "\ud83e\udd26\u200d\u2640\ufe0f"}
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__wrNkZ, {
+          className={classNames("all", sty.freeBox__wrNkZ, {
             [sty.freeBoxselected__wrNkZ7Xsi1]: hasVariant(
               $state,
               "selected",
@@ -271,7 +268,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
         />
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__s0K6N, {
+        className={classNames("all", sty.freeBox__s0K6N, {
           [sty.freeBoxstate_anonymousVisited__s0K6Ntm6Oa]: hasVariant(
             $state,
             "state",
@@ -393,7 +390,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicActivityFeedItem__VariantsArgs;
     args?: PlasmicActivityFeedItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicActivityFeedItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicActivityFeedItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicActivityFeedItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

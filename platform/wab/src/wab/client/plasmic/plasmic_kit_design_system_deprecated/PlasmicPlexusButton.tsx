@@ -33,7 +33,7 @@ import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokens
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicPlexusButton.module.css"; // plasmic-import: sbyrU_8SkoWY/css
 
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
@@ -209,6 +209,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -249,9 +250,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
       aria-label={args.ariaLabel}
       className={classNames(
         "__wab_instance",
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -361,7 +362,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
         <div
           data-plasmic-name={"softBackground"}
           data-plasmic-override={overrides.softBackground}
-          className={classNames(projectcss.all, sty.softBackground, {
+          className={classNames("all", sty.softBackground, {
             [sty.softBackgroundcolor_errorDestructive]: hasVariant(
               $state,
               "color",
@@ -406,7 +407,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
         <div
           data-plasmic-name={"border"}
           data-plasmic-override={overrides.border}
-          className={classNames(projectcss.all, sty.border, {
+          className={classNames("all", sty.border, {
             [sty.bordercolor_errorDestructive]: hasVariant(
               $state,
               "color",
@@ -441,7 +442,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
       <div
         data-plasmic-name={"interactionEffect"}
         data-plasmic-override={overrides.interactionEffect}
-        className={classNames(projectcss.all, sty.interactionEffect, {
+        className={classNames("all", sty.interactionEffect, {
           [sty.interactionEffectcolor_errorDestructive]: hasVariant(
             $state,
             "color",
@@ -505,7 +506,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
       />
 
       <div
-        className={classNames(projectcss.all, sty.freeBox__sFawT, {
+        className={classNames("all", sty.freeBox__sFawT, {
           [sty.freeBoxcolor_neutral__sFawTqVhYc]: hasVariant(
             $state,
             "color",
@@ -552,7 +553,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__yCk3F, {
+          className={classNames("all", sty.freeBox__yCk3F, {
             [sty.freeBoxcolor_neutral__yCk3FqVhYc]: hasVariant(
               $state,
               "color",
@@ -594,7 +595,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <Circle2Icon
-                className={classNames(projectcss.all, sty.svg__urs43)}
+                className={classNames("all", sty.svg__urs43)}
                 role={"img"}
               />
             ),
@@ -711,13 +712,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
         </div>
         {renderPlasmicSlot({
           defaultContents: (
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__umbvB
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text__umbvB)}>
               {"Text"}
             </div>
           ),
@@ -837,7 +832,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
           }),
         })}
         <div
-          className={classNames(projectcss.all, sty.freeBox__w5P1T, {
+          className={classNames("all", sty.freeBox__w5P1T, {
             [sty.freeBoxiconEnd__w5P1TqqRls]: hasVariant(
               $state,
               "iconEnd",
@@ -866,7 +861,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
           {renderPlasmicSlot({
             defaultContents: (
               <ChevronDownIcon
-                className={classNames(projectcss.all, sty.svg__qI2Ih)}
+                className={classNames("all", sty.svg__qI2Ih)}
                 role={"img"}
               />
             ),

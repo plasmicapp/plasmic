@@ -17,12 +17,10 @@ import {
   Flex as Flex__,
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
@@ -35,15 +33,12 @@ import Bill from "../../components/dashboard/Bill"; // plasmic-import: sK-iPs7I1
 import PriceTierPicker from "../../components/pricing/PriceTierPicker"; // plasmic-import: Xx_WsdQKli-S/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicUpsellCheckout.module.css"; // plasmic-import: 5PfErhGRfT/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -136,78 +131,59 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
         path: "skipCreditCard",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.skipCreditCard,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.skipCreditCard,
       },
       {
         path: "onFreeTrial",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.onFreeTrial,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.onFreeTrial,
       },
       {
         path: "tempPickOneModal",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.tempPickOneModal,
       },
       {
         path: "billingFrequencyToggle.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "isChecked",
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootonFreeTrial]: hasVariant(
             $state,
             "onFreeTrial",
@@ -222,7 +198,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox___67Tlr, {
+        className={classNames("all", sty.freeBox___67Tlr, {
           [sty.freeBoxonFreeTrial___67TlRgSsNx]: hasVariant(
             $state,
             "onFreeTrial",
@@ -235,10 +211,8 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___48TmO, {
+        <div
+          className={classNames("all", sty.freeBox___48TmO, {
             [sty.freeBoxonFreeTrial___48TmOgSsNx]: hasVariant(
               $state,
               "onFreeTrial",
@@ -254,28 +228,23 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           <div
             data-plasmic-name={"operationTitle"}
             data-plasmic-override={overrides.operationTitle}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.operationTitle,
-              {
-                [sty.operationTitleonFreeTrial]: hasVariant(
-                  $state,
-                  "onFreeTrial",
-                  "onFreeTrial"
-                ),
-                [sty.operationTitletempPickOneModal]: hasVariant(
-                  $state,
-                  "tempPickOneModal",
-                  "tempPickOneModal"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.operationTitle, {
+              [sty.operationTitleonFreeTrial]: hasVariant(
+                $state,
+                "onFreeTrial",
+                "onFreeTrial"
+              ),
+              [sty.operationTitletempPickOneModal]: hasVariant(
+                $state,
+                "tempPickOneModal",
+                "tempPickOneModal"
+              ),
+            })}
           >
             {"Upgrade "}
           </div>
           <div
-            className={classNames(projectcss.all, sty.freeBox__ot68, {
+            className={classNames("all", sty.freeBox__ot68, {
               [sty.freeBoxtempPickOneModal__ot68ZGtUe]: hasVariant(
                 $state,
                 "tempPickOneModal",
@@ -295,9 +264,9 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               }),
             })}
           </div>
-        </Stack__>
+        </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__veMFb, {
+          className={classNames("all", sty.freeBox__veMFb, {
             [sty.freeBoxtempPickOneModal__veMFbzGtUe]: hasVariant(
               $state,
               "tempPickOneModal",
@@ -306,23 +275,18 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__pa5Ic,
-              {
-                [sty.textonFreeTrial__pa5ICgSsNx]: hasVariant(
-                  $state,
-                  "onFreeTrial",
-                  "onFreeTrial"
-                ),
-                [sty.texttempPickOneModal__pa5ICzGtUe]: hasVariant(
-                  $state,
-                  "tempPickOneModal",
-                  "tempPickOneModal"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__pa5Ic, {
+              [sty.textonFreeTrial__pa5ICgSsNx]: hasVariant(
+                $state,
+                "onFreeTrial",
+                "onFreeTrial"
+              ),
+              [sty.texttempPickOneModal__pa5ICzGtUe]: hasVariant(
+                $state,
+                "tempPickOneModal",
+                "tempPickOneModal"
+              ),
+            })}
           >
             {hasVariant($state, "tempPickOneModal", "tempPickOneModal")
               ? "Select a new plan to upgrade. "
@@ -334,8 +298,8 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             data-plasmic-name={"operationDescription"}
             data-plasmic-override={overrides.operationDescription}
             className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
+              "all",
+              "__wab_text",
               sty.operationDescription,
               {
                 [sty.operationDescriptiononFreeTrial]: hasVariant(
@@ -359,10 +323,11 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                 {
                   <PlasmicLink__
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__ooL7E",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.link___7C6Pl,
                       {
                         [sty.linkonFreeTrial___7C6PLgSsNx]: hasVariant(
@@ -400,10 +365,11 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                 {
                   <PlasmicLink__
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__ooL7E",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.link___7C6Pl,
                       {
                         [sty.linkonFreeTrial___7C6PLgSsNx]: hasVariant(
@@ -436,23 +402,18 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             )}
           </div>
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__nm0Di,
-              {
-                [sty.textonFreeTrial__nm0DigSsNx]: hasVariant(
-                  $state,
-                  "onFreeTrial",
-                  "onFreeTrial"
-                ),
-                [sty.texttempPickOneModal__nm0DizGtUe]: hasVariant(
-                  $state,
-                  "tempPickOneModal",
-                  "tempPickOneModal"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__nm0Di, {
+              [sty.textonFreeTrial__nm0DigSsNx]: hasVariant(
+                $state,
+                "onFreeTrial",
+                "onFreeTrial"
+              ),
+              [sty.texttempPickOneModal__nm0DizGtUe]: hasVariant(
+                $state,
+                "tempPickOneModal",
+                "tempPickOneModal"
+              ),
+            })}
           >
             {hasVariant($state, "tempPickOneModal", "tempPickOneModal") ? (
               <React.Fragment>
@@ -462,10 +423,11 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                 {
                   <PlasmicLink__
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__ooL7E",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.link__py5Bc,
                       {
                         [sty.linkonFreeTrial__py5BcgSsNx]: hasVariant(
@@ -503,10 +465,11 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                 {
                   <PlasmicLink__
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__ooL7E",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.link__py5Bc,
                       {
                         [sty.linkonFreeTrial__py5BcgSsNx]: hasVariant(
@@ -540,10 +503,11 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                 {
                   <PlasmicLink__
                     className={classNames(
-                      projectcss.all,
-                      projectcss.a,
-                      projectcss.__wab_text,
-                      projectcss.plasmic_default__inline,
+                      "all",
+                      "a",
+                      "a__ooL7E",
+                      "__wab_text",
+                      "plasmic_default__inline",
                       sty.link__py5Bc,
                       {
                         [sty.linkonFreeTrial__py5BcgSsNx]: hasVariant(
@@ -575,7 +539,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           </div>
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__eBvEe)}>
+      <div className={classNames("all", sty.freeBox__eBvEe)}>
         <Switch
           data-plasmic-name={"billingFrequencyToggle"}
           data-plasmic-override={overrides.billingFrequencyToggle}
@@ -603,21 +567,13 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             }
           }}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__c7DnN
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__c7DnN)}>
             {"Annual Billing (Save 20%)"}
           </div>
         </Switch>
       </div>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__cZbE, {
+      <div
+        className={classNames("all", sty.freeBox__cZbE, {
           [sty.freeBoxskipCreditCard__cZbE73226]: hasVariant(
             $state,
             "skipCreditCard",
@@ -639,10 +595,8 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           noScrolling={true}
         />
 
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__lrnq, {
+        <div
+          className={classNames("all", sty.freeBox__lrnq, {
             [sty.freeBoxskipCreditCard__lrnq73226]: hasVariant(
               $state,
               "skipCreditCard",
@@ -655,28 +609,22 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             ),
           })}
         >
-          <div className={classNames(projectcss.all, sty.freeBox__tMKh6)}>
+          <div className={classNames("all", sty.freeBox__tMKh6)}>
             <Bill
               data-plasmic-name={"bill"}
               data-plasmic-override={overrides.bill}
               className={classNames("__wab_instance", sty.bill)}
               seatDescription={
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__pogjR
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__pogjR)}
                 >
                   {"$15 x 10 seats x 1 month"}
                 </div>
               }
             />
           </div>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___7P51B, {
+          <div
+            className={classNames("all", sty.freeBox___7P51B, {
               [sty.freeBoxskipCreditCard___7P51B73226]: hasVariant(
                 $state,
                 "skipCreditCard",
@@ -687,7 +635,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             <div
               data-plasmic-name={"spinnerContainer"}
               data-plasmic-override={overrides.spinnerContainer}
-              className={classNames(projectcss.all, sty.spinnerContainer)}
+              className={classNames("all", sty.spinnerContainer)}
             />
 
             <Button
@@ -696,14 +644,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               className={classNames("__wab_instance", sty.cancelButton)}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__cbbt)}
+                  className={classNames("all", sty.svg__cbbt)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__hfzby)}
+                  className={classNames("all", sty.svg__hfzby)}
                   role={"img"}
                 />
               }
@@ -716,14 +664,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               className={classNames("__wab_instance", sty.confirmButton)}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__p2T2J)}
+                  className={classNames("all", sty.svg__p2T2J)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg__r5EBh)}
+                  className={classNames("all", sty.svg__r5EBh)}
                   role={"img"}
                 />
               }
@@ -731,12 +679,10 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             >
               {"Submit"}
             </Button>
-          </Stack__>
-        </Stack__>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___6BfLa, {
+          </div>
+        </div>
+        <div
+          className={classNames("all", sty.freeBox___6BfLa, {
             [sty.freeBoxskipCreditCard___6BfLa73226]: hasVariant(
               $state,
               "skipCreditCard",
@@ -749,63 +695,38 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__eVxan)}
-          >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__ik21K
-              )}
-            >
+          <div className={classNames("all", sty.freeBox__eVxan)}>
+            <div className={classNames("all", "__wab_text", sty.text__ik21K)}>
               {"Checkout"}
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__i0LzW)}
-            >
+            <div className={classNames("all", sty.freeBox__i0LzW)}>
               <div
                 data-plasmic-name={"stripeCardElement"}
                 data-plasmic-override={overrides.stripeCardElement}
-                className={classNames(projectcss.all, sty.stripeCardElement)}
+                className={classNames("all", sty.stripeCardElement)}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__b6Vot
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__b6Vot)}
                 >
                   {"STRIPE CARD ELEMENT"}
                 </div>
               </div>
-              <div className={classNames(projectcss.all, sty.freeBox___6RZop)}>
+              <div className={classNames("all", sty.freeBox___6RZop)}>
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__aX7C
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__aX7C)}
                 >
                   {"Expiration"}
                 </div>
-                <div className={classNames(projectcss.all, sty.freeBox__m66BV)}>
+                <div className={classNames("all", sty.freeBox__m66BV)}>
                   <div
                     data-plasmic-name={"stripeExpiryElement"}
                     data-plasmic-override={overrides.stripeExpiryElement}
-                    className={classNames(
-                      projectcss.all,
-                      sty.stripeExpiryElement
-                    )}
+                    className={classNames("all", sty.stripeExpiryElement)}
                   >
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__a3V3H
                       )}
                     >
@@ -814,26 +735,22 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   </div>
                 </div>
               </div>
-              <div className={classNames(projectcss.all, sty.freeBox__s2GDv)}>
+              <div className={classNames("all", sty.freeBox__s2GDv)}>
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__naWaw
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__naWaw)}
                 >
                   {"Security Code"}
                 </div>
-                <div className={classNames(projectcss.all, sty.freeBox__wiZSw)}>
+                <div className={classNames("all", sty.freeBox__wiZSw)}>
                   <div
                     data-plasmic-name={"stripeCvcElement"}
                     data-plasmic-override={overrides.stripeCvcElement}
-                    className={classNames(projectcss.all, sty.stripeCvcElement)}
+                    className={classNames("all", sty.stripeCvcElement)}
                   >
                     <div
                       className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
+                        "all",
+                        "__wab_text",
                         sty.text__biGjm
                       )}
                     >
@@ -842,12 +759,10 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   </div>
                 </div>
               </div>
-            </Stack__>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___5U5GM, {
+            </div>
+          </div>
+          <div
+            className={classNames("all", sty.freeBox___5U5GM, {
               [sty.freeBoxskipCreditCard___5U5GM73226]: hasVariant(
                 $state,
                 "skipCreditCard",
@@ -858,7 +773,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             <div
               data-plasmic-name={"spinnerContainer2"}
               data-plasmic-override={overrides.spinnerContainer2}
-              className={classNames(projectcss.all, sty.spinnerContainer2)}
+              className={classNames("all", sty.spinnerContainer2)}
             />
 
             <Button
@@ -867,14 +782,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               className={classNames("__wab_instance", sty.cancelButton2)}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__muOl)}
+                  className={classNames("all", sty.svg__muOl)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg___6COrm)}
+                  className={classNames("all", sty.svg___6COrm)}
                   role={"img"}
                 />
               }
@@ -887,14 +802,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               className={classNames("__wab_instance", sty.confirmButton2)}
               endIcon={
                 <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__m1Mj)}
+                  className={classNames("all", sty.svg__m1Mj)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
                 <ArrowRightSvgIcon
-                  className={classNames(projectcss.all, sty.svg___8Fw5J)}
+                  className={classNames("all", sty.svg___8Fw5J)}
                   role={"img"}
                 />
               }
@@ -902,10 +817,10 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             >
               {"Submit"}
             </Button>
-          </Stack__>
-        </Stack__>
-      </Stack__>
-    </Stack__>
+          </div>
+        </div>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -974,7 +889,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicUpsellCheckout__VariantsArgs;
     args?: PlasmicUpsellCheckout__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicUpsellCheckout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicUpsellCheckout__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicUpsellCheckout__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

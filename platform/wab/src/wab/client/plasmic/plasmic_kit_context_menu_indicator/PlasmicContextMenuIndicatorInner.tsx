@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,24 +13,25 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import BoundingBoxHighlighter from "../../components/ContextMenuIndicator/BoundingBoxHighlighter"; // plasmic-import: iKmOjRERju/component
 import MenuIndicator from "../../components/ContextMenuIndicator/MenuIndicator"; // plasmic-import: 5RLoIE7-j5/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_context_menu_indicator.module.css"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/projectcss
+import "./plasmic_plasmic_kit_context_menu_indicator.css"; // plasmic-import: fuzE93KTc4ZKNBYf3LAfy/projectcss
 import sty from "./PlasmicContextMenuIndicatorInner.module.css"; // plasmic-import: juosawBbMz/css
 
 createPlasmicElementProxy;
@@ -55,10 +56,10 @@ export const PlasmicContextMenuIndicatorInner__ArgProps =
   new Array<ArgPropType>();
 
 export type PlasmicContextMenuIndicatorInner__OverridesType = {
-  root?: p.Flex<"div">;
-  menuIndicator?: p.Flex<typeof MenuIndicator>;
-  freeBox?: p.Flex<"div">;
-  boundingBoxHighlighter?: p.Flex<typeof BoundingBoxHighlighter>;
+  root?: Flex__<"div">;
+  menuIndicator?: Flex__<typeof MenuIndicator>;
+  freeBox?: Flex__<"div">;
+  boundingBoxHighlighter?: Flex__<typeof BoundingBoxHighlighter>;
 };
 
 export interface DefaultContextMenuIndicatorInnerProps {
@@ -78,49 +79,61 @@ function PlasmicContextMenuIndicatorInner__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "interactive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.interactive,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.interactive,
       },
       {
         path: "active",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.active,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.active,
       },
       {
         path: "isRecording",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isRecording,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -129,12 +142,11 @@ function PlasmicContextMenuIndicatorInner__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_fuzE93KTc4ZKNBYf3LAfy",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         { [sty.rootactive]: hasVariant($state, "active", "active") }
       )}
@@ -166,7 +178,7 @@ function PlasmicContextMenuIndicatorInner__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxactive]: hasVariant($state, "active", "active"),
           [sty.freeBoxinteractive]: hasVariant(
             $state,
@@ -230,23 +242,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicContextMenuIndicatorInner__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicContextMenuIndicatorInner__VariantsArgs;
     args?: PlasmicContextMenuIndicatorInner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicContextMenuIndicatorInner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicContextMenuIndicatorInner__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicContextMenuIndicatorInner__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicContextMenuIndicatorInner__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -260,7 +272,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicContextMenuIndicatorInner__ArgProps,
           internalVariantPropNames:
             PlasmicContextMenuIndicatorInner__VariantProps,

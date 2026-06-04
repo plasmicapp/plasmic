@@ -32,7 +32,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerColumn.module.css"; // plasmic-import: xmF37LmWYE/css
 
 import PlaySvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
@@ -122,6 +122,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -139,10 +140,10 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_w2GXN278dkQ2gQTVQnPehW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -169,7 +170,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
           <PlaySvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
           />
         }
@@ -179,11 +180,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text
-          )}
+          className={classNames("all", "__wab_text", sty.text)}
         >
           {"Run all previous steps"}
         </div>
@@ -191,7 +188,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxisWide]: hasVariant($state, "isWide", "isWide"),
           [sty.freeBoxpreviewSteps]: hasVariant(
             $state,

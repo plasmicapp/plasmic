@@ -9,6 +9,8 @@
   transition-duration: 1s;
   background: rgb(255, 255, 255);
   min-width: 0;
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 1s;
 }
 .freeBox {
   display: flex;

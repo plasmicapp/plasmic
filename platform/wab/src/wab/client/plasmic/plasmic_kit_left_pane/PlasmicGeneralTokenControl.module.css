@@ -9,7 +9,7 @@
   overflow: hidden;
   min-width: 0;
 }
-.root:hover {
+.root:hover:hover {
   cursor: pointer;
 }
 .rowItem:global(.__wab_instance) {

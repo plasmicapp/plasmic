@@ -14,20 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_alert_banner.module.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../PP__plasmickit_alert_banner.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import sty from "./PlasmicPromoBanner.module.css"; // plasmic-import: V-X3eZLINq/css
 
 createPlasmicElementProxy;
@@ -91,6 +91,8 @@ function PlasmicPromoBanner__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <PlasmicLink__
       data-plasmic-name={"root"}
@@ -98,14 +100,13 @@ function PlasmicPromoBanner__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.a,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "a",
+        "a__29njz",
+        "root_reset_29njzcsBEPR4koRddw4knF",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
       href={args.bannerUrl}
@@ -114,7 +115,7 @@ function PlasmicPromoBanner__RenderFunc(props: {
       <div
         data-plasmic-name={"text"}
         data-plasmic-override={overrides.text}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
+        className={classNames("all", "__wab_text", sty.text)}
       >
         <React.Fragment>
           {(() => {
@@ -159,7 +160,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPromoBanner__VariantsArgs;
     args?: PlasmicPromoBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPromoBanner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPromoBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPromoBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

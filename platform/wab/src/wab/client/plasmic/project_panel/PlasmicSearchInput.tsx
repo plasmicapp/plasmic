@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,23 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../plasmic_kit_project_panel/PlasmicStyleTokensProvider"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_project_panel.module.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
+import "./plasmic_project_panel.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicSearchInput.module.css"; // plasmic-import: CHoUJxFMpo/css
 
 import SearchIcon from "../plasmic_kit/PlasmicIcon__Search"; // plasmic-import: sjONHoK61vpSz/icon
@@ -107,22 +107,24 @@ function PlasmicSearchInput__RenderFunc(props: {
         path: "collapsed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapsed,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapsed,
       },
       {
         path: "withShortcut",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withShortcut,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withShortcut,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -137,6 +139,8 @@ function PlasmicSearchInput__RenderFunc(props: {
       isSearchInputContainerFocusVisibleWithin,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"searchInputContainer"}
@@ -144,13 +148,11 @@ function PlasmicSearchInput__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_m8VxGcigeLAEXFe8c12w5Q",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.searchInputContainer,
         {
           [sty.searchInputContainer___focusVisibleWithin]:
@@ -177,7 +179,7 @@ function PlasmicSearchInput__RenderFunc(props: {
       <SearchIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg, {
+        className={classNames("all", sty.svg, {
           [sty.svgcollapsed]: hasVariant($state, "collapsed", "collapsed"),
         })}
         role={"img"}
@@ -188,8 +190,9 @@ function PlasmicSearchInput__RenderFunc(props: {
           data-plasmic-name={"searchInput"}
           data-plasmic-override={overrides.searchInput}
           className={classNames(
-            projectcss.all,
-            projectcss.input,
+            "all",
+            "input",
+            "input__m8VxG",
             sty.searchInput,
             {
               [sty.searchInput___focusVisibleWithin]:
@@ -218,7 +221,7 @@ function PlasmicSearchInput__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxcollapsed]: hasVariant($state, "collapsed", "collapsed"),
         })}
       >
@@ -226,7 +229,7 @@ function PlasmicSearchInput__RenderFunc(props: {
           <CloseCircleSvgIcon
             data-plasmic-name={"clearFieldIcon"}
             data-plasmic-override={overrides.clearFieldIcon}
-            className={classNames(projectcss.all, sty.clearFieldIcon, {
+            className={classNames("all", sty.clearFieldIcon, {
               [sty.clearFieldIconcollapsed]: hasVariant(
                 $state,
                 "collapsed",
@@ -239,20 +242,15 @@ function PlasmicSearchInput__RenderFunc(props: {
         <div
           data-plasmic-name={"shortcut"}
           data-plasmic-override={overrides.shortcut}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.shortcut,
-            {
-              [sty.shortcut___focusVisibleWithin]:
-                triggers.focusVisibleWithin_searchInputContainer,
-              [sty.shortcutwithShortcut]: hasVariant(
-                $state,
-                "withShortcut",
-                "withShortcut"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.shortcut, {
+            [sty.shortcut___focusVisibleWithin]:
+              triggers.focusVisibleWithin_searchInputContainer,
+            [sty.shortcutwithShortcut]: hasVariant(
+              $state,
+              "withShortcut",
+              "withShortcut"
+            ),
+          })}
         >
           {"P"}
         </div>
@@ -270,7 +268,6 @@ const PlasmicDescendants = {
     "clearFieldIcon",
     "shortcut",
   ],
-
   svg: ["svg"],
   searchInput: ["searchInput"],
   freeBox: ["freeBox", "clearFieldIcon", "shortcut"],
@@ -294,23 +291,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSearchInput__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicSearchInput__VariantsArgs;
     args?: PlasmicSearchInput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSearchInput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSearchInput__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicSearchInput__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicSearchInput__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

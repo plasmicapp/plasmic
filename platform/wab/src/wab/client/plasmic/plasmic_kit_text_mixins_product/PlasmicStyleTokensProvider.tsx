@@ -9,12 +9,11 @@ import { createUseStyleTokens } from "@plasmicapp/react-web";
 
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: sDniSX4oPUZFyk2sXXb3nh/projectModule
 
-import projectcss from "../q_4_text_mixins_product/plasmic_q_4_text_mixins_product.module.css"; // plasmic-import: sDniSX4oPUZFyk2sXXb3nh/projectcss
-
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../q_4_text_mixins_product/plasmic_q_4_text_mixins_product.css"; // plasmic-import: sDniSX4oPUZFyk2sXXb3nh/projectcss
 
 const data = {
-  base: `${projectcss.plasmic_tokens} ${plasmic_plasmic_kit_color_tokens_css.plasmic_tokens}`,
+  base: `${"plasmic_tokens_sDniSX4oPUZFyk2sXXb3nh"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,
   varianted: [],
 };
 

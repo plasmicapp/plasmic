@@ -18,12 +18,10 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
@@ -36,15 +34,12 @@ import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQ
 import PriceTierPicker from "../../components/pricing/PriceTierPicker"; // plasmic-import: Xx_WsdQKli-S/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
-
-import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicTeamBilling.module.css"; // plasmic-import: MtL6MGlBxoy/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -143,72 +138,51 @@ function PlasmicTeamBilling__RenderFunc(props: {
         path: "showBillingError",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showBillingError,
       },
       {
         path: "tier",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.tier,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.tier,
       },
       {
         path: "billingFrequencyToggle.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "isChecked",
       },
     ],
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_pricing_css.plasmic_tokens,
+        "all",
+        "root_reset_ooL7EhXDmFQWnW9sxtchhE",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
-          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
-            hasVariant(globalVariants, "environment", "website"),
           [sty.rootshowBillingError]: hasVariant(
             $state,
             "showBillingError",
@@ -219,7 +193,7 @@ function PlasmicTeamBilling__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__nOs6U, {
+        className={classNames("all", sty.freeBox__nOs6U, {
           [sty.freeBoxshowBillingError__nOs6UXmPkf]: hasVariant(
             $state,
             "showBillingError",
@@ -234,7 +208,7 @@ function PlasmicTeamBilling__RenderFunc(props: {
         })}
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__ftaU, {
+        className={classNames("all", sty.freeBox__ftaU, {
           [sty.freeBoxshowBillingError__ftaUXmPkf]: hasVariant(
             $state,
             "showBillingError",
@@ -243,39 +217,20 @@ function PlasmicTeamBilling__RenderFunc(props: {
           [sty.freeBoxtier_free__ftaUxEnAp]: hasVariant($state, "tier", "free"),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__xXxvr)}
-        >
-          <div className={classNames(projectcss.all, sty.freeBox___7YcIa)}>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___70ASv
-              )}
-            >
+        <div className={classNames("all", sty.freeBox__xXxvr)}>
+          <div className={classNames("all", sty.freeBox___7YcIa)}>
+            <div className={classNames("all", "__wab_text", sty.text___70ASv)}>
               {"Account Plan"}
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___2PErC)}
-            >
+            <div className={classNames("all", sty.freeBox___2PErC)}>
               <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__qCvxa,
-                  {
-                    [sty.textshowBillingError__qCvxaXmPkf]: hasVariant(
-                      $state,
-                      "showBillingError",
-                      "showBillingError"
-                    ),
-                  }
-                )}
+                className={classNames("all", "__wab_text", sty.text__qCvxa, {
+                  [sty.textshowBillingError__qCvxaXmPkf]: hasVariant(
+                    $state,
+                    "showBillingError",
+                    "showBillingError"
+                  ),
+                })}
               >
                 {"Pick a plan that fits your workflow."}
               </div>
@@ -283,9 +238,10 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 data-plasmic-name={"learnMore"}
                 data-plasmic-override={overrides.learnMore}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.a,
-                  projectcss.__wab_text,
+                  "all",
+                  "a",
+                  "a__ooL7E",
+                  "__wab_text",
                   sty.learnMore
                 )}
                 href={"https://www.plasmic.app/pricing"}
@@ -294,7 +250,7 @@ function PlasmicTeamBilling__RenderFunc(props: {
               >
                 {"Learn more."}
               </PlasmicLink__>
-            </Stack__>
+            </div>
           </div>
           {(hasVariant($state, "tier", "free") ? true : false) ? (
             <FreeTrial
@@ -306,10 +262,8 @@ function PlasmicTeamBilling__RenderFunc(props: {
               })}
             />
           ) : null}
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__fQ70J, {
+          <div
+            className={classNames("all", sty.freeBox__fQ70J, {
               [sty.freeBoxtier_enterprise__fQ70J5Ph4X]: hasVariant(
                 $state,
                 "tier",
@@ -327,38 +281,18 @@ function PlasmicTeamBilling__RenderFunc(props: {
               value: args.currentBill,
               className: classNames(sty.slotTargetCurrentBill),
             })}
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text___4Yo4
-              )}
-            >
+            <div className={classNames("all", "__wab_text", sty.text___4Yo4)}>
               {"Recurring bill"}
             </div>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__mOmdD)}
-          >
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___2NKs)}
-            >
+          </div>
+          <div className={classNames("all", sty.freeBox__mOmdD)}>
+            <div className={classNames("all", sty.freeBox___2NKs)}>
               {renderPlasmicSlot({
                 defaultContents: "1",
                 value: args.seatsUsed,
                 className: classNames(sty.slotTargetSeatsUsed),
               })}
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__gJjIm
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__gJjIm)}>
                 {"of"}
               </div>
               {renderPlasmicSlot({
@@ -366,27 +300,15 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 value: args.seatsPurchased,
                 className: classNames(sty.slotTargetSeatsPurchased),
               })}
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__iz26I
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__iz26I)}>
                 {"seats used"}
               </div>
-            </Stack__>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__ofLuw
-              )}
-            >
+            </div>
+            <div className={classNames("all", "__wab_text", sty.text__ofLuw)}>
               {"Current usage"}
             </div>
-          </Stack__>
-        </Stack__>
+          </div>
+        </div>
         <Switch
           data-plasmic-name={"billingFrequencyToggle"}
           data-plasmic-override={overrides.billingFrequencyToggle}
@@ -414,16 +336,12 @@ function PlasmicTeamBilling__RenderFunc(props: {
             }
           }}
         >
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___0IM
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text___0IM)}>
             <React.Fragment>
               <span
-                className={"plasmic_default__all plasmic_default__span"}
+                className={
+                  "plasmic_default__all plasmic_default__span plasmic_default__span__ooL7E"
+                }
                 style={{ fontWeight: 500 }}
               >
                 {"Annual Billing"}
@@ -451,58 +369,40 @@ function PlasmicTeamBilling__RenderFunc(props: {
         })}
       />
 
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"premiumSections"}
         data-plasmic-override={overrides.premiumSections}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.premiumSections, {
+        className={classNames("all", sty.premiumSections, {
           [sty.premiumSectionstier_free]: hasVariant($state, "tier", "free"),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__egD9R)}
-        >
+        <div className={classNames("all", sty.freeBox__egD9R)}>
           <h4
             data-plasmic-name={"h4"}
             data-plasmic-override={overrides.h4}
             className={classNames(
-              projectcss.all,
-              projectcss.h4,
-              projectcss.__wab_text,
+              "all",
+              "h4",
+              "h4__ooL7E",
+              "__wab_text",
               sty.h4
             )}
           >
             {"Preferences"}
           </h4>
-          <div className={classNames(projectcss.all, sty.freeBox__sDa4Q)}>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__oz3Ad)}
-            >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__dsQj7
-                )}
-              >
+          <div className={classNames("all", sty.freeBox__sDa4Q)}>
+            <div className={classNames("all", sty.freeBox__oz3Ad)}>
+              <div className={classNames("all", "__wab_text", sty.text__dsQj7)}>
                 {"Billing email"}
               </div>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox___4WK2C)}
-              >
+              <div className={classNames("all", sty.freeBox___4WK2C)}>
                 <input
                   data-plasmic-name={"billingEmail"}
                   data-plasmic-override={overrides.billingEmail}
                   className={classNames(
-                    projectcss.all,
-                    projectcss.input,
+                    "all",
+                    "input",
+                    "input__ooL7E",
                     sty.billingEmail
                   )}
                   placeholder={"Enter…"}
@@ -523,35 +423,29 @@ function PlasmicTeamBilling__RenderFunc(props: {
                   )}
                   endIcon={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__lL73)}
+                      className={classNames("all", sty.svg__lL73)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
                     <ArrowRightSvgIcon
-                      className={classNames(projectcss.all, sty.svg__dEpin)}
+                      className={classNames("all", sty.svg__dEpin)}
                       role={"img"}
                     />
                   }
                   type={["primary"]}
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__vqNbp
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__vqNbp)}
                   >
                     {"Update"}
                   </div>
                 </Button>
-              </Stack__>
-            </Stack__>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___2CSw, {
+              </div>
+            </div>
+            <div
+              className={classNames("all", sty.freeBox___2CSw, {
                 [sty.freeBoxshowBillingError___2CSwXmPkf]: hasVariant(
                   $state,
                   "showBillingError",
@@ -575,25 +469,21 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.changeSeatsButton)}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__a4XtS)}
+                    className={classNames("all", sty.svg__a4XtS)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__zyBz8)}
+                    className={classNames("all", sty.svg__zyBz8)}
                     role={"img"}
                   />
                 }
                 type={["secondary"]}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__uzg1X
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__uzg1X)}
                 >
                   {"Manage seats"}
                 </div>
@@ -607,25 +497,21 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 )}
                 endIcon={
                   <ChevronDownSvgIcon
-                    className={classNames(projectcss.all, sty.svg__bwN41)}
+                    className={classNames("all", sty.svg__bwN41)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__g7GmU)}
+                    className={classNames("all", sty.svg__g7GmU)}
                     role={"img"}
                   />
                 }
                 type={["secondary"]}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__l6WqO
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__l6WqO)}
                 >
                   {"Change credit card"}
                 </div>
@@ -636,14 +522,14 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 className={classNames("__wab_instance", sty.manageBilling)}
                 endIcon={
                   <ArrowUpRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg___7TuH)}
+                    className={classNames("all", sty.svg___7TuH)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
                   <ArrowRightSvgIcon
-                    className={classNames(projectcss.all, sty.svg__bOkpg)}
+                    className={classNames("all", sty.svg__bOkpg)}
                     role={"img"}
                   />
                 }
@@ -651,18 +537,14 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 withIcons={["endIcon"]}
               >
                 <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__k3Dt
-                  )}
+                  className={classNames("all", "__wab_text", sty.text__k3Dt)}
                 >
                   {"Manage billing"}
                 </div>
               </Button>
-            </Stack__>
+            </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__ncYhG)}>
+          <div className={classNames("all", sty.freeBox__ncYhG)}>
             <Button
               data-plasmic-name={"cancelSubscriptionButton"}
               data-plasmic-override={overrides.cancelSubscriptionButton}
@@ -670,20 +552,14 @@ function PlasmicTeamBilling__RenderFunc(props: {
               type={["backlitError"]}
               withIcons={[]}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__iI7N
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__iI7N)}>
                 {"Cancel plan"}
               </div>
             </Button>
           </div>
-        </Stack__>
-      </Stack__>
-    </Stack__>
+        </div>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -755,7 +631,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTeamBilling__VariantsArgs;
     args?: PlasmicTeamBilling__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTeamBilling__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTeamBilling__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTeamBilling__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

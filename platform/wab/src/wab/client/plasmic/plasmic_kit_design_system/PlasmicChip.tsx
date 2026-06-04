@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicChip.module.css"; // plasmic-import: jW885tExwE/css
 
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
@@ -115,6 +115,7 @@ function PlasmicChip__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -132,12 +133,12 @@ function PlasmicChip__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.button,
-        projectcss.button__tXkSR,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "button",
+        "button__tXkSR",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -152,13 +153,7 @@ function PlasmicChip__RenderFunc(props: {
     >
       {renderPlasmicSlot({
         defaultContents: (
-          <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__cySel
-            )}
-          >
+          <div className={classNames("all", "__wab_text", sty.text__cySel)}>
             {"Chip"}
           </div>
         ),
@@ -180,7 +175,7 @@ function PlasmicChip__RenderFunc(props: {
         <CloseSvgIcon
           data-plasmic-name={"closeIcon"}
           data-plasmic-override={overrides.closeIcon}
-          className={classNames(projectcss.all, sty.closeIcon, {
+          className={classNames("all", sty.closeIcon, {
             [sty.closeIcondeletable]: hasVariant(
               $state,
               "deletable",

@@ -25,13 +25,12 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_alert_banner/PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../../../plasmic/PP__plasmickit_alert_banner.module.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../../../plasmic/PP__plasmickit_alert_banner.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import sty from "./PlasmicAlertBanner.module.css"; // plasmic-import: DCWq1LLaJ6e/css
 
 import CloseIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -146,17 +145,21 @@ function PlasmicAlertBanner__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -165,13 +168,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_29njzcsBEPR4koRddw4knF",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootstate_authError]: hasVariant($state, "state", "authError"),
@@ -207,7 +208,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__ncsVm, {
+        className={classNames("all", sty.freeBox__ncsVm, {
           [sty.freeBoxstate_unlogged__ncsVmt672P]: hasVariant(
             $state,
             "state",
@@ -221,7 +222,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__lHeQv, {
+          className={classNames("all", sty.freeBox__lHeQv, {
             [sty.freeBoxstate_concurrentEdit__lHeQvsWvup]: hasVariant(
               $state,
               "state",
@@ -265,7 +266,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
           })}
         >
           <WarningTriangleSvgIcon
-            className={classNames(projectcss.all, sty.svg___0Dd3A, {
+            className={classNames("all", sty.svg___0Dd3A, {
               [sty.svgstate_invariantError___0Dd3Aw3Sap]: hasVariant(
                 $state,
                 "state",
@@ -286,7 +287,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
           />
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__bzau, {
+          className={classNames("all", sty.freeBox__bzau, {
             [sty.freeBoxstate_concurrentEdit__bzauSWvup]: hasVariant(
               $state,
               "state",
@@ -330,78 +331,73 @@ function PlasmicAlertBanner__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__su8VU,
-              {
-                [sty.textstate_authError__su8VUaPWsX]: hasVariant(
-                  $state,
-                  "state",
-                  "authError"
-                ),
-                [sty.textstate_concurrentEdit__su8VUsWvup]: hasVariant(
-                  $state,
-                  "state",
-                  "concurrentEdit"
-                ),
-                [sty.textstate_invariantError__su8VUw3Sap]: hasVariant(
-                  $state,
-                  "state",
-                  "invariantError"
-                ),
-                [sty.textstate_notChrome__su8VUYjAIr]: hasVariant(
-                  $state,
-                  "state",
-                  "notChrome"
-                ),
-                [sty.textstate_outOfDate__su8VUTk56P]: hasVariant(
-                  $state,
-                  "state",
-                  "outOfDate"
-                ),
-                [sty.textstate_permError__su8VUwZSk1]: hasVariant(
-                  $state,
-                  "state",
-                  "permError"
-                ),
-                [sty.textstate_protectedMainBranch__su8VUtcl19]: hasVariant(
-                  $state,
-                  "state",
-                  "protectedMainBranch"
-                ),
-                [sty.textstate_readOnly__su8VUkX362]: hasVariant(
-                  $state,
-                  "state",
-                  "readOnly"
-                ),
-                [sty.textstate_saveFailed__su8VUr5KvU]: hasVariant(
-                  $state,
-                  "state",
-                  "saveFailed"
-                ),
-                [sty.textstate_unlogged__su8VUt672P]: hasVariant(
-                  $state,
-                  "state",
-                  "unlogged"
-                ),
-                [sty.textstate_viewOld__su8VUbUuHg]: hasVariant(
-                  $state,
-                  "state",
-                  "viewOld"
-                ),
-                [sty.textstate_watch__su8VUCfKC]: hasVariant(
-                  $state,
-                  "state",
-                  "watch"
-                ),
-                [sty.textstate_welcomeGuest__su8VUg2Bk]: hasVariant(
-                  $state,
-                  "state",
-                  "welcomeGuest"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__su8VU, {
+              [sty.textstate_authError__su8VUaPWsX]: hasVariant(
+                $state,
+                "state",
+                "authError"
+              ),
+              [sty.textstate_concurrentEdit__su8VUsWvup]: hasVariant(
+                $state,
+                "state",
+                "concurrentEdit"
+              ),
+              [sty.textstate_invariantError__su8VUw3Sap]: hasVariant(
+                $state,
+                "state",
+                "invariantError"
+              ),
+              [sty.textstate_notChrome__su8VUYjAIr]: hasVariant(
+                $state,
+                "state",
+                "notChrome"
+              ),
+              [sty.textstate_outOfDate__su8VUTk56P]: hasVariant(
+                $state,
+                "state",
+                "outOfDate"
+              ),
+              [sty.textstate_permError__su8VUwZSk1]: hasVariant(
+                $state,
+                "state",
+                "permError"
+              ),
+              [sty.textstate_protectedMainBranch__su8VUtcl19]: hasVariant(
+                $state,
+                "state",
+                "protectedMainBranch"
+              ),
+              [sty.textstate_readOnly__su8VUkX362]: hasVariant(
+                $state,
+                "state",
+                "readOnly"
+              ),
+              [sty.textstate_saveFailed__su8VUr5KvU]: hasVariant(
+                $state,
+                "state",
+                "saveFailed"
+              ),
+              [sty.textstate_unlogged__su8VUt672P]: hasVariant(
+                $state,
+                "state",
+                "unlogged"
+              ),
+              [sty.textstate_viewOld__su8VUbUuHg]: hasVariant(
+                $state,
+                "state",
+                "viewOld"
+              ),
+              [sty.textstate_watch__su8VUCfKC]: hasVariant(
+                $state,
+                "state",
+                "watch"
+              ),
+              [sty.textstate_welcomeGuest__su8VUg2Bk]: hasVariant(
+                $state,
+                "state",
+                "welcomeGuest"
+              ),
+            })}
           >
             {hasVariant($state, "state", "welcomeGuest")
               ? "Welcome to Plasmic!"
@@ -432,78 +428,73 @@ function PlasmicAlertBanner__RenderFunc(props: {
               : "This is bold text."}
           </div>
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__n3UE1,
-              {
-                [sty.textstate_authError__n3UE1APWsX]: hasVariant(
-                  $state,
-                  "state",
-                  "authError"
-                ),
-                [sty.textstate_concurrentEdit__n3UE1SWvup]: hasVariant(
-                  $state,
-                  "state",
-                  "concurrentEdit"
-                ),
-                [sty.textstate_invariantError__n3UE1W3Sap]: hasVariant(
-                  $state,
-                  "state",
-                  "invariantError"
-                ),
-                [sty.textstate_notChrome__n3UE1YjAIr]: hasVariant(
-                  $state,
-                  "state",
-                  "notChrome"
-                ),
-                [sty.textstate_outOfDate__n3UE1Tk56P]: hasVariant(
-                  $state,
-                  "state",
-                  "outOfDate"
-                ),
-                [sty.textstate_permError__n3UE1WZSk1]: hasVariant(
-                  $state,
-                  "state",
-                  "permError"
-                ),
-                [sty.textstate_protectedMainBranch__n3UE1Tcl19]: hasVariant(
-                  $state,
-                  "state",
-                  "protectedMainBranch"
-                ),
-                [sty.textstate_readOnly__n3UE1KX362]: hasVariant(
-                  $state,
-                  "state",
-                  "readOnly"
-                ),
-                [sty.textstate_saveFailed__n3UE1R5KvU]: hasVariant(
-                  $state,
-                  "state",
-                  "saveFailed"
-                ),
-                [sty.textstate_unlogged__n3UE1T672P]: hasVariant(
-                  $state,
-                  "state",
-                  "unlogged"
-                ),
-                [sty.textstate_viewOld__n3UE1BUuHg]: hasVariant(
-                  $state,
-                  "state",
-                  "viewOld"
-                ),
-                [sty.textstate_watch__n3UE1CfKC]: hasVariant(
-                  $state,
-                  "state",
-                  "watch"
-                ),
-                [sty.textstate_welcomeGuest__n3UE1G2Bk]: hasVariant(
-                  $state,
-                  "state",
-                  "welcomeGuest"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__n3UE1, {
+              [sty.textstate_authError__n3UE1APWsX]: hasVariant(
+                $state,
+                "state",
+                "authError"
+              ),
+              [sty.textstate_concurrentEdit__n3UE1SWvup]: hasVariant(
+                $state,
+                "state",
+                "concurrentEdit"
+              ),
+              [sty.textstate_invariantError__n3UE1W3Sap]: hasVariant(
+                $state,
+                "state",
+                "invariantError"
+              ),
+              [sty.textstate_notChrome__n3UE1YjAIr]: hasVariant(
+                $state,
+                "state",
+                "notChrome"
+              ),
+              [sty.textstate_outOfDate__n3UE1Tk56P]: hasVariant(
+                $state,
+                "state",
+                "outOfDate"
+              ),
+              [sty.textstate_permError__n3UE1WZSk1]: hasVariant(
+                $state,
+                "state",
+                "permError"
+              ),
+              [sty.textstate_protectedMainBranch__n3UE1Tcl19]: hasVariant(
+                $state,
+                "state",
+                "protectedMainBranch"
+              ),
+              [sty.textstate_readOnly__n3UE1KX362]: hasVariant(
+                $state,
+                "state",
+                "readOnly"
+              ),
+              [sty.textstate_saveFailed__n3UE1R5KvU]: hasVariant(
+                $state,
+                "state",
+                "saveFailed"
+              ),
+              [sty.textstate_unlogged__n3UE1T672P]: hasVariant(
+                $state,
+                "state",
+                "unlogged"
+              ),
+              [sty.textstate_viewOld__n3UE1BUuHg]: hasVariant(
+                $state,
+                "state",
+                "viewOld"
+              ),
+              [sty.textstate_watch__n3UE1CfKC]: hasVariant(
+                $state,
+                "state",
+                "watch"
+              ),
+              [sty.textstate_welcomeGuest__n3UE1G2Bk]: hasVariant(
+                $state,
+                "state",
+                "welcomeGuest"
+              ),
+            })}
           >
             {hasVariant($state, "state", "welcomeGuest")
               ? "Sign up or log in to edit and save this project."
@@ -599,16 +590,13 @@ function PlasmicAlertBanner__RenderFunc(props: {
           })}
           endIcon={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__jmeQg)}
+              className={classNames("all", sty.svg__jmeQg)}
               role={"img"}
             />
           }
           startIcon={
             false ? (
-              <svg
-                className={classNames(projectcss.all, sty.svg__z6ODh)}
-                role={"img"}
-              />
+              <svg className={classNames("all", sty.svg__z6ODh)} role={"img"} />
             ) : null
           }
           type={["backlitError"]}
@@ -616,66 +604,57 @@ function PlasmicAlertBanner__RenderFunc(props: {
           <div
             data-plasmic-name={"visit2"}
             data-plasmic-override={overrides.visit2}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.visit2,
-              {
-                [sty.visit2state_authError]: hasVariant(
-                  $state,
-                  "state",
-                  "authError"
-                ),
-                [sty.visit2state_concurrentEdit]: hasVariant(
-                  $state,
-                  "state",
-                  "concurrentEdit"
-                ),
-                [sty.visit2state_outOfDate]: hasVariant(
-                  $state,
-                  "state",
-                  "outOfDate"
-                ),
-                [sty.visit2state_permError]: hasVariant(
-                  $state,
-                  "state",
-                  "permError"
-                ),
-                [sty.visit2state_readOnly]: hasVariant(
-                  $state,
-                  "state",
-                  "readOnly"
-                ),
-                [sty.visit2state_saveFailed]: hasVariant(
-                  $state,
-                  "state",
-                  "saveFailed"
-                ),
-                [sty.visit2state_unlogged]: hasVariant(
-                  $state,
-                  "state",
-                  "unlogged"
-                ),
-                [sty.visit2state_viewOld]: hasVariant(
-                  $state,
-                  "state",
-                  "viewOld"
-                ),
-                [sty.visit2state_watch]: hasVariant($state, "state", "watch"),
-                [sty.visit2state_welcomeGuest]: hasVariant(
-                  $state,
-                  "state",
-                  "welcomeGuest"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.visit2, {
+              [sty.visit2state_authError]: hasVariant(
+                $state,
+                "state",
+                "authError"
+              ),
+              [sty.visit2state_concurrentEdit]: hasVariant(
+                $state,
+                "state",
+                "concurrentEdit"
+              ),
+              [sty.visit2state_outOfDate]: hasVariant(
+                $state,
+                "state",
+                "outOfDate"
+              ),
+              [sty.visit2state_permError]: hasVariant(
+                $state,
+                "state",
+                "permError"
+              ),
+              [sty.visit2state_readOnly]: hasVariant(
+                $state,
+                "state",
+                "readOnly"
+              ),
+              [sty.visit2state_saveFailed]: hasVariant(
+                $state,
+                "state",
+                "saveFailed"
+              ),
+              [sty.visit2state_unlogged]: hasVariant(
+                $state,
+                "state",
+                "unlogged"
+              ),
+              [sty.visit2state_viewOld]: hasVariant($state, "state", "viewOld"),
+              [sty.visit2state_watch]: hasVariant($state, "state", "watch"),
+              [sty.visit2state_welcomeGuest]: hasVariant(
+                $state,
+                "state",
+                "welcomeGuest"
+              ),
+            })}
           >
             {hasVariant($state, "state", "concurrentEdit") ? "Watch" : "Button"}
           </div>
         </Button>
       ) : null}
       <div
-        className={classNames(projectcss.all, sty.freeBox___8R5S, {
+        className={classNames("all", sty.freeBox___8R5S, {
           [sty.freeBoxstate_authError___8R5SaPWsX]: hasVariant(
             $state,
             "state",
@@ -738,7 +717,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
             })}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__jR75H)}
+                className={classNames("all", sty.svg__jR75H)}
                 role={"img"}
               />
             }
@@ -746,7 +725,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
             startIcon={
               false ? (
                 <svg
-                  className={classNames(projectcss.all, sty.svg__i6KIv)}
+                  className={classNames("all", sty.svg__i6KIv)}
                   role={"img"}
                 />
               ) : null
@@ -766,64 +745,59 @@ function PlasmicAlertBanner__RenderFunc(props: {
             <div
               data-plasmic-name={"visit"}
               data-plasmic-override={overrides.visit}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.visit,
-                {
-                  [sty.visitstate_authError]: hasVariant(
-                    $state,
-                    "state",
-                    "authError"
-                  ),
-                  [sty.visitstate_concurrentEdit]: hasVariant(
-                    $state,
-                    "state",
-                    "concurrentEdit"
-                  ),
-                  [sty.visitstate_invariantError]: hasVariant(
-                    $state,
-                    "state",
-                    "invariantError"
-                  ),
-                  [sty.visitstate_outOfDate]: hasVariant(
-                    $state,
-                    "state",
-                    "outOfDate"
-                  ),
-                  [sty.visitstate_permError]: hasVariant(
-                    $state,
-                    "state",
-                    "permError"
-                  ),
-                  [sty.visitstate_readOnly]: hasVariant(
-                    $state,
-                    "state",
-                    "readOnly"
-                  ),
-                  [sty.visitstate_saveFailed]: hasVariant(
-                    $state,
-                    "state",
-                    "saveFailed"
-                  ),
-                  [sty.visitstate_unlogged]: hasVariant(
-                    $state,
-                    "state",
-                    "unlogged"
-                  ),
-                  [sty.visitstate_viewOld]: hasVariant(
-                    $state,
-                    "state",
-                    "viewOld"
-                  ),
-                  [sty.visitstate_watch]: hasVariant($state, "state", "watch"),
-                  [sty.visitstate_welcomeGuest]: hasVariant(
-                    $state,
-                    "state",
-                    "welcomeGuest"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.visit, {
+                [sty.visitstate_authError]: hasVariant(
+                  $state,
+                  "state",
+                  "authError"
+                ),
+                [sty.visitstate_concurrentEdit]: hasVariant(
+                  $state,
+                  "state",
+                  "concurrentEdit"
+                ),
+                [sty.visitstate_invariantError]: hasVariant(
+                  $state,
+                  "state",
+                  "invariantError"
+                ),
+                [sty.visitstate_outOfDate]: hasVariant(
+                  $state,
+                  "state",
+                  "outOfDate"
+                ),
+                [sty.visitstate_permError]: hasVariant(
+                  $state,
+                  "state",
+                  "permError"
+                ),
+                [sty.visitstate_readOnly]: hasVariant(
+                  $state,
+                  "state",
+                  "readOnly"
+                ),
+                [sty.visitstate_saveFailed]: hasVariant(
+                  $state,
+                  "state",
+                  "saveFailed"
+                ),
+                [sty.visitstate_unlogged]: hasVariant(
+                  $state,
+                  "state",
+                  "unlogged"
+                ),
+                [sty.visitstate_viewOld]: hasVariant(
+                  $state,
+                  "state",
+                  "viewOld"
+                ),
+                [sty.visitstate_watch]: hasVariant($state, "state", "watch"),
+                [sty.visitstate_welcomeGuest]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                ),
+              })}
             >
               {hasVariant($state, "state", "welcomeGuest")
                 ? "Sign up / Log in"
@@ -852,7 +826,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
         <div
           data-plasmic-name={"dismissBtn"}
           data-plasmic-override={overrides.dismissBtn}
-          className={classNames(projectcss.all, sty.dismissBtn, {
+          className={classNames("all", sty.dismissBtn, {
             [sty.dismissBtnstate_authError]: hasVariant(
               $state,
               "state",
@@ -902,7 +876,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
           })}
         >
           <CloseIcon
-            className={classNames(projectcss.all, sty.svg__sdZvA, {
+            className={classNames("all", sty.svg__sdZvA, {
               [sty.svgstate_authError__sdZvAaPWsX]: hasVariant(
                 $state,
                 "state",
@@ -983,7 +957,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAlertBanner__VariantsArgs;
     args?: PlasmicAlertBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAlertBanner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicAlertBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAlertBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

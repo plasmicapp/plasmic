@@ -1,15 +1,15 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
-export type DownloadsvgIconProps = React.ComponentProps<"svg"> & {
+export type DownloadSvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function DownloadsvgIcon(props: DownloadsvgIconProps) {
+export function DownloadSvgIcon(props: DownloadSvgIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -36,5 +36,5 @@ export function DownloadsvgIcon(props: DownloadsvgIconProps) {
   );
 }
 
-export default DownloadsvgIcon;
+export default DownloadSvgIcon;
 /* prettier-ignore-end */

@@ -33,7 +33,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicTokenTypeHeader.module.css"; // plasmic-import: eMjSZ8G7mG/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -116,21 +116,23 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         path: "isExpanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded,
       },
       {
         path: "border",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.border,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.border,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -148,10 +150,10 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -163,7 +165,7 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox___2Aimk, {
+        className={classNames("all", sty.freeBox___2Aimk, {
           [sty.freeBoxborder_top___2AimkbxlKh]: hasVariant(
             $state,
             "border",
@@ -179,10 +181,10 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         <div
           data-plasmic-name={"iconContainer"}
           data-plasmic-override={overrides.iconContainer}
-          className={classNames(projectcss.all, sty.iconContainer)}
+          className={classNames("all", sty.iconContainer)}
         >
           <ChevronRightSvgIcon
-            className={classNames(projectcss.all, sty.svg__lV3Wg, {
+            className={classNames("all", sty.svg__lV3Wg, {
               [sty.svgisExpanded__lV3WgaTp]: hasVariant(
                 $state,
                 "isExpanded",
@@ -192,13 +194,13 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
             role={"img"}
           />
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__cp1Xx)}>
+        <div className={classNames("all", sty.freeBox__cp1Xx)}>
           {renderPlasmicSlot({
             defaultContents: "Colors",
             value: args.tokenType,
             className: classNames(sty.slotTargetTokenType),
           })}
-          <div className={classNames(projectcss.all, sty.freeBox__etXdI)}>
+          <div className={classNames("all", sty.freeBox__etXdI)}>
             {renderPlasmicSlot({
               defaultContents: "0",
               value: args.groupSize,
@@ -208,7 +210,7 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         </div>
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox___36Lfh, {
+        className={classNames("all", sty.freeBox___36Lfh, {
           [sty.freeBoxisExpanded___36LfHaTp]: hasVariant(
             $state,
             "isExpanded",
@@ -221,7 +223,7 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
           data-plasmic-override={overrides.addButton}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__jqg1)}
+              className={classNames("all", sty.svg__jqg1)}
               role={"img"}
             />
           }
@@ -235,7 +237,7 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
           size={"small"}
         >
           <PlusSvgIcon
-            className={classNames(projectcss.all, sty.svg__ihGm1)}
+            className={classNames("all", sty.svg__ihGm1)}
             role={"img"}
           />
         </IconButton>

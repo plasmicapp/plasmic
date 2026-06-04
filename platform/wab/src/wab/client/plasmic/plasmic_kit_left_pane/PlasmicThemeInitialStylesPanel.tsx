@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicThemeInitialStylesPanel.module.css"; // plasmic-import: T_OF2Q8rJc1U/css
 
 import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
@@ -95,15 +95,17 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
         path: "elementSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -116,35 +118,23 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox___1GpQq)}>
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text___27NdN
-          )}
-        >
+      <div className={classNames("all", sty.freeBox___1GpQq)}>
+        <div className={classNames("all", "__wab_text", sty.text___27NdN)}>
           {
             "Define initial styles that new elements of different types start with when they are inserted."
           }
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__kPz9)}>
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__t3OaN
-          )}
-        >
+      <div className={classNames("all", sty.freeBox__kPz9)}>
+        <div className={classNames("all", "__wab_text", sty.text__t3OaN)}>
           {"Element Type"}
         </div>
         <Select
@@ -155,7 +145,7 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
             <PlusSvgIcon
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg)}
+              className={classNames("all", sty.svg)}
               role={"img"}
             />
           }
@@ -185,7 +175,7 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"form"}
         data-plasmic-override={overrides.form}
-        className={classNames(projectcss.all, sty.form)}
+        className={classNames("all", sty.form)}
       />
     </div>
   ) as React.ReactElement | null;

@@ -40,7 +40,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCombobox.module.css"; // plasmic-import: zIW2sbKF4DAY/css
 
 import ChevronDownIcon from "../plasmic_kit_design_system_deprecated/icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
@@ -190,6 +190,7 @@ function PlasmicCombobox__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -226,9 +227,9 @@ function PlasmicCombobox__RenderFunc(props: {
       aria-label={args.ariaLabel}
       className={classNames(
         "__wab_instance",
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.ariaComboBox,
         {
@@ -271,7 +272,7 @@ function PlasmicCombobox__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <TextInput
           data-plasmic-name={"textInput"}
@@ -304,7 +305,7 @@ function PlasmicCombobox__RenderFunc(props: {
           <ChevronDownIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
           />
         </BaseButton>
@@ -336,11 +337,7 @@ function PlasmicCombobox__RenderFunc(props: {
               <MenuSection
                 header={
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__yToMh
-                    )}
+                    className={classNames("all", "__wab_text", sty.text__yToMh)}
                   >
                     {"Section"}
                   </div>

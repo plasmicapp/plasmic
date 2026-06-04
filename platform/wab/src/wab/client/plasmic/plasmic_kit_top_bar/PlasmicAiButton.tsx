@@ -14,22 +14,23 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicAiButton.module.css"; // plasmic-import: BqSsxlQdj2F0/css
 
 import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
@@ -99,17 +100,21 @@ function PlasmicAiButton__RenderFunc(props: {
         path: "active",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.active,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.active,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <IconButton
@@ -127,26 +132,23 @@ function PlasmicAiButton__RenderFunc(props: {
       <SparklesSvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg)}
+        className={classNames("all", sty.svg)}
         role={"img"}
       />
 
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxactive]: hasVariant($state, "active", "active"),
         })}
       >
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text,
-            { [sty.textactive]: hasVariant($state, "active", "active") }
-          )}
+          className={classNames("all", "__wab_text", sty.text, {
+            [sty.textactive]: hasVariant($state, "active", "active"),
+          })}
         >
           {"\u03b2eta"}
         </div>
@@ -182,7 +184,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAiButton__VariantsArgs;
     args?: PlasmicAiButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAiButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicAiButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAiButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

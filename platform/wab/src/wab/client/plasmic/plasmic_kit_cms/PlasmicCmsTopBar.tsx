@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import "./plasmic_plasmic_kit_cms.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsTopBar.module.css"; // plasmic-import: FxC1c7NZtR/css
 
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
@@ -106,10 +106,10 @@ function PlasmicCmsTopBar__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_ieacQ3Z46z4gwo1FnaB5vY",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -117,12 +117,12 @@ function PlasmicCmsTopBar__RenderFunc(props: {
       <div
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
-        className={classNames(projectcss.all, sty.left)}
+        className={classNames("all", sty.left)}
       >
         <PlasmicLink__
           data-plasmic-name={"link"}
           data-plasmic-override={overrides.link}
-          className={classNames(projectcss.all, projectcss.a, sty.link)}
+          className={classNames("all", "a", "a__ieacQ", sty.link)}
           href={"/"}
           platform={"react"}
         >
@@ -130,7 +130,7 @@ function PlasmicCmsTopBar__RenderFunc(props: {
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
             PlasmicIconType={triggers.hover_svg ? MarkFullColorIcon : Icon3Icon}
-            className={classNames(projectcss.all, sty.svg)}
+            className={classNames("all", sty.svg)}
             role={"img"}
             data-plasmic-trigger-props={[triggerSvgHoverProps]}
           />
@@ -143,11 +143,7 @@ function PlasmicCmsTopBar__RenderFunc(props: {
           <div
             data-plasmic-name={"cmsNameValue"}
             data-plasmic-override={overrides.cmsNameValue}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.cmsNameValue
-            )}
+            className={classNames("all", "__wab_text", sty.cmsNameValue)}
           >
             {"Some CMS"}
           </div>
@@ -156,13 +152,13 @@ function PlasmicCmsTopBar__RenderFunc(props: {
       <div
         data-plasmic-name={"middle"}
         data-plasmic-override={overrides.middle}
-        className={classNames(projectcss.all, sty.middle)}
+        className={classNames("all", sty.middle)}
       />
 
       <div
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
-        className={classNames(projectcss.all, sty.right)}
+        className={classNames("all", sty.right)}
       />
     </div>
   ) as React.ReactElement | null;

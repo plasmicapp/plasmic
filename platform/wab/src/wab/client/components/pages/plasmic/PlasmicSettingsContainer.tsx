@@ -27,6 +27,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_user_settings/PlasmicStyleTokensProvider"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/styleTokensProvider
 import TrustedHost from "../../TrustedHost"; // plasmic-import: 0O5nMBdoCe/component
 import Button from "../../widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
@@ -34,9 +35,7 @@ import PersonalAccessToken from "./PersonalAccessToken"; // plasmic-import: F4ZV
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../../../plasmic/PP__plasmickit_settings.module.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "../../../plasmic/PP__plasmickit_settings.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
 import sty from "./PlasmicSettingsContainer.module.css"; // plasmic-import: XkSd43CUYOB/css
 
 import image3YherfIxkolNxf from "../../../plasmic/plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
@@ -136,31 +135,35 @@ function PlasmicSettingsContainer__RenderFunc(props: {
         path: "tokenState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.tokenState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.tokenState,
       },
       {
         path: "trustedHostsState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.trustedHostsState,
       },
       {
         path: "hideChangePassword",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hideChangePassword,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -169,13 +172,11 @@ function PlasmicSettingsContainer__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_aaggSgVS8yYsAwQffVQB4p",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roottokenState_error]: hasVariant($state, "tokenState", "error"),
@@ -203,28 +204,23 @@ function PlasmicSettingsContainer__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.text__mqBhA,
-          {
-            [sty.texttokenState_loading__mqBhAmpB4V]: hasVariant(
-              $state,
-              "tokenState",
-              "loading"
-            ),
-            [sty.texttrustedHostsState_enabled__mqBhA8K6RB]: hasVariant(
-              $state,
-              "trustedHostsState",
-              "enabled"
-            ),
-          }
-        )}
+        className={classNames("all", "__wab_text", sty.text__mqBhA, {
+          [sty.texttokenState_loading__mqBhAmpB4V]: hasVariant(
+            $state,
+            "tokenState",
+            "loading"
+          ),
+          [sty.texttrustedHostsState_enabled__mqBhA8K6RB]: hasVariant(
+            $state,
+            "trustedHostsState",
+            "enabled"
+          ),
+        })}
       >
         {"Profile settings"}
       </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__vlwnM, {
+        className={classNames("all", sty.freeBox__vlwnM, {
           [sty.freeBoxtokenState_error__vlwnMa2Ye]: hasVariant(
             $state,
             "tokenState",
@@ -258,7 +254,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__mhSrh, {
+          className={classNames("all", sty.freeBox__mhSrh, {
             [sty.freeBoxhideChangePassword__mhSrhT898]: hasVariant(
               $state,
               "hideChangePassword",
@@ -272,7 +268,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(projectcss.all, sty.freeBox__nPrWc, {
+            className={classNames("all", sty.freeBox__nPrWc, {
               [sty.freeBoxhideChangePassword__nPrWcT898]: hasVariant(
                 $state,
                 "hideChangePassword",
@@ -289,11 +285,11 @@ function PlasmicSettingsContainer__RenderFunc(props: {
               data-plasmic-name={"img"}
               data-plasmic-override={overrides.img}
               alt={""}
-              className={classNames(projectcss.all, projectcss.img, sty.img)}
+              className={classNames("all", "img", "img__aaggS", sty.img)}
               src={image3YherfIxkolNxf}
             />
 
-            <div className={classNames(projectcss.all, sty.freeBox__piPA)}>
+            <div className={classNames("all", sty.freeBox__piPA)}>
               {renderPlasmicSlot({
                 defaultContents: "Kimberly Schmidt",
                 value: args.name,
@@ -313,7 +309,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
                 : null}
             </div>
           </div>
-          <div className={classNames(projectcss.all, sty.freeBox__mdyOy)}>
+          <div className={classNames("all", sty.freeBox__mdyOy)}>
             <MenuButton
               data-plasmic-name={"menuButton"}
               data-plasmic-override={overrides.menuButton}
@@ -365,7 +361,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
           </div>
         </div>
         <div
-          className={classNames(projectcss.all, sty.freeBox__wYsKg, {
+          className={classNames("all", sty.freeBox__wYsKg, {
             [sty.freeBoxtrustedHostsState_enabled__wYsKg8K6RB]: hasVariant(
               $state,
               "trustedHostsState",
@@ -375,7 +371,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
         />
 
         <div
-          className={classNames(projectcss.all, sty.freeBox__amKmj, {
+          className={classNames("all", sty.freeBox__amKmj, {
             [sty.freeBoxtokenState_error__amKmJa2Ye]: hasVariant(
               $state,
               "tokenState",
@@ -409,18 +405,13 @@ function PlasmicSettingsContainer__RenderFunc(props: {
           })}
         >
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text___189Ix,
-              {
-                [sty.texttokenState_loaded___189IxanNqw]: hasVariant(
-                  $state,
-                  "tokenState",
-                  "loaded"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text___189Ix, {
+              [sty.texttokenState_loaded___189IxanNqw]: hasVariant(
+                $state,
+                "tokenState",
+                "loaded"
+              ),
+            })}
           >
             {"Personal Access Tokens"}
           </div>
@@ -442,7 +433,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
             size={"wide"}
             startIcon={
               <PlusSvgIcon
-                className={classNames(projectcss.all, sty.svg__hD3Ln)}
+                className={classNames("all", sty.svg__hD3Ln)}
                 role={"img"}
               />
             }
@@ -461,7 +452,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
           <div
             data-plasmic-name={"existingTokens"}
             data-plasmic-override={overrides.existingTokens}
-            className={classNames(projectcss.all, sty.existingTokens, {
+            className={classNames("all", sty.existingTokens, {
               [sty.existingTokenstokenState_error]: hasVariant(
                 $state,
                 "tokenState",
@@ -555,76 +546,66 @@ function PlasmicSettingsContainer__RenderFunc(props: {
             : false
         ) ? (
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__a9D1Y,
-              {
-                [sty.texttokenState_error__a9D1Ya2Ye]: hasVariant(
-                  $state,
-                  "tokenState",
-                  "error"
-                ),
-                [sty.texttokenState_loaded__a9D1YanNqw]: hasVariant(
-                  $state,
-                  "tokenState",
-                  "loaded"
-                ),
-                [sty.texttokenState_loading__a9D1YmpB4V]: hasVariant(
-                  $state,
-                  "tokenState",
-                  "loading"
-                ),
-                [sty.texttrustedHostsState_enabled__a9D1Y8K6RB]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "enabled"
-                ),
-                [sty.texttrustedHostsState_error__a9D1Y7WksN]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "error"
-                ),
-                [sty.texttrustedHostsState_loading__a9D1YqBk4M]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "loading"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__a9D1Y, {
+              [sty.texttokenState_error__a9D1Ya2Ye]: hasVariant(
+                $state,
+                "tokenState",
+                "error"
+              ),
+              [sty.texttokenState_loaded__a9D1YanNqw]: hasVariant(
+                $state,
+                "tokenState",
+                "loaded"
+              ),
+              [sty.texttokenState_loading__a9D1YmpB4V]: hasVariant(
+                $state,
+                "tokenState",
+                "loading"
+              ),
+              [sty.texttrustedHostsState_enabled__a9D1Y8K6RB]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "enabled"
+              ),
+              [sty.texttrustedHostsState_error__a9D1Y7WksN]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "error"
+              ),
+              [sty.texttrustedHostsState_loading__a9D1YqBk4M]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "loading"
+              ),
+            })}
           >
             {hasVariant($state, "tokenState", "loading") ? "Loading\u2026" : ""}
           </div>
         ) : null}
         {(hasVariant($state, "tokenState", "error") ? true : false) ? (
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__bklVi,
-              {
-                [sty.texttokenState_error__bklVia2Ye]: hasVariant(
-                  $state,
-                  "tokenState",
-                  "error"
-                ),
-                [sty.texttrustedHostsState_enabled__bklVi8K6RB]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "enabled"
-                ),
-                [sty.texttrustedHostsState_error__bklVi7WksN]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "error"
-                ),
-                [sty.texttrustedHostsState_loading__bklViqBk4M]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "loading"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__bklVi, {
+              [sty.texttokenState_error__bklVia2Ye]: hasVariant(
+                $state,
+                "tokenState",
+                "error"
+              ),
+              [sty.texttrustedHostsState_enabled__bklVi8K6RB]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "enabled"
+              ),
+              [sty.texttrustedHostsState_error__bklVi7WksN]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "error"
+              ),
+              [sty.texttrustedHostsState_loading__bklViqBk4M]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "loading"
+              ),
+            })}
           >
             {hasVariant($state, "tokenState", "error")
               ? "Error while load existing tokens. Please refresh page to try again."
@@ -641,7 +622,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
             : false
         ) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__ysama, {
+            className={classNames("all", sty.freeBox__ysama, {
               [sty.freeBoxtrustedHostsState_enabled__ysama8K6RB]: hasVariant(
                 $state,
                 "trustedHostsState",
@@ -670,7 +651,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
             : false
         ) ? (
           <div
-            className={classNames(projectcss.all, sty.freeBox__xTzRz, {
+            className={classNames("all", sty.freeBox__xTzRz, {
               [sty.freeBoxtrustedHostsState_enabled__xTzRz8K6RB]: hasVariant(
                 $state,
                 "trustedHostsState",
@@ -689,28 +670,23 @@ function PlasmicSettingsContainer__RenderFunc(props: {
             })}
           >
             <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__xkLp,
-                {
-                  [sty.texttrustedHostsState_enabled__xkLp8K6RB]: hasVariant(
-                    $state,
-                    "trustedHostsState",
-                    "enabled"
-                  ),
-                  [sty.texttrustedHostsState_error__xkLp7WksN]: hasVariant(
-                    $state,
-                    "trustedHostsState",
-                    "error"
-                  ),
-                  [sty.texttrustedHostsState_loading__xkLpqBk4M]: hasVariant(
-                    $state,
-                    "trustedHostsState",
-                    "loading"
-                  ),
-                }
-              )}
+              className={classNames("all", "__wab_text", sty.text__xkLp, {
+                [sty.texttrustedHostsState_enabled__xkLp8K6RB]: hasVariant(
+                  $state,
+                  "trustedHostsState",
+                  "enabled"
+                ),
+                [sty.texttrustedHostsState_error__xkLp7WksN]: hasVariant(
+                  $state,
+                  "trustedHostsState",
+                  "error"
+                ),
+                [sty.texttrustedHostsState_loading__xkLpqBk4M]: hasVariant(
+                  $state,
+                  "trustedHostsState",
+                  "loading"
+                ),
+              })}
             >
               {hasVariant($state, "trustedHostsState", "error")
                 ? "Trusted host apps"
@@ -738,7 +714,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
               size={"wide"}
               startIcon={
                 <PlusSvgIcon
-                  className={classNames(projectcss.all, sty.svg___9ILd5)}
+                  className={classNames("all", sty.svg___9ILd5)}
                   role={"img"}
                 />
               }
@@ -770,7 +746,7 @@ function PlasmicSettingsContainer__RenderFunc(props: {
           <div
             data-plasmic-name={"hostsList"}
             data-plasmic-override={overrides.hostsList}
-            className={classNames(projectcss.all, sty.hostsList, {
+            className={classNames("all", sty.hostsList, {
               [sty.hostsListtokenState_error]: hasVariant(
                 $state,
                 "tokenState",
@@ -860,18 +836,13 @@ function PlasmicSettingsContainer__RenderFunc(props: {
         ) : null}
         {(hasVariant($state, "trustedHostsState", "loading") ? true : false) ? (
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__oOxt,
-              {
-                [sty.texttrustedHostsState_loading__oOxtqBk4M]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "loading"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__oOxt, {
+              [sty.texttrustedHostsState_loading__oOxtqBk4M]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "loading"
+              ),
+            })}
           >
             {hasVariant($state, "trustedHostsState", "loading")
               ? "Loading..."
@@ -886,23 +857,18 @@ function PlasmicSettingsContainer__RenderFunc(props: {
             : false
         ) ? (
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__upK2J,
-              {
-                [sty.texttrustedHostsState_error__upK2J7WksN]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "error"
-                ),
-                [sty.texttrustedHostsState_loading__upK2JqBk4M]: hasVariant(
-                  $state,
-                  "trustedHostsState",
-                  "loading"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text__upK2J, {
+              [sty.texttrustedHostsState_error__upK2J7WksN]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "error"
+              ),
+              [sty.texttrustedHostsState_loading__upK2JqBk4M]: hasVariant(
+                $state,
+                "trustedHostsState",
+                "loading"
+              ),
+            })}
           >
             {hasVariant($state, "trustedHostsState", "error")
               ? "Error while loading trusted hosts. Please refresh page to try again."
@@ -966,7 +932,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSettingsContainer__VariantsArgs;
     args?: PlasmicSettingsContainer__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSettingsContainer__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSettingsContainer__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSettingsContainer__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

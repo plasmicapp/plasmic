@@ -31,7 +31,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicFreeTrial.module.css"; // plasmic-import: p3GgKAlaQe/css
 
 import BookmarkSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BookmarkSvg"; // plasmic-import: ifTRn8aE8/icon
@@ -131,6 +131,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -148,12 +149,12 @@ function PlasmicFreeTrial__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.a,
-        projectcss.a__tXkSR,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "a",
+        "a__tXkSR",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -169,7 +170,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
       platform={"react"}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__bx9A, {
+        className={classNames("all", sty.freeBox__bx9A, {
           [sty.freeBoxaccountSection__bx9A8XxRr]: hasVariant(
             $state,
             "accountSection",
@@ -190,7 +191,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
         <BookmarkSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg, {
+          className={classNames("all", sty.svg, {
             [sty.svgaccountSection]: hasVariant(
               $state,
               "accountSection",
@@ -203,7 +204,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
         />
 
         <div
-          className={classNames(projectcss.all, sty.freeBox__wjeac, {
+          className={classNames("all", sty.freeBox__wjeac, {
             [sty.freeBoxaccountSection__wjeac8XxRr]: hasVariant(
               $state,
               "accountSection",
@@ -224,24 +225,19 @@ function PlasmicFreeTrial__RenderFunc(props: {
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text,
-              {
-                [sty.textaccountSection]: hasVariant(
-                  $state,
-                  "accountSection",
-                  "accountSection"
-                ),
-                [sty.texttopBar]: hasVariant($state, "topBar", "topBar"),
-                [sty.texttrialEnded]: hasVariant(
-                  $state,
-                  "trialEnded",
-                  "trialEnded"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.text, {
+              [sty.textaccountSection]: hasVariant(
+                $state,
+                "accountSection",
+                "accountSection"
+              ),
+              [sty.texttopBar]: hasVariant($state, "topBar", "topBar"),
+              [sty.texttrialEnded]: hasVariant(
+                $state,
+                "trialEnded",
+                "trialEnded"
+              ),
+            })}
           >
             {hasVariant($state, "trialEnded", "trialEnded")
               ? "Trial ended"

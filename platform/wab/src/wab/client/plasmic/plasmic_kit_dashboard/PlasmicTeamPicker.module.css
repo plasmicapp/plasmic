@@ -4,41 +4,16 @@
   position: relative;
   width: 100%;
   height: auto;
+  row-gap: 24px;
   min-width: 0;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  min-width: 0;
-  margin-top: calc(0px - 24px);
-  height: calc(100% + 24px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 24px;
 }
 .freeBox__yFvIw {
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__yFvIw > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox__yFvIw > :global(.__wab_flex-container) > *,
-.freeBox__yFvIw > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__yFvIw > :global(.__wab_flex-container) > picture > img,
-.freeBox__yFvIw
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
+  row-gap: 4px;
 }
 .text__bCkKu {
   font-size: 14px;
@@ -83,23 +58,9 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox__bnwG > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__bnwG > :global(.__wab_flex-container) > *,
-.freeBox__bnwG > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__bnwG > :global(.__wab_flex-container) > picture > img,
-.freeBox__bnwG
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .freeBoxnoTeams__bnwGHye8O {
   display: none;
@@ -145,50 +106,21 @@
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__zdy3R > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: flex-end;
   justify-content: flex-start;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.freeBox__zdy3R > :global(.__wab_flex-container) > *,
-.freeBox__zdy3R > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__zdy3R > :global(.__wab_flex-container) > picture > img,
-.freeBox__zdy3R
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  row-gap: 8px;
 }
 .freeBox__xNslH {
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
-}
-.freeBox__xNslH > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__xNslH > :global(.__wab_flex-container) > *,
-.freeBox__xNslH > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__xNslH > :global(.__wab_flex-container) > picture > img,
-.freeBox__xNslH
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .newTeamName {
   width: 100%;

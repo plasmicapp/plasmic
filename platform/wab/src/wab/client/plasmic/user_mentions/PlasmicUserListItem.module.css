@@ -5,30 +5,19 @@
   width: 100%;
   height: auto;
   max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
   justify-self: flex-start;
   background: #ffffff;
+  column-gap: 8px;
   min-width: 0;
   border-radius: 6px;
   padding: 4px 12px;
 }
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 8px;
-}
 .rootisHighlighted {
   background: #0588f0;
 }
-.root:hover {
+.root:hover:hover {
   background: #0588f0;
 }
 .avatarContainer {
@@ -59,28 +48,11 @@
   width: 100%;
   height: auto;
   max-width: 100%;
-  min-width: 0;
-}
-.freeBox > :global(.__wab_flex-container) {
-  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  column-gap: 2px;
+  row-gap: 2px;
   min-width: 0;
-  margin-left: calc(0px - 2px);
-  width: calc(100% + 2px);
-  margin-top: calc(0px - 2px);
-  height: calc(100% + 2px);
-}
-.freeBox > :global(.__wab_flex-container) > *,
-.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox > :global(.__wab_flex-container) > picture > img,
-.freeBox
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 2px;
-  margin-top: 2px;
 }
 .text__vDhnr {
   position: relative;

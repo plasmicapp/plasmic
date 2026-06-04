@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicFilterButton.module.css"; // plasmic-import: 93uVZfRMCA/css
 
 import FilterIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Filter"; // plasmic-import: F0M2GWyw-k/icon
@@ -99,15 +99,17 @@ function PlasmicFilterButton__RenderFunc(props: {
         path: "isActive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isActive,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -125,7 +127,7 @@ function PlasmicFilterButton__RenderFunc(props: {
       color={hasVariant($state, "isActive", "isActive") ? "green" : undefined}
       endIcon={
         <ChevronDownSvgIcon
-          className={classNames(projectcss.all, sty.svg__ydByj, {
+          className={classNames("all", sty.svg__ydByj, {
             [sty.svgisActive__ydByjpuhxi]: hasVariant(
               $state,
               "isActive",
@@ -139,7 +141,7 @@ function PlasmicFilterButton__RenderFunc(props: {
       size={"compact"}
       startIcon={
         <ArrowRightSvgIcon
-          className={classNames(projectcss.all, sty.svg__h6NCv)}
+          className={classNames("all", sty.svg__h6NCv)}
           role={"img"}
         />
       }
@@ -147,7 +149,7 @@ function PlasmicFilterButton__RenderFunc(props: {
       withIcons={["endIcon"]}
     >
       <FilterIcon
-        className={classNames(projectcss.all, sty.svg__wHz3V, {
+        className={classNames("all", sty.svg__wHz3V, {
           [sty.svgisActive__wHz3Vpuhxi]: hasVariant(
             $state,
             "isActive",
@@ -181,7 +183,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFilterButton__VariantsArgs;
     args?: PlasmicFilterButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicFilterButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicFilterButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicFilterButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

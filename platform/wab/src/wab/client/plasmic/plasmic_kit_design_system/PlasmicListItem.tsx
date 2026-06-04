@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListItem.module.css"; // plasmic-import: v31d9_ANqk/css
 
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
@@ -279,6 +279,7 @@ function PlasmicListItem__RenderFunc(props: {
 
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -301,10 +302,10 @@ function PlasmicListItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -390,7 +391,7 @@ function PlasmicListItem__RenderFunc(props: {
       <div
         data-plasmic-name={"main"}
         data-plasmic-override={overrides.main}
-        className={classNames(projectcss.all, sty.main, {
+        className={classNames("all", sty.main, {
           [sty.mainalwaysShowDragHandle]: hasVariant(
             $state,
             "alwaysShowDragHandle",
@@ -458,7 +459,7 @@ function PlasmicListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"dragHandle"}
             data-plasmic-override={overrides.dragHandle}
-            className={classNames(projectcss.all, sty.dragHandle, {
+            className={classNames("all", sty.dragHandle, {
               [sty.dragHandlealwaysShowDragHandle]: hasVariant(
                 $state,
                 "alwaysShowDragHandle",
@@ -479,7 +480,7 @@ function PlasmicListItem__RenderFunc(props: {
             <GripSvgIcon
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg, {
+              className={classNames("all", sty.svg, {
                 [sty.svgalwaysShowDragHandle]: hasVariant(
                   $state,
                   "alwaysShowDragHandle",
@@ -519,7 +520,7 @@ function PlasmicListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"iconContainer"}
             data-plasmic-override={overrides.iconContainer}
-            className={classNames(projectcss.all, sty.iconContainer, {
+            className={classNames("all", sty.iconContainer, {
               [sty.iconContainercolor_variant]: hasVariant(
                 $state,
                 "color",
@@ -545,7 +546,7 @@ function PlasmicListItem__RenderFunc(props: {
             {renderPlasmicSlot({
               defaultContents: (
                 <ComponentIcon
-                  className={classNames(projectcss.all, sty.svg__fBezd)}
+                  className={classNames("all", sty.svg__fBezd)}
                   role={"img"}
                 />
               ),
@@ -580,7 +581,7 @@ function PlasmicListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          className={classNames(projectcss.all, sty.labelContainer, {
+          className={classNames("all", sty.labelContainer, {
             [sty.labelContainercolor_variant]: hasVariant(
               $state,
               "color",
@@ -642,7 +643,7 @@ function PlasmicListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"leftContent"}
             data-plasmic-override={overrides.leftContent}
-            className={classNames(projectcss.all, sty.leftContent, {
+            className={classNames("all", sty.leftContent, {
               [sty.leftContentalwaysShowDragHandle]: hasVariant(
                 $state,
                 "alwaysShowDragHandle",
@@ -772,7 +773,7 @@ function PlasmicListItem__RenderFunc(props: {
             <div
               data-plasmic-name={"rightContentContainer"}
               data-plasmic-override={overrides.rightContentContainer}
-              className={classNames(projectcss.all, sty.rightContentContainer, {
+              className={classNames("all", sty.rightContentContainer, {
                 [sty.rightContentContaineralwaysShowDragHandle]: hasVariant(
                   $state,
                   "alwaysShowDragHandle",
@@ -836,7 +837,7 @@ function PlasmicListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"addendumContainer"}
             data-plasmic-override={overrides.addendumContainer}
-            className={classNames(projectcss.all, sty.addendumContainer, {
+            className={classNames("all", sty.addendumContainer, {
               [sty.addendumContaineralwaysShowDragHandle]: hasVariant(
                 $state,
                 "alwaysShowDragHandle",
@@ -938,7 +939,7 @@ function PlasmicListItem__RenderFunc(props: {
           <div
             data-plasmic-name={"actionsContainer"}
             data-plasmic-override={overrides.actionsContainer}
-            className={classNames(projectcss.all, sty.actionsContainer, {
+            className={classNames("all", sty.actionsContainer, {
               [sty.actionsContainercolor_variant]: hasVariant(
                 $state,
                 "color",
@@ -976,7 +977,7 @@ function PlasmicListItem__RenderFunc(props: {
                 <IconButton
                   children2={
                     <ChevronDownSvgIcon
-                      className={classNames(projectcss.all, sty.svg__iuQ8O)}
+                      className={classNames("all", sty.svg__iuQ8O)}
                       role={"img"}
                     />
                   }
@@ -988,7 +989,7 @@ function PlasmicListItem__RenderFunc(props: {
                   type={["seamless"]}
                 >
                   <EyeIcon
-                    className={classNames(projectcss.all, sty.svg__d4PxG)}
+                    className={classNames("all", sty.svg__d4PxG)}
                     role={"img"}
                   />
                 </IconButton>
@@ -1126,7 +1127,7 @@ function PlasmicListItem__RenderFunc(props: {
         <div
           data-plasmic-name={"additional"}
           data-plasmic-override={overrides.additional}
-          className={classNames(projectcss.all, sty.additional, {
+          className={classNames("all", sty.additional, {
             [sty.additionalalwaysShowDragHandle]: hasVariant(
               $state,
               "alwaysShowDragHandle",
@@ -1242,7 +1243,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicListItem__VariantsArgs;
     args?: PlasmicListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicListItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicListItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

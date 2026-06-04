@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,25 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import "./plasmic_plasmic_kit_insert_panel.css"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/projectcss
 import sty from "./PlasmicQuickInsertItem.module.css"; // plasmic-import: 9mduXtTTjQe/css
-import projectcss from "./plasmic_plasmic_kit_insert_panel.module.css"; // plasmic-import: 4B48dRthR8uGgyaBYpWthR/projectcss
 
 createPlasmicElementProxy;
 
@@ -83,7 +82,16 @@ function PlasmicQuickInsertItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -100,41 +108,40 @@ function PlasmicQuickInsertItem__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
       {
         path: "hasIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasIcon,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_4B48dRthR8uGgyaBYpWthR",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothasIcon]: hasVariant($state, "hasIcon", "hasIcon"),
@@ -145,16 +152,13 @@ function PlasmicQuickInsertItem__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxhasIcon]: hasVariant($state, "hasIcon", "hasIcon"),
         })}
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <svg
-              className={classNames(projectcss.all, sty.svg___64T5I)}
-              role={"img"}
-            />
+            <svg className={classNames("all", sty.svg___64T5I)} role={"img"} />
           ),
 
           value: args.icon,
@@ -188,7 +192,7 @@ function PlasmicQuickInsertItem__RenderFunc(props: {
           ),
         }),
       })}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -209,23 +213,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicQuickInsertItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicQuickInsertItem__VariantsArgs;
     args?: PlasmicQuickInsertItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicQuickInsertItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicQuickInsertItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicQuickInsertItem__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicQuickInsertItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,16 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -31,12 +30,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import OmnibarAddItem from "../../components/omnibar/OmnibarAddItem"; // plasmic-import: KnUjAGcQKT/component
 import OmnibarCommandItem from "../../components/omnibar/OmnibarCommandItem"; // plasmic-import: A2li_iO_iw/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
+import "./plasmic_plasmic_kit_omnibar.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
 import sty from "./PlasmicOmnibarGroup.module.css"; // plasmic-import: qx4iENdAfF/css
 
 import AddPageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__AddPage"; // plasmic-import: JuZ41tZRcH/icon
@@ -121,18 +119,21 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
         path: "noTitle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noTitle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noTitle,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -141,20 +142,18 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_fQPf2UiMEMhB52C8QQXwWe",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         { [sty.rootnoTitle]: hasVariant($state, "noTitle", "noTitle") }
       )}
     >
       {(hasVariant($state, "noTitle", "noTitle") ? false : true) ? (
         <div
-          className={classNames(projectcss.all, sty.freeBox__vhESn, {
+          className={classNames("all", sty.freeBox__vhESn, {
             [sty.freeBoxnoTitle__vhESniOkW0]: hasVariant(
               $state,
               "noTitle",
@@ -162,25 +161,21 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__eaOhk)}
-          >
+          <div className={classNames("all", sty.freeBox__eaOhk)}>
             {renderPlasmicSlot({
               defaultContents: "Basic Elements",
               value: args.title,
               className: classNames(sty.slotTargetTitle),
             })}
-            <div className={classNames(projectcss.all, sty.freeBox__kPuWw)}>
+            <div className={classNames("all", sty.freeBox__kPuWw)}>
               {renderPlasmicSlot({
                 defaultContents: "package-name",
                 value: args.codeName,
                 className: classNames(sty.slotTargetCodeName),
               })}
             </div>
-          </Stack__>
-          <div className={classNames(projectcss.all, sty.freeBox__tog1Z)}>
+          </div>
+          <div className={classNames("all", sty.freeBox__tog1Z)}>
             {renderPlasmicSlot({
               defaultContents: (
                 <Button
@@ -195,7 +190,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
         </div>
       ) : null}
       <div
-        className={classNames(projectcss.all, sty.freeBox___3LGUg, {
+        className={classNames("all", sty.freeBox___3LGUg, {
           [sty.freeBoxnoTitle___3LGUgiOkW0]: hasVariant(
             $state,
             "noTitle",
@@ -213,7 +208,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                 )}
                 icon={
                   <AddPageIcon
-                    className={classNames(projectcss.all, sty.svg__aouWq)}
+                    className={classNames("all", sty.svg__aouWq)}
                     role={"img"}
                   />
                 }
@@ -226,22 +221,19 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                 )}
                 icon={
                   <AddPageIcon
-                    className={classNames(projectcss.all, sty.svg__yWmS3)}
+                    className={classNames("all", sty.svg__yWmS3)}
                     role={"img"}
                   />
                 }
               />
             </React.Fragment>
           ),
-
           value: args.commandChildren,
         })}
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox___000Ba)}>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___4Vg7B, {
+      <div className={classNames("all", sty.freeBox___000Ba)}>
+        <div
+          className={classNames("all", sty.freeBox___4Vg7B, {
             [sty.freeBoxnoTitle___4Vg7BiOkW0]: hasVariant(
               $state,
               "noTitle",
@@ -383,10 +375,9 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
-
             value: args.addChildren,
           })}
-        </Stack__>
+        </div>
       </div>
     </div>
   ) as React.ReactElement | null;
@@ -407,23 +398,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOmnibarGroup__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicOmnibarGroup__VariantsArgs;
     args?: PlasmicOmnibarGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicOmnibarGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicOmnibarGroup__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicOmnibarGroup__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicOmnibarGroup__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

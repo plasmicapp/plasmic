@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,28 +14,27 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "../plasmic_kit_project_panel/PlasmicStyleTokensProvider"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_project_panel.module.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
+import "./plasmic_project_panel.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicFolderItem.module.css"; // plasmic-import: iWeSjEMdI3/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
@@ -65,7 +64,6 @@ export type PlasmicFolderItem__VariantsArgs = {
   type?: SingleChoiceArg<
     "page" | "component" | "arena" | "folderOpen" | "folderClosed" | "branch"
   >;
-
   selected?: SingleBooleanChoiceArg<"selected">;
   nested?: SingleBooleanChoiceArg<"nested">;
 };
@@ -76,9 +74,7 @@ export const PlasmicFolderItem__VariantProps = new Array<VariantPropType>(
   "nested"
 );
 
-export type PlasmicFolderItem__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicFolderItem__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicFolderItem__ArgsType;
 export const PlasmicFolderItem__ArgProps = new Array<ArgPropType>("children");
 
@@ -93,7 +89,6 @@ export interface DefaultFolderItemProps {
   type?: SingleChoiceArg<
     "page" | "component" | "arena" | "folderOpen" | "folderClosed" | "branch"
   >;
-
   selected?: SingleBooleanChoiceArg<"selected">;
   nested?: SingleBooleanChoiceArg<"nested">;
   className?: string;
@@ -135,30 +130,33 @@ function PlasmicFolderItem__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "selected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected,
       },
       {
         path: "nested",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.nested,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.nested,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -167,13 +165,11 @@ function PlasmicFolderItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_m8VxGcigeLAEXFe8c12w5Q",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootnested]: hasVariant($state, "nested", "nested"),
@@ -199,14 +195,14 @@ function PlasmicFolderItem__RenderFunc(props: {
             data-plasmic-override={overrides.iconButton}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__i2ZUu)}
+                className={classNames("all", sty.svg__i2ZUu)}
                 role={"img"}
               />
             }
             className={classNames("__wab_instance", sty.iconButton)}
           >
             <GearIcon
-              className={classNames(projectcss.all, sty.svg__icCsQ)}
+              className={classNames("all", sty.svg__icCsQ)}
               role={"img"}
             />
           </IconButton>
@@ -227,7 +223,7 @@ function PlasmicFolderItem__RenderFunc(props: {
           <React.Fragment>
             {(hasVariant($state, "type", "folderOpen") ? true : false) ? (
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__q8HG, {
+                className={classNames("all", sty.svg__q8HG, {
                   [sty.svgselected__q8HGz29Uf]: hasVariant(
                     $state,
                     "selected",
@@ -249,7 +245,7 @@ function PlasmicFolderItem__RenderFunc(props: {
                     ? ChevronRightSvgIcon
                     : ChevronRightSvgIcon
                 }
-                className={classNames(projectcss.all, sty.svg__g3Nlv, {
+                className={classNames("all", sty.svg__g3Nlv, {
                   [sty.svgtype_folderClosed__g3Nlv1OX]: hasVariant(
                     $state,
                     "type",
@@ -278,7 +274,7 @@ function PlasmicFolderItem__RenderFunc(props: {
                   ? File2SvgIcon
                   : ComponentSvgIcon
               }
-              className={classNames(projectcss.all, sty.svg__yn2Mk, {
+              className={classNames("all", sty.svg__yn2Mk, {
                 [sty.svgselected__yn2MkZ29Uf]: hasVariant(
                   $state,
                   "selected",
@@ -351,23 +347,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicFolderItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicFolderItem__VariantsArgs;
     args?: PlasmicFolderItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicFolderItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicFolderItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicFolderItem__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicFolderItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,16 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -31,13 +29,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import ImplicitVariablesSection from "../../components/sidebar-tabs/StateManagement/ImplicitVariablesSection"; // plasmic-import: 3OCMg2P28Q/component
 import VariableRow from "../../components/sidebar-tabs/StateManagement/VariableRow"; // plasmic-import: jiD9NQWVHe/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_state_management.module.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
+import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk3bxNXU73uUyvHm/projectcss
 import sty from "./PlasmicVariablesSection.module.css"; // plasmic-import: 2_3UTUe0CF/css
 
 createPlasmicElementProxy;
@@ -89,7 +85,16 @@ function PlasmicVariablesSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -100,33 +105,34 @@ function PlasmicVariablesSection__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isExpanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded,
       },
       {
         path: "hasImplicitStates",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasImplicitStates,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -135,21 +141,16 @@ function PlasmicVariablesSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_frhoorZk3bxNXU73uUyvHm",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__swhJx, {
+      <div
+        className={classNames("all", sty.freeBox__swhJx, {
           [sty.freeBoxhasImplicitStates__swhJx2CNa0]: hasVariant(
             $state,
             "hasImplicitStates",
@@ -188,12 +189,11 @@ function PlasmicVariablesSection__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-
           value: args.children,
         })}
-      </Stack__>
+      </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__swXZo, {
+        className={classNames("all", sty.freeBox__swXZo, {
           [sty.freeBoxhasImplicitStates__swXZo2CNa0]: hasVariant(
             $state,
             "hasImplicitStates",
@@ -221,10 +221,8 @@ function PlasmicVariablesSection__RenderFunc(props: {
           })}
         />
       </div>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__w5Omk, {
+      <div
+        className={classNames("all", sty.freeBox__w5Omk, {
           [sty.freeBoxisExpanded__w5OmkjQ1D7]: hasVariant(
             $state,
             "isExpanded",
@@ -267,10 +265,9 @@ function PlasmicVariablesSection__RenderFunc(props: {
               </ImplicitVariablesSection>
             </React.Fragment>
           ),
-
           value: args.implicitStates,
         })}
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -292,23 +289,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariablesSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicVariablesSection__VariantsArgs;
     args?: PlasmicVariablesSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicVariablesSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicVariablesSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicVariablesSection__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariablesSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

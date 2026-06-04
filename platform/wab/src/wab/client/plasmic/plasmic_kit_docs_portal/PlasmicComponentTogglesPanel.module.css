@@ -6,7 +6,7 @@
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  border-right: 1px solid var(--token-pzmB25Csye);
+  border-right: 1px solid var(--token-hoA5qaM-91G);
 }
 .explanation:global(.__wab_instance) {
   position: relative;
@@ -39,28 +39,58 @@
   font-size: 16px;
   white-space: pre;
 }
-.slotTargetHeader > .__wab_text,
-.slotTargetHeader > .__wab_slot-string-wrapper,
-.slotTargetHeader > .__wab_slot > .__wab_text,
-.slotTargetHeader > .__wab_slot > .__wab_slot-string-wrapper,
-.slotTargetHeader > .__wab_slot > .__wab_slot > .__wab_text,
-.slotTargetHeader > .__wab_slot > .__wab_slot > .__wab_slot-string-wrapper,
-.slotTargetHeader > .__wab_slot > .__wab_slot > .__wab_slot > .__wab_text,
+.slotTargetHeader > :global(.__wab_text),
+.slotTargetHeader > :global(.__wab_expr_html_text),
+.slotTargetHeader > :global(.__wab_slot-string-wrapper),
+.slotTargetHeader > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetHeader > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetHeader > :global(.__wab_slot) > :global(.__wab_slot-string-wrapper),
 .slotTargetHeader
-  > .__wab_slot
-  > .__wab_slot
-  > .__wab_slot
-  > .__wab_slot-string-wrapper {
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
   text-overflow: ellipsis;
 }
 .slotTargetHeader > *,
-.slotTargetHeader > .__wab_slot > *,
-.slotTargetHeader > .__wab_slot > .__wab_slot > *,
-.slotTargetHeader > .__wab_slot > .__wab_slot > .__wab_slot > *,
+.slotTargetHeader > :global(.__wab_slot) > *,
+.slotTargetHeader > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
 .slotTargetHeader > picture > img,
-.slotTargetHeader > .__wab_slot > picture > img,
-.slotTargetHeader > .__wab_slot > .__wab_slot > picture > img,
-.slotTargetHeader > .__wab_slot > .__wab_slot > .__wab_slot > picture > img {
+.slotTargetHeader > :global(.__wab_slot) > picture > img,
+.slotTargetHeader > :global(.__wab_slot) > :global(.__wab_slot) > picture > img,
+.slotTargetHeader
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
   overflow: hidden;
 }
 .resetButton:global(.__wab_instance) {
@@ -105,30 +135,13 @@
   height: auto;
 }
 .variantPropsContainer {
-  flex-direction: column;
   display: flex;
   position: relative;
-  padding-bottom: 16px;
-}
-.variantPropsContainer > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.variantPropsContainer > :global(.__wab_flex-container) > *,
-.variantPropsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.variantPropsContainer > :global(.__wab_flex-container) > picture > img,
-.variantPropsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+  row-gap: 8px;
 }
 .variantProp__yqiyG:global(.__wab_instance) {
   position: relative;
@@ -175,27 +188,13 @@
   margin-bottom: 8px;
 }
 .slotPropsContainer {
-  flex-direction: column;
   display: flex;
   position: relative;
-  padding-bottom: 16px;
-}
-.slotPropsContainer > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.slotPropsContainer > :global(.__wab_flex-container) > *,
-.slotPropsContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.slotPropsContainer > :global(.__wab_flex-container) > picture > img,
-.slotPropsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+  row-gap: 8px;
 }
 .slotProp__o6Qg3:global(.__wab_instance) {
   position: relative;
@@ -274,30 +273,13 @@
   margin-bottom: 8px;
 }
 .elementPropsContainer {
-  flex-direction: column;
   display: flex;
   position: relative;
-  padding-bottom: 16px;
-}
-.elementPropsContainer > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.elementPropsContainer > :global(.__wab_flex-container) > *,
-.elementPropsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.elementPropsContainer > :global(.__wab_flex-container) > picture > img,
-.elementPropsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+  row-gap: 8px;
 }
 .elementProp__ld9th:global(.__wab_instance) {
   position: relative;

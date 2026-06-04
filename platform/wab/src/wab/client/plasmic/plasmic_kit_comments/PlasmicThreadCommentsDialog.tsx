@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicThreadCommentsDialog.module.css"; // plasmic-import: UhTNVxujj1gR/css
 
 createPlasmicElementProxy;
@@ -103,15 +103,17 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
         path: "hover",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hover,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hover,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -149,7 +151,7 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
+          className={classNames("all", sty.freeBox, {
             [sty.freeBoxhover]: hasVariant($state, "hover", "hover"),
           })}
         >
@@ -215,7 +217,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThreadCommentsDialog__VariantsArgs;
     args?: PlasmicThreadCommentsDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThreadCommentsDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThreadCommentsDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThreadCommentsDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

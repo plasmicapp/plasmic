@@ -10,8 +10,8 @@ import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/ProjectPan
 import { Matcher } from "@/wab/client/components/view-common";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import PlasmicNavigationDropdown from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicNavigationDropdown";
 import { DefaultFolderItemProps } from "@/wab/client/plasmic/project_panel/PlasmicFolderItem";
-import PlasmicProjectPanel from "@/wab/client/plasmic/project_panel/PlasmicProjectPanel";
 import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
 import {
   StudioCtx,
@@ -284,7 +284,7 @@ function BranchPanelTop_(
 
   return (
     <div className={styles.root} ref={outerRef} {...testIds.projectPanel}>
-      <PlasmicProjectPanel
+      <PlasmicNavigationDropdown
         style={{ zIndex: 0 }}
         plusButton={{
           props: {
@@ -445,7 +445,7 @@ function BranchPanelTop_(
             );
           }}
         </FixedSizeList>
-      </PlasmicProjectPanel>
+      </PlasmicNavigationDropdown>
     </div>
   );
 }

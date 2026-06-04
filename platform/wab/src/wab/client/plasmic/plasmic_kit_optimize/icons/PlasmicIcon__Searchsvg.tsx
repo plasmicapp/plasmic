@@ -1,15 +1,15 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
-export type SearchsvgIconProps = React.ComponentProps<"svg"> & {
+export type SearchSvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function SearchsvgIcon(props: SearchsvgIconProps) {
+export function SearchSvgIcon(props: SearchSvgIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -37,5 +37,5 @@ export function SearchsvgIcon(props: SearchsvgIconProps) {
   );
 }
 
-export default SearchsvgIcon;
+export default SearchSvgIcon;
 /* prettier-ignore-end */

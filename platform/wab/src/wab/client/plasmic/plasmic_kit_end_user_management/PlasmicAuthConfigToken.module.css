@@ -1,7 +1,4 @@
 .root {
-  --plsmc-rc-col-gap: 0px;
-}
-.root {
   display: flex;
   width: 100%;
   height: auto;
@@ -11,13 +8,14 @@
   flex-wrap: nowrap;
   position: relative;
   min-width: 0;
+  --plsmc-rc-col-gap: 0px;
   padding: 4px 0px;
 }
 .root > :nth-child(2n + 1) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 4 / 12);
 }
 .root > :nth-child(2n + 2) {
-  width: calc((100% - 2 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
+  width: calc((100% - 1 * var(--plsmc-rc-col-gap, 0px)) * 8 / 12);
 }
 .column__mUq5E {
   display: flex;
@@ -56,29 +54,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
   padding: 0px;
-}
-.freeBox__gmOhR > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__gmOhR > :global(.__wab_flex-container) > *,
-.freeBox__gmOhR > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__gmOhR > :global(.__wab_flex-container) > picture > img,
-.freeBox__gmOhR
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .freeBox__tQh1 {
   display: flex;
@@ -167,11 +150,4 @@
   max-width: 100%;
   width: 16px;
   height: 24px;
-}
-.svg__km2G {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 1em;
-  height: 1em;
 }

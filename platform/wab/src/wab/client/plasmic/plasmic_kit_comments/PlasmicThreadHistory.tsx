@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicThreadHistory.module.css"; // plasmic-import: qiIt-rIFSO0f/css
 
 import _69B43A437055B398Eff90A515Ed4F551Svg2AijDeIx4X from "./images/_69B43A437055B398Eff90A515Ed4F551Svg.svg"; // plasmic-import: 2aijDEIx4x/picture
@@ -103,15 +103,17 @@ function PlasmicThreadHistory__RenderFunc(props: {
         path: "isResolved",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isResolved,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isResolved,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -124,20 +126,20 @@ function PlasmicThreadHistory__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         { [sty.rootisResolved]: hasVariant($state, "isResolved", "isResolved") }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__sIx5P)}>
+      <div className={classNames("all", sty.freeBox__sIx5P)}>
         <div
           data-plasmic-name={"avatarContainer"}
           data-plasmic-override={overrides.avatarContainer}
-          className={classNames(projectcss.all, sty.avatarContainer)}
+          className={classNames("all", sty.avatarContainer)}
         >
           <PlasmicImg__
             data-plasmic-name={"img"}
@@ -162,11 +164,7 @@ function PlasmicThreadHistory__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text
-          )}
+          className={classNames("all", "__wab_text", sty.text)}
         >
           <React.Fragment>
             <React.Fragment>{""}</React.Fragment>
@@ -175,10 +173,11 @@ function PlasmicThreadHistory__RenderFunc(props: {
                 data-plasmic-name={"userFullName"}
                 data-plasmic-override={overrides.userFullName}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.span,
-                  projectcss.__wab_text,
-                  projectcss.plasmic_default__inline,
+                  "all",
+                  "span",
+                  "span__BP7V3",
+                  "__wab_text",
+                  "plasmic_default__inline",
                   sty.userFullName
                 )}
               >
@@ -191,10 +190,11 @@ function PlasmicThreadHistory__RenderFunc(props: {
                 data-plasmic-name={"timestamp"}
                 data-plasmic-override={overrides.timestamp}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.span,
-                  projectcss.__wab_text,
-                  projectcss.plasmic_default__inline,
+                  "all",
+                  "span",
+                  "span__BP7V3",
+                  "__wab_text",
+                  "plasmic_default__inline",
                   sty.timestamp
                 )}
               >
@@ -205,23 +205,18 @@ function PlasmicThreadHistory__RenderFunc(props: {
           </React.Fragment>
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox__oEfDr)}>
-        <div className={classNames(projectcss.all, sty.freeBox___8OEcy)}>
+      <div className={classNames("all", sty.freeBox__oEfDr)}>
+        <div className={classNames("all", sty.freeBox___8OEcy)}>
           <div
             data-plasmic-name={"body"}
             data-plasmic-override={overrides.body}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.body,
-              {
-                [sty.bodyisResolved]: hasVariant(
-                  $state,
-                  "isResolved",
-                  "isResolved"
-                ),
-              }
-            )}
+            className={classNames("all", "__wab_text", sty.body, {
+              [sty.bodyisResolved]: hasVariant(
+                $state,
+                "isResolved",
+                "isResolved"
+              ),
+            })}
           >
             {hasVariant($state, "isResolved", "isResolved")
               ? "Comment thread resolved."
@@ -274,7 +269,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThreadHistory__VariantsArgs;
     args?: PlasmicThreadHistory__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThreadHistory__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThreadHistory__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThreadHistory__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

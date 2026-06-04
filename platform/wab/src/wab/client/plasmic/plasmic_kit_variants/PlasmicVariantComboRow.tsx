@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
+import "./plasmic_plasmic_kit_variants.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantComboRow.module.css"; // plasmic-import: FskUdXzKp5L/css
 
 import ComponentBaseIcon from "../plasmic_kit/PlasmicIcon__ComponentBase"; // plasmic-import: FMSGLwXiQt0qP/icon
@@ -119,6 +119,7 @@ function PlasmicVariantComboRow__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -141,10 +142,10 @@ function PlasmicVariantComboRow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_wT5BWZPEc2fYxyqbTLXMt2",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -161,10 +162,10 @@ function PlasmicVariantComboRow__RenderFunc(props: {
         <div
           data-plasmic-name={"iconContainer"}
           data-plasmic-override={overrides.iconContainer}
-          className={classNames(projectcss.all, sty.iconContainer)}
+          className={classNames("all", sty.iconContainer)}
         >
           <ComponentBaseIcon
-            className={classNames(projectcss.all, sty.svg__xqw7)}
+            className={classNames("all", sty.svg__xqw7)}
             role={"img"}
           />
         </div>
@@ -172,18 +173,12 @@ function PlasmicVariantComboRow__RenderFunc(props: {
       <div
         data-plasmic-name={"labelContainer"}
         data-plasmic-override={overrides.labelContainer}
-        className={classNames(projectcss.all, sty.labelContainer)}
+        className={classNames("all", sty.labelContainer)}
       >
         {renderPlasmicSlot({
           defaultContents: (
             <Chip>
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__rh41
-                )}
-              >
+              <div className={classNames("all", "__wab_text", sty.text__rh41)}>
                 {"Type: Bordered"}
               </div>
             </Chip>
@@ -194,7 +189,7 @@ function PlasmicVariantComboRow__RenderFunc(props: {
       <div
         data-plasmic-name={"actionsContainer"}
         data-plasmic-override={overrides.actionsContainer}
-        className={classNames(projectcss.all, sty.actionsContainer)}
+        className={classNames("all", sty.actionsContainer)}
       >
         {(triggers.hover_root ? true : false) ? (
           <IconButton
@@ -202,14 +197,14 @@ function PlasmicVariantComboRow__RenderFunc(props: {
             data-plasmic-override={overrides.visibleButton}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__d7Wtc)}
+                className={classNames("all", sty.svg__d7Wtc)}
                 role={"img"}
               />
             }
             className={classNames("__wab_instance", sty.visibleButton)}
           >
             <EyeIcon
-              className={classNames(projectcss.all, sty.svg__dJrf)}
+              className={classNames("all", sty.svg__dJrf)}
               role={"img"}
             />
           </IconButton>

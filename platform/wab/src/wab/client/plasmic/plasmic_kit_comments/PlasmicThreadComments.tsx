@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicThreadComments.module.css"; // plasmic-import: QY53tkpvLv/css
 
 createPlasmicElementProxy;
@@ -89,10 +89,10 @@ function PlasmicThreadComments__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_BP7V3EkXPURJVwwMyWoHn",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -100,7 +100,7 @@ function PlasmicThreadComments__RenderFunc(props: {
       <div
         data-plasmic-name={"commentsList"}
         data-plasmic-override={overrides.commentsList}
-        className={classNames(projectcss.all, sty.commentsList)}
+        className={classNames("all", sty.commentsList)}
       >
         <CommentPost
           className={classNames("__wab_instance", sty.commentPost__hgBx5)}
@@ -141,7 +141,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThreadComments__VariantsArgs;
     args?: PlasmicThreadComments__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThreadComments__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThreadComments__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThreadComments__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

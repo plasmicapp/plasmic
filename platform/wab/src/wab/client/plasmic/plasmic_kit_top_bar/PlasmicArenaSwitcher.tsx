@@ -14,23 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
+import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicArenaSwitcher.module.css"; // plasmic-import: OAMl2pw5C9W/css
 
 import MixedArenaIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__MixedArena"; // plasmic-import: ArS5N_7TRj/icon
@@ -103,17 +104,21 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
         path: "arenaType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.arenaType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.arenaType,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Button
@@ -136,7 +141,7 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
               ? PageIcon
               : ArrowRightSvgIcon
           }
-          className={classNames(projectcss.all, sty.svg, {
+          className={classNames("all", sty.svg, {
             [sty.svgarenaType_component]: hasVariant(
               $state,
               "arenaType",
@@ -154,24 +159,15 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames("all", sty.freeBox)}
       >
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text,
-            {
-              [sty.textarenaType_mixed]: hasVariant(
-                $state,
-                "arenaType",
-                "mixed"
-              ),
-              [sty.textarenaType_page]: hasVariant($state, "arenaType", "page"),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text, {
+            [sty.textarenaType_mixed]: hasVariant($state, "arenaType", "mixed"),
+            [sty.textarenaType_page]: hasVariant($state, "arenaType", "page"),
+          })}
         >
           {"Arena Name"}
         </div>
@@ -207,7 +203,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicArenaSwitcher__VariantsArgs;
     args?: PlasmicArenaSwitcher__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicArenaSwitcher__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicArenaSwitcher__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicArenaSwitcher__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -34,7 +34,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicMultiAssetsActions.module.css"; // plasmic-import: d693eBfNDs7j/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -112,22 +112,24 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         path: "withoutControlBar",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withoutControlBar,
       },
       {
         path: "selectAll.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -140,10 +142,10 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_aukbrhkegRkQ6KizvhdUPT",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root
       )}
@@ -151,7 +153,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
       <div
         data-plasmic-name={"controlBar"}
         data-plasmic-override={overrides.controlBar}
-        className={classNames(projectcss.all, sty.controlBar, {
+        className={classNames("all", sty.controlBar, {
           [sty.controlBarwithoutControlBar]: hasVariant(
             $state,
             "withoutControlBar",
@@ -162,11 +164,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         <div
           data-plasmic-name={"numSelected"}
           data-plasmic-override={overrides.numSelected}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.numSelected
-          )}
+          className={classNames("all", "__wab_text", sty.numSelected)}
         >
           {"8 elements selected"}
         </div>
@@ -200,7 +198,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
           data-plasmic-override={overrides.deleteSelected}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg__fGucz)}
+              className={classNames("all", sty.svg__fGucz)}
               role={"img"}
             />
           }
@@ -209,7 +207,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
           withBackgroundHover={true}
         >
           <TrashIcon
-            className={classNames(projectcss.all, sty.svg__rQOhJ)}
+            className={classNames("all", sty.svg__rQOhJ)}
             role={"img"}
           />
         </IconButton>
@@ -218,7 +216,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
           data-plasmic-override={overrides.cancel}
           children2={
             <ChevronDownSvgIcon
-              className={classNames(projectcss.all, sty.svg___6Hnn5)}
+              className={classNames("all", sty.svg___6Hnn5)}
               role={"img"}
             />
           }
@@ -227,7 +225,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
           withBackgroundHover={true}
         >
           <CloseIcon
-            className={classNames(projectcss.all, sty.svg__duSe7)}
+            className={classNames("all", sty.svg__duSe7)}
             role={"img"}
           />
         </IconButton>
@@ -284,7 +282,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMultiAssetsActions__VariantsArgs;
     args?: PlasmicMultiAssetsActions__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicMultiAssetsActions__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicMultiAssetsActions__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMultiAssetsActions__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

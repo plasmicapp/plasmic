@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,30 +13,32 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  generateStateOnChangeProp,
+  generateStateValueProp,
+  renderPlasmicSlot,
+  StrictProps,
+  useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicDirectoryUserRow.module.css"; // plasmic-import: _c0HP8vrOTq/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -46,19 +48,17 @@ type VariantPropType = keyof PlasmicDirectoryUserRow__VariantsArgs;
 export const PlasmicDirectoryUserRow__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicDirectoryUserRow__ArgsType = {
-  userEmail?: React.ReactNode;
-};
+export type PlasmicDirectoryUserRow__ArgsType = { userEmail?: React.ReactNode };
 type ArgPropType = keyof PlasmicDirectoryUserRow__ArgsType;
 export const PlasmicDirectoryUserRow__ArgProps = new Array<ArgPropType>(
   "userEmail"
 );
 
 export type PlasmicDirectoryUserRow__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  groupsSelect?: p.Flex<typeof Select>;
-  deleteBtn?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  groupsSelect?: Flex__<typeof Select>;
+  deleteBtn?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultDirectoryUserRowProps {
@@ -66,13 +66,7 @@ export interface DefaultDirectoryUserRowProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicDirectoryUserRow__RenderFunc(props: {
   variants: PlasmicDirectoryUserRow__VariantsArgs;
@@ -82,23 +76,52 @@ function PlasmicDirectoryUserRow__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "groupsSelect.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
     hover_root: isRootHover,
   };
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -107,63 +130,74 @@ function PlasmicDirectoryUserRow__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <div className={classNames(projectcss.all, sty.column___5J5Ef)}>
+      <div className={classNames("all", sty.column___5J5Ef)}>
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
+          className={classNames("all", sty.freeBox)}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "user@plasmic.app",
             value: args.userEmail,
             className: classNames(sty.slotTargetUserEmail),
           })}
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.column__eMzMk)}>
+      <div className={classNames("all", sty.column__eMzMk)}>
         <Select
           data-plasmic-name={"groupsSelect"}
           data-plasmic-override={overrides.groupsSelect}
           className={classNames("__wab_instance", sty.groupsSelect)}
           icon={
-            <PlussvgIcon
-              className={classNames(projectcss.all, sty.svg__l8SIk)}
+            <PlusSvgIcon
+              className={classNames("all", sty.svg__l8SIk)}
               role={"img"}
             />
           }
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, ["groupsSelect", "value"])(
+                eventArgs[0]
+              );
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
+          }}
+          value={generateStateValueProp($state, ["groupsSelect", "value"])}
         />
       </div>
-      <div className={classNames(projectcss.all, sty.column__yrFC)}>
-        {(triggers.hover_root ? true : true) ? (
-          <IconButton
-            data-plasmic-name={"deleteBtn"}
-            data-plasmic-override={overrides.deleteBtn}
-            children2={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg__zQhvK)}
-                role={"img"}
-              />
-            }
-            className={classNames("__wab_instance", sty.deleteBtn)}
-          >
-            <TrashIcon
-              className={classNames(projectcss.all, sty.svg__c1EcA)}
+      <div className={classNames("all", sty.column__yrFC)}>
+        <IconButton
+          data-plasmic-name={"deleteBtn"}
+          data-plasmic-override={overrides.deleteBtn}
+          children2={
+            <ChevronDownSvgIcon
+              className={classNames("all", sty.svg__zQhvK)}
               role={"img"}
             />
-          </IconButton>
-        ) : null}
+          }
+          className={classNames("__wab_instance", sty.deleteBtn)}
+        >
+          <TrashIcon
+            className={classNames("all", sty.svg__c1EcA)}
+            role={"img"}
+          />
+        </IconButton>
       </div>
     </div>
   ) as React.ReactElement | null;
@@ -190,23 +224,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDirectoryUserRow__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicDirectoryUserRow__VariantsArgs;
     args?: PlasmicDirectoryUserRow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDirectoryUserRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDirectoryUserRow__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicDirectoryUserRow__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicDirectoryUserRow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -220,7 +254,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDirectoryUserRow__ArgProps,
           internalVariantPropNames: PlasmicDirectoryUserRow__VariantProps,
         }),

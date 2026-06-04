@@ -18,10 +18,10 @@
 .rootlarge {
   width: 360px;
 }
-.root:hover {
+.root:hover:hover {
   border-color: var(--token-eBt2ZgqRUCz);
 }
-.root:focus {
+.root:focus:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }

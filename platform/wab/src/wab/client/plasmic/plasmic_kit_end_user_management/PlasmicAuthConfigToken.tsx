@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,26 +13,25 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
+import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicAuthConfigToken.module.css"; // plasmic-import: HQf5xQMdD4/css
 
-import CopysvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CopySvg"; // plasmic-import: aGIZL6Ec9/icon
+import CopySvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CopySvg"; // plasmic-import: aGIZL6Ec9/icon
 
 createPlasmicElementProxy;
 
@@ -42,17 +41,15 @@ type VariantPropType = keyof PlasmicAuthConfigToken__VariantsArgs;
 export const PlasmicAuthConfigToken__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicAuthConfigToken__ArgsType = {
-  token?: React.ReactNode;
-};
+export type PlasmicAuthConfigToken__ArgsType = { token?: React.ReactNode };
 type ArgPropType = keyof PlasmicAuthConfigToken__ArgsType;
 export const PlasmicAuthConfigToken__ArgProps = new Array<ArgPropType>("token");
 
 export type PlasmicAuthConfigToken__OverridesType = {
-  root?: p.Flex<"div">;
-  tokenLabel?: p.Flex<"div">;
-  copyBtn?: p.Flex<typeof IconButton>;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  tokenLabel?: Flex__<"div">;
+  copyBtn?: Flex__<typeof IconButton>;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultAuthConfigTokenProps {
@@ -60,13 +57,7 @@ export interface DefaultAuthConfigTokenProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicAuthConfigToken__RenderFunc(props: {
   variants: PlasmicAuthConfigToken__VariantsArgs;
@@ -76,18 +67,27 @@ function PlasmicAuthConfigToken__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -96,61 +96,49 @@ function PlasmicAuthConfigToken__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_style_controls_css.plasmic_tokens,
+        "all",
+        "root_reset_2dMe7XWUq916KsPnra5vYj",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.column__mUq5E)}>
+      <div className={classNames("all", sty.column__mUq5E)}>
         <div
           data-plasmic-name={"tokenLabel"}
           data-plasmic-override={overrides.tokenLabel}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.tokenLabel
-          )}
+          className={classNames("all", "__wab_text", sty.tokenLabel)}
         >
           {"Secret token"}
         </div>
       </div>
-      <div className={classNames(projectcss.all, sty.column__vsg2R)}>
-        {true ? (
-          <p.Stack
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__gmOhR)}
-          >
-            <div className={classNames(projectcss.all, sty.freeBox__tQh1)}>
-              <div className={classNames(projectcss.all, sty.freeBox__aFmJ)}>
-                {p.renderPlasmicSlot({
-                  defaultContents:
-                    "N5JFY3Hos63V1RuljzcNEESK8EPT6YfDTCwFeqk0rGCz2XfgTSPnznvuqnqRcbpnk9204ySst88m3IatsXD1iA",
-                  value: args.token,
-                  className: classNames(sty.slotTargetToken),
-                })}
-              </div>
+      <div className={classNames("all", sty.column__vsg2R)}>
+        <div className={classNames("all", sty.freeBox__gmOhR)}>
+          <div className={classNames("all", sty.freeBox__tQh1)}>
+            <div className={classNames("all", sty.freeBox__aFmJ)}>
+              {renderPlasmicSlot({
+                defaultContents:
+                  "N5JFY3Hos63V1RuljzcNEESK8EPT6YfDTCwFeqk0rGCz2XfgTSPnznvuqnqRcbpnk9204ySst88m3IatsXD1iA",
+                value: args.token,
+                className: classNames(sty.slotTargetToken),
+              })}
             </div>
-            <IconButton
-              data-plasmic-name={"copyBtn"}
-              data-plasmic-override={overrides.copyBtn}
-              className={classNames("__wab_instance", sty.copyBtn)}
-            >
-              <CopysvgIcon
-                data-plasmic-name={"svg"}
-                data-plasmic-override={overrides.svg}
-                className={classNames(projectcss.all, sty.svg)}
-                role={"img"}
-              />
-            </IconButton>
-          </p.Stack>
-        ) : null}
+          </div>
+          <IconButton
+            data-plasmic-name={"copyBtn"}
+            data-plasmic-override={overrides.copyBtn}
+            children2={null}
+            className={classNames("__wab_instance", sty.copyBtn)}
+          >
+            <CopySvgIcon
+              data-plasmic-name={"svg"}
+              data-plasmic-override={overrides.svg}
+              className={classNames("all", sty.svg)}
+              role={"img"}
+            />
+          </IconButton>
+        </div>
       </div>
     </div>
   ) as React.ReactElement | null;
@@ -177,23 +165,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAuthConfigToken__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicAuthConfigToken__VariantsArgs;
     args?: PlasmicAuthConfigToken__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAuthConfigToken__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAuthConfigToken__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicAuthConfigToken__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicAuthConfigToken__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -207,7 +195,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAuthConfigToken__ArgProps,
           internalVariantPropNames: PlasmicAuthConfigToken__VariantProps,
         }),

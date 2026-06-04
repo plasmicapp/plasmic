@@ -35,7 +35,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListSection.module.css"; // plasmic-import: znioE83CPU/css
 
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
@@ -134,6 +134,7 @@ function PlasmicListSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
@@ -151,10 +152,10 @@ function PlasmicListSection__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
+        "all",
+        "root_reset_tXkSR39sgCDWSitZxC5xFV",
+        "plasmic_default_styles",
+        "plasmic_mixins",
         styleTokensClassNames,
         sty.root,
         {
@@ -175,14 +176,14 @@ function PlasmicListSection__RenderFunc(props: {
             data-plasmic-override={overrides.iconButton}
             children2={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__oLuZm)}
+                className={classNames("all", sty.svg__oLuZm)}
                 role={"img"}
               />
             }
             className={classNames("__wab_instance", sty.iconButton)}
           >
             <PlusCircleSvgIcon
-              className={classNames(projectcss.all, sty.svg__m72P3)}
+              className={classNames("all", sty.svg__m72P3)}
               role={"img"}
             />
           </IconButton>
@@ -208,7 +209,7 @@ function PlasmicListSection__RenderFunc(props: {
         }
         icon={
           <VariantGroupIcon
-            className={classNames(projectcss.all, sty.svg___42FXn)}
+            className={classNames("all", sty.svg___42FXn)}
             role={"img"}
           />
         }
@@ -222,7 +223,7 @@ function PlasmicListSection__RenderFunc(props: {
         <div
           data-plasmic-name={"itemsContainer"}
           data-plasmic-override={overrides.itemsContainer}
-          className={classNames(projectcss.all, sty.itemsContainer, {
+          className={classNames("all", sty.itemsContainer, {
             [sty.itemsContainercollapseState_collapsed]: hasVariant(
               $state,
               "collapseState",
@@ -241,13 +242,13 @@ function PlasmicListSection__RenderFunc(props: {
                 <ListItem
                   actions={
                     <EyeIcon
-                      className={classNames(projectcss.all, sty.svg__nOeR)}
+                      className={classNames("all", sty.svg__nOeR)}
                       role={"img"}
                     />
                   }
                   icon={
                     <ComponentIcon
-                      className={classNames(projectcss.all, sty.svg__qxi65)}
+                      className={classNames("all", sty.svg__qxi65)}
                       role={"img"}
                     />
                   }
@@ -257,14 +258,14 @@ function PlasmicListSection__RenderFunc(props: {
                 <ListItem
                   actions={
                     <EyeIcon
-                      className={classNames(projectcss.all, sty.svg__gp8QQ)}
+                      className={classNames("all", sty.svg__gp8QQ)}
                       role={"img"}
                     />
                   }
                   className={classNames("__wab_instance", sty.listItem__fHgE)}
                   icon={
                     <ComponentIcon
-                      className={classNames(projectcss.all, sty.svg__qoaAq)}
+                      className={classNames("all", sty.svg__qoaAq)}
                       role={"img"}
                     />
                   }
@@ -274,14 +275,14 @@ function PlasmicListSection__RenderFunc(props: {
                 <ListItem
                   actions={
                     <EyeIcon
-                      className={classNames(projectcss.all, sty.svg__v9X9I)}
+                      className={classNames("all", sty.svg__v9X9I)}
                       role={"img"}
                     />
                   }
                   className={classNames("__wab_instance", sty.listItem__h0DR)}
                   icon={
                     <ComponentIcon
-                      className={classNames(projectcss.all, sty.svg__l86PJ)}
+                      className={classNames("all", sty.svg__l86PJ)}
                       role={"img"}
                     />
                   }

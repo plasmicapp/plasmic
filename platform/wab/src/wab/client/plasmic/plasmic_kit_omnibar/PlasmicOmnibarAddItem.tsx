@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,29 +14,27 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { Video } from "@plasmicpkgs/plasmic-basic-components";
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
+import "./plasmic_plasmic_kit_omnibar.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
 import sty from "./PlasmicOmnibarAddItem.module.css"; // plasmic-import: KnUjAGcQKT/css
 
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
@@ -137,34 +135,36 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
         path: "focused",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.focused,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.focused,
       },
       {
         path: "preview",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.preview,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.preview,
       },
       {
         path: "installOnly",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.installOnly,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.installOnly,
       },
       {
         path: "_new",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props._new,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props._new,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -173,6 +173,8 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -180,13 +182,11 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_fQPf2UiMEMhB52C8QQXwWe",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.root_new]: hasVariant($state, "_new", "_new"),
@@ -206,7 +206,7 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <div
-        className={classNames(projectcss.all, sty.freeBox__ncMfp, {
+        className={classNames("all", sty.freeBox__ncMfp, {
           [sty.freeBox_new__ncMfpPk6FP]: hasVariant($state, "_new", "_new"),
           [sty.freeBoxfocused__ncMfPpJrFk]: hasVariant(
             $state,
@@ -216,26 +216,19 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text___2WwvC,
-            {
-              [sty.textfocused___2WwvCpJrFk]: hasVariant(
-                $state,
-                "focused",
-                "focused"
-              ),
-            }
-          )}
+          className={classNames("all", "__wab_text", sty.text___2WwvC, {
+            [sty.textfocused___2WwvCpJrFk]: hasVariant(
+              $state,
+              "focused",
+              "focused"
+            ),
+          })}
         >
           {"NEW"}
         </div>
       </div>
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__rhXeC, {
+      <div
+        className={classNames("all", sty.freeBox__rhXeC, {
           [sty.freeBox_new__rhXeCPk6FP]: hasVariant($state, "_new", "_new"),
           [sty.freeBoxpreview_image__rhXeCc086T]: hasVariant(
             $state,
@@ -250,7 +243,7 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__m1Yl, {
+          className={classNames("all", sty.freeBox__m1Yl, {
             [sty.freeBoxfocused__m1YLpJrFk]: hasVariant(
               $state,
               "focused",
@@ -344,7 +337,7 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
         <div
           data-plasmic-name={"titleBox"}
           data-plasmic-override={overrides.titleBox}
-          className={classNames(projectcss.all, sty.titleBox, {
+          className={classNames("all", sty.titleBox, {
             [sty.titleBox_new]: hasVariant($state, "_new", "_new"),
             [sty.titleBoxfocused]: hasVariant($state, "focused", "focused"),
             [sty.titleBoxpreview_image]: hasVariant($state, "preview", "image"),
@@ -373,9 +366,9 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
             }),
           })}
         </div>
-      </Stack__>
+      </div>
       <div
-        className={classNames(projectcss.all, sty.freeBox__ssHQl, {
+        className={classNames("all", sty.freeBox__ssHQl, {
           [sty.freeBoxfocused__ssHQlpJrFk]: hasVariant(
             $state,
             "focused",
@@ -394,13 +387,7 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
             hasVariant($state, "preview", "image"),
         })}
       >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__nsmVm
-          )}
-        >
+        <div className={classNames("all", "__wab_text", sty.text__nsmVm)}>
           <React.Fragment>
             {(() => {
               try {
@@ -443,23 +430,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOmnibarAddItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicOmnibarAddItem__VariantsArgs;
     args?: PlasmicOmnibarAddItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicOmnibarAddItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicOmnibarAddItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicOmnibarAddItem__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicOmnibarAddItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

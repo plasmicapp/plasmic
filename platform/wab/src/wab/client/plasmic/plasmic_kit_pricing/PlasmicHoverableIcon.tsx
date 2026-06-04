@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,34 +14,28 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ElevatedCard from "../../components/pricing/ElevatedCard"; // plasmic-import: OOKbAz_EJ7Rm/component
-import Popout from "../../components/pricing/Popout"; // plasmic-import: XvpbI4g-IJWK/component
-import { PricingTooltip } from "../../components/pricing/Tooltip"; // plasmic-import: eAE4YEj_YxMC/codeComponent
-
-import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { Tooltip } from "../../components/plexus/Tooltip"; // plasmic-import: EBbuUzYSewBk/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import "./plasmic_plasmic_kit_pricing.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicHoverableIcon.module.css"; // plasmic-import: 1T4UNMYLSC7u/css
 
-import InformationsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
+import InformationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
 
 createPlasmicElementProxy;
 
@@ -70,11 +64,8 @@ export const PlasmicHoverableIcon__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicHoverableIcon__OverridesType = {
-  root?: Flex__<"div">;
-  tooltip?: Flex__<typeof PricingTooltip>;
+  root?: Flex__<typeof Tooltip>;
   svg?: Flex__<"svg">;
-  popout?: Flex__<typeof Popout>;
-  elevatedCard?: Flex__<typeof ElevatedCard>;
 };
 
 export interface DefaultHoverableIconProps {
@@ -101,7 +92,9 @@ function PlasmicHoverableIcon__RenderFunc(props: {
         {
           forceOverlay: false,
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -115,134 +108,74 @@ function PlasmicHoverableIcon__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "above",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.above,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.above,
       },
       {
         path: "white",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.white,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.white,
       },
     ],
-
     [$props, $ctx, $refs]
   );
+
+  const globalVariants = _useGlobalVariants();
+
   const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
-  const globalVariants = ensureGlobalVariants({
-    environment: useEnvironment(),
-  });
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
-    <div
+    <Tooltip
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        sty.root,
-        {
-          [projectcss.global_environment_website]: hasVariant(
-            globalVariants,
-            "environment",
-            "website"
-          ),
-          [sty.rootabove]: hasVariant($state, "above", "above"),
-        }
-      )}
-    >
-      <PricingTooltip
-        data-plasmic-name={"tooltip"}
-        data-plasmic-override={overrides.tooltip}
-        className={classNames("__wab_instance", sty.tooltip, {
-          [sty.tooltipabove]: hasVariant($state, "above", "above"),
-        })}
-        overlay={
-          <Popout
-            data-plasmic-name={"popout"}
-            data-plasmic-override={overrides.popout}
-            above={hasVariant($state, "above", "above") ? true : undefined}
-            className={classNames("__wab_instance", sty.popout, {
-              [sty.popoutabove]: hasVariant($state, "above", "above"),
-            })}
-            noArrow={true}
-          >
-            <ElevatedCard
-              data-plasmic-name={"elevatedCard"}
-              data-plasmic-override={overrides.elevatedCard}
-              className={classNames("__wab_instance", sty.elevatedCard)}
-              menuContainer2={
-                <div className={classNames(projectcss.all, sty.freeBox__diuB5)}>
-                  {renderPlasmicSlot({
-                    defaultContents: "Some description",
-                    value: args.popover,
-                    className: classNames(sty.slotTargetPopover, {
-                      [sty.slotTargetPopoverabove]: hasVariant(
-                        $state,
-                        "above",
-                        "above"
-                      ),
-                    }),
-                  })}
-                </div>
-              }
-            />
-          </Popout>
-        }
-        placement={hasVariant($state, "above", "above") ? "top" : undefined}
-        trigger={
-          <div className={classNames(projectcss.all, sty.freeBox__mdtW)}>
-            <InformationsvgIcon
-              data-plasmic-name={"svg"}
-              data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg, {
-                [sty.svgwhite]: hasVariant($state, "white", "white"),
-              })}
-              role={"img"}
-            />
-          </div>
-        }
-      />
-    </div>
+      className={classNames("__wab_instance", sty.root)}
+      content={renderPlasmicSlot({
+        defaultContents: "Some description",
+        value: args.popover,
+        className: classNames(sty.slotTargetPopover, {
+          [sty.slotTargetPopoverabove]: hasVariant($state, "above", "above"),
+        }),
+      })}
+      trigger={
+        <InformationSvgIcon
+          data-plasmic-name={"svg"}
+          data-plasmic-override={overrides.svg}
+          className={classNames("all", sty.svg, {
+            [sty.svgwhite]: hasVariant($state, "white", "white"),
+          })}
+          role={"img"}
+        />
+      }
+    />
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "tooltip", "svg", "popout", "elevatedCard"],
-  tooltip: ["tooltip", "svg", "popout", "elevatedCard"],
+  root: ["root", "svg"],
   svg: ["svg"],
-  popout: ["popout", "elevatedCard"],
-  elevatedCard: ["elevatedCard"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
-  tooltip: typeof PricingTooltip;
+  root: typeof Tooltip;
   svg: "svg";
-  popout: typeof Popout;
-  elevatedCard: typeof ElevatedCard;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -250,23 +183,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHoverableIcon__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicHoverableIcon__VariantsArgs;
     args?: PlasmicHoverableIcon__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicHoverableIcon__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicHoverableIcon__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicHoverableIcon__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicHoverableIcon__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -306,10 +239,7 @@ export const PlasmicHoverableIcon = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    tooltip: makeNodeComponent("tooltip"),
     svg: makeNodeComponent("svg"),
-    popout: makeNodeComponent("popout"),
-    elevatedCard: makeNodeComponent("elevatedCard"),
 
     // Metadata about props expected for PlasmicHoverableIcon
     internalVariantProps: PlasmicHoverableIcon__VariantProps,

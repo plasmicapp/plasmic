@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,23 +14,21 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
+import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicDiffs.module.css"; // plasmic-import: o4Oidp6CzFL/css
 
 import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
@@ -93,6 +91,8 @@ function PlasmicDiffs__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -100,34 +100,24 @@ function PlasmicDiffs__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_p8FkKgCnyuat1kHSEYAKfW",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__bU0WY)}
-      >
-        <div className={classNames(projectcss.all, sty.freeBox__kZmf4)}>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___7C2QV)}
-          >
+      <div className={classNames("all", sty.freeBox__bU0WY)}>
+        <div className={classNames("all", sty.freeBox__kZmf4)}>
+          <div className={classNames("all", sty.freeBox___7C2QV)}>
             <Button
               data-plasmic-name={"backButton"}
               data-plasmic-override={overrides.backButton}
               className={classNames("__wab_instance", sty.backButton)}
               startIcon={
                 <ArrowLeftSvgIcon
-                  className={classNames(projectcss.all, sty.svg__n4509)}
+                  className={classNames("all", sty.svg__n4509)}
                   role={"img"}
                 />
               }
@@ -136,26 +126,18 @@ function PlasmicDiffs__RenderFunc(props: {
             >
               {"Back"}
             </Button>
-            <div className={classNames(projectcss.all, sty.freeBox__bo5SR)}>
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__xCi3C)}
-              >
-                <div className={classNames(projectcss.all, sty.freeBox__ue9L3)}>
+            <div className={classNames("all", sty.freeBox__bo5SR)}>
+              <div className={classNames("all", sty.freeBox__xCi3C)}>
+                <div className={classNames("all", sty.freeBox__ue9L3)}>
                   <div
                     data-plasmic-name={"labelText"}
                     data-plasmic-override={overrides.labelText}
-                    className={classNames(projectcss.all, sty.labelText)}
+                    className={classNames("all", sty.labelText)}
                   >
                     <div
                       data-plasmic-name={"label"}
                       data-plasmic-override={overrides.label}
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.label
-                      )}
+                      className={classNames("all", "__wab_text", sty.label)}
                     >
                       <React.Fragment>
                         <React.Fragment>{"Changes in "}</React.Fragment>
@@ -164,10 +146,11 @@ function PlasmicDiffs__RenderFunc(props: {
                             data-plasmic-name={"branchLabel"}
                             data-plasmic-override={overrides.branchLabel}
                             className={classNames(
-                              projectcss.all,
-                              projectcss.span,
-                              projectcss.__wab_text,
-                              projectcss.plasmic_default__inline,
+                              "all",
+                              "span",
+                              "span__p8FkK",
+                              "__wab_text",
+                              "plasmic_default__inline",
                               sty.branchLabel
                             )}
                           >
@@ -181,11 +164,7 @@ function PlasmicDiffs__RenderFunc(props: {
                       <div
                         data-plasmic-name={"text"}
                         data-plasmic-override={overrides.text}
-                        className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
-                          sty.text
-                        )}
+                        className={classNames("all", "__wab_text", sty.text)}
                       >
                         {"Label"}
                       </div>
@@ -195,35 +174,32 @@ function PlasmicDiffs__RenderFunc(props: {
                     <div
                       data-plasmic-name={"labelIconsContainer"}
                       data-plasmic-override={overrides.labelIconsContainer}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelIconsContainer
-                      )}
+                      className={classNames("all", sty.labelIconsContainer)}
                     >
                       <ChevronDownIcon
-                        className={classNames(projectcss.all, sty.svg__aCBau)}
+                        className={classNames("all", sty.svg__aCBau)}
                         role={"img"}
                       />
                     </div>
                   ) : null}
                 </div>
-              </Stack__>
+              </div>
             </div>
             <div
               data-plasmic-name={"diffContent"}
               data-plasmic-override={overrides.diffContent}
-              className={classNames(projectcss.all, sty.diffContent)}
+              className={classNames("all", sty.diffContent)}
             >
-              <div className={classNames(projectcss.all, sty.freeBox__wTUx)}>
+              <div className={classNames("all", sty.freeBox__wTUx)}>
                 {renderPlasmicSlot({
                   defaultContents: "Enter some text",
                   value: args.children,
                 })}
               </div>
             </div>
-          </Stack__>
+          </div>
         </div>
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -272,7 +248,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDiffs__VariantsArgs;
     args?: PlasmicDiffs__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDiffs__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDiffs__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDiffs__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

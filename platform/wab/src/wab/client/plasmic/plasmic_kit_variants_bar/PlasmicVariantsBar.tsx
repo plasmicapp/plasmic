@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,28 +13,30 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import ToggleRecordingButton from "../../components/canvas/VariantsBar/ToggleRecordingButton"; // plasmic-import: j_Jdg2E_a5/component
 import VariantBadge from "../../components/canvas/VariantsBar/VariantBadge"; // plasmic-import: 4OLKnpGnTY/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
+import "./plasmic_plasmic_kit_variants_bar.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicVariantsBar.module.css"; // plasmic-import: 98t4Edcdrb/css
 
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicVariantsBar__VariantMembers = {
   isFocused: "isFocused";
@@ -42,14 +44,12 @@ export type PlasmicVariantsBar__VariantMembers = {
   isEditable: "isEditable";
   contained: "contained";
 };
-
 export type PlasmicVariantsBar__VariantsArgs = {
   isFocused?: SingleBooleanChoiceArg<"isFocused">;
   isEmpty?: SingleBooleanChoiceArg<"isEmpty">;
   isEditable?: SingleBooleanChoiceArg<"isEditable">;
   contained?: SingleBooleanChoiceArg<"contained">;
 };
-
 type VariantPropType = keyof PlasmicVariantsBar__VariantsArgs;
 export const PlasmicVariantsBar__VariantProps = new Array<VariantPropType>(
   "isFocused",
@@ -63,14 +63,14 @@ type ArgPropType = keyof PlasmicVariantsBar__ArgsType;
 export const PlasmicVariantsBar__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicVariantsBar__OverridesType = {
-  root?: p.Flex<"div">;
-  recordingButton?: p.Flex<typeof ToggleRecordingButton>;
-  freeBox?: p.Flex<"div">;
-  variantsList?: p.Flex<"div">;
-  dropdownTrigger?: p.Flex<"div">;
-  emptyListMessage?: p.Flex<"div">;
-  chevronDownIcon?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  recordingButton?: Flex__<typeof ToggleRecordingButton>;
+  freeBox?: Flex__<"div">;
+  variantsList?: Flex__<"div">;
+  dropdownTrigger?: Flex__<"div">;
+  emptyListMessage?: Flex__<"div">;
+  chevronDownIcon?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultVariantsBarProps {
@@ -81,13 +81,7 @@ export interface DefaultVariantsBarProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicVariantsBar__RenderFunc(props: {
   variants: PlasmicVariantsBar__VariantsArgs;
@@ -97,13 +91,13 @@ function PlasmicVariantsBar__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -113,45 +107,49 @@ function PlasmicVariantsBar__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isFocused",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFocused,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFocused,
       },
-
       {
         path: "isEmpty",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEmpty,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isEmpty,
       },
-
       {
         path: "isEditable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEditable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isEditable,
       },
-
       {
         path: "contained",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.contained,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.contained,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -160,13 +158,11 @@ function PlasmicVariantsBar__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        "all",
+        "root_reset_kdj5vahTyUKxznuR6rrtt6",
+        "plasmic_default_styles",
+        "plasmic_mixins",
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootcontained]: hasVariant($state, "contained", "contained"),
@@ -213,6 +209,11 @@ function PlasmicVariantsBar__RenderFunc(props: {
               "contained",
               "contained"
             ),
+            [sty.recordingButtoncontained_isEditable_isEmpty_isFocused]:
+              hasVariant($state, "contained", "contained") &&
+              hasVariant($state, "isFocused", "isFocused") &&
+              hasVariant($state, "isEditable", "isEditable") &&
+              hasVariant($state, "isEmpty", "isEmpty"),
             [sty.recordingButtoncontained_isEditable_isFocused]:
               hasVariant($state, "contained", "contained") &&
               hasVariant($state, "isFocused", "isFocused") &&
@@ -244,12 +245,10 @@ function PlasmicVariantsBar__RenderFunc(props: {
           contained={$state.contained}
         />
       ) : null}
-      <p.Stack
-        as={"div"}
+      <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox, {
+        className={classNames("all", sty.freeBox, {
           [sty.freeBoxcontained]: hasVariant($state, "contained", "contained"),
           [sty.freeBoxcontained_isEditable_isFocused]:
             hasVariant($state, "contained", "contained") &&
@@ -280,12 +279,10 @@ function PlasmicVariantsBar__RenderFunc(props: {
         })}
       >
         {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
-          <p.Stack
-            as={"div"}
+          <div
             data-plasmic-name={"variantsList"}
             data-plasmic-override={overrides.variantsList}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.variantsList, {
+            className={classNames("all", sty.variantsList, {
               [sty.variantsListcontained_isEditable_isFocused]:
                 hasVariant($state, "contained", "contained") &&
                 hasVariant($state, "isFocused", "isFocused") &&
@@ -293,6 +290,11 @@ function PlasmicVariantsBar__RenderFunc(props: {
               [sty.variantsListcontained_isEmpty]:
                 hasVariant($state, "isEmpty", "isEmpty") &&
                 hasVariant($state, "contained", "contained"),
+              [sty.variantsListisEditable]: hasVariant(
+                $state,
+                "isEditable",
+                "isEditable"
+              ),
               [sty.variantsListisEditable_isEmpty_isFocused]:
                 hasVariant($state, "isFocused", "isFocused") &&
                 hasVariant($state, "isEmpty", "isEmpty") &&
@@ -318,6 +320,11 @@ function PlasmicVariantsBar__RenderFunc(props: {
                   hasVariant($state, "isFocused", "isFocused") &&
                   hasVariant($state, "contained", "contained") &&
                   hasVariant($state, "isEmpty", "isEmpty"),
+                [sty.variantBadgeisEditable__ns9NYEkI4S]: hasVariant(
+                  $state,
+                  "isEditable",
+                  "isEditable"
+                ),
                 [sty.variantBadgeisEditable_isFocused__ns9NYEkI4SSmoKc]:
                   hasVariant($state, "isFocused", "isFocused") &&
                   hasVariant($state, "isEditable", "isEditable"),
@@ -374,7 +381,7 @@ function PlasmicVariantsBar__RenderFunc(props: {
                   : true
               }
             />
-          </p.Stack>
+          </div>
         ) : null}
         {(
           hasVariant($state, "isFocused", "isFocused") &&
@@ -384,12 +391,10 @@ function PlasmicVariantsBar__RenderFunc(props: {
             ? false
             : false
         ) ? (
-          <p.Stack
-            as={"div"}
+          <div
             data-plasmic-name={"dropdownTrigger"}
             data-plasmic-override={overrides.dropdownTrigger}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.dropdownTrigger, {
+            className={classNames("all", sty.dropdownTrigger, {
               [sty.dropdownTriggercontained_isEditable_isEmpty_isFocused]:
                 hasVariant($state, "contained", "contained") &&
                 hasVariant($state, "isEmpty", "isEmpty") &&
@@ -431,8 +436,8 @@ function PlasmicVariantsBar__RenderFunc(props: {
                 data-plasmic-name={"emptyListMessage"}
                 data-plasmic-override={overrides.emptyListMessage}
                 className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
+                  "all",
+                  "__wab_text",
                   sty.emptyListMessage,
                   {
                     [sty.emptyListMessagecontained_isEditable_isEmpty_isFocused]:
@@ -463,12 +468,12 @@ function PlasmicVariantsBar__RenderFunc(props: {
             <div
               data-plasmic-name={"chevronDownIcon"}
               data-plasmic-override={overrides.chevronDownIcon}
-              className={classNames(projectcss.all, sty.chevronDownIcon)}
+              className={classNames("all", sty.chevronDownIcon)}
             >
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 data-plasmic-name={"svg"}
                 data-plasmic-override={overrides.svg}
-                className={classNames(projectcss.all, sty.svg, {
+                className={classNames("all", sty.svg, {
                   [sty.svgisEditable]: hasVariant(
                     $state,
                     "isEditable",
@@ -490,9 +495,9 @@ function PlasmicVariantsBar__RenderFunc(props: {
                 role={"img"}
               />
             </div>
-          </p.Stack>
+          </div>
         ) : null}
-      </p.Stack>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -508,7 +513,6 @@ const PlasmicDescendants = {
     "chevronDownIcon",
     "svg",
   ],
-
   recordingButton: ["recordingButton"],
   freeBox: [
     "freeBox",
@@ -518,7 +522,6 @@ const PlasmicDescendants = {
     "chevronDownIcon",
     "svg",
   ],
-
   variantsList: ["variantsList"],
   dropdownTrigger: [
     "dropdownTrigger",
@@ -526,7 +529,6 @@ const PlasmicDescendants = {
     "chevronDownIcon",
     "svg",
   ],
-
   emptyListMessage: ["emptyListMessage"],
   chevronDownIcon: ["chevronDownIcon", "svg"],
   svg: ["svg"],
@@ -550,25 +552,26 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantsBar__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicVariantsBar__VariantsArgs;
-  args?: PlasmicVariantsBar__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicVariantsBar__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicVariantsBar__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicVariantsBar__VariantsArgs;
+    args?: PlasmicVariantsBar__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantsBar__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantsBar__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -579,7 +582,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantsBar__ArgProps,
           internalVariantPropNames: PlasmicVariantsBar__VariantProps,
         }),
