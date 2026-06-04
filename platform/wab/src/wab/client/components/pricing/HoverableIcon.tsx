@@ -4,7 +4,6 @@ import {
   DefaultHoverableIconProps,
   PlasmicHoverableIcon,
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicHoverableIcon";
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined
@@ -22,10 +21,7 @@ import * as React from "react";
 // total control over the props for your component.
 export type HoverableIconProps = DefaultHoverableIconProps;
 
-function HoverableIcon_(
-  props: HoverableIconProps,
-  ref: HTMLElementRefOf<"div">
-) {
+function HoverableIcon(props: HoverableIconProps) {
   // Use PlasmicHoverableIcon to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
@@ -41,8 +37,7 @@ function HoverableIcon_(
   // By default, we are just piping all HoverableIconProps here, but feel free
   // to do whatever works for you.
 
-  return <PlasmicHoverableIcon root={{ ref }} {...props} />;
+  return <PlasmicHoverableIcon {...props} />;
 }
 
-const HoverableIcon = React.forwardRef(HoverableIcon_);
 export default HoverableIcon;

@@ -4,7 +4,6 @@ import {
   DefaultHoverableTextProps,
   PlasmicHoverableText,
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicHoverableText";
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined
@@ -22,10 +21,7 @@ import * as React from "react";
 // total control over the props for your component.
 export type HoverableTextProps = DefaultHoverableTextProps;
 
-function HoverableText_(
-  props: HoverableTextProps,
-  ref: HTMLElementRefOf<"div">
-) {
+function HoverableText(props: HoverableTextProps) {
   // Use PlasmicHoverableText to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
@@ -41,8 +37,7 @@ function HoverableText_(
   // By default, we are just piping all HoverableTextProps here, but feel free
   // to do whatever works for you.
 
-  return <PlasmicHoverableText root={{ ref }} {...props} />;
+  return <PlasmicHoverableText {...props} />;
 }
 
-const HoverableText = React.forwardRef(HoverableText_);
 export default HoverableText;
