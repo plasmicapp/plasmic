@@ -20,6 +20,18 @@ describe("animations", () => {
       });
     });
 
+    it("should keep `var(--anim-<uuid>)` references as the name", () => {
+      expect(
+        parseCssAnimation(
+          "var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running"
+        )
+      ).toMatchObject({
+        name: "var(--anim-amPxFRYy2Bqz)",
+        duration: "1s",
+        timingFunction: "ease-in-out",
+      });
+    });
+
     it("should parse animation with all properties", () => {
       expect(
         parseCssAnimation("fadeOut 2s ease-in 0.5s 3 alternate forwards paused")

@@ -747,6 +747,86 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
   return rec(node);
 }
 
+function extractSelectorsFromPrelude(prelude: CssNode) {
+  const selectors: Selector[] = [];
+  walk(prelude, function (selectorNode) {
+    if (selectorNode.type === "Selector") {
+      selectors.push(selectorNode);
+    }
+  });
+  return selectors;
+}
+
+function extractDeclarationsFromBlock(block: CssNode) {
+  const declarations: Declaration[] = [];
+  walk(block, function (blockNode) {
+    if (blockNode.type === "Declaration") {
+      declarations.push(blockNode);
+    }
+  });
+  return declarations;
+}
+
+/**
+ * Parse a css-tree `@keyframes` Atrule into a {@link WIAnimationSequence}.
+ * Handles `from`/`to`/`N%` selectors and runs each rule's declarations
+ * through {@link processUnsanitizedStyles} to split safe vs. unsafe styles.
+ * Keyframes are sorted by percentage.
+ */
+export function processKeyframesRule(
+  atrule: Atrule
+): WIAnimationSequence | null {
+  if (!atrule.block || !atrule.prelude) {
+    return null;
+  }
+
+  const sequenceName = generate(atrule.prelude).trim();
+  const keyframes: WIKeyFrame[] = [];
+
+  walk(atrule.block, function (keyframeNode) {
+    if (keyframeNode.type === "Rule") {
+      const selectors = extractSelectorsFromPrelude(keyframeNode.prelude);
+      const declarations = extractDeclarationsFromBlock(keyframeNode.block);
+
+      for (const selector of selectors) {
+        const selectorText = generate(selector).trim();
+        let percentage: number;
+
+        if (selectorText === "from") {
+          percentage = 0;
+        } else if (selectorText === "to") {
+          percentage = 100;
+        } else if (selectorText.endsWith("%")) {
+          percentage = parseFloat(selectorText.replace("%", ""));
+        } else {
+          continue; // Skip invalid selectors
+        }
+
+        const styles: Record<string, string> = {};
+        declarations.forEach((decl) => {
+          styles[decl.property] = generate(decl.value);
+        });
+
+        const { safe, unsafe } = processUnsanitizedStyles(styles);
+
+        keyframes.push({
+          percentage,
+          safeStyles: safe,
+          unsafeStyles: unsafe,
+        });
+      }
+    }
+  });
+
+  // Sort keyframes by percentage
+  keyframes.sort((a, b) => a.percentage - b.percentage);
+
+  return {
+    name: sequenceName,
+    keyframes,
+  };
+}
+
 export async function parseHtmlToWebImporterTree(
   htmlString: string,
   site: Site
@@ -831,28 +911,6 @@ export async function parseHtmlToWebImporterTree(
   const fontDefinitions: string[] = [];
   const animationSequences: WIAnimationSequence[] = [];
 
-  function extractSelectorsFromPrelude(prelude: CssNode) {
-    const selectors: Selector[] = [];
-    walk(prelude, function (selectorNode) {
-      if (selectorNode.type === "Selector") {
-        selectors.push(selectorNode);
-      }
-    });
-    return selectors;
-  }
-
-  function extractDeclarationsFromBlock(block: CssNode) {
-    const declarations: Declaration[] = [];
-
-    walk(block, function (blockNode) {
-      if (blockNode.type === "Declaration") {
-        declarations.push(blockNode);
-      }
-    });
-
-    return declarations;
-  }
-
   function processRule(rule: Rule, context: string) {
     const selectors = extractSelectorsFromPrelude(rule.prelude);
     const declarations = extractDeclarationsFromBlock(rule.block);
@@ -901,58 +959,6 @@ export async function parseHtmlToWebImporterTree(
     );
 
     fontDefinitions.push(`@font-face {\n${declarations.join("\n")}\n}`);
-  }
-
-  function processKeyframesRule(atrule: Atrule): WIAnimationSequence | null {
-    if (!atrule.block || !atrule.prelude) {
-      return null;
-    }
-
-    const sequenceName = generate(atrule.prelude).trim();
-    const keyframes: WIKeyFrame[] = [];
-
-    walk(atrule.block, function (keyframeNode) {
-      if (keyframeNode.type === "Rule") {
-        const selectors = extractSelectorsFromPrelude(keyframeNode.prelude);
-        const declarations = extractDeclarationsFromBlock(keyframeNode.block);
-
-        for (const selector of selectors) {
-          const selectorText = generate(selector).trim();
-          let percentage: number;
-
-          if (selectorText === "from") {
-            percentage = 0;
-          } else if (selectorText === "to") {
-            percentage = 100;
-          } else if (selectorText.endsWith("%")) {
-            percentage = parseFloat(selectorText.replace("%", ""));
-          } else {
-            continue; // Skip invalid selectors
-          }
-
-          const styles: Record<string, string> = {};
-          declarations.forEach((decl) => {
-            styles[decl.property] = generate(decl.value);
-          });
-
-          const { safe, unsafe } = processUnsanitizedStyles(styles);
-
-          keyframes.push({
-            percentage,
-            safeStyles: safe,
-            unsafeStyles: unsafe,
-          });
-        }
-      }
-    });
-
-    // Sort keyframes by percentage
-    keyframes.sort((a, b) => a.percentage - b.percentage);
-
-    return {
-      name: sequenceName,
-      keyframes,
-    };
   }
 
   walk(parsedStylesheet, function (node) {

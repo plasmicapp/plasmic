@@ -407,9 +407,10 @@ const LeftGeneralDataTokensPanel = observer(
             const selectedTokens = studioCtx.site.dataTokens.filter((t) =>
               selected.includes(t.uuid)
             );
-            return await studioCtx
+            const result = await studioCtx
               .siteOps()
               .tryDeleteDataTokens(selectedTokens);
+            return result.deletedResources.length > 0;
           }}
         >
           <DataTokenControlsContext.Provider

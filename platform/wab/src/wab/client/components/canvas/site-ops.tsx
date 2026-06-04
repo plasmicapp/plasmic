@@ -3,11 +3,7 @@ import { FrameClip } from "@/wab/client/clipboard/local";
 import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { toast } from "@/wab/client/components/Messages";
 import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
-import {
-  confirm,
-  deleteStudioElementConfirm,
-  reactConfirm,
-} from "@/wab/client/components/quick-modals";
+import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
 import {
@@ -15,6 +11,7 @@ import {
   ResizableImage,
   maybeUploadImage,
 } from "@/wab/client/dom-utils";
+import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
 import { deleteStyleToken } from "@/wab/client/operations/delete-style-token";
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -45,7 +42,6 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import {
   VariantGroupType,
   areEquivalentScreenVariants,
-  ensureBaseRuleVariantSetting,
   findDuplicateComponentVariant,
   getDisplayVariants,
   getOrderedScreenVariantSpecs,
@@ -1766,223 +1762,147 @@ export class SiteOps {
   }
 
   async tryDeleteImageAssets(assets: ImageAsset[]) {
-    const assetsUsages = assets
-      .map((asset) => ({
-        asset,
-        usages: getComponentsUsingImageAsset(this.site, asset),
-      }))
-      .filter(({ usages }) => usages.length > 0);
+    const resourcesWithUsage = assets.map((asset) => {
+      const components = getComponentsUsingImageAsset(this.site, asset);
+      return {
+        resource: asset,
+        usageSummary: { components },
+        usageCount: components.length,
+      };
+    });
 
-    if (assetsUsages.length > 0) {
-      const confirmed = await deleteStudioElementConfirm(
-        `Deleting asset`,
-        assetsUsages.map(({ asset, usages }) => ({
-          element: asset,
-          summary: { components: usages },
-        })),
-        `Are you sure you want to delete it?`
-      );
-
-      if (!confirmed) {
-        return false;
-      }
-    }
-    await this.studioCtx.changeObserved(
-      () => {
-        return assetsUsages.flatMap(({ usages }) => usages);
-      },
-      ({ success }) => {
-        assets.forEach((asset) => this.tplMgr.removeImageAsset(asset));
-        return success();
+    return deleteResourcesWithUsages(
+      this.studioCtx,
+      resourcesWithUsage,
+      (asset) => this.tplMgr.removeImageAsset(asset),
+      {
+        deleteLabel: "asset",
       }
     );
-    return true;
   }
 
-  async tryDeleteTokens(tokens: StyleToken[]) {
-    const tokensUsages = tokens
-      .map((t) => ({
-        usages: extractTokenUsages(this.site, t),
-        token: t,
-      }))
-      .filter(({ usages }) => usages[0].size > 0);
-    if (tokensUsages.length > 0) {
-      const confirmed = await deleteStudioElementConfirm(
-        `Deleting ${TOKEN_LOWER}`,
-        tokensUsages.map(({ token, usages }) => ({
-          element: token,
-          summary: usages[1],
-        })),
-        `Are you sure you want to delete it? Deleting the ${TOKEN_LOWER} will hard code its value at all its usages.`
-      );
-
-      if (!confirmed) {
-        return false;
-      }
+  async tryDeleteTokens(
+    tokens: StyleToken[],
+    opts?: {
+      behaviour?:
+        | "confirm-if-referenced"
+        | "delete-if-referenced"
+        | "error-if-referenced";
     }
+  ) {
+    const resourcesWithUsage = tokens.map((token) => {
+      const [usages, summary] = extractTokenUsages(this.site, token);
+      return {
+        resource: token,
+        usageSummary: summary,
+        usageCount: usages.size,
+      };
+    });
 
-    await this.studioCtx.changeObserved(
-      () => {
-        return tokensUsages.flatMap((tokenUsage) => [
-          ...tokenUsage.usages[1].components,
-          ...tokenUsage.usages[1].frames.map((f) => f.container.component),
-        ]);
-      },
-      ({ success }) => {
-        tokens.forEach((token) => {
-          deleteStyleToken({ site: this.site, token });
-        });
-        return success();
+    return deleteResourcesWithUsages(
+      this.studioCtx,
+      resourcesWithUsage,
+      (token) => deleteStyleToken({ site: this.site, token }),
+      {
+        behaviour: opts?.behaviour,
+        deleteLabel: TOKEN_LOWER,
       }
     );
-
-    return true;
   }
 
   async tryDeleteDataTokens(tokens: DataToken[]) {
-    const tokensUsages = tokens
-      .map((t) => ({
-        usages: extractDataTokenUsages(
-          this.studioCtx.siteInfo.id,
-          this.site,
-          t
-        ),
-        token: t,
-      }))
-      .filter(({ usages }) =>
-        Object.keys(usages).some((key) => usages[key].length > 0)
+    const resourcesWithUsage = tokens.map((token) => {
+      const usageSummary = extractDataTokenUsages(
+        this.studioCtx.siteInfo.id,
+        this.site,
+        token
       );
-    if (tokensUsages.length > 0) {
-      const confirmed = await deleteStudioElementConfirm(
-        `Deleting ${DATA_TOKEN_LOWER}`,
-        tokensUsages.map(({ token, usages }) => ({
-          element: token,
-          summary: usages,
-        })),
-        `Are you sure you want to delete it? Deleting the ${DATA_TOKEN_LOWER} will hard code its value at all its usages.`
-      );
+      const usageCount =
+        usageSummary.components.length + usageSummary.frames.length;
+      return { resource: token, usageSummary, usageCount };
+    });
 
-      if (!confirmed) {
-        return false;
-      }
-    }
-    await this.studioCtx.changeObserved(
-      () => {
-        return tokensUsages.flatMap((tokenUsage) => [
-          ...tokenUsage.usages.components,
-          ...tokenUsage.usages.frames.map((f) => f.container.component),
-        ]);
-      },
-      ({ success }) => {
-        const projectId = this.studioCtx.siteInfo.id;
-        tokens.forEach((token) => {
-          // Find all expressions that use this data token and flatten them
-          for (const { ownerComponent, exprRefs } of cachedExprsInSite(
-            this.site
-          )) {
-            for (const exprRef of exprRefs) {
-              flattenDataTokenUsage(token, exprRef, projectId, ownerComponent);
-            }
+    const projectId = this.studioCtx.siteInfo.id;
+    return deleteResourcesWithUsages(
+      this.studioCtx,
+      resourcesWithUsage,
+      (token) => {
+        // Find all expressions that use this data token and flatten them
+        for (const { ownerComponent, exprRefs } of cachedExprsInSite(
+          this.site
+        )) {
+          for (const exprRef of exprRefs) {
+            flattenDataTokenUsage(token, exprRef, projectId, ownerComponent);
           }
-          arrayRemove(this.site.dataTokens, token);
-        });
-        return success();
+        }
+        arrayRemove(this.site.dataTokens, token);
+      },
+      {
+        deleteLabel: DATA_TOKEN_LOWER,
       }
     );
-    return true;
   }
 
   async tryDeleteMixins(mixins: Mixin[]) {
-    const mixinsUsages = mixins
-      .map((m) => ({
-        usages: extractMixinUsages(this.site, m),
-        mixin: m,
-      }))
-      .filter(({ usages }) => usages[0].size > 0);
-    if (mixinsUsages.length > 0) {
-      const confirmed = await deleteStudioElementConfirm(
-        `Deleting ${MIXIN_LOWER}`,
-        mixinsUsages.map(({ mixin, usages }) => ({
-          element: mixin,
-          summary: usages[1],
-        })),
-        `Are you sure you want to delete it? Deleting the ${MIXIN_LOWER} remove it from the usages above.`
-      );
+    const resourcesWithUsage = mixins.map((mixin) => {
+      const [usages, summary] = extractMixinUsages(this.site, mixin);
+      return {
+        resource: mixin,
+        usageSummary: summary,
+        usageCount: usages.size,
+      };
+    });
 
-      if (!confirmed) {
-        return false;
-      }
-    }
-
-    await this.studioCtx.changeObserved(
-      () => {
-        return mixinsUsages.flatMap((mixinUsage) => [
-          ...mixinUsage.usages[1].components,
-          ...mixinUsage.usages[1].frames.map((f) => f.container.component),
-        ]);
+    return deleteResourcesWithUsages(
+      this.studioCtx,
+      resourcesWithUsage,
+      (mixin) => {
+        const [usages] = extractMixinUsages(this.site, mixin);
+        usages.forEach((usage) => arrayRemove(usage.mixins, mixin));
+        arrayRemove(this.site.mixins, mixin);
       },
-      ({ success }) => {
-        mixins.forEach((mixin) => {
-          const [usages, _] = extractMixinUsages(this.site, mixin);
-          usages.forEach((usage) => arrayRemove(usage.mixins, mixin));
-          arrayRemove(this.site.mixins, mixin);
-        });
-        return success();
+      {
+        deleteLabel: MIXIN_LOWER,
       }
     );
-
-    return true;
   }
 
-  async tryDeleteAnimationSequences(animationSequences: AnimationSequence[]) {
-    const animationSequencesUsages = animationSequences
-      .map((animSeq) => ({
-        usages: extractAnimationSequenceUsages(this.site, animSeq),
-        animationSequence: animSeq,
-      }))
-      .filter(({ usages }) => usages[0].size > 0);
-
-    if (animationSequencesUsages.length > 0) {
-      const confirmed = await deleteStudioElementConfirm(
-        `Deleting ${ANIMATION_SEQUENCES_LOWER}`,
-        animationSequencesUsages.map(({ animationSequence, usages }) => ({
-          element: animationSequence,
-          summary: usages[1],
-        })),
-        `Are you sure you want to delete it? Deleting the ${ANIMATION_SEQUENCES_LOWER} remove it from the usages above.`
-      );
-
-      if (!confirmed) {
-        return false;
-      }
+  async tryDeleteAnimationSequences(
+    animationSequences: AnimationSequence[],
+    opts?: {
+      behaviour?:
+        | "confirm-if-referenced"
+        | "delete-if-referenced"
+        | "error-if-referenced";
     }
+  ) {
+    const resourcesWithUsage = animationSequences.map((animSeq) => {
+      const [usages, summary] = extractAnimationSequenceUsages(
+        this.site,
+        animSeq
+      );
+      return {
+        resource: animSeq,
+        usageSummary: summary,
+        usageCount: usages.size,
+      };
+    });
 
-    await this.studioCtx.changeObserved(
-      () => {
-        return animationSequencesUsages.flatMap((animSeqUsage) => [
-          ...animSeqUsage.usages[1].components,
-          ...animSeqUsage.usages[1].frames.map((f) => f.container.component),
-        ]);
+    return deleteResourcesWithUsages(
+      this.studioCtx,
+      resourcesWithUsage,
+      (animSeq) => {
+        const [usages] = extractAnimationSequenceUsages(this.site, animSeq);
+        usages.forEach((usage) =>
+          removeWhere(usage.animations ?? [], (a) => a.sequence === animSeq)
+        );
+        arrayRemove(this.site.animationSequences, animSeq);
       },
-      ({ success }) => {
-        animationSequences.forEach((animationSequence) => {
-          const [usages, _] = extractAnimationSequenceUsages(
-            this.site,
-            animationSequence
-          );
-          usages.forEach((usage) =>
-            removeWhere(
-              usage.animations ?? [],
-              (a) => a.sequence === animationSequence
-            )
-          );
-          arrayRemove(this.site.animationSequences, animationSequence);
-        });
-        return success();
+      {
+        behaviour: opts?.behaviour,
+        deleteLabel: ANIMATION_SEQUENCES_LOWER,
       }
     );
-
-    return true;
   }
 
   async swapTokens(fromToken: StyleToken, toToken: StyleToken) {
@@ -1999,22 +1919,6 @@ export class SiteOps {
         return success();
       }
     );
-  }
-
-  // This method was created to be used from browser console whenever there is
-  // a broken project with missing base rule variant settings.
-  ensureAllBaseRuleVariantSettings() {
-    this.site.components
-      .filter((c) => isTplVariantable(c.tplTree))
-      .forEach((c) => {
-        flattenTpls(c.tplTree).forEach((tpl) => {
-          if (isTplVariantable(tpl)) {
-            tpl.vsettings.forEach((vs) => {
-              ensureBaseRuleVariantSetting(tpl, vs.variants, c.tplTree);
-            });
-          }
-        });
-      });
   }
 
   private getArenaByFrame(frame: ArenaFrame) {

@@ -26,8 +26,14 @@ import {
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { mkNameArg } from "@/wab/shared/core/lang";
-import { getResponsiveStrategy } from "@/wab/shared/core/sites";
-import { mkRuleSet } from "@/wab/shared/core/styles";
+import {
+  allAnimationSequences,
+  getResponsiveStrategy,
+} from "@/wab/shared/core/sites";
+import {
+  mkRuleSet,
+  tryGetAnimationSequenceUuidFromCssVar,
+} from "@/wab/shared/core/styles";
 import { AttrsSpec, TplTagType } from "@/wab/shared/core/tpls";
 import { camelCssPropsToKebab } from "@/wab/shared/css";
 import {
@@ -124,9 +130,7 @@ export async function htmlToTpl(
     tpls,
     finalize: (finalizeOpts) => {
       // Process Animation Sequences (keyframes)
-      wiAnimationSequenceToSiteAnimationSequence(animationSequences, {
-        site,
-      });
+      upsertAnimationSequences(animationSequences, { site });
 
       const owningComponent = finalizeOpts.component;
 
@@ -624,46 +628,64 @@ async function wiTreeToTpl(
   };
 }
 
-function wiAnimationSequenceToSiteAnimationSequence(
+/**
+ * Upsert WIAnimationSequences into the site. If a sequence with the same
+ * name already exists, its keyframes are replaced
+ * with the new ones. Otherwise a new AnimationSequence is created.
+ */
+export function upsertAnimationSequences(
   animationSequences: WIAnimationSequence[],
   opts: { site: Site }
-) {
+): AnimationSequence[] {
   const { site } = opts;
+  const result: AnimationSequence[] = [];
 
   for (const sequence of animationSequences) {
-    const sequenceVarName = toVarName(sequence.name);
+    const keyframes = sequence.keyframes.map(
+      (wiKeyframe) =>
+        new KeyFrame({
+          percentage: wiKeyframe.percentage,
+          // We will only utilize the safe styles here. We need to think about the unsafe styles since we don't have any
+          // better way to display them in MixinControls/AnimationSequenceControls. We can have a new custom style attribute section
+          // to store unsafe styles or arbitrary css. Since it doesn't exist yet.
+          rs: mkRuleSet({
+            values: camelCssPropsToKebab(wiKeyframe.safeStyles),
+          }),
+        })
+    );
 
+    const sequenceVarName = toVarName(sequence.name);
     const existingSequence = site.animationSequences.find(
       (existing) => toVarName(existing.name) === sequenceVarName
     );
 
-    // We will skip creating any existing sequence so that it doesn't pollute the list of animation sequences
-    // when user paste the same html multiple times.
     if (existingSequence) {
-      continue;
-    }
-
-    const keyframes = sequence.keyframes.map((wiKeyframe) => {
-      return new KeyFrame({
-        percentage: wiKeyframe.percentage,
-        // We will only utilize the safe styles here. We need to think about the unsafe styles since we don't have any
-        // better way to display them in MixinControls/AnimationSequenceControls. We can have a new custom style attribute section
-        // to store unsafe styles or arbitrary css. Since it doesn't exist yet.
-        rs: mkRuleSet({ values: camelCssPropsToKebab(wiKeyframe.safeStyles) }),
+      // Replace the keyframes on the existing sequence so any references
+      // to it (Animation.sequence on tpl RuleSets) keep pointing to the
+      // same AnimationSequence object.
+      existingSequence.keyframes = keyframes;
+      result.push(existingSequence);
+    } else {
+      const newSequence = new AnimationSequence({
+        name: sequence.name,
+        uuid: mkShortId(),
+        keyframes,
       });
-    });
-
-    const newSequence = new AnimationSequence({
-      name: sequence.name,
-      uuid: mkShortId(),
-      keyframes,
-    });
-
-    site.animationSequences.push(newSequence);
+      site.animationSequences.push(newSequence);
+      result.push(newSequence);
+    }
   }
+
+  return result;
 }
 
-function wiAnimationsToSiteAnimations(
+/**
+ * Resolve a list of CssAnimation entries (from parsed `animation`
+ * shorthand).
+ * CssAnimations whose name doesn't match any existing
+ * AnimationSequence are silently dropped.
+ */
+export function wiAnimationsToSiteAnimations(
   wiAnimations: CssAnimation[],
   opts: { site: Site }
 ) {
@@ -671,8 +693,14 @@ function wiAnimationsToSiteAnimations(
   const animations: Animation[] = [];
 
   for (const wiAnim of wiAnimations) {
-    const animationSequence = site.animationSequences.find(
-      (seq) => toVarName(seq.name) === toVarName(wiAnim.name)
+    const animSeqUuid = tryGetAnimationSequenceUuidFromCssVar(wiAnim.name);
+    const animationSequences = allAnimationSequences(site, {
+      includeDeps: "direct",
+    });
+    const animationSequence = animationSequences.find(
+      (seq) =>
+        seq.uuid === animSeqUuid ||
+        toVarName(seq.name) === toVarName(wiAnim.name)
     );
 
     if (!animationSequence) {

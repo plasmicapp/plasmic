@@ -182,7 +182,10 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
           const selectedAssets = studioCtx.site.imageAssets.filter((asset) => {
             return selectedAssetsIds.has(asset.uuid);
           });
-          return await studioCtx.siteOps().tryDeleteImageAssets(selectedAssets);
+          const result = await studioCtx
+            .siteOps()
+            .tryDeleteImageAssets(selectedAssets);
+          return result.deletedResources.length > 0;
         }}
       >
         <VirtualGroupedList

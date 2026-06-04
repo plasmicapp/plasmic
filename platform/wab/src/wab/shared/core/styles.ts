@@ -1054,6 +1054,19 @@ export function generateKeyframesRule(
   )} {\n${keyframeRules}\n}`;
 }
 
+const ANIM_CSS_VAR_REGEX = /^var\(--anim-([^)]+)\)$/;
+
+/**
+ * If `value` is a `var(--anim-<uuid>)` reference, return the uuid;
+ * otherwise return null.
+ */
+export function tryGetAnimationSequenceUuidFromCssVar(
+  value: string
+): string | null {
+  const match = value.match(ANIM_CSS_VAR_REGEX);
+  return match ? match[1] : null;
+}
+
 /**
  * Internal CSS variable that holds the keyframe identifier for a given
  * AnimationSequence. uuid-keyed used by Plasmic-generated `animation:` rules.

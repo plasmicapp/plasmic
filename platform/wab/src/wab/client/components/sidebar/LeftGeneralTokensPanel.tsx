@@ -499,7 +499,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           const selectedTokens = studioCtx.site.styleTokens.filter((t) =>
             selected.includes(t.uuid)
           );
-          return await studioCtx.siteOps().tryDeleteTokens(selectedTokens);
+          const result = await studioCtx
+            .siteOps()
+            .tryDeleteTokens(selectedTokens);
+          return result.deletedResources.length > 0;
         }}
       >
         <StyleTokenControlsContext.Provider

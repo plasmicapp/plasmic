@@ -144,7 +144,12 @@ export function parseCssAnimation(value: string): CssAnimation | null {
         iterationCount = identifierName;
       }
     } else if (node.type === "Function") {
-      // Timing functions like cubic-bezier() or steps() not supported yet.
+      // `var(--anim-<uuid>)` is the codegen form of an animation-name
+      // reference. Timing functions like cubic-bezier() / steps() are
+      // not supported yet, so other Function nodes are ignored.
+      if (node.name === "var" && !name) {
+        name = generate(node);
+      }
     } else if (isDimensionNode(node)) {
       const nodeValue = generate(node);
 

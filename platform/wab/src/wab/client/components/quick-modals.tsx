@@ -1,19 +1,11 @@
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
+import type { UsageSummary } from "@/wab/client/operations/delete-resources";
 import { zIndex } from "@/wab/client/z-index";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
-import type { AddItemKey } from "@/wab/shared/add-item-keys";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
-import type { DefaultStyle } from "@/wab/shared/core/styles";
-import type {
-  ArenaFrame,
-  Component,
-  Mixin,
-  StyleToken,
-  StyleTokenOverride,
-} from "@/wab/shared/model/classes";
 import { Form } from "antd";
 import { Rule } from "antd/lib/form";
 import React from "react";
@@ -310,16 +302,6 @@ export async function reactPrompt(opts: ReactPromptOpts) {
 
 interface StudioElement {
   name: string;
-}
-
-interface UsageSummary {
-  components?: Component[];
-  frames?: ArenaFrame[];
-  mixins?: Mixin[];
-  styleTokens?: StyleToken[];
-  styleTokenOverrides?: StyleTokenOverride[];
-  themes?: DefaultStyle[];
-  addItemPrefs?: AddItemKey[];
 }
 
 export async function deleteStudioElementConfirm(
