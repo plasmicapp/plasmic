@@ -7,6 +7,8 @@ import {
   PlasmicWorkspaceDataSources,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceDataSources";
 import { ApiDataSource, WorkspaceId } from "@/wab/shared/ApiSchema";
+import { AccessLevel } from "@/wab/shared/EntUtil";
+import { canEditDataSource } from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -17,6 +19,7 @@ export interface WorkspaceDataSourcesProps
   dataSources: ApiDataSource[];
   matcher: Matcher;
   readOnly: boolean;
+  workspaceAccessLevel: AccessLevel;
   onUpdate: () => Promise<void>;
 }
 
@@ -27,6 +30,7 @@ function WorkspaceDataSources_(
     dataSources,
     matcher,
     readOnly,
+    workspaceAccessLevel,
     onUpdate,
     ...props
   }: WorkspaceDataSourcesProps,
@@ -51,7 +55,13 @@ function WorkspaceDataSources_(
                   <DataSource
                     appCtx={appCtx}
                     source={source}
-                    readOnly={readOnly}
+                    readOnly={
+                      !canEditDataSource(
+                        source.ownerId,
+                        appCtx.selfInfo?.id,
+                        workspaceAccessLevel
+                      )
+                    }
                     matcher={matcher}
                     onClick={() => !readOnly && setIsEditing(source)}
                     onUpdate={onUpdate}
@@ -78,6 +88,14 @@ function WorkspaceDataSources_(
             workspaceId={workspaceId}
             key={isEditing === "new" ? "new" : isEditing?.id}
             onUpdate={onUpdate}
+            canEdit={
+              isEditing === "new" ||
+              canEditDataSource(
+                isEditing.ownerId,
+                appCtx.selfInfo?.id,
+                workspaceAccessLevel
+              )
+            }
           />
         )}
       </>

@@ -519,7 +519,7 @@ export async function getProjectAppMeta(req: Request, res: Response) {
       : undefined,
     roles: roles.map(mkApiAppRole),
     accesses: accesses.map(mkApiAppEndUserAccess),
-    dataSources: dataSources.map((ds) => mkApiDataSource(ds, ds.createdById!)),
+    dataSources: dataSources.map((ds) => mkApiDataSource(ds)),
   };
 
   res.json(meta);

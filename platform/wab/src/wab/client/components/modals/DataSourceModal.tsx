@@ -48,6 +48,7 @@ export interface DataSourceModalProps {
   onDone: () => void;
   dataSourceType?: DataSourceType;
   readOpsOnly?: boolean;
+  canEdit?: boolean;
 }
 
 const INTEGRATION_KEY = "/api/v1/auth/integrations";
@@ -150,6 +151,7 @@ export function DataSourceModal({
   onUpdate,
   dataSourceType,
   readOpsOnly,
+  canEdit,
 }: DataSourceModalProps) {
   const api = useApi();
   const [form] = Form.useForm<DataSourceFormData>();
@@ -177,10 +179,7 @@ export function DataSourceModal({
   const sourceMeta = selectedDataSourceType
     ? getDataSourceMeta(selectedDataSourceType)
     : undefined;
-  const isDisabled =
-    editingDataSource !== "new" &&
-    editingDataSource.ownerId !== undefined &&
-    appCtx.selfInfo?.id !== editingDataSource.ownerId;
+  const isDisabled = editingDataSource !== "new" && !canEdit;
 
   const hasOauthIntegration =
     sourceMeta !== undefined &&
@@ -325,7 +324,11 @@ export function DataSourceModal({
           className="mb-lg"
           type="info"
           showIcon={true}
-          message={<div>Only the owner of the integration can edit it</div>}
+          message={
+            <div>
+              Only the owner of the integration or a workspace owner can edit it
+            </div>
+          }
         />
       )}
       {sourceMeta?.id && DATA_SOURCE_MESSAGE[sourceMeta.id] && (

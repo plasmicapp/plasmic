@@ -242,6 +242,7 @@ import {
   SiteFeature,
   TaggedResourceId,
   TaggedResourceIds,
+  canEditDataSource,
   createTaggedResourceId,
   pluralizeResourceId,
 } from "@/wab/shared/perms";
@@ -6732,31 +6733,26 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
+  /**
+   * Checks that the current actor may edit/delete this data source. Data
+   * sources are special among workspace sub-resources because they can hold
+   * sensitive credentials like secret tokens, so we don't let just any
+   * workspace editor manage them: editing is allowed only for the
+   * creator/owner (as long as they retain at least editor access to the
+   * workspace) or a workspace owner. The actor's workspace access level
+   * already reflects the org/team -> workspace cascade (and grants SuperUser
+   * owner-level access), so this covers transferred org owners.
+   */
   async checkDataSourceEditPerms(dataSource: DataSource) {
-    const owner = dataSource.createdById;
+    const level = await this.getActorAccessLevelToWorkspace(
+      dataSource.workspaceId
+    );
+    const userId =
+      this.actor.type === "NormalUser" ? this.actor.userId : undefined;
     const actor = await this.describeActor();
-    if (this.actor.type === "SuperUser") {
-      return;
-    }
-
-    const canEdit = async () => {
-      if (this.actor.type === "SuperUser") {
-        return true;
-      } else if (this.actor.type === "AnonUser") {
-        return false;
-      } else if (this.actor.type === "NormalUser") {
-        return this.actor.userId === owner;
-      } else if (this.actor.type === "TeamApiUser") {
-        const workspace = await this.getWorkspaceById(dataSource.workspaceId);
-        return workspace.teamId === this.actor.teamId;
-      } else {
-        unreachable(this.actor);
-      }
-    };
-
     checkPermissions(
-      await canEdit(),
-      `${actor} tried to edit dataSource ${dataSource.id}, but they weren't owners.`
+      canEditDataSource(dataSource.createdById, userId, level),
+      `${actor} tried to edit dataSource ${dataSource.id}, but they aren't the owner with workspace editor access, nor a workspace owner.`
     );
   }
 
@@ -6853,11 +6849,6 @@ export class DbMgr implements MigrationDbMgr {
       `Data source ${id}`
     );
     await this.checkDataSourceEditPerms(dataSource);
-    await this.checkWorkspacePerms(
-      dataSource.workspaceId,
-      "editor",
-      "update data source"
-    );
     if (opts.name) {
       dataSource.name = opts.name;
     }
@@ -6891,11 +6882,6 @@ export class DbMgr implements MigrationDbMgr {
       `Data source ${id}`
     );
     await this.checkDataSourceEditPerms(dataSource);
-    await this.checkWorkspacePerms(
-      dataSource.workspaceId,
-      "editor",
-      "delete data source"
-    );
     Object.assign(dataSource, this.stampDelete());
     await this.dataSources().save(dataSource);
     return dataSource;

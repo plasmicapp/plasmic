@@ -21,7 +21,6 @@ import {
   ListDataSourceBasesResponse,
   ListDataSourcesResponse,
   ProjectId,
-  UserId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
 import { assert, ensureType, hackyCast } from "@/wab/shared/common";
@@ -37,12 +36,12 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { dropFakeDatabase } from "@/wab/shared/data-sources-meta/fake-meta";
 import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
+import { canEditDataSource } from "@/wab/shared/perms";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
 
 export function mkApiDataSource(
   dataSource: DataSource,
-  reqUserId?: UserId,
   excludeSettings?: boolean
 ): ApiDataSource {
   const meta = getDataSourceMeta(dataSource.source);
@@ -51,14 +50,13 @@ export function mkApiDataSource(
     name: dataSource.name,
     workspaceId: dataSource.workspaceId,
     source: dataSource.source,
-    settings:
-      !excludeSettings && dataSource.createdById === reqUserId
-        ? dataSource.settings
-        : Object.fromEntries(
-            Object.entries(dataSource.settings).filter(
-              ([key, _]) => meta.settings[key].public
-            )
-          ),
+    settings: !excludeSettings
+      ? dataSource.settings
+      : Object.fromEntries(
+          Object.entries(dataSource.settings).filter(
+            ([key, _]) => meta.settings[key].public
+          )
+        ),
     ownerId: dataSource.createdById ?? undefined,
   } as const;
 }
@@ -72,12 +70,19 @@ export async function listDataSources(req: Request, res: Response) {
     ? [await mgr.getWorkspaceById(maybeWorkspaceId)]
     : await mgr.getAffiliatedWorkspaces();
   const sources = await Promise.all(
-    workspaces.map(async (workspace) => ({
-      workspace: mkApiWorkspace(workspace),
-      dataSources: (
-        await mgr.getWorkspaceDataSources(workspace.id)
-      ).map((dataSource) => mkApiDataSource(dataSource, req.user!.id)),
-    }))
+    workspaces.map(async (workspace) => {
+      const dataSources = await mgr.getWorkspaceDataSources(workspace.id);
+      const accessLevel = await mgr.getActorAccessLevelToWorkspace(workspace.id);
+      return {
+        workspace: mkApiWorkspace(workspace),
+        dataSources: dataSources.map((dataSource) =>
+          mkApiDataSource(
+            dataSource,
+            !canEditDataSource(dataSource.createdById, req.user?.id, accessLevel)
+          )
+        ),
+      };
+    })
   );
   res.json(ensureType<ListDataSourcesResponse>(sources));
 }
@@ -111,9 +116,7 @@ export async function createDataSource(req: Request, res: Response) {
     source: fields.source,
     settings: fields.settings,
   });
-  res.json(
-    ensureType<ApiDataSource>(mkApiDataSource(dataSource, req.user!.id))
-  );
+  res.json(ensureType<ApiDataSource>(mkApiDataSource(dataSource)));
 }
 
 export async function testDataSourceConnection(req: Request, res: Response) {
@@ -204,9 +207,7 @@ export async function updateDataSource(req: Request, res: Response) {
   }
 
   dataSource = await mgr.updateDataSource(id, fields);
-  res.json(
-    ensureType<ApiDataSource>(mkApiDataSource(dataSource, req.user!.id))
-  );
+  res.json(ensureType<ApiDataSource>(mkApiDataSource(dataSource)));
 }
 
 export async function deleteDataSource(req: Request, res: Response) {
@@ -314,10 +315,16 @@ export async function getDataSourceById(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const dataSourceId = req.params.dataSourceId as WorkspaceId;
   const dataSource = await mgr.getDataSourceById(dataSourceId);
-  const excludeSettings = req.query.excludeSettings
+  const explicitExcludeSettings = req.query.excludeSettings
     ? (JSON.parse(req.query.excludeSettings as string) as boolean)
-    : undefined;
-  res.json(mkApiDataSource(dataSource, req.user!.id, excludeSettings));
+    : false;
+  const accessLevel = await mgr.getActorAccessLevelToWorkspace(
+    dataSource.workspaceId
+  );
+  const excludeSettings =
+    explicitExcludeSettings ||
+    !canEditDataSource(dataSource.createdById, req.user?.id, accessLevel);
+  res.json(mkApiDataSource(dataSource, excludeSettings));
 }
 
 // Data Source endpoint to fetch bases metadata

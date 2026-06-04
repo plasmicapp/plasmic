@@ -25,7 +25,6 @@ function DataSource_(
   { source, appCtx, onUpdate, matcher, ...props }: DataSourceProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const isOwner = appCtx.selfInfo && appCtx.selfInfo.id === source.ownerId;
   return (
     <MaybeWrap
       cond={!props.readOnly}
@@ -33,19 +32,16 @@ function DataSource_(
         <Dropdown
           overlay={() => (
             <Menu>
-              {isOwner && (
-                <Menu.Item
-                  onClick={async () => {
-                    await confirmDeleteDataSource(appCtx, source, onUpdate);
-                  }}
-                >
-                  Delete
-                </Menu.Item>
-              )}
-              {isOwner && (
-                <Menu.Item
-                  key="move"
-                  onClick={async () => {
+              <Menu.Item
+                onClick={async () => {
+                  await confirmDeleteDataSource(appCtx, source, onUpdate);
+                }}
+              >
+                Delete
+              </Menu.Item>
+              <Menu.Item
+                key="move"
+                onClick={async () => {
                     const response = await promptMoveToWorkspace(
                       appCtx,
                       null,
@@ -70,7 +66,6 @@ function DataSource_(
                 >
                   Move to workspace
                 </Menu.Item>
-              )}
             </Menu>
           )}
           trigger={["contextMenu"]}

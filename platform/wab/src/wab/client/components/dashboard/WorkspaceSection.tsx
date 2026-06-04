@@ -271,6 +271,7 @@ function WorkspaceSection_(
                 appCtx={appCtx}
                 dataSources={asyncData.value.dataSources}
                 readOnly={asyncData.value.readOnly}
+                workspaceAccessLevel={workspaceAccessLevel}
                 matcher={matcher}
                 onUpdate={async () => {
                   await fetchAsyncData();

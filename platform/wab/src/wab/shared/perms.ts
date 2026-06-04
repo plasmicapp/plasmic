@@ -91,6 +91,21 @@ export function convertToTaggedResourceId(
   return createTaggedResourceId(resource.type, resource.resource.id);
 }
 
+export function canEditDataSource(
+  dataSourceOwnerId: string | null | undefined,
+  userId: string | null | undefined,
+  workspaceAccessLevel: AccessLevel
+): boolean {
+  if (accessLevelRank(workspaceAccessLevel) >= accessLevelRank("owner")) {
+    return true;
+  }
+  return (
+    !!userId &&
+    dataSourceOwnerId === userId &&
+    accessLevelRank(workspaceAccessLevel) >= accessLevelRank("editor")
+  );
+}
+
 export function getAccessLevelToResource(
   resource: ApiResource,
   user: ApiUser | null,
