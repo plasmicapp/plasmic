@@ -1,5 +1,5 @@
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
-import { COPILOT_TOOLS } from "@/wab/client/copilot/tools";
+import { COPILOT_TOOLS } from "@/wab/client/copilot";
 import {
   CopilotToolCallResult,
   HostFrameApi,

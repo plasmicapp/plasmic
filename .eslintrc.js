@@ -21,6 +21,78 @@ const testFiles = [
   "**/__mocks__/**/*",
 ];
 
+const fs = require("fs");
+const path = require("path");
+
+// Find all files in the repo with overlays, e.g. `foo.external.ts` -> `foo.ts`.
+function findExternalOverlayTargets(root) {
+  const targets = [];
+  const walk = (dir) => {
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (entry.name.includes(".external.")) {
+        targets.push(path.relative(__dirname, full).replace(".external", ""));
+      }
+    }
+  };
+  walk(root);
+  return targets;
+}
+
+const internalFiles = ["**/enterprise/**", "**/internal/**", "**/*.internal*"];
+const overlayTargets = findExternalOverlayTargets(
+  path.join(__dirname, "platform/wab/src")
+);
+
+// Public synced files can't import enterprise/internal code.
+const noEnterpriseImportPattern = {
+  group: internalFiles,
+  message:
+    "This file is synced to the public repo and cannot import from enterprise/internal. " +
+    "Either move this file under `enterprise/`/`internal/`, or add an `.external` " +
+    "stub sibling to override it (see copy.bara.sky).",
+};
+
+// Shared by the top-level rule and the public-import guard override (which replaces it per-file).
+const restrictedImportPaths = [
+  {
+    name: "@plasmicapp/host",
+    importNames: ["registerComponent", "CodeComponentMeta"],
+    message: "Please import from @plasmicapp/host/registerComponent instead",
+  },
+  {
+    name: "antd",
+    importNames: ["Modal"],
+    message:
+      "Please use drop-in replacement src/wab/client/components/widgets/Modal.tsx instead",
+  },
+  {
+    name: "react-use",
+    importNames: ["useAsync", "useAsyncRetry", "useAsyncFn"],
+    message: "Please use useAsyncStrict()/useAsyncFnStrict() instead",
+  },
+  {
+    name: "react-use/lib/useAsync",
+    message: "Please use useAsyncStrict() instead",
+  },
+  {
+    name: "react-use/lib/useAsyncRetry",
+    message: "Please use useAsyncStrict() instead",
+  },
+  {
+    name: "react-use/lib/useAsyncFn",
+    message: "Please use useAsyncFnStrict() instead",
+  },
+];
+
 module.exports = {
   root: true,
   ignorePatterns: [
@@ -96,38 +168,7 @@ module.exports = {
           "Please use reactPrompt() instead; window.prompt() does not work well with app hosting",
       },
     ],
-    "no-restricted-imports": [
-      "error",
-      {
-        name: "@plasmicapp/host",
-        importNames: ["registerComponent", "CodeComponentMeta"],
-        message:
-          "Please import from @plasmicapp/host/registerComponent instead",
-      },
-      {
-        name: "antd",
-        importNames: ["Modal"],
-        message:
-          "Please use drop-in replacement src/wab/client/components/widgets/Modal.tsx instead",
-      },
-      {
-        name: "react-use",
-        importNames: ["useAsync", "useAsyncRetry", "useAsyncFn"],
-        message: "Please use useAsyncStrict()/useAsyncFnStrict() instead",
-      },
-      {
-        name: "react-use/lib/useAsync",
-        message: "Please use useAsyncStrict() instead",
-      },
-      {
-        name: "react-use/lib/useAsyncRetry",
-        message: "Please use useAsyncStrict() instead",
-      },
-      {
-        name: "react-use/lib/useAsyncFn",
-        message: "Please use useAsyncFnStrict() instead",
-      },
-    ],
+    "no-restricted-imports": ["error", { paths: restrictedImportPaths }],
     "no-restricted-syntax": [
       "warn",
       {
@@ -352,6 +393,21 @@ module.exports = {
                     allowTypeImports: true,
                   },
                 ],
+              },
+            ],
+          },
+        },
+        {
+          files: ["platform/wab/src/**/*.ts", "platform/wab/src/**/*.tsx"],
+          // Files allowed to import from internalFiles. Includes files which are overlay targets,
+          // since they are replaced in the public sync.
+          excludedFiles: [...testFiles, ...internalFiles, ...overlayTargets],
+          rules: {
+            "no-restricted-imports": [
+              "error",
+              {
+                paths: restrictedImportPaths,
+                patterns: [noEnterpriseImportPattern],
               },
             ],
           },
