@@ -13,6 +13,28 @@ import {
   getConnectionOptions,
 } from "typeorm";
 
+function getDatabaseUriForConnectionOptions(
+  dburi: string | ConnectionOptions
+): string | undefined {
+  if (typeof dburi === "string") {
+    return dburi;
+  }
+  return (dburi as ConnectionOptions & { url?: string }).url;
+}
+
+function existingConnectionMatches(
+  conn: Connection,
+  dburi: string | ConnectionOptions
+) {
+  const requestedUri = getDatabaseUriForConnectionOptions(dburi);
+  const existingUri = (conn.options as ConnectionOptions & { url?: string })
+    .url;
+  if (requestedUri && existingUri) {
+    return requestedUri === existingUri;
+  }
+  return true;
+}
+
 // Unused, just creating for the global side effect of having a connection
 // pool.  Contrary to the name, this actually sets up a pool of connections
 // that later getConnection() calls draw from.
@@ -34,8 +56,15 @@ export async function ensureDbConnection(
     try {
       const conn = connMgr.get(name);
       if (conn.isConnected) {
-        logger().info(`Reusing typeorm connection pool for ${name}`);
-        return conn;
+        if (!existingConnectionMatches(conn, dburi)) {
+          logger().info(
+            `Closing typeorm connection pool for ${name} because its database URI changed`
+          );
+          await conn.close();
+        } else {
+          logger().info(`Reusing typeorm connection pool for ${name}`);
+          return conn;
+        }
       }
     } catch (error: unknown) {
       logger().warn(error as any);
@@ -163,8 +192,15 @@ export async function maybeMigrateDatabase() {
 }
 
 async function closeConnection(name?: string) {
-  logger().info(`Closing typeorm connection pool for ${name}`);
+  const connMgr = getConnectionManager();
+  if (!connMgr.has(name ?? "default")) {
+    return;
+  }
   const conn = getConnection(name);
+  if (!conn.isConnected) {
+    return;
+  }
+  logger().info(`Closing typeorm connection pool for ${name}`);
   await conn.close();
 }
 
