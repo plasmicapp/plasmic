@@ -53,7 +53,7 @@ All designs must be responsive. Before generating HTML for a Page component, rea
 ```javascript
 async () => {
   return await window.PLASMIC_AI_TOOLS.read({
-    project: { screenBreakpoints: true },
+    projects: [{ projectId: "<currentProjectId>", screenBreakpoints: true }],
   });
 };
 ```

@@ -64,6 +64,11 @@ export interface WISVG extends WIBase {
 export interface WIComponent extends WIBase {
   type: "component";
   component: string;
+  /**
+   * Optional projectId of the source project dependency.
+   * When omitted, a local site will be used for lookup.
+   */
+  depProjectId?: string;
   props: Record<string, any>;
   slots: Record<string, WIElement[]>;
 }

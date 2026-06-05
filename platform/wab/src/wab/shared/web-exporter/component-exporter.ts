@@ -23,6 +23,7 @@ import {
   Component,
   Expr,
   RuleSet,
+  Site,
   TplComponent,
   TplNode,
   TplSlot,
@@ -41,6 +42,7 @@ import {
   isBoolType,
   isNumType,
 } from "@/wab/shared/model/model-util";
+import { serializePlasmicTplComponent } from "@/wab/shared/web-exporter/component-utils";
 import {
   XmlAttrs,
   XmlElement,
@@ -50,15 +52,15 @@ import {
 /**
  * Serializes a Tpl tree to indented XML format.
  */
-export function serializeTpl(tpl: TplNode): string {
-  return toXml(buildTplNode(tpl));
+export function serializeTpl(tpl: TplNode, opts: { site: Site }): string {
+  return toXml(buildTplNode(tpl, opts.site));
 }
 
-function buildTplNode(tpl: TplNode): XmlElement {
+function buildTplNode(tpl: TplNode, site: Site): XmlElement {
   return switchType(tpl)
-    .when(TplTag, (tag) => buildTplTag(tag))
-    .when(TplComponent, (comp) => buildTplComponent(comp))
-    .when(TplSlot, (slot) => buildTplSlot(slot))
+    .when(TplTag, (tag) => buildTplTag(tag, site))
+    .when(TplComponent, (comp) => buildTplComponent(comp, site))
+    .when(TplSlot, (slot) => buildTplSlot(slot, site))
     .result();
 }
 
@@ -170,7 +172,7 @@ function getStyleString(vs: VariantSetting, tpl: TplNode): string | undefined {
   return entries.map(([prop, value]) => `${prop}: ${value}`).join("; ");
 }
 
-function buildTplTag(tpl: TplTag): XmlElement {
+function buildTplTag(tpl: TplTag, site: Site): XmlElement {
   const vs = tryGetBaseVariantSetting(tpl);
   assert(vs, "base variant settings must exists");
 
@@ -205,25 +207,18 @@ function buildTplTag(tpl: TplTag): XmlElement {
   }
 
   // Build children
-  const children = tplChildren(tpl).map((child) => buildTplNode(child));
+  const children = tplChildren(tpl).map((child) => buildTplNode(child, site));
 
   return { [tpl.tag]: [{ _attr: attrs }, ...children] };
 }
 
-function buildTplComponent(tpl: TplComponent): XmlElement {
+function buildTplComponent(tpl: TplComponent, site: Site): XmlElement {
   const component = tpl.component;
 
   const vs = tryGetBaseVariantSetting(tpl);
   assert(vs, "base variant settings must exists");
 
-  const attrs: XmlAttrs = {
-    id: tpl.uuid,
-    "data-plasmic-component": toVarName(component.name),
-  };
-
-  if (tpl.name) {
-    attrs["data-plasmic-name"] = tpl.name;
-  }
+  const attrs: XmlAttrs = serializePlasmicTplComponent(site, tpl);
 
   // Collect regular props and variant-group activations into a JSON object.
   // Variant-group activations are stored on vs.args as Args whose expr is a
@@ -278,7 +273,7 @@ function buildTplComponent(tpl: TplComponent): XmlElement {
       const param = arg.param;
       if (isSlot(param) && isKnownRenderExpr(arg.expr)) {
         const slotName = paramToVarName(component, param);
-        const children = arg.expr.tpl.map((child) => buildTplNode(child));
+        const children = arg.expr.tpl.map((child) => buildTplNode(child, site));
         slotElements.push({
           slot: [{ _attr: { name: slotName } }, ...children],
         });
@@ -289,13 +284,13 @@ function buildTplComponent(tpl: TplComponent): XmlElement {
   return { "plasmic-component": [{ _attr: attrs }, ...slotElements] };
 }
 
-function buildTplSlot(tpl: TplSlot): XmlElement {
+function buildTplSlot(tpl: TplSlot, site: Site): XmlElement {
   const attrs: XmlAttrs = {
     name: tpl.param.variable.name,
     id: tpl.uuid,
   };
 
-  const children = tplChildren(tpl).map((child) => buildTplNode(child));
+  const children = tplChildren(tpl).map((child) => buildTplNode(child, site));
 
   return { "slot-target": [{ _attr: attrs }, ...children] };
 }
@@ -552,7 +547,10 @@ function buildComponentVariants(component: Component): XmlElement | null {
  *   </VariantSettings>
  * </component>
  */
-export function serializeComponent(component: Component): string {
+export function serializeComponent(
+  component: Component,
+  opts: { site: Site }
+): string {
   const children: XmlElement[] = [
     { _attr: { name: component.name, uuid: component.uuid } },
     { props: buildComponentProps(component) },
@@ -561,7 +559,7 @@ export function serializeComponent(component: Component): string {
 
   if (component.tplTree) {
     children.push({
-      "base-variant-tpl-tree": [buildTplNode(component.tplTree)],
+      "base-variant-tpl-tree": [buildTplNode(component.tplTree, opts.site)],
     });
   } else {
     children.push({ "base-variant-tpl-tree": "" });

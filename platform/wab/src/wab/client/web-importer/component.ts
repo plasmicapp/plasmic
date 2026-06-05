@@ -17,6 +17,7 @@ import { fixJson } from "@/wab/shared/copilot/fix-json";
  * </plasmic-component>
  *
  * - data-plasmic-component: identifies which component to instantiate (case-sensitive, must exactly match component name)
+ * - data-plasmic-project: optional, the projectId of the imported project dependency the component comes from.
  * - data-plasmic-name: optional, names the TplComponent instance in the element tree
  * - data-props: JSON-stringified object of all component props. Using a single attribute
  *   preserves camelCase prop names (individual data-prop-* attributes get lowercased by DOMParser).
@@ -44,6 +45,8 @@ export function parseComponent(
   if (!componentName) {
     return null;
   }
+
+  const depProjectId = attrs["data-plasmic-project"] || undefined;
 
   const slots: Record<string, WIElement[]> = {};
 
@@ -84,6 +87,7 @@ export function parseComponent(
     type: "component",
     tag,
     component: componentName,
+    ...(depProjectId ? { depProjectId } : {}),
     props,
     slots,
     attrs,

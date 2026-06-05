@@ -14,7 +14,7 @@ describe("Component Serialization", () => {
   it("serialize all components into text representation for prompt", () => {
     const output: Record<string, string> = {};
     for (const component of site.components) {
-      output[component.name] = serializeComponent(component);
+      output[component.name] = serializeComponent(component, { site });
     }
     expect(output).toMatchSnapshot();
   });
@@ -38,7 +38,7 @@ describe("Component Serialization", () => {
     vs.attrs["aria-label"] = codeLit("Hover label");
     vs.attrs.id = codeLit("html-id");
 
-    const output = serializeComponent(component);
+    const output = serializeComponent(component, { site });
     expect(output).toContain(`<button id="${tpl.uuid}" title="Base">`);
     expect(output).toContain(`<Attrs>{"aria-label":"Hover label"}</Attrs>`);
     expect(output).not.toContain(`html-id`);

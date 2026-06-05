@@ -1,7 +1,6 @@
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
-import { allAnimationSequences } from "@/wab/shared/core/sites";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
 import { FinalToken } from "@/wab/shared/core/tokens";
 import { parseScreenSpec } from "@/wab/shared/css-size";
@@ -21,19 +20,22 @@ import {
  * Serialize project-level information to XML based on the requested filters.
  *
  * @param site - The Site model.
- * @param opts - Boolean filters for which sections to include.
+ * @param opts - The project's id plus boolean filters for which sections to
+ *   include.
  */
 export function serializeProject(
   site: Site,
   opts: {
+    projectId: string;
     components?: boolean;
     screenBreakpoints?: boolean;
     globalVariants?: boolean;
     tokens?: boolean;
     animations?: boolean;
+    importedProjects?: boolean;
   }
 ): string {
-  const projectChildren: XmlObject[] = [];
+  const projectChildren: XmlObject[] = [{ _attr: { id: opts.projectId } }];
 
   if (opts.components) {
     const components = site.components.map((comp) => {
@@ -97,11 +99,22 @@ export function serializeProject(
   }
 
   if (opts.animations) {
-    const sequences = allAnimationSequences(site, { includeDeps: "direct" });
-    const animationElements = sequences.map((sequence) => ({
+    const animationElements = site.animationSequences.map((sequence) => ({
       animation: { _attr: { name: sequence.name, uuid: sequence.uuid } },
     }));
     projectChildren.push({ animations: animationElements });
+  }
+
+  if (opts.importedProjects) {
+    for (const dep of site.projectDependencies) {
+      projectChildren.push({
+        "imported-project": [
+          { _attr: { id: dep.projectId } },
+          { name: dep.name },
+          { version: dep.version },
+        ],
+      });
+    }
   }
 
   return toXml({ project: projectChildren });
@@ -171,6 +184,7 @@ export function serializeAnimationSequence(
 export function serializeInvalidResource(
   uuid: string,
   type:
+    | "project"
     | "component"
     | "token"
     | "tpl"

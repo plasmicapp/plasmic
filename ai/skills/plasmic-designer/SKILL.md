@@ -3,12 +3,12 @@ name: plasmic-designer
 description: Build and modify Plasmic Studio designs using copilot tools via Chrome DevTools MCP. First argument should be a project ID, followed by the design request. Use this skill whenever the user mentions Plasmic, Plasmic Studio, visual web builder, or asks to design, build, edit, or modify UI components, pages, sections, or layouts inside a Plasmic project. Also trigger when the user references a Plasmic project ID, wants to add/remove/restyle elements in a visual editor, or asks about Plasmic component props, variants, slots, or tokens — even if they don't say "Plasmic" explicitly but describe visual design work that implies it.
 allowed-tools: mcp__chrome-devtools__evaluate_script mcp__chrome-devtools__navigate_page mcp__chrome-devtools__take_screenshot mcp__chrome-devtools__list_pages
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Plasmic Designer
 
-Skill Version: 1.0.0
+Skill Version: 1.0.1
 
 Control Plasmic Studio through Chrome DevTools MCP to build and modify production-ready interfaces.
 
@@ -81,15 +81,26 @@ Check `success` on every call. On failure, read the error message — common cau
 ### read — Inspect project data
 
 ```javascript
-// Read all components and tokens
+// Read all components and tokens for the current project
 async () => {
   return await window.PLASMIC_AI_TOOLS.read({
-    project: {
-      components: true,
-      tokens: true,
-      screenBreakpoints: true,
-      globalVariants: true,
-    },
+    projects: [
+      {
+        projectId: "<currentProjectId>",
+        components: true,
+        tokens: true,
+        screenBreakpoints: true,
+        globalVariants: true,
+        importedProjects: true,
+      },
+    ],
+  });
+};
+
+// Read components from an imported project (use its id from a prior read)
+async () => {
+  return await window.PLASMIC_AI_TOOLS.read({
+    projects: [{ projectId: "<importedProjectId>", components: true }],
   });
 };
 
@@ -184,7 +195,9 @@ To use a component in insertHtml:
 
 ```html
 <plasmic-component
-  data-plasmic-name="ComponentName"
+  data-plasmic-component="ComponentName"
+  data-plasmic-project="importedProjectId"
+  data-plasmic-name="primaryCta"
   data-props='{"propName":"value","variantGroup":"optionName"}'
   style="margin: 16px;"
 >
@@ -192,7 +205,9 @@ To use a component in insertHtml:
 </plasmic-component>
 ```
 
-- `data-plasmic-name` must exactly match the component name from `read()` (case-sensitive).
+- `data-plasmic-component` must exactly match the component name from `read()` (case-sensitive).
+- `data-plasmic-project` (optional) is the id of the imported project the component comes from. Omit it for components in the current project; set it to use a component from an imported project.
+- `data-plasmic-name` (optional) names this component instance in the tree. It's a semantic name picked up by Plasmic codegen to override the element in the generated code.
 - `data-props` is a JSON object for both props and variant activations. Boolean variants: `"group": true`. Enum variants: `"group": "optionName"`.
 - `slot="slotName"` on direct children fills a named slot.
 - **Only layout/position styles work on instances**: width, height, min/max sizing, margin, position, top/left/bottom/right, z-index, order, align-self, flex-grow/shrink, opacity, display (only `none`), transform, and transition properties. Background, padding, color, font, border, etc. are ignored on instances — use `changeElement` on the component's root element instead. This is a Plasmic platform constraint, not a preference.
@@ -203,7 +218,7 @@ Before generating HTML, read `references/html-constraints.md` for the full set o
 
 - Use `<style>` blocks with BEM-style class names instead of inline styles.
 - Use flex layout exclusively (Plasmic does not support CSS Grid).
-- Include `@media` queries for responsive breakpoints — read the project's breakpoints with `read({ project: { screenBreakpoints: true } })` first.
+- Include `@media` queries for responsive breakpoints — read the project's breakpoints with `read({ projects: [{ projectId: "<currentProjectId>", screenBreakpoints: true }] })` first.
 - Use Google Fonts (single name, no fallback lists).
 - Use inline SVG for icons, `https://placehold.co` for placeholder images.
 - No JavaScript, no vendor prefixes, no `data:image/svg+xml`, no `currentColor`, no `:root`.

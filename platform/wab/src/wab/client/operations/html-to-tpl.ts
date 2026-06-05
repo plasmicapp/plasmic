@@ -16,6 +16,7 @@ import {
   WIStyleVariant,
   WIVariant,
 } from "@/wab/client/web-importer/types";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import {
@@ -78,6 +79,7 @@ import {
   VariantGroupType,
 } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { deserializePlasmicComponentAttrs } from "@/wab/shared/web-exporter/component-utils";
 import L, { isArray, isObject } from "lodash";
 
 export interface HtmlToTplResult {
@@ -218,6 +220,7 @@ export const htmlAttrsIgnoredByTpl = new Set([
   "style", // RuleSet styles (split to safe/unsafe)
   "data-plasmic-name", // Tpl name
   "data-plasmic-component", // Plasmic metadata
+  "data-plasmic-project", // Plasmic metadata (imported-project disambiguation)
   "data-props", // Plasmic metadata
   "slot", // Plasmic slot
   "src", // image asset
@@ -519,11 +522,16 @@ async function wiTreeToTpl(
 
     if (node.type === "component") {
       const componentName = node.component;
-      const component = site.components.find(
-        (c) => toVarName(c.name) === toVarName(componentName)
-      );
+      const component = deserializePlasmicComponentAttrs(site, {
+        "data-plasmic-component": componentName,
+        "data-plasmic-project": node.depProjectId as ProjectId | undefined,
+      });
       if (!component) {
-        throw new Error(`Component not found with name ${componentName}`);
+        throw new Error(
+          node.depProjectId
+            ? `Component "${componentName}" not found in imported project "${node.depProjectId}"`
+            : `Component not found with name ${componentName}`
+        );
       }
 
       // Build args from props and slots

@@ -3721,6 +3721,23 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
           },
           {
             "attrs": {
+              "data-plasmic-component": "Alert",
+              "data-plasmic-project": "testDepProject123",
+              "data-props": "{"message":"From dependency","type":"info"}",
+            },
+            "component": "Alert",
+            "depProjectId": "testDepProject123",
+            "props": {
+              "message": "From dependency",
+              "type": "info",
+            },
+            "slots": {},
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "attrs": {
               "class": "hero-section",
             },
             "children": [
