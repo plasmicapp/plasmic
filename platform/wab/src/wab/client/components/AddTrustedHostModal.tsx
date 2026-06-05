@@ -3,7 +3,6 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import { Modal } from "@/wab/client/components/widgets/Modal";
-import { spawn, swallow } from "@/wab/shared/common";
 import React from "react";
 
 interface HostConfigProps {
@@ -17,13 +16,6 @@ export function AddTrustedHostModal({
   onCancel,
   onUpdate,
 }: HostConfigProps) {
-  const [draft, setDraft] = React.useState("");
-  const [protocol, setProtocol] = React.useState("https://");
-  const draftUrl = protocol + (draft || "").trim();
-
-  const invalidInput =
-    !swallow(() => draft && new URL(draftUrl)) || draftUrl?.includes(" ");
-
   return (
     <Modal
       title={"Add trusted host"}
@@ -40,41 +32,11 @@ export function AddTrustedHostModal({
       .
       <HostUrlInput
         className="mv-xlg"
-        hostProtocolSelect={{
-          onChange: (val) => {
-            if (val) {
-              setProtocol(val);
-            }
-          },
+        originOnly
+        onConfirm={async (_url, parsedUrl) => {
+          await appCtx.api.addTrustedHost(parsedUrl.origin);
+          onUpdate();
         }}
-        urlInput={{
-          props: {
-            value: draft || "",
-            onChange: (e) => setDraft(e.currentTarget.value ?? ""),
-          },
-        }}
-        confirmButton={{
-          props: {
-            onClick: () =>
-              !invalidInput &&
-              spawn(appCtx.api.addTrustedHost(draftUrl).then(() => onUpdate())),
-            disabled: invalidInput,
-          },
-        }}
-        clearButton={{
-          render: () => null,
-        }}
-        showPlasmicHostValidations={true}
-        urlValidationStatus={
-          !draft ? undefined : invalidInput ? "invalid" : "valid"
-        }
-        urlPathStatus={
-          !draft
-            ? undefined
-            : draftUrl.endsWith("/plasmic-host")
-            ? "standard"
-            : "nonStandard"
-        }
       />
       Remember to only add domains you trust.
     </Modal>

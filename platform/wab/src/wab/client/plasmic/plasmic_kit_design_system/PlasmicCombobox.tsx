@@ -185,7 +185,8 @@ function PlasmicCombobox__RenderFunc(props: {
         path: "textInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props["defaultValue"],
       },
     ],
     [$props, $ctx, $refs]
@@ -295,6 +296,7 @@ function PlasmicCombobox__RenderFunc(props: {
           }}
           padded={[]}
           placeholder={args.placeholder}
+          value={generateStateValueProp($state, ["textInput", "value"])}
         />
 
         <BaseButton

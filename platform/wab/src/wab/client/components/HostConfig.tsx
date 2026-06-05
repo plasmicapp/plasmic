@@ -8,7 +8,7 @@ import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ApiBranch, ApiProject, MainBranchId } from "@/wab/shared/ApiSchema";
-import { ensure, spawnWrapper, swallow } from "@/wab/shared/common";
+import { ensure } from "@/wab/shared/common";
 import React from "react";
 
 interface HostConfigProps {
@@ -26,9 +26,7 @@ export function HostConfig({
   onUpdate,
   isRefreshingProjectData,
 }: HostConfigProps) {
-  const [currentUrl, setCurrentUrl] = React.useState<string | null>(null);
-  const [currentUrlWithoutProtocol, setCurrentUrlWithoutProtocol] =
-    React.useState<string | null>(null);
+  const [currentUrl, setCurrentUrl] = React.useState<string>();
   const parsedLocation = parseProjectLocation(appCtx.history.location);
   const team = appCtx.getAllTeams().find((t) => t.id === project.teamId);
   const showBranching =
@@ -40,18 +38,8 @@ export function HostConfig({
   const [branchName, setBranchName] = React.useState<string | MainBranchId>(
     !showBranching ? MainBranchId : parsedLocation?.branchName || MainBranchId
   );
-  const [draft, setDraft] = React.useState<string | null>(
-    currentUrlWithoutProtocol
-  );
-  const [protocol, setProtocol] = React.useState("https://");
   const [reloadDataCounter, setReloadDataCounter] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
-  const draftUrl = protocol + (draft || "").trim();
-
-  const invalidInput =
-    !swallow(() => draft && new URL(draftUrl)) || draftUrl?.includes(" ");
-
-  const isDisabled = invalidInput || draftUrl === currentUrl?.trim();
 
   const branchData = useAsyncStrict(
     async () =>
@@ -62,27 +50,19 @@ export function HostConfig({
   );
 
   React.useEffect(() => {
-    const handleCurrentHostUrl = (hostUrl: string | null) => {
-      const hostProtocol =
-        (hostUrl && new URL(hostUrl).protocol + "//") ?? "https://";
-      setProtocol(hostProtocol);
-      const hostUrlWithoutProtocol =
-        hostUrl?.substring(hostProtocol.length) ?? null;
-      setCurrentUrlWithoutProtocol(hostUrlWithoutProtocol);
-      setDraft(hostUrlWithoutProtocol);
-      setCurrentUrl(hostUrl);
-    };
     if (isRefreshingProjectData) {
       return;
     }
+
+    let hostUrl = project.hostUrl;
     if (branchName && branchName !== MainBranchId && branchData.value) {
       const branch = branchData.value.find((b) => b.name === branchName);
       if (branch) {
-        handleCurrentHostUrl(branch.hostUrl);
-        return;
+        hostUrl = branch.hostUrl;
       }
     }
-    handleCurrentHostUrl(project.hostUrl);
+
+    setCurrentUrl(hostUrl || undefined);
   }, [branchData.value, branchName, project.hostUrl, isRefreshingProjectData]);
 
   const doUpdateUrl = async (
@@ -162,72 +142,17 @@ export function HostConfig({
             )}
             <HostUrlInput
               className="mv-xlg"
-              hostProtocolSelect={{
-                key: protocol,
-                value: protocol,
-                onChange: (newVal) => {
-                  setProtocol(newVal!);
-                },
+              inputTestId="host-url-input"
+              defaultUrl={currentUrl}
+              confirmDisabled={isLoading || isRefreshingProjectData}
+              onConfirm={async (url, parsedUrl) => {
+                await doUpdateUrl(branches, url);
+                await appCtx.api.addTrustedHost(parsedUrl.origin);
               }}
-              urlInput={{
-                props: {
-                  "data-test-id": "host-url-input",
-                  value: draft || "",
-                  onChange: (e) => {
-                    let value = e.currentTarget.value || null;
-                    ["http://", "https://"].forEach((p) => {
-                      if (value && value.startsWith(p)) {
-                        value = value.substring(p.length);
-                        setProtocol(p);
-                      }
-                    });
-                    setDraft(value);
-                  },
-                  ...(currentUrlWithoutProtocol
-                    ? { placeholder: currentUrlWithoutProtocol }
-                    : {}),
-                },
+              onClear={async () => {
+                await doUpdateUrl(branches, null);
               }}
-              showPlasmicHostValidations={true}
-              urlValidationStatus={
-                !draft ? undefined : invalidInput ? "invalid" : "valid"
-              }
-              urlPathStatus={
-                !draft
-                  ? undefined
-                  : draftUrl.endsWith("/plasmic-host")
-                  ? "standard"
-                  : "nonStandard"
-              }
-              confirmButton={
-                !isLoading && !isRefreshingProjectData
-                  ? {
-                      props: {
-                        onClick: spawnWrapper(async () => {
-                          if (isDisabled) {
-                            return;
-                          }
-                          const domain = new URL(
-                            ensure(draftUrl, "Unexpected URL")
-                          ).origin;
-                          await doUpdateUrl(branches, draftUrl);
-                          await appCtx.api.addTrustedHost(domain);
-                        }),
-                        disabled: isDisabled,
-                      },
-                    }
-                  : { props: { children: "Loading", disabled: true } }
-              }
-              clearButton={{
-                onClick: spawnWrapper(async () => {
-                  if (!currentUrl) {
-                    return;
-                  }
-                  await doUpdateUrl(branches, null);
-                  setDraft(null);
-                }),
-                disabled: !currentUrl || isLoading,
-              }}
+              clearDisabled={!currentUrl || isLoading}
             />
             Remember to only use trusted hosts for your projects.
           </>

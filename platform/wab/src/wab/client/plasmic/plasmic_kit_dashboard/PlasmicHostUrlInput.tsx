@@ -19,7 +19,6 @@ import {
   deriveRenderOpts,
   Flex as Flex__,
   generateStateOnChangeProp,
-  generateStateValueProp,
   hasVariant,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
@@ -28,8 +27,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import HostProtocolSelect from "../../components/HostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/component
-import HostProtocolSelect__Option from "../../components/HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
+import TextInput from "../../components/plexus/TextInput"; // plasmic-import: J_e2eE41048e/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
@@ -68,8 +66,7 @@ export const PlasmicHostUrlInput__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicHostUrlInput__OverridesType = {
   root?: Flex__<"div">;
-  hostProtocolSelect?: Flex__<typeof HostProtocolSelect>;
-  urlInput?: Flex__<"input">;
+  urlInput?: Flex__<typeof TextInput>;
   clearButton?: Flex__<typeof Button>;
   confirmButton?: Flex__<typeof Button>;
 };
@@ -114,18 +111,6 @@ function PlasmicHostUrlInput__RenderFunc(props: {
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
-        path: "hostProtocolSelect.value",
-        type: "private",
-        variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "https://",
-      },
-      {
-        path: "urlInput.value",
-        type: "private",
-        variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
-      {
         path: "urlValidationStatus",
         type: "private",
         variableType: "variant",
@@ -145,6 +130,12 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showPlasmicHostValidations,
+      },
+      {
+        path: "urlInput.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
@@ -224,17 +215,14 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         >
           {"URL:"}
         </div>
-        <HostProtocolSelect
-          data-plasmic-name={"hostProtocolSelect"}
-          data-plasmic-override={overrides.hostProtocolSelect}
-          className={classNames("__wab_instance", sty.hostProtocolSelect)}
+        <TextInput
+          data-plasmic-name={"urlInput"}
+          data-plasmic-override={overrides.urlInput}
           onChange={async (...eventArgs: any) => {
-            ((...eventArgs) => {
-              generateStateOnChangeProp($state, [
-                "hostProtocolSelect",
-                "value",
-              ])(eventArgs[0]);
-            }).apply(null, eventArgs);
+            generateStateOnChangeProp($state, ["urlInput", "value"]).apply(
+              null,
+              eventArgs
+            );
 
             if (
               eventArgs.length > 1 &&
@@ -244,56 +232,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
               return;
             }
           }}
-          placeholder={"Select\u2026"}
-          value={generateStateValueProp($state, [
-            "hostProtocolSelect",
-            "value",
-          ])}
-        >
-          <HostProtocolSelect__Option
-            className={classNames("__wab_instance", sty.option__jSgyS)}
-            textValue={"https://"}
-            value={"https://"}
-          >
-            {"https://"}
-          </HostProtocolSelect__Option>
-          <HostProtocolSelect__Option
-            className={classNames("__wab_instance", sty.option__nopaD)}
-            textValue={"http://"}
-            value={"http://"}
-          >
-            {"http://"}
-          </HostProtocolSelect__Option>
-        </HostProtocolSelect>
-        <input
-          data-plasmic-name={"urlInput"}
-          data-plasmic-override={overrides.urlInput}
-          className={classNames("all", "input", "input__ooL7E", sty.urlInput, {
-            [sty.urlInputurlValidationStatus_invalid]: hasVariant(
-              $state,
-              "urlValidationStatus",
-              "invalid"
-            ),
-            [sty.urlInputurlValidationStatus_valid]: hasVariant(
-              $state,
-              "urlValidationStatus",
-              "valid"
-            ),
-          })}
-          onChange={async (...eventArgs: any) => {
-            ((e) => {
-              generateStateOnChangeProp($state, ["urlInput", "value"])(
-                e.target.value
-              );
-            }).apply(null, eventArgs);
-          }}
-          placeholder={"my-app.com/plasmic-host"}
-          ref={(ref) => {
-            $refs["urlInput"] = ref;
-          }}
-          size={1}
-          type={"text"}
-          value={generateStateValueProp($state, ["urlInput", "value"]) ?? ""}
+          placeholder={"https://my-app.com/plasmic-host"}
         />
 
         <Button
@@ -397,6 +336,12 @@ function PlasmicHostUrlInput__RenderFunc(props: {
                 "urlValidationStatus",
                 "invalid"
               ),
+              [sty.texturlValidationStatus_invalid_showPlasmicHostValidations__dSWcvmYfFIDwTg]:
+                hasVariant(
+                  $state,
+                  "showPlasmicHostValidations",
+                  "showPlasmicHostValidations"
+                ) && hasVariant($state, "urlValidationStatus", "invalid"),
               [sty.texturlValidationStatus_valid__dSWc0YpMn]: hasVariant(
                 $state,
                 "urlValidationStatus",
@@ -404,7 +349,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
               ),
             })}
           >
-            {"Please enter a valid URL. Note that spaces are not allowed."}
+            {"Please enter a valid URL."}
           </div>
         </div>
         <div
@@ -477,14 +422,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: [
-    "root",
-    "hostProtocolSelect",
-    "urlInput",
-    "clearButton",
-    "confirmButton",
-  ],
-  hostProtocolSelect: ["hostProtocolSelect"],
+  root: ["root", "urlInput", "clearButton", "confirmButton"],
   urlInput: ["urlInput"],
   clearButton: ["clearButton"],
   confirmButton: ["confirmButton"],
@@ -494,8 +432,7 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  hostProtocolSelect: typeof HostProtocolSelect;
-  urlInput: "input";
+  urlInput: typeof TextInput;
   clearButton: typeof Button;
   confirmButton: typeof Button;
 };
@@ -511,7 +448,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicHostUrlInput__VariantsArgs;
     args?: PlasmicHostUrlInput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicHostUrlInput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicHostUrlInput__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicHostUrlInput__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -560,7 +498,6 @@ export const PlasmicHostUrlInput = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    hostProtocolSelect: makeNodeComponent("hostProtocolSelect"),
     urlInput: makeNodeComponent("urlInput"),
     clearButton: makeNodeComponent("clearButton"),
     confirmButton: makeNodeComponent("confirmButton"),

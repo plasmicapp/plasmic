@@ -62,6 +62,7 @@ export const PlasmicTextInput__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicTextInput__ArgsType = {
   placeholder?: string;
+  value?: string;
   defaultValue?: string;
   disabled?: boolean;
   readOnly?: boolean;
@@ -142,6 +143,7 @@ export type PlasmicTextInput__ArgsType = {
 type ArgPropType = keyof PlasmicTextInput__ArgsType;
 export const PlasmicTextInput__ArgProps = new Array<ArgPropType>(
   "placeholder",
+  "value",
   "defaultValue",
   "disabled",
   "readOnly",
@@ -159,6 +161,7 @@ export type PlasmicTextInput__OverridesType = {
 
 export interface DefaultTextInputProps {
   placeholder?: string;
+  value?: string;
   defaultValue?: string;
   disabled?: boolean;
   readOnly?: boolean;
@@ -275,11 +278,10 @@ function PlasmicTextInput__RenderFunc(props: {
     () => [
       {
         path: "ariaInput.value",
-        type: "readonly",
+        type: "writable",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props["defaultValue"],
 
+        valueProp: "value",
         onChangeProp: "onChange",
 
         onMutate: generateOnMutateForSpec("value", BaseInput_Helpers),

@@ -29,7 +29,7 @@ import {
   MainBranchId,
   ProjectId,
 } from "@/wab/shared/ApiSchema";
-import { maybeOne, spawn, swallow } from "@/wab/shared/common";
+import { maybeOne, spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
@@ -61,7 +61,6 @@ export function StudioFrame({
   const [branch, setBranch] = React.useState<ApiBranch>();
   const [editorPerm, setEditorPerm] = React.useState(false);
   const [untrustedHost, setUntrustedHost] = React.useState(false);
-  const [draft, setDraft] = React.useState("");
   const [perms, setPerms] = React.useState<ApiPermission[]>([]);
   const [fetchProjectCount, setFetchProjectCount] = React.useState(0);
   const [isRefreshingProjectData, setIsRefreshingProjectData] =
@@ -225,13 +224,8 @@ export function StudioFrame({
 
   if (untrustedHost) {
     const hostOrigin = src.origin;
-    const hostProtocol = src.protocol + "//";
-    const hostDomainWithoutProtocol = hostOrigin.substr(hostProtocol.length);
-    const draftContainsOrigin =
-      swallow(() => new URL(hostProtocol + draft))?.origin === hostOrigin ||
-      swallow(() => new URL(draft))?.origin === hostOrigin;
     return (
-      <Modal visible footer={null} title="Project is hosted by another app">
+      <Modal open footer={null} title="Project is hosted by another app">
         The project {project.name} is <i>app-hosted</i>. This means it's running
         a third-party app that can show anything on screen, including the
         Plasmic login screen. Only open projects that are hosted by domains you
@@ -249,39 +243,14 @@ export function StudioFrame({
         .
         <HostUrlInput
           className="mv-xlg"
-          hostProtocolSelect={{
-            isDisabled: true,
-            value: hostProtocol,
-          }}
-          urlInput={{
-            props: {
-              value: draft || "",
-              onChange: (e) => setDraft(e.currentTarget.value ?? ""),
-              placeholder: hostDomainWithoutProtocol,
-            },
-          }}
-          confirmButton={{
-            props: {
-              onClick: () => {
-                if (!draftContainsOrigin) {
-                  return;
-                }
-
-                if (appCtx.selfInfo) {
-                  spawn(
-                    appCtx.api
-                      .addTrustedHost(hostOrigin)
-                      .then(() => location.reload())
-                  );
-                }
-
-                setUntrustedHost(false);
-              },
-              disabled: !draftContainsOrigin,
-            },
-          }}
-          clearButton={{
-            render: () => null,
+          originOnly
+          placeholder={hostOrigin}
+          expectedOrigin={hostOrigin}
+          onConfirm={async (_url, parsedUrl) => {
+            if (appCtx.selfInfo) {
+              await appCtx.api.addTrustedHost(parsedUrl.origin);
+              location.reload();
+            }
           }}
         />
       </Modal>

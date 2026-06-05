@@ -592,7 +592,7 @@
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
       "projectName": "[PlasmicKit] Dashboard",
-      "version": "63.0.0",
+      "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_dashboard.css",
       "components": [
         {
@@ -1231,62 +1231,6 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicFreeTrialModal.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        },
-        {
-          "id": "6_CfQ5GVLku",
-          "name": "HostProtocolSelect",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/HostProtocolSelect.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect.module.css",
-          "scheme": "blackbox",
-          "componentType": "component",
-          "plumeType": "select"
-        },
-        {
-          "id": "aHgWgR3OVni",
-          "name": "HostProtocolSelect__Option",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Option.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/HostProtocolSelect__Option.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Option.module.css",
-          "scheme": "blackbox",
-          "componentType": "component",
-          "plumeType": "select-option"
-        },
-        {
-          "id": "FB-WsFik1_I",
-          "name": "HostProtocolSelect__OptionGroup",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__OptionGroup.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/HostProtocolSelect__OptionGroup.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__OptionGroup.module.css",
-          "scheme": "blackbox",
-          "componentType": "component",
-          "plumeType": "select-option-group"
-        },
-        {
-          "id": "WAelYWWWRyr",
-          "name": "HostProtocolSelect__Overlay",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Overlay.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/HostProtocolSelect__Overlay.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Overlay.module.css",
-          "scheme": "blackbox",
-          "componentType": "component",
-          "plumeType": "triggered-overlay"
         }
       ],
       "icons": [
@@ -1321,11 +1265,6 @@
           "id": "dQeKTjQST",
           "name": "image",
           "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/image.png"
-        },
-        {
-          "id": "h1Ar4hymw",
-          "name": "Kimmy_Schmidt_icon.jpg",
-          "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/kimmySchmidtIconJpg.jpeg"
         }
       ],
       "projectApiToken": "YzbgboSZAaDHJCGNghzsdDqkJDAyWIlduYVmCAX0NeqSwwSXgXghqA3IzLsk4G8MZS869d3PmpALwwW47sbw",
@@ -1593,7 +1532,7 @@
     {
       "projectId": "tXkSR39sgCDWSitZxC5xFV",
       "projectName": "[PlasmicKit] Design System",
-      "version": ">=42.0.0",
+      "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_design_system.css",
       "components": [
         {
@@ -9369,7 +9308,7 @@
           "projectId": "w2GXN278dkQ2gQTVQnPehW",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicChatMessage.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/copilot/ChatMessage.tsx",
+            "modulePath": "wab/client/components/copilot/enterprise/ChatMessage.tsx",
             "exportName": "ChatMessage"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicChatMessage.module.css",

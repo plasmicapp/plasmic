@@ -6,7 +6,7 @@ import * as React from "react";
 
 type NativeTextAreaProps = Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "defaultValue" | "onChange"
+  "value" | "defaultValue" | "onChange"
 >;
 export interface TextAreaInputProps
   extends DefaultTextAreaInputProps,

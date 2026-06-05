@@ -4,6 +4,7 @@
 @import "./plasmic_kit_icons/plasmic_q_4_icons.css"; /* plasmic-import: oT38tGyqov9SPWHpf3Y2Rf/projectcss */
 @import "./plasmic_kit_pricing/plasmic_plasmic_kit_pricing.css"; /* plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss */
 @import "./plasmic_embed_css/plasmic_plasmic_embed_css.css"; /* plasmic-import: 8PtdGodUbexNYgkuyBUcWu/projectcss */
+@import "./react_aria/plasmic.css"; /* plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss */
 @import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&family=Paytone+One%3Aital%2Cwght%400%2C400&display=swap");
 
 .plasmic_default_styles {

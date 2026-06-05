@@ -334,13 +334,15 @@ function PlasmicTextField__RenderFunc(props: {
         path: "textInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props["defaultValue"],
       },
       {
         path: "textAreaInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props["defaultValue"],
       },
     ],
     [$props, $ctx, $refs]
@@ -516,6 +518,7 @@ function PlasmicTextField__RenderFunc(props: {
                 : undefined
             }
             placeholder={args.placeholder}
+            value={generateStateValueProp($state, ["textInput", "value"])}
           />
         ) : null}
         {(hasVariant($state, "multiLine", "multiLine") ? true : false) ? (
@@ -554,6 +557,7 @@ function PlasmicTextField__RenderFunc(props: {
                 : undefined
             }
             placeholder={args.placeholder}
+            value={generateStateValueProp($state, ["textAreaInput", "value"])}
           />
         ) : null}
         <div

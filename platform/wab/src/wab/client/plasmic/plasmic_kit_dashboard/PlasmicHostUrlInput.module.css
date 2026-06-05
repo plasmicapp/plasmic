@@ -29,25 +29,7 @@
   height: auto;
   width: auto;
   white-space: pre;
-}
-.hostProtocolSelect:global(.__wab_instance) {
-  position: relative;
-}
-.option__jSgyS:global(.__wab_instance) {
-  position: relative;
-}
-.option__nopaD:global(.__wab_instance) {
-  position: relative;
-}
-.urlInput {
-  position: relative;
-  width: 100%;
-  margin-left: -9px;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  min-width: 0;
-  padding: 7px;
-  border: 1px solid var(--token-hoA5qaM-91G);
+  padding-bottom: 0px;
 }
 .clearButton:global(.__wab_instance) {
   position: relative;
