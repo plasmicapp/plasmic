@@ -17,6 +17,7 @@ import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import {
   FreestyleState,
   PointerState,
+  RightTabKey,
   StudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
@@ -968,6 +969,11 @@ export class ViewCtx extends WithDbCtx {
   }
 
   setTriggerEditingTextDataPicker(x: boolean | null) {
+    // The DataPicker is rendered by the TypogrpahySection.
+    // Make sure TypographySection is rendered on the settings tab.
+    if (x) {
+      this.studioCtx.switchRightTab(RightTabKey.settings);
+    }
     this._triggerEditingTextDataPicker.set(x);
   }
 
