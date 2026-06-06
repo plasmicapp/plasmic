@@ -13,6 +13,8 @@ import {
 } from "@/wab/client/dom-utils";
 import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
 import { deleteStyleToken } from "@/wab/client/operations/delete-style-token";
+import { deleteVariant } from "@/wab/client/operations/delete-variant";
+import { deleteVariantGroup } from "@/wab/client/operations/delete-variant-group";
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
@@ -45,7 +47,6 @@ import {
   findDuplicateComponentVariant,
   getDisplayVariants,
   getOrderedScreenVariantSpecs,
-  isBaseVariant,
   isCodeComponentVariant,
   isGlobalVariantGroup,
   isPrivateStyleVariant,
@@ -63,8 +64,6 @@ import {
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
   findQueryInvalidationExprWithRefs,
-  findSplitsUsingVariantGroup,
-  findStyleTokensUsingVariantGroup,
   flattenComponent,
   getComponentsUsingImageAsset,
 } from "@/wab/shared/cached-selectors";
@@ -78,7 +77,6 @@ import {
   removeWhere,
   switchType,
   uniqueName,
-  xAddAll,
 } from "@/wab/shared/common";
 import {
   addCustomComponentFrame,
@@ -171,10 +169,7 @@ import {
   getFrameColumnIndex,
   removeManagedFramesFromPageArenaForVariants,
 } from "@/wab/shared/page-arenas";
-import {
-  getPlumeEditorPlugin,
-  getPlumeVariantDef,
-} from "@/wab/shared/plume/plume-registry";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import {
   flattenDataTokenUsage,
   isQueryUsedInExpr,
@@ -193,7 +188,6 @@ import {
 } from "@/wab/shared/visibility-utils";
 import { notification } from "antd";
 import L from "lodash";
-import pluralize from "pluralize";
 import React from "react";
 
 /**
@@ -626,77 +620,6 @@ export class SiteOps {
                 )}
                 .
               </p>
-            )}
-          </>
-        ),
-      });
-    }
-    return true;
-  }
-
-  private findComponentsUsingVariantGroup(
-    group: VariantGroup,
-    component: Component | undefined
-  ) {
-    const usingComps = new Set<Component>();
-    for (const variant of group.variants) {
-      const compsUsingVariant = component
-        ? findComponentsUsingComponentVariant(this.site, component, variant)
-        : findComponentsUsingGlobalVariant(this.site, variant);
-      xAddAll(usingComps, compsUsingVariant);
-    }
-    return usingComps;
-  }
-
-  private async confirmDeleteVariantGroup(
-    group: VariantGroup,
-    component: Component | undefined,
-    opts: {
-      confirm: "always" | "if-referenced";
-    }
-  ) {
-    const usingComps = this.findComponentsUsingVariantGroup(group, component);
-    const usingSplits = findSplitsUsingVariantGroup(this.site, group);
-    const usingTokens = findStyleTokensUsingVariantGroup(this.site, group);
-
-    const renderUsageInfo = (objectType: string, names: React.ReactNode[]) => {
-      if (names.length > 0) {
-        return (
-          <p>
-            It is being used by {pluralize(objectType, names.length)}{" "}
-            {joinReactNodes(names, ", ")}.
-          </p>
-        );
-      }
-      return null;
-    };
-
-    if (
-      opts.confirm === "always" ||
-      usingComps.size > 0 ||
-      usingSplits.length > 0 ||
-      usingTokens.length > 0
-    ) {
-      return await reactConfirm({
-        title: (
-          <div>
-            Are you sure you want to delete variant group{" "}
-            <strong>{group.param.variable.name}</strong>?
-          </div>
-        ),
-        message: (
-          <>
-            {renderUsageInfo(
-              "component",
-              [...usingComps].map((c) => makeComponentName(this.site, c))
-            )}
-            {renderUsageInfo(
-              "split",
-              usingSplits.map((split) => split.name)
-            )}
-            {renderUsageInfo(
-              "style token",
-              usingTokens.map((token) => token.name)
             )}
           </>
         ),
@@ -1350,135 +1273,77 @@ export class SiteOps {
   }
 
   async removeVariantGroup(component: Component, group: ComponentVariantGroup) {
-    const refs = this.findVariantGroupReferences(component, group);
-    if (refs.length > 0) {
-      this.notifyVariantGroupReferenced(component, refs);
-      return;
-    }
-    if (isPlumeComponent(component)) {
-      const groupName = toVarName(group.param.variable.name);
-      const plugin = getPlumeEditorPlugin(component);
-      const isRequired = plugin?.componentMeta.variantDefs.some(
-        (def) => def.group === groupName && def.required
-      );
-      if (isRequired) {
-        const key = mkUuid();
+    const result = await deleteVariantGroup(
+      group,
+      component,
+      this.site,
+      this.studioCtx,
+      this.tplMgr
+    );
+
+    if (result.result === "error" && !result.cancelled) {
+      const key = mkUuid();
+      if (result.variantGroupRefs) {
+        this.notifyVariantGroupReferenced(
+          component,
+          result.variantGroupRefs,
+          "Cannot delete variant group"
+        );
+      } else {
         notification.error({
           key,
           message: "Cannot delete variant group",
-          description: `Please note that in order for the "${component.name}" component to function properly, the "${group.param.variable.name}" variant must exist.`,
+          description: result.message,
         });
-        return;
       }
     }
-    const implicitUsages = group.linkedState
-      ? findImplicitUsages(this.site, group.linkedState)
-      : [];
-    if (implicitUsages.length > 0) {
-      const components = L.uniq(implicitUsages.map((usage) => usage.component));
-      notification.error({
-        message: "Cannot delete variant group",
-        description: `It is referenced in ${components
-          .map((c) => getComponentDisplayName(c))
-          .join(", ")}.`,
-      });
-      return;
-    }
-    const really = await this.confirmDeleteVariantGroup(group, component, {
-      confirm: "if-referenced",
-    });
-    if (!really) {
-      return;
-    }
-
-    await this.studioCtx.changeObserved(
-      () => {
-        return Array.from(
-          this.findComponentsUsingVariantGroup(group, component)
-        );
-      },
-      ({ success }) => {
-        removeVariantGroup(this.site, component, group);
-        this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(
-          component
-        );
-        this.studioCtx.pruneInvalidViewCtxs();
-        return success();
-      }
-    );
   }
 
   async removeGlobalVariantGroup(group: VariantGroup) {
-    const really = await this.confirmDeleteVariantGroup(group, undefined, {
-      confirm: "if-referenced",
-    });
-    if (!really) {
-      return;
-    }
-    await this.studioCtx.changeObserved(
-      () => {
-        return Array.from(
-          this.findComponentsUsingVariantGroup(group, undefined)
-        );
-      },
-      ({ success }) => {
-        this.tplMgr.removeGlobalVariantGroup(group);
-        this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
-        this.studioCtx.pruneInvalidViewCtxs();
-        return success();
-      }
+    const result = await deleteVariantGroup(
+      group,
+      undefined,
+      this.site,
+      this.studioCtx,
+      this.tplMgr
     );
+
+    if (result.result === "error" && !result.cancelled) {
+      const key = mkUuid();
+      notification.error({
+        key,
+        message: "Cannot delete variant group",
+        description: result.message,
+      });
+    }
   }
 
   async removeVariant(component: Component, variant: Variant) {
-    assert(!isBaseVariant(variant), "Base variant can not be removed");
+    const result = await deleteVariant(
+      variant,
+      component,
+      this.site,
+      this.studioCtx,
+      this.tplMgr,
+      { behaviour: "confirm-if-referenced" }
+    );
 
-    if (variant.parent) {
-      // Checks if the parent group is referenced in the component. This can be improved by
-      // verifying the reference is specific to the target variant.
-      const refs = this.findVariantGroupReferences(component, variant.parent);
-      if (refs.length > 0) {
+    if (result.result === "error" && !result.cancelled) {
+      const key = mkUuid();
+      if (result.variantGroupRefs) {
         this.notifyVariantGroupReferenced(
           component,
-          refs,
+          result.variantGroupRefs,
           "Cannot delete variant"
         );
-        return;
-      }
-    }
-    if (isPlumeComponent(component)) {
-      const variantDef = getPlumeVariantDef(component, variant);
-      if (variantDef?.required) {
-        const key = mkUuid();
+      } else {
         notification.error({
           key,
           message: "Cannot delete variant",
-          description: `Please note that in order for the "${component.name}" component to function properly, the "${variant.name}" variant must exist.`,
+          description: result.message,
         });
-        return;
       }
     }
-    const really = await this.confirmDeleteVariant(variant, component, {
-      confirm: "if-referenced",
-    });
-    if (!really) {
-      return;
-    }
-    await this.studioCtx.changeObserved(
-      () => {
-        return Array.from(
-          findComponentsUsingComponentVariant(this.site, component, variant)
-        );
-      },
-      ({ success }) => {
-        this.tplMgr.tryRemoveVariant(variant, component);
-        this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(
-          component
-        );
-        this.studioCtx.pruneInvalidViewCtxs();
-        return success();
-      }
-    );
   }
 
   tryRenameVariant(variant: Variant, newName: string) {
@@ -1536,25 +1401,30 @@ export class SiteOps {
   }
 
   async removeSplitAndGlobalVariant(split: Split, group: VariantGroup) {
-    const really = await this.confirmDeleteVariantGroup(group, undefined, {
-      confirm: "if-referenced",
-    });
+    const result = await deleteVariantGroup(
+      group,
+      undefined,
+      this.site,
+      this.studioCtx,
+      this.tplMgr
+    );
 
-    if (!really) {
+    if (result.result === "error") {
+      if (!result.cancelled) {
+        const key = mkUuid();
+        notification.error({
+          key,
+          message: "Cannot delete variant group",
+          description: result.message,
+        });
+      }
       return;
     }
 
     await this.studioCtx.changeObserved(
-      () => {
-        return Array.from(
-          this.findComponentsUsingVariantGroup(group, undefined)
-        );
-      },
+      () => [],
       ({ success }) => {
         this.tplMgr.removeSplit(split);
-        this.tplMgr.removeGlobalVariantGroup(group);
-        this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
-        this.studioCtx.pruneInvalidViewCtxs();
         return success();
       }
     );

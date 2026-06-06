@@ -301,7 +301,8 @@ export async function reactPrompt(opts: ReactPromptOpts) {
 }
 
 interface StudioElement {
-  name: string;
+  uuid: string;
+  name?: string;
 }
 
 export async function deleteStudioElementConfirm(
@@ -318,7 +319,8 @@ export async function deleteStudioElementConfirm(
       <>
         {usages.map(({ element, summary }) => (
           <p>
-            <strong>{element.name}</strong> is still being used in:
+            {element.name ? <strong>{element.name}</strong> : "It"} is still
+            being used in:
             <ul>
               {makeUsageControl(
                 "Components",

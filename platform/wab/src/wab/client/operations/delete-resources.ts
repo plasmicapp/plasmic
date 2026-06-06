@@ -11,6 +11,8 @@ import type {
   Mixin,
   StyleToken,
   StyleTokenOverride,
+  Variant,
+  VariantGroup,
 } from "@/wab/shared/model/classes";
 
 export interface UsageSummary {
@@ -28,7 +30,9 @@ export type DeletableResource =
   | StyleToken
   | ImageAsset
   | DataToken
-  | Mixin;
+  | Mixin
+  | Variant
+  | VariantGroup;
 
 export interface ResourceWithUsage<R extends DeletableResource> {
   resource: R;
@@ -40,6 +44,8 @@ export interface DeleteResourcesResult<R extends DeletableResource> {
   deletedResources: R[];
   messages: string[];
   errors?: string[];
+  /** True when the user dismissed the confirmation dialog without deleting. */
+  cancelled?: boolean;
 }
 
 /**
@@ -91,7 +97,9 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
         .filter(Boolean)
         .join("; ");
       errors.push(
-        `Cannot delete "${resource.name}" (uuid: ${resource.uuid}): still referenced in ${locations}.`
+        `Cannot delete "${getDeletableResourceLabel(resource)}" (uuid: ${
+          resource.uuid
+        }): still referenced in ${locations}.`
       );
     }
     return { deletedResources: [], messages, errors };
@@ -107,7 +115,8 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
       }))
     );
     if (!confirmed) {
-      return { deletedResources: [], messages, errors };
+      errors.push(`Deletion of ${deleteLabel} was cancelled.`);
+      return { deletedResources: [], messages, errors, cancelled: true };
     }
   }
 
@@ -127,7 +136,9 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
         for (const { resource } of resourcesWithUsage) {
           onDelete(resource);
           messages.push(
-            `Deleted ${deleteLabel} "${resource.name}" (uuid: ${resource.uuid}).`
+            `Deleted ${deleteLabel} "${getDeletableResourceLabel(
+              resource
+            )}" (uuid: ${resource.uuid}).`
           );
         }
         return success();
@@ -140,4 +151,8 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
     messages,
     errors,
   };
+}
+
+function getDeletableResourceLabel(resource: DeletableResource) {
+  return "name" in resource ? resource.name : resource.typeTag;
 }
