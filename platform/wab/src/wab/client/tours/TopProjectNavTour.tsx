@@ -1,4 +1,5 @@
 import { KeyboardShortcut } from "@/wab/client/components/menu-builder";
+import { tourSeenTopProjectNavKey } from "@/wab/client/LocalStorageKey";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Tour } from "@/wab/client/tours/Tour";
@@ -7,7 +8,7 @@ import React from "react";
 
 export const TopProjectNavTour = observer(function TopProjectNavTour() {
   const studioCtx = useStudioCtx();
-  const seenStateKey = "plasmic.tours.top-project-nav";
+  const seenStateKey = tourSeenTopProjectNavKey;
   const targetSelector = "#proj-nav-button";
   const onlyUsersCreatedBefore = "2022-11-01";
   const didActionSignal = studioCtx.showProjectPanelRequested;

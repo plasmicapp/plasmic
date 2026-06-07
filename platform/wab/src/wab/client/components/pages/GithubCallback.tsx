@@ -1,5 +1,9 @@
 import { NonAuthCtx } from "@/wab/client/app-ctx";
 import { getURL } from "@/wab/client/components/auth/GithubConnect";
+import {
+  githubStateKey,
+  githubTokenKey,
+} from "@/wab/client/LocalStorageKey";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import * as React from "react";
 
@@ -9,7 +13,7 @@ export function GithubCallback(props: { nonAuthCtx: NonAuthCtx }) {
   useAsyncStrict(async () => {
     const params = new URLSearchParams(location.search);
     const state = params.get("state");
-    const expectedState = localStorage.getItem("githubState");
+    const expectedState = localStorage.getItem(githubStateKey);
 
     if (typeof state !== "string" || state !== expectedState) {
       // This can happen in 3 cases:
@@ -45,7 +49,7 @@ export function GithubCallback(props: { nonAuthCtx: NonAuthCtx }) {
       if (installations.length === 0) {
         location.href = getURL("install", state);
       } else {
-        localStorage.setItem("githubToken", token);
+        localStorage.setItem(githubTokenKey, token);
         localStorage.setItem("authStatus", "Success");
         window.close();
       }

@@ -1,6 +1,7 @@
 import { Api, setUser } from "@/wab/client/api";
 import { isHostFrame, Router } from "@/wab/client/cli-routes";
 import { getClientDevFlagOverrides } from "@/wab/client/client-dev-flags";
+import { loadCacheKey } from "@/wab/client/LocalStorageKey";
 import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
 import { App } from "@/wab/client/components/top-view";
@@ -412,7 +413,7 @@ export async function withHostFrameCache<T>(
   baseApi: PromisifyMethods<Api>,
   f: () => Promise<T>
 ): Promise<T> {
-  const realKey = `plasmic.load-cache.${key}`;
+  const realKey = loadCacheKey(key);
   if (isHostFrame()) {
     if (useCaching) {
       const cached = await baseApi.getStorageItem(realKey);

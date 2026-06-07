@@ -65,7 +65,7 @@ export function joinReactNodes(
   return <>{res}</>;
 }
 
-export function updateRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
+function updateRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
   if (!ref) {
     return;
   }

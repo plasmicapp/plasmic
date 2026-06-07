@@ -4,6 +4,7 @@ import {
   serializeToggledComponent,
   updateComponentCode,
 } from "@/wab/client/components/docs/serialize-docs-preview";
+import { codegenTypeKey } from "@/wab/client/LocalStorageKey";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import { toClassName, toVarName } from "@/wab/shared/codegen/util";
@@ -76,7 +77,7 @@ export class DocsPortalCtx {
 
   setCodegenType(type: "loader" | "codegen") {
     this.codegenType.set(type);
-    spawn(this.studioCtx.appCtx.api.addStorageItem("codegenType", type));
+    spawn(this.studioCtx.appCtx.api.addStorageItem(codegenTypeKey, type));
     this.resetComponentCustomCode();
   }
 

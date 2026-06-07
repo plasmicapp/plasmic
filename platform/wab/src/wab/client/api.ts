@@ -1,5 +1,11 @@
-import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
+import {
+  codegenTypeKey,
+  copyFromProjectKey,
+  githubTokenKey,
+  LocalStorageKey,
+  storageViewAsKey,
+} from "@/wab/client/LocalStorageKey";
 import {
   SerializableClipboardData,
   serializeClipboardItems,
@@ -9,7 +15,7 @@ import { analytics } from "@/wab/client/observability";
 import { PushPullQueue } from "@/wab/commons/asyncutil";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { transformErrors } from "@/wab/shared/ApiErrors/errors";
-import { ApiUser } from "@/wab/shared/ApiSchema";
+import { ApiUser, ProjectId } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import {
@@ -237,7 +243,7 @@ export class Api extends SharedApi {
   }
 
   githubToken() {
-    const token = this.getStorageItem("githubToken");
+    const token = this.getStorageItem(githubTokenKey);
     if (!token) {
       throw new Error("Missing GitHub token");
     }
@@ -291,7 +297,7 @@ export class Api extends SharedApi {
     delete this.listeners[uniqueId];
   }
 
-  addStorageItem(key: string, value: any) {
+  addStorageItem(key: LocalStorageKey, value: any) {
     assert(!isHostFrame(), "Should only run in the top frame");
     localStorage.setItem(key, value);
     // "storage" events aren't triggered on the same window that sets the
@@ -343,7 +349,10 @@ export class Api extends SharedApi {
   async whitelistProjectIdToCopy(projectId: string) {
     assert(!isHostFrame(), "Should only run in the top frame");
 
-    this.addStorageItem(`copy/${projectId}`, JSON.stringify(+new Date()));
+    this.addStorageItem(
+      copyFromProjectKey(projectId as ProjectId),
+      JSON.stringify(+new Date())
+    );
   }
 }
 
@@ -451,9 +460,9 @@ export function filteredApi(
 
   // Whitelisted keys for the host app to read and write to the localStorage
   // Make sure to not allow reading auth tokens etc.
-  const whitelistedLocalStorageKeys = [
-    "codegenType",
-    storageViewAsKey(projectId),
+  const whitelistedLocalStorageKeys: string[] = [
+    codegenTypeKey,
+    storageViewAsKey(projectId as ProjectId),
   ];
   const whitelistedLocalStorageKeyPrefixes = [
     PLEXUS_STORAGE_KEY,
@@ -568,7 +577,9 @@ export function filteredApi(
       // than 1 day, we don't need to fetch the project.
       const errorMsg = `Unexpected projectId ${siteId}`;
 
-      const value = await apiProxy.getStorageItem(`copy/${siteId}`);
+      const value = await apiProxy.getStorageItem(
+        copyFromProjectKey(siteId as ProjectId)
+      );
       if (!value) {
         throw new Error(errorMsg);
       }

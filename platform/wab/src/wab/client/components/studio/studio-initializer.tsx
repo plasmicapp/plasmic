@@ -1,5 +1,8 @@
-import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { AppCtx } from "@/wab/client/app-ctx";
+import {
+  plexusKey,
+  storageViewAsKey,
+} from "@/wab/client/LocalStorageKey";
 import { isHostFrame } from "@/wab/client/cli-routes";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import importAndRetry from "@/wab/client/components/dynamic-import";
@@ -27,7 +30,6 @@ import { isUnownedProject } from "@/wab/shared/EntUtil";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { initBuiltinActions } from "@/wab/shared/core/states";
-import { PLEXUS_STORAGE_KEY } from "@/wab/shared/insertables";
 import { makeGlobalObservable } from "@/wab/shared/mobx-util";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { notification } from "antd";
@@ -76,7 +78,7 @@ class StudioInitializer_ extends React.Component<
     initializePlasmicExtension();
     const { hostFrameCtx, appCtx, onRefreshUi, projectId } = this.props;
 
-    const plexusStorageKey = `${PLEXUS_STORAGE_KEY}.${projectId}`;
+    const plexusStorageKey = plexusKey(projectId);
     const plexusInStorage = await appCtx.api.getStorageItem(plexusStorageKey);
     if (plexusInStorage) {
       // The user has already opted into/out of Plexus

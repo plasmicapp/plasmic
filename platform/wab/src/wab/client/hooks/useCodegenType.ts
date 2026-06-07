@@ -1,4 +1,5 @@
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { codegenTypeKey } from "@/wab/client/LocalStorageKey";
 import { mkUuid, spawn } from "@/wab/shared/common";
 import { proxy } from "comlink";
 import { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ export function useCodegenType(): "loader" | "codegen" {
 
   useEffect(() => {
     spawn(
-      Promise.resolve(appCtx.api.getStorageItem("codegenType")).then(
+      Promise.resolve(appCtx.api.getStorageItem(codegenTypeKey)).then(
         (storedCodegenType: any) => {
           if (storedCodegenType) {
             setCodegenType(storedCodegenType as any);
@@ -28,7 +29,7 @@ export function useCodegenType(): "loader" | "codegen" {
     appCtx.api.addStorageListener(
       uniqueId,
       proxy(({ key, newValue }) => {
-        if (key === "codegenType" && newValue) {
+        if (key === codegenTypeKey && newValue) {
           setCodegenType(newValue as any);
         }
       })

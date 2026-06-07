@@ -1,6 +1,7 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { tourSeenForProjectKey } from "@/wab/client/LocalStorageKey";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import IconButton from "@/wab/client/components/widgets/IconButton";
@@ -151,8 +152,6 @@ function trackTourEvent(meta: TourStepMeta) {
   trackEvent("studio-tour", meta);
 }
 
-const tourStorageKey = (projectId: string) => `plasmic.tours.${projectId}`;
-
 const TOUR_STEP_VISIBILITY_CHECK_INTERVAL = 1500; // 1.5 seconds
 const USER_CHANGE_CHECK_INTERVAL = 250; // 0.25 seconds
 const USER_CHANGE_MAX_WAIT = 1000 * 60 * 45; // 45 minutes
@@ -258,7 +257,10 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
   };
 
   const markTourAsSeen = async () => {
-    await api.addStorageItem(tourStorageKey(studioCtx.siteInfo.id), true);
+    await api.addStorageItem(
+      tourSeenForProjectKey(studioCtx.siteInfo.id),
+      true
+    );
   };
 
   const quitTour = async () => {
@@ -418,7 +420,9 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
           return;
         }
 
-        const hasSeenTour = await api.getStorageItem(tourStorageKey(projectId));
+        const hasSeenTour = await api.getStorageItem(
+          tourSeenForProjectKey(projectId)
+        );
 
         if (!hasSeenTour && isMounted()) {
           trackTourEvent({

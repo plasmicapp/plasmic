@@ -12,8 +12,12 @@ import {
   getProjectReleases,
   listUnpublishedProjectRevisions,
 } from "@/wab/client/api-hooks";
-import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
+import {
+  focusPreferenceKey,
+  leftTabKey,
+  storageViewAsKey,
+} from "@/wab/client/LocalStorageKey";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
@@ -3342,11 +3346,11 @@ export class StudioCtx extends WithDbCtx {
   };
 
   private mkFocusPreferenceKey = () => {
-    return `plasmic.focused.${this.siteInfo.id}`;
+    return focusPreferenceKey(this.siteInfo.id);
   };
 
   private leftTabKeyLocalStorageKey = () => {
-    return `plasmic.leftTabKey.${this.siteInfo.id}`;
+    return leftTabKey(this.siteInfo.id);
   };
 
   /**

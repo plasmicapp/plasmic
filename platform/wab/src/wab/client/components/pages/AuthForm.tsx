@@ -8,6 +8,7 @@ import "@/wab/client/components/pages/AuthForm.sass";
 import { IntakeFlowForm } from "@/wab/client/components/pages/IntakeFlowForm";
 import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { ssoEmailKey } from "@/wab/client/LocalStorageKey";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { mkUuid, spawnWrapper } from "@/wab/shared/common";
 import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
@@ -481,8 +482,8 @@ export function SsoLoginForm(props: { onLoggedIn: () => void }) {
   );
 
   const { mutate: mutatePreviousSsoEmail, data: previousSsoEmail } = useSWR(
-    "plasmic-sso-email",
-    async () => await nonAuthCtx.api.getStorageItem("plasmic-sso-email")
+    ssoEmailKey,
+    async () => await nonAuthCtx.api.getStorageItem(ssoEmailKey)
   );
 
   function setSelfInfo(user: ApiUser) {
@@ -496,7 +497,7 @@ export function SsoLoginForm(props: { onLoggedIn: () => void }) {
     onSuccess: spawnWrapper(async () => {
       await nonAuthCtx.api.refreshCsrfToken();
       const { user } = await nonAuthCtx.api.getSelfInfo();
-      await nonAuthCtx.api.addStorageItem("plasmic-sso-email", user.email);
+      await nonAuthCtx.api.addStorageItem(ssoEmailKey, user.email);
       await mutatePreviousSsoEmail(user.email);
       setSelfInfo(user);
     }),

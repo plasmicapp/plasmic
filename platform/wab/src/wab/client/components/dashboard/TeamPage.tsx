@@ -3,6 +3,7 @@ import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import WorkspaceSection from "@/wab/client/components/dashboard/WorkspaceSection";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { freeTrialKey } from "@/wab/client/LocalStorageKey";
 import {
   useAsyncFnStrict,
   useAsyncStrict,
@@ -67,7 +68,7 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
     if (!team) {
       return;
     }
-    const storageKey = `plasmic.free-trial.${team.id}`;
+    const storageKey = freeTrialKey(team.id);
     const hasFreeTrialStorage = async () => {
       const firstTimeRender = !(await appCtx.api.getStorageItem(storageKey));
       if (
