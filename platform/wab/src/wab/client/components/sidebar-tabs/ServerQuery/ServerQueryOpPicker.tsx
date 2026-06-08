@@ -413,38 +413,47 @@ export const ServerQueryOpDraftForm = observer(
       (fn) => fn.namespace ?? null
     );
 
-    const handlePropEditorRowChange = React.useCallback(
-      (param: ArgType, newExpr: Expr) => {
+    // Rebuild fnExpr with `mkArgs` applied to the current args and commit it.
+    const commitFnExprArgs = React.useCallback(
+      (mkArgs: (args: FunctionArg[]) => FunctionArg[]) => {
         if (value.fnExpr) {
-          const newFnExpr = new CustomFunctionExpr({
-            ...value.fnExpr,
-            args: [...value.fnExpr.args],
+          onChange({
+            queryName: value.queryName,
+            fnExpr: new CustomFunctionExpr({
+              ...value.fnExpr,
+              args: mkArgs(value.fnExpr.args),
+            }),
           });
-          const changedArg = newFnExpr.args.find(
-            (arg) => arg.argType === param
-          );
+        }
+      },
+      [onChange, value]
+    );
+
+    const handlePropEditorRowChange = React.useCallback(
+      (param: ArgType, newExpr: Expr) =>
+        commitFnExprArgs((args) => {
+          const newArgs = [...args];
+          const changedArg = newArgs.find((arg) => arg.argType === param);
           if (changedArg) {
             changedArg.expr = newExpr;
-            onChange({
-              queryName: value.queryName,
-              fnExpr: newFnExpr,
-            });
           } else {
-            newFnExpr.args.push(
+            newArgs.push(
               new FunctionArg({
                 uuid: mkShortId(),
                 expr: newExpr,
                 argType: param,
               })
             );
-            onChange({
-              queryName: value.queryName,
-              fnExpr: newFnExpr,
-            });
           }
-        }
-      },
-      [onChange, value]
+          return newArgs;
+        }),
+      [commitFnExprArgs]
+    );
+
+    const handlePropEditorRowDelete = React.useCallback(
+      (param: ArgType) =>
+        commitFnExprArgs((args) => args.filter((arg) => arg.argType !== param)),
+      [commitFnExprArgs]
     );
 
     const handleInstallCustomFunction = async (
@@ -646,6 +655,7 @@ export const ServerQueryOpDraftForm = observer(
                       propType,
                       propValueEditorContext,
                       onParamChange: handlePropEditorRowChange,
+                      onParamDelete: handlePropEditorRowDelete,
                     });
                   })
                 )

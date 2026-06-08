@@ -31,6 +31,7 @@ import {
   isKnownExpr,
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
+import { omit } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -80,6 +81,7 @@ interface ServerQueryParamRowProps {
   label: string;
   valueSetState: "isSet" | undefined;
   onChange: (newVal: any) => void;
+  onDelete?: () => void;
   propValueEditorContext: PropValueEditorContextData;
   controlExtras: ControlExtras;
 }
@@ -94,6 +96,7 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
     label,
     valueSetState,
     onChange,
+    onDelete,
     propValueEditorContext,
     controlExtras,
   } = props;
@@ -106,6 +109,7 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
         label={label}
         valueSetState={valueSetState}
         onChange={onChange}
+        onDelete={onDelete}
         controlExtras={controlExtras}
       />
     </PropValueEditorContext.Provider>
@@ -122,9 +126,16 @@ export function getServerQueryParamRowItems(opts: {
   propType: StudioPropType<any>;
   propValueEditorContext: PropValueEditorContextData;
   onParamChange: (param: ArgType, newExpr: Expr) => void;
+  onParamDelete: (param: ArgType) => void;
 }): MaybeCollapsibleRow[] {
-  const { param, argsMap, propType, propValueEditorContext, onParamChange } =
-    opts;
+  const {
+    param,
+    argsMap,
+    propType,
+    propValueEditorContext,
+    onParamChange,
+    onParamDelete,
+  } = opts;
   const mkControlExtras = (path: (string | number)[]): ControlExtras => ({
     path,
   });
@@ -150,6 +161,18 @@ export function getServerQueryParamRowItems(opts: {
     const curArg =
       param.argName in argsMap ? argsMap[param.argName][0] : undefined;
     const curObj = decomposeObjExpr(curArg?.expr);
+
+    // Re-read the current arg to avoid stale closures, apply `transform` to the
+    // decomposed object, then re-serialize and commit back to the param.
+    const updateObj = (
+      transform: (obj: Record<string, any>) => Record<string, any>
+    ) => {
+      const existingArg =
+        param.argName in argsMap ? argsMap[param.argName][0] : undefined;
+      const existingObj = decomposeObjExpr(existingArg?.expr);
+      const newExpr = clone(serCompositeExprMaybe(transform(existingObj)));
+      onParamChange(param, newExpr);
+    };
 
     return Object.entries(flattenedFields)
       .filter(([fieldName, fieldPropType]) =>
@@ -183,21 +206,14 @@ export function getServerQueryParamRowItems(opts: {
               valueSetState={fieldValue !== undefined ? "isSet" : undefined}
               propValueEditorContext={propValueEditorContext}
               controlExtras={controlExtras}
-              onChange={(newFieldVal) => {
-                // Re-read the current arg to avoid stale closures
-                const existingArg =
-                  param.argName in argsMap
-                    ? argsMap[param.argName][0]
-                    : undefined;
-                const existingObj = decomposeObjExpr(existingArg?.expr);
-                const updatedObj = {
-                  ...existingObj,
-                  [fieldName]: newFieldVal,
-                };
-
-                const newExpr = clone(serCompositeExprMaybe(updatedObj));
-                onParamChange(param, newExpr);
-              }}
+              onChange={(newFieldVal) =>
+                updateObj((obj) => ({ ...obj, [fieldName]: newFieldVal }))
+              }
+              onDelete={
+                fieldValue !== undefined
+                  ? () => updateObj((obj) => omit(obj, fieldName))
+                  : undefined
+              }
             />
           ),
         };
@@ -230,6 +246,7 @@ export function getServerQueryParamRowItems(opts: {
             const newExpr = isKnownExpr(expr) ? expr : codeLit(expr);
             onParamChange(param, newExpr);
           }}
+          onDelete={curExpr ? () => onParamDelete(param) : undefined}
         />
       ),
     },
