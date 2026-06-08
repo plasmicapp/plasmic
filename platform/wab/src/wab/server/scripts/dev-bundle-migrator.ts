@@ -78,7 +78,6 @@ const paths = [
   "../loader-tests/data/react-aria.json",
   "../loader-tests/data/strapi.json",
   "../loader-tests/data/wordpress.json",
-  "src/wab/client/copilot/enterprise/tests/bundles/starter-project-desktop-first.json",
   "src/wab/shared/site-diffs/_tests_/bundles/code-components-with-same-name.json",
   "src/wab/shared/site-diffs/_tests_/bundles/rich-text-conflict.json",
   "src/wab/shared/site-diffs/_tests_/bundles/test-tpl-merge.json",
