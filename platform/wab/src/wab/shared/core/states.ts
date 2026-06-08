@@ -430,6 +430,30 @@ export function getStateVarName(state: State) {
   }
 }
 
+/**
+ * Splits a state's `$state` variable name into path parts, with repeated-state
+ * segments represented as the literal `"[]"` marker. E.g. `list[].value` ->
+ * `["list", "[]", "value"]`, `input.value` -> `["input", "value"]`.
+ */
+export function getStateVarNameParts(state: State): string[] {
+  return getStateVarName(state).replaceAll("[", ".[").split(".");
+}
+
+/**
+ * Finds the state in `component` whose root var name part equals `varName`
+ * (e.g. `"list"` matches the repeated state `list[].value`). This matches the
+ * root data picker node only, not its children. Returns undefined if no state
+ * matches.
+ */
+export function getStateByVarName(
+  component: Component,
+  varName: string
+): State | undefined {
+  return component.states.find(
+    (state) => varName === getStateVarNameParts(state)[0]
+  );
+}
+
 type StateIn$State = {
   obj: {};
   key: string;
@@ -451,7 +475,7 @@ export function findStateIn$State(state: State, $state: {}): StateIn$State[] {
     }
   };
 
-  const allParts = getStateVarName(state).replaceAll("[", ".[").split(".");
+  const allParts = getStateVarNameParts(state);
   return recurse($state, allParts);
 }
 

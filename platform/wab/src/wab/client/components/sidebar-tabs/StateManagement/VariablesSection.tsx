@@ -2,7 +2,10 @@ import { COMMANDS } from "@/wab/client/commands/command";
 import ImplicitVariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/ImplicitVariablesSection";
 import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
 import VariableRow from "@/wab/client/components/sidebar-tabs/StateManagement/VariableRow";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  SidebarSection,
+  SidebarSectionHandle,
+} from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { StateVariablesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -10,8 +13,10 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { DefaultVariablesSectionProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariablesSection";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { parseUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unwrap } from "@/wab/commons/failable-utils";
+import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
 import { ensure } from "@/wab/shared/common";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { mkParamsForState } from "@/wab/shared/core/lang";
@@ -23,7 +28,6 @@ import {
   getDefaultValueForStateVariableType,
   mkState,
 } from "@/wab/shared/core/states";
-import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
 import { Component, State } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { groupBy } from "lodash";
@@ -69,6 +73,7 @@ function VariablesSection_(props: VariablesSectionProps) {
 
   const [newVariable, setNewVariable] = useState<State | null>(null);
   const [isExpanded, setExpanded] = useState(false);
+  const sectionRef = React.useRef<SidebarSectionHandle>(null);
 
   const implicitVariableGroups = Object.values(
     groupBy(
@@ -76,6 +81,21 @@ function VariablesSection_(props: VariablesSectionProps) {
       (state) => state.tplNode?.name
     )
   );
+
+  // Implicit states may be collapsed, so listen for UI actions
+  // and expand their section if an action is dispatched.
+  React.useEffect(() => {
+    const { dispose } = studioCtx.uiActionBus.registerListener(
+      (uiId, _type) => {
+        const parsed = parseUiId(uiId);
+        if (parsed.type === "Model" && parsed.typeTag === "StateParam") {
+          sectionRef.current?.expand();
+          setExpanded(true);
+        }
+      }
+    );
+    return dispose;
+  }, [studioCtx]);
 
   const regularVariables = component.states.filter(
     (state) =>
@@ -87,6 +107,7 @@ function VariablesSection_(props: VariablesSectionProps) {
   return (
     <>
       <SidebarSection
+        ref={sectionRef}
         title={
           <LabelWithDetailedTooltip tooltip={StateVariablesTooltip}>
             {VARIABLE_PLURAL_CAP}

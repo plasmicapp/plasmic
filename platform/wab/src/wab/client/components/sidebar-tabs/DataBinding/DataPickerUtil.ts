@@ -1,5 +1,10 @@
 import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
+import {
+  UiId,
+  mkModelUiId,
+  mkSectionUiId,
+} from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
@@ -8,8 +13,11 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, isNonNil, isPrefixArray } from "@/wab/shared/common";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
+  getComponentDataQueryByVarName,
+  getComponentServerQueryByVarName,
   getRealParams,
   isCodeComponent,
+  isPageComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import {
@@ -21,12 +29,14 @@ import {
   flattenedKeys,
   omittedKeysIfEmpty,
 } from "@/wab/shared/core/exprs";
-import { findStateIn$State } from "@/wab/shared/core/states";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import { findStateIn$State, getStateByVarName } from "@/wab/shared/core/states";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import {
   Component,
+  Site,
   State,
   TplNode,
   VariantGroup,
@@ -399,4 +409,89 @@ export function extractExpectedValues(
     }
   }
   return enumValues?.toString();
+}
+
+// This function is only necessary because we currently pass around
+// env: Record<string, any>. If we passed around a more structured env with
+// direct references to modes, we wouldn't need this lookup from itemPath to
+// model.
+// TODO: Obviate getSourceUiId.
+
+/**
+ * Given the path of a data picker row (e.g. `["$q", "myQuery"]`),
+ * finds the relevant model in the Site and returns its UiId.
+ */
+export function getSourceUiId(
+  itemPath: (string | number)[],
+  site: Site,
+  component?: Component
+): UiId | undefined {
+  if (itemPath.length < 2) {
+    return undefined;
+  }
+
+  const dollarVar = itemPath[0];
+  const name = itemPath[1];
+  switch (dollarVar) {
+    case "$dataTokens": {
+      if (itemPath.length === 2) {
+        const token = site.dataTokens.find((t) => toVarName(t.name) === name);
+        return token ? mkModelUiId(token) : undefined;
+      } else if (itemPath.length === 3) {
+        const tokenName = itemPath[2];
+        const dep = walkDependencyTree(site, "direct").find(
+          (d) => toVarName(d.name) === name
+        );
+        const token = dep?.site.dataTokens.find(
+          (t) => toVarName(t.name) === tokenName
+        );
+        return token ? mkModelUiId(token) : undefined;
+      }
+      return undefined;
+    }
+    case "$ctx": {
+      if (!component || !isPageComponent(component) || itemPath.length !== 2) {
+        return undefined;
+      } else if (name === "pagePath" || name === "pageRoute") {
+        return mkSectionUiId("PageMetaUrl");
+      } else if (name === "params" && itemPath.length === 2) {
+        // TODO: Link to specific param
+        return mkSectionUiId("PageMetaUrlParams");
+      } else {
+        return undefined;
+      }
+    }
+    case "$props": {
+      if (!component || itemPath.length !== 2 || typeof name !== "string") {
+        return undefined;
+      }
+      const param = getRealParams(component).find(
+        (p) => toVarName(p.variable.name) === name
+      );
+      return param ? mkModelUiId(param) : undefined;
+    }
+    case "$q": {
+      if (!component || itemPath.length !== 2 || typeof name !== "string") {
+        return undefined;
+      }
+      const query = getComponentServerQueryByVarName(component, name);
+      return query ? mkModelUiId(query) : undefined;
+    }
+    case "$queries": {
+      if (!component || itemPath.length !== 2 || typeof name !== "string") {
+        return undefined;
+      }
+      const query = getComponentDataQueryByVarName(component, name);
+      return query ? mkModelUiId(query) : undefined;
+    }
+    case "$state": {
+      if (!component || itemPath.length !== 2 || typeof name !== "string") {
+        return undefined;
+      }
+      const state = getStateByVarName(component, name);
+      return state ? mkModelUiId(state.param) : undefined;
+    }
+    default:
+      return undefined;
+  }
 }

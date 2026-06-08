@@ -6,6 +6,7 @@ import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import { DefaultVariableRowProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariableRow";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getStateVarName } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
@@ -36,6 +37,7 @@ const VariableRow = observer(
     return (
       <WithContextMenu overlay={menu}>
         <LabeledListItem
+          uiId={mkModelUiId(state.param)}
           data-test-id={getStateVarName(state)}
           data-test-type={"variable-row"}
           ref={ref}

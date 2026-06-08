@@ -14,6 +14,9 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkSectionUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { valueAsString } from "@/wab/commons/values";
 import {
   ensure,
   maybe,
@@ -21,7 +24,6 @@ import {
   swallow,
   unexpected,
 } from "@/wab/shared/common";
-import { valueAsString } from "@/wab/commons/values";
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import {
   getSingleDynExprFromTemplatedString,
@@ -380,6 +382,7 @@ export const PageURLParametersSection = observer(
             />
           ))}
         </div>
+        <UiActionsOverlay uiId={mkSectionUiId("PageMetaUrlParams")} />
       </SidebarSection>
     );
   }

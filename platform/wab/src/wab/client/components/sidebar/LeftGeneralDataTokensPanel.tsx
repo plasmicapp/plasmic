@@ -1,6 +1,7 @@
 import {
   RenderElementProps,
   VirtualTree,
+  VirtualTreeHandle,
   getFolderKeyChanges,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
@@ -19,6 +20,7 @@ import {
 import { Matcher } from "@/wab/client/components/view-common";
 import { PlasmicLeftGeneralDataTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralDataTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { parseUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import {
   DataTokenType,
   DataTokenValue,
@@ -119,6 +121,7 @@ function mapToDataTokenPanelRow({
 const LeftGeneralDataTokensPanel = observer(
   function LeftGeneralDataTokensPanel() {
     const studioCtx = useStudioCtx();
+    const treeRef = React.useRef<VirtualTreeHandle>(null);
     const [debouncedQuery, setDebouncedQuery] = React.useState("");
     const debouncedSetQuery = React.useCallback(
       debounce((value: string) => {
@@ -324,6 +327,10 @@ const LeftGeneralDataTokensPanel = observer(
               tokenType: category,
               name: studioCtx.projectDependencyManager.getNiceDepName(dep),
               key: `${category}-${dep.uuid}`,
+              // We only include registered tokens if they're from a hostless
+              // package; otherwise, registered tokens from custom host will
+              // already show up in the RegisteredTokens section.
+              // Note we don't currently allow registered DATA tokens.
               ...makeTokensItems(
                 (isHostLessPackage(dep.site)
                   ? finalDataTokensForDep(studioCtx.site, dep.site)
@@ -423,6 +430,7 @@ const LeftGeneralDataTokensPanel = observer(
             }}
           >
             <VirtualTree
+              ref={treeRef}
               rootNodes={items}
               renderElement={DataTokenTreeRow}
               nodeData={nodeData}
@@ -457,6 +465,7 @@ const LeftGeneralDataTokensPanel = observer(
       nodeKey,
       nodeHeights,
       renameGroup,
+      expandTo,
       expandAll,
       collapseAll,
     } = useTreeData<DataTokenPanelRow>({
@@ -469,6 +478,25 @@ const LeftGeneralDataTokensPanel = observer(
       getNodeHeight: getRowHeight,
       defaultOpenKeys: "all",
     });
+
+    // Tokens from imported projects may be virtualized or collapsed,
+    // so listen for UI actions and expand/scroll to it.
+    React.useEffect(() => {
+      const { dispose } = studioCtx.uiActionBus.registerListener(
+        (uiId, type) => {
+          const parsed = parseUiId(uiId);
+          if (
+            type === "jump" &&
+            parsed.type === "Model" &&
+            parsed.typeTag === "DataToken"
+          ) {
+            expandTo(parsed.uuid);
+            treeRef.current?.scrollTo(parsed.uuid);
+          }
+        }
+      );
+      return dispose;
+    }, [studioCtx, expandTo]);
 
     return (
       <>

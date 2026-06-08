@@ -2,17 +2,18 @@ import {
   DefaultDataPickerColumnItemProps,
   PlasmicDataPickerColumnItem,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
+import { BLOCKED_RUN_INTERACTION_MESSAGE } from "@/wab/client/state-management/interactions-meta";
 import {
   canRunInteraction,
   runInteraction,
 } from "@/wab/client/state-management/preview-steps";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { Interaction } from "@/wab/shared/model/classes";
 import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
+import { Interaction } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
+import { observer } from "mobx-react";
 import * as React from "react";
-import { BLOCKED_RUN_INTERACTION_MESSAGE } from "@/wab/client/state-management/interactions-meta";
 
 export interface DataPickerColumnItemProps
   extends DefaultDataPickerColumnItemProps {
@@ -21,13 +22,22 @@ export interface DataPickerColumnItemProps
   previewValue?: string;
   columnIndex?: number;
   interaction?: Interaction;
+  /** Jumps to this row's editable source. Absent when the row has no source. */
+  onJumpToSource?: () => void;
 }
 
 function DataPickerColumnItem_(
   props: DataPickerColumnItemProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { columnIndex, previewValue, itemName, interaction, ...rest } = props;
+  const {
+    columnIndex,
+    previewValue,
+    itemName,
+    interaction,
+    onJumpToSource,
+    ...rest
+  } = props;
   const studioCtx = useStudioCtx();
   return (
     <PlasmicDataPickerColumnItem
@@ -35,8 +45,16 @@ function DataPickerColumnItem_(
       {...rest}
       itemName={itemName}
       previewValue={previewValue ?? null}
+      hasLink={onJumpToSource ? "hasLink" : undefined}
+      link={{
+        onClick: (e) => {
+          e.stopPropagation();
+          onJumpToSource?.();
+        },
+      }}
       play={{
-        onClick: () => {
+        onClick: (e) => {
+          e.stopPropagation();
           const vc = studioCtx.focusedViewCtx();
           const tpl = vc?.focusedTpls()?.[0];
           if (!vc || !tpl || !isTplTagOrComponent(tpl) || !interaction) {
@@ -55,5 +73,5 @@ function DataPickerColumnItem_(
   );
 }
 
-const DataPickerColumnItem = React.forwardRef(DataPickerColumnItem_);
+const DataPickerColumnItem = observer(React.forwardRef(DataPickerColumnItem_));
 export default DataPickerColumnItem;

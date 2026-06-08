@@ -5,6 +5,11 @@ import {
   reportError,
   showError,
 } from "@/wab/client/ErrorNotifications";
+import {
+  focusPreferenceKey,
+  leftTabKey,
+  storageViewAsKey,
+} from "@/wab/client/LocalStorageKey";
 import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
 import { zoomJump } from "@/wab/client/Zoom";
 import { invalidationKey } from "@/wab/client/api";
@@ -13,11 +18,6 @@ import {
   listUnpublishedProjectRevisions,
 } from "@/wab/client/api-hooks";
 import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
-import {
-  focusPreferenceKey,
-  leftTabKey,
-  storageViewAsKey,
-} from "@/wab/client/LocalStorageKey";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
@@ -103,6 +103,8 @@ import {
 } from "@/wab/client/studio-ctx/comments-ctx";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { MultiplayerCtx } from "@/wab/client/studio-ctx/multiplayer-ctx";
+import { UiActionBus } from "@/wab/client/studio-ctx/ui/UiActionBus";
+import { UiId, parseUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import {
   SpotlightAndVariantsInfo,
   ViewCtx,
@@ -220,6 +222,7 @@ import {
   arrayEqIgnoreOrder,
   asOne,
   assert,
+  assertNever,
   asyncMaxAtATime,
   asyncOneAtATime,
   asyncTimeout,
@@ -751,6 +754,41 @@ export class StudioCtx extends WithDbCtx {
       this.appCtx.history.listen((location) => {
         spawn(this.handleRouteChange(location));
       }),
+      this.uiActionBus.registerListener((uiId, _type) => {
+        const parsed = parseUiId(uiId);
+        switch (parsed.type) {
+          case "Section":
+            switch (parsed.section) {
+              case "PageMetaUrl":
+              case "PageMetaUrlParams":
+                this.switchRightTab(RightTabKey.component);
+                break;
+              default:
+                assertNever(parsed.section);
+            }
+            break;
+          case "Model":
+            switch (parsed.typeTag) {
+              case "DataToken":
+                this.switchLeftTab("dataTokens");
+                break;
+              case "ComponentDataQuery":
+              case "ComponentServerQuery":
+              case "PropParam":
+              case "StateParam":
+              case "SlotParam":
+              case "GlobalVariantGroupParam":
+              case "StateChangeHandlerParam":
+                this.switchRightTab(RightTabKey.component);
+                break;
+              default:
+                assertNever(parsed.typeTag);
+            }
+            break;
+          default:
+            assertNever(parsed);
+        }
+      }).dispose,
       autorun(
         async () => {
           const arenaFrames = getArenaFrames(this.previousArena);
@@ -6048,6 +6086,8 @@ export class StudioCtx extends WithDbCtx {
   set forceOpenProp(p: readonly [classes.Component, string] | null) {
     this._forceOpenProp.set(p);
   }
+
+  readonly uiActionBus = new UiActionBus<UiId>();
 
   private _forceOpenSplit = observable.box<classes.Split | null>(null);
   get forceOpenSpit() {

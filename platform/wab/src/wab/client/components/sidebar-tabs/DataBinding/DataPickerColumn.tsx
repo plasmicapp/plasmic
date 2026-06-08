@@ -4,11 +4,13 @@ import {
   DataPickerOpts,
   evalExpr,
   getItemPath,
+  getSourceUiId,
   getSupportedObjectKeys,
   getVariableType,
   isListType,
   isTypeSupported,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
 import {
   DefaultDataPickerColumnProps,
   PlasmicDataPickerColumn,
@@ -20,13 +22,14 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, isTruthy } from "@/wab/shared/common";
+import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { ensureKnownInteraction } from "@/wab/shared/model/classes";
-import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { mkMetaName } from "@plasmicapp/host";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export interface DataPickerColumnProps extends DefaultDataPickerColumnProps {
@@ -37,6 +40,7 @@ export interface DataPickerColumnProps extends DefaultDataPickerColumnProps {
   columnItems: ColumnItem[];
   onItemSelected: (column: number, item: number) => void;
   opts: DataPickerOpts;
+  onCancelDataPicker?: () => void;
 }
 
 function DataPickerColumn_(
@@ -51,6 +55,7 @@ function DataPickerColumn_(
     onItemSelected,
     isActiveColumn,
     opts,
+    onCancelDataPicker,
     ...rest
   } = props;
   if (!data) {
@@ -58,6 +63,7 @@ function DataPickerColumn_(
   }
 
   const studioCtx = useStudioCtx();
+  const viewCtx = useViewCtxMaybe();
   const getInteraction = React.useCallback(
     (key: string) => {
       return data["$steps"]?.[mkMetaName(key)]?.interaction;
@@ -101,6 +107,9 @@ function DataPickerColumn_(
             ? keyCount + ` item${keyCount === 1 ? "" : "s"}`
             : undefined;
           const isSelected = index === selectedItem;
+          const sourceUiId = viewCtx
+            ? getSourceUiId(itemPath, viewCtx.site, viewCtx.currentComponent())
+            : undefined;
           return (
             <DataPickerColumnItem
               ref={
@@ -123,6 +132,14 @@ function DataPickerColumn_(
               previewValue={previewValue}
               isSelected={isSelected}
               onClick={() => onItemSelected(columnIndex, index)}
+              onJumpToSource={
+                sourceUiId
+                  ? () => {
+                      onCancelDataPicker?.();
+                      studioCtx.uiActionBus.dispatch(sourceUiId, "jump");
+                    }
+                  : undefined
+              }
               columnIndex={columnIndex}
               step={
                 isStepsColumn && enabledPreviewSteps
@@ -167,5 +184,5 @@ function DataPickerColumn_(
   );
 }
 
-const DataPickerColumn = React.forwardRef(DataPickerColumn_);
+const DataPickerColumn = observer(React.forwardRef(DataPickerColumn_));
 export default DataPickerColumn;

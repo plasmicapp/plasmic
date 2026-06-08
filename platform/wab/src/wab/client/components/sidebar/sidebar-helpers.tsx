@@ -25,6 +25,7 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { StyleTokenType, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
@@ -55,6 +56,7 @@ import { CSSProperties, ReactNode } from "react";
 import type { SetOptional } from "type-fest";
 
 export function LabeledItem(props: {
+  uiId?: UiId;
   label?: React.ReactNode;
   subtitle?: React.ReactNode;
   layout?: "vertical" | "horizontal";
@@ -79,6 +81,7 @@ export function LabeledItem(props: {
 }) {
   const {
     children,
+    uiId,
     menu,
     className,
     label,
@@ -117,6 +120,7 @@ export function LabeledItem(props: {
 
   return (
     <LabeledListItem
+      uiId={uiId}
       layout={layout === "vertical" ? "vertical" : undefined}
       alignment={alignment === "baseline" ? undefined : alignment}
       className={className}

@@ -1,11 +1,12 @@
 import {
-  StringPropEditor,
   isTemplatedStringEditorValue,
+  StringPropEditor,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { mkSectionUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn, switchType } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
@@ -19,10 +20,10 @@ import {
 import {
   CustomCode,
   Expr,
+  isKnownExpr,
   ObjectPath,
   TemplatedString,
   TplTag,
-  isKnownExpr,
 } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
@@ -44,7 +45,11 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
 
   return (
     <SidebarSection style={{ paddingTop: 12 }} id="sidebar-page-meta">
-      <LabeledItemRow label="URL path" data-test-id="page-path">
+      <LabeledItemRow
+        uiId={mkSectionUiId("PageMetaUrl")}
+        label="URL path"
+        data-test-id="page-path"
+      >
         <StringPropEditor
           disabled={false}
           leftAligned={true}

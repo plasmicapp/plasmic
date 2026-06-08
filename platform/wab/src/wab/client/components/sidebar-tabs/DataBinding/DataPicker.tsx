@@ -518,6 +518,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
               key={idx}
               onItemSelected={onItemSelectedHandle}
               opts={opts}
+              onCancelDataPicker={onCancel}
             />
           );
         })}

@@ -5,6 +5,8 @@ import {
   DefaultLabeledListItemProps,
   PlasmicLabeledListItem,
 } from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicLabeledListItem";
+import { UiActionsWrapper } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { UiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { combineProps, swallowClick } from "@/wab/commons/components/ReactUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
@@ -15,6 +17,7 @@ export interface LabeledListItemProps
     DefaultLabeledListItemProps,
     "clickable" | "withMenu" | "onClick" | "withIndicator"
   > {
+  uiId?: UiId;
   menu?: React.ReactNode | MenuMaker;
   noMenuButton?: boolean;
   onClick?: (event: React.MouseEvent) => void;
@@ -31,6 +34,7 @@ function LabeledListItem_(
 ) {
   const [hover, setHover] = React.useState(false);
   const {
+    uiId,
     menu,
     noMenuButton,
     onClick,
@@ -49,13 +53,17 @@ function LabeledListItem_(
   return (
     <PlasmicLabeledListItem
       root={{
-        ref,
-        onClick,
-        onContextMenu,
-        "data-plasmic-role": "labeled-item",
-        "data-test-id": dataTestId,
-        onMouseEnter: () => setHover(true),
-        onMouseLeave: () => setHover(false),
+        props: {
+          ref,
+          onClick,
+          onContextMenu,
+          "data-plasmic-role": "labeled-item",
+          "data-test-id": dataTestId,
+          onMouseEnter: () => setHover(true),
+          onMouseLeave: () => setHover(false),
+        },
+        wrap: (x) =>
+          uiId ? <UiActionsWrapper uiId={uiId}>{x}</UiActionsWrapper> : x,
       }}
       {...rest}
       withMenu={!!menu}
