@@ -111,6 +111,7 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
         onChange={onChange}
         onDelete={onDelete}
         controlExtras={controlExtras}
+        disableLinkToProp
       />
     </PropValueEditorContext.Provider>
   );
