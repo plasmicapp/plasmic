@@ -56,6 +56,21 @@ function renderStudioIntoIframe() {
   document.body.appendChild(script);
 }
 
+const HIDE_HOST_OVERLAYS_STYLE_ID = "plasmic-hide-host-overlays";
+
+/**
+ * Hide the NextJS dev overlay, rendered as a <nextjs-portal>, when running in an iframe
+ */
+function hideHostOverlaysInStudioIframe() {
+  if (document.getElementById(HIDE_HOST_OVERLAYS_STYLE_ID)) {
+    return;
+  }
+  const style = document.createElement("style");
+  style.id = HIDE_HOST_OVERLAYS_STYLE_ID;
+  style.textContent = `nextjs-portal { display: none !important; }`;
+  document.head.appendChild(style);
+}
+
 let renderCount = 0;
 export function setPlasmicRootNode(node: React.ReactElement | null) {
   // Keep track of renderCount, which we use as key to ErrorBoundary, so
@@ -104,6 +119,12 @@ function _PlasmicCanvasHost() {
       }
     };
   }, [forceUpdate]);
+  React.useEffect(() => {
+    // Hide framework dev overlays when running in Studio
+    if (isFrameAttached && window.parent !== window) {
+      hideHostOverlaysInStudioIframe();
+    }
+  }, [isFrameAttached]);
   React.useEffect(() => {
     if (shouldRenderStudio && isFrameAttached && window.parent !== window) {
       renderStudioIntoIframe();
