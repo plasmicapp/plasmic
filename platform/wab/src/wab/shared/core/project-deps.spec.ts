@@ -1,11 +1,14 @@
+import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { mkVariant } from "@/wab/shared/Variants";
 import {
+  getDependenciesWithReferencedCss,
   upgradeProjectDeps,
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
 import { createSite } from "@/wab/shared/core/sites";
 import {
   ProjectDependency,
+  Site,
   StyleToken,
   StyleTokenOverride,
   VariantedValue,
@@ -417,5 +420,114 @@ describe("upgradeProjectDeps", () => {
 
     // Verify the dependency was updated
     expect(mainSite.projectDependencies).toEqual([newDep]);
+  });
+});
+
+describe("getDependenciesWithReferencedCss", () => {
+  const mkDep = (name: string, site: Site): ProjectDependency =>
+    new ProjectDependency({
+      name,
+      pkgId: `${name}-pkg`,
+      projectId: `${name}-project`,
+      version: "0.0.1",
+      uuid: `${name}-uuid`,
+      site,
+    });
+
+  const mkToken = (name: string, uuid: string, value: string): StyleToken =>
+    new StyleToken({
+      name,
+      type: "Color",
+      uuid,
+      value,
+      variantedValues: [],
+      isRegistered: false,
+      regKey: null,
+    });
+
+  test("includes deps whose tokens the project CSS references, excludes the rest", () => {
+    const depToken = mkToken("DepColor", "dep-color", "#fff");
+    const usedDep = mkDep("UsedDep", createSite({ styleTokens: [depToken] }));
+    const unusedDep = mkDep(
+      "UnusedDep",
+      createSite({ styleTokens: [mkToken("Other", "other", "#000")] })
+    );
+
+    // A local token references the used dep's token.
+    const localToken = mkToken("Local", "local", mkTokenRef(depToken));
+
+    const site = createSite({
+      projectDependencies: [usedDep, unusedDep],
+      styleTokens: [localToken],
+    });
+
+    expect(
+      getDependenciesWithReferencedCss(site, []).map((d) => d.name)
+    ).toEqual(["UsedDep"]);
+  });
+
+  test("returns no deps when nothing references them", () => {
+    const dep = mkDep(
+      "Dep",
+      createSite({ styleTokens: [mkToken("DepColor", "dep-color", "#fff")] })
+    );
+    const site = createSite({
+      projectDependencies: [dep],
+      styleTokens: [mkToken("Local", "local", "#000")],
+    });
+
+    expect(getDependenciesWithReferencedCss(site, [])).toEqual([]);
+  });
+
+  test("includes deps referenced by the site's token overrides", () => {
+    const depToken = mkToken("DepColor", "dep-color", "#fff");
+    const dep = mkDep("Dep", createSite({ styleTokens: [depToken] }));
+
+    const localToken = mkToken("Local", "local", "#000");
+    const site = createSite({
+      projectDependencies: [dep],
+      styleTokens: [localToken],
+      styleTokenOverrides: [
+        new StyleTokenOverride({
+          token: localToken,
+          value: mkTokenRef(depToken),
+          variantedValues: [],
+        }),
+      ],
+    });
+
+    expect(
+      getDependenciesWithReferencedCss(site, []).map((d) => d.name)
+    ).toEqual(["Dep"]);
+  });
+
+  test("follows transitive references through a reachable dependency's own CSS", () => {
+    const depBToken = mkToken("BColor", "b-color", "#abc");
+    const depB = mkDep("DepB", createSite({ styleTokens: [depBToken] }));
+
+    // depA depends on depB; one of depA's own tokens references depB's token.
+    const depAUsedToken = mkToken("AColor", "a-color", "#def");
+    const depAChainToken = mkToken("AChain", "a-chain", mkTokenRef(depBToken));
+    const depA = mkDep(
+      "DepA",
+      createSite({
+        projectDependencies: [depB],
+        styleTokens: [depAUsedToken, depAChainToken],
+      })
+    );
+
+    // The site references only depA's non-chain token; depB is reachable only
+    // through depA's own CSS.
+    const localToken = mkToken("Local", "local", mkTokenRef(depAUsedToken));
+    const site = createSite({
+      projectDependencies: [depA],
+      styleTokens: [localToken],
+    });
+
+    expect(
+      getDependenciesWithReferencedCss(site, [])
+        .map((d) => d.name)
+        .sort()
+    ).toEqual(["DepA", "DepB"]);
   });
 });

@@ -42,6 +42,7 @@ import {
   makePlasmicComponentName,
   wrapGlobalProvider,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { ProjectConfig } from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { extractUsedGlobalVariantsForComponents } from "@/wab/shared/codegen/variants";
 import { assert, ensure, removeAt, spawn } from "@/wab/shared/common";
@@ -51,6 +52,7 @@ import {
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { getDependenciesWithReferencedCss } from "@/wab/shared/core/project-deps";
 import { allImageAssets } from "@/wab/shared/core/sites";
 import {
   Component,
@@ -136,9 +138,17 @@ export function syncDocsPreview(
       // whenever mobx observables change -- specifically, the view
       // state (current component, toggles, custom code) and also
       // data model.
-      const { modules, globalGroups } = serializeDependentModules(docsCtx);
+      const { modules, globalGroups, depsProjectConfigs } =
+        serializeDependentModules(docsCtx);
 
-      modules.push(createPreviewModule(docsCtx, globalGroups, codePreviewCtx));
+      modules.push(
+        createPreviewModule(
+          docsCtx,
+          globalGroups,
+          depsProjectConfigs,
+          codePreviewCtx
+        )
+      );
 
       spawn(renderQueue.push({ modules }));
     },
@@ -211,11 +221,13 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
     return {
       modules,
       globalGroups,
+      depsProjectConfigs,
     };
   } else {
     return {
       modules,
       globalGroups: [] as VariantGroup[],
+      depsProjectConfigs,
     };
   }
 }
@@ -285,12 +297,34 @@ function makeComponentsMap(
 }
 
 /**
+ * Import statements for the project CSS of the dependencies whose tokens,
+ * mixins, or animations the component references, so those vars resolve even
+ * when no component from the dependency is rendered.
+ */
+function serializeReferencedDepCssImports(
+  site: Site,
+  component: Component,
+  depsProjectConfigs: ProjectConfig[]
+): string {
+  const referencedDepIds = new Set(
+    getDependenciesWithReferencedCss(site, [
+      ...componentToDeepReferenced(component, true),
+    ]).map((dep) => dep.projectId)
+  );
+  return depsProjectConfigs
+    .filter((cfg) => referencedDepIds.has(cfg.projectId))
+    .map((cfg) => `import "./${cfg.cssFileName}";`)
+    .join("\n");
+}
+
+/**
  * Serialize the actual preview module -- the "root" of the preview react
  * app, and the module that instantiates the focused component.
  */
 function createPreviewModule(
   docsCtx: DocsPortalCtx,
   globalGroups: VariantGroup[],
+  depsProjectConfigs: ProjectConfig[],
   codePreviewCtx: CodePreviewCtx | undefined
 ) {
   const component = docsCtx.tryGetFocusedComponent();
@@ -340,6 +374,14 @@ function createPreviewModule(
         docsCtx.useLoader()
       );
 
+  const depCssImports = component
+    ? serializeReferencedDepCssImports(
+        docsCtx.studioCtx.site,
+        component,
+        depsProjectConfigs
+      )
+    : "";
+
   let before = "";
   if (codePreviewCtx) {
     before = codePreviewCtx.getCode();
@@ -360,6 +402,7 @@ function createPreviewModule(
     source: `
 import React from "react";
 import ReactDOM from "react-dom";
+${depCssImports}
 import ${className} from "./${importedFileName}";
 ${component ? makePlumeDepsImports(docsCtx.studioCtx.site, component) : ""}
 ${makeGlobalGroupImports(globalGroups, { idFileNames: true })}

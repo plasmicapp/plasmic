@@ -69,7 +69,10 @@ import {
   isPageComponent,
 } from "@/wab/shared/core/components";
 import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import {
+  getDependenciesWithReferencedCss,
+  walkDependencyTree,
+} from "@/wab/shared/core/project-deps";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { getOwnerSite } from "@/wab/shared/core/tpls";
@@ -260,10 +263,20 @@ export function pushPreviewModules(
 
       modules.push(createCustomFunctionsModule(site));
 
+      // Only inject the CSS stylesheet for dependencies the page actually references.
+      const referencedDepIds = new Set(
+        getDependenciesWithReferencedCss(site, [
+          rootComponent,
+          ...referencedComponents,
+        ]).map((dep) => dep.projectId)
+      );
       modules.push(
         ...createPreviewScript(
           rootOutput,
           previewCtx,
+          depsProjectConfigs.filter((cfg) =>
+            referencedDepIds.has(cfg.projectId)
+          ),
           projectConfig.globalContextBundle,
           projectConfig.hasStyleTokenOverrides
             ? projectConfig.styleTokensProviderBundle
@@ -498,11 +511,20 @@ function createGlobalContextsModules(
 function createPreviewScript(
   rootOutput: ComponentExportOutput,
   previewCtx: PreviewCtx,
+  depProjectConfigs: ProjectConfig[],
   globalContextsBundle?: GlobalContextBundle,
   styleTokensProviderBundle?: StyleTokensProviderBundle
 ) {
   const componentName = rootOutput.componentName;
   const componentPath = rootOutput.skeletonModuleFileName;
+
+  // Import the referenced dependencies' project CSS up front. The caller passes
+  // only the dependencies whose CSS the page references, including ones with no
+  // rendered component (e.g. a dependency contributing just a token or
+  // animation).
+  const depCssImports = depProjectConfigs
+    .map((dep) => `import "./${dep.cssFileName}";`)
+    .join("\n");
 
   let content = `React.createElement(${componentName}, {
     ...props,
@@ -610,6 +632,7 @@ function createPreviewScript(
       import ReactDOM from "react-dom";
       import * as ph from "@plasmicapp/host";
       import * as p from "@plasmicapp/react-web";
+      ${depCssImports}
       ${globalGroupImports}
       ${globalContextsImports}
       ${

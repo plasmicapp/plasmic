@@ -264,3 +264,47 @@ export function extractUsedTokensForMixins(
   }
   return usedTokens;
 }
+
+/**
+ * Tokens referenced by a site's global CSS layer: token values, token
+ * overrides, mixins, and active theme.
+ * @sourceSite is the layer to scan (the top-level site or a dependency);
+ * @rootSite is the top-level site, used to resolve token references across the dependency tree.
+ */
+export function extractUsedTokensForProjectCss(
+  sourceSite: Site,
+  rootSite: Site
+): Set<StyleToken> {
+  const opts = { derefTokens: true };
+  const tokens = new Set<StyleToken>();
+  xAddAll(
+    tokens,
+    extractUsedTokensForTokens(sourceSite.styleTokens, rootSite, opts)
+  );
+  xAddAll(
+    tokens,
+    extractUsedTokensForTokenOverrides(
+      sourceSite.styleTokenOverrides,
+      rootSite,
+      opts
+    )
+  );
+  xAddAll(
+    tokens,
+    extractUsedTokensForMixins(sourceSite.mixins, rootSite, opts)
+  );
+  if (sourceSite.activeTheme) {
+    xAddAll(
+      tokens,
+      extractUsedTokensForMixins(
+        [
+          sourceSite.activeTheme.defaultStyle,
+          ...sourceSite.activeTheme.styles.map((s) => s.style),
+        ],
+        rootSite,
+        opts
+      )
+    );
+  }
+  return tokens;
+}

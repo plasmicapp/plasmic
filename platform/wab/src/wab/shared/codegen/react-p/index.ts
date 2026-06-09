@@ -547,24 +547,28 @@ ${animationsBlocks.varDecls}
   // import (e.g. from _app.tsx on Next.js) transitively loads them all.
   // The dep path is a best-effort placeholder; the trailing
   // /* plasmic-import: */ directive lets the plasmic cli re-resolve it at sync time.
-  const depCssImports = walkDependencyTree(site, "direct")
-    .map((dep) => {
-      const depCssFile = makeProjectCssFileName(
-        dep.projectId as ProjectId,
-        exportOpts
-      );
-      // Loader outputs a flat directory structure with list of modules at same level.
-      const depImportPath =
-        exportOpts.targetEnv === "loader"
-          ? `./${depCssFile}`
-          : `../${L.snakeCase(dep.name)}/${depCssFile}`;
-      return makeCssTaggedPlasmicImport(
-        depImportPath,
-        dep.projectId,
-        projectStyleCssImportName
-      );
-    })
-    .join("\n");
+  const depCssImports =
+    exportOpts.targetEnv === "preview"
+      ? // Preview injects dependency CSS imports in its root preview script, so we omit it here.
+        ""
+      : walkDependencyTree(site, "direct")
+          .map((dep) => {
+            const depCssFile = makeProjectCssFileName(
+              dep.projectId as ProjectId,
+              exportOpts
+            );
+            // Loader outputs a flat directory structure with list of modules at same level.
+            const depImportPath =
+              exportOpts.targetEnv === "loader"
+                ? `./${depCssFile}`
+                : `../${L.snakeCase(dep.name)}/${depCssFile}`;
+            return makeCssTaggedPlasmicImport(
+              depImportPath,
+              dep.projectId,
+              projectStyleCssImportName
+            );
+          })
+          .join("\n");
 
   const splitsProviderBundle = makeSplitsProviderBundle(
     site,

@@ -32,10 +32,15 @@ import {
   collectUsedIconAssetsForTpl,
   collectUsedPictureAssetsForTpl,
 } from "@/wab/shared/codegen/image-assets";
-import { collectUsedMixinsForTpl } from "@/wab/shared/codegen/mixins";
+import {
+  collectUsedMixinsForTpl,
+  extractUsedMixinsForComponents,
+} from "@/wab/shared/codegen/mixins";
 import {
   collectUsedTokensForTpl,
+  extractUsedTokensForComponents,
   extractUsedTokensForMixins,
+  extractUsedTokensForProjectCss,
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
 import { arrayRemove } from "@/wab/shared/collections";
@@ -47,7 +52,9 @@ import {
   maybe,
   tuple,
   withoutNils,
+  xAddAll,
 } from "@/wab/shared/common";
+import { extractUsedAnimationSequencesForComponents } from "@/wab/shared/core/animation-sequences";
 import {
   PageComponent,
   getComponentDisplayName,
@@ -95,6 +102,7 @@ import {
   findExprsInComponent,
   findExprsInNode,
   flattenTpls,
+  getOwnerSite,
   isTplColumns,
   isTplComponent,
   isTplImage,
@@ -340,6 +348,80 @@ export function getTransitiveDepsFromObjs(
     ),
     "projectId"
   );
+}
+
+/**
+ * Returns the dependencies whose styles are reachable from the given components
+ *
+ * Collects the tokens/mixins/animations referenced by the components and the
+ * site's global CSS tokens, also include reachable transitive dependencies.
+ */
+export function getDependenciesWithReferencedCss(
+  site: Site,
+  components: Component[]
+): ProjectDependency[] {
+  const deps = walkDependencyTree(site, "all");
+
+  const referencedSites = new Set<Site>();
+  const queue: Site[] = [];
+  const enqueue = (depSite: Site) => {
+    if (!referencedSites.has(depSite)) {
+      referencedSites.add(depSite);
+      queue.push(depSite);
+    }
+  };
+
+  // Enqueue every dependency that defines one of the referenced resources.
+  const enqueueReferencedDepSite = (refs: {
+    tokens?: Set<StyleToken>;
+    mixins?: Set<Mixin>;
+    animations?: Set<AnimationSequence>;
+  }) => {
+    for (const dep of deps) {
+      const ds = dep.site;
+      if (
+        ds.styleTokens.some((t) => refs.tokens?.has(t)) ||
+        ds.mixins.some((m) => refs.mixins?.has(m)) ||
+        ds.animationSequences.some((a) => refs.animations?.has(a))
+      ) {
+        enqueue(ds);
+      }
+    }
+  };
+
+  // Start from references from the site's global CSS and the rendered components.
+  const usedTokens = extractUsedTokensForProjectCss(site, site);
+  xAddAll(
+    usedTokens,
+    extractUsedTokensForComponents(site, components, {
+      expandMixins: true,
+      derefTokens: true,
+    })
+  );
+  enqueueReferencedDepSite({
+    tokens: usedTokens,
+    mixins: extractUsedMixinsForComponents(components),
+    animations: extractUsedAnimationSequencesForComponents(components),
+  });
+
+  // Include dependencies that own one of the rendered components.
+  for (const component of components) {
+    const owner = getOwnerSite(component);
+    if (owner !== site) {
+      enqueue(owner);
+    }
+  }
+
+  // Each referenced dependency's own global CSS may point at tokens from further dependencies;
+  // We don't scan a dependency's components, it's already handled above.
+  while (queue.length > 0) {
+    const ds = ensure(queue.pop(), "queue is non-empty");
+    enqueueReferencedDepSite({
+      tokens: extractUsedTokensForProjectCss(ds, site),
+    });
+  }
+
+  return deps.filter((dep) => referencedSites.has(dep.site));
 }
 
 export type ImportableObject =
