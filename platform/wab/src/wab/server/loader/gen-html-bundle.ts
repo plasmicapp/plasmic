@@ -31,7 +31,8 @@ export async function genLoaderHtmlBundle(opts: {
     prepass,
   } = opts;
 
-  const codegenUrl = getCodegenUrl();
+  const publicCodegenUrl = getCodegenUrl();
+  const internalCodegenUrl = getCodegenOriginUrl();
   const loader = initPlasmicLoader({
     projects: [
       {
@@ -41,8 +42,8 @@ export async function genLoaderHtmlBundle(opts: {
       },
     ],
     preview: !version,
-    apiHost: getCodegenOriginUrl(),
-    cdnHost: codegenUrl,
+    apiHost: internalCodegenUrl,
+    cdnHost: internalCodegenUrl,
   });
 
   const data = await loader.fetchComponentData({
@@ -95,7 +96,7 @@ export async function genLoaderHtmlBundle(opts: {
     hydrate &&
       React.createElement("script", {
         async: true,
-        src: `${codegenUrl}/static/js/loader-hydrate.js`,
+        src: `${publicCodegenUrl}/static/js/loader-hydrate.js`,
       })
   );
 
