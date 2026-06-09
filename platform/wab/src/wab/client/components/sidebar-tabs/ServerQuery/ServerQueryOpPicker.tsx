@@ -51,7 +51,7 @@ import {
   customCode,
   stripParens,
 } from "@/wab/shared/core/exprs";
-import { isHostlessPackageInstalledWithHidden } from "@/wab/shared/core/project-deps";
+import { isHostlessPackageInstalled } from "@/wab/shared/core/project-deps";
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
@@ -92,7 +92,7 @@ const CUSTOM_CODE_OPTION = "__custom_code__";
 
 type ServerQueryMode = "query" | "mutation";
 
-function mkCustomFunctionArgs(
+export function mkCustomFunctionArgs(
   customFunction: CustomFunction,
   registrationMeta: CustomFunctionMeta<any> | undefined,
   mode: ServerQueryMode
@@ -207,12 +207,12 @@ function getAvailableCustomFunctions(
   const availableCustomFunctions: AvailableCustomFunctionInfo[] = [];
 
   for (const meta of hostLessComponentsMeta) {
-    const isInstalledWithHidden = isHostlessPackageInstalledWithHidden(
+    const isInstalled = isHostlessPackageInstalled(
       meta,
       studioCtx.site.projectDependencies
     );
     // Only show packages that should be visible
-    if (isInstalledWithHidden || !shouldShowHostLessPackage(studioCtx, meta)) {
+    if (isInstalled || !shouldShowHostLessPackage(studioCtx, meta)) {
       continue;
     }
     const projectIds = ensureArray(meta.projectId);

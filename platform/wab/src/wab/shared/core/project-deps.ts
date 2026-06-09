@@ -252,14 +252,12 @@ export function getLeafProjectIdForHostLessPackageMeta(
   return last(ensureArray(pkg.projectId));
 }
 
-export function isHostlessPackageInstalledWithHidden(
+export function isHostlessPackageInstalled(
   meta: HostLessPackageInfo,
   deps: ProjectDependency[]
 ) {
   const leafId = getLeafProjectIdForHostLessPackageMeta(meta);
-  const isInstalledWithHidden =
-    meta.hiddenWhenInstalled && deps.some((dep) => leafId === dep.projectId);
-  return isInstalledWithHidden;
+  return deps.some((dep) => leafId === dep.projectId);
 }
 
 export function extractTransitiveHostLessPackages(site: Site) {

@@ -13,3 +13,8 @@
   height: 100%;
   animation: slideIn 150ms forwards;
 }
+
+.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}

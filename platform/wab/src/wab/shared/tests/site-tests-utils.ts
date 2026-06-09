@@ -3,6 +3,7 @@ import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { Bundler } from "@/wab/shared/bundler";
 import { Bundle } from "@/wab/shared/bundles";
 import {
+  CustomFunction,
   Site,
   isKnownProjectDependency,
   isKnownSite,
@@ -31,6 +32,29 @@ export function generateSiteFromBundle(
   }
 
   return site;
+}
+
+/**
+ * Builds a minimal `CustomFunction`. Defaults to a query function with no namespace.
+ */
+export function mkCustomFunction(opts: {
+  importName: string;
+  importPath?: string;
+  namespace?: string | null;
+  displayName?: string | null;
+  isQuery?: boolean;
+  isMutation?: boolean;
+}): CustomFunction {
+  return new CustomFunction({
+    importPath: opts.importPath ?? "test",
+    importName: opts.importName,
+    defaultExport: false,
+    namespace: opts.namespace ?? null,
+    displayName: opts.displayName ?? null,
+    params: [],
+    isQuery: opts.isQuery ?? true,
+    isMutation: opts.isMutation ?? false,
+  });
 }
 
 export const createTplMgr = (site: Site) => new TplMgr({ site });

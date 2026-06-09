@@ -55,7 +55,13 @@ import {
 } from "@/wab/shared/devflags";
 import { Rect } from "@/wab/shared/geom";
 import { CloneOpts } from "@/wab/shared/insertable-templates/types";
-import { Arena, Component, TplNode, TplTag } from "@/wab/shared/model/classes";
+import {
+  Arena,
+  Component,
+  ComponentServerQuery,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import L from "lodash";
 import * as React from "react";
 import { FaListOl, FaListUl, FaPlus } from "react-icons/fa";
@@ -66,6 +72,7 @@ export enum AddItemType {
   plume = "plume",
   installable = "installable",
   fake = "fake",
+  customFunction = "customFunction",
 }
 
 interface AddItemCommon {
@@ -90,6 +97,7 @@ interface AddItemCommon {
   description?: string;
   /** Uses a monospace font for the label, usually for code libraries. */
   monospaced?: boolean;
+  isDisabled?: boolean;
 }
 
 export type AddInstallableItem<T = any> = AddItemCommon & {
@@ -153,6 +161,17 @@ export type AddFakeItem<T = any> = AddItemCommon & {
   component?: Component;
 };
 
+export type AddCustomFunctionItem = AddItemCommon & {
+  type: AddItemType.customFunction;
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  projectIds: string[];
+  createDraftQuery: (
+    studioCtx: StudioCtx
+  ) => Promise<ComponentServerQuery | undefined>;
+};
+
 export function isTplAddItem(item: AddItem): item is AddTplItem {
   return item.type === AddItemType.tpl || item.type === AddItemType.plume;
 }
@@ -177,7 +196,8 @@ export type AddItem =
   | AddFrameItem
   | AddTplItem
   | AddFakeItem
-  | AddInstallableItem;
+  | AddInstallableItem
+  | AddCustomFunctionItem;
 
 export const isAddItem = (i: { type: string }): i is AddItem =>
   L.values(AddItemType).includes(i.type as AddItemType);

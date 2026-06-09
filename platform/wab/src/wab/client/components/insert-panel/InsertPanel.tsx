@@ -18,10 +18,15 @@ import {
 import { shouldShowHostLessPackage } from "@/wab/client/components/omnibar/Omnibar";
 import OmnibarAddItem from "@/wab/client/components/omnibar/OmnibarAddItem";
 import { getPlumeImage } from "@/wab/client/components/plume/plume-display-utils";
+import { useServerQueryBottomModals } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import {
+  createAddCustomFunction,
+  createAddCustomFunctionFromMeta,
   createAddHostLessComponent,
   createAddInsertableTemplate,
   createAddInstallable,
+  createAddPackageComponent,
+  createAddPackageFunction,
   createAddTemplateComponent,
   createAddTplCodeComponents,
   createAddTplComponent,
@@ -51,6 +56,7 @@ import {
 } from "@/wab/client/definitions/insertables";
 import { DragInsertManager } from "@/wab/client/Dnd";
 import { useVirtualCombobox } from "@/wab/client/hooks/useVirtualCombobox";
+import { DOWNLOAD_ICON } from "@/wab/client/icons";
 import {
   getEventDataForTplComponent,
   InsertItemEventData,
@@ -71,6 +77,7 @@ import { isFlexContainer } from "@/wab/client/utils/tpl-client-utils";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
+import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { createMapFromObject } from "@/wab/shared/collections";
 import {
   assertNever,
@@ -100,12 +107,10 @@ import {
   sortComponentsByName,
   tryGetDefaultComponent,
 } from "@/wab/shared/core/components";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { isIcon } from "@/wab/shared/core/image-assets";
-import {
-  getLeafProjectIdForHostLessPackageMeta,
-  isHostlessPackageInstalledWithHidden,
-} from "@/wab/shared/core/project-deps";
+import { getLeafProjectIdForHostLessPackageMeta } from "@/wab/shared/core/project-deps";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -120,6 +125,7 @@ import {
   DEVFLAGS,
   flattenInsertableTemplates,
   flattenInsertableTemplatesByType,
+  HostLessComponentInfo,
   HostLessPackageInfo,
   InsertableTemplatesGroup,
 } from "@/wab/shared/devflags";
@@ -143,7 +149,7 @@ import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import L, { groupBy, sortBy, uniq } from "lodash";
+import L, { groupBy, partition, sortBy, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -217,6 +223,7 @@ export const InsertPanel = observer(function InsertPanel_({
         <AddDrawerContent
           studioCtx={studioCtx}
           onInserted={onInserted}
+          onClose={onClose}
           onDragStart={() => {
             setDragging(true);
             onClose();
@@ -249,7 +256,7 @@ const shouldShowPreview = (group: AddItemGroup): boolean => {
   if (
     group.sectionKey === "Code Libraries" ||
     group.sectionKey === "Functions" ||
-    group.familyKey === "imported-packages"
+    group.familyKey === "installed"
   ) {
     return false;
   }
@@ -281,13 +288,22 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
   onDragStart: DraggableInsertableProps["onDragStart"];
   onDragEnd: DraggableInsertableProps["onDragEnd"];
   onInserted: (item: AddItem, comp: TplNode | null) => void;
+  onClose: () => void;
   recentItems: AddTplItem[];
 }) {
-  const { studioCtx, onDragStart, onDragEnd, onInserted, recentItems } = props;
+  const {
+    studioCtx,
+    onDragStart,
+    onDragEnd,
+    onInserted,
+    onClose,
+    recentItems,
+  } = props;
   const inputRef = React.useRef<TextboxRef>(null);
   const contentRef = React.useRef<HTMLElement>(null);
   const listRef = React.useRef<VariableSizeList>(null);
   const focusManager = useFocusManager();
+  const serverQueryModals = useServerQueryBottomModals();
 
   const vc = studioCtx.focusedViewCtx();
 
@@ -446,7 +462,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
   };
 
   const onInsert = spawnWrapper(async (item: AddItem) => {
-    if (shouldInterceptOnInsert(item)) {
+    if (item.isDisabled || shouldInterceptOnInsert(item)) {
       return;
     }
 
@@ -508,6 +524,44 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
             dragged: false,
           });
         }
+        break;
+      }
+      case AddItemType.customFunction: {
+        const queryRef = await item.createDraftQuery(studioCtx);
+        if (!queryRef) {
+          onClose();
+          break;
+        }
+        const focusedViewCtx = ensure(
+          studioCtx.focusedOrFirstViewCtx(),
+          "draft query was successfully created, so focused viewCtx must exist"
+        );
+        onInserted(item, null);
+        const exprCtx: ExprCtx = {
+          projectFlags: studioCtx.projectFlags(),
+          component: focusedViewCtx.component,
+          inStudio: true,
+        };
+        serverQueryModals.open(queryRef.uuid, {
+          value: queryRef,
+          onSave: spawnWrapper(
+            async (newOp: ServerQueryOp, opExprName?: string) => {
+              await studioCtx.change(({ success }) => {
+                queryRef.op = newOp;
+                if (opExprName) {
+                  queryRef.name = opExprName;
+                }
+                return success();
+              });
+              serverQueryModals.close(queryRef.uuid);
+            }
+          ),
+          onCancel: () => serverQueryModals.close(queryRef.uuid),
+          viewCtx: focusedViewCtx,
+          tpl: focusedViewCtx.currentCtxTplRoot(),
+          schema: focusedViewCtx.customFunctionsSchema(),
+          exprCtx,
+        });
         break;
       }
     }
@@ -878,11 +932,15 @@ const Row = React.memo(function Row(props: {
                 aria-label={item.label}
                 data-plasmic-add-item-name={item.systemName ?? item.label}
                 role="option"
-                className={item.type === "tpl" ? "grabbable" : ""}
+                aria-disabled={item.isDisabled}
+                className={cn({
+                  grabbable: item.type === "tpl" && !item.isDisabled,
+                  [S.disabled]: item.isDisabled,
+                })}
                 style={{ width: itemWidth }}
               >
                 <MaybeWrap
-                  cond={isTplAddItem(item)}
+                  cond={isTplAddItem(item) && !item.isDisabled}
                   wrapper={(children) => (
                     <DraggableInsertable
                       key={item.key}
@@ -966,6 +1024,15 @@ const getTemplateComponents = memoizeOne(function getTemplateComponent(
   );
 });
 
+const groupByBundleName = (hostlessPackageMeta: HostLessPackageInfo[]) =>
+  groupBy(
+    hostlessPackageMeta.filter((m) => m.bundleName),
+    (m) => m.bundleName
+  );
+
+const isVisibleHostLessItem = (i: HostLessComponentInfo) =>
+  !i.hidden && !i.hiddenOnStore && i.onlyShownIn !== "old";
+
 const getHostLess = memoizeOne(
   (
     studioCtx: StudioCtx,
@@ -975,19 +1042,28 @@ const getHostLess = memoizeOne(
       studioCtx.appCtx.appConfig.hostLessComponents ??
       DEVFLAGS.hostLessComponents ??
       [];
+    const isMetaInstalled = (meta: HostLessPackageInfo) =>
+      ensureArray(meta.projectId).some((pid) =>
+        projectDependencies.some((d) => d.projectId === pid)
+      );
+    // After any member installs, the bundle entry takes over its installs.
+    const activeBundleNames = new Set(
+      hostLessComponentsMeta.flatMap((m) =>
+        m.bundleName && isMetaInstalled(m) ? [m.bundleName] : []
+      )
+    );
     return hostLessComponentsMeta
       .filter(
         (meta) =>
           meta.onlyShownIn !== "old" &&
-          shouldShowHostLessPackage(studioCtx, meta)
+          shouldShowHostLessPackage(studioCtx, meta) &&
+          // Render bundle primary items, but only while the bundle is dormant.
+          (!meta.bundleName ||
+            (meta.isPrimaryItemOfBundle &&
+              !activeBundleNames.has(meta.bundleName)))
       )
       .map<AddItemGroup>((meta) => {
-        // Filter custom function packages with hiddenWhenInstalled that are installed
-        // TODO - update function UI to indicate that it's already installed
-        const isInstalledWithHidden = isHostlessPackageInstalledWithHidden(
-          meta,
-          projectDependencies
-        );
+        const isInstalled = isMetaInstalled(meta);
         const newVar: AddItemGroup = {
           hostLessPackageInfo: meta,
           key: `hostless-packages--${meta.projectId}`,
@@ -1001,15 +1077,16 @@ const getHostLess = memoizeOne(
           items: meta.items
             .filter(
               (item) =>
-                (!(item.isCustomFunction && isInstalledWithHidden) &&
-                  !item.hidden &&
-                  !item.hiddenOnStore &&
-                  item.onlyShownIn !== "old") ||
+                (!((item.isFake || item.isCustomFunction) && isInstalled) &&
+                  isVisibleHostLessItem(item)) ||
                 DEVFLAGS.showHiddenHostLessComponents
             )
             .map((item) => {
               if (meta.isInstallOnly) {
                 return createInstallOnlyPackage(item, meta);
+              }
+              if (item.isCustomFunction) {
+                return createAddCustomFunctionFromMeta(item, meta);
               }
               if (item.isFake) {
                 return createFakeHostLessComponent(
@@ -1079,7 +1156,7 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
 }
 
 const familyKeyToLabel = {
-  "imported-packages": "Imported packages",
+  installed: "Installed",
   "hostless-packages": "Component store",
 };
 const familyKeyRank = new Map<
@@ -1087,7 +1164,7 @@ const familyKeyRank = new Map<
   number
 >([
   [undefined, 0],
-  ["imported-packages", 1],
+  ["installed", 1],
   ["hostless-packages", 2],
 ]);
 // Ranking each section key when sorting with an active search on.
@@ -1153,6 +1230,10 @@ export function buildAddItemGroups({
   const hostLessComponentsMeta =
     studioCtx.appCtx.appConfig.hostLessComponents ??
     DEVFLAGS.hostLessComponents;
+  const metaForDep = (dep: ProjectDependency) =>
+    (hostLessComponentsMeta ?? []).find(
+      (m) => getLeafProjectIdForHostLessPackageMeta(m) === dep.projectId
+    );
   const contentEditorMode = studioCtx.contentEditorMode;
   const isApp = studioCtx.siteInfo.hasAppAuth;
   const builtinSections = mergeSane(
@@ -1183,6 +1264,43 @@ export function buildAddItemGroups({
   // This is a temporary flag to hide the Plexus Design System for installation until it is ready for public use.
   // Once Plexus is released for all users, this flag can be removed.
   const hasPlexus = studioCtx.appCtx.appConfig.plexus;
+
+  // Items for one installed dep (components + custom-function tiles + image assets);
+  // `hiddenWhenInstalled` drops everything except image assets.
+  const buildDepItems = (dep: ProjectDependency): AddItem[] => {
+    const items: AddItem[] = [
+      ...(metaForDep(dep)?.hiddenWhenInstalled
+        ? []
+        : [
+            ...sortComponentsByName(
+              dep.site.components.filter(
+                (c) =>
+                  isReusableComponent(c) &&
+                  (!isCodeComponent(c) ||
+                    isShownHostLessCodeComponent(c, hostLessComponentsMeta)) &&
+                  !isContextCodeComponent(c)
+              )
+            ).map((comp) => createAddTplComponent(comp)),
+            ...dep.site.customFunctions
+              .filter((fn) => fn.isQuery)
+              .map((fn) => createAddCustomFunction(fn, dep)),
+          ]),
+      ...dep.site.imageAssets
+        .filter((asset) => asset.dataUri)
+        .map((asset) => createAddTplImage(asset)),
+    ];
+    for (const item of items) {
+      if (item.systemName) {
+        installedHostlessComponents.add(item.systemName);
+      }
+    }
+    return items;
+  };
+
+  const [deps, depsWithBundle] = partition(
+    projectDependencies,
+    (dep) => !metaForDep(dep)?.bundleName
+  );
 
   let groupedItems: AddItemGroup[] = filterFalsy([
     // This is the main section/groups.
@@ -1466,7 +1584,7 @@ export function buildAddItemGroups({
         key: "synthetic-plume",
         label: 'Customizable "headless" components',
         sectionLabel: "Headless components",
-        familyKey: "imported-packages",
+        familyKey: "installed",
         items: naturalSort(
           [
             ...sortComponentsByName(
@@ -1498,7 +1616,7 @@ export function buildAddItemGroups({
         key: "synthetic-unstyled",
         label: "More HTML elements",
         sectionLabel: "More HTML elements",
-        familyKey: "imported-packages",
+        familyKey: "installed",
         items: [
           INSERTABLES_MAP.button,
           INSERTABLES_MAP.textbox,
@@ -1512,52 +1630,91 @@ export function buildAddItemGroups({
 
     // Imported hostless packages
     ...naturalSort(
-      projectDependencies.map((dep) => {
-        const items = [
-          ...sortComponentsByName(
-            dep.site.components.filter(
-              (c) =>
-                isReusableComponent(c) &&
-                (!isCodeComponent(c) ||
-                  isShownHostLessCodeComponent(c, hostLessComponentsMeta)) &&
-                !isContextCodeComponent(c) &&
-                // There are certain packages, like plasmic-basic-components or plasmic-embed-css,
-                // that should feel like built-ins (in the "Default components") - it's confusing to suddenly show them as installed.
-                !(hostLessComponentsMeta ?? []).some(
-                  (group) =>
-                    getLeafProjectIdForHostLessPackageMeta(group) ===
-                      dep.projectId && group.hiddenWhenInstalled
-                )
-            )
-          ).map((comp) => createAddTplComponent(comp)),
-          ...dep.site.imageAssets
-            .filter((asset) => asset.dataUri)
-            .map((asset) => createAddTplImage(asset)),
-        ];
-        for (const item of items) {
-          if (item.systemName) {
-            installedHostlessComponents.add(item.systemName);
-          }
-        }
-        return {
-          key: isHostLessPackage(dep.site)
-            ? `hostless-packages--${dep.projectId}`
-            : dep.pkgId,
-          label:
-            hostLessComponentsMeta?.flatMap((pkg) => {
-              return getLeafProjectIdForHostLessPackageMeta(pkg) ===
-                dep.projectId &&
-                pkg.onlyShownIn !== "old" &&
-                shouldShowHostLessPackage(studioCtx, pkg)
-                ? [pkg.name]
-                : [];
-            })[0] ?? dep.name,
-          familyKey: "imported-packages",
-          items,
-        };
-      }),
+      deps.map((dep) => ({
+        key: isHostLessPackage(dep.site)
+          ? `hostless-packages--${dep.projectId}`
+          : dep.pkgId,
+        label:
+          hostLessComponentsMeta?.flatMap((pkg) => {
+            return getLeafProjectIdForHostLessPackageMeta(pkg) ===
+              dep.projectId &&
+              pkg.onlyShownIn !== "old" &&
+              shouldShowHostLessPackage(studioCtx, pkg)
+              ? [pkg.name]
+              : [];
+          })[0] ?? dep.name,
+        familyKey: "installed" as const,
+        items: buildDepItems(dep),
+      })),
       (item) => item.label
     ),
+
+    // Bundle entries: one group per `bundleName`.
+    ...(() => {
+      const depsByBundleName: Record<string, ProjectDependency[]> = groupBy(
+        depsWithBundle,
+        (d) => metaForDep(d)!.bundleName!
+      );
+      const bundleDict = groupByBundleName(hostLessComponentsMeta ?? []);
+      const groups: AddItemGroup[] = [];
+      for (const [bundleName, bundleDeps] of naturalSort(
+        Object.entries(depsByBundleName),
+        ([name]) => name
+      )) {
+        const items: AddItem[] = [];
+        for (const member of bundleDict[bundleName] ?? []) {
+          if (!shouldShowHostLessPackage(studioCtx, member)) {
+            continue;
+          }
+          const projectId = getLeafProjectIdForHostLessPackageMeta(member);
+          const installedDep = bundleDeps.find(
+            (d) => d.projectId === projectId
+          );
+          if (installedDep) {
+            items.push(...buildDepItems(installedDep));
+          } else if (member.components?.length) {
+            const projectIds = ensureArray(member.projectId);
+            for (const item of member.components) {
+              items.push(createAddPackageComponent(item, projectIds));
+            }
+          } else if (member.functions?.length) {
+            for (const fn of member.functions) {
+              items.push(createAddPackageFunction(fn, member));
+            }
+          } else {
+            // Install the package and insert one of its
+            const projectIds = ensureArray(member.projectId);
+            for (const item of member.items) {
+              const cta = item.isCustomFunction
+                ? createAddCustomFunctionFromMeta(item, member)
+                : createAddHostLessComponent(item, projectIds);
+              items.push({ ...cta, icon: DOWNLOAD_ICON });
+            }
+          }
+        }
+        const [functionItems, componentItems] = partition(
+          items,
+          (i) => i.type === AddItemType.customFunction
+        );
+        for (const [label, sectionItems] of [
+          ["Functions", functionItems],
+          ["Components", componentItems],
+        ] as const) {
+          if (sectionItems.length === 0) {
+            continue;
+          }
+          groups.push({
+            key: `bundle--${bundleName}--${label}`,
+            label,
+            sectionKey: `bundle--${bundleName}`,
+            sectionLabel: bundleName,
+            familyKey: "installed",
+            items: sectionItems,
+          });
+        }
+      }
+      return groups;
+    })(),
     ...(hostLessComponentsMeta
       ? getHostLess(studioCtx, projectDependencies)
           .filter((group) =>

@@ -234,6 +234,8 @@ export const Omnibar = observer(function Omnibar(props: OmnibarProps) {
     } else if (item.type === AddItemType.installable) {
       // NOTE: Omnibar is an un-used feature, so the line below is just assumed to work
       await DragInsertManager.install(studioCtx, item);
+    } else if (item.type === AddItemType.customFunction) {
+      // NOTE: Omnibar is an un-used feature, so customFunction insertion is not implemented
     } else if (L.values(CommandItemType).includes(item.type)) {
       await item.action(studioCtx);
     }

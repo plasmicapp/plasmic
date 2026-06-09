@@ -13,7 +13,6 @@ import {
   Arg,
   ComponentDataQuery,
   ComponentServerQuery,
-  CustomFunction,
   CustomFunctionExpr,
   ensureKnownTplNode,
   EventHandler,
@@ -32,6 +31,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { withoutUids } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
+import { mkCustomFunction } from "@/wab/shared/tests/site-tests-utils";
 import {
   mkBaseVariant,
   mkVariant,
@@ -325,15 +325,9 @@ describe("replaceNestedExprInExpr", () => {
   it("should replace nested expression in CustomFunctionExpr args", () => {
     const oldExpr = customCode("$props.old");
     const newExpr = customCode("$props.new");
-    const customFunc = new CustomFunction({
-      importPath: "test",
+    const customFunc = mkCustomFunction({
       importName: "testFunc",
-      defaultExport: false,
-      namespace: null,
-      displayName: null,
-      params: [],
       isQuery: false,
-      isMutation: false,
     });
     const funcArg = new FunctionArg({
       uuid: mkShortId(),
@@ -605,15 +599,9 @@ describe("replaceExprInComponent", () => {
   it("should replace expression in serverQueries", () => {
     const oldExpr = customCode("$props.old");
     const newExpr = customCode("$props.new");
-    const customFunc = new CustomFunction({
-      importPath: "test",
+    const customFunc = mkCustomFunction({
       importName: "testFunc",
-      defaultExport: false,
-      namespace: null,
-      displayName: null,
-      params: [],
       isQuery: true,
-      isMutation: false,
     });
     const funcArg = new FunctionArg({
       uuid: mkShortId(),

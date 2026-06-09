@@ -8361,6 +8361,11 @@
           "id": "dv3Bkq7gSf1e",
           "name": "CurlyBracesIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces.tsx"
+        },
+        {
+          "id": "M5K-Io2qEu6p",
+          "name": "FunctionSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__FunctionSvg.tsx"
         }
       ],
       "images": [],
