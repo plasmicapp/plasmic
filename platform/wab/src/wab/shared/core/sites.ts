@@ -168,6 +168,7 @@ import {
   ensureMaybeKnownVariantGroup,
   isKnownComponent,
   isKnownComponentInstance,
+  isKnownComponentServerQuery,
   isKnownCustomCode,
   isKnownEventHandler,
   isKnownExpr,
@@ -704,6 +705,11 @@ export function cloneSite(fromSite: Site) {
       (v) => v.oldToNewComponentQuery
     )
   );
+  const oldToNewComponentServerQuery = mergeMaps(
+    ...[...oldToNewComponentCloneResults.values()].map(
+      (v) => v.oldToNewComponentServerQuery
+    )
+  );
   const oldToNewTpls = mergeMaps(
     ...[...oldToNewComponentCloneResults.values()].map((v) => v.oldToNewTpls)
   );
@@ -792,10 +798,13 @@ export function cloneSite(fromSite: Site) {
   );
 
   const fixQueryRef = (queryRef: QueryRef) => {
-    queryRef.ref =
-      (isKnownTplNode(queryRef.ref)
-        ? oldToNewTpls.get(queryRef.ref)
-        : oldToNewComponentQuery.get(queryRef.ref)) ?? queryRef.ref;
+    const ref = queryRef.ref;
+    const newRef = isKnownTplNode(ref)
+      ? oldToNewTpls.get(ref)
+      : isKnownComponentServerQuery(ref)
+      ? oldToNewComponentServerQuery.get(ref)
+      : oldToNewComponentQuery.get(ref);
+    queryRef.ref = newRef ?? queryRef.ref;
   };
 
   const fixGlobalRefForExpr = (expr: Expr) => {

@@ -17,7 +17,6 @@ import type {
 import {
   _StatefulQueryResult as StatefulQueryResult,
   _StatefulQueryState as StatefulQueryState,
-  makeQueryCacheKey,
   unstable_usePlasmicQueries as usePlasmicQueries,
 } from "@plasmicapp/data-sources";
 import type { SWRResponse } from "@plasmicapp/query";
@@ -60,8 +59,9 @@ function isCustomCodeOpArgs(args: ServerQueryOpArgs): args is CustomCodeOpArgs {
 export function useServerQueryOp(
   args: ServerQueryOpArgs
 ): ServerQueryOpResult<unknown> {
+  const studioCtx = useStudioCtx();
   // Stable across renders (a bound StudioCtx method), so it's a safe useMemo dep.
-  const wrapFetch = useStudioCtx().executeServerQuery;
+  const wrapFetch = studioCtx.executeServerQuery;
 
   const { fnId, env } = args;
   const code = isCustomCodeOpArgs(args) ? args.code : undefined;
@@ -113,33 +113,28 @@ export function useServerQueryOp(
   }, [fnId, fn, expr, exprCtx, currGlobalThis, code, wrapFetch]);
 
   const $queries = usePlasmicQueries(queryTree, rootCtx, rootProps, rootState);
-  const swrResponse = React.useMemo(
-    () => ({
-      mutate: async () => {
-        const params = expr
-          ? getCustomFunctionParams(
-              expr,
-              {
-                ...(envRef.current ?? {}),
-                $q: { ...(envRef.current?.$q ?? {}), ...$queries },
-                $props: rootProps,
-                $ctx: rootCtx,
-              },
-              exprCtx!,
-              currGlobalThis
-            )
-          : [];
-        return mutate(makeQueryCacheKey(fnId, params));
-      },
-    }),
-    [rootProps, rootCtx, expr, exprCtx, fnId, mutate, $queries, currGlobalThis]
-  );
 
   // $query is a mutable object and will not trigger React updates as normal,
   // so we secretly use the internal state which is guaranteed to change.
-  const $query = $queries[fnId];
-  const queryState = ($query as StatefulQueryResult)
-    .current as StatefulQueryState;
+  const $query = $queries[fnId] as StatefulQueryResult;
+  const queryState = $query.current as StatefulQueryState;
+
+  const swrResponse = React.useMemo(
+    () => ({
+      mutate: async () => {
+        const key = $query.current.key;
+        if (!key) {
+          return undefined;
+        }
+        // Clear the shared studio execution cache first, since revalidation invokes the
+        // wrapped fetcher, which otherwise resolves to the cached promise for this key.
+        studioCtx.mutateDataOp(key);
+        return mutate(key);
+      },
+    }),
+    [$query, mutate, studioCtx]
+  );
+
   return {
     queryState,
     swrResponse,

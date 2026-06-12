@@ -16,6 +16,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TopProjectNavTour } from "@/wab/client/tours/TopProjectNavTour";
 import { StudioTutorialTours } from "@/wab/client/tours/tutorials/TutorialTours";
 import { mkShortId, spawn } from "@/wab/shared/common";
+import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import { notification } from "antd";
 import * as React from "react";
 
@@ -87,17 +88,21 @@ export class Studio extends React.Component<StudioProps, {}> {
   render() {
     return (
       <ShortcutsModal>
-        <BottomModalsProvider>
-          <IntercomProviderWrapper>
-            <div className={"studio"}>
-              <div className={"studio__main-area"}>{this.props.children}</div>
-            </div>
-          </IntercomProviderWrapper>
-          <React.Suspense fallback={null}>
-            <TopProjectNavTour />
-            <StudioTutorialTours />
-          </React.Suspense>
-        </BottomModalsProvider>
+        <PlasmicQueryDataProvider
+          provider={() => this.props.studioCtx.hostQuerySwrCache}
+        >
+          <BottomModalsProvider>
+            <IntercomProviderWrapper>
+              <div className={"studio"}>
+                <div className={"studio__main-area"}>{this.props.children}</div>
+              </div>
+            </IntercomProviderWrapper>
+            <React.Suspense fallback={null}>
+              <TopProjectNavTour />
+              <StudioTutorialTours />
+            </React.Suspense>
+          </BottomModalsProvider>
+        </PlasmicQueryDataProvider>
       </ShortcutsModal>
     );
   }

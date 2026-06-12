@@ -1,4 +1,3 @@
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
 import { withoutNils } from "@/wab/shared/common";
 import {
@@ -8,6 +7,7 @@ import {
   isFallbackSet,
   stripParens,
 } from "@/wab/shared/core/exprs";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { findExprsInNode } from "@/wab/shared/core/tpls";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { parseCodeExpression } from "@/wab/shared/eval/expression-parser";
@@ -66,13 +66,6 @@ export function getEnvForPlasmicQueries(
 }
 
 /**
- * Query ID for a custom-code data query
- */
-export function makeCustomCodeQueryKey(uuid: string): string {
-  return `custom-code:${uuid}`;
-}
-
-/**
  * Builds a runtime `PlasmicQuery` node for Studio editor.
  *
  * In production codegen, the static env only contains $$ and $dataTokens.
@@ -92,7 +85,7 @@ export function buildCustomCodePlasmicQuery(
   // static context ($$, $dataTokens) changes.
   // TODO: Switch getStaticEnv function to staticEnv object
   return {
-    id: `${queryId}:${code}`,
+    id: `${queryId}.$.${code}`,
     fn: buildCustomCodeFn(code, getRawEnv),
     args: buildCustomCodeArgs(code, getRawEnv),
   };

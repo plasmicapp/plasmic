@@ -6,6 +6,7 @@ import {
 import * as React from "react";
 import { isPlasmicUndefinedDataErrorPromise, usePlasmicFetch } from "../common";
 import { executePlasmicDataOp } from "../executor";
+import { matchesQueryCacheKey } from "../serverQueries/makeQueryCacheKey";
 import {
   ClientQueryResult,
   DataOp,
@@ -32,7 +33,10 @@ export function makeCacheKey(
     : queryDependencies;
 }
 
-/** @deprecated See https://docs.plasmic.app/learn/integrations */
+/**
+ * Returns a function that invalidates cached query data. Accepts a list of invalidation keys
+ * or `plasmic_refresh_all` to invalidate everything.
+ */
 export function usePlasmicInvalidate() {
   // NOTE: we use `revalidateIfStale: false` with SWR.
   // One quirk of this is that if you supply fallback data to swr,
@@ -71,7 +75,7 @@ export function usePlasmicInvalidate() {
         return allKeys;
       }
       return allKeys.filter((key) =>
-        invalidatedKeys.some((k) => key.includes(`.$.${k}.$.`))
+        invalidatedKeys.some((k) => matchesQueryCacheKey(key, k))
       );
     };
 

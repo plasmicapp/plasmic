@@ -90,7 +90,6 @@ import {
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
 import {
-  customFunctionId,
   isCodeComponentWithHelpers,
   isPlainObjectPropType,
   tryGetStateHelpers,
@@ -152,7 +151,6 @@ import {
   StatefulQueryResult,
   buildCustomCodePlasmicQuery,
   getCustomFunctionParams,
-  makeCustomCodeQueryKey,
   wrapPlasmicQueryFetch,
 } from "@/wab/shared/core/custom-functions";
 import {
@@ -169,6 +167,10 @@ import {
   removeFallbackFromDataSourceOp,
 } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
+import {
+  customFunctionId,
+  makeCustomCodeQueryKey,
+} from "@/wab/shared/core/query-ids";
 import { makeSelectableKey } from "@/wab/shared/core/selection";
 import { makeTokenValueResolver } from "@/wab/shared/core/site-style-tokens";
 import { isSlotSelection } from "@/wab/shared/core/slots";

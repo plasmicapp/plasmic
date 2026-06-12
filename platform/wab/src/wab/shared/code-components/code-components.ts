@@ -76,6 +76,10 @@ import {
 } from "@/wab/shared/core/lang";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
+  customFunctionId,
+  type CustomFunctionId,
+} from "@/wab/shared/core/query-ids";
+import {
   allComponents,
   isHostLessPackage,
   writeable,
@@ -256,7 +260,7 @@ import {
   failableAsync,
   mapMultiple,
 } from "ts-failable";
-import type { Opaque, PartialDeep } from "type-fest";
+import type { PartialDeep } from "type-fest";
 
 export type VariablePropType<P> = PropTypeBaseDefault<P, VarRef> & {
   type: "variable";
@@ -2624,14 +2628,6 @@ export function getHostLessComponents(site: Site) {
   return walkDependencyTree(site, "all")
     .filter((dep) => isHostLessPackage(dep.site))
     .flatMap((dep) => dep.site.components.filter(isHostLessCodeComponent));
-}
-
-export type CustomFunctionId = Opaque<string, "CustomFunctionId">;
-
-export function customFunctionId(f: CustomFunction) {
-  return `${f.namespace ? f.namespace + "." : ""}${
-    f.importName
-  }` as CustomFunctionId;
 }
 
 export function registeredFunctionId(r: CustomFunctionRegistration) {

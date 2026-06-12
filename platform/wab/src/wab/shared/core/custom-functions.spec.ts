@@ -79,7 +79,7 @@ describe("buildCustomCodePlasmicQuery", () => {
 
   it("computes the id from the queryId + code", () => {
     const query = buildCustomCodePlasmicQuery("my-id", "1", () => ({}));
-    expect(query.id).toBe("my-id:1");
+    expect(query.id).toBe("my-id.$.1");
   });
 
   it("resolves data accessed from a settled $q passed via env arg", async () => {

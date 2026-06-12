@@ -212,7 +212,6 @@ import {
 import {
   CodeComponentsRegistry,
   HighlightInteractionRequest,
-  customFunctionId,
   registeredFunctionId,
   syncPlumeComponent,
 } from "@/wab/shared/code-components/code-components";
@@ -272,6 +271,7 @@ import {
   mergeRecordedChanges,
 } from "@/wab/shared/core/observable-model";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import {
   isSelectable,
   makeSelectableFullKey,
@@ -5950,7 +5950,7 @@ export class StudioCtx extends WithDbCtx {
         this.setHighLevelFocusOnly(undefined, undefined); // Hide the focused box
       });
       const {
-        rev: currRev,
+        rev: _currRev,
         bundle,
         depPkgs,
         revisionNum,
@@ -7325,7 +7325,16 @@ export class StudioCtx extends WithDbCtx {
     }
   );
 
+  // Execution cache for in-flight/resolved data op/query Promises keyed by
+  // id+args for preview/interactions/canvas, invalidated via `mutateDataOp`.
+  // Shared across all frames to ensure query execution occurs once.
   private dataOpCache = new BoundedCache<Promise<any>>(100);
+
+  // SWR cache backing `$q` hooks in the studio host frame (useServerQueryOp).
+  // SWR has to cache hook state somewhere, without this it falls back to the unbounded global
+  // Map shared with all SWR users in the app, outliving this StudioCtx. This make it bounded
+  // and scoped to the session, and keeps "Refresh data" away from unrelated app SWR state.
+  hostQuerySwrCache = new BoundedCache<any>(100);
 
   executePlasmicDataOp = asyncMaxAtATime(
     10,

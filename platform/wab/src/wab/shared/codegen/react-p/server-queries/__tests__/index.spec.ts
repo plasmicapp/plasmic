@@ -262,7 +262,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
 
       const result = serializeRootServerQueryTree(makeCtx(component));
       expect(result).toContain("myQuery");
-      expect(result).toContain('id: "custom:' + query.uuid);
+      expect(result).toContain('id: "custom-code:' + query.uuid);
       expect(result).toContain("fn: ({ $q, $props, $ctx, $state }) => {"); // no async
       expect(result).toContain("return 1 + 2;");
       expect(result).toContain(
@@ -287,7 +287,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
 
       const result = serializeRootServerQueryTree(makeCtx(component));
       expect(result).toContain("myQuery");
-      expect(result).toContain('id: "custom:' + query.uuid);
+      expect(result).toContain('id: "custom-code:' + query.uuid);
       expect(result).toContain("fn: async ({ $q, $props, $ctx, $state }) => {"); // has async
       expect(result).toContain("return await new Promise(r => r(3000))");
       expect(result).toContain(

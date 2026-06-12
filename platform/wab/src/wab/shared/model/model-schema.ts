@@ -685,7 +685,7 @@ DataSourceTemplate
   value: TemplatedString | String
   bindings: Map[String, TemplatedString | CustomCode | ObjectPath]?
 QueryRef
-  @WeakRef ref: TplNode|ComponentDataQuery
+  @WeakRef ref: TplNode|ComponentDataQuery|ComponentServerQuery
 
 State (concrete)
   @Const @WeakRef param: StateParam

@@ -1,8 +1,8 @@
 import { customFunctionsAndLibsUsedByComponent } from "@/wab/shared/cached-selectors";
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { CustomFunctionConfig } from "@/wab/shared/codegen/types";
 import { ensure } from "@/wab/shared/common";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { CodeLibrary, CustomFunction } from "@/wab/shared/model/classes";
 import { groupBy } from "lodash";

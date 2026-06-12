@@ -1,4 +1,3 @@
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import {
   DynamicExprCode,
   ServerComponentNode,
@@ -15,6 +14,10 @@ import {
   stripParens,
   stripParensAndMaybeConvertToIife,
 } from "@/wab/shared/core/exprs";
+import {
+  customFunctionId,
+  makeCustomCodeQueryKey,
+} from "@/wab/shared/core/query-ids";
 import { parseCodeExpression } from "@/wab/shared/eval/expression-parser";
 import {
   CustomCode,
@@ -275,7 +278,7 @@ function serializeCustomCode(
     $allAccessLines.length > 0 ? $allAccessLines.join("\n") + "\n" : ""
   }    return [${argsReturn}];\n  }`;
   return `{
-  id: ${jsLiteral(`custom:${queryUuid}`)},
+  id: ${jsLiteral(makeCustomCodeQueryKey(queryUuid))},
   fn: ${convertToFunction(
     stripParens(op.code),
     "{ $q, $props, $ctx, $state }"

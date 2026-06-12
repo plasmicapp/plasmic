@@ -44,7 +44,7 @@ describe("regression: synchronous fn return value", () => {
 
     // Without Promise.resolve(): syncFn returns "hello-world", loadingPromise calls
     // "hello-world".then(...) → TypeError, query stays in "loading", cache is {}.
-    expect(result.cache).toEqual({ 'greetFn:["world"]': "hello-world" });
+    expect(result.cache).toEqual({ '$q.$.greetFn.$.["world"]': "hello-world" });
   });
 
   it("resolves a dependent query whose upstream fn returns synchronously", async () => {
@@ -76,8 +76,8 @@ describe("regression: synchronous fn return value", () => {
     });
 
     expect(result.cache).toEqual({
-      "firstFn:[]": "first-value",
-      'secondFn:["first-value"]': "second-got-first-value",
+      "$q.$.firstFn.$.[]": "first-value",
+      '$q.$.secondFn.$.["first-value"]': "second-got-first-value",
     });
   });
 });
@@ -136,11 +136,12 @@ describe("executePlasmicQueries (flat-style via tree)", () => {
           $ctx: {},
         });
         expect(result.cache).toEqual({
-          'depFn:["dep1-param"]': "dep1-param-done",
-          'depFn:["dep2-param"]': "dep2-param-done",
-          'depFn:["dep3-param","dep1-param-done","dep2-param-done"]':
+          '$q.$.depFn.$.["dep1-param"]': "dep1-param-done",
+          '$q.$.depFn.$.["dep2-param"]': "dep2-param-done",
+          '$q.$.depFn.$.["dep3-param","dep1-param-done","dep2-param-done"]':
             "dep3-param-done",
-          'resultFn:["result-param","dep3-param-done"]': "result-param-done",
+          '$q.$.resultFn.$.["result-param","dep3-param-done"]':
+            "result-param-done",
         });
       });
 
@@ -159,10 +160,10 @@ describe("executePlasmicQueries (flat-style via tree)", () => {
           $ctx: {},
         });
         expect(result.cache).toEqual({
-          'depFn:["dep1-param"]': null,
-          'depFn:["dep2-param"]': false,
-          'depFn:["dep3-param",null,false]': 0,
-          'resultFn:["result-param",0]': "",
+          '$q.$.depFn.$.["dep1-param"]': null,
+          '$q.$.depFn.$.["dep2-param"]': false,
+          '$q.$.depFn.$.["dep3-param",null,false]': 0,
+          '$q.$.resultFn.$.["result-param",0]': "",
         });
       });
 
@@ -235,12 +236,12 @@ describe("executePlasmicQueries (tree)", () => {
 
     expect(Object.keys(cache)).toHaveLength(2);
     expect(queries.list).toEqual({
-      key: "getList:[]",
+      key: "$q.$.getList.$.[]",
       data: ["a", "b", "c"],
       isLoading: false,
     });
     expect(queries.item).toEqual({
-      key: 'getItem:[["a","b","c"]]',
+      key: '$q.$.getItem.$.[["a","b","c"]]',
       data: { count: 3 },
       isLoading: false,
     });
@@ -438,7 +439,7 @@ describe("executePlasmicQueries (tree)", () => {
     expect(Object.keys(result.cache)).toHaveLength(5);
 
     const summaryEntries = Object.entries(result.cache).filter(([k]) =>
-      k.startsWith("getSummary")
+      k.includes(".$.getSummary.$.")
     );
     expect(summaryEntries).toHaveLength(2);
     expect(summaryEntries.map(([, v]) => v)).toEqual(
@@ -613,11 +614,11 @@ describe("executePlasmicQueries (tree)", () => {
 
       expect(Object.keys(result.cache)).toHaveLength(4);
       const nestedEntry = Object.entries(result.cache).find(([k]) =>
-        k.startsWith("fetchNested:")
+        k.includes(".$.fetchNested.$.")
       );
       expect(nestedEntry?.[1]).toEqual({ nested: 999 });
       const dependentEntry = Object.entries(result.cache).find(([k]) =>
-        k.startsWith("fetchNestedDependent")
+        k.includes(".$.fetchNestedDependent.$.")
       );
       expect(dependentEntry?.[1]).toEqual({ dependent: 999 });
     });
@@ -898,14 +899,14 @@ describe("executePlasmicQueries (stateSpecs)", () => {
     });
 
     expect(result.cache).toEqual({
-      "listIds:[]": ["a", "b", "c"],
-      'fetchTenant:["us-east/7"]': { t: "us-east/7" },
-      "fetchRange:[10,100]": { lo: 10, hi: 100 },
-      'fetchItems:[["a","b","c"]]': { count: 3, ids: ["a", "b", "c"] },
-      "fetchCount:[3]": { n: 3 },
-      "childList:[]": ["x", "y", "z"],
-      'fetchChildLabel:["child-of-7"]': { label: "child-of-7" },
-      "fetchChildSize:[3]": { size: 3 },
+      "$q.$.listIds.$.[]": ["a", "b", "c"],
+      '$q.$.fetchTenant.$.["us-east/7"]': { t: "us-east/7" },
+      "$q.$.fetchRange.$.[10,100]": { lo: 10, hi: 100 },
+      '$q.$.fetchItems.$.[["a","b","c"]]': { count: 3, ids: ["a", "b", "c"] },
+      "$q.$.fetchCount.$.[3]": { n: 3 },
+      "$q.$.childList.$.[]": ["x", "y", "z"],
+      '$q.$.fetchChildLabel.$.["child-of-7"]': { label: "child-of-7" },
+      "$q.$.fetchChildSize.$.[3]": { size: 3 },
     });
   });
 
@@ -987,8 +988,8 @@ describe("executePlasmicQueries (stateSpecs)", () => {
     expect(rootRead).toHaveBeenCalledWith("from-root");
     expect(childRead).toHaveBeenCalledWith(undefined);
     expect(result.cache).toEqual({
-      'rootRead:["from-root"]': { read: "from-root" },
-      'childRead:["ρ:UNDEFINED"]': { read: undefined },
+      '$q.$.rootRead.$.["from-root"]': { read: "from-root" },
+      '$q.$.childRead.$.["ρ:UNDEFINED"]': { read: undefined },
     });
   });
 });

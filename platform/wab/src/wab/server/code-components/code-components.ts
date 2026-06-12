@@ -13,7 +13,6 @@ import {
   compareComponentStatesWithMeta,
   createCustomFunctionFromRegistration,
   createStyleTokenFromRegistration,
-  customFunctionId,
   extractDefaultSlotContents,
   getNewProps,
   mkCodeComponent,
@@ -27,6 +26,7 @@ import {
   isContextCodeComponent,
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { createSite, writeable } from "@/wab/shared/core/sites";
 import { addComponentState } from "@/wab/shared/core/states";
 import { mkTplComponent } from "@/wab/shared/core/tpls";

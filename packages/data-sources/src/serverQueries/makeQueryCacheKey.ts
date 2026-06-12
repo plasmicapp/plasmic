@@ -1,6 +1,22 @@
-/** @internal Make a cache key for a query */
+/**
+ * @internal Make a cache key for a query.
+ *
+ * Wrapped in `.$.` delimiters to match data op cache keys, so invalidation can match
+ * the id via `matchesQueryCacheKey` without colliding with other SWR cache keys.
+ */
 export function makeQueryCacheKey(id: string, params: any[]) {
-  return `${id}:${safeStableStringify(params)}`;
+  return `$q.$.${id}.$.${safeStableStringify(params)}`;
+}
+
+/**
+ * Returns whether `cacheKey` is invalidated by `invalidationKey`. Works for both server
+ * query cache keys (built by `makeQueryCacheKey`) and data op cache keys.
+ */
+export function matchesQueryCacheKey(
+  cacheKey: string,
+  invalidationKey: string
+) {
+  return cacheKey.includes(`.$.${invalidationKey}.$.`);
 }
 
 const shortPlasmicPrefix = "ρ";

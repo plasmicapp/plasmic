@@ -1,16 +1,25 @@
+import { TplMgr, ensureBaseVariant, uniquePagePath } from "@/wab/shared/TplMgr";
+import { mkVariantSetting } from "@/wab/shared/Variants";
+import {
+  mkComponentWithQueries,
+  mkCustomCodeOp,
+  mkCustomFunctionExpr,
+  mkServerQuery,
+} from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { createSite } from "@/wab/shared/core/sites";
+import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Arg,
-  ensureKnownTplTag,
+  ComponentServerQuery,
+  QueryInvalidationExpr,
+  QueryRef,
   TplComponent,
   VariantGroup,
   VariantsRef,
+  ensureKnownTplTag,
 } from "@/wab/shared/model/classes";
-import { ensureBaseVariant, TplMgr, uniquePagePath } from "@/wab/shared/TplMgr";
-import { mkVariantSetting } from "@/wab/shared/Variants";
-import { createSite } from "@/wab/shared/core/sites";
-import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 
 describe("uniquePagePath", () => {
   it("works", () => {
@@ -195,5 +204,61 @@ describe("TplMgr", () => {
       expect(componentRoot.vsettings).not.toContain(vs4);
       expect(componentRoot.vsettings).not.toContain(vs5);
     });
+  });
+});
+
+describe("TplMgr.removeComponentServerQuery", () => {
+  function setup(
+    queries: ComponentServerQuery[],
+    anchor: ComponentServerQuery
+  ) {
+    const site = createSite();
+    const mgr = new TplMgr({ site });
+    const component = mkComponentWithQueries(...queries);
+    mgr.attachComponent(component);
+
+    const expr = new QueryInvalidationExpr({
+      invalidationQueries: [new QueryRef({ ref: anchor })],
+      invalidationKeys: null,
+    });
+    const root = ensureKnownTplTag(component.tplTree);
+    const vs = mkVariantSetting({ variants: [ensureBaseVariant(component)] });
+    vs.attrs["onClick"] = expr;
+    root.vsettings.push(vs);
+
+    return { mgr, component, expr };
+  }
+
+  it("re-anchors function-level invalidations to a surviving query with the same function id", () => {
+    const q1 = mkServerQuery("query 1", mkCustomFunctionExpr("refreshFn"));
+    const q2 = mkServerQuery("query 2", mkCustomFunctionExpr("refreshFn"));
+    const { mgr, component, expr } = setup([q1, q2], q1);
+
+    mgr.removeComponentServerQuery(component, q1);
+    expect(component.serverQueries).toEqual([q2]);
+    expect(expr.invalidationQueries).toHaveLength(1);
+    expect((expr.invalidationQueries[0] as QueryRef).ref).toBe(q2);
+
+    // No query with the same function id remains, so the ref is dropped.
+    mgr.removeComponentServerQuery(component, q2);
+    expect(expr.invalidationQueries).toHaveLength(0);
+  });
+
+  it("does not re-anchor to a query with a different function id", () => {
+    const q1 = mkServerQuery("query 1", mkCustomFunctionExpr("refreshFn"));
+    const q2 = mkServerQuery("query 2", mkCustomFunctionExpr("otherFn"));
+    const { mgr, component, expr } = setup([q1, q2], q1);
+
+    mgr.removeComponentServerQuery(component, q1);
+    expect(expr.invalidationQueries).toHaveLength(0);
+  });
+
+  it("drops invalidations for removed custom-code queries", () => {
+    const q1 = mkServerQuery("query 1", mkCustomCodeOp("$props.foo"));
+    const q2 = mkServerQuery("query 2", mkCustomCodeOp("$props.foo"));
+    const { mgr, component, expr } = setup([q1, q2], q1);
+
+    mgr.removeComponentServerQuery(component, q1);
+    expect(expr.invalidationQueries).toHaveLength(0);
   });
 });

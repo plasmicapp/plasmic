@@ -445,6 +445,7 @@ export interface ComponentCloneResult {
   subCompResults: ComponentCloneResult[];
   oldToNewTpls: Map<TplNode, TplNode>;
   oldToNewComponentQuery: Map<ComponentDataQuery, ComponentDataQuery>;
+  oldToNewComponentServerQuery: Map<ComponentServerQuery, ComponentServerQuery>;
 }
 
 export function cloneCodeComponentHelpers(
@@ -746,6 +747,10 @@ export function cloneComponent(
     ComponentDataQuery,
     ComponentDataQuery
   >();
+  const oldToNewComponentServerQuery = new Map<
+    ComponentServerQuery,
+    ComponentServerQuery
+  >();
 
   const component = mkRawComponent({
     name,
@@ -772,7 +777,11 @@ export function cloneComponent(
       oldToNewComponentQuery.set(componentDataQuery, cloned);
       return cloned;
     }),
-    serverQueries: fromComponent.serverQueries.map(cloneComponentServerQuery),
+    serverQueries: fromComponent.serverQueries.map((componentServerQuery) => {
+      const cloned = cloneComponentServerQuery(componentServerQuery);
+      oldToNewComponentServerQuery.set(componentServerQuery, cloned);
+      return cloned;
+    }),
     figmaMappings: fromComponent.figmaMappings.map(
       (c) => new FigmaComponentMapping({ ...c })
     ),
@@ -788,6 +797,9 @@ export function cloneComponent(
         .when(TplNode, (tpl) => oldToNewTpls.get(tpl))
         .when(ComponentDataQuery, (refQuery) =>
           oldToNewComponentQuery.get(refQuery)
+        )
+        .when(ComponentServerQuery, (refQuery) =>
+          oldToNewComponentServerQuery.get(refQuery)
         )
         .result();
       if (maybeCloned) {
@@ -953,6 +965,7 @@ export function cloneComponent(
     subCompResults,
     oldToNewTpls,
     oldToNewComponentQuery,
+    oldToNewComponentServerQuery,
   };
 }
 

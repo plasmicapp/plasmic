@@ -55,7 +55,6 @@ import { getBaseVariant } from "@/wab/shared/Variants";
 import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import {
   appendCodeComponentMetaToModel,
-  customFunctionId,
   isPlainObjectPropType,
   syncPlumeComponent,
 } from "@/wab/shared/code-components/code-components";
@@ -81,6 +80,7 @@ import {
 import { codeLit } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";

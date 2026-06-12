@@ -87,21 +87,21 @@ describe("resolveParams", () => {
     expect(resolveParams("queryId", () => [] as [])).toEqual({
       status: "ready",
       resolvedParams: [],
-      cacheKey: "queryId:[]",
+      cacheKey: "$q.$.queryId.$.[]",
     });
   });
   it("returns ready for null params", () => {
     expect(resolveParams("queryId", () => [null])).toEqual({
       status: "ready",
       resolvedParams: [null],
-      cacheKey: "queryId:[null]",
+      cacheKey: "$q.$.queryId.$.[null]",
     });
   });
   it("returns ready for undefined params", () => {
     expect(resolveParams("queryId", () => [undefined])).toEqual({
       status: "ready",
       resolvedParams: [undefined],
-      cacheKey: 'queryId:["ρ:UNDEFINED"]',
+      cacheKey: '$q.$.queryId.$.["ρ:UNDEFINED"]',
     });
   });
   it("returns ready for simple params", () => {
@@ -110,7 +110,7 @@ describe("resolveParams", () => {
     ).toEqual({
       status: "ready",
       resolvedParams: ["foo", 42],
-      cacheKey: 'queryId:["foo",42]',
+      cacheKey: '$q.$.queryId.$.["foo",42]',
     });
   });
   it("returns error for other errors", () => {
@@ -137,7 +137,7 @@ describe("resolveParams", () => {
     expect(resolveParams("queryId", () => ["foo", queryResult.data])).toEqual({
       status: "ready",
       resolvedParams: ["foo", "done"],
-      cacheKey: 'queryId:["foo","done"]',
+      cacheKey: '$q.$.queryId.$.["foo","done"]',
     });
   });
   it("works with StatefulQueryResult, blocked -> error", () => {

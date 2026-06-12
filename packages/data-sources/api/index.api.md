@@ -99,6 +99,9 @@ export interface ManyRowsResult<T = any> {
     total?: number;
 }
 
+// @public
+export function matchesQueryCacheKey(cacheKey: string, invalidationKey: string): boolean;
+
 // @public @deprecated (undocumented)
 export function normalizeData(rawData: unknown): NormalizedData | undefined;
 
@@ -282,7 +285,7 @@ export function usePlasmicDataOp<T extends SingleRowResult | ManyRowsResult, E =
     noUndefinedDataProxy?: boolean;
 }): ClientQueryResult<T["data"]>;
 
-// @public @deprecated (undocumented)
+// @public
 export function usePlasmicInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
 
 // (No @packageDocumentation comment for this package)

@@ -9,11 +9,11 @@ import Select from "@/wab/client/components/widgets/Select";
 import TrashsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TrashSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { cachedExprsInSite } from "@/wab/shared/cached-selectors";
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { ensure, removeWhere } from "@/wab/shared/common";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { fixCustomFunctionExpr } from "@/wab/shared/core/custom-functions";
 import { isDynamicExpr } from "@/wab/shared/core/exprs";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { ExprReference, findExprsInInteraction } from "@/wab/shared/core/tpls";
 import { codeUsesFunction } from "@/wab/shared/eval/expression-parser";
 import {

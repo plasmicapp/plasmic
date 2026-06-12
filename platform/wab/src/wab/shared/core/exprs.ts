@@ -13,6 +13,24 @@ import {
   GenericEventHandler,
   ImageAssetRef,
   Interaction,
+  MapExpr,
+  ObjectPath,
+  PageHref,
+  QueryInvalidationExpr,
+  RenderExpr,
+  SelectorRuleSet,
+  Site,
+  StrongFunctionArg,
+  StyleExpr,
+  StyleTokenRef,
+  TemplatedString,
+  TplComponent,
+  TplRef,
+  TplTag,
+  VarRef,
+  VariantsRef,
+  VirtualRenderExpr,
+  isKnownComponentServerQuery,
   isKnownCompositeExpr,
   isKnownCustomCode,
   isKnownDataSourceOpExpr,
@@ -30,25 +48,8 @@ import {
   isKnownTemplatedString,
   isKnownTplNode,
   isKnownTplRef,
-  isKnownVariantsRef,
   isKnownVarRef,
-  MapExpr,
-  ObjectPath,
-  PageHref,
-  QueryInvalidationExpr,
-  RenderExpr,
-  SelectorRuleSet,
-  Site,
-  StrongFunctionArg,
-  StyleExpr,
-  StyleTokenRef,
-  TemplatedString,
-  TplComponent,
-  TplRef,
-  TplTag,
-  VariantsRef,
-  VarRef,
-  VirtualRenderExpr,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 /* eslint-disable
     no-this-before-super,
@@ -78,7 +79,8 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { cloneNameArg, cloneQueryRef } from "@/wab/shared/core/components";
-import { jsonParse, JsonValue } from "@/wab/shared/core/lang";
+import { JsonValue, jsonParse } from "@/wab/shared/core/lang";
+import { serverQueryId } from "@/wab/shared/core/query-ids";
 import {
   extractEventArgsNameFromEventHandler,
   isGlobalAction,
@@ -740,18 +742,25 @@ const _asCode = maybeComputedFn(
       .when(QueryInvalidationExpr, (expr) =>
         code(
           `[${withoutNils(
-            expr.invalidationQueries.map((query) =>
+            expr.invalidationQueries.map((query) => {
               // explicit query cache key
-              isString(query)
-                ? jsLiteral(query)
-                : // DataFetcher TplComponent invalidated by uuid
-                isKnownTplNode(query.ref)
-                ? jsLiteral(query.ref.uuid)
-                : // Else invalidated by query op id
-                query.ref.op
-                ? jsLiteral(query.ref.op.opId)
-                : undefined
-            )
+              if (isString(query)) {
+                return jsLiteral(query);
+              }
+              const ref = query.ref;
+              // DataFetcher TplComponent invalidated by uuid
+              if (isKnownTplNode(ref)) {
+                return jsLiteral(ref.uuid);
+              }
+              // Server query ($q) invalidated by runtime cache-key id
+              // (the `<id>:` prefix of its SWR keys).
+              if (isKnownComponentServerQuery(ref)) {
+                const id = serverQueryId(ref);
+                return id ? jsLiteral(id) : undefined;
+              }
+              // Component-level data query invalidated by op id
+              return ref.op ? jsLiteral(ref.op.opId) : undefined;
+            })
           ).join(",")}]${
             expr.invalidationKeys
               ? `.concat(${getCodeExpressionWithFallback(

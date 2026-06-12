@@ -2,9 +2,15 @@ import { mkEventHandlerEnv } from "@/wab/client/components/canvas/canvas-renderi
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { ensure } from "@/wab/shared/common";
 import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
-import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  extractEventArgsNameFromEventHandler,
+  findKeyForEventHandler,
+  serializeActionArg,
+} from "@/wab/shared/core/states";
+import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
 import { evalCodeWithEnv } from "@/wab/shared/eval";
 import {
   FunctionExpr,
@@ -13,11 +19,7 @@ import {
   TplTag,
 } from "@/wab/shared/model/classes";
 import { isValidJavaScriptCode, parseJsCode } from "@/wab/shared/parser-utils";
-import {
-  extractEventArgsNameFromEventHandler,
-  findKeyForEventHandler,
-  serializeActionArg,
-} from "@/wab/shared/core/states";
+import { matchesQueryCacheKey } from "@plasmicapp/data-sources";
 import { ancestor as traverse } from "acorn-walk";
 import { notification } from "antd";
 import { findLast, isString } from "lodash";
@@ -171,11 +173,29 @@ export function runInteractionCode(
             if (!invalidateKeys) {
               return undefined;
             }
-            const invalidateKey = async (key: string) => {
-              await viewCtx.studioCtx.refreshFetchedDataFromPlasmicQuery(key);
-            };
+            const studioCtx = viewCtx.studioCtx;
+            if (invalidateKeys.includes(ALL_QUERIES.value)) {
+              studioCtx.refreshFetchedDataFromPlasmicQuery();
+              return undefined;
+            }
+            // Resolve each token to the cache keys it matches before
+            // invalidating. If a token matches no key, treat it as an explicit
+            // key and invalidate it directly.
+            const allKeys = Array.from(studioCtx.getAllDataOpCacheKeys());
+            const keysToInvalidate = Array.from(
+              new Set(
+                invalidateKeys.flatMap((token) => {
+                  const matchedKeys = allKeys.filter((key) =>
+                    matchesQueryCacheKey(key, token)
+                  );
+                  return matchedKeys.length > 0 ? matchedKeys : [token];
+                })
+              )
+            );
             return await Promise.all(
-              invalidateKeys.map((key) => invalidateKey(key))
+              keysToInvalidate.map((key) =>
+                studioCtx.refreshFetchedDataFromPlasmicQuery(key)
+              )
             );
           },
           viewCtx.canvasCtx.win(),

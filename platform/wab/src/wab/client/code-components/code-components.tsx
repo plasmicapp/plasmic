@@ -38,7 +38,6 @@ import {
   UnknownComponentError,
   UnknownComponentPropError,
   appendCodeComponentMetaToModel,
-  customFunctionId,
   elementSchemaToTpl,
   getPropTypeType,
   syncCodeComponents,
@@ -62,6 +61,7 @@ import {
   isCodeComponent,
   isDefaultComponent,
 } from "@/wab/shared/core/components";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { TplCodeComponent } from "@/wab/shared/core/tpls";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";

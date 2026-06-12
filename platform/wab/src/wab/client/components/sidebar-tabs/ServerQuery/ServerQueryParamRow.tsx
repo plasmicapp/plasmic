@@ -9,7 +9,6 @@ import { MaybeCollapsibleRow } from "@/wab/client/components/sidebar/SidebarSect
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   StudioPropType,
-  customFunctionId,
   isAdvancedProp,
   isFlattenedObjectPropType,
   maybePropTypeToDisplayName,
@@ -22,6 +21,7 @@ import {
   serCompositeExprMaybe,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import {
   ArgType,
   CustomFunction,

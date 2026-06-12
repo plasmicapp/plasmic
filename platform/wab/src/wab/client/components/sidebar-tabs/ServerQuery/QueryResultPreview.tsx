@@ -6,14 +6,14 @@ import { Modal } from "@/wab/client/components/widgets/Modal";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observer } from "@/wab/client/utils/mobx-client-util";
 import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { ensure } from "@/wab/shared/common";
-import {
-  StatefulQueryState,
-  makeCustomCodeQueryKey,
-} from "@/wab/shared/core/custom-functions";
+import { StatefulQueryState } from "@/wab/shared/core/custom-functions";
 import { ExprCtx } from "@/wab/shared/core/exprs";
+import {
+  customFunctionId,
+  makeCustomCodeQueryKey,
+} from "@/wab/shared/core/query-ids";
 import {
   CustomCode,
   CustomFunctionExpr,

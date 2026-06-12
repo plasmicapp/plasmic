@@ -26,7 +26,6 @@ import { CUSTOM_CODE_QUERY_CAP } from "@/wab/shared/Labels";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import {
   StudioPropType,
-  customFunctionId,
   getPropTypeDefaultValue,
 } from "@/wab/shared/code-components/code-components";
 import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
@@ -42,7 +41,6 @@ import {
 import {
   StatefulQueryState,
   getCustomFunctionParams,
-  makeCustomCodeQueryKey,
 } from "@/wab/shared/core/custom-functions";
 import {
   ExprCtx,
@@ -52,6 +50,10 @@ import {
   stripParens,
 } from "@/wab/shared/core/exprs";
 import { isHostlessPackageInstalled } from "@/wab/shared/core/project-deps";
+import {
+  customFunctionId,
+  makeCustomCodeQueryKey,
+} from "@/wab/shared/core/query-ids";
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";

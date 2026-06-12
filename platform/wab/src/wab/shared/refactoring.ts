@@ -1,6 +1,5 @@
 import { computeDataTokenValue } from "@/wab/commons/DataToken";
 import { ProjectId } from "@/wab/shared/ApiSchema";
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import {
   jsLiteral,
   makeShortProjectId,
@@ -8,6 +7,7 @@ import {
 } from "@/wab/shared/codegen/util";
 import { assert, isPrefixArray, uniqueName } from "@/wab/shared/common";
 import * as Exprs from "@/wab/shared/core/exprs";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import {
   findRecursiveImplicitStates,
   getStateVarName,

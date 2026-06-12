@@ -137,6 +137,7 @@ import {
   upgradeProjectDeps,
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
+import { serverQueryId } from "@/wab/shared/core/query-ids";
 import {
   ensureScreenVariantsOrderOnMatrices,
   getAllSiteFrames,
@@ -1234,6 +1235,10 @@ export class TplMgr {
     if (queries.length > 0) {
       this.clearReferencesToRemovedQueries(queries.map((q) => q.uuid));
     }
+    const serverQueries = comps.flatMap((c) => c.serverQueries);
+    if (serverQueries.length > 0) {
+      this.fixReferencesToRemovedServerQueries(serverQueries);
+    }
   }
 
   clearReferencesToRemovedQueries(removedQueries: string[] | string) {
@@ -1274,7 +1279,53 @@ export class TplMgr {
     query: ComponentServerQuery
   ) {
     arrayRemove(component.serverQueries, query);
-    this.clearReferencesToRemovedQueries(query.uuid);
+    this.fixReferencesToRemovedServerQueries([query]);
+  }
+
+  /**
+   * Custom function invalidations are tied to an arbitrary server query using it,
+   * so when a server query is removed, its QueryRefs are moved to another surviving
+   * query with the same invalidation id (if any).
+   */
+  private fixReferencesToRemovedServerQueries(
+    removedQueries: ComponentServerQuery[]
+  ) {
+    const survivingQueries = this.site().components.flatMap(
+      (c) => c.serverQueries
+    );
+    const removedUuidToReplacement = new Map(
+      withoutNils(
+        removedQueries.map((removed) => {
+          const id = serverQueryId(removed);
+          const replacement = id
+            ? survivingQueries.find((q) => serverQueryId(q) === id)
+            : undefined;
+          return replacement
+            ? ([removed.uuid, replacement] as const)
+            : undefined;
+        })
+      )
+    );
+    const removedUuids = new Set(removedQueries.map((q) => q.uuid));
+    const queryInvalidationExprs = findQueryInvalidationExprWithRefs(
+      this.site(),
+      [...removedUuids]
+    );
+    queryInvalidationExprs.forEach(({ expr }) => {
+      expr.invalidationQueries = withoutNils(
+        expr.invalidationQueries.map((key) => {
+          if (isString(key) || !removedUuids.has(key.ref.uuid)) {
+            return key;
+          }
+          const replacement = removedUuidToReplacement.get(key.ref.uuid);
+          if (!replacement) {
+            return undefined;
+          }
+          key.ref = replacement;
+          return key;
+        })
+      );
+    });
   }
 
   renameArena(arena: Arena, name: string) {

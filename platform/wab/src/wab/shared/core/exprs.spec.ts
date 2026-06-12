@@ -1,4 +1,8 @@
-import { mkCustomFunctionExpr } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
+import {
+  mkCustomCodeOp,
+  mkCustomFunctionExpr,
+  mkServerQuery,
+} from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import {
   ExprCtx,
   asCode,
@@ -17,6 +21,8 @@ import {
   CompositeExpr,
   CustomCode,
   ObjectPath,
+  QueryInvalidationExpr,
+  QueryRef,
   TemplatedString,
 } from "@/wab/shared/model/classes";
 
@@ -139,6 +145,37 @@ describe("asCode", () => {
     expect(generatedCode).toEqual(`$$.testFunc((
       1 + 1
     ),undefined,undefined)`);
+  });
+
+  it("serializes a custom-function server query invalidation to its function id", () => {
+    const query = mkServerQuery(
+      "My Query",
+      mkCustomFunctionExpr("refreshFn", [], [])
+    );
+    const expr = new QueryInvalidationExpr({
+      invalidationQueries: [new QueryRef({ ref: query })],
+      invalidationKeys: undefined,
+    });
+
+    const { code: generatedCode } = asCode(expr, exprCtxFixture);
+
+    expect(generatedCode).toEqual(`["refreshFn"]`);
+    expect(eval(generatedCode)).toEqual(["refreshFn"]);
+  });
+
+  it("serializes a custom-code server query invalidation to its custom-code:<uuid> id", () => {
+    const query = mkServerQuery("My Query", mkCustomCodeOp("$props.foo"));
+    const expr = new QueryInvalidationExpr({
+      invalidationQueries: [new QueryRef({ ref: query })],
+      invalidationKeys: undefined,
+    });
+
+    const { code: generatedCode } = asCode(expr, exprCtxFixture);
+
+    // Must match makeCustomCodeQueryKey (`custom-code:<uuid>`) so the invalidation token
+    // matches the `$q.$.custom-code:<uuid>.$.<args>` SWR cache key (see matchesQueryCacheKey).
+    expect(generatedCode).toEqual(`["custom-code:${query.uuid}"]`);
+    expect(eval(generatedCode)).toEqual([`custom-code:${query.uuid}`]);
   });
 });
 

@@ -1,4 +1,3 @@
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import {
   customFunctionImportAlias,
   serializeCustomFunctionsAndLibs,
@@ -43,6 +42,7 @@ import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { ComponentExportOutput, ExportOpts } from "@/wab/shared/codegen/types";
 import { assert } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import {
