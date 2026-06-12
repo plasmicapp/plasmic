@@ -522,7 +522,9 @@ test.describe("Plexus Installation", () => {
       );
       await page.keyboard.press("Escape");
 
-      await models.studio.leftPanel.insertNode("Plasmic Design System");
+      await models.studio.leftPanel.insertNode("Plasmic Design System", {
+        expectDrawerToClose: false,
+      });
       await page.waitForTimeout(1000);
 
       await verifyInstallationDialog(models);
@@ -546,7 +548,9 @@ test.describe("Plexus Installation", () => {
       );
       await page.keyboard.press("Escape");
 
-      await models.studio.leftPanel.insertNode("Plasmic Design System");
+      await models.studio.leftPanel.insertNode("Plasmic Design System", {
+        expectDrawerToClose: false,
+      });
       await page.waitForTimeout(1000);
 
       await unflattenInstallation(models);
@@ -587,7 +591,9 @@ test.describe("Plexus Installation", () => {
       );
       await page.keyboard.press("Escape");
 
-      await models.studio.leftPanel.insertNode("Plasmic Design System");
+      await models.studio.leftPanel.insertNode("Plasmic Design System", {
+        expectDrawerToClose: false,
+      });
       await page.waitForTimeout(1000);
 
       await unflattenInstallation(models);

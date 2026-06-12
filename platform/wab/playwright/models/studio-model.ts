@@ -475,14 +475,18 @@ export class StudioModel extends BaseModel {
     });
   }
 
+  /**
+   * Renames the focused element via ctrl+R shortcut, which opens an inline rename
+   * textbox on the canvas selection tag. Waits for the textbox to appear/disappear
+   * so a swallowed shortcut fails here.
+   */
   async renameTreeNode(name: string) {
-    await this.page.waitForTimeout(200);
     await this.page.keyboard.press("ControlOrMeta+r");
-    await this.page.waitForTimeout(200);
-    await this.page.keyboard.type(name);
-    await this.page.waitForTimeout(200);
-    await this.page.keyboard.press("Enter");
-    await this.page.waitForTimeout(200);
+    const renameInput = this.frame.locator(".node-outline-tag input");
+    await renameInput.waitFor({ state: "visible" });
+    await renameInput.fill(name);
+    await renameInput.press("Enter");
+    await renameInput.waitFor({ state: "hidden" });
   }
 
   async convertToSlot(slotName?: string) {

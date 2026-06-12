@@ -265,7 +265,9 @@ test.describe("dynamic-initial-value", () => {
     // pick Text.
     await models.studio.leftPanel.switchToTreeTab();
     await models.studio.leftPanel.selectTreeNode(["Form", `Slot: "children"`]);
-    await models.studio.leftPanel.insertNode("plasmic-antd5-form-item");
+    await models.studio.leftPanel.insertNode("plasmic-antd5-form-item", {
+      expectDrawerToClose: false,
+    });
     await models.studio.frame
       .locator('[data-test-id="omnibar-add-Text"]')
       .click();

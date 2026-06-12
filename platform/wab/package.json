@@ -157,7 +157,7 @@
     "monaco-editor-webpack-plugin": "7.1.0",
     "pegjs": "~0.10.0",
     "pegjs-coffee-plugin": "~0.3.0",
-    "playwright": "1.38.1",
+    "playwright": "1.60.0",
     "prando": "^6.0.1",
     "storybook": "^7.6.20",
     "sucrase": "^3.35.1",

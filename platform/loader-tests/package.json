@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "prepare": "playwright install chromium",
+    "prepare": "playwright install chromium ${CI:+--only-shell}",
     "playwright-ui": "playwright test --ui",
     "test": "yarn test-playwright",
     "test-docker": "yarn docker-build && yarn docker-run",
@@ -23,7 +23,7 @@
     "typescript": "6.0.3"
   },
   "dependencies": {
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.60.0",
     "fs-extra": "^10.0.0",
     "get-port": "^5.1.1",
     "node-fetch": "^2",

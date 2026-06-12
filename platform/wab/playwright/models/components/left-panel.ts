@@ -91,7 +91,16 @@ export class LeftPanel extends BaseModel {
     super(page);
   }
 
-  async insertNode(node: string) {
+  async insertNode(
+    node: string,
+    opts: {
+      /**
+       * Most items insert immediately and close the add drawer. Items that open a
+       * follow-up UI keep the drawer open, so callers must opt out.
+       */
+      expectDrawerToClose?: boolean;
+    } = {}
+  ) {
     const addMenuOpen = await this.addContainer.isVisible();
     if (!addMenuOpen) {
       await this.addButton.click({ timeout: 30000 });
@@ -136,6 +145,14 @@ export class LeftPanel extends BaseModel {
     if (!itemClicked) {
       throw new Error(`Failed to click item "${node}"`);
     }
+
+    if (opts.expectDrawerToClose ?? true) {
+      // The drawer only closes once the insert goes through. If nothing is
+      // inserted, fail here with a clear error rather than in a later step.
+      await expect(this.addContainer, `inserting "${node}"`).not.toBeVisible({
+        timeout: 10000,
+      });
+    }
   }
 
   async assertDataTokenExists(name: string) {
@@ -176,6 +193,7 @@ export class LeftPanel extends BaseModel {
         await this.page.keyboard.type(value);
         await this.page.keyboard.press("Enter");
       }
+      await this.sidebarModal.waitFor({ state: "hidden" });
     });
   }
 

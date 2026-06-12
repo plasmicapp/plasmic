@@ -162,7 +162,9 @@ test.describe("variants", () => {
 
     await frame.getByText("Horizontal stack").click({ force: true });
 
-    await models.studio.leftPanel.insertNode("More HTML elements");
+    await models.studio.leftPanel.insertNode("More HTML elements", {
+      expectDrawerToClose: false,
+    });
 
     await page.waitForTimeout(500);
     await models.studio.leftPanel.addSearchInput.fill("Unstyled text input");
