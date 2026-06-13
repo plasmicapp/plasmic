@@ -297,7 +297,12 @@ export class PostgresFetcher {
     } ${
       sort && sort.length > 0
         ? `ORDER BY ${sort
-            .map((s) => `${s.field} ${s.order === "desc" ? "DESC" : "ASC"} `)
+            .map(
+              (s) =>
+                `${quoteIdentifier(validateSortField(s.field, tableSchema))} ${
+                  s.order === "desc" ? "DESC" : "ASC"
+                } `
+            )
             .join(", ")}`
         : ``
     } ${pagination ? `LIMIT ${pagination.pageSize}` : ``} ${
@@ -708,6 +713,30 @@ function formatIdentifier(identifier: string) {
   return identifier.startsWith(`"`) && identifier.endsWith(`"`)
     ? identifier.slice(1, -1)
     : identifier;
+}
+
+/**
+ * Quotes a value so Postgres interprets it as a single identifier (column/table name).
+ * Wrap in quotes and escape embedded quotes by doubling them.
+ */
+function quoteIdentifier(identifier: string): string {
+  return `"${identifier.replace(/"/g, `""`)}"`;
+}
+
+/**
+ * Validates a sort field against a table's columns. The sort field is interpolated
+ * into the `ORDER BY` clause and can't be parameterized, so we validate against the
+ * schema to prevent SQL injection. Returns the normalized column name.
+ */
+function validateSortField(field: unknown, tableSchema: TableSchema): string {
+  if (typeof field !== "string") {
+    throw new DataSourceError(`Invalid sort field`, 400);
+  }
+  const normalized = formatIdentifier(field);
+  if (!tableSchema.fields.some((f) => f.id === normalized)) {
+    throw new DataSourceError(`Invalid sort field "${field}"`, 400);
+  }
+  return normalized;
 }
 
 const tablesQuery = `

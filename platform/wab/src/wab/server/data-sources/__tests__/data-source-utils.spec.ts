@@ -1,5 +1,12 @@
-import { normalizeOperationTemplate } from "@/wab/server/data-sources/data-source-utils";
-import { DataSourceMeta } from "@/wab/shared/data-sources-meta/data-sources";
+import {
+  normalizeOperationTemplate,
+  substituteArgs,
+} from "@/wab/server/data-sources/data-source-utils";
+import {
+  DataSourceError,
+  DataSourceMeta,
+  OperationMeta,
+} from "@/wab/shared/data-sources-meta/data-sources";
 
 describe("normalizing operation template", () => {
   const dataSourceMeta: DataSourceMeta = {
@@ -137,5 +144,58 @@ describe("normalizing operation template", () => {
         variables: `{"amount":{{ DYNAMIC0 }},"to_bucket_id":{{ DYNAMIC1 }},"user_id":"{{ (currentUser.customProperties.id) }}","description":"{{ DYNAMIC2 }}"}`,
       },
     });
+  });
+});
+
+describe("substituteArgs", () => {
+  const source = { source: "postgres", id: "src", workspaceId: "w" } as any;
+  // getList op with no args pinned via templates, so all args fall
+  // through to the "use whatever is specified live" branch.
+  const op = {
+    name: "getList",
+    type: "read",
+    args: {
+      resource: { type: "table" },
+      filters: { type: "filter[]", fields: () => ({}), isSql: true },
+      sort: { type: "sort[]", fields: () => ({}), isSql: true },
+    },
+  } as unknown as OperationMeta;
+
+  it("passes a runtime sort through untouched", () => {
+    const result = substituteArgs(
+      source,
+      op,
+      {},
+      { resource: "users", sort: [{ field: "name", order: "asc" }] }
+    );
+    expect(result.resource).toEqual("users");
+    expect(result.sort).toEqual([{ field: "name", order: "asc" }]);
+  });
+
+  it("rejects a raw SQL filter supplied at request time", () => {
+    expect(() =>
+      substituteArgs(
+        source,
+        op,
+        {},
+        { resource: "users", filters: "1=1; DROP TABLE users; --" }
+      )
+    ).toThrow(DataSourceError);
+  });
+
+  it("rejects a structured filter object supplied at request time", () => {
+    expect(() =>
+      substituteArgs(
+        source,
+        op,
+        {},
+        { resource: "users", filters: { value: "1=1; DROP TABLE users; --" } }
+      )
+    ).toThrow(DataSourceError);
+  });
+
+  it("leaves an absent filter untouched on an untemplated op", () => {
+    const result = substituteArgs(source, op, {}, { resource: "users" });
+    expect(result.filters).toBeUndefined();
   });
 });

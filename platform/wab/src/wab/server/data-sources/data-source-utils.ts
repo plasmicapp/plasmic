@@ -28,6 +28,7 @@ import {
 } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   ArgMeta,
+  DataSourceError,
   DataSourceMeta,
   Filters,
   FiltersLogic,
@@ -184,8 +185,18 @@ export function substituteArgs(
         newArgs[key] = coerceArgStringToType(sqlString || template, argMeta);
       }
     } else {
-      // If no templates defined, then we directly use whatever is
-      // specified live
+      // If no templates defined, then we directly use whatever is specified live.
+      //
+      // SQL filters are the exception: `filter[]` is raw SQL that must always be built on
+      // the server from the operation's template (with parametrized dynamic values).
+      // A filter supplied directly at request time would be interpolated directly, so
+      // reject it rather than trust caller-supplied SQL.
+      if (argMeta.type === "filter[]" && !isNil(userArgs[key])) {
+        throw new DataSourceError(
+          `Operation argument "${key}" must be configured in the op, not supplied at request time`,
+          400
+        );
+      }
       newArgs[key] = userArgs[key];
     }
   }
