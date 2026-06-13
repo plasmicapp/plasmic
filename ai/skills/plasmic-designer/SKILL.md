@@ -3,12 +3,12 @@ name: plasmic-designer
 description: Build and modify Plasmic Studio designs using copilot tools via Chrome DevTools MCP. First argument should be a project ID, followed by the design request. Use this skill whenever the user mentions Plasmic, Plasmic Studio, visual web builder, or asks to design, build, edit, or modify UI components, pages, sections, or layouts inside a Plasmic project. Also trigger when the user references a Plasmic project ID, wants to add/remove/restyle elements in a visual editor, or asks about Plasmic component props, variants, slots, or tokens — even if they don't say "Plasmic" explicitly but describe visual design work that implies it.
 allowed-tools: mcp__chrome-devtools__evaluate_script mcp__chrome-devtools__navigate_page mcp__chrome-devtools__take_screenshot mcp__chrome-devtools__list_pages
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # Plasmic Designer
 
-Skill Version: 1.0.1
+Skill Version: 1.1.0
 
 Control Plasmic Studio through Chrome DevTools MCP to build and modify production-ready interfaces.
 
@@ -59,7 +59,7 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
 
    - `model` — Model name as known to the agent (e.g. `claude-opus-4-7`, `anthropic/claude-sonnet-4-6`, `gpt-5.3-codex`).
    - `client` — AI client/CLI invoking the tool (e.g. `claude-code`, `claude-code@1.x`, `opencode`, `cursor`, `cline`).
-   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.0.0`, `unknown`).
+   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.1.0`, `unknown`).
 
    Pass `"unknown"` for any field you cannot reliably identify.
 
@@ -67,119 +67,52 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
 
 Follow an explore-first pattern for every request:
 
-1. **Understand** — Use `read` to inspect the current state before making changes. If the request could reuse existing components (buttons, cards, navbars), read available components first and prefer reusing them over creating new HTML.
-2. **Plan** — For complex requests, think through the sequence of operations before acting. Break large tasks into logical steps.
-3. **Execute** — Make changes using the appropriate tools.
-4. **Verify** — Use `take_screenshot` to visually confirm the result. Use `read` if you need to verify structural changes.
+1. **Understand** — `read` the current state before changing anything; prefer reusing existing components over new HTML.
+2. **Plan** — For complex requests, break the work into steps before acting.
+3. **Execute** — Make changes with the appropriate tools.
+4. **Verify** — `read` to confirm structural changes; Optionally, `take_screenshot` to confirm the result visually
 
-## API Reference
+## Using the tools
 
-All tools are called via `evaluate_script` using async arrow functions (the tools return Promises). Each returns `{ success: true, output: "..." }` or `{ success: false, error: { message: "...", type: "..." } }`.
+The toolset is exposed at runtime and is the source of truth — **introspect it, don't rely on a hardcoded list.** `_meta` is a `Record<string, CopilotToolMeta>` keyed by tool name:
 
-Check `success` on every call. On failure, read the error message — common causes are invalid UUIDs or elements that don't exist. If a UUID-related error occurs, re-read the component to get fresh UUIDs before retrying.
-
-### read — Inspect project data
-
-```javascript
-// Read all components and tokens for the current project
-async () => {
-  return await window.PLASMIC_AI_TOOLS.read({
-    projects: [
-      {
-        projectId: "<currentProjectId>",
-        components: true,
-        tokens: true,
-        screenBreakpoints: true,
-        globalVariants: true,
-        importedProjects: true,
-      },
-    ],
-  });
-};
-
-// Read components from an imported project (use its id from a prior read)
-async () => {
-  return await window.PLASMIC_AI_TOOLS.read({
-    projects: [{ projectId: "<importedProjectId>", components: true }],
-  });
-};
-
-// Read a specific component
-async () => {
-  return await window.PLASMIC_AI_TOOLS.read({
-    components: ["<componentUuid>"],
-  });
-};
-
-// Read specific elements within a component
-async () => {
-  return await window.PLASMIC_AI_TOOLS.read({
-    elements: [
-      { componentUuid: "<componentUuid>", elementUuid: "<elementUuid>" },
-    ],
-  });
-};
-
-// Read specific tokens
-async () => {
-  return await window.PLASMIC_AI_TOOLS.read({ tokens: ["<tokenUuid>"] });
-};
+```ts
+interface CopilotToolMeta {
+  toolName: string;
+  title: string;
+  description: string;
+  inputSchema: JSONSchema7; // JSON Schema (draft-07)
+}
 ```
 
-The output is often XML. Parse it to extract UUIDs, structure, props, variants, and slots. Large projects may return large results — read selectively by requesting specific components rather than everything.
-
-### insertHtml — Add HTML/CSS snippets
+Read it once with `evaluate_script` (return the object directly; `evaluate_script` serializes it for you), and treat each tool's `inputSchema` as authoritative for field names, required fields, enums, and nesting:
 
 ```javascript
-async () => {
-  return await window.PLASMIC_AI_TOOLS.insertHtml({
-    html: "<div class='section'>...</div>",
-    componentUuid: "<componentUuid>",
-    tplUuid: "<targetElementUuid>",
-    insertRelLoc: "append", // "before" | "prepend" | "append" | "after" | "wrap" | "replace"
-    // variantUuids: ["<variantUuid>"]  // optional, defaults to base variant
-  });
-};
+() => window.PLASMIC_AI_TOOLS._meta;
 ```
 
-After insertion, the browser canvas updates automatically.
-
-### changeElement — Rename elements and/or modify CSS
+Call a tool with an async arrow function (tools return Promises), passing one input object that conforms to its schema:
 
 ```javascript
-async () => {
-  return await window.PLASMIC_AI_TOOLS.changeElement({
-    componentUuid: "<componentUuid>",
-    // variantUuids: ["<variantUuid>"],  // optional
-    changes: [
-      {
-        tplUuid: "<elementUuid>",
-        // optional; pass null to remove the existing name
-        name: "HeroSection",
-        // optional; and null removes a property
-        styles: {
-          "background-color": "#1a1a2e",
-          padding: "48px 24px",
-          color: null,
-        },
-      },
-    ],
-  });
-};
+async () => await window.PLASMIC_AI_TOOLS.<toolName>({
+  /* fields per window.PLASMIC_AI_TOOLS._meta.<toolName>.inputSchema */
+});
 ```
 
-Each change entry can include a `name`, `styles`, or both.
+Every call resolves to a `CopilotToolCallResult`:
 
-### deleteElement — Remove an element
-
-```javascript
-async () => {
-  return await window.PLASMIC_AI_TOOLS.deleteElement({
-    componentUuid: "<componentUuid>",
-    tplUuid: "<elementUuid>",
-  });
-};
+```ts
+type CopilotToolCallResult =
+  | { success: true; output: string }
+  | {
+      success: false;
+      error: { message: string; type: "TOOL_NOT_FOUND" | "EXECUTION_FAILED" };
+    };
 ```
+
+Check `success` each time; on a UUID error, re-read for fresh UUIDs and retry.
+
+Call `read` before any mutation to get project structure and the UUIDs every other tool needs. Its output is usually XML: parse it for UUIDs, props, variants, and slots, and read selectively (specific components/elements) on large projects. After a successful mutation the canvas updates automatically.
 
 ## Components & Variants
 
@@ -218,7 +151,7 @@ Before generating HTML, read `references/html-constraints.md` for the full set o
 
 - Use `<style>` blocks with BEM-style class names instead of inline styles.
 - Use flex layout exclusively (Plasmic does not support CSS Grid).
-- Include `@media` queries for responsive breakpoints — read the project's breakpoints with `read({ projects: [{ projectId: "<currentProjectId>", screenBreakpoints: true }] })` first.
+- Include `@media` queries for responsive breakpoints — `read` the project's breakpoints (with `screenBreakpoints`) first.
 - Use Google Fonts (single name, no fallback lists).
 - Use inline SVG for icons, `https://placehold.co` for placeholder images.
 - No JavaScript, no vendor prefixes, no `data:image/svg+xml`, no `currentColor`, no `:root`.
@@ -229,7 +162,7 @@ Before generating designs, read `references/design-guidelines.md` for aesthetic 
 
 ## Design Tokens
 
-Read the project's tokens with `read()` before generating designs, then:
+Read the project's tokens before generating designs, then:
 
 - Prefer existing tokens over hardcoded values for consistency. Reference them as `var(--token-<uuid>)`.
 - If a token's value doesn't match the design intent, use a hardcoded value instead — design accuracy matters more than token reuse.
