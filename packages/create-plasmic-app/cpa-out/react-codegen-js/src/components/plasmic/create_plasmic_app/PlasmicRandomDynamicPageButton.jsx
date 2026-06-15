@@ -18,6 +18,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import Button from "../../Button"; // plasmic-import: TQcvW_pSKi3/component
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 import "@plasmicapp/react-web/lib/plasmic.css";
+import "./plasmic.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicRandomDynamicPageButton.module.css"; // plasmic-import: Q23H1_1M_P/css
 
 createPlasmicElementProxy;

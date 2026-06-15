@@ -1,3 +1,4 @@
+import "../components/plasmic/create_plasmic_app/plasmic.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import '@/app/globals.css'
 import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
 

@@ -61,7 +61,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
+import "./plasmic.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicRandomDynamicPageButton.module.css"; // plasmic-import: Q23H1_1M_P/css
 
 import CheckSvgIcon from "./icons/PlasmicIcon__CheckSvg"; // plasmic-import: gj-_D7n31Ho/icon

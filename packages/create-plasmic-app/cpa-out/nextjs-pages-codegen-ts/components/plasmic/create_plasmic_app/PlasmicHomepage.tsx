@@ -65,7 +65,6 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicHomepage.module.css"; // plasmic-import: 6uuAAE1jiCew/css
 
 const emptyProxy: any = new Proxy(() => "", {
@@ -178,17 +177,17 @@ function PlasmicHomepage__RenderFunc(props: {
         }
       `}</style>
 
-      <div className={projectcss.plasmic_page_wrapper}>
+      <div className={"plasmic_page_wrapper"}>
         <div
           data-plasmic-name={"root"}
           data-plasmic-override={overrides.root}
           data-plasmic-root={true}
           data-plasmic-for-node={forNode}
           className={classNames(
-            projectcss.all,
-            projectcss.root_reset,
-            projectcss.plasmic_default_styles,
-            projectcss.plasmic_mixins,
+            "all",
+            "root_reset_47tFXWjN2C4NyHFGGpaYQ3",
+            "plasmic_default_styles",
+            "plasmic_mixins",
             styleTokensClassNames,
             sty.root
           )}
@@ -196,16 +195,16 @@ function PlasmicHomepage__RenderFunc(props: {
           <section
             data-plasmic-name={"section"}
             data-plasmic-override={overrides.section}
-            className={classNames(projectcss.all, sty.section)}
+            className={classNames("all", sty.section)}
           >
             <h1
               data-plasmic-name={"h1"}
               data-plasmic-override={overrides.h1}
               className={classNames(
-                projectcss.all,
-                projectcss.h1,
-                projectcss.h1__47tFX,
-                projectcss.__wab_text,
+                "all",
+                "h1",
+                "h1__47tFX",
+                "__wab_text",
                 sty.h1
               )}
             >
@@ -216,11 +215,7 @@ function PlasmicHomepage__RenderFunc(props: {
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text
-              )}
+              className={classNames("all", "__wab_text", sty.text)}
             >
               {
                 "This project is used by run-cpa.ts in the create-plasmic-app repo.\n\n\nrun-cpa.ts runs create-plasmic-app for many combinations of args (e.g. nextjs + appDir + loader + typescript) to check for changes in generated files. Any changes to this project will result in lots of changes to the generated files. Therefore, please avoid changing this project.\n"

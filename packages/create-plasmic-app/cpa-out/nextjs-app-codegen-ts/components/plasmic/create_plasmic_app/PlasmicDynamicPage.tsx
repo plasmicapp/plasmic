@@ -72,7 +72,6 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicDynamicPage.module.css"; // plasmic-import: AO44A-w7hh/css
 
 const emptyProxy: any = new Proxy(() => "", {
@@ -117,7 +116,7 @@ const pageQueryTree: QueryComponentNode = {
   type: "component",
   queries: {
     sha256: {
-      id: "custom:krgWtF9Kkesx",
+      id: "custom-code:krgWtF9Kkesx",
       fn: async ({ $q, $props, $ctx, $state }) => {
         console.log("Running SHA-256");
         const data = new TextEncoder().encode($ctx.params.slug);
@@ -201,17 +200,17 @@ function PlasmicDynamicPage__RenderFunc(props: {
         }
       `}</style>
 
-      <div className={projectcss.plasmic_page_wrapper}>
+      <div className={"plasmic_page_wrapper"}>
         <div
           data-plasmic-name={"root"}
           data-plasmic-override={overrides.root}
           data-plasmic-root={true}
           data-plasmic-for-node={forNode}
           className={classNames(
-            projectcss.all,
-            projectcss.root_reset,
-            projectcss.plasmic_default_styles,
-            projectcss.plasmic_mixins,
+            "all",
+            "root_reset_47tFXWjN2C4NyHFGGpaYQ3",
+            "plasmic_default_styles",
+            "plasmic_mixins",
             styleTokensClassNames,
             sty.root
           )}
@@ -219,16 +218,16 @@ function PlasmicDynamicPage__RenderFunc(props: {
           <section
             data-plasmic-name={"section"}
             data-plasmic-override={overrides.section}
-            className={classNames(projectcss.all, sty.section)}
+            className={classNames("all", sty.section)}
           >
             <h2
               data-plasmic-name={"h2"}
               data-plasmic-override={overrides.h2}
               className={classNames(
-                projectcss.all,
-                projectcss.h2,
-                projectcss.h2__47tFX,
-                projectcss.__wab_text,
+                "all",
+                "h2",
+                "h2__47tFX",
+                "__wab_text",
                 sty.h2
               )}
             >
@@ -238,10 +237,10 @@ function PlasmicDynamicPage__RenderFunc(props: {
               data-plasmic-name={"span"}
               data-plasmic-override={overrides.span}
               className={classNames(
-                projectcss.all,
-                projectcss.span,
-                projectcss.span__47tFX,
-                projectcss.__wab_text,
+                "all",
+                "span",
+                "span__47tFX",
+                "__wab_text",
                 sty.span
               )}
             >

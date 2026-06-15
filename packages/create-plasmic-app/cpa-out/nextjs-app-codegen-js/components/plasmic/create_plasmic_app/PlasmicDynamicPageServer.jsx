@@ -25,7 +25,7 @@ export const serverQueryTree = {
   type: "component",
   queries: {
     sha256: {
-      id: "custom:krgWtF9Kkesx",
+      id: "custom-code:krgWtF9Kkesx",
       fn: async ({ $q, $props, $ctx, $state }) => {
         console.log("Running SHA-256");
         const data = new TextEncoder().encode($ctx.params.slug);
