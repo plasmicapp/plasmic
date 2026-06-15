@@ -31,6 +31,45 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <component name="Drawer" uuid="66fbwz7FPx2e" type="plain"/>
     <component name="Tooltip" uuid="ASiSVqfHCthg" type="plain"/>
     <component name="TestComponent" uuid="JqzpTYaVCfc0" type="plain"/>
+    <component name="plasmic-react-aria-select" uuid="QswWn7k1U7ET" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-select-value" uuid="XEco5EOfFG7-" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-combobox" uuid="YsCvUUXRgPKy" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-button" uuid="HvUCgqiPzPEX" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-label" uuid="me7KTdO_KIkf" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-listbox" uuid="4sLOTHHFrzj2" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-listbox-item" uuid="PoAYkttnnKt8" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-popover" uuid="zIp51FL8KHRa" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-input" uuid="P1zT4UvhSciD" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-switch" uuid="IRebgwZ5KOxr" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-checkbox" uuid="t7JSdrAmVPUA" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-checkboxGroup" uuid="J6dFzk9sLhiL" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-radioGroup" uuid="YiLyhyFTHV9y" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-radioGroup-radio" uuid="L01PBsCNswpe" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-textField" uuid="rMswhyNZvi7B" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-modal" uuid="sHCwEg6H_Y31" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-tooltip" uuid="_Qjx-IzfLF6l" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-dialogTrigger" uuid="kp28MgccfwlQ" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-text" uuid="51hRux-iu0RF" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-description" uuid="-_rmqfmyqbxd" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-listbox-section" uuid="iIIdXu16I-k-" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-slider" uuid="kv1js5i5hCxL" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-slider-sliderOutput" uuid="ZoPZHoboZWhP" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-slider-sliderThumb" uuid="kiBpPWTzQmrA" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-slider-sliderTrack" uuid="flW7Lvcc_jyV" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-slider-range-slider" uuid="kbh41PnPdelo" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-heading" uuid="FCiuD5hxcsIL" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-textarea" uuid="z-WtOn_lG8-p" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-overlayArrow" uuid="ve6CbDRk1Jw-" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="plasmic-react-aria-dialog" uuid="xPmAZLS8Wf-7" type="code" fromProject="vraRvHJQpWZ2nQbXtKvCmD"/>
+    <component name="hostless-plasmic-head" uuid="p3UWaNRJcdGc" type="code" fromProject="uQew8EvRgLoREu4uLkeKWL"/>
+    <component name="plasmic-data-source-fetcher" uuid="n2LpPFmLp1pv" type="code" fromProject="uQew8EvRgLoREu4uLkeKWL"/>
+    <component name="hostless-plasmic-head" uuid="vo5pW2Cq7_Im" type="code" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <component name="plasmic-data-source-fetcher" uuid="5Yx7dsOC4vrj" type="code" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <component name="hostless-plasmic-head" uuid="YdUVCUmnqpDT" type="code" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <component name="plasmic-data-source-fetcher" uuid="zbDhFqKdVGov" type="code" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <component name="Homepage" uuid="pZV0b0ysiEE1" type="page" path="/" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <component name="hostless-plasmic-head" uuid="QG4_OGucsyMZ" type="code" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <component name="plasmic-data-source-fetcher" uuid="GKuemYaPBvo9" type="code" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
   </components>
   <screenBreakpoints>
     <screenBreakpoint name="Mobile only" uuid="pIBrJnbkAQLL" maxWidth="768"/>
@@ -50,7 +89,9 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <token name="Size-24" uuid="5Dj8sI4bqV2C" type="Spacing" value="var(--token-ekJK2BNXfyOR)" resolvedValue="1.5rem"/>
     <token name="Font-LG" uuid="QkMNDbZUI9zH" type="FontSize" value="1.25rem"/>
     <token name="Basic/Container-Background" uuid="48p0Jlumb6Of" type="Color" value="#FFFFFF"/>
-    <token name="Brand/Brand" uuid="6R_RCgXDnfCy" type="Color" value="var(--token-3kYlE5VFDAO5)" resolvedValue="#2563EB"/>
+    <token name="Brand/Brand" uuid="6R_RCgXDnfCy" type="Color" value="var(--token-3kYlE5VFDAO5)" resolvedValue="#2563EB">
+      <varianted-value variantUuids="pIBrJnbkAQLL" value="var(--token-LRdyYjwXlY-r)" resolvedValue="#9333EA"/>
+    </token>
     <token name="Sans-serif" uuid="VRn5eg_X38q7" type="FontFamily" value="Inter"/>
     <token name="Font-MD" uuid="mdlFAaQL9cZT" type="FontSize" value="1rem"/>
     <token name="Line-height-MD" uuid="bFkpmJG5PZPn" type="LineHeight" value="1.25"/>
@@ -62,15 +103,19 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <token name="Line-height-SM" uuid="TeiPG4bVS8s9" type="LineHeight" value="1"/>
     <token name="Line-height-LG" uuid="nnknQsSF9X4M" type="LineHeight" value="1.4"/>
     <token name="Size-2" uuid="aR8bR72wtSYZ" type="Spacing" value="var(--token-IUVIp1DHBSFd)" resolvedValue="0.125rem"/>
-    <token name="Success/Success" uuid="KIKkVE5HITTq" type="Color" value="var(--token-8odYYBvkaHVX)" resolvedValue="#16A34A"/>
+    <token name="Success/Success" uuid="KIKkVE5HITTq" type="Color" value="var(--token-8odYYBvkaHVX)" resolvedValue="#169E48"/>
     <token name="Warning/Warning" uuid="cpEXg673w3LE" type="Color" value="var(--token-L6pBmIkiSkx4)" resolvedValue="#FACC15"/>
-    <token name="Brand/Brand-Soft" uuid="o3a6NOLIofKT" type="Color" value="var(--token-w7EPkOMSh2Xb)" resolvedValue="#DBEAFE"/>
+    <token name="Brand/Brand-Soft" uuid="o3a6NOLIofKT" type="Color" value="var(--token-w7EPkOMSh2Xb)" resolvedValue="#DBEAFE">
+      <varianted-value variantUuids="pIBrJnbkAQLL" value="var(--token-IQebKfyP9Vbp)" resolvedValue="#F3E8FF"/>
+    </token>
     <token name="Neutral/Neutral-Soft" uuid="iwAtTzjIrY52" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
     <token name="Muted/Muted-Soft" uuid="_Zhqc4oeimE_" type="Color" value="var(--token-NyTb7hfbZNyN)" resolvedValue="#F3F4F6"/>
     <token name="Success/Success-Soft" uuid="iJ_NxhLUkdWo" type="Color" value="var(--token-Xs2o77o8RCB-)" resolvedValue="#DCFCE7"/>
     <token name="Warning/Warning-Soft" uuid="996B2a7W81uk" type="Color" value="var(--token-BUYkn0c_BT-J)" resolvedValue="#FEF9C3"/>
     <token name="Destructive/Destructive-Soft" uuid="YMdR_Biy5WbG" type="Color" value="var(--token-I0_BUYzH206C)" resolvedValue="#FEE2E2"/>
-    <token name="Brand/Brand-Border" uuid="JI5CHdDLi9zk" type="Color" value="var(--token-qsHKKmoi9Z2N)" resolvedValue="#93C5FD"/>
+    <token name="Brand/Brand-Border" uuid="JI5CHdDLi9zk" type="Color" value="var(--token-qsHKKmoi9Z2N)" resolvedValue="#93C5FD">
+      <varianted-value variantUuids="pIBrJnbkAQLL" value="var(--token-qeHSzxlRDSRm)" resolvedValue="#D8B4FE"/>
+    </token>
     <token name="Neutral/Neutral-Border" uuid="XYb5IRzNoqX7" type="Color" value="var(--token-GQQSYIXwL9h_)" resolvedValue="#D1D5DB"/>
     <token name="Muted/Muted-Border" uuid="lQAqvQ-ZHuDc" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
     <token name="Success/Success-Border" uuid="-HhbTi7UcSzz" type="Color" value="var(--token-Y7e5ggCd09M6)" resolvedValue="#86EFAC"/>
@@ -80,10 +125,14 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <token name="Interaction / Disabled" uuid="uSzxYmtL19gq" type="Color" value="#FFFFFF40"/>
     <token name="Interaction / Pressed" uuid="jbqfmQJrnHdW" type="Color" value="#00000033"/>
     <token name="Size-10" uuid="yk7m7bwFJ02R" type="Spacing" value="var(--token-vINZR3MlEOSB)" resolvedValue="0.625rem"/>
-    <token name="Brand/Brand-Foreground" uuid="8Z9NGJU5I115" type="Color" value="var(--token-M0LHGDR880st)" resolvedValue="#EFF6FF"/>
+    <token name="Brand/Brand-Foreground" uuid="8Z9NGJU5I115" type="Color" value="var(--token-M0LHGDR880st)" resolvedValue="#EFF6FF">
+      <varianted-value variantUuids="pIBrJnbkAQLL" value="var(--token-zrzu4DH_2Ak0)" resolvedValue="#FAF5FF"/>
+    </token>
     <token name="Neutral/Neutral-Foreground" uuid="jDYABwPNRgB6" type="Color" value="var(--token-w0BmYAdVh1BD)" resolvedValue="#F9FAFB"/>
     <token name="Muted/Muted-Foreground" uuid="Le_d7m1UzXV7" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
-    <token name="Brand/Brand-Soft-Foreground" uuid="_RWFFiNKNXVv" type="Color" value="var(--token-wXhZBDyFIH77)" resolvedValue="#1E3A8A"/>
+    <token name="Brand/Brand-Soft-Foreground" uuid="_RWFFiNKNXVv" type="Color" value="var(--token-wXhZBDyFIH77)" resolvedValue="#1E3A8A">
+      <varianted-value variantUuids="pIBrJnbkAQLL" value="var(--token-4Hnug9A3OCfz)" resolvedValue="#581C87"/>
+    </token>
     <token name="Warning/Warning-Foreground" uuid="gUYL2yuOGlk5" type="Color" value="var(--token-IM1QVYeIZBIA)" resolvedValue="#422006"/>
     <token name="Success/Success-Foreground" uuid="T19iHLx7o2j3" type="Color" value="var(--token-d5rxOApLiBXu)" resolvedValue="#F0FDF4"/>
     <token name="Destructive/Destructive-Foreground" uuid="KY151bWozx0p" type="Color" value="var(--token-wO2qMySVKYXU)" resolvedValue="#FEF2F2"/>
@@ -100,452 +149,328 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <token name="Basic/Input-Background" uuid="oYen04JAIf3J" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
     <token name="Basic/Overlay-Background" uuid="ghoU2mpMJmil" type="Color" value="#0A0A0A80"/>
     <token name="Basic/Container-Background-Dark" uuid="X4GQ8bRemoGX" type="Color" value="var(--token-c-y4Lbl8pLuG)" resolvedValue="#171717"/>
+    <token name="slate-50" uuid="OP4RqOVaeAzf" type="Color" value="#F8FAFC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-100" uuid="vNzKZAU3OD_s" type="Color" value="#F1F5F9" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-200" uuid="CIZmv5rSXMND" type="Color" value="#E2E8F0" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-300" uuid="ZwvIj-4N4oQL" type="Color" value="#CBD5E1" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-400" uuid="5xIiwbTxJ6Pg" type="Color" value="#94A3B8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-500" uuid="nWGJZJDhubtG" type="Color" value="#64748B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-600" uuid="zQpRAPm6W7j5" type="Color" value="#475569" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-700" uuid="464tHRw5BmKX" type="Color" value="#334155" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-800" uuid="6ejI8EHwX0xR" type="Color" value="#1E293B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-900" uuid="QdINyNpnsbvg" type="Color" value="#0F172A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="slate-950" uuid="o9sNrHk6V4-i" type="Color" value="#020617" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-50" uuid="w0BmYAdVh1BD" type="Color" value="#F9FAFB" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-100" uuid="NyTb7hfbZNyN" type="Color" value="#F3F4F6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-200" uuid="YTNNB1KtOvN9" type="Color" value="#E5E7EB" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-300" uuid="GQQSYIXwL9h_" type="Color" value="#D1D5DB" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-400" uuid="RN6-6smk2YHi" type="Color" value="#9CA3AF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-500" uuid="MGudh00NLP3q" type="Color" value="#6B7280" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-600" uuid="toRE9vsKdhXL" type="Color" value="#4B5563" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-700" uuid="Cn459MKRbWu9" type="Color" value="#374151" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-800" uuid="47XUuFrc7S8X" type="Color" value="#1F2937" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-900" uuid="ZnueTOHp2Zir" type="Color" value="#111827" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="gray-950" uuid="4Cdw41zGDm2p" type="Color" value="#030712" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-50" uuid="5iS0WED_pO7a" type="Color" value="#FAFAFA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-100" uuid="IcNxG7joZ6cC" type="Color" value="#F4F4F5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-200" uuid="vpSV5m_DXl3R" type="Color" value="#E4E4E7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-300" uuid="b1G1HIaI7kwe" type="Color" value="#D4D4D8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-400" uuid="Cdry_fHXqIzy" type="Color" value="#A1A1AA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-500" uuid="jnklENhwb2fp" type="Color" value="#71717A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-600" uuid="ZhaFnC0XU-TI" type="Color" value="#52525B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-700" uuid="jOCWHETPZx7c" type="Color" value="#3F3F46" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-800" uuid="dyGyvSC5JKFA" type="Color" value="#27272A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-900" uuid="iYyCcJ_aaV8s" type="Color" value="#18181B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="zinc-950" uuid="T--iApnavJWq" type="Color" value="#09090B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-50" uuid="eRwVnCXPLlDU" type="Color" value="#FAFAFA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-100" uuid="8YZlAGVronIB" type="Color" value="#F5F5F5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-200" uuid="5fdk-pCRsldu" type="Color" value="#E5E5E5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-300" uuid="IkoEj1Qfcy84" type="Color" value="#D4D4D4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-400" uuid="8D7KICXtEOv8" type="Color" value="#A3A3A3" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-500" uuid="pJDZFoPia0Hj" type="Color" value="#737373" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-600" uuid="IYFxvteD_IjA" type="Color" value="#525252" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-700" uuid="MGIERWXajRM3" type="Color" value="#404040" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-800" uuid="AVduXRnX_Hlz" type="Color" value="#262626" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-900" uuid="c-y4Lbl8pLuG" type="Color" value="#171717" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="neutral-950" uuid="4u3XPZrRvGq9" type="Color" value="#0A0A0A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-50" uuid="8D9FHcQQfs7R" type="Color" value="#FAFAF9" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-100" uuid="D2McOnSNn_Dz" type="Color" value="#F5F5F4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-200" uuid="nAsSHd-kWjto" type="Color" value="#E7E5E4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-300" uuid="jMUyduaGJ37Q" type="Color" value="#D6D3D1" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-400" uuid="EO-GF_5iL7Ic" type="Color" value="#A8A29E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-500" uuid="e0cHkFyBbvEK" type="Color" value="#78716C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-600" uuid="HrmyLsaBCu8s" type="Color" value="#57534E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-700" uuid="2eEztKzYAJ8H" type="Color" value="#44403C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-800" uuid="T8PdXkcAlLYw" type="Color" value="#292524" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-900" uuid="_1vVKapWssCZ" type="Color" value="#1C1917" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="stone-950" uuid="a1dQ8T3iURwc" type="Color" value="#0C0A09" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-50" uuid="wO2qMySVKYXU" type="Color" value="#FEF2F2" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-100" uuid="I0_BUYzH206C" type="Color" value="#FEE2E2" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-200" uuid="EK4C39YKm89q" type="Color" value="#FECACA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-300" uuid="8XWkpFEFETNw" type="Color" value="#FCA5A5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-400" uuid="dDlEaOOZplvV" type="Color" value="#F87171" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-500" uuid="8KsU3cvoS_xP" type="Color" value="#EF4444" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-600" uuid="u2RgMe-uQAju" type="Color" value="#DC2626" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-700" uuid="tt6-YQWwSdvb" type="Color" value="#B91C1C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-800" uuid="eBVTO_mnpQ4r" type="Color" value="#991B1B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-900" uuid="c1-8q9kxmrq_" type="Color" value="#7F1D1D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="red-950" uuid="1zdm7HvqzSTf" type="Color" value="#450A0A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-50" uuid="v4bjiVYEId2m" type="Color" value="#FFF7ED" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-100" uuid="IKFygJ0xepqB" type="Color" value="#FFEDD5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-200" uuid="QagGPlziIA8k" type="Color" value="#FED7AA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-300" uuid="5OotjbPjC70I" type="Color" value="#FDBA74" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-400" uuid="6UtOnCYrEQ9F" type="Color" value="#FB923C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-500" uuid="qejtewMjrB6W" type="Color" value="#F97316" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-600" uuid="IV11MCMbKC2y" type="Color" value="#EA580C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-700" uuid="5YN5O6yOLC9n" type="Color" value="#C2410C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-800" uuid="GKqjGFiwvEgU" type="Color" value="#9A3412" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-900" uuid="eN2s7PDUz9R6" type="Color" value="#7C2D12" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="orange-950" uuid="FtS9slm6qYr3" type="Color" value="#431407" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-50" uuid="fKlWCTfklJ7B" type="Color" value="#FFFBEB" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-100" uuid="vkyhsxLSFEaI" type="Color" value="#FEF3C7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-200" uuid="oNtLHLoZZWYI" type="Color" value="#FDE68A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-300" uuid="xXM2yAnnA8fD" type="Color" value="#FCD34D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-400" uuid="tT7yoLp6nZpA" type="Color" value="#FBBF24" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-500" uuid="dJ93JAwKuPHk" type="Color" value="#F59E0B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-600" uuid="NH1ZLrkO-KHD" type="Color" value="#D97706" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-700" uuid="lZIcjtq6huau" type="Color" value="#B45309" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-800" uuid="kp2ey-ao0gGo" type="Color" value="#92400E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-900" uuid="OfgRac1wNBjB" type="Color" value="#78350F" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="amber-950" uuid="BxJmyCsnlkNJ" type="Color" value="#451A03" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-50" uuid="lLjFhzSs6xNr" type="Color" value="#FEFCE8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-100" uuid="BUYkn0c_BT-J" type="Color" value="#FEF9C3" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-200" uuid="gUoxovJetw2o" type="Color" value="#FEF08A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-300" uuid="N2GVB8b4MTkJ" type="Color" value="#FDE047" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-400" uuid="L6pBmIkiSkx4" type="Color" value="#FACC15" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-500" uuid="y8WLRWMOuITN" type="Color" value="#EAB308" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-600" uuid="1lP8DIn_y9Ox" type="Color" value="#CA8A04" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-700" uuid="YFvwZzfIDZrn" type="Color" value="#A16207" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-800" uuid="5tS2-OmgldxU" type="Color" value="#854D0E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-900" uuid="Work-inyFZuD" type="Color" value="#713F12" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="yellow-950" uuid="IM1QVYeIZBIA" type="Color" value="#422006" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-50" uuid="Z6v6ZWB9vpGX" type="Color" value="#F7FEE7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-100" uuid="dJWU7lgZ103l" type="Color" value="#ECFCCB" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-200" uuid="WR9Tzpyxuj4A" type="Color" value="#D9F99D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-300" uuid="R4NMd20Fw_ja" type="Color" value="#BEF264" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-400" uuid="UDqDIVl1qub5" type="Color" value="#A3E635" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-500" uuid="5x4TUbWap0TQ" type="Color" value="#84CC16" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-600" uuid="ClU0wTIL1EBw" type="Color" value="#65A30D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-700" uuid="sEancl9sSQD9" type="Color" value="#4D7C0F" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-800" uuid="el0KYGs2a1gz" type="Color" value="#3F6212" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-900" uuid="HYk5Mm0mcNlR" type="Color" value="#365314" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="lime-950" uuid="jJz0gpDR6mD5" type="Color" value="#1A2E05" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-50" uuid="d5rxOApLiBXu" type="Color" value="#F0FDF4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-100" uuid="Xs2o77o8RCB-" type="Color" value="#DCFCE7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-200" uuid="UvXxNsxSqKVP" type="Color" value="#BBF7D0" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-300" uuid="Y7e5ggCd09M6" type="Color" value="#86EFAC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-400" uuid="Z8gseOjMrlNN" type="Color" value="#4ADE80" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-500" uuid="es6uM09cZmbA" type="Color" value="#22C55E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-600" uuid="8odYYBvkaHVX" type="Color" value="#16A34A" fromProject="hy5iSgnRhdQaXJLA78LVPv">
+      <override value="#169E48">
+        <varianted-value variantUuids="pIBrJnbkAQLL" value="#0CC14E"/>
+      </override>
+    </token>
+    <token name="green-700" uuid="PQwIJKlwbQZI" type="Color" value="#15803D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-800" uuid="5vVExEA_D6rl" type="Color" value="#166534" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-900" uuid="MD2kb85IOAun" type="Color" value="#14532D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="green-950" uuid="xYMlUaWDkmdp" type="Color" value="#052E16" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-50" uuid="zqShlLjRyQY1" type="Color" value="#ECFDF5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-100" uuid="R6-TfKoVLb3t" type="Color" value="#D1FAE5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-200" uuid="OUJCxKopjw6j" type="Color" value="#A7F3D0" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-300" uuid="UfjqBKalRXEQ" type="Color" value="#6EE7B7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-400" uuid="K8jm6iD6CH02" type="Color" value="#34D399" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-500" uuid="dFzvf2ar9njL" type="Color" value="#10B981" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-600" uuid="hx5aN54WGgpg" type="Color" value="#059669" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-700" uuid="9vpEFuaelD5X" type="Color" value="#047857" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-800" uuid="34rFmJQCUgIk" type="Color" value="#065F46" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-900" uuid="NpcHUt2GXKJv" type="Color" value="#064E3B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="emerald-950" uuid="VSf6MzZkwa9u" type="Color" value="#022C22" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-50" uuid="9GZFgs6uftZu" type="Color" value="#F0FDFA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-100" uuid="j3ajS0i8Fv2N" type="Color" value="#CCFBF1" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-200" uuid="woUiqz13sSZ_" type="Color" value="#99F6E4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-300" uuid="3tV0x-1yqTix" type="Color" value="#5EEAD4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-400" uuid="ib-EqTqpEPmH" type="Color" value="#2DD4BF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-500" uuid="v0_dGUpLc9jz" type="Color" value="#14B8A6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-600" uuid="lj8C5C9geJYt" type="Color" value="#0D9488" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-700" uuid="DYMaIOTD_N04" type="Color" value="#0F766E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-800" uuid="nkTm_qK4NBaE" type="Color" value="#115E59" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-900" uuid="tAPlTgXnOJpn" type="Color" value="#134E4A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="teal-950" uuid="zb6MW-JqfA80" type="Color" value="#042F2E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-50" uuid="a1tBdrn4VLTV" type="Color" value="#ECFEFF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-100" uuid="IiiLcOYpICU1" type="Color" value="#CFFAFE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-200" uuid="3EGq78D_ogKU" type="Color" value="#A5F3FC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-300" uuid="f_u2uTO8qVxG" type="Color" value="#67E8F9" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-400" uuid="dhXycvOm2c1r" type="Color" value="#22D3EE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-500" uuid="2XrEDCDdBCyy" type="Color" value="#06B6D4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-600" uuid="xlkPFnh03HtF" type="Color" value="#0891B2" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-700" uuid="SSN-zB0imzob" type="Color" value="#0E7490" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-800" uuid="luEjmkk6Iqyn" type="Color" value="#155E75" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-900" uuid="uY4ZfVqTUYhL" type="Color" value="#164E63" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="cyan-950" uuid="WQjXCeVVtH2t" type="Color" value="#083344" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-50" uuid="QmKJFteWhaRq" type="Color" value="#F0F9FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-100" uuid="FSkHpkcJi4-F" type="Color" value="#E0F2FE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-200" uuid="VH0NxpPzB2FN" type="Color" value="#BAE6FD" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-300" uuid="rPRvL2Z6hqT6" type="Color" value="#7DD3FC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-400" uuid="oiYyQ9ZyTXrn" type="Color" value="#38BDF8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-500" uuid="7XuQ89mG_HOj" type="Color" value="#0EA5E9" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-600" uuid="uD1hyJ8j1Vj8" type="Color" value="#0284C7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-700" uuid="kCeK1anx8XTN" type="Color" value="#0369A1" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-800" uuid="e6dHJZUN2abd" type="Color" value="#075985" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-900" uuid="dzf8rUinPeUp" type="Color" value="#0C4A6E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="sky-950" uuid="TlWZED5lkAqI" type="Color" value="#082F49" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-50" uuid="M0LHGDR880st" type="Color" value="#EFF6FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-100" uuid="w7EPkOMSh2Xb" type="Color" value="#DBEAFE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-200" uuid="-TFv9ys77CnL" type="Color" value="#BFDBFE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-300" uuid="qsHKKmoi9Z2N" type="Color" value="#93C5FD" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-400" uuid="wf6FgFNQQa9z" type="Color" value="#60A5FA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-500" uuid="GgwzU2ipyk2Z" type="Color" value="#3B82F6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-600" uuid="3kYlE5VFDAO5" type="Color" value="#2563EB" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-700" uuid="UgY36eBmPBAE" type="Color" value="#1D4ED8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-800" uuid="Fh8yz2VaZHlR" type="Color" value="#1E40AF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-900" uuid="wXhZBDyFIH77" type="Color" value="#1E3A8A" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="blue-950" uuid="vw-mcGE2roe0" type="Color" value="#172554" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-50" uuid="MUgyHQgB8Onb" type="Color" value="#EEF2FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-100" uuid="EAilB_IHEv4n" type="Color" value="#E0E7FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-200" uuid="NTIDgQUPKhnj" type="Color" value="#C7D2FE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-300" uuid="W2y29HMVjHBD" type="Color" value="#A5B4FC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-400" uuid="hd_-4ix45S80" type="Color" value="#818CF8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-500" uuid="wjDz2yYxsQQ8" type="Color" value="#6366F1" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-600" uuid="fprQyG0t3unE" type="Color" value="#4F46E5" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-700" uuid="pjrh6LTpx1C7" type="Color" value="#4338CA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-800" uuid="-aYt4qvnMM1i" type="Color" value="#3730A3" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-900" uuid="dQhfe3TJqOhd" type="Color" value="#312E81" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="indigo-950" uuid="WHkLklfRuupI" type="Color" value="#1E1B4B" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-50" uuid="HbHgmVj9P1bZ" type="Color" value="#F5F3FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-100" uuid="WK-NTYF-5BVv" type="Color" value="#EDE9FE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-200" uuid="dTfB3Xo52tZd" type="Color" value="#DDD6FE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-300" uuid="H0oFXXh3davx" type="Color" value="#C4B5FD" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-400" uuid="jSjWrtfR97I8" type="Color" value="#A78BFA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-500" uuid="BAiVbiAYYRty" type="Color" value="#8B5CF6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-600" uuid="BUqDgo1KDCAM" type="Color" value="#7C3AED" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-700" uuid="FVVPmyIhsWSw" type="Color" value="#6D28D9" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-800" uuid="h9NXW_a-X-ce" type="Color" value="#5B21B6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-900" uuid="JuI-Y_ng_RiA" type="Color" value="#4C1D95" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="violet-950" uuid="z8uDTpjKexI6" type="Color" value="#2E1065" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-50" uuid="zrzu4DH_2Ak0" type="Color" value="#FAF5FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-100" uuid="IQebKfyP9Vbp" type="Color" value="#F3E8FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-200" uuid="qF66CJCpOJhC" type="Color" value="#E9D5FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-300" uuid="qeHSzxlRDSRm" type="Color" value="#D8B4FE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-400" uuid="wENjc8qf_p3H" type="Color" value="#C084FC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-500" uuid="5xI7rD9EJBl1" type="Color" value="#A855F7" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-600" uuid="LRdyYjwXlY-r" type="Color" value="#9333EA" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-700" uuid="VkXtaIgovIPL" type="Color" value="#7E22CE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-800" uuid="zNy5dTqaDBJU" type="Color" value="#6B21A8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-900" uuid="4Hnug9A3OCfz" type="Color" value="#581C87" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="purple-950" uuid="SGsAJ0KBbWhv" type="Color" value="#3B0764" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-50" uuid="TOhPgr1I4f4K" type="Color" value="#FDF4FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-100" uuid="BvOv4iggVLV3" type="Color" value="#FAE8FF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-200" uuid="UgGpf-HO_ZX9" type="Color" value="#F5D0FE" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-300" uuid="j2txmjkTbNri" type="Color" value="#F0ABFC" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-400" uuid="IcgaaEMOByjk" type="Color" value="#E879F9" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-500" uuid="9hZhIDQryy-0" type="Color" value="#D946EF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-600" uuid="1FfOm8b4Fwpu" type="Color" value="#C026D3" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-700" uuid="tApCCZ0L5jvL" type="Color" value="#A21CAF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-800" uuid="dWDu6W9GR0ne" type="Color" value="#86198F" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-900" uuid="6q0IQdZg09DZ" type="Color" value="#701A75" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="fuchsia-950" uuid="mg4Iv2SZbmhT" type="Color" value="#4A044E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-50" uuid="75Zwwmh6OLmL" type="Color" value="#FDF2F8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-100" uuid="2wPmyCc_mbj5" type="Color" value="#FCE7F3" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-200" uuid="hjZkVQTWN2rl" type="Color" value="#FBCFE8" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-300" uuid="mEqH48W_IZpc" type="Color" value="#F9A8D4" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-400" uuid="U2Onhuzr8YHT" type="Color" value="#F472B6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-500" uuid="8g5hhXxZ9hMU" type="Color" value="#EC4899" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-600" uuid="VK_dvImpXfxq" type="Color" value="#DB2777" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-700" uuid="fcej--D2G3DH" type="Color" value="#BE185D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-900" uuid="IZA9QASIQRxq" type="Color" value="#831843" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-800" uuid="rrpXIEx7cqsM" type="Color" value="#9D174D" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="pink-950" uuid="625IYYAaoEso" type="Color" value="#500724" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-50" uuid="PTRH9uynHA6L" type="Color" value="#FFF1F2" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-100" uuid="I5uUVfp-QnSG" type="Color" value="#FFE4E6" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-200" uuid="tBlt_THhGKQw" type="Color" value="#FECDD3" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-300" uuid="9iEQtdvqEjEy" type="Color" value="#FDA4AF" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-400" uuid="5iMD7CqzmnUr" type="Color" value="#FB7185" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-500" uuid="pHGut6bzLkK5" type="Color" value="#F43F5E" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-600" uuid="7MIbFjtxqM6V" type="Color" value="#E11D48" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-700" uuid="Q4hDHJx_HNqY" type="Color" value="#BE123C" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-800" uuid="GpI-c_g2V2k_" type="Color" value="#9F1239" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-900" uuid="cJ1sPX79UZ5i" type="Color" value="#881337" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="rose-950" uuid="IqkIQtEIIIBj" type="Color" value="#4C0519" fromProject="hy5iSgnRhdQaXJLA78LVPv"/>
+    <token name="0.5" uuid="IUVIp1DHBSFd" type="Spacing" value="0.125rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="1" uuid="RuQNZpYm0Yds" type="Spacing" value="0.25rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="1.5" uuid="c8-rjzKYORFj" type="Spacing" value="0.375rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="2" uuid="cfon0PHiXQoL" type="Spacing" value="0.5rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="2.5" uuid="vINZR3MlEOSB" type="Spacing" value="0.625rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="3" uuid="PKf5XaFatup3" type="Spacing" value="0.75rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="3.5" uuid="f5yZMucxeQg7" type="Spacing" value="0.875rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="4" uuid="0tl2H1TRPHhV" type="Spacing" value="1rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="5" uuid="TONjX_YbO9_T" type="Spacing" value="1.25rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="6" uuid="ekJK2BNXfyOR" type="Spacing" value="1.5rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="7" uuid="IaX53w_ZwhMz" type="Spacing" value="1.75rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="8" uuid="OJSN3W0Myvht" type="Spacing" value="2rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="9" uuid="xpA-7-UWgDGz" type="Spacing" value="2.25rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="10" uuid="gzhQ56cI3Art" type="Spacing" value="2.5rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="11" uuid="sDj2bMFpgPsu" type="Spacing" value="2.75rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="12" uuid="-_xqF59Qmd-S" type="Spacing" value="3rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="14" uuid="-BrM_ZV0mYra" type="Spacing" value="3.5rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="16" uuid="MbEKSCQSHAZe" type="Spacing" value="4rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="20" uuid="H_DkTyHUBUqw" type="Spacing" value="5rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="24" uuid="ckp0_SexMOmY" type="Spacing" value="6rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="28" uuid="r7CyN1jk6eOo" type="Spacing" value="7rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="32" uuid="AUBHFmH0aB1O" type="Spacing" value="8rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="36" uuid="lpCj9NKaufH1" type="Spacing" value="9rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="40" uuid="-PhtmxJfN8kB" type="Spacing" value="10rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="44" uuid="OQvpyfunyWKz" type="Spacing" value="11rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="48" uuid="tQNX9MsWMvEv" type="Spacing" value="12rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="52" uuid="cU7K2PYR7j_D" type="Spacing" value="13rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="56" uuid="TeSIAVk-0ZUO" type="Spacing" value="14rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="60" uuid="Wsj6zjPCfuzD" type="Spacing" value="15rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="64" uuid="pxg61APozE59" type="Spacing" value="16rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="72" uuid="i8QROmIXjFBE" type="Spacing" value="18rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="80" uuid="UXQUXu8zXr17" type="Spacing" value="20rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="96" uuid="sz3dtWxMyjKb" type="Spacing" value="24rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
+    <token name="4.5" uuid="fEaUg40ICnXp" type="Spacing" value="1.125rem" fromProject="vqJgaHdHtmNa4jCyszhj8z"/>
   </tokens>
   <animations>
+    <animation name="Bounce" uuid="mz8pGamSoahc" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Flash" uuid="gywO1jkB0c0b" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Pulse" uuid="0DlLE3ZmR0lr" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Shake X" uuid="I3e22tKHL0k5" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Shake Y" uuid="L0kBo9LJTzBS" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Bounce In" uuid="3hoXU1WP6GS8" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Bounce In Down" uuid="hp0hXEW9IovK" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Bounce In Up" uuid="OUEx47B0gs0N" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Bounce Out" uuid="DI9YSao-ElcP" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Bounce Out Down" uuid="hEnFj0ViWREN" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Bounce Out Up" uuid="xZzUZYpv_BEF" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade In" uuid="K8aS4cD8LxJC" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade In Down" uuid="3wejw0KdhvkT" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade In Left" uuid="4b8z_yZskL8t" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade In Right" uuid="Kdx1r1C3T-k5" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade In Up" uuid="CV8t_94hMZOJ" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade Out" uuid="WsmEXWsKHehM" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade Out Down" uuid="xkwpUUXKXaKh" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade Out Left" uuid="4I7FFZXpTQqw" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade Out Right" uuid="v7VeJyZF8OiV" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Fade Out Up" uuid="WCNCocbUJlyZ" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Zoom In" uuid="8_EsQyUE1f6D" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Zoom In Down" uuid="nKgmo_Ih8ecU" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Zoom In Up" uuid="wDQdAk9BrYhY" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Zoom Out" uuid="-8XcUEhc_tFz" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Zoom Out Down" uuid="T1UpFUnBqbit" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Zoom Out Up" uuid="Mk_d1Et3X2KO" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide In Down" uuid="H_u23sDnaGBJ" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide In Left" uuid="amPxFRYy2Bqz" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide In Right" uuid="tlJWuYi8yUnT" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide In Up" uuid="l416FyqrLiVP" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide Out Down" uuid="IQTsEFKh0RaO" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide Out Left" uuid="yGtWsF8QCRpo" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide Out Right" uuid="JR7y0rUT-Qox" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
+    <animation name="Slide Out Up" uuid="x_snDqhPUPUr" fromProject="xawVbnXnpTdzmP3BKZNH31"/>
   </animations>
-  <imported-project id="jKCDydDR4y1ssisNLSBpHa">
-    <name>react-aria</name>
-    <version>0.0.1</version>
-  </imported-project>
-  <imported-project id="r4Z5RCuvs1nuk8vGZKhSbS">
-    <name>[Library] Tabler 3.2 Icons</name>
-    <version>0.0.1</version>
-  </imported-project>
-  <imported-project id="oEfRmFCRze9EZbKxAwxH7b">
-    <name>[Library] Tailwind 3.4 Colors</name>
-    <version>0.0.1</version>
-  </imported-project>
-  <imported-project id="pfSdZUuEmzVejurMmPzR23">
-    <name>[Library] Tailwind 3.4 Number Tokens</name>
-    <version>0.0.1</version>
-  </imported-project>
-  <imported-project id="1R5oD8mgkyJkLKQnD9hQb2">
-    <name>[PlasmicKit] Animations</name>
-    <version>0.0.1</version>
-  </imported-project>
-</project>
-<project id="jKCDydDR4y1ssisNLSBpHa">
-  <components>
-    <component name="plasmic-react-aria-select" uuid="QswWn7k1U7ET" type="code"/>
-    <component name="plasmic-react-aria-select-value" uuid="XEco5EOfFG7-" type="code"/>
-    <component name="plasmic-react-aria-combobox" uuid="YsCvUUXRgPKy" type="code"/>
-    <component name="plasmic-react-aria-button" uuid="HvUCgqiPzPEX" type="code"/>
-    <component name="plasmic-react-aria-label" uuid="me7KTdO_KIkf" type="code"/>
-    <component name="plasmic-react-aria-listbox" uuid="4sLOTHHFrzj2" type="code"/>
-    <component name="plasmic-react-aria-listbox-item" uuid="PoAYkttnnKt8" type="code"/>
-    <component name="plasmic-react-aria-popover" uuid="zIp51FL8KHRa" type="code"/>
-    <component name="plasmic-react-aria-input" uuid="P1zT4UvhSciD" type="code"/>
-    <component name="plasmic-react-aria-switch" uuid="IRebgwZ5KOxr" type="code"/>
-    <component name="plasmic-react-aria-checkbox" uuid="t7JSdrAmVPUA" type="code"/>
-    <component name="plasmic-react-aria-checkboxGroup" uuid="J6dFzk9sLhiL" type="code"/>
-    <component name="plasmic-react-aria-radioGroup" uuid="YiLyhyFTHV9y" type="code"/>
-    <component name="plasmic-react-aria-radioGroup-radio" uuid="L01PBsCNswpe" type="code"/>
-    <component name="plasmic-react-aria-textField" uuid="rMswhyNZvi7B" type="code"/>
-    <component name="plasmic-react-aria-modal" uuid="sHCwEg6H_Y31" type="code"/>
-    <component name="plasmic-react-aria-tooltip" uuid="_Qjx-IzfLF6l" type="code"/>
-    <component name="plasmic-react-aria-dialogTrigger" uuid="kp28MgccfwlQ" type="code"/>
-    <component name="plasmic-react-aria-text" uuid="51hRux-iu0RF" type="code"/>
-    <component name="plasmic-react-aria-description" uuid="-_rmqfmyqbxd" type="code"/>
-    <component name="plasmic-react-aria-listbox-section" uuid="iIIdXu16I-k-" type="code"/>
-    <component name="plasmic-react-aria-slider" uuid="kv1js5i5hCxL" type="code"/>
-    <component name="plasmic-react-aria-slider-sliderOutput" uuid="ZoPZHoboZWhP" type="code"/>
-    <component name="plasmic-react-aria-slider-sliderThumb" uuid="kiBpPWTzQmrA" type="code"/>
-    <component name="plasmic-react-aria-slider-sliderTrack" uuid="flW7Lvcc_jyV" type="code"/>
-    <component name="plasmic-react-aria-slider-range-slider" uuid="kbh41PnPdelo" type="code"/>
-    <component name="plasmic-react-aria-heading" uuid="FCiuD5hxcsIL" type="code"/>
-    <component name="plasmic-react-aria-textarea" uuid="z-WtOn_lG8-p" type="code"/>
-    <component name="plasmic-react-aria-overlayArrow" uuid="ve6CbDRk1Jw-" type="code"/>
-    <component name="plasmic-react-aria-dialog" uuid="xPmAZLS8Wf-7" type="code"/>
-  </components>
-  <globalVariantGroups>
-  </globalVariantGroups>
-  <tokens>
-  </tokens>
-  <animations>
-  </animations>
-</project>
-<project id="r4Z5RCuvs1nuk8vGZKhSbS">
-  <components>
-    <component name="hostless-plasmic-head" uuid="p3UWaNRJcdGc" type="code"/>
-    <component name="plasmic-data-source-fetcher" uuid="n2LpPFmLp1pv" type="code"/>
-  </components>
-  <screenBreakpoints>
-    <screenBreakpoint name="Mobile only" uuid="jOZjFDZEU9rW" maxWidth="768"/>
-  </screenBreakpoints>
-  <globalVariantGroups>
-    <group name="Screen" uuid="Rf3u7x-B0S_o">
-      <variant name="Mobile only" uuid="jOZjFDZEU9rW"/>
-    </group>
-  </globalVariantGroups>
-  <tokens>
-  </tokens>
-  <animations>
-  </animations>
-</project>
-<project id="oEfRmFCRze9EZbKxAwxH7b">
-  <components>
-    <component name="hostless-plasmic-head" uuid="vo5pW2Cq7_Im" type="code"/>
-    <component name="plasmic-data-source-fetcher" uuid="5Yx7dsOC4vrj" type="code"/>
-  </components>
-  <screenBreakpoints>
-    <screenBreakpoint name="Mobile only" uuid="KUS0HrSGR6Rp" maxWidth="768"/>
-  </screenBreakpoints>
-  <globalVariantGroups>
-    <group name="Screen" uuid="CQH1yWTrsJfR">
-      <variant name="Mobile only" uuid="KUS0HrSGR6Rp"/>
-    </group>
-  </globalVariantGroups>
-  <tokens>
-    <token name="slate-50" uuid="OP4RqOVaeAzf" type="Color" value="#F8FAFC"/>
-    <token name="slate-100" uuid="vNzKZAU3OD_s" type="Color" value="#F1F5F9"/>
-    <token name="slate-200" uuid="CIZmv5rSXMND" type="Color" value="#E2E8F0"/>
-    <token name="slate-300" uuid="ZwvIj-4N4oQL" type="Color" value="#CBD5E1"/>
-    <token name="slate-400" uuid="5xIiwbTxJ6Pg" type="Color" value="#94A3B8"/>
-    <token name="slate-500" uuid="nWGJZJDhubtG" type="Color" value="#64748B"/>
-    <token name="slate-600" uuid="zQpRAPm6W7j5" type="Color" value="#475569"/>
-    <token name="slate-700" uuid="464tHRw5BmKX" type="Color" value="#334155"/>
-    <token name="slate-800" uuid="6ejI8EHwX0xR" type="Color" value="#1E293B"/>
-    <token name="slate-900" uuid="QdINyNpnsbvg" type="Color" value="#0F172A"/>
-    <token name="slate-950" uuid="o9sNrHk6V4-i" type="Color" value="#020617"/>
-    <token name="gray-50" uuid="w0BmYAdVh1BD" type="Color" value="#F9FAFB"/>
-    <token name="gray-100" uuid="NyTb7hfbZNyN" type="Color" value="#F3F4F6"/>
-    <token name="gray-200" uuid="YTNNB1KtOvN9" type="Color" value="#E5E7EB"/>
-    <token name="gray-300" uuid="GQQSYIXwL9h_" type="Color" value="#D1D5DB"/>
-    <token name="gray-400" uuid="RN6-6smk2YHi" type="Color" value="#9CA3AF"/>
-    <token name="gray-500" uuid="MGudh00NLP3q" type="Color" value="#6B7280"/>
-    <token name="gray-600" uuid="toRE9vsKdhXL" type="Color" value="#4B5563"/>
-    <token name="gray-700" uuid="Cn459MKRbWu9" type="Color" value="#374151"/>
-    <token name="gray-800" uuid="47XUuFrc7S8X" type="Color" value="#1F2937"/>
-    <token name="gray-900" uuid="ZnueTOHp2Zir" type="Color" value="#111827"/>
-    <token name="gray-950" uuid="4Cdw41zGDm2p" type="Color" value="#030712"/>
-    <token name="zinc-50" uuid="5iS0WED_pO7a" type="Color" value="#FAFAFA"/>
-    <token name="zinc-100" uuid="IcNxG7joZ6cC" type="Color" value="#F4F4F5"/>
-    <token name="zinc-200" uuid="vpSV5m_DXl3R" type="Color" value="#E4E4E7"/>
-    <token name="zinc-300" uuid="b1G1HIaI7kwe" type="Color" value="#D4D4D8"/>
-    <token name="zinc-400" uuid="Cdry_fHXqIzy" type="Color" value="#A1A1AA"/>
-    <token name="zinc-500" uuid="jnklENhwb2fp" type="Color" value="#71717A"/>
-    <token name="zinc-600" uuid="ZhaFnC0XU-TI" type="Color" value="#52525B"/>
-    <token name="zinc-700" uuid="jOCWHETPZx7c" type="Color" value="#3F3F46"/>
-    <token name="zinc-800" uuid="dyGyvSC5JKFA" type="Color" value="#27272A"/>
-    <token name="zinc-900" uuid="iYyCcJ_aaV8s" type="Color" value="#18181B"/>
-    <token name="zinc-950" uuid="T--iApnavJWq" type="Color" value="#09090B"/>
-    <token name="neutral-50" uuid="eRwVnCXPLlDU" type="Color" value="#FAFAFA"/>
-    <token name="neutral-100" uuid="8YZlAGVronIB" type="Color" value="#F5F5F5"/>
-    <token name="neutral-200" uuid="5fdk-pCRsldu" type="Color" value="#E5E5E5"/>
-    <token name="neutral-300" uuid="IkoEj1Qfcy84" type="Color" value="#D4D4D4"/>
-    <token name="neutral-400" uuid="8D7KICXtEOv8" type="Color" value="#A3A3A3"/>
-    <token name="neutral-500" uuid="pJDZFoPia0Hj" type="Color" value="#737373"/>
-    <token name="neutral-600" uuid="IYFxvteD_IjA" type="Color" value="#525252"/>
-    <token name="neutral-700" uuid="MGIERWXajRM3" type="Color" value="#404040"/>
-    <token name="neutral-800" uuid="AVduXRnX_Hlz" type="Color" value="#262626"/>
-    <token name="neutral-900" uuid="c-y4Lbl8pLuG" type="Color" value="#171717"/>
-    <token name="neutral-950" uuid="4u3XPZrRvGq9" type="Color" value="#0A0A0A"/>
-    <token name="stone-50" uuid="8D9FHcQQfs7R" type="Color" value="#FAFAF9"/>
-    <token name="stone-100" uuid="D2McOnSNn_Dz" type="Color" value="#F5F5F4"/>
-    <token name="stone-200" uuid="nAsSHd-kWjto" type="Color" value="#E7E5E4"/>
-    <token name="stone-300" uuid="jMUyduaGJ37Q" type="Color" value="#D6D3D1"/>
-    <token name="stone-400" uuid="EO-GF_5iL7Ic" type="Color" value="#A8A29E"/>
-    <token name="stone-500" uuid="e0cHkFyBbvEK" type="Color" value="#78716C"/>
-    <token name="stone-600" uuid="HrmyLsaBCu8s" type="Color" value="#57534E"/>
-    <token name="stone-700" uuid="2eEztKzYAJ8H" type="Color" value="#44403C"/>
-    <token name="stone-800" uuid="T8PdXkcAlLYw" type="Color" value="#292524"/>
-    <token name="stone-900" uuid="_1vVKapWssCZ" type="Color" value="#1C1917"/>
-    <token name="stone-950" uuid="a1dQ8T3iURwc" type="Color" value="#0C0A09"/>
-    <token name="red-50" uuid="wO2qMySVKYXU" type="Color" value="#FEF2F2"/>
-    <token name="red-100" uuid="I0_BUYzH206C" type="Color" value="#FEE2E2"/>
-    <token name="red-200" uuid="EK4C39YKm89q" type="Color" value="#FECACA"/>
-    <token name="red-300" uuid="8XWkpFEFETNw" type="Color" value="#FCA5A5"/>
-    <token name="red-400" uuid="dDlEaOOZplvV" type="Color" value="#F87171"/>
-    <token name="red-500" uuid="8KsU3cvoS_xP" type="Color" value="#EF4444"/>
-    <token name="red-600" uuid="u2RgMe-uQAju" type="Color" value="#DC2626"/>
-    <token name="red-700" uuid="tt6-YQWwSdvb" type="Color" value="#B91C1C"/>
-    <token name="red-800" uuid="eBVTO_mnpQ4r" type="Color" value="#991B1B"/>
-    <token name="red-900" uuid="c1-8q9kxmrq_" type="Color" value="#7F1D1D"/>
-    <token name="red-950" uuid="1zdm7HvqzSTf" type="Color" value="#450A0A"/>
-    <token name="orange-50" uuid="v4bjiVYEId2m" type="Color" value="#FFF7ED"/>
-    <token name="orange-100" uuid="IKFygJ0xepqB" type="Color" value="#FFEDD5"/>
-    <token name="orange-200" uuid="QagGPlziIA8k" type="Color" value="#FED7AA"/>
-    <token name="orange-300" uuid="5OotjbPjC70I" type="Color" value="#FDBA74"/>
-    <token name="orange-400" uuid="6UtOnCYrEQ9F" type="Color" value="#FB923C"/>
-    <token name="orange-500" uuid="qejtewMjrB6W" type="Color" value="#F97316"/>
-    <token name="orange-600" uuid="IV11MCMbKC2y" type="Color" value="#EA580C"/>
-    <token name="orange-700" uuid="5YN5O6yOLC9n" type="Color" value="#C2410C"/>
-    <token name="orange-800" uuid="GKqjGFiwvEgU" type="Color" value="#9A3412"/>
-    <token name="orange-900" uuid="eN2s7PDUz9R6" type="Color" value="#7C2D12"/>
-    <token name="orange-950" uuid="FtS9slm6qYr3" type="Color" value="#431407"/>
-    <token name="amber-50" uuid="fKlWCTfklJ7B" type="Color" value="#FFFBEB"/>
-    <token name="amber-100" uuid="vkyhsxLSFEaI" type="Color" value="#FEF3C7"/>
-    <token name="amber-200" uuid="oNtLHLoZZWYI" type="Color" value="#FDE68A"/>
-    <token name="amber-300" uuid="xXM2yAnnA8fD" type="Color" value="#FCD34D"/>
-    <token name="amber-400" uuid="tT7yoLp6nZpA" type="Color" value="#FBBF24"/>
-    <token name="amber-500" uuid="dJ93JAwKuPHk" type="Color" value="#F59E0B"/>
-    <token name="amber-600" uuid="NH1ZLrkO-KHD" type="Color" value="#D97706"/>
-    <token name="amber-700" uuid="lZIcjtq6huau" type="Color" value="#B45309"/>
-    <token name="amber-800" uuid="kp2ey-ao0gGo" type="Color" value="#92400E"/>
-    <token name="amber-900" uuid="OfgRac1wNBjB" type="Color" value="#78350F"/>
-    <token name="amber-950" uuid="BxJmyCsnlkNJ" type="Color" value="#451A03"/>
-    <token name="yellow-50" uuid="lLjFhzSs6xNr" type="Color" value="#FEFCE8"/>
-    <token name="yellow-100" uuid="BUYkn0c_BT-J" type="Color" value="#FEF9C3"/>
-    <token name="yellow-200" uuid="gUoxovJetw2o" type="Color" value="#FEF08A"/>
-    <token name="yellow-300" uuid="N2GVB8b4MTkJ" type="Color" value="#FDE047"/>
-    <token name="yellow-400" uuid="L6pBmIkiSkx4" type="Color" value="#FACC15"/>
-    <token name="yellow-500" uuid="y8WLRWMOuITN" type="Color" value="#EAB308"/>
-    <token name="yellow-600" uuid="1lP8DIn_y9Ox" type="Color" value="#CA8A04"/>
-    <token name="yellow-700" uuid="YFvwZzfIDZrn" type="Color" value="#A16207"/>
-    <token name="yellow-800" uuid="5tS2-OmgldxU" type="Color" value="#854D0E"/>
-    <token name="yellow-900" uuid="Work-inyFZuD" type="Color" value="#713F12"/>
-    <token name="yellow-950" uuid="IM1QVYeIZBIA" type="Color" value="#422006"/>
-    <token name="lime-50" uuid="Z6v6ZWB9vpGX" type="Color" value="#F7FEE7"/>
-    <token name="lime-100" uuid="dJWU7lgZ103l" type="Color" value="#ECFCCB"/>
-    <token name="lime-200" uuid="WR9Tzpyxuj4A" type="Color" value="#D9F99D"/>
-    <token name="lime-300" uuid="R4NMd20Fw_ja" type="Color" value="#BEF264"/>
-    <token name="lime-400" uuid="UDqDIVl1qub5" type="Color" value="#A3E635"/>
-    <token name="lime-500" uuid="5x4TUbWap0TQ" type="Color" value="#84CC16"/>
-    <token name="lime-600" uuid="ClU0wTIL1EBw" type="Color" value="#65A30D"/>
-    <token name="lime-700" uuid="sEancl9sSQD9" type="Color" value="#4D7C0F"/>
-    <token name="lime-800" uuid="el0KYGs2a1gz" type="Color" value="#3F6212"/>
-    <token name="lime-900" uuid="HYk5Mm0mcNlR" type="Color" value="#365314"/>
-    <token name="lime-950" uuid="jJz0gpDR6mD5" type="Color" value="#1A2E05"/>
-    <token name="green-50" uuid="d5rxOApLiBXu" type="Color" value="#F0FDF4"/>
-    <token name="green-100" uuid="Xs2o77o8RCB-" type="Color" value="#DCFCE7"/>
-    <token name="green-200" uuid="UvXxNsxSqKVP" type="Color" value="#BBF7D0"/>
-    <token name="green-300" uuid="Y7e5ggCd09M6" type="Color" value="#86EFAC"/>
-    <token name="green-400" uuid="Z8gseOjMrlNN" type="Color" value="#4ADE80"/>
-    <token name="green-500" uuid="es6uM09cZmbA" type="Color" value="#22C55E"/>
-    <token name="green-600" uuid="8odYYBvkaHVX" type="Color" value="#16A34A"/>
-    <token name="green-700" uuid="PQwIJKlwbQZI" type="Color" value="#15803D"/>
-    <token name="green-800" uuid="5vVExEA_D6rl" type="Color" value="#166534"/>
-    <token name="green-900" uuid="MD2kb85IOAun" type="Color" value="#14532D"/>
-    <token name="green-950" uuid="xYMlUaWDkmdp" type="Color" value="#052E16"/>
-    <token name="emerald-50" uuid="zqShlLjRyQY1" type="Color" value="#ECFDF5"/>
-    <token name="emerald-100" uuid="R6-TfKoVLb3t" type="Color" value="#D1FAE5"/>
-    <token name="emerald-200" uuid="OUJCxKopjw6j" type="Color" value="#A7F3D0"/>
-    <token name="emerald-300" uuid="UfjqBKalRXEQ" type="Color" value="#6EE7B7"/>
-    <token name="emerald-400" uuid="K8jm6iD6CH02" type="Color" value="#34D399"/>
-    <token name="emerald-500" uuid="dFzvf2ar9njL" type="Color" value="#10B981"/>
-    <token name="emerald-600" uuid="hx5aN54WGgpg" type="Color" value="#059669"/>
-    <token name="emerald-700" uuid="9vpEFuaelD5X" type="Color" value="#047857"/>
-    <token name="emerald-800" uuid="34rFmJQCUgIk" type="Color" value="#065F46"/>
-    <token name="emerald-900" uuid="NpcHUt2GXKJv" type="Color" value="#064E3B"/>
-    <token name="emerald-950" uuid="VSf6MzZkwa9u" type="Color" value="#022C22"/>
-    <token name="teal-50" uuid="9GZFgs6uftZu" type="Color" value="#F0FDFA"/>
-    <token name="teal-100" uuid="j3ajS0i8Fv2N" type="Color" value="#CCFBF1"/>
-    <token name="teal-200" uuid="woUiqz13sSZ_" type="Color" value="#99F6E4"/>
-    <token name="teal-300" uuid="3tV0x-1yqTix" type="Color" value="#5EEAD4"/>
-    <token name="teal-400" uuid="ib-EqTqpEPmH" type="Color" value="#2DD4BF"/>
-    <token name="teal-500" uuid="v0_dGUpLc9jz" type="Color" value="#14B8A6"/>
-    <token name="teal-600" uuid="lj8C5C9geJYt" type="Color" value="#0D9488"/>
-    <token name="teal-700" uuid="DYMaIOTD_N04" type="Color" value="#0F766E"/>
-    <token name="teal-800" uuid="nkTm_qK4NBaE" type="Color" value="#115E59"/>
-    <token name="teal-900" uuid="tAPlTgXnOJpn" type="Color" value="#134E4A"/>
-    <token name="teal-950" uuid="zb6MW-JqfA80" type="Color" value="#042F2E"/>
-    <token name="cyan-50" uuid="a1tBdrn4VLTV" type="Color" value="#ECFEFF"/>
-    <token name="cyan-100" uuid="IiiLcOYpICU1" type="Color" value="#CFFAFE"/>
-    <token name="cyan-200" uuid="3EGq78D_ogKU" type="Color" value="#A5F3FC"/>
-    <token name="cyan-300" uuid="f_u2uTO8qVxG" type="Color" value="#67E8F9"/>
-    <token name="cyan-400" uuid="dhXycvOm2c1r" type="Color" value="#22D3EE"/>
-    <token name="cyan-500" uuid="2XrEDCDdBCyy" type="Color" value="#06B6D4"/>
-    <token name="cyan-600" uuid="xlkPFnh03HtF" type="Color" value="#0891B2"/>
-    <token name="cyan-700" uuid="SSN-zB0imzob" type="Color" value="#0E7490"/>
-    <token name="cyan-800" uuid="luEjmkk6Iqyn" type="Color" value="#155E75"/>
-    <token name="cyan-900" uuid="uY4ZfVqTUYhL" type="Color" value="#164E63"/>
-    <token name="cyan-950" uuid="WQjXCeVVtH2t" type="Color" value="#083344"/>
-    <token name="sky-50" uuid="QmKJFteWhaRq" type="Color" value="#F0F9FF"/>
-    <token name="sky-100" uuid="FSkHpkcJi4-F" type="Color" value="#E0F2FE"/>
-    <token name="sky-200" uuid="VH0NxpPzB2FN" type="Color" value="#BAE6FD"/>
-    <token name="sky-300" uuid="rPRvL2Z6hqT6" type="Color" value="#7DD3FC"/>
-    <token name="sky-400" uuid="oiYyQ9ZyTXrn" type="Color" value="#38BDF8"/>
-    <token name="sky-500" uuid="7XuQ89mG_HOj" type="Color" value="#0EA5E9"/>
-    <token name="sky-600" uuid="uD1hyJ8j1Vj8" type="Color" value="#0284C7"/>
-    <token name="sky-700" uuid="kCeK1anx8XTN" type="Color" value="#0369A1"/>
-    <token name="sky-800" uuid="e6dHJZUN2abd" type="Color" value="#075985"/>
-    <token name="sky-900" uuid="dzf8rUinPeUp" type="Color" value="#0C4A6E"/>
-    <token name="sky-950" uuid="TlWZED5lkAqI" type="Color" value="#082F49"/>
-    <token name="blue-50" uuid="M0LHGDR880st" type="Color" value="#EFF6FF"/>
-    <token name="blue-100" uuid="w7EPkOMSh2Xb" type="Color" value="#DBEAFE"/>
-    <token name="blue-200" uuid="-TFv9ys77CnL" type="Color" value="#BFDBFE"/>
-    <token name="blue-300" uuid="qsHKKmoi9Z2N" type="Color" value="#93C5FD"/>
-    <token name="blue-400" uuid="wf6FgFNQQa9z" type="Color" value="#60A5FA"/>
-    <token name="blue-500" uuid="GgwzU2ipyk2Z" type="Color" value="#3B82F6"/>
-    <token name="blue-600" uuid="3kYlE5VFDAO5" type="Color" value="#2563EB"/>
-    <token name="blue-700" uuid="UgY36eBmPBAE" type="Color" value="#1D4ED8"/>
-    <token name="blue-800" uuid="Fh8yz2VaZHlR" type="Color" value="#1E40AF"/>
-    <token name="blue-900" uuid="wXhZBDyFIH77" type="Color" value="#1E3A8A"/>
-    <token name="blue-950" uuid="vw-mcGE2roe0" type="Color" value="#172554"/>
-    <token name="indigo-50" uuid="MUgyHQgB8Onb" type="Color" value="#EEF2FF"/>
-    <token name="indigo-100" uuid="EAilB_IHEv4n" type="Color" value="#E0E7FF"/>
-    <token name="indigo-200" uuid="NTIDgQUPKhnj" type="Color" value="#C7D2FE"/>
-    <token name="indigo-300" uuid="W2y29HMVjHBD" type="Color" value="#A5B4FC"/>
-    <token name="indigo-400" uuid="hd_-4ix45S80" type="Color" value="#818CF8"/>
-    <token name="indigo-500" uuid="wjDz2yYxsQQ8" type="Color" value="#6366F1"/>
-    <token name="indigo-600" uuid="fprQyG0t3unE" type="Color" value="#4F46E5"/>
-    <token name="indigo-700" uuid="pjrh6LTpx1C7" type="Color" value="#4338CA"/>
-    <token name="indigo-800" uuid="-aYt4qvnMM1i" type="Color" value="#3730A3"/>
-    <token name="indigo-900" uuid="dQhfe3TJqOhd" type="Color" value="#312E81"/>
-    <token name="indigo-950" uuid="WHkLklfRuupI" type="Color" value="#1E1B4B"/>
-    <token name="violet-50" uuid="HbHgmVj9P1bZ" type="Color" value="#F5F3FF"/>
-    <token name="violet-100" uuid="WK-NTYF-5BVv" type="Color" value="#EDE9FE"/>
-    <token name="violet-200" uuid="dTfB3Xo52tZd" type="Color" value="#DDD6FE"/>
-    <token name="violet-300" uuid="H0oFXXh3davx" type="Color" value="#C4B5FD"/>
-    <token name="violet-400" uuid="jSjWrtfR97I8" type="Color" value="#A78BFA"/>
-    <token name="violet-500" uuid="BAiVbiAYYRty" type="Color" value="#8B5CF6"/>
-    <token name="violet-600" uuid="BUqDgo1KDCAM" type="Color" value="#7C3AED"/>
-    <token name="violet-700" uuid="FVVPmyIhsWSw" type="Color" value="#6D28D9"/>
-    <token name="violet-800" uuid="h9NXW_a-X-ce" type="Color" value="#5B21B6"/>
-    <token name="violet-900" uuid="JuI-Y_ng_RiA" type="Color" value="#4C1D95"/>
-    <token name="violet-950" uuid="z8uDTpjKexI6" type="Color" value="#2E1065"/>
-    <token name="purple-50" uuid="zrzu4DH_2Ak0" type="Color" value="#FAF5FF"/>
-    <token name="purple-100" uuid="IQebKfyP9Vbp" type="Color" value="#F3E8FF"/>
-    <token name="purple-200" uuid="qF66CJCpOJhC" type="Color" value="#E9D5FF"/>
-    <token name="purple-300" uuid="qeHSzxlRDSRm" type="Color" value="#D8B4FE"/>
-    <token name="purple-400" uuid="wENjc8qf_p3H" type="Color" value="#C084FC"/>
-    <token name="purple-500" uuid="5xI7rD9EJBl1" type="Color" value="#A855F7"/>
-    <token name="purple-600" uuid="LRdyYjwXlY-r" type="Color" value="#9333EA"/>
-    <token name="purple-700" uuid="VkXtaIgovIPL" type="Color" value="#7E22CE"/>
-    <token name="purple-800" uuid="zNy5dTqaDBJU" type="Color" value="#6B21A8"/>
-    <token name="purple-900" uuid="4Hnug9A3OCfz" type="Color" value="#581C87"/>
-    <token name="purple-950" uuid="SGsAJ0KBbWhv" type="Color" value="#3B0764"/>
-    <token name="fuchsia-50" uuid="TOhPgr1I4f4K" type="Color" value="#FDF4FF"/>
-    <token name="fuchsia-100" uuid="BvOv4iggVLV3" type="Color" value="#FAE8FF"/>
-    <token name="fuchsia-200" uuid="UgGpf-HO_ZX9" type="Color" value="#F5D0FE"/>
-    <token name="fuchsia-300" uuid="j2txmjkTbNri" type="Color" value="#F0ABFC"/>
-    <token name="fuchsia-400" uuid="IcgaaEMOByjk" type="Color" value="#E879F9"/>
-    <token name="fuchsia-500" uuid="9hZhIDQryy-0" type="Color" value="#D946EF"/>
-    <token name="fuchsia-600" uuid="1FfOm8b4Fwpu" type="Color" value="#C026D3"/>
-    <token name="fuchsia-700" uuid="tApCCZ0L5jvL" type="Color" value="#A21CAF"/>
-    <token name="fuchsia-800" uuid="dWDu6W9GR0ne" type="Color" value="#86198F"/>
-    <token name="fuchsia-900" uuid="6q0IQdZg09DZ" type="Color" value="#701A75"/>
-    <token name="fuchsia-950" uuid="mg4Iv2SZbmhT" type="Color" value="#4A044E"/>
-    <token name="pink-50" uuid="75Zwwmh6OLmL" type="Color" value="#FDF2F8"/>
-    <token name="pink-100" uuid="2wPmyCc_mbj5" type="Color" value="#FCE7F3"/>
-    <token name="pink-200" uuid="hjZkVQTWN2rl" type="Color" value="#FBCFE8"/>
-    <token name="pink-300" uuid="mEqH48W_IZpc" type="Color" value="#F9A8D4"/>
-    <token name="pink-400" uuid="U2Onhuzr8YHT" type="Color" value="#F472B6"/>
-    <token name="pink-500" uuid="8g5hhXxZ9hMU" type="Color" value="#EC4899"/>
-    <token name="pink-600" uuid="VK_dvImpXfxq" type="Color" value="#DB2777"/>
-    <token name="pink-700" uuid="fcej--D2G3DH" type="Color" value="#BE185D"/>
-    <token name="pink-900" uuid="IZA9QASIQRxq" type="Color" value="#831843"/>
-    <token name="pink-800" uuid="rrpXIEx7cqsM" type="Color" value="#9D174D"/>
-    <token name="pink-950" uuid="625IYYAaoEso" type="Color" value="#500724"/>
-    <token name="rose-50" uuid="PTRH9uynHA6L" type="Color" value="#FFF1F2"/>
-    <token name="rose-100" uuid="I5uUVfp-QnSG" type="Color" value="#FFE4E6"/>
-    <token name="rose-200" uuid="tBlt_THhGKQw" type="Color" value="#FECDD3"/>
-    <token name="rose-300" uuid="9iEQtdvqEjEy" type="Color" value="#FDA4AF"/>
-    <token name="rose-400" uuid="5iMD7CqzmnUr" type="Color" value="#FB7185"/>
-    <token name="rose-500" uuid="pHGut6bzLkK5" type="Color" value="#F43F5E"/>
-    <token name="rose-600" uuid="7MIbFjtxqM6V" type="Color" value="#E11D48"/>
-    <token name="rose-700" uuid="Q4hDHJx_HNqY" type="Color" value="#BE123C"/>
-    <token name="rose-800" uuid="GpI-c_g2V2k_" type="Color" value="#9F1239"/>
-    <token name="rose-900" uuid="cJ1sPX79UZ5i" type="Color" value="#881337"/>
-    <token name="rose-950" uuid="IqkIQtEIIIBj" type="Color" value="#4C0519"/>
-  </tokens>
-  <animations>
-  </animations>
-</project>
-<project id="pfSdZUuEmzVejurMmPzR23">
-  <components>
-    <component name="hostless-plasmic-head" uuid="YdUVCUmnqpDT" type="code"/>
-    <component name="plasmic-data-source-fetcher" uuid="zbDhFqKdVGov" type="code"/>
-  </components>
-  <screenBreakpoints>
-    <screenBreakpoint name="Mobile only" uuid="ndKITHrsc_1h" maxWidth="768"/>
-  </screenBreakpoints>
-  <globalVariantGroups>
-    <group name="Screen" uuid="sunYRowGFPxL">
-      <variant name="Mobile only" uuid="ndKITHrsc_1h"/>
-    </group>
-  </globalVariantGroups>
-  <tokens>
-    <token name="0.5" uuid="IUVIp1DHBSFd" type="Spacing" value="0.125rem"/>
-    <token name="1" uuid="RuQNZpYm0Yds" type="Spacing" value="0.25rem"/>
-    <token name="1.5" uuid="c8-rjzKYORFj" type="Spacing" value="0.375rem"/>
-    <token name="2" uuid="cfon0PHiXQoL" type="Spacing" value="0.5rem"/>
-    <token name="2.5" uuid="vINZR3MlEOSB" type="Spacing" value="0.625rem"/>
-    <token name="3" uuid="PKf5XaFatup3" type="Spacing" value="0.75rem"/>
-    <token name="3.5" uuid="f5yZMucxeQg7" type="Spacing" value="0.875rem"/>
-    <token name="4" uuid="0tl2H1TRPHhV" type="Spacing" value="1rem"/>
-    <token name="5" uuid="TONjX_YbO9_T" type="Spacing" value="1.25rem"/>
-    <token name="6" uuid="ekJK2BNXfyOR" type="Spacing" value="1.5rem"/>
-    <token name="7" uuid="IaX53w_ZwhMz" type="Spacing" value="1.75rem"/>
-    <token name="8" uuid="OJSN3W0Myvht" type="Spacing" value="2rem"/>
-    <token name="9" uuid="xpA-7-UWgDGz" type="Spacing" value="2.25rem"/>
-    <token name="10" uuid="gzhQ56cI3Art" type="Spacing" value="2.5rem"/>
-    <token name="11" uuid="sDj2bMFpgPsu" type="Spacing" value="2.75rem"/>
-    <token name="12" uuid="-_xqF59Qmd-S" type="Spacing" value="3rem"/>
-    <token name="14" uuid="-BrM_ZV0mYra" type="Spacing" value="3.5rem"/>
-    <token name="16" uuid="MbEKSCQSHAZe" type="Spacing" value="4rem"/>
-    <token name="20" uuid="H_DkTyHUBUqw" type="Spacing" value="5rem"/>
-    <token name="24" uuid="ckp0_SexMOmY" type="Spacing" value="6rem"/>
-    <token name="28" uuid="r7CyN1jk6eOo" type="Spacing" value="7rem"/>
-    <token name="32" uuid="AUBHFmH0aB1O" type="Spacing" value="8rem"/>
-    <token name="36" uuid="lpCj9NKaufH1" type="Spacing" value="9rem"/>
-    <token name="40" uuid="-PhtmxJfN8kB" type="Spacing" value="10rem"/>
-    <token name="44" uuid="OQvpyfunyWKz" type="Spacing" value="11rem"/>
-    <token name="48" uuid="tQNX9MsWMvEv" type="Spacing" value="12rem"/>
-    <token name="52" uuid="cU7K2PYR7j_D" type="Spacing" value="13rem"/>
-    <token name="56" uuid="TeSIAVk-0ZUO" type="Spacing" value="14rem"/>
-    <token name="60" uuid="Wsj6zjPCfuzD" type="Spacing" value="15rem"/>
-    <token name="64" uuid="pxg61APozE59" type="Spacing" value="16rem"/>
-    <token name="72" uuid="i8QROmIXjFBE" type="Spacing" value="18rem"/>
-    <token name="80" uuid="UXQUXu8zXr17" type="Spacing" value="20rem"/>
-    <token name="96" uuid="sz3dtWxMyjKb" type="Spacing" value="24rem"/>
-    <token name="4.5" uuid="fEaUg40ICnXp" type="Spacing" value="1.125rem"/>
-  </tokens>
-  <animations>
-  </animations>
-</project>
-<project id="1R5oD8mgkyJkLKQnD9hQb2">
-  <components>
-    <component name="Homepage" uuid="pZV0b0ysiEE1" type="page" path="/"/>
-    <component name="hostless-plasmic-head" uuid="QG4_OGucsyMZ" type="code"/>
-    <component name="plasmic-data-source-fetcher" uuid="GKuemYaPBvo9" type="code"/>
-  </components>
-  <screenBreakpoints>
-    <screenBreakpoint name="Mobile only" uuid="d1mSrXRKZ5_Z" maxWidth="768"/>
-  </screenBreakpoints>
-  <globalVariantGroups>
-    <group name="Screen" uuid="aTL61Gk1GKw5">
-      <variant name="Mobile only" uuid="d1mSrXRKZ5_Z"/>
-    </group>
-  </globalVariantGroups>
-  <tokens>
-  </tokens>
-  <animations>
-    <animation name="Bounce" uuid="mz8pGamSoahc"/>
-    <animation name="Flash" uuid="gywO1jkB0c0b"/>
-    <animation name="Pulse" uuid="0DlLE3ZmR0lr"/>
-    <animation name="Shake X" uuid="I3e22tKHL0k5"/>
-    <animation name="Shake Y" uuid="L0kBo9LJTzBS"/>
-    <animation name="Bounce In" uuid="3hoXU1WP6GS8"/>
-    <animation name="Bounce In Down" uuid="hp0hXEW9IovK"/>
-    <animation name="Bounce In Up" uuid="OUEx47B0gs0N"/>
-    <animation name="Bounce Out" uuid="DI9YSao-ElcP"/>
-    <animation name="Bounce Out Down" uuid="hEnFj0ViWREN"/>
-    <animation name="Bounce Out Up" uuid="xZzUZYpv_BEF"/>
-    <animation name="Fade In" uuid="K8aS4cD8LxJC"/>
-    <animation name="Fade In Down" uuid="3wejw0KdhvkT"/>
-    <animation name="Fade In Left" uuid="4b8z_yZskL8t"/>
-    <animation name="Fade In Right" uuid="Kdx1r1C3T-k5"/>
-    <animation name="Fade In Up" uuid="CV8t_94hMZOJ"/>
-    <animation name="Fade Out" uuid="WsmEXWsKHehM"/>
-    <animation name="Fade Out Down" uuid="xkwpUUXKXaKh"/>
-    <animation name="Fade Out Left" uuid="4I7FFZXpTQqw"/>
-    <animation name="Fade Out Right" uuid="v7VeJyZF8OiV"/>
-    <animation name="Fade Out Up" uuid="WCNCocbUJlyZ"/>
-    <animation name="Zoom In" uuid="8_EsQyUE1f6D"/>
-    <animation name="Zoom In Down" uuid="nKgmo_Ih8ecU"/>
-    <animation name="Zoom In Up" uuid="wDQdAk9BrYhY"/>
-    <animation name="Zoom Out" uuid="-8XcUEhc_tFz"/>
-    <animation name="Zoom Out Down" uuid="T1UpFUnBqbit"/>
-    <animation name="Zoom Out Up" uuid="Mk_d1Et3X2KO"/>
-    <animation name="Slide In Down" uuid="H_u23sDnaGBJ"/>
-    <animation name="Slide In Left" uuid="amPxFRYy2Bqz"/>
-    <animation name="Slide In Right" uuid="tlJWuYi8yUnT"/>
-    <animation name="Slide In Up" uuid="l416FyqrLiVP"/>
-    <animation name="Slide Out Down" uuid="IQTsEFKh0RaO"/>
-    <animation name="Slide Out Left" uuid="yGtWsF8QCRpo"/>
-    <animation name="Slide Out Right" uuid="JR7y0rUT-Qox"/>
-    <animation name="Slide Out Up" uuid="x_snDqhPUPUr"/>
-  </animations>
+  <imported-project id="vraRvHJQpWZ2nQbXtKvCmD" name="react-aria"/>
+  <imported-project id="uQew8EvRgLoREu4uLkeKWL" name="[Library] Tabler 3.2 Icons"/>
+  <imported-project id="hy5iSgnRhdQaXJLA78LVPv" name="[Library] Tailwind 3.4 Colors"/>
+  <imported-project id="vqJgaHdHtmNa4jCyszhj8z" name="[Library] Tailwind 3.4 Number Tokens"/>
+  <imported-project id="xawVbnXnpTdzmP3BKZNH31" name="[PlasmicKit] Animations"/>
 </project>"
 `;

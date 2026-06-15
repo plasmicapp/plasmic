@@ -13,17 +13,14 @@ describe("Project Serialization", () => {
       globalVariants: true,
       tokens: true,
       animations: true,
-      importedProjects: true,
     };
 
-    // Serialize the current project plus every imported project, so the
-    // snapshot captures the complete project including its dependencies.
-    const output = [
-      serializeProject(site, { projectId: "testProjectId", ...filters }),
-      ...site.projectDependencies.map((dep) =>
-        serializeProject(dep.site, { projectId: dep.projectId, ...filters })
-      ),
-    ].join("\n");
+    // A single serialization covers the project and its imported projects,
+    // since each section is a flattened view including dependency resources.
+    const output = serializeProject(site, {
+      projectId: "testProjectId",
+      ...filters,
+    });
 
     expect(output).toMatchSnapshot();
   });
