@@ -784,11 +784,7 @@ async function createDraftQueryForFunction(
   }
   const op = new CustomFunctionExpr({
     func: fn,
-    args: mkCustomFunctionArgs(
-      fn,
-      studioCtx.getRegisteredFunctionsMap().get(customFunctionId(fn))?.meta,
-      "query"
-    ),
+    args: mkCustomFunctionArgs(studioCtx, fn, "query"),
   });
   const { result } = await studioCtx.change<never, ComponentServerQuery>(
     ({ success }) => {

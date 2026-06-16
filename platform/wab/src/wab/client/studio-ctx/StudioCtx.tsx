@@ -3791,6 +3791,10 @@ export class StudioCtx extends WithDbCtx {
     return map;
   }
 
+  getRegisteredFunction(func: classes.CustomFunction) {
+    return this.getRegisteredFunctionsMap().get(customFunctionId(func));
+  }
+
   getRegisteredLibraries() {
     return [
       ...(swallow(() => this.codeComponentsRegistry.getRegisteredLibraries()) ??

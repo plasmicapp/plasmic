@@ -9,19 +9,23 @@ import { MaybeCollapsibleRow } from "@/wab/client/components/sidebar/SidebarSect
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   StudioPropType,
+  getPropTypeDefaultValue,
   isAdvancedProp,
   isFlattenedObjectPropType,
   maybePropTypeToDisplayName,
+  normalizeCustomFunctionParams,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
 import {
+  ExprCtx,
   clone,
   codeLit,
   deserCompositeExpr,
   serCompositeExprMaybe,
+  summarizeExpr,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
-import { customFunctionId } from "@/wab/shared/core/query-ids";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
 import {
   ArgType,
   CustomFunction,
@@ -64,14 +68,11 @@ export function propTypeForParam(
   func: CustomFunction,
   studioCtx: StudioCtx
 ): StudioPropType<any> {
-  return (
-    (studioCtx
-      .getRegisteredFunctionsMap()
-      .get(customFunctionId(func))
-      ?.meta.params?.find(
-        (p) => p.name === param.argName
-      ) as StudioPropType<any>) ?? wabTypeToPropType(param.type)
+  const registeredParams = studioCtx.getRegisteredFunction(func)?.meta.params;
+  const propType = normalizeCustomFunctionParams(registeredParams).find(
+    (p) => p.name === param.argName
   );
+  return propType ?? wabTypeToPropType(param.type);
 }
 
 interface ServerQueryParamRowProps {
@@ -79,6 +80,7 @@ interface ServerQueryParamRowProps {
   propType: StudioPropType<any>;
   expr: Expr | undefined;
   label: string;
+  definedIndicator?: DefinedIndicatorType;
   valueSetState: "isSet" | undefined;
   onChange: (newVal: any) => void;
   onDelete?: () => void;
@@ -94,6 +96,7 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
     propType,
     expr,
     label,
+    definedIndicator,
     valueSetState,
     onChange,
     onDelete,
@@ -107,6 +110,8 @@ export const ServerQueryParamRow = observer(function ServerQueryParamRow(
         propType={propType}
         expr={expr}
         label={label}
+        labelType="param"
+        definedIndicator={definedIndicator}
         valueSetState={valueSetState}
         onChange={onChange}
         onDelete={onDelete}
@@ -126,6 +131,7 @@ export function getServerQueryParamRowItems(opts: {
   argsMap: Record<string, FunctionArg[]>;
   propType: StudioPropType<any>;
   propValueEditorContext: PropValueEditorContextData;
+  mode: "query" | "mutation";
   onParamChange: (param: ArgType, newExpr: Expr) => void;
   onParamDelete: (param: ArgType) => void;
 }): MaybeCollapsibleRow[] {
@@ -134,6 +140,7 @@ export function getServerQueryParamRowItems(opts: {
     argsMap,
     propType,
     propValueEditorContext,
+    mode,
     onParamChange,
     onParamDelete,
   } = opts;
@@ -189,6 +196,13 @@ export function getServerQueryParamRowItems(opts: {
         const fieldLabel =
           maybePropTypeToDisplayName(fieldPropType) ?? smartHumanize(fieldName);
         const fieldValue = curObj[fieldName];
+        // Fields with a registered defaultValue reset to it instead of
+        // becoming unset.
+        const fieldDefault = getPropTypeDefaultValue(fieldPropType, {
+          componentPropValues: propValueEditorContext.componentPropValues,
+          ccContextData: propValueEditorContext.ccContextData,
+          controlExtras: { ...controlExtras, mode },
+        });
         // Preserve exprs and wrap plain values in codeLit
         const fieldExpr = isKnownExpr(fieldValue)
           ? fieldValue
@@ -204,6 +218,11 @@ export function getServerQueryParamRowItems(opts: {
               propType={fieldPropType}
               expr={fieldExpr}
               label={fieldLabel}
+              definedIndicator={mkFieldDefinedIndicator(
+                fieldName,
+                fieldExpr,
+                propValueEditorContext.exprCtx
+              )}
               valueSetState={fieldValue !== undefined ? "isSet" : undefined}
               propValueEditorContext={propValueEditorContext}
               controlExtras={controlExtras}
@@ -212,7 +231,12 @@ export function getServerQueryParamRowItems(opts: {
               }
               onDelete={
                 fieldValue !== undefined
-                  ? () => updateObj((obj) => omit(obj, fieldName))
+                  ? () =>
+                      updateObj((obj) =>
+                        fieldDefault != null
+                          ? { ...obj, [fieldName]: fieldDefault }
+                          : omit(obj, fieldName)
+                      )
                   : undefined
               }
             />
@@ -227,6 +251,13 @@ export function getServerQueryParamRowItems(opts: {
     param.argName in argsMap ? argsMap[param.argName][0] : undefined;
   const curExpr = curArg?.expr;
   const controlExtras = mkControlExtras([param.argName]);
+  // Params with a registered defaultValue reset to it instead of becoming
+  // unset, matching how args are seeded on function select.
+  const paramDefault = getPropTypeDefaultValue(propType, {
+    componentPropValues: propValueEditorContext.componentPropValues,
+    ccContextData: propValueEditorContext.ccContextData,
+    controlExtras: { ...controlExtras, mode },
+  });
 
   return [
     {
@@ -237,6 +268,11 @@ export function getServerQueryParamRowItems(opts: {
           propType={propType}
           expr={curExpr}
           label={argLabel}
+          definedIndicator={mkFieldDefinedIndicator(
+            param.argName,
+            curExpr,
+            propValueEditorContext.exprCtx
+          )}
           valueSetState={curExpr ? "isSet" : undefined}
           propValueEditorContext={propValueEditorContext}
           controlExtras={controlExtras}
@@ -247,9 +283,30 @@ export function getServerQueryParamRowItems(opts: {
             const newExpr = isKnownExpr(expr) ? expr : codeLit(expr);
             onParamChange(param, newExpr);
           }}
-          onDelete={curExpr ? () => onParamDelete(param) : undefined}
+          onDelete={
+            curExpr
+              ? () =>
+                  paramDefault != null
+                    ? onParamChange(param, codeLit(paramDefault))
+                    : onParamDelete(param)
+              : undefined
+          }
         />
       ),
     },
   ];
+}
+
+function mkFieldDefinedIndicator(
+  prop: string,
+  fieldExpr: Expr | undefined,
+  exprCtx: ExprCtx | undefined
+): DefinedIndicatorType {
+  return fieldExpr
+    ? {
+        source: "setNonVariable",
+        prop,
+        value: exprCtx ? summarizeExpr(fieldExpr, exprCtx) : "",
+      }
+    : { source: "none" };
 }

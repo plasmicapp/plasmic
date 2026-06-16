@@ -121,7 +121,8 @@ export interface SlotSource {
 }
 
 export type DefinedIndicatorType =
-  // Used for frame settings or Mixin settings, which is not bound to variants at all.
+  // Prop/value set outside the variant system, such as:
+  // frame settings, mixin settings, query params
   | {
       source: "setNonVariable";
       prop: string;

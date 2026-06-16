@@ -501,6 +501,172 @@ test.describe("server queries", () => {
     });
   });
 
+  test("param required validation, removal, and reset to default", async ({
+    apiClient,
+    page,
+    models,
+  }) => {
+    // The graphql function registers a flattened object param whose fields
+    // exercise everything under test: `url` (required, no default), `request`
+    // (required, no default), and `method` (optional, defaults to "POST").
+    projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "server-queries-graphql-params",
+      hostLessPackagesInfo: {
+        name: "graphql",
+        npmPkg: ["@plasmicpkgs/graphql"],
+      },
+    });
+    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+
+    const GRAPHQL_MOCK_URL = "https://mock-graphql-for-server-queries.test";
+    const receivedMethods: string[] = [];
+    await page.route(GRAPHQL_MOCK_URL, async (route) => {
+      receivedMethods.push(route.request().method());
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ data: { hello: "world" } }),
+      });
+    });
+
+    await models.studio.leftPanel.createNewPage("GraphQL Page");
+    await models.studio.rightPanel.clickPageData();
+
+    const serverQueryModal = models.studio.serverQueryBottomModal;
+    const previewResult = serverQueryModal.locator(".code-preview-inner");
+    const executeButton = serverQueryModal
+      .locator("button")
+      .getByText("Execute");
+
+    // First query in the project, so the add button creates it directly.
+    await models.studio.rightPanel.addServerQueryButton.click();
+    await models.studio.rightPanel.serverQueriesSection
+      .locator(`[data-plasmic-role="labeled-item"]`)
+      .last()
+      .click();
+    await serverQueryModal
+      .locator(`[data-test-id="query-name"] input`)
+      .fill("gqlQuery");
+
+    const urlRow = serverQueryModal.locator(
+      '[data-test-id="prop-editor-row-url"]'
+    );
+    const methodRow = serverQueryModal.locator(
+      '[data-test-id="prop-editor-row-method"]'
+    );
+    const requestRow = serverQueryModal.locator(
+      '[data-test-id="prop-editor-row-request"]'
+    );
+    const urlInput = urlRow.locator('[data-plasmic-prop="url"]');
+    const invalidArgIcons = serverQueryModal.locator(".invalid-arg-icon");
+    const setIndicator = (row: typeof urlRow) =>
+      row.locator('[class*="DefinedIndicator--set"]');
+
+    await test.step("required params are labeled; method seeded with its default", async () => {
+      await expect(urlRow.locator(".required-prop")).toBeVisible();
+      await expect(requestRow.locator(".required-prop")).toBeVisible();
+      await expect(methodRow.locator(".required-prop")).toHaveCount(0);
+
+      // method has a registered defaultValue ("POST"), so it starts set
+      // (with a defined indicator), while url starts unset.
+      await expect(methodRow).toContainText("POST");
+      await expect(setIndicator(methodRow)).toBeVisible();
+      await expect(setIndicator(urlRow)).toHaveCount(0);
+    });
+
+    await test.step("executing with missing required params is blocked with validation errors", async () => {
+      await executeButton.click();
+      await expect(
+        serverQueryModal.getByText("Fix validation errors")
+      ).toBeVisible();
+      await expect(
+        serverQueryModal.getByText("These parameters have invalid values:")
+      ).toBeVisible();
+      await expect(serverQueryModal.getByText("URL: Required")).toBeVisible();
+      await expect(
+        serverQueryModal.getByText("Request: Required")
+      ).toBeVisible();
+      await expect(invalidArgIcons).toHaveCount(2);
+      expect(receivedMethods).toEqual([]);
+    });
+
+    await test.step("filling a required param clears its validation error on next execute", async () => {
+      await urlInput.click();
+      await models.studio.page.keyboard.type(GRAPHQL_MOCK_URL);
+      await models.studio.page.keyboard.press("Enter");
+      await expect(setIndicator(urlRow)).toBeVisible();
+
+      await executeButton.click();
+      await expect(
+        serverQueryModal.getByText("This parameter has an invalid value:")
+      ).toBeVisible();
+      await expect(
+        serverQueryModal.getByText("Request: Required")
+      ).toBeVisible();
+      await expect(
+        serverQueryModal.getByText("URL: Required")
+      ).not.toBeVisible();
+      await expect(invalidArgIcons).toHaveCount(1);
+    });
+
+    await test.step("removing a param without defaultValue unsets it", async () => {
+      await urlInput.click({ button: "right" });
+      await models.studio.frame
+        .locator(".ant-dropdown-menu-item")
+        .filter({ hasText: "Remove URL param" })
+        .click();
+      await expect(urlInput).toContainText("unset");
+      await expect(setIndicator(urlRow)).toHaveCount(0);
+
+      // Restore it for the final execute.
+      await urlInput.click();
+      await models.studio.page.keyboard.type(GRAPHQL_MOCK_URL);
+      await models.studio.page.keyboard.press("Enter");
+      await expect(setIndicator(urlRow)).toBeVisible();
+    });
+
+    await test.step("removing a param with defaultValue resets it to the default", async () => {
+      await methodRow.locator('[data-plasmic-prop="method"]').click();
+      await models.studio.frame.locator(`[data-key="'GET'"]`).click();
+      await expect(methodRow).toContainText("GET");
+
+      await methodRow
+        .getByText("Method", { exact: true })
+        .click({ button: "right" });
+      await models.studio.frame
+        .locator(".ant-dropdown-menu-item")
+        .filter({ hasText: "Remove Method param" })
+        .click();
+      await expect(methodRow).toContainText("POST");
+      await expect(setIndicator(methodRow)).toBeVisible();
+    });
+
+    await test.step("query executes once all required params are set", async () => {
+      // Set `request` as a dynamic value to avoid the GraphiQL editor UI.
+      await requestRow
+        .getByText("Request", { exact: true })
+        .click({ button: "right" });
+      await models.studio.frame.getByText("Use dynamic value").click();
+      await models.studio.rightPanel.insertMonacoCode(
+        '({ query: "query { hello }" })'
+      );
+      await expect(setIndicator(requestRow)).toBeVisible();
+
+      await executeButton.click();
+      await expect(previewResult).toContainText("statusCode: 200");
+      await expect(
+        serverQueryModal.getByText("Fix validation errors")
+      ).not.toBeVisible();
+      await expect(invalidArgIcons).toHaveCount(0);
+
+      // The reset `method` default actually flowed through to the request.
+      expect([...new Set(receivedMethods)]).toEqual(["POST"]);
+
+      await serverQueryModal.locator("button").getByText("Save").click();
+      await serverQueryModal.waitFor({ state: "hidden" });
+    });
+  });
+
   test("Use Data Query interaction runs custom code with await", async ({
     apiClient,
     page,

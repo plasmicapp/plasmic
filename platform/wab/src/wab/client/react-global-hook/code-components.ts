@@ -1,15 +1,15 @@
 import { GlobalHookCtx } from "@/wab/client/react-global-hook/types";
 import { mkFrameValKeyToContextDataKey } from "@/wab/client/react-global-hook/utils";
-import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
+import {
+  isPlainObjectPropType,
+  maybePropTypeToDisplayName,
+  maybePropTypeToRequired,
+} from "@/wab/shared/code-components/code-components";
 import { hackyCast, withoutNils } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
+import { InvalidArgMeta, ValidationType } from "@/wab/shared/core/invalid-arg";
 import { isTplComponent } from "@/wab/shared/core/tpls";
-import {
-  InvalidArgMeta,
-  ValNode,
-  ValidationType,
-  isValComponent,
-} from "@/wab/shared/core/val-nodes";
+import { ValNode, isValComponent } from "@/wab/shared/core/val-nodes";
 import { TplNode } from "@/wab/shared/model/classes";
 
 export function validateCodeComponentParams(opts: {
@@ -38,14 +38,16 @@ export function validateCodeComponentParams(opts: {
         if (!isPlainObjectPropType(propType)) {
           return undefined;
         }
+        const displayLabel =
+          maybePropTypeToDisplayName(propType) ?? p.variable.name;
         if (
-          "required" in propType &&
-          propType.required &&
+          maybePropTypeToRequired(propType) &&
           valNode.codeComponentProps[p.variable.name] == null
         ) {
           return {
             param: p,
             validationType: ValidationType.Required,
+            displayLabel,
           };
         }
         if ("validator" in propType && propType.validator) {
@@ -59,6 +61,7 @@ export function validateCodeComponentParams(opts: {
             return {
               param: p,
               validationType: ValidationType.Custom,
+              displayLabel,
               message: res,
             };
           }

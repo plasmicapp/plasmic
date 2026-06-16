@@ -128,6 +128,7 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
         url: {
           type: "string",
           displayName: "URL",
+          required: true,
         },
         method: {
           type: "choice",

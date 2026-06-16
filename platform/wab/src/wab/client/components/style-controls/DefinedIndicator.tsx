@@ -152,7 +152,7 @@ export function getStylePropValue(
       val = derefTokenRefs(allTokens, val, vsh);
     }
 
-    const parsedBgImg: BackgroundLayer = swallow(() =>
+    const parsedBgImg: BackgroundLayer | null = swallow(() =>
       parseCss(val, { startRule: "backgroundLayer" })
     );
 
@@ -162,7 +162,7 @@ export function getStylePropValue(
       <span>
         <ColorSwatch color={val} />
       </span>
-    ) : !(parsedBgImg.image instanceof NoneBackground) ? (
+    ) : parsedBgImg && !(parsedBgImg.image instanceof NoneBackground) ? (
       <div
         style={{
           width: 24,

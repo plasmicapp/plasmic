@@ -1,11 +1,16 @@
+import { CustomFunctionParam } from "@/wab/shared/code-components/code-components";
 import { mkCustomFunctionExpr } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import {
   _testonly,
   buildCustomCodePlasmicQuery,
   getCustomFunctionParams,
+  getInvalidFunctionArgs,
   unwrapStatefulQueryResult,
 } from "@/wab/shared/core/custom-functions";
 import { ExprCtx } from "@/wab/shared/core/exprs";
+import { ValidationType } from "@/wab/shared/core/invalid-arg";
+import { CustomFunction } from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import {
   QueryExecutionContext,
   _StatefulQueryResult as StatefulQueryResult,
@@ -255,5 +260,183 @@ describe("getCustomFunctionParams", () => {
     }
 
     expect((thrown as any)?.plasmicType).toBe("PlasmicUndefinedDataError");
+  });
+});
+
+const required = (displayLabel: string) => ({
+  validationType: ValidationType.Required,
+  displayLabel,
+});
+
+function mkFunc(paramNames: string[]): CustomFunction {
+  return new CustomFunction({
+    namespace: "",
+    importName: "myFunc",
+    importPath: "",
+    displayName: null,
+    defaultExport: false,
+    params: paramNames.map((p) => typeFactory.arg(p, typeFactory.text())),
+    isQuery: true,
+    isMutation: false,
+  });
+}
+
+describe("getInvalidFunctionArgs", () => {
+  it("reports nothing when there are no registered params", () => {
+    const func = mkFunc(["id"]);
+    expect(getInvalidFunctionArgs([undefined], func, undefined)).toEqual(
+      undefined
+    );
+  });
+
+  it("reports a required top-level param that is undefined or null", () => {
+    const func = mkFunc(["id"]);
+    const registeredParams = [
+      { name: "id", type: "string", required: true },
+    ] as unknown as CustomFunctionParam[];
+
+    expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
+      { id: required("ID") }
+    );
+    expect(getInvalidFunctionArgs([null], func, registeredParams)).toEqual({
+      id: required("ID"),
+    });
+  });
+
+  it("reports nothing when a required top-level param is filled (incl. falsy)", () => {
+    const func = mkFunc(["id"]);
+    const registeredParams = [
+      { name: "id", type: "string", required: true },
+    ] as unknown as CustomFunctionParam[];
+
+    expect(getInvalidFunctionArgs(["abc"], func, registeredParams)).toEqual(
+      undefined
+    );
+    // Falsy-but-present values (empty string, 0, false) are not "missing".
+    expect(getInvalidFunctionArgs([""], func, registeredParams)).toEqual(
+      undefined
+    );
+    expect(getInvalidFunctionArgs([0], func, registeredParams)).toEqual(
+      undefined
+    );
+  });
+
+  it("reports nothing when an optional param is missing", () => {
+    const func = mkFunc(["id"]);
+    const registeredParams = [
+      { name: "id", type: "string" },
+    ] as unknown as CustomFunctionParam[];
+
+    expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
+      undefined
+    );
+  });
+
+  it("ignores bare-string param registrations (no required possible)", () => {
+    const func = mkFunc(["id"]);
+    const registeredParams = ["id"] as unknown as CustomFunctionParam[];
+
+    expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
+      undefined
+    );
+  });
+
+  it("reports required fields of a flattened object param", () => {
+    const func = mkFunc(["opts"]);
+    const registeredParams = [
+      {
+        name: "opts",
+        type: "object",
+        display: "flatten",
+        fields: {
+          a: { type: "string", required: true },
+          b: { type: "string" },
+        },
+      },
+    ] as unknown as CustomFunctionParam[];
+
+    // Whole object missing -> required field reported.
+    expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
+      { "opts.a": required("A") }
+    );
+
+    // Required field missing within an otherwise-set object.
+    expect(
+      getInvalidFunctionArgs([{ b: "set" }], func, registeredParams)
+    ).toEqual({ "opts.a": required("A") });
+
+    // Required field filled -> nothing (optional field can stay unset).
+    expect(
+      getInvalidFunctionArgs([{ a: "set" }], func, registeredParams)
+    ).toEqual(undefined);
+  });
+
+  it("reports a required registered param that is missing from the model", () => {
+    // Model is stale and doesn't yet have the param, so it has no value.
+    const func = mkFunc([]);
+    const registeredParams = [
+      { name: "id", type: "string", required: true },
+    ] as unknown as CustomFunctionParam[];
+
+    expect(getInvalidFunctionArgs([], func, registeredParams)).toEqual({
+      id: required("ID"),
+    });
+  });
+
+  it("reports a mix of top-level and flattened required params", () => {
+    const func = mkFunc(["id", "opts"]);
+    const registeredParams = [
+      { name: "id", type: "string", required: true },
+      {
+        name: "opts",
+        type: "object",
+        display: "flatten",
+        fields: {
+          a: { type: "string", required: true },
+        },
+      },
+    ] as unknown as CustomFunctionParam[];
+
+    expect(
+      getInvalidFunctionArgs([undefined, undefined], func, registeredParams)
+    ).toEqual({ id: required("ID"), "opts.a": required("A") });
+  });
+});
+
+describe("getInvalidFunctionArgs displayLabel", () => {
+  const func = mkFunc(["id", "opts"]);
+  const registeredParams = [
+    { name: "id", type: "string", displayName: "Identifier", required: true },
+    {
+      name: "opts",
+      type: "object",
+      display: "flatten",
+      fields: {
+        url: { type: "string", displayName: "URL", required: true },
+        apiKey: { type: "string", required: true },
+      },
+    },
+  ] as unknown as CustomFunctionParam[];
+
+  it("prefers a field's registered displayName", () => {
+    expect(
+      getInvalidFunctionArgs(["set", { apiKey: "set" }], func, registeredParams)
+    ).toEqual({ "opts.url": required("URL") });
+  });
+
+  it("humanizes a field name when there is no displayName", () => {
+    expect(
+      getInvalidFunctionArgs(["set", { url: "set" }], func, registeredParams)
+    ).toEqual({ "opts.apiKey": required("Api key") });
+  });
+
+  it("labels a top-level param by its displayName", () => {
+    expect(
+      getInvalidFunctionArgs(
+        [undefined, { url: "set", apiKey: "set" }],
+        func,
+        registeredParams
+      )
+    ).toEqual({ id: required("Identifier") });
   });
 });

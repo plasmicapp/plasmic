@@ -1,5 +1,6 @@
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
+import { InvalidArgsList } from "@/wab/client/components/widgets/InvalidArgs";
 import { hasLayoutBox } from "@/wab/client/dom";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
@@ -8,7 +9,6 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
 import { assert, last } from "@/wab/shared/common";
 import {
   CodeComponent,
@@ -16,12 +16,11 @@ import {
   getParamForVar,
   isCodeComponent,
 } from "@/wab/shared/core/components";
+import { InvalidArgMeta } from "@/wab/shared/core/invalid-arg";
 import { getTplOwnerComponent } from "@/wab/shared/core/tpls";
 import {
-  InvalidArgMeta,
   ValComponent,
   flattenVals,
-  getInvalidArgErrorMessage,
   isValComponent,
 } from "@/wab/shared/core/val-nodes";
 import { ArenaFrame, isKnownVarRef } from "@/wab/shared/model/classes";
@@ -40,20 +39,7 @@ const TooltipMessage = ({
   <>
     The component {getComponentDisplayName(component)} may not work properly
     because some props have an invalid value:
-    <ul>
-      {invalidArgs.map((invalidArg) => (
-        <li>
-          {" "}
-          -{" "}
-          {(component._meta &&
-            maybePropTypeToDisplayName(
-              component._meta.props[invalidArg.param.variable.name]
-            )) ??
-            invalidArg.param.variable.name}
-          : {getInvalidArgErrorMessage(invalidArg)}
-        </li>
-      ))}
-    </ul>
+    <InvalidArgsList invalidArgs={invalidArgs} />
   </>
 );
 
@@ -151,7 +137,10 @@ function _CanvasAction(props: {
             <TooltipMessage component={component} invalidArgs={invalidArgs} />
           }
         >
-          <WarningIcon style={{ color: "#faad14", width: 25, height: 25 }} />
+          <WarningIcon
+            className="invalid-arg-warning"
+            style={{ width: 25, height: 25 }}
+          />
         </Tooltip>
       </div>
     </CanvasTransformedBox>

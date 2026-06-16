@@ -48,7 +48,6 @@ export type ComponentContextConfig<Props, R> = ContextDependentConfig<
 
 export interface PropTypeBase<Ctx extends any[]> extends CommonTypeBase {
   displayName?: string;
-  required?: boolean;
   readOnly?: boolean | ContextDependentConfig<Ctx, boolean>;
   /**
    * If set to true, the component will be remounted when the prop value is updated.

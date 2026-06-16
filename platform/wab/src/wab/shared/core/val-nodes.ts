@@ -13,6 +13,7 @@ import {
   tuple,
 } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
+import { InvalidArgMeta } from "@/wab/shared/core/invalid-arg";
 import { SQ, SelQuery, Selectable } from "@/wab/shared/core/selection";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -137,17 +138,6 @@ export class ValTag extends ValNode {
   declare readonly tpl: TplTag;
   declare readonly children: Array<ValNode>;
   declare readonly className: string;
-}
-
-export enum ValidationType {
-  Required,
-  Custom,
-}
-
-export interface InvalidArgMeta {
-  param: Param;
-  validationType: ValidationType;
-  message?: string;
 }
 
 export interface ValComponentParams extends ValNodeParams {
@@ -711,10 +701,4 @@ export function slotContentValNodeOrReactElement(
   child: ValNode | React.ReactElement
 ) {
   return child;
-}
-
-export function getInvalidArgErrorMessage(invalidArg: InvalidArgMeta) {
-  return invalidArg.validationType === ValidationType.Required
-    ? "Required"
-    : invalidArg.message ?? "Invalid Value";
 }

@@ -3054,6 +3054,12 @@ input[type="checkbox"]:checked + .checkbox__repr
 .positioning-label
   @include panel-col(4)
 
+$invalid-arg-color: #faad14
+
+// Increase specificity over .value-preview
+.invalid-arg-warning.invalid-arg-warning
+  color: $invalid-arg-color
+
 .invalid-arg-icon
   position: absolute
   width: 15px
@@ -3061,7 +3067,7 @@ input[type="checkbox"]:checked + .checkbox__repr
   top: 0
   left: -10px
   z-index: 50
-  color: #faad14
+  color: $invalid-arg-color
 
 .typography__text-decoration
   text-align: right

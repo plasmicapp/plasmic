@@ -2,14 +2,16 @@ import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/QueryResult
 import { ServerQueryOpPreview } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker";
 import { useServerQueryOp } from "@/wab/client/components/sidebar-tabs/ServerQuery/useServerQueryOp";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
+import {
+  InvalidArgsBadge,
+  InvalidArgsSummary,
+} from "@/wab/client/components/widgets/InvalidArgs";
 import { Modal } from "@/wab/client/components/widgets/Modal";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observer } from "@/wab/client/utils/mobx-client-util";
-import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
 import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
-import { ensure } from "@/wab/shared/common";
 import { StatefulQueryState } from "@/wab/shared/core/custom-functions";
 import { ExprCtx } from "@/wab/shared/core/exprs";
+import { InvalidArg } from "@/wab/shared/core/invalid-arg";
 import {
   customFunctionId,
   makeCustomCodeQueryKey,
@@ -20,6 +22,7 @@ import {
   isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
+import { Tooltip } from "antd";
 import * as React from "react";
 
 export const CustomFunctionExprPreview = observer(
@@ -28,6 +31,7 @@ export const CustomFunctionExprPreview = observer(
     title?: React.ReactNode;
     env?: Record<string, any>;
     exprCtx: ExprCtx;
+    currGlobalThis?: typeof globalThis;
   }) {
     if (!props.env) {
       return null;
@@ -42,24 +46,46 @@ const CustomFunctionExprPreviewInner = observer(
     title?: React.ReactNode;
     env: Record<string, any>;
     exprCtx: ExprCtx;
+    currGlobalThis?: typeof globalThis;
   }) {
-    const { expr, env, title, exprCtx } = props;
-    const studioCtx = useStudioCtx();
-    const functionId = customFunctionId(expr.func);
-    const regFunc = ensure(
-      studioCtx.getRegisteredFunctionsMap().get(functionId),
-      `Missing registered function for ${SERVER_QUERY_LOWER}`
-    );
-    const result = useServerQueryOp({
-      fnId: functionId,
-      fn: regFunc.function,
+    const { expr, env, title, exprCtx, currGlobalThis } = props;
+    const { queryState, invalidArgs } = useServerQueryOp({
       expr,
       env,
       exprCtx,
+      currGlobalThis,
     });
-    return <QueryResultPreview queryState={result.queryState} title={title} />;
+    // The query is blocked from running while required params are unset; show
+    // a "Fix validation errors" indicator rather than the blocked query's
+    // error, and don't offer to inspect a non-result.
+    if (invalidArgs) {
+      return <InlineValidationErrorPreview invalidArgs={invalidArgs} />;
+    }
+    if (!queryState) {
+      return null;
+    }
+    return <QueryResultPreview queryState={queryState} title={title} />;
   }
 );
+
+/**
+ * Compact inline indicator shown in place of a result preview when a server
+ * query is blocked from running because some params are invalid. Styled
+ * amber like the per-field validation warning; the tooltip lists the invalid
+ * fields.
+ */
+function InlineValidationErrorPreview(props: {
+  invalidArgs: Record<string, InvalidArg>;
+}) {
+  const invalidArgs = Object.values(props.invalidArgs);
+  return (
+    <Tooltip title={<InvalidArgsSummary invalidArgs={invalidArgs} />}>
+      <InvalidArgsBadge className="value-preview">
+        Fix validation errors
+      </InvalidArgsBadge>
+    </Tooltip>
+  );
+}
 
 function QueryResultPreview(props: {
   queryState: StatefulQueryState;
@@ -67,6 +93,7 @@ function QueryResultPreview(props: {
 }) {
   const { queryState, title } = props;
   const [showModal, setShowModal] = React.useState(false);
+
   return (
     <>
       <ValuePreview
@@ -112,12 +139,15 @@ const CustomCodePreviewInner = observer(function CustomCodePreviewInner(props: {
   env: Record<string, any>;
 }) {
   const { queryUuid, expr, env, title } = props;
-  const result = useServerQueryOp({
+  const { queryState } = useServerQueryOp({
     fnId: makeCustomCodeQueryKey(queryUuid),
     code: expr,
     env,
   });
-  return <QueryResultPreview queryState={result.queryState} title={title} />;
+  if (!queryState) {
+    return null;
+  }
+  return <QueryResultPreview queryState={queryState} title={title} />;
 });
 
 export function CustomFunctionExprPreviewModal(props: {
@@ -155,7 +185,7 @@ export function CustomFunctionExprPreviewModal(props: {
           e.stopPropagation();
         }}
       >
-        <ServerQueryOpPreview queryState={queryState} />
+        <ServerQueryOpPreview queryState={queryState} invalidArgs={undefined} />
       </div>
     </Modal>
   );

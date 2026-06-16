@@ -2636,30 +2636,51 @@ export function registeredFunctionId(r: CustomFunctionRegistration) {
   }` as CustomFunctionId;
 }
 
-type CustomFunctionParam = string | ParamType<any[], any>;
+export type CustomFunctionParam = string | ParamType<any[], any>;
 
-function mapParamTypeToArgType(paramReg: CustomFunctionParam): ArgType["type"] {
-  if (isString(paramReg)) {
+type NormalizedCustomFunctionParam = {
+  name: string;
+} & StudioPropType<any>;
+
+/** Normalize params to full param types, which have a name and type. */
+export function normalizeCustomFunctionParams(
+  params: readonly CustomFunctionParam[] | undefined
+): NormalizedCustomFunctionParam[] {
+  return (params ?? []).map((param) =>
+    // When the param is a string, it represents the name of the param.
+    // We don't know the type, so we use "any".
+    typeof param === "string"
+      ? { name: param, type: "any" }
+      : (param as NormalizedCustomFunctionParam)
+  );
+}
+
+function mapParamTypeToArgType(
+  propType: ParamType<any[], any>
+): ArgType["type"] {
+  // `ParamType` includes a bare-`"string"` member; narrow it out so the rich
+  // object members (which carry `.type`/`.options`) are accessible below.
+  if (isString(propType)) {
     return typeFactory.text();
   }
-  if (isArray(paramReg.type)) {
+  if (isArray(propType.type)) {
     return typeFactory.any();
   }
-  if (paramReg.type === "choice") {
+  if (propType.type === "choice") {
     return typeFactory.choice(
-      Array.isArray(paramReg.options)
-        ? isArrayOfLiterals(paramReg.options)
-          ? paramReg.options
-          : paramReg.options.map((op) => ({
+      Array.isArray(propType.options)
+        ? isArrayOfLiterals(propType.options)
+          ? propType.options
+          : propType.options.map((op) => ({
               label: op.label,
               value: op.value,
             }))
         : ["Dynamic options"]
     );
-  } else if ((paramReg.type as any) === "code") {
+  } else if ((propType.type as any) === "code") {
     return convertTsToWabType("string") as ArgType["type"];
   }
-  return convertTsToWabType(paramReg.type ?? "string") as ArgType["type"];
+  return convertTsToWabType(propType.type ?? "string") as ArgType["type"];
 }
 
 export function createCustomFunctionFromRegistration(
@@ -2673,18 +2694,21 @@ export function createCustomFunctionFromRegistration(
     importPath: functionReg.meta.importPath,
     namespace: functionReg.meta.namespace ?? null,
     displayName: functionReg.meta.displayName ?? null,
-    params:
-      functionReg.meta.params?.map((paramReg: CustomFunctionParam) => {
-        const name = isString(paramReg) ? paramReg : paramReg.name;
-
-        const argType = mapParamTypeToArgType(paramReg);
-        const existingParam = existingParams.find((p) => p.argName === name);
+    params: normalizeCustomFunctionParams(functionReg.meta.params).map(
+      (param) => {
+        // Cast back to the registration vocabulary; see
+        // `NormalizedCustomFunctionParam` for why the unions aren't assignable.
+        const argType = mapParamTypeToArgType(param as ParamType<any[], any>);
+        const existingParam = existingParams.find(
+          (p) => p.argName === param.name
+        );
         if (existingParam && existingParam.type.name === argType.name) {
           return existingParam;
         }
 
-        return typeFactory.arg(name, argType, undefined);
-      }) ?? [],
+        return typeFactory.arg(param.name, argType, undefined);
+      }
+    ),
     isQuery: functionReg.meta.isQuery ?? false,
     isMutation: functionReg.meta.isMutation ?? false,
   });
@@ -3945,7 +3969,7 @@ export const getPropTypeDefaultValue = (
   context?: {
     componentPropValues?: any;
     ccContextData?: any;
-    controlExtras: DefaultValueControlExtras;
+    controlExtras?: DefaultValueControlExtras;
   }
 ) => {
   if (!isPlainObjectPropType(propType)) {

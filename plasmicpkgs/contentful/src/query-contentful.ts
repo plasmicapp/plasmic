@@ -311,10 +311,12 @@ export const queryContentfulMeta: CustomFunctionMeta<typeof queryContentful> = {
         space: {
           type: "string",
           description: "Contentful space ID",
+          required: true,
         },
         accessToken: {
           type: "string",
           description: "Contentful access token",
+          required: true,
         },
         environment: {
           type: "string",
@@ -324,6 +326,7 @@ export const queryContentfulMeta: CustomFunctionMeta<typeof queryContentful> = {
           type: "choice",
           displayName: "Content Type",
           description: "Content type to query",
+          required: true,
           options: (_: any, ctx: any) => {
             return (
               ctx?.contentTypes?.map((ct: ContentTypeSchema) => ({

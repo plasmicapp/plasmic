@@ -102,6 +102,12 @@ import {
   renderable,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
+import {
+  getInvalidArgErrorMessage,
+  InvalidArg,
+  mkInvalidArgKey,
+  mkInvalidArgsRecord,
+} from "@/wab/shared/core/invalid-arg";
 import { JsonValue } from "@/wab/shared/core/lang";
 import {
   getTplTextBlockContent,
@@ -109,11 +115,7 @@ import {
   isTplTag,
   TplTagCodeGenType,
 } from "@/wab/shared/core/tpls";
-import {
-  ComponentEvalContext,
-  getInvalidArgErrorMessage,
-  InvalidArgMeta,
-} from "@/wab/shared/core/val-nodes";
+import { ComponentEvalContext } from "@/wab/shared/core/val-nodes";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
@@ -198,7 +200,12 @@ export interface ControlExtras {
 export interface PropValueEditorContextData {
   componentPropValues: Record<string, any> | any[];
   ccContextData: any;
-  invalidArg?: InvalidArgMeta;
+  /**
+   * Validation errors for the rows under this context, keyed by each row's
+   * control path (see `mkInvalidArgKey`). Computed by whatever generates the
+   * context; each row looks up its own entry.
+   */
+  invalidArgs?: Record<string, InvalidArg>;
   tpl?: TplTag | TplComponent;
   viewCtx?: ViewCtx;
   env: { [key: string]: any } | undefined;
@@ -584,7 +591,7 @@ function PropEditorRowWrapper_(props: {
       tpl={tpl}
       componentPropValues={componentPropValues}
       ccContextData={ccContextData}
-      invalidArg={invalidArgs.find((invalidArg) => invalidArg.param === param)}
+      invalidArgs={mkInvalidArgsRecord(invalidArgs)}
     />
   );
 }
@@ -601,6 +608,7 @@ export type HighlightOptions = {
 interface PropEditorRowProps {
   expr: DeepReadonly<Expr> | undefined;
   label: string;
+  labelType?: "prop" | "param";
   fullDisplayName?: string;
   subtitle?: React.ReactNode;
   definedIndicator?: DefinedIndicatorType;
@@ -683,6 +691,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const {
     about = maybePropTypeToAbout(props.propType),
     label,
+    labelType = "prop",
     fullDisplayName = props.label,
     subtitle,
     attr,
@@ -708,11 +717,12 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const {
     componentPropValues,
     ccContextData,
-    invalidArg,
+    invalidArgs,
     env: origCanvasEnv,
     tpl,
     viewCtx,
   } = currValueEditorCtx;
+  const invalidArg = invalidArgs?.[mkInvalidArgKey(controlExtras.path)];
 
   const extraEnv = getExtraEnvFromPropType(
     propType,
@@ -919,7 +929,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         ) &&
         !["functionArgs"].includes(getPropTypeType(propType) ?? "") && (
           <Menu.Item onClick={onDelete}>
-            {RESET_CAP} <strong>{label}</strong> prop
+            {RESET_CAP} <strong>{label}</strong> {labelType}
           </Menu.Item>
         )}
       {!readOnly &&
@@ -1684,7 +1694,7 @@ function PropEditorRow_(
     schema?: DataPickerTypesSchema;
     componentPropValues?: Record<string, any>;
     ccContextData?: any;
-    invalidArg?: InvalidArgMeta;
+    invalidArgs?: Record<string, InvalidArg>;
   }
 ) {
   const { tpl, viewCtx, ...rest } = props;
@@ -1692,22 +1702,19 @@ function PropEditorRow_(
     if (
       !!props.componentPropValues ||
       !!props.ccContextData ||
-      !!props.invalidArg
+      !!props.invalidArgs
     ) {
       return props;
     }
     const { componentPropValues, ccContextData, invalidArgs } =
       viewCtx.getComponentEvalContext(tpl);
-    const invalidArg = invalidArgs.find(
-      (arg) => arg.param.variable.name === rest.attr
-    );
     return {
       componentPropValues,
       ccContextData,
-      invalidArg,
+      invalidArgs: mkInvalidArgsRecord(invalidArgs),
     };
   };
-  const { componentPropValues, ccContextData, invalidArg } =
+  const { componentPropValues, ccContextData, invalidArgs } =
     getCurrentComponentEvalContext();
   const env = !props.env ? viewCtx.getCanvasEnvForTpl(tpl) : props.env;
   const schema = !props.schema ? viewCtx.customFunctionsSchema() : props.schema;
@@ -1719,7 +1726,7 @@ function PropEditorRow_(
         viewCtx,
         componentPropValues: componentPropValues ?? {},
         ccContextData,
-        invalidArg,
+        invalidArgs,
         env,
         schema,
       }}

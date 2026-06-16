@@ -61,11 +61,16 @@ export const CustomFunctionEditor = observer(
     } = props;
     const { open, close } = useServerQueryBottomModal(queryKey);
     const studioCtx = useStudioCtx();
-    const exprCtx: ExprCtx = {
-      projectFlags: studioCtx.projectFlags(),
-      component: component ?? null,
-      inStudio: true,
-    };
+    const projectFlags = studioCtx.projectFlags();
+    // Identity-stable for useServerQueryOp's memo deps.
+    const exprCtx: ExprCtx = React.useMemo(
+      () => ({
+        projectFlags,
+        component: component ?? null,
+        inStudio: true,
+      }),
+      [projectFlags, component]
+    );
 
     const env =
       "env" in props
@@ -79,6 +84,8 @@ export const CustomFunctionEditor = observer(
             props.eventHandlerKey
           )
         : undefined;
+    const currGlobalThis =
+      "viewCtx" in props ? props.viewCtx?.canvasCtx.win() : undefined;
 
     return (
       <div className="flex-col fill-width">
@@ -111,7 +118,12 @@ export const CustomFunctionEditor = observer(
           )}
         </Button>
         {value && isKnownCustomFunctionExpr(value) && (
-          <CustomFunctionExprPreview expr={value} env={env} exprCtx={exprCtx} />
+          <CustomFunctionExprPreview
+            expr={value}
+            env={env}
+            exprCtx={exprCtx}
+            currGlobalThis={currGlobalThis}
+          />
         )}
         {value && isKnownCustomCode(value) && (
           <CustomCodePreview queryUuid={queryKey} expr={value} env={env} />

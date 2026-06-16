@@ -216,6 +216,7 @@ export const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
           description:
             "Base URL of your WordPress site (e.g., https://example.com)",
           helpText: "The root URL of your WordPress installation",
+          required: true,
         },
         queryType: {
           type: "choice",

@@ -47,6 +47,11 @@ export interface CommonTypeBase {
    * If true, does not allow the user to use a dynamic expression for this prop
    */
   disableDynamicValue?: boolean;
+  /**
+   * Mark field as required (not null / undefined). Editor will attempt to
+   * enforce the field is present, but it is not guaranteed.
+   */
+  required?: boolean;
 }
 
 export interface Defaultable<Ctx extends any[], T> {

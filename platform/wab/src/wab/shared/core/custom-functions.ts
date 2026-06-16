@@ -1,3 +1,10 @@
+import {
+  CustomFunctionParam,
+  isFlattenedObjectPropType,
+  maybePropTypeToDisplayName,
+  maybePropTypeToRequired,
+  normalizeCustomFunctionParams,
+} from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
 import { withoutNils } from "@/wab/shared/common";
 import {
@@ -7,6 +14,11 @@ import {
   isFallbackSet,
   stripParens,
 } from "@/wab/shared/core/exprs";
+import {
+  InvalidArg,
+  ValidationType,
+  mkInvalidArgKey,
+} from "@/wab/shared/core/invalid-arg";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { findExprsInNode } from "@/wab/shared/core/tpls";
 import { tryEvalExpr } from "@/wab/shared/eval";
@@ -20,6 +32,7 @@ import {
   isKnownEventHandler,
 } from "@/wab/shared/model/classes";
 import { convertToFunction } from "@/wab/shared/parser-utils";
+import { smartHumanize } from "@/wab/shared/strs";
 import type {
   PlasmicQuery,
   PlasmicQueryResult,
@@ -227,6 +240,46 @@ export function getCustomFunctionParams(
       return undefined;
     }) ?? []
   );
+}
+
+export function getInvalidFunctionArgs(
+  args: unknown[],
+  func: CustomFunction,
+  registeredParams: readonly CustomFunctionParam[] | undefined
+): Record<string, InvalidArg> | undefined {
+  const argByName = new Map<string, unknown>(
+    func.params.map((param, i) => [param.argName, args[i]])
+  );
+  const invalidArgs: Record<string, InvalidArg> = {};
+  for (const param of normalizeCustomFunctionParams(registeredParams)) {
+    const arg = argByName.get(param.name);
+
+    if (isFlattenedObjectPropType(param)) {
+      const flattenedFields = param.fields ?? {};
+      for (const [fieldName, fieldPropType] of Object.entries(
+        flattenedFields
+      )) {
+        if (
+          maybePropTypeToRequired(fieldPropType) &&
+          (arg == null || (arg as Record<string, unknown>)[fieldName] == null)
+        ) {
+          invalidArgs[mkInvalidArgKey([param.name, fieldName])] = {
+            validationType: ValidationType.Required,
+            displayLabel:
+              maybePropTypeToDisplayName(fieldPropType) ??
+              smartHumanize(fieldName),
+          };
+        }
+      }
+    } else if (maybePropTypeToRequired(param) && arg == null) {
+      invalidArgs[mkInvalidArgKey([param.name])] = {
+        validationType: ValidationType.Required,
+        displayLabel:
+          maybePropTypeToDisplayName(param) ?? smartHumanize(param.name),
+      };
+    }
+  }
+  return Object.keys(invalidArgs).length > 0 ? invalidArgs : undefined;
 }
 
 export function getOldToNewCustomFunctions(

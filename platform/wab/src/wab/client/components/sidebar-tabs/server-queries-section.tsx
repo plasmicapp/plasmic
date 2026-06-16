@@ -54,11 +54,16 @@ const ServerQueryRow = observer(
   }) => {
     const { component, query, viewCtx } = props;
     const studioCtx = viewCtx.studioCtx;
-    const exprCtx: ExprCtx = {
-      projectFlags: studioCtx.projectFlags(),
-      component,
-      inStudio: true,
-    };
+    const projectFlags = studioCtx.projectFlags();
+    // Identity-stable for useServerQueryOp's memo deps.
+    const exprCtx: ExprCtx = React.useMemo(
+      () => ({
+        projectFlags,
+        component,
+        inStudio: true,
+      }),
+      [projectFlags, component]
+    );
     const schema = viewCtx.customFunctionsSchema();
     const tpl = viewCtx.currentCtxTplRoot();
 
@@ -123,12 +128,13 @@ const ServerQueryRow = observer(
       );
     };
     const title = `Query data results for "${query.name}"`;
-    const env = omitQueryFromEnv(
-      viewCtx.getCanvasEnvForTpl(tpl, {
-        forDataRepCollection: true,
-      }),
-      query
-    );
+    let env: Record<string, any> | undefined = viewCtx.getCanvasEnvForTpl(tpl, {
+      forDataRepCollection: true,
+    });
+    if (env) {
+      env = omitQueryFromEnv(env, query);
+    }
+    const currGlobalThis = viewCtx.canvasCtx.win();
 
     return (
       <WithContextMenu overlay={menu}>
@@ -147,6 +153,7 @@ const ServerQueryRow = observer(
                   env={env}
                   title={title}
                   exprCtx={exprCtx}
+                  currGlobalThis={currGlobalThis}
                 />
               ) : isKnownCustomCode(query.op) ? (
                 <CustomCodePreview
