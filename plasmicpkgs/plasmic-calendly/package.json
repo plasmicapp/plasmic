@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-calendly",
-  "version": "0.0.94",
+  "version": "0.0.95",
   "description": "Plasmic Calendly components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.5",
+    "@plasmicapp/host": "2.0.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",
