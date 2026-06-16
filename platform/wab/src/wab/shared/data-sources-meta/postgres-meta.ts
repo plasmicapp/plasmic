@@ -19,7 +19,6 @@ import SqlString from "sqlstring";
 export interface PostgresDataSource extends DataSource {
   source: "postgres";
   credentials: {
-    connectionString?: string;
     password?: string;
   };
   settings: {

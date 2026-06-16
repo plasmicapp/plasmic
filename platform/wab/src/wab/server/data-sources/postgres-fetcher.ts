@@ -100,12 +100,8 @@ export class PostgresFetcher {
     source: Pick<PostgresDataSource, "credentials" | "settings">,
     poolOptions?: PoolConfig
   ) {
-    let connectionString = source.credentials.connectionString;
-    if (!connectionString) {
-      connectionString = buildConnectionString(source);
-    }
     const _pool = new Pool({
-      connectionString: connectionString,
+      connectionString: buildConnectionString(source),
       max: 20,
       ...poolOptions,
     });

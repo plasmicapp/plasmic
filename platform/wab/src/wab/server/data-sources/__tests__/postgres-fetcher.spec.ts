@@ -37,8 +37,13 @@ const SCHEMA: DataSourceSchema = {
 
 function makeFetcher() {
   const fetcher = new PostgresFetcher({
-    credentials: { connectionString: "postgres://user:pass@localhost:5432/db" },
-    settings: {},
+    credentials: { password: "pass" },
+    settings: {
+      host: "localhost",
+      port: "5432",
+      name: "db",
+      user: "user",
+    },
   } as any);
   const queryMock = jest.fn().mockResolvedValue({ rows: [], fields: [] });
   // Inject a fake pool with schema so getList builds SQL without touching a real database.
