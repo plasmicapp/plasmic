@@ -78,6 +78,9 @@ export interface FetcherProps extends DataOpConfig {
     queries?: Record<string, any>;
 }
 
+// @public (undocumented)
+export function isPlasmicUndefinedDataErrorPromise(x: any): x is PlasmicUndefinedDataErrorPromise;
+
 // @public @deprecated (undocumented)
 export function makeCacheKey(dataOp: DataOp, opts?: {
     paginate?: Pagination;
@@ -137,6 +140,14 @@ export interface PlasmicQueryResult<T = unknown> {
     // (undocumented)
     isLoading: boolean;
     key: string | null;
+}
+
+// @public (undocumented)
+export interface PlasmicUndefinedDataErrorPromise extends Promise<any> {
+    // (undocumented)
+    message: string;
+    // (undocumented)
+    plasmicType: "PlasmicUndefinedDataError";
 }
 
 // @internal (undocumented)

@@ -1,4 +1,8 @@
-export { throwIfPlasmicUndefinedDataError } from "./common";
+export {
+  isPlasmicUndefinedDataErrorPromise,
+  throwIfPlasmicUndefinedDataError,
+} from "./common";
+export type { PlasmicUndefinedDataErrorPromise } from "./common";
 export { usePlasmicInvalidate } from "./hooks/usePlasmicDataOp";
 export { usePlasmicQueries as unstable_usePlasmicQueries } from "./serverQueries/client";
 export {

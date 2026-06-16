@@ -18,6 +18,7 @@ import {
   isKnownComponent,
   TplNode,
 } from "@/wab/shared/model/classes";
+import { isPlasmicUndefinedDataErrorPromise } from "@plasmicapp/data-sources";
 import { debounce } from "lodash";
 import { computedFn } from "mobx-utils";
 import type React from "react";
@@ -88,7 +89,7 @@ export const mkCanvasErrorBoundary = computedFn(
         // re-renders the canvas.
         if (
           this.state.error &&
-          (this.state.error as any)?.plasmicType !== "PlasmicUndefinedDataError"
+          !isPlasmicUndefinedDataErrorPromise(this.state.error)
         ) {
           // PlasmicUndefinedDataErrors are pending-query sentinels: they should
           // propagate to a React Suspense boundary (or be swallowed gracefully
@@ -103,10 +104,7 @@ export const mkCanvasErrorBoundary = computedFn(
         const r = react.createElement;
         const { ctx, children, nodeOrComponent, nodeProps } = this.props;
         if (this.state.error != null) {
-          if (
-            (this.state.error as any)?.plasmicType ===
-            "PlasmicUndefinedDataError"
-          ) {
+          if (isPlasmicUndefinedDataErrorPromise(this.state.error)) {
             throw this.state.error;
           }
 
@@ -167,7 +165,7 @@ export function withErrorDisplayFallback<T>(
   try {
     return fn();
   } catch (error: any) {
-    if (error?.plasmicType === "PlasmicUndefinedDataError") {
+    if (isPlasmicUndefinedDataErrorPromise(error)) {
       if (opts.hasLoadingBoundary) {
         // There is a React Suspense boundary above us — let it handle the
         // pending-query promise so it can show a loading fallback.
