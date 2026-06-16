@@ -167,10 +167,10 @@
   resolved "https://registry.yarnpkg.com/@nolyfill/is-core-module/-/is-core-module-1.0.39.tgz#3dc35ba0f1e66b403c00b39344f870298ebb1c8e"
   integrity sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==
 
-"@plasmicapp/host@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-2.0.5.tgz#89de5744d422f2c2a29ec4bc1e7d42ca069d49ce"
-  integrity sha512-93YG6HbGENiONBJqzri1wKDWj3pQ97DN2vB5dxqO4vBLDS9jE3mHepUo6NUY8QYpEptDdlTDaCTdwF7qwdz44g==
+"@plasmicapp/host@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-2.0.6.tgz#fb9a6ca486c94958d6aaf073d19d0ea8b4e33971"
+  integrity sha512-v2VdUl+Cs7zcSQowGf/nzTJWu/MlfNoa8hMQUUJbBYDY7mxBhy5RBGVx6evM+JTentLA6/wpJG1UupTK5N1Wgw==
   dependencies:
     "@plasmicapp/query" "0.1.84"
     csstype "^3.1.2"

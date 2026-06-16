@@ -16,7 +16,7 @@
   },
   "author": "Chung Wu",
   "dependencies": {
-    "@plasmicapp/loader-react": "^2.0.7",
+    "@plasmicapp/loader-react": "^2.0.8",
     "react": "^18",
     "react-dom": "^18"
   },
