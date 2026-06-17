@@ -21,12 +21,13 @@ import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import {
   code,
+  codeLit,
   customCode,
   InteractionConditionalMode,
 } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
-import { mkNameArg } from "@/wab/shared/core/lang";
+import { JsonValue, mkNameArg } from "@/wab/shared/core/lang";
 import {
   allAnimationSequences,
   getResponsiveStrategy,
@@ -52,8 +53,11 @@ import {
   FunctionExpr,
   ImageAssetRef,
   Interaction,
+  isKnownDateRangeStrings,
+  isKnownDateString,
   isKnownTplTag,
   KeyFrame,
+  Param,
   RawText,
   Site,
   TplNode,
@@ -62,8 +66,8 @@ import {
 } from "@/wab/shared/model/classes";
 import {
   isAnyType,
-  isBoolType,
-  isNumType,
+  isChoiceType,
+  wabToTsType,
 } from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
@@ -80,7 +84,7 @@ import {
 } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { deserializePlasmicComponentAttrs } from "@/wab/shared/web-exporter/component-utils";
-import L, { isArray, isObject } from "lodash";
+import L, { isArray } from "lodash";
 
 export interface HtmlToTplResult {
   /** Tpl nodes ready to be inserted (multiple when root is a WIFragment) */
@@ -539,15 +543,13 @@ async function wiTreeToTpl(
 
       if (node.props) {
         for (const [propName, propValue] of Object.entries(node.props)) {
-          const componentArg = getComponentArgFromHtmlProp(
+          const [param, argValue] = getComponentArgFromHtmlProp(
             component,
             componentName,
             propName,
             propValue
           );
-
-          const [paramName, argValue] = componentArg;
-          args[paramName] = argValue;
+          args[param.variable.name] = argValue;
         }
       }
 
@@ -751,16 +753,17 @@ function splitStylesByAnimations(styles: Record<string, string>): {
 }
 
 /**
- * Converts an HTML prop name and value to a component arg for the web importer.
+ * Converts an HTML prop name and value (in the serialized data-props format)
+ * to the matching component Param and arg Expr.
  *
  * Throws on invalid prop name, slot params, or type mismatches.
  */
-function getComponentArgFromHtmlProp(
+export function getComponentArgFromHtmlProp(
   component: Component,
   componentName: string,
   propName: string,
   value: unknown
-): [string, VariantsRef | CustomCode | string | number | boolean] {
+): [Param, VariantsRef | CustomCode] {
   const name = toVarName(propName);
   const param = component.params.find(
     (p) => paramToVarName(component, p) === name
@@ -795,10 +798,7 @@ function getComponentArgFromHtmlProp(
           )}`
         );
       }
-      return [
-        param.variable.name,
-        new VariantsRef({ variants: [variantGroup.variants[0]] }),
-      ];
+      return [param, new VariantsRef({ variants: [variantGroup.variants[0]] })];
     } else if (variantGroup.multi) {
       const values = isArray(value) ? value : [value];
       const variants = values.map((v) => {
@@ -812,7 +812,7 @@ function getComponentArgFromHtmlProp(
         }
         return variant;
       });
-      return [param.variable.name, new VariantsRef({ variants })];
+      return [param, new VariantsRef({ variants })];
     } else {
       const variant = variantGroup.variants.find(
         (v) => toVarName(v.name) === toVarName(`${value}`)
@@ -822,42 +822,75 @@ function getComponentArgFromHtmlProp(
           `Component "${componentName}" prop "${propName}" has no variant matching "${value}"`
         );
       }
-      return [param.variable.name, new VariantsRef({ variants: [variant] })];
+      return [param, new VariantsRef({ variants: [variant] })];
     }
   }
 
-  if (isBoolType(param.type)) {
-    if (typeof value !== "boolean") {
+  // Primitive-valued types (bool, num, text/img/href/target).
+  const tsType = wabToTsType(param.type);
+  if (tsType === "boolean" || tsType === "number" || tsType === "string") {
+    if (typeof value !== tsType) {
       throw new Error(
-        `Component "${componentName}" prop "${propName}" expects a boolean but got ${JSON.stringify(
+        `Component "${componentName}" prop "${propName}" expects a ${tsType} but got ${JSON.stringify(
           value
         )}`
       );
     }
-
-    return [param.variable.name, code(JSON.stringify(value))];
+    return [param, code(JSON.stringify(value))];
   }
 
-  if (isNumType(param.type)) {
-    if (typeof value !== "number") {
+  if (isChoiceType(param.type)) {
+    const options = param.type.options.map((opt) =>
+      typeof opt === "object" ? opt.value : opt
+    );
+    if (!options.some((opt) => opt === value)) {
       throw new Error(
-        `Component "${componentName}" prop "${propName}" expects a number but got ${JSON.stringify(
+        `Component "${componentName}" prop "${propName}" must be one of ${JSON.stringify(
+          options
+        )} but got ${JSON.stringify(value)}`
+      );
+    }
+    return [param, code(JSON.stringify(value))];
+  }
+
+  // dateString carries a single ISO date string.
+  if (isKnownDateString(param.type)) {
+    if (typeof value !== "string") {
+      throw new Error(
+        `Component "${componentName}" prop "${propName}" expects a date string but got ${JSON.stringify(
           value
         )}`
       );
     }
-    return [param.variable.name, code(JSON.stringify(value))];
+    return [param, code(JSON.stringify(value))];
   }
 
-  // Complex types (object/array/null/any-type) in customCode(JSON.stringify)
-  if (
-    isAnyType(param.type) ||
-    isArray(value) ||
-    isObject(value) ||
-    value === null
-  ) {
-    return [param.variable.name, customCode(JSON.stringify(value))];
+  // dateRangeStrings carries a [from, to] pair of ISO date strings; either
+  // end may be null for an open range.
+  if (isKnownDateRangeStrings(param.type)) {
+    if (
+      !isArray(value) ||
+      value.length != 2 ||
+      value.some((v) => typeof v !== "string" && v !== null)
+    ) {
+      throw new Error(
+        `Component "${componentName}" prop "${propName}" expects an array of [from, to] date strings but got ${JSON.stringify(
+          value
+        )}`
+      );
+    }
+    return [param, codeLit(value as JsonValue)];
   }
 
-  return [param.variable.name, code(JSON.stringify(value))];
+  // Untyped ('any') props accept arbitrary JSON (objects, arrays, null, and
+  // scalars). Stored as an unparenthesized code literal (codeLit), the same
+  // form the studio prop editor stores, so tryExtractJson can read it back
+  // when serializing the instance.
+  if (isAnyType(param.type)) {
+    return [param, codeLit(value as JsonValue)];
+  }
+
+  throw new Error(
+    `Component "${componentName}" prop "${propName}" of type "${param.type.name}" is not supported yet.`
+  );
 }

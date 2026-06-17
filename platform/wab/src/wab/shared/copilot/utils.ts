@@ -1,6 +1,10 @@
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { VariantCombo, getAllVariantsForTpl } from "@/wab/shared/Variants";
+import {
+  VariantCombo,
+  getAllVariantsForTpl,
+  getBaseVariant,
+} from "@/wab/shared/Variants";
 import { getComponentArenaBaseFrame } from "@/wab/shared/component-arenas";
 import {
   GlobalVariantFrame,
@@ -79,6 +83,29 @@ export function getVariantsByUuids(
     }
   }
   return { variants, invalidUuids };
+}
+
+export function getComponentVariantCombo(
+  site: Site,
+  component: Component,
+  variantUuids: string[] | undefined
+): VariantCombo {
+  if (!variantUuids?.length) {
+    return [getBaseVariant(component)];
+  }
+
+  const result = getVariantsByUuids(variantUuids, {
+    component,
+    site,
+  });
+  if (result.invalidUuids.length) {
+    throw new Error(
+      `Variant(s) not found: ${result.invalidUuids
+        .map((u) => `"${u}"`)
+        .join(", ")}.`
+    );
+  }
+  return result.variants;
 }
 
 /**

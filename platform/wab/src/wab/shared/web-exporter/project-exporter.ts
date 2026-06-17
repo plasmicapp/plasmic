@@ -296,7 +296,8 @@ export function serializeInvalidResource(
     | "variantGroup"
     | "variant"
     | "variantedValue"
-    | "animation",
+    | "animation"
+    | "prop",
   message: string
 ): string {
   return toXml({ "invalid-resource": [{ _attr: { uuid, type } }, message] });
