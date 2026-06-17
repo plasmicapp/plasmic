@@ -11,6 +11,7 @@ import {
   ResizableImage,
   maybeUploadImage,
 } from "@/wab/client/dom-utils";
+import { deleteComponent } from "@/wab/client/operations/delete-component";
 import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
 import { deleteStyleToken } from "@/wab/client/operations/delete-style-token";
 import { deleteVariant } from "@/wab/client/operations/delete-variant";
@@ -27,7 +28,6 @@ import {
   getArenaFrames,
   getArenaName,
   isComponentArena,
-  isDedicatedArena,
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
@@ -96,7 +96,6 @@ import {
   PageComponent,
   findStateForParam,
   getComponentDisplayName,
-  getSubComponents,
   isCodeComponent,
   isPageComponent,
   isPlumeComponent,
@@ -832,47 +831,14 @@ export class SiteOps {
       "Cannot remove sub-components"
     );
 
-    if (!isPageComponent(component)) {
-      const refComps = ensure(
-        componentToReferencers(this.studioCtx.site).get(component),
-        `All site components should be mapped but ${component.name} was not found`
-      );
-
-      if (refComps.size > 0) {
-        notification.error({
-          message: `${component.name} is still being used by ${L.uniq(
-            Array.from(refComps).map((c) => getComponentDisplayName(c))
-          ).join(", ")}.`,
-        });
-
-        return;
-      }
-    }
-
-    if (this.studioCtx.site.pageWrapper === component) {
-      notification.error({
-        message: `Cannot remove component ${getComponentDisplayName(
-          component
-        )} because it is set as the default page wrapper.`,
-      });
-
-      return;
-    }
-
-    const curArena = this.studioCtx.currentArena;
-
-    const comps = [component];
-    if (!isCodeComponent(component)) {
-      // `removeComponentGroup` handles the case of code components, whose
-      // "subComponents" structure is just for organization and doesn't require
-      // deleting the whole branch of sub-components.
-      comps.push(...getSubComponents(component));
-    }
-    this.tplMgr.removeComponentGroup(comps);
-    this.studioCtx.pruneInvalidViewCtxs();
-
-    if (isDedicatedArena(curArena) && comps.includes(curArena.component)) {
-      this.studioCtx.switchToFirstArena();
+    const result = deleteComponent(
+      component,
+      this.studioCtx.site,
+      this.studioCtx,
+      this.tplMgr
+    );
+    if (result.result === "error") {
+      notification.error({ message: result.message });
     }
   }
 
