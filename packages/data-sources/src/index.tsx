@@ -7,6 +7,7 @@ export { usePlasmicInvalidate } from "./hooks/usePlasmicDataOp";
 export { usePlasmicQueries as unstable_usePlasmicQueries } from "./serverQueries/client";
 export {
   StatefulQueryResult as _StatefulQueryResult,
+  safeExecResult as _safeExecResult,
   wrapDollarQueriesForMetadata as unstable_wrapDollarQueriesForMetadata,
   type StateListener as _StateListener,
   type StatefulQueryState as _StatefulQueryState,

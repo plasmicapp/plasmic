@@ -177,6 +177,15 @@ export type QueryResult = Partial<ManyRowsResult<any>> & {
     isLoading?: boolean;
 };
 
+// @public
+export function _safeExecResult<T>(tryData: () => T): {
+    data: T;
+} | {
+    promise: PlasmicUndefinedDataErrorPromise;
+} | {
+    error: unknown;
+};
+
 // @public @deprecated (undocumented)
 export interface SingleRowResult<T = any> {
     // (undocumented)
