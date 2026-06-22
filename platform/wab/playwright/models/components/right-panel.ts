@@ -479,6 +479,22 @@ export class RightPanel extends BaseModel {
     await this.htmlAttributesSection.click();
   }
 
+  /**
+   * Expands the "Show more" toggle in the component props section so that
+   * advanced props become visible.
+   */
+  async expandComponentPropsSection() {
+    const showExtraContent = this.frame.locator(
+      '#component-props-section [data-test-id="show-extra-content"]'
+    );
+    if (
+      (await showExtraContent.getAttribute("data-show-extra-content")) !==
+      "true"
+    ) {
+      await showExtraContent.click();
+    }
+  }
+
   async getPropEditorRowsCount() {
     return this.propEditorRows.count();
   }

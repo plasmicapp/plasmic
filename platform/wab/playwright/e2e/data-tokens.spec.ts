@@ -401,6 +401,7 @@ test.describe("data token usages", () => {
       ];
       await models.studio.leftPanel.createNewPage("TestPage");
       await models.studio.leftPanel.insertNode("Slider");
+      await models.studio.rightPanel.expandComponentPropsSection();
 
       for (const propInfo of PROP_INFO) {
         const propRow = models.studio.rightPanel.frame.locator(
@@ -460,6 +461,7 @@ test.describe("data token usages", () => {
       await test.step("can pick an existing token from the Data tokens submenu", async () => {
         const { displayName, jsName } = PROP_INFO[0];
         await models.studio.leftPanel.insertNode("Slider");
+        await models.studio.rightPanel.expandComponentPropsSection();
         const propRow = models.studio.rightPanel.frame.locator(
           `[data-test-id="prop-editor-row-${displayName}"]`
         );

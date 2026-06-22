@@ -62,7 +62,10 @@ import {
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, hackyCast, spawn } from "@/wab/shared/common";
-import { getComponentPropTypes } from "@/wab/shared/component-props";
+import {
+  getComponentPropTypes,
+  inferPropTypeFromParam,
+} from "@/wab/shared/component-props";
 import {
   getComponentDisplayName,
   getRealParams,
@@ -125,9 +128,12 @@ export type TplComponentPropCtx = {
 
 function isParamAdvanced(param: Param, ctx: TplComponentPropCtx): boolean {
   const { tpl, viewCtx, expsProvider } = ctx;
-  const propType = viewCtx.canvasCtx
-    .getRegisteredCodeComponentsMap()
-    .get(tpl.component.name)?.meta.props[param.variable.name];
+  const propType = inferPropTypeFromParam(
+    viewCtx.studioCtx,
+    viewCtx,
+    tpl,
+    param
+  );
   const isSet = !!expsProvider
     .effectiveVs()
     .args.find((_arg) => _arg.param === param);
