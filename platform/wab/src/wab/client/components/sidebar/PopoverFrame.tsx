@@ -405,7 +405,6 @@ function PopoverFrameShell() {
           style={{
             minHeight: minHeight,
             pointerEvents: "auto",
-            overflow: "hidden",
             ...positionProps.style,
           }}
           {...overlayProps}
@@ -417,7 +416,7 @@ function PopoverFrameShell() {
                 className="flex-col"
                 style={{
                   position: "absolute",
-                  overflow: "hidden",
+                  overflow: "auto",
                   top: 0,
                   width: "100%",
                   height: "100%",
