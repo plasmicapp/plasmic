@@ -221,56 +221,70 @@ function PlasmicNewComponentModal__RenderFunc(props: {
             }
           />
         </div>
-        <button
-          data-plasmic-name={"expander"}
-          data-plasmic-override={overrides.expander}
-          className={classNames(
-            "all",
-            "button",
-            "button__oermw",
-            sty.expander,
-            {
-              [sty.expandershowTemplates]: hasVariant(
-                $state,
-                "showTemplates",
-                "showTemplates"
-              ),
+        {(() => {
+          try {
+            return !$state.isPage;
+          } catch (e) {
+            if (
+              e instanceof TypeError ||
+              e?.plasmicType === "PlasmicUndefinedDataError"
+            ) {
+              return true;
             }
-          )}
-          ref={(ref) => {
-            $refs["expander"] = ref;
-          }}
-        >
-          <PlasmicIcon__
-            PlasmicIconType={
-              hasVariant($state, "showTemplates", "showTemplates")
-                ? ChevronDownSvgIcon
-                : ChevronRightSvgIcon
-            }
-            className={classNames("all", sty.svg__nc1Yg, {
-              [sty.svgshowTemplates__nc1YgChkSp]: hasVariant(
-                $state,
-                "showTemplates",
-                "showTemplates"
-              ),
-            })}
-            role={"img"}
-          />
-
-          <div
-            className={classNames("all", "__wab_text", sty.text__hBmC, {
-              [sty.textshowTemplates__hBmCChkSp]: hasVariant(
-                $state,
-                "showTemplates",
-                "showTemplates"
-              ),
-            })}
+            throw e;
+          }
+        })() ? (
+          <button
+            data-plasmic-name={"expander"}
+            data-plasmic-override={overrides.expander}
+            className={classNames(
+              "all",
+              "button",
+              "button__oermw",
+              sty.expander,
+              {
+                [sty.expandershowTemplates]: hasVariant(
+                  $state,
+                  "showTemplates",
+                  "showTemplates"
+                ),
+              }
+            )}
+            ref={(ref) => {
+              $refs["expander"] = ref;
+            }}
           >
-            {hasVariant($state, "showTemplates", "showTemplates")
-              ? "Hide component templates."
-              : "Pick from a component template\u2026"}
-          </div>
-        </button>
+            <PlasmicIcon__
+              PlasmicIconType={
+                hasVariant($state, "showTemplates", "showTemplates")
+                  ? ChevronDownSvgIcon
+                  : ChevronRightSvgIcon
+              }
+              className={classNames("all", sty.svg__nc1Yg, {
+                [sty.svgshowTemplates__nc1YgChkSp]: hasVariant(
+                  $state,
+                  "showTemplates",
+                  "showTemplates"
+                ),
+              })}
+              role={"img"}
+            />
+
+            <div
+              className={classNames("all", "__wab_text", sty.text__hBmC, {
+                [sty.textshowTemplates__hBmCChkSp]: hasVariant(
+                  $state,
+                  "showTemplates",
+                  "showTemplates"
+                ),
+              })}
+            >
+              {hasVariant($state, "showTemplates", "showTemplates")
+                ? "Hide component templates."
+                : "Pick from a component template\u2026"}
+            </div>
+          </button>
+        ) : null}
       </div>
       {(
         hasVariant($state, "isPage", "isPage")
