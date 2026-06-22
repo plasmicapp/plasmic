@@ -39,7 +39,9 @@ import {
 export function serializeInitFunc(
   state: State,
   ctx: SerializerBaseContext,
-  isForRegisterInitFunc?: boolean
+  isForRegisterInitFunc?: boolean,
+  shouldTransformWritableStates: boolean | undefined = ctx.exportOpts
+    .shouldTransformWritableStates
 ) {
   let initFunc: undefined | string = undefined;
   if (
@@ -112,10 +114,7 @@ export function serializeInitFunc(
       joinVariantVals(exprs, ctx.variantComboChecker, "undefined").value
     })`;
   }
-  if (
-    !initFunc ||
-    (isWritableState(state) && !ctx.exportOpts.shouldTransformWritableStates)
-  ) {
+  if (!initFunc || (isWritableState(state) && !shouldTransformWritableStates)) {
     return undefined;
   } else if (isWritableState(state)) {
     return `$props["${makePlasmicIsPreviewRootComponent()}"] ? ${initFunc} : undefined`;
@@ -126,21 +125,35 @@ export function serializeInitFunc(
 
 export function serializeStateSpecs(
   component: Component,
-  ctx: SerializerBaseContext
+  ctx: SerializerBaseContext,
+  opts?: {
+    /**
+     * Set when serializing state specs for the non-RSC render path, where specs live
+     * inside the component render function. When unset the following are omitted, they are
+     * unused be the server query runtime:
+     *  - `onMutate: generateOnMutateForSpec(...)`
+     *  - `shouldTransformWritableStates` `$props[...]` transform, which needs $props in scope.
+     */
+    forLegacyQueries?: boolean;
+  }
 ) {
+  // Only the legacy render path can emit the `$props[...]` transform.
+  // The query tree is a module-scoped, so it can't reference `$props`.
+  const shouldTransformWritableStates =
+    !!opts?.forLegacyQueries && !!ctx.exportOpts.shouldTransformWritableStates;
+
   const serializeState = (state: State) => {
-    const initFunc = serializeInitFunc(state, ctx);
+    const initFunc = serializeInitFunc(
+      state,
+      ctx,
+      undefined,
+      shouldTransformWritableStates
+    );
 
     let valueProp = ``;
-    if (
-      !ctx.exportOpts.shouldTransformWritableStates &&
-      isWritableState(state)
-    ) {
+    if (!shouldTransformWritableStates && isWritableState(state)) {
       valueProp = `valueProp: "${getStateValuePropName(state)}",`;
-    } else if (
-      ctx.exportOpts.shouldTransformWritableStates &&
-      isWritableState(state)
-    ) {
+    } else if (shouldTransformWritableStates && isWritableState(state)) {
       valueProp = `...(!$props["${makePlasmicIsPreviewRootComponent()}"]
         ? { valueProp: "${getStateValuePropName(state)}" }
         : { }
@@ -161,7 +174,7 @@ export function serializeStateSpecs(
     return `{
       path: "${getStateVarName(state)}",
       type: ${
-        !ctx.exportOpts.shouldTransformWritableStates || !isWritableState(state)
+        !shouldTransformWritableStates || !isWritableState(state)
           ? `"${state.accessType}"`
           : `$props["${makePlasmicIsPreviewRootComponent()}"] ? "private" : "writable"`
       },
@@ -181,6 +194,7 @@ export function serializeStateSpecs(
           : ``
       }
       ${
+        opts?.forLegacyQueries &&
         state.tplNode &&
         isTplComponent(state.tplNode) &&
         isCodeComponentWithHelpers(state.tplNode.component)

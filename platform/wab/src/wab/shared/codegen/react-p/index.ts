@@ -1438,7 +1438,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     ${
       component.states.length
         ? `const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
-          (${serializeStateSpecs(component, ctx)})
+          (${serializeStateSpecs(component, ctx, { forLegacyQueries: true })})
         , [$props, $ctx, $refs]);`
         : ""
     }${
