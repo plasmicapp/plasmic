@@ -196,18 +196,32 @@ export class ViewCtx extends WithDbCtx {
     return this._nextFocusedTpl;
   }
 
-  private _highlightParam = observable.box<
+  private _highlightParams = observable.box<
     | {
-        param: Param;
+        params: Param[];
         tpl: TplComponent;
       }
     | undefined
   >(undefined);
-  get highlightParam() {
-    return this._highlightParam.get();
+  private _highlightParamsDispose: (() => void) | undefined;
+  get highlightParams() {
+    return this._highlightParams.get();
   }
-  set highlightParam(val: { param: Param; tpl: TplComponent } | undefined) {
-    this._highlightParam.set(val);
+  set highlightParams(val: { params: Param[]; tpl: TplComponent } | undefined) {
+    this._highlightParamsDispose?.();
+
+    this._highlightParams.set(val);
+
+    if (val) {
+      const timer = setTimeout(() => {
+        this._highlightParamsDispose = undefined;
+        mobx.runInAction(() => this._highlightParams.set(undefined));
+      }, 2000);
+      this._highlightParamsDispose = () => {
+        clearTimeout(timer);
+        this._highlightParamsDispose = undefined;
+      };
+    }
   }
 
   _triggerEditingTextDataPicker = observable.box<boolean | null>(null);
@@ -728,6 +742,7 @@ export class ViewCtx extends WithDbCtx {
    */
   dispose() {
     this.disposals.forEach((d) => d());
+    this._highlightParamsDispose?.();
     this._editingTextResizeObserver?.disconnect();
     this.canvasObservers.forEach(
       (reaction) => !reaction.isDisposed && reaction.dispose()

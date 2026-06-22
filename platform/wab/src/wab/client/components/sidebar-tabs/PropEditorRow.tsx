@@ -50,7 +50,6 @@ import {
   ensurePropTypeToWabType,
   getPropTypeLayout,
   getPropTypeType,
-  isAdvancedProp,
   isAllowedDefaultExprForPropType,
   isDynamicValueDisabledInPropType,
   isExprValuePropType,
@@ -495,25 +494,18 @@ function PropEditorRowWrapper_(props: {
     return null;
   }
 
-  const isNavHighlight =
-    viewCtx.highlightParam &&
-    viewCtx.highlightParam.tpl === tpl &&
-    viewCtx.highlightParam.param === param;
+  const highlightParams = viewCtx.highlightParams;
+  const highlight: boolean | HighlightOptions =
+    highlightParams &&
+    highlightParams.tpl === tpl &&
+    highlightParams.params.includes(param)
+      ? { focusAndScroll: highlightParams.params.length === 1 }
+      : false;
 
   const isDisabled =
     isPlainObjectPropType(propType) &&
     hackyCast(propType).invariantable &&
     !isBaseVariant(expsProvider.targetIndicatorCombo);
-
-  const isAdvancedPropHighlight = !!isAdvancedProp(propType, param) && !arg;
-  const highlight: boolean | HighlightOptions = isNavHighlight
-    ? {
-        focusAndScroll: true,
-        onFinish: () => {
-          viewCtx.highlightParam = undefined;
-        },
-      }
-    : isAdvancedPropHighlight;
 
   return (
     <PropEditorRow

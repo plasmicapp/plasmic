@@ -212,7 +212,7 @@ const ExpressionListItem = observer(function ExpressionListItem({
       viewCtx.postEval(() => {
         const focusedTpl = viewCtx.focusedTpl();
         if (focusedTpl === tpl) {
-          viewCtx.highlightParam = { tpl, param };
+          viewCtx.highlightParams = { tpl, params: [param] };
         }
       });
     }

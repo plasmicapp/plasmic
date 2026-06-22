@@ -90,8 +90,8 @@ function _CanvasAction(props: {
 
           // If the invalid component is owned by the current component, we can just hightlight the tpl and param
           if (invalidTplOwner === viewCtx.currentComponent()) {
-            viewCtx.highlightParam = {
-              param: invalidParam,
+            viewCtx.highlightParams = {
+              params: [invalidParam],
               tpl: invalidTpl,
             };
             viewCtx.selectNewTpl(invalidTpl);
@@ -121,8 +121,8 @@ function _CanvasAction(props: {
                   arg.expr.variable
                 );
 
-                viewCtx.highlightParam = {
-                  param: linkedParam,
+                viewCtx.highlightParams = {
+                  params: [linkedParam],
                   tpl: visibleTplOwner,
                 };
               }

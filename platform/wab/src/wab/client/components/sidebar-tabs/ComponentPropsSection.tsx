@@ -140,16 +140,6 @@ function isParamAdvanced(param: Param, ctx: TplComponentPropCtx): boolean {
   return !!isAdvancedProp(propType, param) && !isSet;
 }
 
-function hasAdvancedProps(
-  node: PropTreeNode,
-  ctx: TplComponentPropCtx
-): boolean {
-  if (node.kind === "param") {
-    return isParamAdvanced(node.param, ctx);
-  }
-  return node.children.some((child) => hasAdvancedProps(child, ctx));
-}
-
 function hasNonAdvancedProps(
   node: PropTreeNode,
   ctx: TplComponentPropCtx
@@ -158,6 +148,16 @@ function hasNonAdvancedProps(
     return !isParamAdvanced(node.param, ctx);
   }
   return node.children.some((child) => hasNonAdvancedProps(child, ctx));
+}
+
+function collectAdvancedParams(
+  node: PropTreeNode,
+  ctx: TplComponentPropCtx
+): Param[] {
+  if (node.kind === "param") {
+    return isParamAdvanced(node.param, ctx) ? [node.param] : [];
+  }
+  return node.children.flatMap((child) => collectAdvancedParams(child, ctx));
 }
 
 function getPropNodeKey(node: PropTreeNode): string | number {
@@ -292,6 +292,9 @@ export const ComponentPropsSection = observer(
     );
 
     const tree = buildPropTree(tpl.component, mainProps);
+    const advancedParams = tree.flatMap((node) =>
+      collectAdvancedParams(node, tplCtx)
+    );
 
     return (
       <>
@@ -304,9 +307,12 @@ export const ComponentPropsSection = observer(
                 tab === "settings" ? "props" : "nested styles"
               }`
             }
-            hasCollapsibleContent={tree.some((node) =>
-              hasAdvancedProps(node, tplCtx)
-            )}
+            hasCollapsibleContent={advancedParams.length > 0}
+            onExtraContentExpanded={() => {
+              if (advancedParams.length > 0) {
+                viewCtx.highlightParams = { tpl, params: advancedParams };
+              }
+            }}
             key={`main.${tpl.uid}`}
           >
             {tab === "settings" && actions.length > 0 && (
