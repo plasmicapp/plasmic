@@ -125,7 +125,7 @@ test.describe("image-slots", () => {
     await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
     await page.waitForTimeout(100);
-    const imgUrl = "https://picsum.photos/50/50";
+    const imgUrl = "https://placehold.co/50x50";
     const imageUrlInput = models.studio.rightPanel.frame.locator(
       '[data-test-id="image-url-input"]'
     );
