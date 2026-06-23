@@ -24,8 +24,11 @@ const testFiles = [
 const fs = require("fs");
 const path = require("path");
 
-// Find all files in the repo with overlays, e.g. `foo.external.ts` -> `foo.ts`.
-function findExternalOverlayTargets(root) {
+// Find all files in the repo with overlay, e.g. `foo.external.ts` -> `foo.ts`.
+// There are two stub types (see copy.bara.sky):
+//   - `.external.` : replaces files in both public and enterprise sync
+//   - `.public.`   : replaces files only in public sync
+function findOverlayTargets(root) {
   const targets = [];
   const walk = (dir) => {
     let entries;
@@ -38,8 +41,16 @@ function findExternalOverlayTargets(root) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full);
-      } else if (entry.name.includes(".external.")) {
-        targets.push(path.relative(__dirname, full).replace(".external", ""));
+      } else if (
+        entry.name.includes(".external.") ||
+        entry.name.includes(".public.")
+      ) {
+        targets.push(
+          path
+            .relative(__dirname, full)
+            .replace(".external", "")
+            .replace(".public", "")
+        );
       }
     }
   };
@@ -48,7 +59,7 @@ function findExternalOverlayTargets(root) {
 }
 
 const internalFiles = ["**/enterprise/**", "**/internal/**", "**/*.internal*"];
-const overlayTargets = findExternalOverlayTargets(
+const overlayTargets = findOverlayTargets(
   path.join(__dirname, "platform/wab/src")
 );
 
@@ -56,8 +67,7 @@ const overlayTargets = findExternalOverlayTargets(
 const noEnterpriseImportPattern = {
   group: internalFiles,
   message:
-    "This file is synced to the public repo and cannot import from enterprise/internal. " +
-    "Either move this file under `enterprise/`/`internal/`, or add an `.external` " +
+    "Either move this file under `enterprise/`/`internal/`, or add an `.external`/`.public`" +
     "stub sibling to override it (see copy.bara.sky).",
 };
 
