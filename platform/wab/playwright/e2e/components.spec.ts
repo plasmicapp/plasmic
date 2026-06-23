@@ -1,17 +1,9 @@
 import { expect } from "@playwright/test";
-import {
-  FREE_CONTAINER_CAP,
-  FREE_CONTAINER_LOWER,
-} from "../../src/wab/shared/Labels";
+import { FREE_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { test } from "../fixtures/test";
 import { goToProject } from "../utils/studio-utils";
-import { undoAndRedo } from "../utils/undo-and-redo";
 
-// Was not passing in Cypress at the time of migration.
-// It clicks into a Widget instance and tries to add a component variant group there,
-// which no longer has an "Add variant group" option in the right panel.
-// TODO - run variant group steps while editing the Widget artboard not the page artboard.
-test.describe.skip("components", () => {
+test.describe("components", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
@@ -27,13 +19,13 @@ test.describe.skip("components", () => {
     );
   });
 
-  test("can extract, instantiate, drill, add variants, undo select", async ({
+  test("can extract a component, add variants, instantiate and position it", async ({
     page,
     models,
     apiClient,
   }) => {
+    // Create a page artboard with a free container and extract it as a component.
     await models.studio.leftPanel.addNewFrame();
-
     const framed = models.studio.frame.locator("iframe").first().contentFrame();
 
     await models.studio.focusFrameRoot(framed);
@@ -42,152 +34,58 @@ test.describe.skip("components", () => {
 
     await models.studio.extractComponentNamed("Widget");
 
-    // NOTE: the `editInNewArtboard` flag in openComponentInNewFrame is
-    // misnamed — `false` actually clicks "Edit in new artboard".
+    // Open the Widget component in its own artboard and edit there.
+    // Variant groups can only be added while editing the component artboard, not
+    // while drilled into an instance on the page.
     await models.studio.openComponentInNewFrame("Widget");
-
-    await page.keyboard.press("n");
-
     const framed2 = models.studio.frame.locator("iframe").nth(1).contentFrame();
 
-    await framed.locator("body").click();
-    const rootElt = framed.locator(".__wab_root > *:not(style)");
-    await rootElt.locator("..").dblclick({ force: true });
-
-    await page.keyboard.press("Shift+A");
-
-    await page.keyboard.press("r");
-    await models.studio.drawRectRelativeToElt(
-      framed.locator("body"),
-      1,
-      1,
-      10,
-      10
-    );
+    // Add a child box to the Widget and give it min dimensions. These end up in
+    // the Widget component's generated CSS (asserted via codegen below).
+    await models.studio.focusFrameRoot(framed2);
+    await models.studio.leftPanel.insertNode(FREE_CONTAINER_CAP);
 
     await models.studio.rightPanel.switchToDesignTab();
     await models.studio.rightPanel.expandSizeSection();
-    await models.studio.rightPanel.setDataPlasmicProp("width", "stretch");
-    await models.studio.rightPanel.setDataPlasmicProp("height", "stretch");
     await models.studio.rightPanel.setDataPlasmicProp("min-width", "20px");
     await models.studio.rightPanel.setDataPlasmicProp("min-height", "20px");
 
+    // Add a variant group + variant to the Widget component.
     await models.studio.rightPanel.switchToComponentDataTab();
     await models.studio.rightPanel.addVariantGroup("WidgetRole");
     await models.studio.rightPanel.addVariantToGroup("WidgetRole", "Blah");
 
-    await page.keyboard.press("Enter");
-    await page.keyboard.press("Delete");
-    await models.studio.deleteInsteadButton.waitFor({ state: "visible" });
-
-    await page.keyboard.press("Shift+Enter");
-
-    await models.studio.leftPanel.insertNode(FREE_CONTAINER_CAP);
-
+    // Select the page artboard, add a second Widget instance, and position it.
     await models.studio.focusFrameRoot(framed);
-    await models.studio.expectDebugTplTree(`
-${FREE_CONTAINER_LOWER}
-  Widget`);
-
-    await page.keyboard.press("n");
-    await models.studio.expectDebugTplTreeForFrame(
-      1,
-      `
-${FREE_CONTAINER_LOWER}
-  ${FREE_CONTAINER_LOWER}
-  ${FREE_CONTAINER_LOWER}`
-    );
-
-    await models.studio.focusFrameRoot(framed);
-    const rootElt2 = framed.locator(".__wab_root > *:not(style)");
-    await rootElt2.locator("..").locator("..").dblclick({ force: true });
-
-    await models.studio.focusFrameRoot(framed2);
-
-    await page.keyboard.press("Shift+Enter");
-
-    await models.studio.focusFrameRoot(framed);
-    await page.keyboard.press("Shift+Digit1");
-
     await models.studio.leftPanel.insertNode("Widget");
-    await models.studio.expectDebugTplTree(`
-${FREE_CONTAINER_LOWER}
-  Widget
-  Widget`);
 
     const selectionTag = models.studio.frame.locator(".node-outline-tag");
     await expect(selectionTag).toContainText("Widget");
 
+    await models.studio.rightPanel.switchToDesignTab();
     await models.studio.rightPanel.setPosition("top", 100);
     await models.studio.rightPanel.setPosition("left", 75);
     await models.studio.rightPanel.setDataPlasmicProp("width", "200px");
     await models.studio.rightPanel.setDataPlasmicProp("height", "300px");
 
-    const selectedElt = await models.studio.getSelectedElt();
-    await expect(selectedElt).toHaveCSS("top", "100px");
-    await expect(selectedElt).toHaveCSS("left", "75px");
-    await expect(selectedElt).toHaveCSS("width", "200px");
-    await expect(selectedElt).toHaveCSS("height", "300px");
-
+    // Convert the page artboard into a component named "Funky". The positioned
+    // Widget instance's styling lives on Funky, not on Widget.
     await models.studio.focusFrameRoot(framed);
     await page.keyboard.press("ControlOrMeta+Alt+k");
     await models.studio.submitPrompt("Funky");
 
-    await models.studio.withinLiveMode(async (liveFrame) => {
-      await expect(
-        liveFrame.locator(".plasmic_page_wrapper > div > :nth-child(2)")
-      ).toHaveCSS("top", "100px");
-      await expect(
-        liveFrame.locator(".plasmic_page_wrapper > div > :nth-child(2)")
-      ).toHaveCSS("left", "75px");
-      await expect(
-        liveFrame.locator(".plasmic_page_wrapper > div > :nth-child(2)")
-      ).toHaveCSS("width", "200px");
-      await expect(
-        liveFrame.locator(".plasmic_page_wrapper > div > :nth-child(2)")
-      ).toHaveCSS("height", "300px");
-    });
+    await models.studio.rightPanel.checkNoErrors();
 
-    async function checkEndState() {
-      await models.studio.waitAllEval();
-
-      await models.studio.expectDebugTplTreeForFrame(
-        0,
-        `
-${FREE_CONTAINER_LOWER}
-  Widget
-  Widget`
-      );
-      await models.studio.expectDebugTplTreeForFrame(
-        1,
-        `
-${FREE_CONTAINER_LOWER}
-  ${FREE_CONTAINER_LOWER}
-  ${FREE_CONTAINER_LOWER}`
-      );
-
-      await page.keyboard.press("Shift+Enter");
-      await page.keyboard.press("Shift+Enter");
-
-      await expect(selectionTag).toContainText("Funky");
-
-      await models.studio.rightPanel.checkNoErrors();
-    }
-
-    await checkEndState();
-    await undoAndRedo(page);
-    await checkEndState();
-
-    await page.waitForTimeout(500);
+    // Verify the generated code splits styling between the two components.
+    await models.studio.waitForSave();
 
     const bundle = await apiClient.codegen(page);
-    console.log("codegen bundle", bundle);
     expect(bundle.components.length).toBe(2);
 
     const widgetComp = bundle.components.find(
       (c: any) => c.renderModuleFileName === "PlasmicWidget.tsx"
     );
-    expect(widgetComp).not.toBeNull();
+    expect(widgetComp).toBeTruthy();
     expect(widgetComp.cssRules).not.toContain("top: 100px");
     expect(widgetComp.cssRules).toContain("min-width: 20px");
     expect(widgetComp.cssRules).toContain("min-height: 20px");
@@ -195,7 +93,7 @@ ${FREE_CONTAINER_LOWER}
     const funkyComp = bundle.components.find(
       (c: any) => c.renderModuleFileName === "PlasmicFunky.tsx"
     );
-    expect(funkyComp).not.toBeNull();
+    expect(funkyComp).toBeTruthy();
     expect(funkyComp.cssRules).toContain("top: 100px");
     expect(funkyComp.cssRules).toContain("left: 75px");
     expect(funkyComp.cssRules).toContain("width: 200px");

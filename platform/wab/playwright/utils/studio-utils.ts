@@ -158,7 +158,7 @@ export async function updateFormValuesInLiveMode(
   },
   root: FrameLocator
 ) {
-  const { inputs = {}, selects: _selects = {}, radios = {} } = newValues;
+  const { inputs = {}, selects = {}, radios = {} } = newValues;
 
   for (const key in inputs) {
     let input = root.locator(`input[name="${key}"]`);
@@ -184,6 +184,22 @@ export async function updateFormValuesInLiveMode(
     }
 
     await input.fill(valueToType);
+  }
+
+  for (const key in selects) {
+    // Open the antd Select for this field and pick the option by its text. Anchor the form
+    // with the hidden control input via id=<field name>.
+    const formItem = root
+      .locator(".ant-form-item")
+      .filter({ has: root.locator(`[id="${key}"]`) })
+      .first();
+    await formItem.locator(".ant-select-selector").click();
+    // Options render in a portal, so match within the whole frame.
+    await root
+      .locator(".ant-select-item-option")
+      .filter({ hasText: new RegExp(`^${escapeRegex(String(selects[key]))}$`) })
+      .first()
+      .click();
   }
 
   for (const key in radios) {

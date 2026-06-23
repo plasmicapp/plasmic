@@ -551,20 +551,22 @@ export class StudioModel extends BaseModel {
   async openComponentInNewFrame(
     componentName: string,
     options: {
+      /**
+       * When true, opens the component via "Edit in new artboard".
+       * When false, opens via "Edit component" in the component's own arena.
+       */
       editInNewArtboard: boolean;
-    } = { editInNewArtboard: false }
+    } = { editInNewArtboard: true }
   ) {
     await this.leftPanel.switchToComponentsTab();
     const componentItem = this.componentListItem.filter({
       hasText: componentName,
     });
     await componentItem.click({ button: "right" });
-    if (options) {
-      if (options.editInNewArtboard) {
-        await this.editComponentButton.click();
-      } else {
-        await this.editComponentInNewArtboardButton.click();
-      }
+    if (options.editInNewArtboard) {
+      await this.editComponentInNewArtboardButton.click();
+    } else {
+      await this.editComponentButton.click();
     }
   }
 

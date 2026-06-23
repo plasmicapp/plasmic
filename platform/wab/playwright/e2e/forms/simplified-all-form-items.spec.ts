@@ -5,9 +5,10 @@ import {
   checkFormValues,
   getFormValue,
   goToProject,
+  waitForFrameToLoad,
 } from "../../utils/studio-utils";
 
-test.describe.skip("simplified-all-form-items", () => {
+test.describe("simplified-all-form-items", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
@@ -29,13 +30,14 @@ test.describe.skip("simplified-all-form-items", () => {
     );
   });
 
-  test.skip("can create all types of form items", async ({ models }) => {
-    await models.studio.createNewComponent("Simplified Form");
+  test("can create all types of form items", async ({ page, models }) => {
+    await models.studio.leftPanel.addComponent("Simplified Form");
+    await waitForFrameToLoad(page);
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
 
     // Wait for component to be fully loaded
-    await (models.studio as any).page.waitForTimeout(3000);
+    await page.waitForTimeout(3000);
 
     // Remove default form items (name, message) - matching Cypress exactly
     await models.studio.rightPanel.removeItemFromArrayProp("formItems", 0);
@@ -102,18 +104,20 @@ test.describe.skip("simplified-all-form-items", () => {
       });
     }
 
-    await checkFormValues(
-      expectedFormItems,
-      (models.studio as any).studioFrame
-    );
+    const nestedFrame = models.studio.frames.first().contentFrame();
+    await checkFormValues(expectedFormItems, nestedFrame);
 
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($state.form.value, Object.keys($state.form.value).sort())"
+      "JSON.stringify($state.form.value, Object.keys($state.form.value ?? {}).sort())"
     );
 
-    const selectedElt = await models.studio.getSelectedElt();
-    await expect(selectedElt).toContainText(getFormValue(expectedFormItems));
+    await expect(
+      nestedFrame
+        .locator("div")
+        .filter({ hasText: getFormValue(expectedFormItems) })
+        .first()
+    ).toBeVisible({ timeout: 15000 });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await checkFormValues(expectedFormItems, liveFrame);
@@ -141,9 +145,12 @@ test.describe.skip("simplified-all-form-items", () => {
       liveModeExpectedFormItems[5].value = "radio2";
 
       await checkFormValues(liveModeExpectedFormItems, liveFrame);
-      await expect(liveFrame.locator("#plasmic-app div")).toContainText(
-        getFormValue(liveModeExpectedFormItems)
-      );
+      await expect(
+        liveFrame
+          .locator("div")
+          .filter({ hasText: getFormValue(liveModeExpectedFormItems) })
+          .first()
+      ).toBeVisible({ timeout: 15000 });
     });
 
     await models.studio.rightPanel.checkNoErrors();
