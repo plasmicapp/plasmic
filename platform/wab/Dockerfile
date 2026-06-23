@@ -1,5 +1,9 @@
 # See https://hub.docker.com/_/node/
-FROM node:24-alpine AS builder
+# Pinned to an exact patch (not the floating node:24-alpine tag) to avoid silently
+# pulling in Node patch regressions on rebuild. Node 24.17.0 introduced an http.Agent
+# keep-alive regression (nodejs/node#63989) that broke node-fetch outbound requests with
+# ERR_STREAM_PREMATURE_CLOSE. Bump deliberately once a fixed 24.17.x+ is verified.
+FROM node:24.16.0-alpine AS builder
 
 ENV PUPPETEER_SKIP_DOWNLOAD=1
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
@@ -32,7 +36,7 @@ RUN mkdir -p src/wab/gen && make
 RUN rm -rf node_modules/
 RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --production --frozen-lockfile --network-timeout 600000 --mutex file
 
-FROM node:24-alpine AS runner
+FROM node:24.16.0-alpine AS runner
 
 # System setup
 RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc libc-dev
