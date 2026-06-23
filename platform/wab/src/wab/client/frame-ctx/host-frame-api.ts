@@ -54,6 +54,8 @@ export type HostFrameApi = {
     toolName: string,
     toolArgs: Record<string, unknown>
   ): Promise<CopilotToolCallResult>;
+  /** Resolves once the studio and its active canvas are ready. */
+  waitForStudioReady(): Promise<void>;
 };
 
 /** Structured error for copilot tool calls — Comlink-serializable. */

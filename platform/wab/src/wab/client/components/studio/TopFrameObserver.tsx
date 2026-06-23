@@ -163,6 +163,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       async handleBranchMerged(): Promise<void> {
         await studioCtx.handleBranchMerged();
       },
+      async waitForStudioReady(): Promise<void> {
+        await studioCtx.awaitStudioReady();
+      },
       async executeCopilotToolCall(
         toolName: string,
         toolArgs: Record<string, unknown>

@@ -1578,6 +1578,60 @@ export class StudioCtx extends WithDbCtx {
     await Promise.all(this.viewCtxs.map((vc) => vc.awaitSync()));
   }
 
+  /**
+   * Returns the ViewCtx backing the the focused frame, the first frame of the
+   * focused arena, or failing that any frame in the current arena.
+   *
+   * Similar to focusedOrFirstViewCtx, but also falls back to a frame in a mixed
+   * arena with nothing focused. Only returns undefined while frames are still mounting.
+   */
+  private activeCanvasViewCtx(): ViewCtx | undefined {
+    const focused = this.focusedOrFirstViewCtx();
+    if (focused) {
+      return focused;
+    }
+    const arena = this.currentArena;
+    let vc: ViewCtx | undefined;
+    if (arena) {
+      const frames = new Set(getArenaFrames(arena));
+      vc = this.viewCtxs.find((v) => frames.has(v.arenaFrame()));
+    }
+    return vc ?? this.viewCtxs[0];
+  }
+
+  /**
+   * Resolves once the studio and active canvas are ready for tool calls.
+   * The active canvas frame must have a ViewCtx with rendered val tree and idle sync queue.
+   * Rejects after 60s timeout.
+   */
+  async awaitStudioReady(): Promise<void> {
+    await withTimeout(
+      (async () => {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const viewCtx = this.activeCanvasViewCtx();
+          if (viewCtx) {
+            while (viewCtx.isStale() && !viewCtx.isDisposed) {
+              await asyncTimeout(50);
+              await viewCtx.awaitSync();
+            }
+            if (!viewCtx.isDisposed) {
+              return;
+            }
+          } else if (
+            this.currentArena &&
+            getArenaFrames(this.currentArena).length === 0
+          ) {
+            return;
+          }
+          await asyncTimeout(100);
+        }
+      })(),
+      "Timed out waiting for the studio and active canvas to be ready",
+      60_000
+    );
+  }
+
   private modelChangeQueue = (() => {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const asyncQueue = asynclib.queue<

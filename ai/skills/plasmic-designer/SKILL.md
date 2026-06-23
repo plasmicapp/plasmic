@@ -26,32 +26,24 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
 
 1. **Navigate to the project** using `navigate_page` to open `{baseUrl}/projects/{projectId}/`
 
-2. **Wait for studio to load** — the studio takes a few seconds to initialize. Poll until the API is available:
+2. **Wait for studio to load and identify the session** — the studio takes a few seconds to initialize. Poll until `window.PLASMIC_AI_TOOLS` is available, then call `identify()` once, before any other tool.
 
    ```javascript
    async () => {
-     for (let i = 0; i < 15; i++) {
-       if (window.PLASMIC_AI_TOOLS) return { ready: true };
-       await new Promise((r) => setTimeout(r, 2000));
+     for (let i = 0; i < 30; i++) {
+       if (window.PLASMIC_AI_TOOLS) {
+         return await window.PLASMIC_AI_TOOLS.identify({
+           model: "<model>",
+           client: "<client>",
+           skill: "<skill>",
+         });
+       }
+       await new Promise((r) => setTimeout(r, 1000));
      }
      return {
-       ready: false,
-       error: "Studio did not load. Check the project ID and dev server.",
+       success: false,
+       error: { message: "Studio failed to load." },
      };
-   };
-   ```
-
-   If `ready` is false, inform the user and stop.
-
-3. **Identify the session** — call `window.PLASMIC_AI_TOOLS.identify()` once before any other tool. All fields are required.
-
-   ```javascript
-   () => {
-     return window.PLASMIC_AI_TOOLS.identify({
-       model: "<model>",
-       client: "<client>",
-       skill: "<skill>",
-     });
    };
    ```
 
@@ -62,6 +54,8 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
    - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.1.0`, `unknown`).
 
    Pass `"unknown"` for any field you cannot reliably identify.
+
+   If `success` is false, inform the user and stop.
 
 ## Workflow
 
