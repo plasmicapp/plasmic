@@ -37,7 +37,9 @@ interface ExprRef {
   exprRefs: ExprReference[];
 }
 
-function getCustomFunctionDisplayName(customFunction: CustomFunction): string {
+export function getCustomFunctionDisplayName(
+  customFunction: CustomFunction
+): string {
   return customFunction.displayName || customFunctionId(customFunction);
 }
 

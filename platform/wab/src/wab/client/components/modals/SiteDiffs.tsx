@@ -2,6 +2,7 @@ import sty from "@/wab/client/components/modals/SiteDiffs.module.css";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import CodeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Code";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import GlobeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Globe";
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
@@ -105,6 +106,8 @@ export function getObjClassName(typename: SemVerSiteElement["type"]) {
       return "token-fg";
     case "Data token":
       return "data-token-fg";
+    case "Function":
+      return "function-fg";
     case "Mixin":
       return "mixin-fg";
     case "Icon":
@@ -134,6 +137,8 @@ export function objIcon(obj: SemVerSiteElement, tplIcon?: React.ReactNode) {
     return <Icon className={className} icon={MixinIcon} />;
   } else if (obj.type === "Component") {
     return <Icon className={className} icon={ComponentIcon} />;
+  } else if (obj.type === "Function") {
+    return <Icon className={className} icon={CodeIcon} />;
   } else if (obj.type === "Icon" || obj.type === "Image") {
     return <Icon className={className} icon={ImageBlockIcon} />;
   } else if (obj.type === "Element") {

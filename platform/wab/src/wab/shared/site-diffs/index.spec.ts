@@ -11,6 +11,7 @@ import { mkTplComponent, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   ComponentVariantGroup,
   CustomCode,
+  CustomFunction,
   GlobalVariantGroup,
   Mixin,
   ProjectDependency,
@@ -423,6 +424,29 @@ describe("compareSites / calculateSemVer", () => {
     });
     compareCheck("major", 2);
     return;
+  });
+
+  // site.customFunctions
+  it("semver-custom-functions", () => {
+    nextSite().customFunctions.unshift(
+      new CustomFunction({
+        importPath: "@plasmicapp/test-functions",
+        importName: "getProduct",
+        defaultExport: false,
+        namespace: "commerce",
+        displayName: "Get product",
+        params: [],
+        isQuery: true,
+        isMutation: false,
+      })
+    );
+    compareCheck("minor", 1);
+
+    nextSite().customFunctions[0].displayName = "Load product";
+    compareCheck("major", 1);
+
+    nextSite().customFunctions.shift();
+    compareCheck("major", 1);
   });
 
   // site.styleTokens

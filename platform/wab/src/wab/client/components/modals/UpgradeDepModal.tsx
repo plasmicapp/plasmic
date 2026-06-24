@@ -1,15 +1,20 @@
+import { getCustomFunctionDisplayName } from "@/wab/client/components/modals/customFunctionModals";
 import { SiteDiffs } from "@/wab/client/components/modals/SiteDiffs";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
+import CodeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Code";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { componentToReferenced } from "@/wab/shared/cached-selectors";
+import {
+  componentToReferenced,
+  customFunctionsUsedBySite,
+} from "@/wab/shared/cached-selectors";
 import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,
@@ -24,7 +29,6 @@ import {
 } from "@/wab/shared/codegen/style-tokens";
 import {
   ensure,
-  hackyCast,
   intersectSets,
   mergeSets,
   spawn,
@@ -38,13 +42,14 @@ import {
   extractTransitiveDepsFromTokens,
   getTransitiveDepsFromObjs,
 } from "@/wab/shared/core/project-deps";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { createSite, isHostLessPackage } from "@/wab/shared/core/sites";
 import {
-  isKnownComponent,
-  isKnownImageAsset,
-  isKnownMixin,
-  isKnownStyleToken,
+  Component,
+  ImageAsset,
+  Mixin,
   ProjectDependency,
+  StyleToken,
 } from "@/wab/shared/model/classes";
 import {
   ChangeLogEntry,
@@ -311,21 +316,23 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
   targetDep?: ProjectDependency;
   heading: React.ReactElement;
 }) {
-  // TODO all these checks are broken, wrapping in hackyCast for now. We're comparing e.g. Components with SemVerElements.
-
   const { studioCtx, curDep, targetDep, heading } = props;
   const site = studioCtx.site;
   const diffs = targetDep
     ? filterUsefulDiffs(compareSites(curDep.site, targetDep.site))
     : filterUsefulDiffs(compareSites(curDep.site, createSite()));
 
-  const removedComponents = withoutNils(
-    diffs.map((diff) =>
-      diff.description === "removed" &&
-      isKnownComponent(hackyCast(diff.oldValue))
-        ? diff.oldValue
-        : undefined
+  const removedComponentUuids = new Set(
+    withoutNils(
+      diffs.map((diff) =>
+        diff.description === "removed" && diff.oldValue?.type === "Component"
+          ? diff.oldValue.uuid
+          : undefined
+      )
     )
+  );
+  const removedComponents = curDep.site.components.filter((component) =>
+    removedComponentUuids.has(component.uuid)
   );
 
   // Build a set of components that are directly used by local components
@@ -334,16 +341,20 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
   );
   const removedReferencedComponents = intersectSets(
     referencedComponents,
-    hackyCast(new Set(removedComponents))
+    new Set<Component>(removedComponents)
   );
 
-  const removedTokens = withoutNils(
-    diffs.map((diff) =>
-      diff.description === "removed" &&
-      isKnownStyleToken(hackyCast(diff.oldValue))
-        ? diff.oldValue
-        : undefined
+  const removedTokenUuids = new Set(
+    withoutNils(
+      diffs.map((diff) =>
+        diff.description === "removed" && diff.oldValue?.type === "Style token"
+          ? diff.oldValue.uuid
+          : undefined
+      )
     )
+  );
+  const removedTokens = curDep.site.styleTokens.filter((token) =>
+    removedTokenUuids.has(token.uuid)
   );
 
   // Build a set of tokens that are directly used by local tokens, overrides,
@@ -385,15 +396,20 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
   );
   const removedReferencedTokens = intersectSets(
     referencedTokens,
-    hackyCast(new Set(removedTokens))
+    new Set<StyleToken>(removedTokens)
   );
 
-  const removedMixins = withoutNils(
-    diffs.map((diff) =>
-      diff.description === "removed" && isKnownMixin(hackyCast(diff.oldValue))
-        ? diff.oldValue
-        : undefined
+  const removedMixinUuids = new Set(
+    withoutNils(
+      diffs.map((diff) =>
+        diff.description === "removed" && diff.oldValue?.type === "Mixin"
+          ? diff.oldValue.uuid
+          : undefined
+      )
     )
+  );
+  const removedMixins = curDep.site.mixins.filter((mixin) =>
+    removedMixinUuids.has(mixin.uuid)
   );
 
   // Build a set of Mixins that are directly used by local components
@@ -402,16 +418,21 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
   );
   const removedReferencedMixins = intersectSets(
     referencedMixins,
-    hackyCast(new Set(removedMixins))
+    new Set<Mixin>(removedMixins)
   );
 
-  const removedImageAssets = withoutNils(
-    diffs.map((diff) =>
-      diff.description === "removed" &&
-      isKnownImageAsset(hackyCast(diff.oldValue))
-        ? diff.oldValue
-        : undefined
+  const removedImageAssetUuids = new Set(
+    withoutNils(
+      diffs.map((diff) =>
+        diff.description === "removed" &&
+        (diff.oldValue?.type === "Image" || diff.oldValue?.type === "Icon")
+          ? diff.oldValue.uuid
+          : undefined
+      )
     )
+  );
+  const removedImageAssets = curDep.site.imageAssets.filter((asset) =>
+    removedImageAssetUuids.has(asset.uuid)
   );
 
   // Build a set of ImageAssets that are directly used by local components
@@ -426,7 +447,26 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
   ]);
   const removedReferencedImageAssets = intersectSets(
     referencedImageAssets,
-    hackyCast(new Set(removedImageAssets))
+    new Set<ImageAsset>(removedImageAssets)
+  );
+
+  const removedFunctionDiffIds = new Set(
+    withoutNils(
+      diffs.map((diff) =>
+        diff.description === "removed" && diff.oldValue?.type === "Function"
+          ? diff.oldValue.functionId
+          : undefined
+      )
+    )
+  );
+  const removedFunctions = curDep.site.customFunctions.filter((fn) =>
+    removedFunctionDiffIds.has(customFunctionId(fn))
+  );
+  const removedFunctionsById = new Set(removedFunctions.map(customFunctionId));
+  const removedReferencedFunctions = new Set(
+    [...customFunctionsUsedBySite(site)].filter((fn) =>
+      removedFunctionsById.has(customFunctionId(fn))
+    )
   );
 
   // out of those directly referenced objects that will now be removed,
@@ -455,6 +495,34 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
       objDepMap
     ),
   ]);
+  const functionsList =
+    removedReferencedFunctions.size > 0 ? (
+      <div>
+        <Icon className="function-fg mr-sm" icon={CodeIcon} /> Functions{" "}
+        {[...removedReferencedFunctions]
+          .map((fn) => getCustomFunctionDisplayName(fn))
+          .join(", ")}
+      </div>
+    ) : null;
+  const functionsNote = removedReferencedFunctions.size > 0 && (
+    <div className="mt-m">
+      These functions will no longer be available:{" "}
+      {[...removedReferencedFunctions]
+        .map((fn) => getCustomFunctionDisplayName(fn))
+        .join(", ")}
+    </div>
+  );
+  const removedHostlessArtifactTypes = withoutNils([
+    removedReferencedComponents.size > 0 ? "components" : undefined,
+    removedReferencedFunctions.size > 0 ? "functions" : undefined,
+  ]);
+  const removedHostlessArtifactLabel =
+    removedHostlessArtifactTypes.length === 0
+      ? "items"
+      : removedHostlessArtifactTypes.length === 1
+      ? removedHostlessArtifactTypes[0]
+      : removedHostlessArtifactTypes.join(" and ");
+
   return (
     <>
       {heading}
@@ -467,7 +535,8 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
       {(removedReferencedTokens.size > 0 ||
         removedReferencedMixins.size > 0 ||
         removedReferencedComponents.size > 0 ||
-        removedReferencedImageAssets.size > 0) && (
+        removedReferencedImageAssets.size > 0 ||
+        removedReferencedFunctions.size > 0) && (
         <Alert
           type="warning"
           showIcon
@@ -477,7 +546,8 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
             isHostLessPackage(curDep.site) ? (
               <div>
                 <div>
-                  Instances of these external components will be removed:
+                  These external {removedHostlessArtifactLabel} will be removed
+                  from this project:
                 </div>
                 {removedReferencedComponents.size > 0 && (
                   <div>
@@ -488,6 +558,7 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
                       .join(", ")}
                   </div>
                 )}
+                {functionsList}
               </div>
             ) : (
               <div>
@@ -530,6 +601,7 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
                     {[...transitiveDeps].map((dep) => dep.name).join(", ")}
                   </div>
                 )}
+                {functionsNote}
               </div>
             )
           }
@@ -547,7 +619,12 @@ const WarnChangeDepForm = observer(function WarnChangeDepForm_(props: {
   const { onSubmit, onCancel, children } = props;
   return (
     <Form onFinish={() => onSubmit(true)}>
-      {children}
+      <div
+        className="mb-xlg"
+        style={{ maxHeight: "calc(80vh - 50px)", overflowY: "auto" }}
+      >
+        {children}
+      </div>
       <Form.Item className="m0">
         <Button
           className="mr-sm"

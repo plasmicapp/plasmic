@@ -18,6 +18,7 @@ import {
 } from "@/wab/shared/core/components";
 import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { siteFinalStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { SplitStatus } from "@/wab/shared/core/splits";
@@ -34,6 +35,7 @@ import {
   Component,
   CompositeExpr,
   CustomCode,
+  CustomFunction,
   CustomFunctionExpr,
   DataSourceOpExpr,
   DataToken,
@@ -96,6 +98,7 @@ export type AllowedSemVerSiteElement =
   | StyleToken
   | StyleTokenOverride
   | DataToken
+  | CustomFunction
   | ImageAsset
   | Split
   | ProjectDependency
@@ -138,12 +141,19 @@ interface SemVerSiteDefaultElement {
     | "Element"
     | "Split";
   name: string | null;
+  uuid?: string;
+}
+interface SemVerSiteFunction {
+  type: "Function";
+  name: string;
+  functionId: string;
 }
 export type SemVerSiteElement =
   | SemVerSiteComponent
   | SemVerSiteVariant
   | SemVerSiteSplit
   | SemVerSiteImportedProject
+  | SemVerSiteFunction
   | SemVerSiteDefaultElement;
 
 type ParentComponent = Omit<SemVerSiteComponent, "type">;
@@ -204,15 +214,25 @@ export function maybeMkSemVerSiteElement(
           : (`Global variant group` as const),
       name: vg.param.variable.name,
     }))
-    .when(Mixin, (m) => ({ type: "Mixin" as const, name: m.name }))
-    .when(StyleToken, (s) => ({ type: "Style token" as const, name: s.name }))
+    .when(Mixin, (m) => ({
+      type: "Mixin" as const,
+      name: m.name,
+      uuid: m.uuid,
+    }))
+    .when(StyleToken, (s) => ({
+      type: "Style token" as const,
+      name: s.name,
+      uuid: s.uuid,
+    }))
     .when(StyleTokenOverride, (s) => ({
       type: "Style token override" as const,
       name: s.token.name,
+      uuid: s.token.uuid,
     }))
     .when(DataToken, (dt) => ({
       type: "Data token" as const,
       name: dt.name,
+      uuid: dt.uuid,
     }))
     .when(ImageAsset, (i) => ({
       type:
@@ -220,8 +240,18 @@ export function maybeMkSemVerSiteElement(
           ? (`Image` as const)
           : (`Icon` as const),
       name: i.name,
+      uuid: i.uuid,
     }))
-    .when(Split, (s) => ({ type: "Split" as const, name: s.name }))
+    .when(CustomFunction, (f) => ({
+      type: "Function" as const,
+      name: f.displayName || customFunctionId(f),
+      functionId: customFunctionId(f),
+    }))
+    .when(Split, (s) => ({
+      type: "Split" as const,
+      name: s.name,
+      uuid: s.uuid,
+    }))
     .when(TplNode, () => {
       const tpl = node as SemVerAllowedTplTypes;
       return {
@@ -588,6 +618,25 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         {
           selector: (t) => t.value,
           ...patchUpdateDiffSpecs,
+        },
+      ],
+      "global",
+      namedEntityDiffSpecs
+    )
+  );
+
+  // site.customFunctions
+  results.push(
+    ...genericCheck(
+      prev,
+      curr,
+      prev.customFunctions,
+      curr.customFunctions,
+      customFunctionId,
+      [
+        {
+          selector: (f) => f.displayName || customFunctionId(f),
+          ...nameValueDiffSpecs,
         },
       ],
       "global",
