@@ -23,7 +23,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry in CI only */
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 8 : undefined,
+  workers: process.env.CI ? 6 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [["github"], ["playwright-ctrf-json-reporter", {}]]
@@ -56,9 +56,15 @@ export default defineConfig({
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
+        channel: "chromium",
         headless,
         launchOptions: {
-          args: ["--disable-web-security"],
+          args: [
+            "--disable-web-security",
+            ...(process.env.PLAYWRIGHT_CHROMIUM_ARGS?.split(" ").filter(
+              Boolean
+            ) ?? []),
+          ],
         },
       },
     },

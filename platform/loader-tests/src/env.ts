@@ -94,10 +94,10 @@ export const LOADER_REACT_VERSIONS = [
   { reactVersion: "^18", loaderReactVersion: "latest" },
 ];
 
+// Used only by the heavy snapshot specs (plasmic-website-2023, nextjs-website).
+// Per-version loader behavior is covered by other specs that use LOADER_NEXTJS_VERSIONS.
 export const LOADER_NEXTJS_VERSIONS_EXHAUSTIVE = [
   ...LOADER_NEXTJS_VERSIONS,
-  { loaderVersion: "latest", reactVersion: "^18", nextVersion: "^13" },
-  { loaderVersion: "latest", reactVersion: "^18", nextVersion: "^14" },
   { loaderVersion: "latest", reactVersion: "^18", nextVersion: "^15" },
 ];
 

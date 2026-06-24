@@ -23,11 +23,11 @@ const VIEWPORT_SIZES = {
   "iphone-x": { width: 375, height: 812 },
 } as const;
 
-export function setViewportSize(
+export async function setViewportSize(
   page: Page,
   viewport: keyof typeof VIEWPORT_SIZES
 ) {
-  page.setViewportSize(VIEWPORT_SIZES[viewport]);
+  await page.setViewportSize(VIEWPORT_SIZES[viewport]);
 }
 
 // Sets image loading to eager and scrolls to the bottom of the page to ensure
@@ -73,6 +73,15 @@ async function preparePageForScreenshot() {
     document.fonts?.ready ?? Promise.resolve(),
     ...Array.from(document.images, waitForImage),
   ]);
+
+  // Awaiting decode() forces every image to a paintable state before capture.
+  await Promise.all(
+    Array.from(document.images, (img) =>
+      typeof img.decode === "function"
+        ? img.decode().catch(() => undefined)
+        : Promise.resolve()
+    )
+  );
 }
 
 export async function waitUntilNoChanges(page: Page, loc: Locator) {

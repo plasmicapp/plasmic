@@ -24,7 +24,7 @@ const ENVS = [
   })),
 ] as const;
 
-test.skip(`Plasmic Website`, async () => {
+test.describe(`Plasmic Website`, async () => {
   let bundleCtx: ProjectContext;
   test.beforeAll(async () => {
     bundleCtx = await setupBundle("plasmic-website-2023.json");
@@ -73,7 +73,7 @@ test.skip(`Plasmic Website`, async () => {
 
       test(`should render mobile`, async ({ page }) => {
         await test.step("Set viewport size", async () => {
-          setViewportSize(page, "iphone-x");
+          await setViewportSize(page, "iphone-x");
         });
 
         await test.step("Go to /", async () => {
