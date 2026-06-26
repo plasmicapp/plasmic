@@ -5,7 +5,7 @@ import {
   getDefaultConnection,
 } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import { md5 } from "@/wab/server/util/hash";
 import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-util";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
@@ -51,6 +51,7 @@ import { asDataUrl } from "@/wab/shared/data-urls";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
 import { Site } from "@/wab/shared/model/classes";
+import { context, propagation } from "@opentelemetry/api";
 import S3 from "aws-sdk/clients/s3";
 import fs from "fs";
 import type { OverrideProperties, SetOptional } from "type-fest";
@@ -120,23 +121,34 @@ interface CodegenOpts {
   scheme: "blackbox" | "plain";
 }
 
-export async function workerGenCode(opts: CodegenOpts) {
-  await ensureDbConnections(opts.connectionOptions);
-  const connection = await getDefaultConnection();
-  try {
-    return await connection.transaction(async () => {
-      // Note that we are assuming SUPER_USER, so any permission
-      // checks should've already happened before this worker is
-      // invoked.
-      const mgr = new DbMgr(connection.createEntityManager(), SUPER_USER);
-      await ensureDevFlags(mgr);
-      return await doGenCode(mgr, opts);
-    });
-  } finally {
-    if (connection.isConnected) {
-      await connection.close();
+export async function workerGenCode(
+  opts: CodegenOpts,
+  traceCarrier?: TraceCarrier
+) {
+  const ctx = traceCarrier
+    ? propagation.extract(context.active(), traceCarrier)
+    : context.active();
+
+  return await context.with(ctx, async () => {
+    await ensureDbConnections(opts.connectionOptions);
+    const connection = await getDefaultConnection();
+    try {
+      return await withSpan("worker-codegen-db-transaction", async () => {
+        return await connection.transaction(async () => {
+          // Note that we are assuming SUPER_USER, so any permission
+          // checks should've already happened before this worker is
+          // invoked.
+          const mgr = new DbMgr(connection.createEntityManager(), SUPER_USER);
+          await ensureDevFlags(mgr);
+          return await doGenCode(mgr, opts);
+        });
+      });
+    } finally {
+      if (connection.isConnected) {
+        await connection.close();
+      }
     }
-  }
+  });
 }
 
 export async function doGenCode(

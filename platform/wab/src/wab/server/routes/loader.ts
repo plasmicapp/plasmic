@@ -25,7 +25,7 @@ import {
 } from "@/wab/server/loader/resolve-projects";
 import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -42,6 +42,7 @@ import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { toJson } from "@/wab/shared/model/model-tree-util";
 import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
+import { context, propagation } from "@opentelemetry/api";
 import S3 from "aws-sdk/clients/s3";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
@@ -612,24 +613,57 @@ export async function genLoaderHtmlBundleSandboxed(
   args: Parameters<typeof genLoaderHtmlBundle>[0]
 ) {
   return withSpan("genLoaderHtmlBundleSandboxed", async () => {
-    const cmd = `node -r esbuild-register src/wab/server/loader/gen-html-bundle.ts`;
+    const cmd = [
+      "node",
+      "-r",
+      "esbuild-register",
+      "src/wab/server/loader/gen-html-bundle.ts",
+    ];
+    const payload = JSON.stringify(args);
+
+    // prettier-ignore
+    const bwrapArgs = [
+      "--clearenv",
+      "--setenv", "CODEGEN_HOST", getCodegenUrl(),
+      "--setenv", "CODEGEN_ORIGIN_HOST", getCodegenOriginUrl(),
+      "--unshare-user",
+      "--unshare-pid",
+      "--unshare-ipc",
+      "--unshare-uts",
+      "--unshare-cgroup",
+      "--ro-bind", "/lib", "/lib",
+      "--ro-bind", "/usr", "/usr",
+      "--ro-bind", "/etc", "/etc",
+      "--ro-bind", "/run", "/run",
+      "--ro-bind-try", "/otel-auto-instrumentation-nodejs", "/otel-auto-instrumentation-nodejs",
+    ];
+
+    // Allowlist the env the OTel auto-instrumentation needs, plus the trace
+    // carrier. Pushed as discrete --setenv triples because values like
+    // NODE_OPTIONS and OTEL_RESOURCE_ATTRIBUTES can contain spaces.
+    for (const [k, v] of Object.entries(process.env)) {
+      if (v !== undefined && (k === "NODE_OPTIONS" || k.startsWith("OTEL_"))) {
+        bwrapArgs.push("--setenv", k, v);
+      }
+    }
+    const traceCarrier: TraceCarrier = {};
+    propagation.inject(context.active(), traceCarrier);
+    for (const [k, v] of Object.entries(traceCarrier)) {
+      if (v !== undefined) {
+        bwrapArgs.push("--setenv", k, v);
+      }
+    }
+
+    if (process.env.BWRAP_ARGS) {
+      bwrapArgs.push(...process.env.BWRAP_ARGS.split(/\s+/g));
+    }
+
+    bwrapArgs.push("--chdir", process.cwd(), ...cmd, payload);
+
     const { stdout, stderr, exitCode } =
       process.env.DISABLE_BWRAP === "1"
-        ? await execa(
-            "node",
-            [...cmd.split(/\s+/g).slice(1), JSON.stringify(args)],
-            { reject: false }
-          )
-        : await execa(
-            `bwrap`,
-            [
-              ...`--clearenv --setenv CODEGEN_HOST ${getCodegenUrl()} --setenv CODEGEN_ORIGIN_HOST ${getCodegenOriginUrl()} --unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
-                process.env.BWRAP_ARGS || ""
-              } --chdir ${process.cwd()} ${cmd}`.split(/\s+/g),
-              JSON.stringify(args),
-            ],
-            { reject: false }
-          );
+        ? await execa(cmd[0], [...cmd.slice(1), payload], { reject: false })
+        : await execa("bwrap", bwrapArgs, { reject: false });
     if (stderr.trim().length > 0 && exitCode === 0) {
       logger().error(
         `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`

@@ -1,10 +1,11 @@
 import { Config } from "@/wab/server/config";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import type { workerBuildAssets } from "@/wab/server/workers/build-loader-assets";
 import type { workerGenCode } from "@/wab/server/workers/codegen";
 import type { workerLocalizationStrings } from "@/wab/server/workers/localization-worker";
+import { context, propagation } from "@opentelemetry/api";
 import path from "path";
-import { pool as createPool, WorkerPool } from "workerpool";
+import { WorkerPool, pool as createPool } from "workerpool";
 
 // Setting a pool task timeout of 6 minutes
 const TIMEOUT_MS = 6 * 60 * 1000;
@@ -33,14 +34,13 @@ class WorkerPoolWrapper {
   ) {}
 
   exec(method: string, params: any) {
-    return withSpan(
-      `workerpool-exec-${method}`,
-      async () => {
-        return (method === "loader-assets" ? this.loaderPool : this.genericPool)
-          .exec(method, params)
-          .timeout(TIMEOUT_MS);
-      },
-    );
+    return withSpan(`workerpool-exec-${method}`, async () => {
+      const traceCarrier: TraceCarrier = {};
+      propagation.inject(context.active(), traceCarrier);
+      return (method === "loader-assets" ? this.loaderPool : this.genericPool)
+        .exec(method, [...params, traceCarrier])
+        .timeout(TIMEOUT_MS);
+    });
   }
 }
 

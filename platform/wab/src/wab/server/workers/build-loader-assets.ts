@@ -4,11 +4,13 @@ import {
 } from "@/wab/server/loader/module-bundler";
 import { writeCodeBundlesToDisk } from "@/wab/server/loader/module-writer";
 import { logger } from "@/wab/server/observability";
+import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import {
   CachedCodegenOutputBundle,
   ComponentReference,
 } from "@/wab/server/workers/codegen";
 import { spawnWrapper } from "@/wab/shared/common";
+import { context, propagation } from "@opentelemetry/api";
 import tmp from "tmp";
 
 export async function workerBuildAssets(
@@ -20,42 +22,51 @@ export async function workerBuildAssets(
     mode: "production" | "development";
     loaderVersion: number;
     browserOnly: boolean;
-  }
+  },
+  traceCarrier?: TraceCarrier
 ) {
-  return new Promise<LoaderBundleOutput>((resolve, reject) => {
-    // We create a temporary folder for writing generated code files
-    tmp.dir(
-      {
-        unsafeCleanup: true,
-      },
-      spawnWrapper(async (err, dir, cleanup) => {
-        if (err) {
-          reject(err);
-        } else {
-          try {
-            logger().info(`Building worker assets in ${dir}`);
-            await writeCodeBundlesToDisk(dir, codegenOutputs);
-            const result = await bundleModules(
-              dir,
-              codegenOutputs,
-              componentDeps,
-              componentRefs,
-              {
-                platform,
-                mode: opts.mode,
-                loaderVersion: opts.loaderVersion,
-                browserOnly: opts.browserOnly,
+  const ctx = traceCarrier
+    ? propagation.extract(context.active(), traceCarrier)
+    : context.active();
+
+  return await context.with(ctx, async () => {
+    return await withSpan("worker-build-assets", async () => {
+      return new Promise<LoaderBundleOutput>((resolve, reject) => {
+        // We create a temporary folder for writing generated code files
+        tmp.dir(
+          {
+            unsafeCleanup: true,
+          },
+          spawnWrapper(async (err, dir, cleanup) => {
+            if (err) {
+              reject(err);
+            } else {
+              try {
+                logger().info(`Building worker assets in ${dir}`);
+                await writeCodeBundlesToDisk(dir, codegenOutputs);
+                const result = await bundleModules(
+                  dir,
+                  codegenOutputs,
+                  componentDeps,
+                  componentRefs,
+                  {
+                    platform,
+                    mode: opts.mode,
+                    loaderVersion: opts.loaderVersion,
+                    browserOnly: opts.browserOnly,
+                  }
+                );
+                resolve(result);
+                cleanup();
+              } catch (err2) {
+                // Don't clean up on error, to allow investigating
+                logger().error(`Error bundling in ${dir}:`, err2);
+                reject(err2);
               }
-            );
-            resolve(result);
-            cleanup();
-          } catch (err2) {
-            // Don't clean up on error, to allow investigating
-            logger().error(`Error bundling in ${dir}:`, err2);
-            reject(err2);
-          }
-        }
-      })
-    );
+            }
+          })
+        );
+      });
+    });
   });
 }

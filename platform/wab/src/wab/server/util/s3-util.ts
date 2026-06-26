@@ -1,4 +1,5 @@
 import { logger } from "@/wab/server/observability";
+import { withSpan } from "@/wab/server/util/apm-util";
 import { ensureInstance } from "@/wab/shared/common";
 import S3 from "aws-sdk/clients/s3";
 import path from "path";
@@ -28,7 +29,9 @@ export async function upsertS3CacheEntry<T>(opts: {
       throw err;
     }
     logger().info(`S3 cache miss for ${bucket} ${key}; computing`);
-    const content = await f();
+    const content = await withSpan("s3-cache-compute", async () => {
+      return await f();
+    });
     const serialized = serialize(content);
     try {
       await s3

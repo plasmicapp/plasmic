@@ -2,6 +2,41 @@ import { logger } from "@/wab/server/observability";
 import { WabPromTimer } from "@/wab/server/promstats";
 import { trace } from "@opentelemetry/api";
 
+/**
+ * Carrier object used to propagate OpenTelemetry trace context across
+ * process/thread boundaries (e.g. worker pool, bwrap subprocesses) via
+ * `propagation.inject` / `propagation.extract`.
+ */
+export interface TraceCarrier {
+  traceparent?: string;
+  tracestate?: string;
+  baggage?: string;
+  [key: string]: string | undefined;
+}
+
+/**
+ * Keys that may hold OpenTelemetry trace context when propagated
+ */
+const TRACE_CARRIER_KEYS = ["traceparent", "tracestate", "baggage"] as const;
+
+/**
+ * Builds a {@link TraceCarrier} containing only the trace-context keys found
+ * in `source` (e.g. `process.env`), so we can call `propagation.extract`
+ * without leaking the rest of the environment into the carrier.
+ */
+export function pickTraceCarrier(
+  source: Record<string, string | undefined>
+): TraceCarrier {
+  const carrier: TraceCarrier = {};
+  for (const key of TRACE_CARRIER_KEYS) {
+    const value = source[key];
+    if (value !== undefined) {
+      carrier[key] = value;
+    }
+  }
+  return carrier;
+}
+
 export async function withSpan<T>(
   name: string,
   f: () => Promise<T>,
