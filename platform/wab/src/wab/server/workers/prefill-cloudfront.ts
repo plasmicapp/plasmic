@@ -36,38 +36,18 @@ export async function prefillCloudfront(
   );
 
   logger().info(
-    `Pre-filling ${projectId}@${
-      pkgVersion.version
-    } for combinations ${JSON.stringify(
-      loaderPublishments.map((p) => ({
-        platform: p.platform,
-        loaderVersion: p.loaderVersion,
-        projectIds: p.projectIds,
-        browserOnly: p.browserOnly ?? false,
-        i18nKeyScheme: p.i18nKeyScheme ?? null,
-        i18nTagPrefix: p.i18nTagPrefix ?? null,
-        appDir: p.appDir ?? null,
-      }))
-    )}`
+    `Pre-filling ${projectId}@${pkgVersion.version} for combinations [${loaderPublishments.map(stringifyPublishment).join(", ")}]`
   );
 
   for (const publishment of loaderPublishments) {
+    const comboInfo = stringifyPublishment(publishment);
     try {
       const resolvedProjectIdSpecs = await getResolvedProjectVersions(
         mgr,
         publishment.projectIds
       );
 
-      const label = `Pre-filling codegen combo ${JSON.stringify(
-        resolvedProjectIdSpecs
-      )}, version=${publishment.loaderVersion}, platform=${
-        publishment.platform
-      }, browserOnly=${publishment.browserOnly}, i18n=${JSON.stringify({
-        key: publishment.i18nKeyScheme,
-        prefix: publishment.i18nTagPrefix,
-      })}, appDir=${publishment.appDir} projectIds=${JSON.stringify(
-        publishment.projectIds
-      )} pkgVersionId=${pkgVersionId}`;
+      const label = `Pre-filling combo ${comboInfo} resolvedProjectIds=${JSON.stringify(resolvedProjectIdSpecs)} pkgVersionId=${pkgVersionId}`;
 
       await withSpan(
         "loader-prefill",
@@ -96,13 +76,13 @@ export async function prefillCloudfront(
         },
         label
       );
+      logger().info(
+        `Done pre-filling combo ${comboInfo} resolvedProjectIds=${JSON.stringify(resolvedProjectIdSpecs)}`
+      );
     } catch (err) {
       // Even if there was an error, continue with remaining combos and mark
       // as pre-filled at the end, else it'll never be pre-filled.
-      logger().error(
-        `Error pre-filling combo for ${projectId}@${pkgVersion.version}`,
-        err
-      );
+      logger().error(`Error pre-filling combo ${comboInfo}`, err);
     }
   }
   await mgr.updatePkgVersion(
@@ -113,5 +93,24 @@ export async function prefillCloudfront(
       isPrefilled: true,
     }
   );
-  logger().info(`Done prefilling cloudfront for ${projectId}`);
+}
+
+function stringifyPublishment(p: {
+  platform: string;
+  loaderVersion: number;
+  projectIds: string[];
+  browserOnly: boolean | null | undefined;
+  i18nKeyScheme: string | null | undefined;
+  i18nTagPrefix: string | null | undefined;
+  appDir: boolean | null | undefined;
+}) {
+  return JSON.stringify({
+    platform: p.platform,
+    loaderVersion: p.loaderVersion,
+    projectIds: p.projectIds,
+    browserOnly: p.browserOnly ?? false,
+    i18nKeyScheme: p.i18nKeyScheme ?? null,
+    i18nTagPrefix: p.i18nTagPrefix ?? null,
+    appDir: p.appDir ?? null,
+  });
 }
