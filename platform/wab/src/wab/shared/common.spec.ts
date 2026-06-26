@@ -1,3 +1,4 @@
+import { toVarName } from "@/wab/shared/codegen/util";
 import * as common from "@/wab/shared/common";
 import {
   arrayEqIgnoreOrder,
@@ -308,11 +309,21 @@ describe("xpick", function () {
     expect(() => xpick(new Map([tuple(0, 1)]), 2)).toThrow());
 });
 
-describe("uniqueName", () =>
+describe("uniqueName", () => {
   it("should work", function () {
-    expect(uniqueName(tuple("a", "b"), "my thing")).toBe("my thing");
+    expect(uniqueName(["a", "b"], "my thing")).toBe("my thing");
     expect(uniqueName(["a", "b", "my thing"], "my thing")).toBe("my thing 2");
+    expect(uniqueName(["a", "b", "my thing"], "my thing 1")).toBe("my thing 1");
     expect(uniqueName(["a", "b", "my thing 1"], "my thing")).toBe("my thing");
+    expect(uniqueName(["a", "b", "my thing 1"], "my thing 1")).toBe(
+      "my thing 2"
+    );
+    expect(uniqueName(["a", "b", "my thing 9"], "my thing 9")).toBe(
+      "my thing 10"
+    );
+    expect(uniqueName(["a", "b", "my thing 19"], "my thing 19")).toBe(
+      "my thing 20"
+    );
     expect(uniqueName(["a", "b", "my thing", "my thing 2"], "my thing")).toBe(
       "my thing 3"
     );
@@ -323,10 +334,71 @@ describe("uniqueName", () =>
       "my thing 2"
     );
     expect(uniqueName(["a", "a 2", "a 3", "a 4", "a 5"], "a")).toBe("a 6");
-    return expect(uniqueName(["a", "b", "my thing 2"], "my thing")).toBe(
+    expect(uniqueName(["a", "a2", "a3", "a4", "a5"], "a")).toBe("a 2");
+  });
+
+  it("should work with empty separator", () => {
+    const opts = { separator: "" };
+
+    expect(uniqueName(["a", "b"], "my thing", opts)).toBe("my thing");
+    expect(uniqueName(["a", "b", "my thing"], "my thing", opts)).toBe(
+      "my thing2"
+    );
+    expect(uniqueName(["a", "b", "my thing"], "my thing1", opts)).toBe(
+      "my thing1"
+    );
+    expect(uniqueName(["a", "b", "my thing1"], "my thing", opts)).toBe(
       "my thing"
     );
-  }));
+    expect(uniqueName(["a", "b", "my thing1"], "my thing1", opts)).toBe(
+      "my thing2"
+    );
+    expect(uniqueName(["a", "b", "my thing9"], "my thing9", opts)).toBe(
+      "my thing10"
+    );
+    expect(uniqueName(["a", "b", "my thing19"], "my thing19", opts)).toBe(
+      "my thing20"
+    );
+    expect(
+      uniqueName(["a", "b", "my thing", "my thing2"], "my thing", opts)
+    ).toBe("my thing3");
+    expect(
+      uniqueName(["a", "b", "my thing", "my thing2"], "my thing2", opts)
+    ).toBe("my thing3");
+    expect(
+      uniqueName(["a", "b", "my thing", "my thing3"], "my thing", opts)
+    ).toBe("my thing2");
+    expect(uniqueName(["a", "a2", "a3", "a4", "a5"], "a", opts)).toBe("a6");
+    expect(uniqueName(["a", "a 2", "a 3", "a 4", "a 5"], "a", opts)).toBe("a2");
+  });
+
+  it("dedupes after normalization, appends number to base", () => {
+    expect(
+      uniqueName(["current index"], "currentIndex", {
+        separator: "",
+        normalize: toVarName,
+      })
+    ).toBe("currentIndex2");
+    expect(
+      uniqueName(["currentIndex"], "current index", {
+        separator: "",
+        normalize: toVarName,
+      })
+    ).toBe("current index2");
+    expect(
+      uniqueName(["current index"], "currentIndex", {
+        separator: " ",
+        normalize: toVarName,
+      })
+    ).toBe("currentIndex 2");
+    expect(
+      uniqueName(["currentIndex"], "current index", {
+        separator: " ",
+        normalize: toVarName,
+      })
+    ).toBe("current index 2");
+  });
+});
 
 describe("longestCommonPrefix", () =>
   it("should work", function () {

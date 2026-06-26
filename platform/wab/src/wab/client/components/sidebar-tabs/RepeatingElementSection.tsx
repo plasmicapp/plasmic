@@ -6,16 +6,17 @@ import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/shared/common";
+import { isBaseVariant } from "@/wab/shared/Variants";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { ensure, uniqueName, withoutNils } from "@/wab/shared/common";
 import {
   code,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
 } from "@/wab/shared/core/exprs";
 import { mkVar } from "@/wab/shared/core/lang";
-import { isBaseVariant } from "@/wab/shared/Variants";
-import { ObjectPath, Rep, TplNode } from "@/wab/shared/model/classes";
 import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
+import { ObjectPath, Rep, TplNode } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -130,13 +131,19 @@ export const RepeatingElementSection = observer(function (props: {
           >
             <StringPropEditor
               disabled={false}
-              onChange={(newName) => {
+              onChange={(newElementName) => {
                 viewCtx.change(() => {
-                  if (newName) {
-                    dataRep.element = mkVar(newName);
-                  } else {
-                    dataRep.element = mkVar(defaultElementName);
-                  }
+                  // Ensure element name doesn't collide with index name
+                  dataRep.element = mkVar(
+                    uniqueName(
+                      withoutNils([dataRep.index?.name]),
+                      newElementName || defaultElementName,
+                      {
+                        separator: "",
+                        normalize: toVarName,
+                      }
+                    )
+                  );
                 });
               }}
               value={dataRep.element.name}
@@ -149,10 +156,16 @@ export const RepeatingElementSection = observer(function (props: {
           >
             <StringPropEditor
               disabled={false}
-              onChange={(newName) => {
+              onChange={(newIndexName) => {
                 viewCtx.change(() => {
-                  if (newName) {
-                    dataRep.index = mkVar(newName);
+                  if (newIndexName) {
+                    // Ensure index name doesn't collide with element name
+                    dataRep.index = mkVar(
+                      uniqueName([dataRep.element.name], newIndexName, {
+                        separator: "",
+                        normalize: toVarName,
+                      })
+                    );
                   } else {
                     dataRep.index = null;
                   }

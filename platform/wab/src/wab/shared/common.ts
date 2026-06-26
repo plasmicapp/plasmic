@@ -1012,10 +1012,21 @@ export function uniqueName(
   let attempt = base;
   let num = 2;
 
-  const tokens = split(base, separator);
-  if (tokens.length > 0 && Number.isInteger(+last(tokens)!)) {
-    base = dropRight(tokens).join(separator);
-    num = +last(tokens)! + 1;
+  if (separator !== "") {
+    // If the separator isn't an empty string,
+    // then split on the separator to find the trailing number.
+    const tokens = split(base, separator);
+    if (tokens.length > 0 && Number.isInteger(+last(tokens)!)) {
+      base = dropRight(tokens).join(separator);
+      num = +last(tokens)! + 1;
+    }
+  } else {
+    // Otherwise, find the trailing number with a regular expression.
+    const match = base.match(/^(.*?)(\d+)$/);
+    if (match) {
+      base = match[1];
+      num = +match[2] + 1;
+    }
   }
 
   while (
