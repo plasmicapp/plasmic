@@ -1,17 +1,19 @@
-import { SWRHook } from "@plasmicpkgs/commerce";
-import { UseCategories, useCategories } from "@plasmicpkgs/commerce";
+import { SWRHook, UseCategories, useCategories } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
 import { CollectionCountableEdge } from "../schema";
 import { GetCategoriesHook } from "../types/site";
 import { CollectionMany, CollectionOne, normalizeCategory } from "../utils";
 
-export default useCategories as UseCategories<typeof handler>;
+const _default: UseCategories<typeof handler> = useCategories as UseCategories<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<GetCategoriesHook> = {
   fetchOptions: {
     query: CollectionMany,
   },
-  async fetcher({ input, options, fetch }) {
+  async fetcher({ input, fetch }) {
     const { categoryId } = input;
     if (!categoryId) {
       const data = await fetch({
@@ -19,7 +21,7 @@ export const handler: SWRHook<GetCategoriesHook> = {
         variables: {
           first: 250,
         },
-      })
+      });
 
       return (
         data.collections?.edges?.map(({ node }: CollectionCountableEdge) =>
@@ -31,27 +33,27 @@ export const handler: SWRHook<GetCategoriesHook> = {
         query: CollectionOne,
         variables: { categoryId },
       });
-      return !!data?.collection ? [normalizeCategory(data?.collection)] : [];
+      return data?.collection ? [normalizeCategory(data?.collection)] : [];
     }
   },
   useHook:
     ({ useData }) =>
-      (input) => {
-        const response = useData({
-          input: [["categoryId", input?.categoryId]],
-          swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
-        });
-        return useMemo(
-          () =>
-            Object.create(response, {
-              isEmpty: {
-                get() {
-                  return (response.data?.length ?? 0) <= 0;
-                },
-                enumerable: true,
+    (input) => {
+      const response = useData({
+        input: [["categoryId", input?.categoryId]],
+        swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
+      });
+      return useMemo(
+        () =>
+          Object.create(response, {
+            isEmpty: {
+              get() {
+                return (response.data?.length ?? 0) <= 0;
               },
-            }),
-          [response]
-        );
-      },
+              enumerable: true,
+            },
+          }),
+        [response]
+      );
+    },
 };

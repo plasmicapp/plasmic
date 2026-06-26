@@ -47,13 +47,13 @@
     }
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
+    "build": "rollup -c rollup.config.mjs && tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
-    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test"
+    "test": "TEST_CWD=`pwd` pnpm -w test"
   },
   "dependencies": {
     "antd": "^5.12.7",

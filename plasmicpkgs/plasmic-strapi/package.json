@@ -19,10 +19,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:types && yarn build:index",
-    "build:types": "yarn tsc",
+    "build": "pnpm build:types && pnpm build:index",
+    "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
-    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
+    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"

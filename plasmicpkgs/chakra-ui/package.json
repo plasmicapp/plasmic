@@ -13,8 +13,8 @@
   ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/",
-    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
+    "build": "rollup -c rollup.config.mjs && tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/",
+    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
     "lint": "tsdx lint",
     "prepublishOnly": "npm run build",
     "size": "size-limit",

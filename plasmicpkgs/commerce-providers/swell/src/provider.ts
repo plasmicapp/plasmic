@@ -17,9 +17,8 @@ import { handler as useBrands } from "./site/use-brands";
 import { handler as useCategories } from "./site/use-categories";
 
 export const getSwellProvider = (storeId: string, publicKey: string) => {
-  // Their types claim `init` is a named export, but examining the JS files in
-  // dist/, you can see it's actually a function on the default export.
-  // @ts-expect-error swell-js types are wrong
+  // swell-js exports `init` as a named function; with esModuleInterop the
+  // default import resolves it as a method on the namespace, so this typechecks.
   swell.init(storeId, publicKey);
 
   return {

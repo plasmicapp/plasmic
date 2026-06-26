@@ -10,7 +10,10 @@ import { normalizeCategory } from "../utils/normalize";
 import { getSiteCollectionsQuery } from "../utils/queries/get-all-collections-query";
 import { getCollectionQueryById } from "../utils/queries/get-collection-query";
 
-export default useCategories as UseCategories<typeof handler>;
+const _default: UseCategories<typeof handler> = useCategories as UseCategories<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<SiteTypes.GetCategoriesHook> = {
   fetchOptions: {
@@ -40,7 +43,7 @@ export const handler: SWRHook<SiteTypes.GetCategoriesHook> = {
             : { handle: categoryId }),
         },
       });
-      return !!data?.collection ? [normalizeCategory(data?.collection)] : [];
+      return data?.collection ? [normalizeCategory(data?.collection)] : [];
     }
   },
   useHook:

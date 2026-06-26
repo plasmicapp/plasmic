@@ -11,13 +11,16 @@ import {
 } from "../utils/graphql/gen/graphql";
 import { getAllProductVendors } from "../utils/queries/get-all-product-vendors-query";
 
-export default useBrands as UseBrands<typeof handler>;
+const _default: UseBrands<typeof handler> = useBrands as UseBrands<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<SiteTypes.GetBrandsHook> = {
   fetchOptions: {
     query: getAllProductVendors.toString(),
   },
-  async fetcher({ input, options, fetch }) {
+  async fetcher({ fetch }) {
     const data = await fetch<
       GetAllProductVendorsQuery,
       GetAllProductVendorsQueryVariables
@@ -28,7 +31,7 @@ export const handler: SWRHook<SiteTypes.GetBrandsHook> = {
       },
     });
 
-    let vendorsStrings = data.products.edges.map(
+    const vendorsStrings = data.products.edges.map(
       ({ node: { vendor } }) => vendor
     );
     return Array.from(new Set(vendorsStrings).values()).map((v) => {

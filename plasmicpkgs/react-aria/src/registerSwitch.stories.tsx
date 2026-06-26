@@ -20,6 +20,13 @@ const meta: Meta<typeof BaseSwitch> = {
 export default meta;
 type Story = StoryObj<typeof BaseSwitch>;
 
+// As of react-aria-components 1.19 the Switch label uses react-aria's
+// pointer-based press system (data-react-aria-pressable), so a synthetic
+// userEvent click on the label no longer fires the toggle. Click the
+// role="switch" input instead.
+const clickSwitch = (canvas: ReturnType<typeof within>) =>
+  userEvent.click(canvas.getByRole("switch"));
+
 // Basic Switch with default state (unselected)
 export const Basic: Story = {
   play: async ({ canvasElement, args }) => {
@@ -31,7 +38,7 @@ export const Basic: Story = {
     expect(switchEl).not.toHaveAttribute("data-selected");
 
     // Toggle the switch on
-    await userEvent.click(switchEl);
+    await clickSwitch(canvas);
     expect(args.onChange).toHaveBeenCalledWith(true);
     expect(switchEl).toHaveAttribute("data-focused", "true");
     expect(switchEl).toHaveAttribute("data-selected", "true");
@@ -60,7 +67,7 @@ export const WithInitialValue: Story = {
     expect(switchEl).not.toHaveAttribute("data-focused");
     expect(switchEl).toHaveAttribute("data-selected", "true");
 
-    await userEvent.click(switchEl);
+    await clickSwitch(canvas);
     expect(switchEl).not.toHaveAttribute("data-selected");
     expect(args.onChange).toHaveBeenCalledWith(false);
   },
@@ -89,7 +96,7 @@ export const ReadOnly: Story = {
     expect(switchEl).not.toHaveAttribute("data-selected");
     expect(switchEl).not.toHaveAttribute("data-disabled");
 
-    await userEvent.click(switchEl);
+    await clickSwitch(canvas);
     expect(switchEl).not.toHaveAttribute("data-selected"); // unchanged
     expect(args.onChange).not.toHaveBeenCalled();
   },
@@ -106,7 +113,7 @@ export const Disabled: Story = {
     expect(switchEl).not.toHaveAttribute("data-selected");
     expect(switchEl).toHaveAttribute("data-disabled", "true");
 
-    await userEvent.click(switchEl);
+    await clickSwitch(canvas);
     expect(switchEl).not.toHaveAttribute("data-selected"); // unchanged
     expect(args.onChange).not.toHaveBeenCalled();
   },
@@ -137,13 +144,13 @@ export const Controlled: Story = {
     const switchEl = await canvas.findByText("Low power mode");
 
     expect(switchEl).toHaveAttribute("data-selected", "true");
-    await userEvent.click(switchEl);
+    await clickSwitch(canvas);
     expect(switchEl).not.toHaveAttribute("data-selected");
 
     expect(args.onChange).toHaveBeenCalledWith(false);
     expect(args.onChange).toHaveBeenCalledOnce();
 
-    await userEvent.click(switchEl);
+    await clickSwitch(canvas);
     expect(switchEl).toHaveAttribute("data-selected", "true");
 
     expect(args.onChange).toHaveBeenCalledWith(true);

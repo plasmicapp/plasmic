@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsdx build",
     "start": "tsdx watch",
-    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
+    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
     "lint": "tsdx lint",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
@@ -36,9 +36,6 @@
   },
   "dependencies": {
     "lottie-react": "^2.4.0"
-  },
-  "resolutions": {
-    "lottie-web": ">=5.13.0"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

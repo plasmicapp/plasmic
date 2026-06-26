@@ -10,7 +10,10 @@ import {
   getProductQueryBySlug,
 } from "../utils/queries/get-product-query";
 
-export default useProduct as UseProduct<typeof handler>;
+const _default: UseProduct<typeof handler> = useProduct as UseProduct<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<GetProductHook> = {
   fetchOptions: {

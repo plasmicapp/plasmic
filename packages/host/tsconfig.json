@@ -3,6 +3,7 @@
   "include": ["src"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.spec-d.ts"],
   "compilerOptions": {
+    "types": ["node", "react"],
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "importHelpers": true,

@@ -3,15 +3,18 @@
   Changes:None
 */
 
+import { UseCart, useCart as useCommerceCart } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
-import { useCart as useCommerceCart, UseCart } from "@plasmicpkgs/commerce";
 
 import { SWRHook } from "@plasmicpkgs/commerce";
+import { GetCartHook } from "../types/cart";
 import { checkoutCreate, checkoutToCart, getCheckoutId } from "../utils";
 import * as query from "../utils/queries";
-import { GetCartHook } from "../types/cart";
 
-export default useCommerceCart as UseCart<typeof handler>;
+const _default: UseCart<typeof handler> = useCommerceCart as UseCart<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<GetCartHook> = {
   fetchOptions: {
@@ -21,10 +24,10 @@ export const handler: SWRHook<GetCartHook> = {
     let checkout;
 
     if (checkoutId) {
-      const checkoutId = getCheckoutId().checkoutToken;
+      const checkoutToken = getCheckoutId().checkoutToken;
       const data = await fetch({
         ...options,
-        variables: { checkoutId },
+        variables: { checkoutId: checkoutToken },
       });
 
       checkout = data;

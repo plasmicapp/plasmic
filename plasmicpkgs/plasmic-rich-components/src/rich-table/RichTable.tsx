@@ -191,7 +191,6 @@ export function RichTable(props: RichTableProps) {
               addHref && (
                 <Button
                   key="button"
-                  // @ts-expect-error: https://github.com/ant-design/ant-design/issues/47886
                   icon={<PlusOutlined />}
                   type="primary"
                   href={addHref}
@@ -516,7 +515,6 @@ function ExportMenu(props: { data: NormalizedData | undefined }) {
       }}
     >
       <Button>
-        {/* @ts-expect-error: https://github.com/ant-design/ant-design/issues/47886 */}
         <EllipsisOutlined />
       </Button>
     </Dropdown>

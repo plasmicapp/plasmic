@@ -36,7 +36,7 @@
     "email:sync": "cd src/wab/server/emails/templates && plasmic sync -p taNK5uwsoPrzfpYmBVwUwX --skip-upgrade-check && vite-node ../tools/remove-css-imports.ts",
     "email:generate": "cd src/wab/server/emails/host && vite-node ../tools/test-email.mts",
     "prepare": "if [ -n \"$PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD\" ]; then echo \"Skipping Playwright download (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD set)\"; else playwright install chromium; fi",
-    "eslint-all": "yarn --cwd ../.. eslint platform/wab",
+    "eslint-all": "pnpm --dir ../.. exec eslint platform/wab",
     "test": "NODE_OPTIONS='--max-old-space-size=8192' jest --runInBand --forceExit",
     "test:coverage": "NODE_OPTIONS='--max-old-space-size=8192' jest --coverage",
     "test:inspect": "node --inspect-brk node_modules/.bin/jest --runInBand",

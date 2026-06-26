@@ -35,6 +35,8 @@
 /platform/sub/typedoc/
 bower_components/
 node_modules/
+.pnpm-store/
+lerna-debug.log
 storybook-static/
 .nx/
 # ignore decrypted yaml files by sops

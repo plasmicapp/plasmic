@@ -110,7 +110,7 @@ NODE_ENV=development
 
 ### 2. Installing dependencies
 
-Run `yarn install` twice -- once in the root folder, and second time in the `./platform/wab`
+Run `pnpm install` in the root folder, then `yarn install` in `./platform/wab`
 
 ### 3. Seeding the database
 
@@ -125,7 +125,7 @@ yarn seed
 In the project root directory, run:
 
 ```
-yarn setup-all && yarn bootstrap
+pnpm setup-all && pnpm bootstrap
 ```
 
 ### 5. Starting dev servers
@@ -133,7 +133,7 @@ yarn setup-all && yarn bootstrap
 Run all servers in GNU screens:
 
 ```
-yarn dev
+pnpm dev
 ```
 
 ## Using the app

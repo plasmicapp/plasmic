@@ -1,17 +1,24 @@
-import { GetProductHook, SWRHook, UseProduct, useProduct } from '@plasmicpkgs/commerce'
-import { normalizeProduct } from '../utils'
-import { SwellProduct } from '../types'
+import {
+  GetProductHook,
+  SWRHook,
+  UseProduct,
+  useProduct,
+} from "@plasmicpkgs/commerce";
+import { normalizeProduct } from "../utils";
 
 export type GetProductInput = {
   id?: string;
-}
+};
 
-export default useProduct as UseProduct<typeof handler>
+const _default: UseProduct<typeof handler> = useProduct as UseProduct<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<GetProductHook> = {
   fetchOptions: {
-    query: 'products',
-    method: 'get',
+    query: "products",
+    method: "get",
   },
   async fetcher({ input, options, fetch }) {
     const { id } = input;
@@ -29,13 +36,11 @@ export const handler: SWRHook<GetProductHook> = {
     ({ useData }) =>
     (input = {}) => {
       return useData({
-        input: [
-          ['id', input.id],
-        ],
+        input: [["id", input.id]],
         swrOptions: {
           revalidateOnFocus: false,
           ...input.swrOptions,
         },
-      })
+      });
     },
-}
+};

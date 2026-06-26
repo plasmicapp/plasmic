@@ -111,7 +111,7 @@ cd packages/cli/
 
 # Step 1. (One-time)
 # Ensure dependencies are built.
-npx nx build @plasmicapp/cli
+pnpm --filter "@plasmicapp/cli..." run build
 
 # Step 2. (Repeat)
 # Hackety hack, then you can directly run the source with esbuild-register.
@@ -130,12 +130,12 @@ If you need the package installed in another npm project to test it, like say a 
 # This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local
 # verdaccio.
 # Note that this does not bump versions!
-# We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
+# pnpm builds the dependency graph, so if your dependencies haven't changed, this should be fast.
 # In this example, even though we edited @plasmicapp/host, we can just think about publishing the "root" package(s) we're ultimately installing into the test app, in this case @plasmicapp/loader-nextjs.
-yarn local-publish @plasmicapp/loader-nextjs &&
+pnpm local-publish @plasmicapp/loader-nextjs &&
 
 # Or publish all packages to verdaccio. This will take longer.
-# yarn local-publish
+# pnpm local-publish
 
 # Step 3.
 # Go to the package you're testing, e.g. test-host-app.
@@ -193,7 +193,7 @@ Before starting, we recommend reading our docs for Code Components:
 
 Ignore this if you are just updating an existing package.
 
-To create a new plasmicpkg, the easiest approach is to clone one of the existing packages (like react-slick) and fix up the names in package.json and README. Then author your registration code in src. Please use `yarn` for package management.
+To create a new plasmicpkg, the easiest approach is to clone one of the existing packages (like react-slick) and fix up the names in package.json and README. Then author your registration code in src. Please use `pnpm` for package management.
 
 The directory name should be the same name as the main package you'll be using to import the React components. Your package must be named `@plasmicpkgs/{package-name}` and start with version 1.0.0.
 

@@ -8,7 +8,7 @@ WAB (Web Application Builder) is the core Plasmic Studio application codebase. I
 
 ```bash
 # Setup repo (must be performed in root directory)
-cd ../.. && yarn setup-all
+cd ../.. && pnpm setup-all
 
 # Start full dev environment (frontend, backend, host-server) at http://localhost:3003
 yarn dev

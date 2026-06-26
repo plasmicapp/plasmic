@@ -6,7 +6,10 @@ import {
 } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
 
-export default useBrands as UseBrands<typeof handler>;
+const _default: UseBrands<typeof handler> = useBrands as UseBrands<
+  typeof handler
+>;
+export default _default;
 
 type GetBrandsHook = SiteTypes.GetBrandsHook;
 
@@ -30,21 +33,23 @@ export const handler: SWRHook<GetBrandsHook> = {
       path: `brands/${v}`,
     }));
   },
-  useHook: ({ useData }) => (input) => {
-    const response = useData({
-      swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
-    });
-    return useMemo(
-      () =>
-        Object.create(response, {
-          isEmpty: {
-            get() {
-              return (response.data?.length ?? 0) <= 0;
+  useHook:
+    ({ useData }) =>
+    (input) => {
+      const response = useData({
+        swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
+      });
+      return useMemo(
+        () =>
+          Object.create(response, {
+            isEmpty: {
+              get() {
+                return (response.data?.length ?? 0) <= 0;
+              },
+              enumerable: true,
             },
-            enumerable: true,
-          },
-        }),
-      [response]
-    );
-  },
+          }),
+        [response]
+      );
+    },
 };

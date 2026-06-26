@@ -30,8 +30,8 @@ Please use your given IAM credentials and access token.
 On project root directory, make sure the Postgresql server is running, and run:
 
 ```
-yarn db:setup
-yarn db:reset # specify no_sudo=1 if `sudo -u postgres psql` doesn't work
+pnpm db:setup
+pnpm db:reset # specify no_sudo=1 if `sudo -u postgres psql` doesn't work
 ```
 
 ### Reset DB State
@@ -39,7 +39,7 @@ yarn db:reset # specify no_sudo=1 if `sudo -u postgres psql` doesn't work
 If you ever want to, you can reset the DB state by running (on project root):
 
 ```
-yarn db:reset # add --sudo if necessary (hopefully not)
+pnpm db:reset # add --sudo if necessary (hopefully not)
 ```
 
 > Important: remember clearing your browser cookies and restart any running servers.
@@ -164,12 +164,12 @@ make
 But if something is still going wrong, try:
 
 ```
-yarn setup
+pnpm setup
 # restart node server
 # restart webpack, once in a blue moon
 ```
 
-If the above doesn't fix the issue, try again but running `yarn setup-all` instead.
+If the above doesn't fix the issue, try again but running `pnpm setup-all` instead.
 
 ## SVG Icons
 

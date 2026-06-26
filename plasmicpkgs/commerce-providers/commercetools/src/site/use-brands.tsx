@@ -1,15 +1,17 @@
-import { SWRHook } from '@plasmicpkgs/commerce'
-import { UseBrands, useBrands } from '@plasmicpkgs/commerce'
+import { SWRHook, UseBrands, useBrands } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
-import { GetBrandsHook } from "../types/site"
+import { GetBrandsHook } from "../types/site";
 
-export default useBrands as UseBrands<typeof handler>
+const _default: UseBrands<typeof handler> = useBrands as UseBrands<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<GetBrandsHook> = {
   fetchOptions: {
-    query: ""
+    query: "",
   },
-  async fetcher({ input, options, fetch }) {
+  async fetcher() {
     return null;
   },
   useHook:
@@ -17,18 +19,18 @@ export const handler: SWRHook<GetBrandsHook> = {
     (input) => {
       const response = useData({
         swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
-      })
+      });
       return useMemo(
         () =>
           Object.create(response, {
             isEmpty: {
               get() {
-                return (response.data?.length ?? 0) <= 0
+                return (response.data?.length ?? 0) <= 0;
               },
               enumerable: true,
             },
           }),
         [response]
-      )
+      );
     },
-}
+};

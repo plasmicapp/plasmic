@@ -18,7 +18,10 @@ import {
 import { normalizeCart } from "../utils/normalize";
 import { getCartQuery } from "../utils/queries/get-cart-query";
 
-export default useCommerceCart as UseCart<typeof handler>;
+const _default: UseCart<typeof handler> = useCommerceCart as UseCart<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<CartType.GetCartHook> = {
   fetchOptions: {

@@ -10,7 +10,10 @@ import { normalizeCategory } from "../utils";
 import { topologicalSortForCategoryTree } from "../utils/category-tree";
 import { ensureNoNilFields } from "../utils/common";
 
-export default useCategories as UseCategories<typeof handler>;
+const _default: UseCategories<typeof handler> = useCategories as UseCategories<
+  typeof handler
+>;
+export default _default;
 
 type GetCategoriesHook = SiteTypes.GetCategoriesHook;
 
@@ -61,25 +64,27 @@ export const handler: SWRHook<GetCategoriesHook> = {
     }
     return normalizedCategories;
   },
-  useHook: ({ useData }) => (input) => {
-    const response = useData({
-      input: [
-        ["addIsEmptyField", input?.addIsEmptyField],
-        ["categoryId", input?.categoryId],
-      ],
-      swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
-    });
-    return useMemo(
-      () =>
-        Object.create(response, {
-          isEmpty: {
-            get() {
-              return (response.data?.length ?? 0) <= 0;
+  useHook:
+    ({ useData }) =>
+    (input) => {
+      const response = useData({
+        input: [
+          ["addIsEmptyField", input?.addIsEmptyField],
+          ["categoryId", input?.categoryId],
+        ],
+        swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
+      });
+      return useMemo(
+        () =>
+          Object.create(response, {
+            isEmpty: {
+              get() {
+                return (response.data?.length ?? 0) <= 0;
+              },
+              enumerable: true,
             },
-            enumerable: true,
-          },
-        }),
-      [response]
-    );
-  },
+          }),
+        [response]
+      );
+    },
 };

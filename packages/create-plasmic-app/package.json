@@ -12,10 +12,10 @@
     "create-plasmic-app": "./dist/index.js"
   },
   "scripts": {
-    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
-    "coverage": "TEST_CWD=`pwd` yarn --cwd=../.. test --coverage --passWithNoTests",
+    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
+    "coverage": "TEST_CWD=`pwd` pnpm -w test --coverage --passWithNoTests",
     "build": "eslint 'src/**' && tsc",
-    "run-cpa": "yarn build && tsx run-cpa.ts",
+    "run-cpa": "pnpm build && tsx run-cpa.ts",
     "create-plasmic-app": "tsx src/index.ts",
     "prepublishOnly": "npm run build"
   },

@@ -1,20 +1,18 @@
-import { SWRHook } from "@plasmicpkgs/commerce";
-import { UseBrands, useBrands } from "@plasmicpkgs/commerce";
+import { SWRHook, UseBrands, useBrands } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
-import {
-  GetAllProductPathsQuery,
-  GetAllProductPathsQueryVariables,
-} from "../schema";
 import { GetBrandsHook } from "../types/site";
 import { getAllProductVendors } from "../utils";
 
-export default useBrands as UseBrands<typeof handler>;
+const _default: UseBrands<typeof handler> = useBrands as UseBrands<
+  typeof handler
+>;
+export default _default;
 
 export const handler: SWRHook<GetBrandsHook> = {
   fetchOptions: {
     query: getAllProductVendors,
   },
-  async fetcher({ input, options, fetch }) {
+  async fetcher() {
     return []; // brands it's not available on saleor
   },
   useHook:
