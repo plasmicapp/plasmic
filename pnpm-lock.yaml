@@ -618,7 +618,7 @@ importers:
         specifier: 2.0.9
         version: link:../loader-react
       '@plasmicapp/nextjs-app-router':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../nextjs-app-router
       '@plasmicapp/watcher':
         specifier: 1.0.85
@@ -810,7 +810,7 @@ importers:
         specifier: 1.0.71
         version: link:../loader-splits
       '@plasmicapp/nextjs-app-router':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../nextjs-app-router
       '@plasmicapp/prepass':
         specifier: 1.0.25
@@ -949,7 +949,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.16
+        specifier: 1.0.17
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -989,7 +989,7 @@ importers:
   plasmicpkgs-dev:
     dependencies:
       '@plasmicapp/loader-nextjs':
-        specifier: 2.0.9
+        specifier: 2.0.10
         version: link:../packages/loader-nextjs
       '@plasmicpkgs/cms':
         specifier: 0.0.28
@@ -1164,7 +1164,7 @@ importers:
         specifier: 0.1.85
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.16
+        specifier: 1.0.17
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
