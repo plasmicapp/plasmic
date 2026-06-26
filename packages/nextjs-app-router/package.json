@@ -21,8 +21,7 @@
     "build:react-server": "node ../../build.mjs ./src/react-server.ts",
     "test": "pnpm -w test",
     "coverage": "pnpm -w test --coverage --passWithNoTests",
-    "lint": "eslint",
-    "prepare": "if-env PREPARE_NO_BUILD=true || pnpm build"
+    "lint": "eslint"
   },
   "dependencies": {
     "@plasmicapp/prepass": "1.0.25",
