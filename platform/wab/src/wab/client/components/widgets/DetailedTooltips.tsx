@@ -391,7 +391,10 @@ export function DataQueriesDeprecatedTooltip() {
         section above.
       </p>
       <p>
-        <a target={"_blank"} href="https://docs.plasmic.app/learn/integrations">
+        <a
+          target={"_blank"}
+          href="https://docs.plasmic.app/learn/integrations#data-queries"
+        >
           Learn more about this change in the docs
         </a>
         .
@@ -408,7 +411,10 @@ export function DataQueriesTooltip() {
         <em>integration</em> like a backend database or API.
       </p>
       <p>
-        <a target={"_blank"} href="https://docs.plasmic.app/learn/integrations">
+        <a
+          target={"_blank"}
+          href="https://docs.plasmic.app/learn/integrations#data-queries"
+        >
           Learn more in the docs
         </a>
         .

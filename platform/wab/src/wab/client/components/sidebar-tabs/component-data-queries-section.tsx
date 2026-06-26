@@ -191,7 +191,7 @@ function ComponentQueriesSection_(props: {
           }
         >
           {DATA_QUERY_PLURAL_CAP}
-          {isDeprecated ? " (DEPRECATED)" : ""}
+          {isDeprecated ? " (legacy)" : ""}
         </LabelWithDetailedTooltip>
       }
       emptyBody={component.dataQueries.length === 0 && tplFetchers.length === 0}
