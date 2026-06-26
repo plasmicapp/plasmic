@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "plasmic library for app hosting",
   "repository": {
     "type": "git",
@@ -49,7 +49,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.84",
+    "@plasmicapp/query": "0.1.85",
     "csstype": "^3.1.2",
     "window-or-global": "^1.0.1"
   },

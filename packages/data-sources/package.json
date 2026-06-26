@@ -1,5 +1,5 @@
 {
-  "version": "1.0.14",
+  "version": "1.0.15",
   "name": "@plasmicapp/data-sources",
   "license": "MIT",
   "types": "./dist/index.d.ts",
@@ -41,10 +41,10 @@
     "vitest": "3.2.4"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.23",
-    "@plasmicapp/host": "2.0.6",
+    "@plasmicapp/data-sources-context": "0.1.24",
+    "@plasmicapp/host": "2.0.7",
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
-    "@plasmicapp/query": "0.1.84",
+    "@plasmicapp/query": "0.1.85",
     "fast-stringify": "^2.0.0"
   },
   "peerDependencies": {
