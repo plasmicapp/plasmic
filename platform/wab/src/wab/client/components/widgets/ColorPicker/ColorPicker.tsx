@@ -213,14 +213,9 @@ function ColorPicker_({
         preview: true,
         opacity: true,
         hue: true,
-        interaction: {
-          clear: false,
-          save: false,
-          input: true,
-          hex: false,
-          rgba: false,
-          hsla: false,
-        },
+        // Studio renders its own custom Hex/RGB/HSL inputs, so disable Pickr's
+        // built-in interaction.
+        interaction: {},
       },
     })
       .on("show", show)
