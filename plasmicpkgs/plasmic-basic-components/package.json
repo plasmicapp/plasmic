@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-basic-components",
-  "version": "0.0.279",
+  "version": "0.0.280",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,8 +31,8 @@
     "test-storybook": "test-storybook"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.7",
-    "@plasmicapp/query": "0.1.85",
+    "@plasmicapp/host": "2.0.8",
+    "@plasmicapp/query": "0.1.86",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "@types/react-dom": "^18",

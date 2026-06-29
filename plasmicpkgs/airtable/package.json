@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/airtable",
-  "version": "0.0.264",
+  "version": "0.0.265",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.7",
+    "@plasmicapp/host": "2.0.8",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "tsdx": "^0.14.1",
