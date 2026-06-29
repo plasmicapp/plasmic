@@ -3,6 +3,7 @@ import {
   StudioAppUser,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiBranch, BranchId } from "@/wab/shared/ApiSchema";
+import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
@@ -54,6 +55,8 @@ export type HostFrameApi = {
     toolName: string,
     toolArgs: Record<string, unknown>
   ): Promise<CopilotToolCallResult>;
+  /** Store the AI agent's preferred copilot tool output format on StudioCtx. */
+  setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void>;
   /** Resolves once the studio and its active canvas are ready. */
   waitForStudioReady(): Promise<void>;
 };

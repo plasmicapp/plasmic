@@ -63,7 +63,7 @@ export function deserializePlasmicComponentAttrs(
  * defined in the current site. Only direct dependencies are resolved, matching
  * how the component is looked up on use.
  */
-function getDataPlasmicProject(
+export function getDataPlasmicProject(
   site: Site,
   component: Component
 ): string | undefined {

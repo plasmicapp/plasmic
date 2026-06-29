@@ -1,0 +1,453 @@
+import { tokenTypes } from "@/wab/commons/StyleToken";
+import { z } from "zod";
+
+/**
+ * The schema every AI tool returns: the serialized resources it produced or
+ * read, plus optional human-readable status messages.
+ */
+export function outputResultSchema(resultSchema: z.ZodTypeAny) {
+  return z.object({
+    __type: z.literal("OutputResult"),
+    messages: z
+      .array(z.string())
+      .optional()
+      .describe("Human-readable status messages from the tool, if any."),
+    results: z
+      .array(resultSchema)
+      .describe("Serialized resources, each self-describing via `__type`."),
+  });
+}
+
+/**
+ * Build the `OutputResult` envelope a tool returns: the resources it produced or
+ * read, plus optional human-readable status messages.
+ */
+export function outputResult<T extends ReadResultJson>(
+  results: T[],
+  messages?: string[]
+): { __type: "OutputResult"; messages?: string[]; results: T[] } {
+  return {
+    __type: "OutputResult",
+    ...(messages && messages.length > 0 ? { messages } : {}),
+    results,
+  };
+}
+
+/** Build the canonical JSON model for an invalid/missing resource. */
+export function serializeInvalidResource(
+  uuid: string,
+  type: InvalidResourceJson["type"],
+  message: string
+): InvalidResourceJson {
+  return { __type: "InvalidResource", type, uuid, message };
+}
+
+/** Any standalone resource that `read` can return. */
+export function readResultSchema() {
+  return z.discriminatedUnion("__type", [
+    projectSchema(),
+    componentSchema(),
+    elementSchema(),
+    tokenSchema(),
+    animationSchema(),
+    invalidResourceSchema(),
+  ]);
+}
+export type ReadResultJson = z.infer<ReturnType<typeof readResultSchema>>;
+
+export function componentResultSchema() {
+  return z.discriminatedUnion("__type", [
+    componentSchema(),
+    invalidResourceSchema(),
+  ]);
+}
+
+export function tokenResultSchema() {
+  return z.discriminatedUnion("__type", [
+    tokenSchema(),
+    invalidResourceSchema(),
+  ]);
+}
+
+export function animationResultSchema() {
+  return z.discriminatedUnion("__type", [
+    animationSchema(),
+    invalidResourceSchema(),
+  ]);
+}
+
+export function projectSchema() {
+  return z.object({
+    __type: z.literal("Project"),
+    id: z.string().describe("Project id."),
+    components: z
+      .array(componentSummarySchema())
+      .optional()
+      .describe("All components (own + imported), when requested."),
+    screenBreakpoints: z
+      .array(screenBreakpointSchema())
+      .optional()
+      .describe("Active screen breakpoints, when requested."),
+    globalVariantGroups: z
+      .array(globalVariantGroupSchema())
+      .optional()
+      .describe("Global variant groups (own + imported), when requested."),
+    tokens: z
+      .array(tokenSchema())
+      .optional()
+      .describe("Style tokens (own + imported), when requested."),
+    animations: z
+      .array(animationSummarySchema())
+      .optional()
+      .describe("Animation sequences (own + imported), when requested."),
+    importedProjects: z
+      .array(importedProjectSchema())
+      .describe("Imported (direct dependency) projects; always included."),
+  });
+}
+export type ProjectJson = z.infer<ReturnType<typeof projectSchema>>;
+
+/**
+ * Project-listing entry: the full component minus its heavy nested fields, with
+ * pageMeta reduced to just its path.
+ */
+export function componentSummarySchema() {
+  return componentSchema()
+    .omit({
+      props: true,
+      variants: true,
+      baseVariantTplTree: true,
+      variantSettings: true,
+      pageMeta: true,
+    })
+    .extend({
+      pageMeta: pageMetaSchema()
+        .pick({ __type: true, path: true })
+        .optional()
+        .describe("Page route, present for pages."),
+    });
+}
+export type ComponentSummaryJson = z.infer<
+  ReturnType<typeof componentSummarySchema>
+>;
+
+export function componentSchema() {
+  return z.object({
+    __type: z.literal("Component"),
+    name: z.string().describe("Component name."),
+    uuid: z.string().describe("Component UUID."),
+    type: z
+      .enum(["plain", "page", "code", "frame"])
+      .describe("Component kind."),
+    pageMeta: pageMetaSchema()
+      .optional()
+      .describe("Page metadata, present for pages."),
+    fromProject: z
+      .string()
+      .optional()
+      .describe("Imported project id, present only for imported components."),
+    props: z
+      .array(propSchema())
+      .describe("Component props (non-variant params)."),
+    variants: z
+      .array(variantDefSchema())
+      .describe("Component variant definitions (group + element variants)."),
+    baseVariantTplTree: z
+      .string()
+      .describe("Base-variant tpl tree as HTML markup."),
+    variantSettings: z
+      .array(variantOverrideSchema())
+      .optional()
+      .describe("Per-variant style/attr overrides."),
+  });
+}
+export type ComponentJson = z.infer<ReturnType<typeof componentSchema>>;
+
+export function pageMetaSchema() {
+  return z.object({
+    __type: z.literal("PageMeta"),
+    path: z.string().optional().describe("Route path."),
+    params: z
+      .record(z.string(), z.string())
+      .optional()
+      .describe("Default values for path params."),
+    query: z
+      .record(z.string(), z.string())
+      .optional()
+      .describe("Default values for query params."),
+    title: z.string().optional().describe("Page title / og:title."),
+    description: z
+      .string()
+      .optional()
+      .describe("Meta description for SEO and social previews."),
+    canonical: z.string().optional().describe("Canonical URL."),
+    openGraphImage: z.string().optional().describe("Open Graph image URL."),
+  });
+}
+export type PageMetaJson = z.infer<ReturnType<typeof pageMetaSchema>>;
+
+export function propSchema() {
+  return z.object({
+    __type: z.literal("Prop"),
+    name: z.string().describe("Prop name."),
+    uuid: z.string().describe("Prop UUID."),
+    type: z
+      .string()
+      .describe(
+        'Prop type, e.g. "text", "boolean", "number", "href", "enum", or a variant-group options string.'
+      ),
+    options: z
+      .array(z.string())
+      .optional()
+      .describe("Allowed values, present for enum/choice props."),
+    default: z.any().optional().describe("Default value (real typed value)."),
+  });
+}
+export type PropJson = z.infer<ReturnType<typeof propSchema>>;
+
+export function variantDefSchema() {
+  return z.discriminatedUnion("__type", [
+    componentVariantDefSchema(),
+    elementVariantDefSchema(),
+  ]);
+}
+export type VariantDefJson = z.infer<ReturnType<typeof variantDefSchema>>;
+
+export function componentVariantDefSchema() {
+  return z.object({
+    __type: z.literal("ComponentVariant"),
+    variant: variantSchema().describe("Variant identity."),
+    type: z
+      .enum(["single", "multi", "boolean"])
+      .describe(
+        "Variant group kind: single (one-of-many), multi (any-of-many), or boolean (standalone)."
+      ),
+    group: z.string().describe("Owning variant group name."),
+  });
+}
+
+export function elementVariantDefSchema() {
+  return z.object({
+    __type: z.literal("ElementVariant"),
+    variant: variantSchema().describe("Variant identity."),
+    elementUuid: z
+      .string()
+      .describe("UUID of the element this style variant targets."),
+  });
+}
+
+export function variantOverrideSchema() {
+  return z.object({
+    __type: z.literal("VariantOverride"),
+    variant: variantSchema().describe("The variant these overrides apply to."),
+    elements: z
+      .array(elementOverrideSchema())
+      .describe("Per-element overrides activated by this variant."),
+  });
+}
+export type VariantOverrideJson = z.infer<
+  ReturnType<typeof variantOverrideSchema>
+>;
+
+/** A single element's style/attr overrides under one variant. */
+export function elementOverrideSchema() {
+  return z.object({
+    __type: z.literal("ElementOverride"),
+    uuid: z.string().describe("Target element (TplNode) UUID."),
+    styles: z
+      .record(z.string(), z.string())
+      .optional()
+      .describe("CSS property overrides for this element under this variant."),
+    attrs: z
+      .record(z.string(), z.string())
+      .optional()
+      .describe(
+        "HTML attribute overrides for this element under this variant."
+      ),
+  });
+}
+export type ElementOverrideJson = z.infer<
+  ReturnType<typeof elementOverrideSchema>
+>;
+
+/** A standalone element read (a tpl subtree). */
+export function elementSchema() {
+  return z.object({
+    __type: z.literal("Element"),
+    baseVariantTplTree: z
+      .string()
+      .describe("The element's subtree as HTML markup."),
+  });
+}
+export type ElementJson = z.infer<ReturnType<typeof elementSchema>>;
+
+export function tokenSchema() {
+  return z.object({
+    __type: z.literal("Token"),
+    name: z.string().describe("Token name."),
+    uuid: z.string().describe("Token UUID."),
+    type: z
+      .enum(tokenTypes)
+      .describe("Token type, determining which CSS properties it applies to."),
+    fromProject: z
+      .string()
+      .optional()
+      .describe("Imported project id, present only for imported tokens."),
+    value: tokenValuesSchema().describe(
+      "Token values: base value (+ resolved alias) and per-variant values."
+    ),
+    override: z
+      .object({
+        __type: z.literal("TokenOverride"),
+        value: tokenValuesSchema().describe("Override values."),
+      })
+      .optional()
+      .describe("Local override of this imported/registered token."),
+  });
+}
+export type TokenJson = z.infer<ReturnType<typeof tokenSchema>>;
+
+/** A token's values: base value (+ resolved alias) and per-variant values. */
+export function tokenValuesSchema() {
+  return z.object({
+    __type: z.literal("TokenValues"),
+    value: z
+      .string()
+      .optional()
+      .describe("Base CSS value or `var(--token-...)`."),
+    resolvedValue: z
+      .string()
+      .optional()
+      .describe(
+        "Dereferenced value, present only when `value` is a token ref."
+      ),
+    variantedValues: z
+      .array(variantedValueSchema())
+      .optional()
+      .describe("Per-global-variant values."),
+  });
+}
+export type TokenValuesJson = z.infer<ReturnType<typeof tokenValuesSchema>>;
+
+/** A per-global-variant-combination value override. */
+export function variantedValueSchema() {
+  return z.object({
+    __type: z.literal("VariantedValue"),
+    variantUuids: z
+      .array(z.string())
+      .describe(
+        "Global-variant UUIDs whose combination this value applies to (order-independent)."
+      ),
+    value: z.string().describe("CSS value for this variant combination."),
+    resolvedValue: z
+      .string()
+      .optional()
+      .describe(
+        "Dereferenced value, present only when `value` is a token ref."
+      ),
+  });
+}
+export type VariantedValueJson = z.infer<
+  ReturnType<typeof variantedValueSchema>
+>;
+
+export function animationSchema() {
+  return z.object({
+    __type: z.literal("Animation"),
+    name: z.string().describe("Animation name."),
+    uuid: z.string().describe("Animation UUID."),
+    fromProject: z
+      .string()
+      .optional()
+      .describe("Imported project id, present only for imported animations."),
+    keyframesRule: z
+      .string()
+      .optional()
+      .describe("Full CSS @keyframes rule (omitted in minimal listings)."),
+  });
+}
+export type AnimationJson = z.infer<ReturnType<typeof animationSchema>>;
+
+/** Project-listing entry: the animation minus its keyframes body. */
+export function animationSummarySchema() {
+  return animationSchema().omit({ keyframesRule: true });
+}
+export type AnimationSummaryJson = z.infer<
+  ReturnType<typeof animationSummarySchema>
+>;
+
+export function invalidResourceSchema() {
+  return z.object({
+    __type: z.literal("InvalidResource"),
+    type: z
+      .enum([
+        "Component",
+        "Token",
+        "Element",
+        "Variant",
+        "VariantedValue",
+        "VariantGroup",
+        "Animation",
+        "Prop",
+      ])
+      .describe(
+        "Kind of resource that could not be found (matches its __type)."
+      ),
+    uuid: z.string().describe("The requested (missing) resource UUID."),
+    message: z.string().describe("Human-readable explanation."),
+  });
+}
+export type InvalidResourceJson = z.infer<
+  ReturnType<typeof invalidResourceSchema>
+>;
+
+export function screenBreakpointSchema() {
+  return z.object({
+    __type: z.literal("ScreenBreakpoint"),
+    name: z.string().describe("Breakpoint variant name."),
+    uuid: z.string().describe("Breakpoint variant UUID."),
+    minWidth: z.number().optional().describe("Min width in px, if set."),
+    maxWidth: z.number().optional().describe("Max width in px, if set."),
+  });
+}
+export type ScreenBreakpointJson = z.infer<
+  ReturnType<typeof screenBreakpointSchema>
+>;
+
+export function globalVariantGroupSchema() {
+  return z.object({
+    __type: z.literal("GlobalVariantGroup"),
+    name: z.string().describe("Global variant group name."),
+    uuid: z.string().describe("Global variant group UUID."),
+    fromProject: z
+      .string()
+      .optional()
+      .describe("Imported project id, present only for imported groups."),
+    variants: z.array(variantSchema()).describe("Variants in this group."),
+  });
+}
+export type GlobalVariantGroupJson = z.infer<
+  ReturnType<typeof globalVariantGroupSchema>
+>;
+
+/** A variant identity (name + uuid). */
+export function variantSchema() {
+  return z.object({
+    __type: z.literal("Variant"),
+    name: z.string().describe("Variant name."),
+    uuid: z.string().describe("Variant UUID."),
+  });
+}
+export type VariantJson = z.infer<ReturnType<typeof variantSchema>>;
+
+/** A reference to an imported (direct dependency) project. */
+export function importedProjectSchema() {
+  return z.object({
+    __type: z.literal("ImportedProject"),
+    id: z.string().describe("Imported project id."),
+    name: z.string().describe("Imported project name."),
+  });
+}
+export type ImportedProjectJson = z.infer<
+  ReturnType<typeof importedProjectSchema>
+>;

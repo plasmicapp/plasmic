@@ -248,6 +248,7 @@ import {
   getComponentArenaBaseFrame,
 } from "@/wab/shared/component-arenas";
 import { RootComponentVariantFrame } from "@/wab/shared/component-frame";
+import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import {
   CodeComponent,
   ComponentType,
@@ -2904,6 +2905,20 @@ export class StudioCtx extends WithDbCtx {
 
   openUiCopilotDialog(isOpen: boolean) {
     this._showUiCopilot.set(isOpen);
+  }
+
+  private _preferredAiOutputFormat = observable.box<AiOutputFormat>("json");
+
+  /**
+   * Serialization format an AI agent prefers for copilot tool output, declared
+   * via `window.PLASMIC_AI_TOOLS.identify`. Defaults to JSON.
+   */
+  preferredAiOutputFormat(): AiOutputFormat {
+    return this._preferredAiOutputFormat.get();
+  }
+
+  setPreferredAiOutputFormat(format: AiOutputFormat) {
+    this._preferredAiOutputFormat.set(format);
   }
 
   private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);

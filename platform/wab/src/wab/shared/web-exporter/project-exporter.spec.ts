@@ -1,7 +1,8 @@
 import { Bundle } from "@/wab/shared/bundler";
 import { generateSiteFromBundle } from "@/wab/shared/tests/site-tests-utils";
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
-import { serializeProject } from "@/wab/shared/web-exporter/project-exporter";
+import { jsonToXml } from "@/wab/shared/web-exporter/json-to-xml";
+import { buildProjectResource } from "@/wab/shared/web-exporter/project-exporter";
 
 describe("Project Serialization", () => {
   const site = generateSiteFromBundle(_bundle as [string, Bundle][]);
@@ -17,11 +18,11 @@ describe("Project Serialization", () => {
 
     // A single serialization covers the project and its imported projects,
     // since each section is a flattened view including dependency resources.
-    const output = serializeProject(site, {
+    const project = buildProjectResource(site, {
       projectId: "testProjectId",
       ...filters,
     });
-
-    expect(output).toMatchSnapshot();
+    expect(jsonToXml(project, true)).toMatchSnapshot();
+    expect(project).toMatchSnapshot();
   });
 });

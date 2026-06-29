@@ -12,6 +12,7 @@ import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { filterFalsy, jsonClone, spawn } from "@/wab/shared/common";
+import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import {
   isFrameComponent,
   isPageComponent,
@@ -194,6 +195,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             },
           };
         }
+      },
+      async setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void> {
+        studioCtx.setPreferredAiOutputFormat(format);
       },
     }),
     [studioCtx]

@@ -142,7 +142,6 @@
     "@types/uuid": "^8.0.0",
     "@types/validator": "^13.15.10",
     "@types/workerpool": "^6.0.0",
-    "@types/xml": "^1.0.11",
     "@vitejs/plugin-react": "^4.7.0",
     "babel-jest": "^29.7.0",
     "concurrently": "^5.3.0",
@@ -421,7 +420,7 @@
     "uuid": "^11.1.1",
     "validator": "^13.15.35",
     "workerpool": "^6.5.1",
-    "xml": "^1.0.1",
+    "xml-js": "^1.6.11",
     "yargs": "^16.2.0",
     "zod": "3.25.28"
   },

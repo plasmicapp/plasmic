@@ -36,6 +36,7 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
            model: "<model>",
            client: "<client>",
            skill: "<skill>",
+           outputFormat: "<json|xml>",
          });
        }
        await new Promise((r) => setTimeout(r, 1000));
@@ -52,8 +53,9 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
    - `model` — Model name as known to the agent (e.g. `claude-opus-4-7`, `anthropic/claude-sonnet-4-6`, `gpt-5.3-codex`).
    - `client` — AI client/CLI invoking the tool (e.g. `claude-code`, `claude-code@1.x`, `opencode`, `cursor`, `cline`).
    - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.1.0`, `unknown`).
+   - `outputFormat` — Preferred format for tool output, `"json"` or `"xml"`.
 
-   Pass `"unknown"` for any field you cannot reliably identify.
+   Pass `"unknown"` for any required string field you cannot reliably identify.
 
    If `success` is false, inform the user and stop.
 
