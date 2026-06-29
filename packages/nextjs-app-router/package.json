@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
-    "@types/node": "^20.8.9",
+    "@types/node": "^20.19.43",
     "@types/react": "^18",
     "@types/yargs": "^17.0.35",
     "next": "^13.5.11",

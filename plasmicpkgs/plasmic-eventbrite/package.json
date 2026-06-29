@@ -44,7 +44,7 @@
     "tslib": "^2.3.1"
   },
   "dependencies": {
-    "@types/uuid": "^9.0.2",
+    "@types/uuid": "^9.0.8",
     "change-case": "^4.1.2",
     "uuid": "^9.0.0"
   }

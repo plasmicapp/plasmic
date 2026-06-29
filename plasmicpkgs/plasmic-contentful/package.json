@@ -45,7 +45,7 @@
     "@plasmicapp/host": "2.0.7",
     "@plasmicapp/query": "0.1.85",
     "@plasmicpkgs/contentful": "0.0.22",
-    "@types/dlv": "^1.1.2",
+    "@types/dlv": "^1.1.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "react": "^18.2.0",

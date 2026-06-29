@@ -38,7 +38,7 @@
     }
   ],
   "devDependencies": {
-    "@types/node": "^20.8.9"
+    "@types/node": "^20.19.43"
   },
   "dependencies": {
     "@plasmicapp/isomorphic-unfetch": "1.0.3",

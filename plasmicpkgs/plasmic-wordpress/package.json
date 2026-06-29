@@ -54,7 +54,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@types/dlv": "^1.1.2",
+    "@types/dlv": "^1.1.5",
     "dlv": "^1.1.3"
   }
 }
