@@ -30,7 +30,6 @@ import {
   ArgMeta,
   DataSourceError,
   DataSourceMeta,
-  Filters,
   FiltersLogic,
   OperationMeta,
   OperationTemplate,
@@ -55,7 +54,6 @@ import {
 } from "@/wab/shared/dynamic-bindings";
 import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { DataSourceOpExpr, Site } from "@/wab/shared/model/classes";
-import { CrudFilter, CrudFilters, LogicalFilter } from "@pankod/refine-core";
 import {
   Config,
   JsonTree,
@@ -321,101 +319,12 @@ export async function getDataSourceOperation(
   return JSON.parse(encryptor.from(str)) as OperationTemplate;
 }
 
-const JSON_LOGIC_TO_REFINE_OPERATORS = {
-  "===": "eq",
-  "==": "eq",
-  "!==": "ne",
-  "!=": "ne",
-  ">": "gt",
-  ">=": "gte",
-  "<": "lt",
-  "<=": "lte",
-  inArray: "in",
-  inString: "contains",
-  in: "contains",
-} as const;
-
 export const JSON_LOGIC_REVERSE_OPERATORS = {
   ">=": "<=",
   "<=": ">=",
   ">": "<",
   "<": ">",
 } as const;
-
-/**
- * Attempts to convert Json Logic filters to Refine's CrudFilters.
- * Unfortunately the CrudFilters are pretty limited, and only supports
- * a conjunction of disjunctions. We may need to either similarly limit
- * query builder, or will need to work around Refine.
- */
-export function filtersToRefineFilters(
-  filters: Filters,
-  config: Config
-): CrudFilters {
-  const filtersLogic = filters.tree
-    ? toJsonLogicFormat(filters.tree, config)
-    : filters.logic;
-  if (!filtersLogic) {
-    return [];
-  }
-  const transform = (logic: FiltersLogic): CrudFilters | CrudFilter => {
-    if ("or" in logic) {
-      return {
-        operator: "or",
-        value: logic.or.map((c) => transform(c as any) as LogicalFilter),
-      };
-    } else if ("!" in logic) {
-      const res = transform(logic["!"]);
-      const operator = Object.keys(res)[0];
-      return {
-        ...res,
-        operator: `n${operator}`,
-      } as CrudFilter;
-    } else if ("in" in logic) {
-      const [value, field] = logic.in as any[];
-      return {
-        operator: JSON_LOGIC_TO_REFINE_OPERATORS["in"],
-        field: field.var,
-        value,
-      };
-    } else {
-      const operator = Object.keys(logic)[0];
-      if (logic[operator].length === 3) {
-        const reverseOperator = JSON_LOGIC_REVERSE_OPERATORS[operator];
-        const field = logic[operator][1].var;
-        const value1 = logic[operator][0];
-        const value2 = logic[operator][2];
-        return [
-          {
-            operator: JSON_LOGIC_TO_REFINE_OPERATORS[operator],
-            field,
-            value: value2,
-          },
-          {
-            operator: JSON_LOGIC_TO_REFINE_OPERATORS[reverseOperator],
-            field,
-            value: value1,
-          },
-        ];
-      } else {
-        const field = logic[operator][0].var;
-        const value = logic[operator][1];
-        return {
-          operator: JSON_LOGIC_TO_REFINE_OPERATORS[operator],
-          field,
-          value,
-        };
-      }
-    }
-  };
-
-  if ("and" in filtersLogic) {
-    return filtersLogic.and.flatMap((x) => transform(x as any));
-  } else {
-    const transformed = transform(filtersLogic as FiltersLogic);
-    return Array.isArray(transformed) ? transformed : [transformed];
-  }
-}
 
 export function toJsonLogicFormat(
   tree: JsonTree,

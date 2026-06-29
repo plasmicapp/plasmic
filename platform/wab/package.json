@@ -204,7 +204,6 @@
     "@okta/jwt-verifier": "^4.0.2",
     "@opentelemetry/api": "^1.9.1",
     "@pankod/refine-core": "^3.58.1",
-    "@pankod/refine-supabase": "^4.3.0",
     "@plasmicapp/data-sources": "^1.0.15",
     "@plasmicapp/data-sources-context": "0.1.24",
     "@plasmicapp/host": "^2.0.7",

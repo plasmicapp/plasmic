@@ -3221,13 +3221,6 @@
     tslib "^2.3.1"
     warn-once "^0.1.0"
 
-"@pankod/refine-supabase@^4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-supabase/-/refine-supabase-4.3.0.tgz#367ee71697e68068e08206850204dd4baafd52e5"
-  integrity sha512-KdApR3CTdBzrB1A8p2iu6ykST7ha8p8Txt2s+HkIQ4mEz9UugzdsOUrRo6V5kJGy87Fp8GXSyDRae10g7RrAGQ==
-  dependencies:
-    "@supabase/supabase-js" "^2.7.0"
-
 "@parcel/watcher-android-arm64@2.5.6":
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/@parcel/watcher-android-arm64/-/watcher-android-arm64-2.5.6.tgz#5f32e0dba356f4ac9a11068d2a5c134ca3ba6564"
@@ -7260,7 +7253,7 @@
   dependencies:
     "@supabase/node-fetch" "^2.6.14"
 
-"@supabase/supabase-js@^2.38.4", "@supabase/supabase-js@^2.7.0":
+"@supabase/supabase-js@^2.38.4":
   version "2.38.4"
   resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-2.38.4.tgz#ca075f7aa5ad0e33cb39b0254053087c56323e4f"
   integrity sha512-bYwxm/GosvRqOMIv6YP7qUTZWi/trgHtDWUEZDEmyRHW24d0JYIb1GOt6RaO2hsWlecn88DAJIpjoNbprocgRA==

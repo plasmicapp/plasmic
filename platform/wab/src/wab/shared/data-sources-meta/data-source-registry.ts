@@ -24,7 +24,6 @@ import {
   QueryBuilderPostgresConfig,
 } from "@/wab/shared/data-sources-meta/postgres-meta";
 import {
-  QueryBuilderSupabaseConfig,
   SUPABASE_META,
   SupabaseDataSource,
 } from "@/wab/shared/data-sources-meta/supabase-meta";
@@ -86,7 +85,6 @@ export function getAllDataSourceTypes() {
 }
 
 export const DATA_SOURCE_QUERY_BUILDER_CONFIG = {
-  supabase: QueryBuilderSupabaseConfig,
   postgres: QueryBuilderPostgresConfig,
   airtable: QueryBuilderAirtableConfig,
   tutorialdb: QueryBuilderTutorialDbConfig,

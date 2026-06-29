@@ -1,13 +1,5 @@
 import type { DataSource } from "@/wab/server/entities/Entities";
-import {
-  DataSourceMeta,
-  FilterArgMeta,
-  SortArgMeta,
-  TableArgMeta,
-} from "@/wab/shared/data-sources-meta/data-sources";
-import { capitalizeFirst } from "@/wab/shared/strs";
-import { DataSourceSchema } from "@plasmicapp/data-sources";
-import { camelCase } from "lodash";
+import { DataSourceMeta } from "@/wab/shared/data-sources-meta/data-sources";
 
 export interface SupabaseDataSource extends DataSource {
   source: "supabase";
@@ -18,50 +10,6 @@ export interface SupabaseDataSource extends DataSource {
     url: string;
   };
 }
-
-const TABLE_TYPE: TableArgMeta = {
-  type: "table",
-  label: "Table",
-  required: true,
-  options: (schema: DataSourceSchema) => {
-    return schema.tables.map((table) => ({
-      value: table.id,
-      label: capitalizeFirst(camelCase(table.id)),
-    }));
-  },
-};
-
-const makeFields = (schema: DataSourceSchema, tableId?: string) => {
-  const table = tableId
-    ? schema.tables.find((t) => t.id === tableId)
-    : undefined;
-  if (table) {
-    return Object.fromEntries(
-      table.fields
-        .filter((field) => field.type !== "unknown")
-        .map((field) => [
-          field.id,
-          {
-            type: field.type,
-            label: capitalizeFirst(camelCase(field.id)),
-          },
-        ])
-    );
-  }
-  return {};
-};
-
-const FILTER_TYPE: FilterArgMeta = {
-  type: "filter[]",
-  label: "Filters",
-  fields: makeFields,
-};
-
-const SORT_TYPE: SortArgMeta = {
-  type: "sort[]",
-  label: "Sort by",
-  fields: makeFields,
-};
 
 export const SUPABASE_META: DataSourceMeta = {
   id: "supabase",
@@ -82,13 +30,7 @@ export const SUPABASE_META: DataSourceMeta = {
       description: "The REST endpoint for querying your Supabase",
     },
   },
-  studioOps: {
-    // schemaOp: {
-    //   name: "getSchema",
-    //   type: "read",
-    //   args: {},
-    // },
-  },
+  studioOps: {},
   ops: [
     {
       name: "uploadFile",
@@ -153,147 +95,5 @@ export const SUPABASE_META: DataSourceMeta = {
         },
       },
     },
-    // {
-    //   name: "getMany",
-    //   label: "Fetch rows by IDs",
-    //   type: "read",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     ids: {
-    //       type: "string[]",
-    //       label: "Row IDs",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "getList",
-    //   label: "Query for rows",
-    //   type: "read",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     filters: FILTER_TYPE,
-    //     sort: SORT_TYPE,
-    //   },
-    // },
-    // {
-    //   name: "getOne",
-    //   label: "Fetch row by ID",
-    //   type: "read",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     id: {
-    //       type: "string",
-    //       label: "ID",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "create",
-    //   label: "Create row",
-    //   type: "write",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     variables: {
-    //       type: "dict",
-    //       label: "Values",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "createMany",
-    //   label: "Create rows",
-    //   type: "write",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     variables: {
-    //       type: "dict[]",
-    //       label: "Values",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "updateOne",
-    //   label: "Update row",
-    //   type: "write",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     variables: {
-    //       type: "dict",
-    //       label: "Values",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "updateMany",
-    //   label: "Update rows",
-    //   type: "write",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     variables: {
-    //       type: "dict[]",
-    //       label: "Values",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "deleteOne",
-    //   label: "Delete row",
-    //   type: "write",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     id: {
-    //       type: "string",
-    //       label: "ID",
-    //       required: true,
-    //     },
-    //   },
-    // },
-    // {
-    //   name: "deleteMany",
-    //   label: "Delete rows",
-    //   type: "write",
-    //   args: {
-    //     resource: TABLE_TYPE,
-    //     ids: {
-    //       type: "string[]",
-    //       label: "IDs",
-    //       required: true,
-    //     },
-    //   },
-    // },
   ],
-};
-
-const OPERATORS_NOT_AVAILABLE = ["proximity"];
-
-export const QueryBuilderSupabaseConfig = {
-  types: {
-    text: {
-      valueSources: ["value"],
-      excludeOperators: OPERATORS_NOT_AVAILABLE,
-    },
-    datetime: {
-      valueSources: ["value"],
-      excludeOperators: OPERATORS_NOT_AVAILABLE,
-      widgets: {
-        datetime: {
-          widgetProps: {
-            timeFormat: "HH:mm:ss",
-            dateFormat: "YYYY-MM-DD",
-            valueFormat: "YYYY-MM-DDTHH:mm:ss",
-          },
-        },
-      },
-    },
-    number: {
-      valueSources: ["value"],
-      excludeOperators: OPERATORS_NOT_AVAILABLE,
-    },
-  },
 };
