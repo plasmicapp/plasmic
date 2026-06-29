@@ -60,7 +60,3 @@ shamefullyHoist: true
 # Link local workspace packages even when referenced by plain version range.
 linkWorkspacePackages: deep
 preferWorkspacePackages: true
-
-# pnpm 11 defaults minimumReleaseAge to 1440 min.
-# Remove this for some degree of supply chain attack resistance
-minimumReleaseAge: 0
