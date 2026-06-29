@@ -1,8 +1,8 @@
-import { isUrlSafe } from "@/wab/server/util/url";
+import { fetchUntrusted, UnsafeUrlError } from "@/wab/server/util/url";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { GraphqlDataSource } from "@/wab/shared/data-sources-meta/graphql-meta";
+import { AxiosResponse } from "axios";
 import { isEmpty, isString } from "lodash";
-import fetch, { Response } from "node-fetch";
 
 export function makeGraphqlFetcher(source: GraphqlDataSource) {
   return new GraphqlFetcher(source);
@@ -121,14 +121,26 @@ export class GraphqlFetcher {
     variables?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(await this.makePath(), {
-      method: "POST",
-      headers: this.makeHeaders(opts.headers),
-      body: JSON.stringify({
-        query: opts.query,
-        variables: opts.variables,
-      }),
-    });
+    const url = this.makeUrl().toString();
+    const headers = this.makeHeaders(opts.headers);
+    let res: AxiosResponse<string>;
+    try {
+      res = await fetchUntrusted({
+        method: "POST",
+        url,
+        headers,
+        data: {
+          query: opts.query,
+          variables: opts.variables,
+        },
+      });
+    } catch (e) {
+      if (e instanceof UnsafeUrlError) {
+        throw new DataSourceError("Invalid URL", 400);
+      } else {
+        throw e;
+      }
+    }
     return processResult(res);
   }
 
@@ -141,19 +153,14 @@ export class GraphqlFetcher {
     return this.query(opts);
   }
 
-  private async makePath(params?: Record<string, string>) {
+  private makeUrl(params?: Record<string, string>) {
     const url = new URL(this.baseUrl);
-
-    const isSafe = await isUrlSafe(url);
-    if (!isSafe) {
-      throw new DataSourceError("Invalid URL", 400);
-    }
 
     const searchParams = new URLSearchParams(params);
     Array.from(searchParams.entries()).forEach(([k, v]) => {
       url.searchParams.append(k, v);
     });
-    return url.toString();
+    return url;
   }
 
   private makeHeaders(headers?: Record<string, string>) {
@@ -170,8 +177,8 @@ export class GraphqlFetcher {
   }
 }
 
-async function processResult(res: Response) {
-  let processedResponse: string | any = await res.text();
+async function processResult(res: AxiosResponse<string>) {
+  let processedResponse: string | any = res.data;
   const statusCode = res.status;
   try {
     processedResponse = JSON.parse(processedResponse);
@@ -188,7 +195,7 @@ async function processResult(res: Response) {
     data: {
       response: processedResponse,
       statusCode,
-      headers: Object.fromEntries(res.headers.entries()),
+      headers: { ...res.headers },
     },
   };
 }

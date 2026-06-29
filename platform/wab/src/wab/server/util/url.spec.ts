@@ -1,25 +1,114 @@
-import { isIpAddrSafe } from "@/wab/server/util/url";
+/** @jest-environment node */
+import {
+  setupSsrfTestServers,
+  SsrfTestServers,
+  startInternalTestServer,
+  TestServer,
+} from "@/wab/server/testonly/test-server";
+import { fetchUntrusted, UnsafeUrlError } from "@/wab/server/util/url";
 
-describe("isIpAddrSafe", () => {
-  it("should return true for safe public IP addresses", () => {
-    expect(isIpAddrSafe("1.1.1.1")).toBe(true);
-    expect(isIpAddrSafe("8.8.8.8")).toBe(true);
-    expect(isIpAddrSafe("2000:0000:0000:0000:0000:0000:0000:0000")).toBe(true);
-    expect(isIpAddrSafe("3fff:ffff:ffff:ffff:ffff:ffff:ffff:ffff")).toBe(true);
+describe("fetchUntrusted", () => {
+  let ssrf: SsrfTestServers | undefined;
+
+  beforeEach(async () => {
+    ssrf = await setupSsrfTestServers();
   });
 
-  it("should return false for private IP addresses", () => {
-    expect(isIpAddrSafe("10.0.0.1")).toBe(false);
-    expect(isIpAddrSafe("127.0.0.1")).toBe(false);
-    expect(isIpAddrSafe("169.254.169.252")).toBe(false);
-    expect(isIpAddrSafe("172.16.0.1")).toBe(false);
-    expect(isIpAddrSafe("192.168.0.1")).toBe(false);
-    expect(isIpAddrSafe("fc00:0000:0000:0000:0000:0000:0000:0000")).toBe(false);
+  afterEach(async () => {
+    await ssrf?.dispose();
   });
 
-  it("should return false for invalid IP addresses", () => {
-    expect(isIpAddrSafe("256.256.256.256")).toBe(false);
-    expect(isIpAddrSafe("not.an.ip.address")).toBe(false);
-    expect(isIpAddrSafe("")).toBe(false);
+  it("fetches an external IP", async () => {
+    await expect(
+      fetchUntrusted({
+        method: "GET",
+        url: ssrf!.externalGoodServer.url,
+      })
+    ).resolves.toMatchObject({
+      status: 200,
+      data: ssrf!.expectedGoodContent,
+    });
+    expect(ssrf!.externalGoodServer.requestCount()).toBe(1);
   });
+
+  it("does not fetch an internal IP", async () => {
+    await expect(
+      fetchUntrusted({ method: "GET", url: ssrf!.internalServer.url })
+    ).rejects.toThrow(UnsafeUrlError);
+    expect(ssrf!.internalServer.requestCount()).toBe(0);
+  });
+
+  it("does not fetch an internal IP via external redirect", async () => {
+    await expect(
+      fetchUntrusted({ method: "GET", url: ssrf!.externalBadServer.url })
+    ).rejects.toThrow(UnsafeUrlError);
+    expect(ssrf!.externalBadServer.requestCount()).toBe(1);
+    expect(ssrf!.internalServer.requestCount()).toBe(0);
+  });
+});
+
+// These tests are skipped if these services go down.
+describe("fetchUntrusted - e2e test with external redirect service", () => {
+  const REDIRECT_SERVICES = [
+    "https://httpbin.org",
+    "https://nghttp2.org/httpbin",
+  ];
+
+  function redirectTo(redirectService: string, targetUrl: string) {
+    return `${redirectService}/redirect-to?url=${encodeURIComponent(
+      targetUrl
+    )}&status_code=302`;
+  }
+
+  let internalServer: TestServer | undefined;
+
+  beforeEach(async () => {
+    internalServer = await startInternalTestServer((_req, res) => {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("INTERNAL ONLY");
+    });
+  });
+
+  afterEach(async () => {
+    await internalServer?.dispose();
+  });
+
+  it("follows redirect with fetch but fails with fetchUntrusted", async () => {
+    for (const redirectService of REDIRECT_SERVICES) {
+      // Craft URL with 2 redirect hops (external -> external -> internal)
+      const url = redirectTo(
+        redirectService,
+        redirectTo(redirectService, internalServer!.url)
+      );
+
+      let response: Response;
+      try {
+        response = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        // If the initial fetch succeeds, verify we hit our internal server.
+        expect(await response.text()).toBe("INTERNAL ONLY");
+        expect(internalServer!.requestCount()).toBe(1);
+      } catch (e) {
+        // If the initial fetch fails, we try the next redirect service.
+        console.warn(`Skipping ${redirectService}`, e);
+        continue;
+      }
+
+      // fetchUntrusted should reject the second redirect.
+      let redirectCount = 0;
+      await expect(
+        fetchUntrusted({
+          method: "GET",
+          url,
+          beforeRedirect: () => {
+            ++redirectCount;
+          },
+        })
+      ).rejects.toThrow(UnsafeUrlError);
+      expect(redirectCount).toBe(2);
+      expect(internalServer!.requestCount()).toBe(1); // unchanged
+      return;
+    }
+
+    console.warn("url.spec.ts - ALL REDIRECT SERVICES SKIPPED");
+  }, 30000);
 });

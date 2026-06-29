@@ -1,9 +1,9 @@
 import { base64StringToBuffer } from "@/wab/server/data-sources/data-utils";
-import { isUrlSafe } from "@/wab/server/util/url";
+import { fetchUntrusted, UnsafeUrlError } from "@/wab/server/util/url";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { HttpDataSource } from "@/wab/shared/data-sources-meta/http-meta";
+import { AxiosResponse } from "axios";
 import { isEmpty, isNil, isString } from "lodash";
-import fetch, { Response } from "node-fetch";
 
 const DEFAULT_TIMEOUT = 175000;
 
@@ -23,12 +23,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(await this.makePath(opts.path, opts.params), {
-      method: "GET",
-      headers: this.makeHeaders(opts.headers),
-      timeout: DEFAULT_TIMEOUT,
-    });
-    return processResult(res);
+    return this.request("GET", opts);
   }
 
   async post(opts: {
@@ -37,13 +32,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(await this.makePath(opts.path, opts.params), {
-      method: "POST",
-      headers: this.makeHeaders(opts.headers),
-      body: bodyToFetchBody(opts.body),
-      timeout: DEFAULT_TIMEOUT,
-    });
-    return processResult(res);
+    return this.request("POST", opts);
   }
 
   async put(opts: {
@@ -52,13 +41,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(await this.makePath(opts.path, opts.params), {
-      method: "PUT",
-      headers: this.makeHeaders(opts.headers),
-      body: bodyToFetchBody(opts.body),
-      timeout: DEFAULT_TIMEOUT,
-    });
-    return processResult(res);
+    return this.request("PUT", opts);
   }
 
   async delete(opts: {
@@ -66,12 +49,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(await this.makePath(opts.path, opts.params), {
-      method: "DELETE",
-      headers: this.makeHeaders(opts.headers),
-      timeout: DEFAULT_TIMEOUT,
-    });
-    return processResult(res);
+    return this.request("DELETE", opts);
   }
 
   async patch(opts: {
@@ -80,16 +58,41 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(await this.makePath(opts.path, opts.params), {
-      method: "PATCH",
-      headers: this.makeHeaders(opts.headers),
-      body: bodyToFetchBody(opts.body),
-      timeout: DEFAULT_TIMEOUT,
-    });
+    return this.request("PATCH", opts);
+  }
+
+  private async request(
+    method: string,
+    opts: {
+      path?: string;
+      body?: string | object;
+      params?: Record<string, string>;
+      headers?: Record<string, string>;
+    }
+  ) {
+    const url = this.makeUrl(opts.path, opts.params).toString();
+    const headers = this.makeHeaders(opts.headers);
+    const data = bodyToFetchBody(opts.body);
+    let res: AxiosResponse<string>;
+    try {
+      res = await fetchUntrusted({
+        method,
+        url,
+        headers,
+        data,
+        timeout: DEFAULT_TIMEOUT,
+      });
+    } catch (e) {
+      if (e instanceof UnsafeUrlError) {
+        throw new DataSourceError("Invalid URL", 400);
+      } else {
+        throw e;
+      }
+    }
     return processResult(res);
   }
 
-  private async makePath(path?: string, params?: Record<string, string>) {
+  private makeUrl(path?: string, params?: Record<string, string>) {
     const fixedPath = isNil(path)
       ? ""
       : path.startsWith("/")
@@ -97,16 +100,11 @@ export class HttpFetcher {
       : path;
     const url = new URL(this.baseUrl + fixedPath);
 
-    const isSafe = await isUrlSafe(url);
-    if (!isSafe) {
-      throw new DataSourceError("Invalid URL", 400);
-    }
-
     const searchParams = new URLSearchParams(params);
     Array.from(searchParams.entries()).forEach(([k, v]) => {
       url.searchParams.append(k, v);
     });
-    return url.toString();
+    return url;
   }
 
   private makeHeaders(headers?: Record<string, string>) {
@@ -119,8 +117,8 @@ export class HttpFetcher {
   }
 }
 
-async function processResult(res: Response) {
-  let processedResponse: string | any = await res.text();
+async function processResult(res: AxiosResponse<string>) {
+  let processedResponse: string | any = res.data;
   const statusCode = res.status;
   try {
     processedResponse = JSON.parse(processedResponse);
@@ -137,7 +135,7 @@ async function processResult(res: Response) {
     data: {
       response: processedResponse,
       statusCode,
-      headers: Object.fromEntries(res.headers.entries()),
+      headers: { ...res.headers },
     },
   };
 }
