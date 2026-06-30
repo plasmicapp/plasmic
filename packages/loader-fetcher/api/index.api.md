@@ -111,7 +111,7 @@ export interface FetcherOptions {
     };
     // (undocumented)
     manualRedirect?: boolean;
-    // (undocumented)
+    // @deprecated (undocumented)
     nativeFetch?: boolean;
     // (undocumented)
     platform?: "react" | "nextjs" | "gatsby";

@@ -16,7 +16,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "scripts": {
     "build": "pnpm build:types && pnpm build:index",
@@ -43,7 +43,6 @@
   "dependencies": {
     "@plasmicapp/data-sources-context": "0.1.24",
     "@plasmicapp/host": "2.0.8",
-    "@plasmicapp/isomorphic-unfetch": "1.0.3",
     "@plasmicapp/query": "0.1.86",
     "fast-stringify": "^2.0.0"
   },

@@ -75,6 +75,7 @@ export interface InitOptions {
         tagPrefix?: string;
     };
     manualRedirect?: boolean;
+    // @deprecated (undocumented)
     nativeFetch?: boolean;
     // (undocumented)
     onClientSideFetch?: "warn" | "error";

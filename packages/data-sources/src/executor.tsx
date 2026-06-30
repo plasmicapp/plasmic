@@ -1,5 +1,4 @@
 import { PlasmicDataSourceContextValue } from "@plasmicapp/data-sources-context";
-import fetch from "@plasmicapp/isomorphic-unfetch";
 import { wrapLoadingFetcher } from "@plasmicapp/query";
 import stringify from "fast-stringify";
 import { addPlaceholdersToUserArgs } from "./placeholders";

@@ -15,7 +15,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "scripts": {
     "build": "pnpm build:types && pnpm build:index",

@@ -42,7 +42,7 @@
     "react-server-conditional.d.ts"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=18"
   },
   "scripts": {
     "build": "pnpm build:types && pnpm build:index && pnpm build:react-server",

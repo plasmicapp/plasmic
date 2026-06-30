@@ -25,6 +25,7 @@ export interface FetcherOptions {
     tagPrefix?: string;
   };
   skipHead?: boolean;
+  /** @deprecated No-op. Native fetch is always used now. */
   nativeFetch?: boolean;
   manualRedirect?: boolean;
 }

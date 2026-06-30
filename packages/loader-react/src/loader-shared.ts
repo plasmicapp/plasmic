@@ -78,7 +78,7 @@ export interface InitOptions {
   skipHead?: boolean;
 
   /**
-   * If true, uses browser / node's native fetch
+   * @deprecated No-op. Native fetch is always used now.
    */
   nativeFetch?: boolean;
 

@@ -1,5 +1,3 @@
-import unfetch from "@plasmicapp/isomorphic-unfetch";
-
 export interface ComponentMeta {
   id: string;
   usedComponents: string[];
@@ -170,6 +168,7 @@ export class Api {
       host?: string;
       apiHost?: string;
       cdnHost?: string;
+      /** @deprecated No-op. Native fetch is always used now. */
       nativeFetch?: boolean;
       manualRedirect?: boolean;
     }
@@ -177,9 +176,7 @@ export class Api {
     this.apiHost =
       opts.apiHost ?? opts.host ?? "https://codegen-origin.plasmic.app";
     this.cdnHost = opts.cdnHost ?? opts.host ?? "https://codegen.plasmic.app";
-    this.fetch = (
-      opts.nativeFetch && globalThis.fetch ? globalThis.fetch : unfetch
-    ).bind(globalThis);
+    this.fetch = globalThis.fetch.bind(globalThis);
   }
 
   async fetchLoaderData(
