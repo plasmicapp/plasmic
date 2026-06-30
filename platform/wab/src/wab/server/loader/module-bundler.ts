@@ -111,8 +111,6 @@ type BundleOpts = {
   browserOnly: boolean;
 };
 
-const RE_RENDERER_FILE = /\/render__[^./]*\.tsx/g;
-
 function componentEntrypoint(c: ComponentExportOutput) {
   return c.isPage ? c.renderModuleFileName : c.skeletonModuleFileName;
 }
@@ -200,6 +198,7 @@ async function bundleModulesEsbuild(
       entryNames: "[name]",
       preserveSymlinks: true,
       plugins: withoutNils([
+        externalizeCssUrlsPlugin,
         fixAntdPathPlugin,
         // Handle newer antd4 whose transpiled code triggers this limitation (so we don't have to somehow pin antd4 version in our monorepo)
         // https://github.com/evanw/esbuild/issues/1941
@@ -376,6 +375,7 @@ async function bundleModulesEsbuild(
     // as https://developer.mozilla.org/en-US/docs/Web/CSS/inset
     // Not targetting a chrome version, as anything that works in older safari should work in recent chrome
     target: ["safari13"],
+    plugins: [externalizeCssUrlsPlugin],
   });
   // Next, the "common" / shared css like default react-web styles, project defaults,
   // etc. These are imported by css-entrypoint.tsx, so doing this will combine the
@@ -386,6 +386,7 @@ async function bundleModulesEsbuild(
     outdir: browserOutDir,
     bundle: true,
     plugins: [
+      externalizeCssUrlsPlugin,
       {
         name: "fix-slick-carousel",
         setup(build) {
@@ -749,6 +750,28 @@ async function getPkgJson(dir: string) {
     return undefined;
   }
 }
+
+/**
+ * Plasmic generates `url(...)` in CSS for user-supplied URLs in properties like
+ * `background-image`. If esbuild sees a relative URL like "/assets/logo.png"
+ * or "./assets/logo.png", it will try to resolve them locally, which would
+ * never work. Instead, we want these URLs to be resolved on the browser,
+ * so it has a chance to be resolved relative to the app host.
+ * Therefore, we mark all url-tokens as external. Note this makes url-tokens
+ * match the behavior of absolute URLs like `https://plasmic.app/logo.png`,
+ * which are already treated as external by esbuild.
+ */
+export const externalizeCssUrlsPlugin: EsbuildPlugin = {
+  name: "externalize-css-urls",
+  setup(build) {
+    build.onResolve({ filter: /.*/ }, (args) => {
+      if (args.kind === "url-token") {
+        return { path: args.path, external: true };
+      }
+      return undefined;
+    });
+  },
+};
 
 /**
  * An esbuild plugin that turns:
