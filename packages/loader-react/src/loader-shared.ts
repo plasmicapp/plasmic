@@ -930,10 +930,10 @@ export class PlasmicComponentLoader {
     return this.__internal.loadServerQueriesModule(fileName);
   }
 
-  async unstable__getServerQueriesData(
+  async getPlasmicQueriesData(
     renderData: ComponentRenderData,
-    $ctx: Record<string, any>,
-    $props?: Record<string, any>
+    ctx: Record<string, any>,
+    props?: Record<string, any>
   ) {
     const module = this.getExecFuncModule(
       renderData,
@@ -946,15 +946,26 @@ export class PlasmicComponentLoader {
     );
 
     try {
-      const $serverQueries = await module?.executeServerQueries($ctx, $props);
-      return $serverQueries;
+      const queries = await module?.getPlasmicQueriesData(ctx, props);
+      return queries;
     } catch (err) {
-      console.error("Error executing server queries function", err);
+      console.error("Error executing queries function", err);
       return {};
     }
   }
 
-  async unstable__generateMetadata(
+  /**
+   * @deprecated Use {@link PlasmicComponentLoader.getPlasmicQueriesData} instead.
+   */
+  async unstable__getServerQueriesData(
+    renderData: ComponentRenderData,
+    ctx: Record<string, any>,
+    props?: Record<string, any>
+  ) {
+    return this.getPlasmicQueriesData(renderData, ctx, props);
+  }
+
+  async getPlasmicMetadata(
     renderData: ComponentRenderData,
     props: {
       params: Promise<ParamsRecord> | ParamsRecord;
@@ -979,5 +990,18 @@ export class PlasmicComponentLoader {
     } catch (err) {
       return fallback;
     }
+  }
+
+  /**
+   * @deprecated Use {@link PlasmicComponentLoader.getPlasmicMetadata} instead.
+   */
+  async unstable__generateMetadata(
+    renderData: ComponentRenderData,
+    props: {
+      params: Promise<ParamsRecord> | ParamsRecord;
+      query: Promise<ParamsRecord> | ParamsRecord;
+    }
+  ) {
+    return this.getPlasmicMetadata(renderData, props);
   }
 }

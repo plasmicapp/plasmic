@@ -74,7 +74,7 @@ export function makeServerQueryTreeTypeImport() {
 }
 
 export function makeDataSourcesServerQueryImports() {
-  return `import { unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";`;
+  return `import { executePlasmicQueries } from "${getDataSourcesPackageName()}";`;
 }
 
 export function serializeServerQueryCustomFunctionArgs(

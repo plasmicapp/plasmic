@@ -83,7 +83,7 @@ export function getRscMetadata(
 export function serializeServerComponentBody(ctx: SerializerBaseContext) {
   return `const { params, searchParams, ...rest } = props;
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
-  const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+  const { cache: prefetchedCache } = await executePlasmicQueries(
     serverQueryTree,
     { $props: rest, $ctx: ctx }
   );
@@ -213,7 +213,7 @@ function serializeComponentServerQueryTree(
 
 /**
  * Serializes serverQueryTree for client components. Generates a root tree (no children).
- * Used by unstable_usePlasmicQueries(qs, { $ctx, $props, $state }) in the render component.
+ * Used by usePlasmicQueries(qs, { $ctx, $props, $state }) in the render component.
  */
 export function serializeRootServerQueryTree(ctx: SerializerBaseContext) {
   if (!ctx.hasServerQueries) {
@@ -329,12 +329,12 @@ export async function generateMetadata(props: ${propTypeName}): Promise<PlasmicP
  * since both functions share the same imports and helpers.
  */
 function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
-  let executeServerQueriesBody: string;
+  let getPlasmicQueriesDataBody: string;
 
   if (!ctx.hasServerQueries) {
-    executeServerQueriesBody = `return {};`;
+    getPlasmicQueriesDataBody = `return {};`;
   } else {
-    executeServerQueriesBody = `const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+    getPlasmicQueriesDataBody = `const { cache: prefetchedCache } = await executePlasmicQueries(
     serverQueryTree,
     { $props: props ?? {}, $ctx: ctx }
   );
@@ -342,8 +342,8 @@ function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
   }
 
   const module = `${serializeServerPageQueries(ctx)}
-export async function executeServerQueries(ctx: any, props?: any) {
-  ${executeServerQueriesBody}
+export async function getPlasmicQueriesData(ctx: any, props?: any) {
+  ${getPlasmicQueriesDataBody}
 }
 ${serializeLoaderGenerateMetadataSection(ctx)}
 ${serializeRequiredQueryFunctions(ctx)}`;
@@ -378,7 +378,7 @@ export function getAppRouterSkeletonImports({
 }: Pick<SerializerBaseContext, "hasServerQueries">) {
   return `import type { Metadata, ResolvingMetadata } from "next";${
     hasServerQueries
-      ? `\nimport { unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";`
+      ? `\nimport { executePlasmicQueries } from "${getDataSourcesPackageName()}";`
       : ""
   }`;
 }
@@ -389,7 +389,7 @@ export function getTanStackSkeletonImports({
   return `import { createFileRoute } from "@tanstack/react-router";${
     hasServerQueries
       ? `
-import { unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";
+import { executePlasmicQueries } from "${getDataSourcesPackageName()}";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
       : ""
   }`;
@@ -399,7 +399,7 @@ import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
  * Serializes `requiredServerQueryFunctions` export for loader. Includes user-registered
  * custom functions (non-hostless) referenced by queries in this component.
  *
- * loader-react reads this in unstable__getServerQueriesData / unstable__generateMetadata
+ * loader-react reads this in getPlasmicQueriesData / getPlasmicMetadata
  * to check that every function is present in REGISTERED_CUSTOM_FUNCTIONS before execution,
  * and throws a clear error if not.
  */
@@ -495,7 +495,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 /**
  * Serialize generateMetadata for Next.js App Router skeleton
- * Uses executeServerQueries to get dynamic data
+ * Uses executePlasmicQueries to get dynamic data
  */
 export function serializeAppRouterGenerateMetadata(ctx: SerializerBaseContext) {
   const { component, hasServerQueries } = ctx;

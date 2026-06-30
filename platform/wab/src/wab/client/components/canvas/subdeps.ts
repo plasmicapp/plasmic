@@ -52,9 +52,7 @@ export type SubDeps = {
   // See canvas-ctx.ts for why dataSources has this type.
   dataSources?: SetOptional<
     typeof PlasmicDataSources,
-    | "usePlasmicDataConfig"
-    | "usePlasmicInvalidate"
-    | "unstable_usePlasmicQueries"
+    "usePlasmicDataConfig" | "usePlasmicInvalidate" | "usePlasmicQueries"
   >;
   dataSourcesContext: typeof PlasmicDataSourcesContext;
   useGlobalActions?: typeof useGlobalActions;

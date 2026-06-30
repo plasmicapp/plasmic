@@ -48,7 +48,7 @@ type ClientQueryExecutionContext = Pick<
  *
  * Example codegen:
  *
- * export const serverQueryTree = {
+ * export const queryTree = {
  *   type: "component",
  *   queries: {
  *     films: { fn: $$.fetch, id: "fetch", args: ({ $q, $props, $ctx }) => [...] }
@@ -57,7 +57,7 @@ type ClientQueryExecutionContext = Pick<
  * };
  *
  * export function ClientComponent($props, $ctx) {
- *   const $q = usePlasmicQueries(serverQueryTree, { $ctx, $props, $state: null });
+ *   const $q = usePlasmicQueries(queryTree, { $ctx, $props, $state: null });
  *   return <div>{$q.films.data}</div>
  * }
  */

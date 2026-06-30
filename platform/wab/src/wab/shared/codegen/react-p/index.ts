@@ -958,7 +958,7 @@ ${
 }
 ${
   ctx.hasServerQueries
-    ? `import { unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
+    ? `import { usePlasmicQueries } from "${getDataSourcesPackageName()}";`
     : ""
 }
 ${ctx.hasServerQueries && !ctx.useRSC ? makeDataSourcesQueryTypeImports() : ""}
@@ -1453,7 +1453,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
           ? "const $stateRef = React.useRef<Record<string, unknown> | null>(null);"
           : ""
       }
-      const $q = unstable_usePlasmicQueries(${
+      const $q = usePlasmicQueries(${
         useRscServerWrapper && isPage ? "pageQueryTree" : "serverQueryTree"
       }, { $ctx, $props, $state: ${
           component.states.length ? "$stateRef.current" : "null"
@@ -2798,7 +2798,7 @@ function serializePageAwareSkeletonWrapperTs(
           params: (params ?? {}) as Record<string, string | string[] | undefined>,
           query: (deps.search ?? {}) as Record<string, string | string[] | undefined>,
         };
-        const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+        const { cache: prefetchedCache } = await executePlasmicQueries(
           serverQueryTree,
           { $props: {}, $ctx }
         );

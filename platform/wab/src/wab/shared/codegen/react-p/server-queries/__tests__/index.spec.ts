@@ -523,7 +523,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
   });
 
   describe("serializeServerComponentBody", () => {
-    it("passes $props and $ctx to unstable_executePlasmicQueries", () => {
+    it("passes $props and $ctx to executePlasmicQueries", () => {
       // Page component with a server query that references $state, plus a
       // private number state with a default value. stateSpecs is now carried
       // on the serverQueryTree itself, so the component body does not need to

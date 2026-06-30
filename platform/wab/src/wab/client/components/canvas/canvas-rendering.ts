@@ -3869,7 +3869,7 @@ const mkComponentLevelQueryFetcher = computedFn(
           ]
         );
         const new$Q =
-          sub.dataSources?.unstable_usePlasmicQueries?.(serverQueryTree, {
+          sub.dataSources?.usePlasmicQueries?.(serverQueryTree, {
             $ctx: ctx.env.$ctx ?? {},
             $props: ctx.env.$props ?? {},
             $state:

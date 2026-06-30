@@ -21,7 +21,7 @@ import type {
 import {
   _StatefulQueryResult as StatefulQueryResult,
   _StatefulQueryState as StatefulQueryState,
-  unstable_usePlasmicQueries as usePlasmicQueries,
+  usePlasmicQueries,
 } from "@plasmicapp/data-sources";
 import type { CustomFunctionRegistration } from "@plasmicapp/host";
 import type { SWRResponse } from "@plasmicapp/query";

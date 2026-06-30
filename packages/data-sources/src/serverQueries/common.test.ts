@@ -8,8 +8,8 @@ import {
   createInitial$State,
   resolveParams,
   safeExec,
-  wrapDollarQueriesForMetadata,
-  wrapDollarQueriesWithFallbacks,
+  wrapPlasmicQueriesForMetadata,
+  wrapPlasmicQueriesWithFallbacks,
 } from "./common";
 import { asyncFunc, asyncFuncCalls } from "./testonly/test-common";
 import { PlasmicQueryResult } from "./types";
@@ -160,13 +160,13 @@ describe("resolveParams", () => {
   });
 });
 
-describe("wrapDollarQueriesWithFallbacks, wrapDollarQueriesForMetadata", () => {
+describe("wrapPlasmicQueriesWithFallbacks, wrapPlasmicQueriesForMetadata", () => {
   const ifUndefined = () => "LOADING";
   const ifError = () => "ERROR";
 
   it("replaces undefined/error with fallback values", () => {
     const $queries = createDollarQueries(["loading", "rejected", "resolved"]);
-    const $fallback = wrapDollarQueriesWithFallbacks(
+    const $fallback = wrapPlasmicQueriesWithFallbacks(
       $queries,
       ifUndefined,
       ifError
@@ -193,7 +193,7 @@ describe("wrapDollarQueriesWithFallbacks, wrapDollarQueriesForMetadata", () => {
     expect(String($fallback.rejected.data)).toEqual("ERROR");
     expect($fallback.resolved.data).toEqual("RESOLVED");
 
-    const $metadata = wrapDollarQueriesForMetadata($queries);
+    const $metadata = wrapPlasmicQueriesForMetadata($queries);
     expect(
       `loading:${$metadata.loading.data} rejected:${$metadata.rejected.data} resolved:${$metadata.resolved.data}`
     ).toEqual("loading:… rejected:[ERROR] resolved:RESOLVED");
@@ -201,7 +201,7 @@ describe("wrapDollarQueriesWithFallbacks, wrapDollarQueriesForMetadata", () => {
 
   it("replaces fallback values in nested accesses", () => {
     const $queries = createDollarQueries(["loading", "rejected"]);
-    const $fallback = wrapDollarQueriesWithFallbacks(
+    const $fallback = wrapPlasmicQueriesWithFallbacks(
       $queries,
       ifUndefined,
       ifError

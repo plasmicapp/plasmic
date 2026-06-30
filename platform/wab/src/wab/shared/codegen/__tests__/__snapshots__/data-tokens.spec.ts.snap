@@ -538,7 +538,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   };
 }
 
-export async function executeServerQueries(ctx: any, props?: any) {
+export async function getPlasmicQueriesData(ctx: any, props?: any) {
   return {};
 }
 

@@ -42,8 +42,9 @@ import { getConnection } from "typeorm";
  * 18 - started returning list of component refs in codegen response to handle errors
  * 19 - fix css class name generation
  * 20 - style token overrides
+ * 21 - cached outputs with appDir=true include removed imports
  */
-export const LOADER_CACHE_BUST = "20";
+export const LOADER_CACHE_BUST = "21";
 
 /**
  * This represents the version of the loader API wire format; should reflect the

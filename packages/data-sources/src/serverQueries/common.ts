@@ -286,15 +286,15 @@ export function resolveParams<F extends (...args: any[]) => any>(
  * Wraps each PlasmicQueryResult so that they return a hardcoded string for
  * undefined/loading and error cases.
  */
-export function wrapDollarQueriesForMetadata<
+export function wrapPlasmicQueriesForMetadata<
   T extends Record<string, PlasmicQueryResult>
 >(
-  $queries: T,
+  queries: T,
   ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown,
   ifError?: (err: unknown) => unknown
 ): T {
-  return wrapDollarQueriesWithFallbacks(
-    $queries,
+  return wrapPlasmicQueriesWithFallbacks(
+    queries,
     ifUndefined ?? (() => "…"),
     ifError ?? (() => "[ERROR]")
   );
@@ -304,17 +304,17 @@ export function wrapDollarQueriesForMetadata<
  * Wraps each PlasmicQueryResult with a FallbackQueryResult to allow
  * setting fallbacks for undefined/loading and error cases.
  */
-export function wrapDollarQueriesWithFallbacks<
+export function wrapPlasmicQueriesWithFallbacks<
   T extends Record<string, PlasmicQueryResult>
 >(
-  $queries: T,
+  queries: T,
   ifUndefined: (promise: PlasmicUndefinedDataErrorPromise) => unknown,
   ifError: (err: unknown) => unknown
 ): T {
   return mapRecords(
     (_queryName, $query): PlasmicQueryResult =>
       new FallbackQueryResult($query, ifUndefined, ifError),
-    $queries
+    queries
   ) as T;
 }
 

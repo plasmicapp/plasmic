@@ -56,6 +56,9 @@ export function deriveFieldConfigs<T extends BaseFieldConfig>(specifiedFieldsPar
 // @public @deprecated (undocumented)
 export function executePlasmicDataOp<T extends SingleRowResult | ManyRowsResult>(op: DataOp, opts?: ExecuteOpts): Promise<T>;
 
+// @public
+export function executePlasmicQueries(rootNode: QueryComponentNode, env: InitialQueryExecutionContext): Promise<ExecutePlasmicQueriesResult>;
+
 // @public @deprecated (undocumented)
 export function executeServerQuery<F extends (...args: any[]) => any>(_query?: any): Promise<{
     data: ReturnType<F>;
@@ -282,15 +285,6 @@ export interface TableSchema {
 // @public (undocumented)
 export function throwIfPlasmicUndefinedDataError(err: unknown): void;
 
-// @public
-export function unstable_executePlasmicQueries(rootNode: QueryComponentNode, env: InitialQueryExecutionContext): Promise<ExecutePlasmicQueriesResult>;
-
-// @internal
-export function unstable_usePlasmicQueries(tree: QueryComponentNode, env: ClientQueryExecutionContext): Record<string, PlasmicQueryResult>;
-
-// @internal
-export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;
-
 // @public @deprecated (undocumented)
 export function useNormalizedData(rawData: unknown): NormalizedData | undefined;
 
@@ -307,6 +301,12 @@ export function usePlasmicDataOp<T extends SingleRowResult | ManyRowsResult, E =
 
 // @public
 export function usePlasmicInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
+
+// @internal
+export function usePlasmicQueries(tree: QueryComponentNode, env: ClientQueryExecutionContext): Record<string, PlasmicQueryResult>;
+
+// @internal
+export function wrapPlasmicQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>(queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;
 
 // (No @packageDocumentation comment for this package)
 

@@ -152,6 +152,13 @@ export class PlasmicComponentLoader {
     getExecFuncModule(renderData: ComponentRenderData, fileNameKey: "serverQueriesExecFuncFileName"): any;
     // (undocumented)
     getExternalVariation(variation: Record<string, string>, filters?: Parameters<typeof getExternalIds>[2]): Record<string, string>;
+    // (undocumented)
+    getPlasmicMetadata(renderData: ComponentRenderData, props: {
+        params: Promise<ParamsRecord> | ParamsRecord;
+        query: Promise<ParamsRecord> | ParamsRecord;
+    }): Promise<any>;
+    // (undocumented)
+    getPlasmicQueriesData(renderData: ComponentRenderData, ctx: Record<string, any>, props?: Record<string, any>): Promise<any>;
     maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;
     // (undocumented)
     maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
@@ -168,13 +175,13 @@ export class PlasmicComponentLoader {
     registerTrait(trait: string, meta: TraitMeta): void;
     setGlobalVariants(globalVariants: GlobalVariantSpec[]): void;
     substituteComponent<P>(component: React.ComponentType<P>, name: ComponentLookupSpec): void;
-    // (undocumented)
+    // @deprecated (undocumented)
     unstable__generateMetadata(renderData: ComponentRenderData, props: {
         params: Promise<ParamsRecord> | ParamsRecord;
         query: Promise<ParamsRecord> | ParamsRecord;
     }): Promise<any>;
-    // (undocumented)
-    unstable__getServerQueriesData(renderData: ComponentRenderData, $ctx: Record<string, any>, $props?: Record<string, any>): Promise<any>;
+    // @deprecated (undocumented)
+    unstable__getServerQueriesData(renderData: ComponentRenderData, ctx: Record<string, any>, props?: Record<string, any>): Promise<any>;
 }
 
 // (No @packageDocumentation comment for this package)

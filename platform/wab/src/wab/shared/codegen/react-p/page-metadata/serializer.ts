@@ -9,7 +9,7 @@ export function serializeGeneratePageMetadataBody(
   let body = `const ctx = await makeAppRouterPageCtx({ params, searchParams });\n`;
 
   if (opts.hasServerQueries) {
-    body += `  const { queries: $q } = await unstable_executePlasmicQueries(
+    body += `  const { queries: $q } = await executePlasmicQueries(
     metadataQueryTree,
     { $props: {}, $ctx: ctx }
   );

@@ -364,17 +364,17 @@ export class CanvasCtx {
       ? undefined
       : (this._win as any).__PlasmicDataSourcesBundle;
     // Also need to check usePlasmicDataConfig() as usePlasmicInvalidate() and
-    // unstable_usePlasmicQueries() depend on it, and usePlasmicDataConfig() is
+    // usePlasmicQueries() depend on it, and usePlasmicDataConfig() is
     // actually re-exported from @plasmicapp/query, so just because
     // usePlasmicInvalidate() exists doesn't mean usePlasmicDataConfig() exists.
     // That's because data-sources is provided by react-web, but query is provided
-    // by the user's custom host. This also applies to unstable_usePlasmicQueries.
+    // by the user's custom host. This also applies to usePlasmicQueries.
     if (dataSources && typeof dataSources.usePlasmicDataConfig !== "function") {
       dataSources = {
         ...dataSources,
         usePlasmicDataConfig: undefined,
         usePlasmicInvalidate: undefined,
-        unstable_usePlasmicQueries: undefined,
+        usePlasmicQueries: undefined,
       };
     }
 
