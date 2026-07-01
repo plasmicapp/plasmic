@@ -59,7 +59,10 @@ yarn update-snapshots
 yarn playwright-ui
 
 # To run E2e tests (requires verdaccio with local packages published)
-yarn local-publish
+# Publish local packages from the repo root.
+(cd ../.. && pnpm local-publish)
+
+# Then, from platform/loader-tests, run Playwright against the local registry.
 yarn run local:playwright-ui
 ```
 
