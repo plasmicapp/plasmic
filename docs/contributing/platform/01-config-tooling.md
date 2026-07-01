@@ -282,7 +282,7 @@ Read more about Ant theming: https://paper.dropbox.com/doc/Web-Dev-Tips--AQguKQi
 Check what dependencies are not used (or missing):
 
 ```
-yarn custom-depcheck
+pnpm knip:deps
 ```
 
 Check what needs to be updated:
