@@ -485,11 +485,14 @@ export function testMergeFromJsonBundle(
     () => `Expected only two revisions (latest From and To branches)`
   );
   const commitGraph = json.project.commitGraph;
-  const ancestorCommit = getLowestCommonAncestor(
-    json.project.id,
-    commitGraph,
-    json.branches[0].id,
-    undefined
+  const ancestorCommit = ensure(
+    getLowestCommonAncestor(
+      json.project.id,
+      commitGraph,
+      json.branches[0].id,
+      undefined
+    ),
+    () => `Did not find ancestor commit between branch and main`
   );
   const ancestorPkgVersion = ensure(
     json.pkgVersions.find((pkgVersion) => pkgVersion.id === ancestorCommit),

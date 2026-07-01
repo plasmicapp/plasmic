@@ -25,7 +25,10 @@ export function ancestors(
     }
     seen.add(current);
     result.push(current);
-    for (const parent of [...graph[current]].reverse()) {
+    // A node referenced as a parent (or branch head) may itself be missing
+    // from the parents map if the commit graph is partially populated.
+    const parents = graph[current] ?? [];
+    for (const parent of [...parents].reverse()) {
       stack.push(parent);
     }
   }
@@ -68,14 +71,16 @@ export function getLowestCommonAncestor(
 ) {
   // Lowest common ancestors algorithm - find the "best" merge-base.
   // From https://git-scm.com/docs/git-merge-base: One common ancestor is better than another common ancestor if the latter is an ancestor of the former.
-  const fromAncestors = ancestors(
-    graph.parents,
-    fromPkgVersionId ?? graph.branches[fromBranchId ?? MainBranchId]
-  );
-  const toAncestors = ancestors(
-    graph.parents,
-    toPkgVersionId ?? graph.branches[toBranchId ?? MainBranchId]
-  );
+  const fromHead =
+    fromPkgVersionId ?? graph.branches[fromBranchId ?? MainBranchId];
+  const toHead = toPkgVersionId ?? graph.branches[toBranchId ?? MainBranchId];
+  if (!fromHead || !toHead) {
+    // A branch without any pkgVersions has no head in the commit graph, so
+    // there is no ancestor to compute against.
+    return undefined;
+  }
+  const fromAncestors = ancestors(graph.parents, fromHead);
+  const toAncestors = ancestors(graph.parents, toHead);
   const commonAncestors = intersection(fromAncestors, toAncestors);
   const ancestorsSubgraph = subgraph(graph.parents, commonAncestors);
   const lowestCommonAncestors = leaves(ancestorsSubgraph);

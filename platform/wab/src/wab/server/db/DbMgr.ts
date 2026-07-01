@@ -668,7 +668,7 @@ function getCommitChainFromCommit(
   return generate(function* () {
     while (pkgVersionId) {
       yield pkgVersionId;
-      [pkgVersionId] = g.parents[pkgVersionId];
+      [pkgVersionId] = g.parents[pkgVersionId] ?? [];
     }
   });
 }
@@ -3020,7 +3020,6 @@ export class DbMgr implements MigrationDbMgr {
     branchIdOrNamesVersioned: (BranchId | string)[]
   ) {
     const project = await this.getProjectById(projectId);
-    const commitGraph = await this.getCommitGraphForProject(projectId);
     const allBranches = await this.listBranchesForProject(projectId, true);
     const versionedBranches = branchIdOrNamesVersioned.map(
       (branchIdOrNameVersioned) => {
@@ -3060,15 +3059,25 @@ export class DbMgr implements MigrationDbMgr {
     ];
 
     const branchIds = withoutNils(versionedBranches.map(({ id }) => id));
+    const commitGraph = await this.getCommitGraphForProject(
+      projectId,
+      versionedBranchesIncludingMain.map(
+        ({ id: branchId }) => branchId ?? MainBranchId
+      )
+    );
 
     const branches = await Promise.all(
       branchIds.map((branchId) => this.getBranchById(branchId, true))
     );
 
+    // Branches that have never been published have no head in
+    // commitGraph.branches, so there may be no pkgVersion to load for them.
     const pkgVersionsIds = uniq(
-      versionedBranchesIncludingMain.map(
-        ({ id: branchId, version }) =>
-          version ?? commitGraph.branches[branchId ?? MainBranchId]
+      withoutNils(
+        versionedBranchesIncludingMain.map(
+          ({ id: branchId, version }) =>
+            version ?? commitGraph.branches[branchId ?? MainBranchId]
+        )
       )
     );
 
@@ -3109,7 +3118,10 @@ export class DbMgr implements MigrationDbMgr {
           left.version,
           right.version
         );
+        // Branches that have never been published have no commits in the
+        // graph, so two branches may have no common ancestor.
         if (
+          ancestorPkgId &&
           !pkgVersionsIds.includes(ancestorPkgId) &&
           !additionalPkgVersionsIds.includes(ancestorPkgId)
         ) {
@@ -3494,7 +3506,9 @@ export class DbMgr implements MigrationDbMgr {
     pkgId: string,
     limit: number
   ) {
-    const graph = await this.getCommitGraphForProject(projectId as ProjectId);
+    const graph = await this.getCommitGraphForProject(projectId as ProjectId, [
+      branchId ?? MainBranchId,
+    ]);
     const branchHead = graph.branches[branchId ?? MainBranchId];
 
     // The branch head might not be the latest version in this branch, if the
@@ -3681,14 +3695,18 @@ export class DbMgr implements MigrationDbMgr {
       conflictPickMap: conflictPickMap ? JSON.stringify(conflictPickMap) : null,
     });
 
-    await this.maybeUpdateCommitGraphForProject(projectId as ProjectId, (g) => {
-      const branchSpec = branchId ?? MainBranchId;
-      g.parents[pkgVersion.id] = withoutNils([
-        g.branches[branchSpec],
-        secondMergeParentPkgVersionId,
-      ]);
-      g.branches[branchSpec] = pkgVersion.id;
-    });
+    const branchSpec = branchId ?? MainBranchId;
+    await this.updateCommitGraphForProject(
+      projectId as ProjectId,
+      (g) => {
+        g.parents[pkgVersion.id] = withoutNils([
+          g.branches[branchSpec],
+          secondMergeParentPkgVersionId,
+        ]);
+        g.branches[branchSpec] = pkgVersion.id;
+      },
+      [branchSpec]
+    );
 
     await this.entMgr.save(pkgVersion);
 
@@ -4383,9 +4401,15 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (branchId && range === "latest") {
-      const graph = await this.getCommitGraphForProject(pkg.projectId);
+      const graph = await this.getCommitGraphForProject(pkg.projectId, [
+        branchId,
+      ]);
       const chain = getCommitChainFromBranch(graph, branchId);
-      return await this.getPkgVersionById(chain[0]);
+      if (chain[0]) {
+        return await this.getPkgVersionById(chain[0]);
+      }
+      // A branch without published pkgVersions has no head in the commit graph.
+      return undefined;
     }
 
     // Older versions may not fit strict semantic versions, requires coercion
@@ -7839,45 +7863,217 @@ export class DbMgr implements MigrationDbMgr {
   // Branches
   //
 
-  async getCommitGraphForProject(projectId: ProjectId): Promise<CommitGraph> {
+  async lockProjectRow(projectId: ProjectId) {
+    if (!(this.entMgr.queryRunner?.isTransactionActive ?? false)) {
+      return;
+    }
+    await this.projects()
+      .createQueryBuilder("project")
+      .setLock("pessimistic_write")
+      .where("project.id = :id", { id: projectId })
+      .andWhere("project.deletedAt is null")
+      .getOne();
+  }
+
+  private async lockPkgRowsForProject(projectId: ProjectId) {
+    if (!(this.entMgr.queryRunner?.isTransactionActive ?? false)) {
+      return;
+    }
+    // Even though we only read here, pessimistic_write is required to block a concurrent
+    // publish from inserting a new pkgVersion while we rebuild the graph.
+    await this.pkgs()
+      .createQueryBuilder("pkg")
+      .setLock("pessimistic_write")
+      .where("pkg.projectId = :projectId", { projectId })
+      .getMany();
+  }
+
+  /**
+   * Reads the project's commit graph and repairs the heads of `branchSpecs` if they look
+   * broken (see {@link shouldRepairCommitGraphForBranches}). Pass the branches whose
+   * heads the caller is about to dereference; leave empty to read the graph as-is.
+   */
+  async getCommitGraphForProject(
+    projectId: ProjectId,
+    branchSpecs: (BranchId | MainBranchId)[] = []
+  ): Promise<CommitGraph> {
     let graph = mkCommitGraph();
     await this.maybeUpdateCommitGraphForProject(
       projectId,
-      (g) => (graph = jsonClone(g))
+      (g) => (graph = jsonClone(g)),
+      branchSpecs
     );
     return graph;
   }
 
-  async maybeUpdateCommitGraphForProject(
+  /**
+   * A branch head is broken if the graph is missing an entry that the db says should exist.
+   * Either it has no head for a branch that has published pkgVersions, or its head points
+   * at a commit with no `parents` entry. If so we repair the graph from project
+   * pkgVersions instead of reading the broken snapshot.
+   */
+  private async shouldRepairCommitGraphForBranches(
     projectId: ProjectId,
-    updater: (commitGraph: Draft<CommitGraph>) => void
+    graph: CommitGraph | undefined,
+    branchSpecs: (BranchId | MainBranchId)[]
   ) {
-    const project = await this.getProjectById(projectId, undefined);
-    let changed = false;
-    const curDraft = createDraft(project.extraData ?? {});
-    await (async (draft) => {
-      if (!draft.commitGraph) {
-        draft.commitGraph = mkCommitGraph();
+    if (!graph || branchSpecs.length === 0) {
+      return false;
+    }
+
+    for (const branchSpec of uniq(branchSpecs)) {
+      const branchHead = graph.branches[branchSpec];
+      if (branchHead) {
+        if (!graph.parents[branchHead]) {
+          return true;
+        }
+        continue;
       }
-      if (!safeHas(draft.commitGraph.branches, MainBranchId)) {
-        const pkg = await this.getPkgByProjectId(projectId);
-        if (pkg) {
-          const allPkgVersions = (
-            await this.listPkgVersionsRaw(pkg.id, { includeData: false })
-          ).sort((a, b) => compareVersionNumbers(a.version, b.version));
-          if (allPkgVersions.length > 0) {
-            draft.commitGraph.branches[MainBranchId] = allPkgVersions[0].id;
-            for (const [pv, parent] of pairwise(allPkgVersions)) {
-              draft.commitGraph.parents[pv.id] = [parent.id];
-            }
-            draft.commitGraph.parents[last(allPkgVersions).id] = [];
-          }
+
+      if (await this.hasPkgVersionForBranchSpec(projectId, branchSpec)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private async hasPkgVersionForBranchSpec(
+    projectId: ProjectId,
+    branchSpec: BranchId | MainBranchId
+  ) {
+    const pkg = await this.getPkgByProjectId(projectId);
+    if (!pkg) {
+      return false;
+    }
+    const qb = this.pkgVersions()
+      .createQueryBuilder("pkgVersion")
+      .where("pkgVersion.pkgId = :pkgId", { pkgId: pkg.id })
+      .andWhere("pkgVersion.deletedAt is null");
+    if (branchSpec === MainBranchId) {
+      qb.andWhere("pkgVersion.branchId is null");
+    } else {
+      qb.andWhere("pkgVersion.branchId = :branchId", { branchId: branchSpec });
+    }
+    return !!(await qb.select("pkgVersion.id").limit(1).getOne());
+  }
+
+  /**
+   * Rebuilds the broken parts of the commit graph from the pkgVersion rows.
+   * Existing entries are preserved as much as possible: `parents` links recorded at
+   * publish can encode merge commits, and branch heads can point at pkgVersions
+   * published on other branches, or at older versions. So we only derive missing links and
+   * heads that don't resolve to a known commit from branch's version order.
+   */
+  private async repairCommitGraphForProject(
+    projectId: ProjectId,
+    previousCommitGraph: CommitGraph | undefined
+  ) {
+    const commitGraph = mkCommitGraph();
+    commitGraph.parents = { ...(previousCommitGraph?.parents ?? {}) };
+    commitGraph.branches = { ...(previousCommitGraph?.branches ?? {}) };
+
+    const pkg = await this.getPkgByProjectId(projectId);
+    if (!pkg) {
+      return commitGraph;
+    }
+
+    const pkgVersions = await this.listPkgVersionsRaw(pkg.id, {
+      includeData: false,
+    });
+    const pkgVersionsByBranch = _.groupBy(
+      pkgVersions,
+      (pv) => pv.branchId ?? MainBranchId
+    );
+
+    for (const [branchSpec, branchPkgVersions] of Object.entries(
+      pkgVersionsByBranch
+    ) as [BranchId | MainBranchId, PkgVersion[]][]) {
+      const sortedPkgVersions = branchPkgVersions.sort((a, b) =>
+        compareVersionNumbers(a.version, b.version)
+      );
+
+      if (!safeHas(commitGraph.parents, sortedPkgVersions[0].id)) {
+        commitGraph.parents[sortedPkgVersions[0].id] = [];
+      }
+      for (const [parent, child] of pairwise(sortedPkgVersions)) {
+        if (!safeHas(commitGraph.parents, child.id)) {
+          commitGraph.parents[child.id] = [parent.id];
         }
       }
-      const initialDag = JSON.stringify(draft.commitGraph);
-      updater(draft.commitGraph);
-      changed = JSON.stringify(draft.commitGraph) !== initialDag;
-    })(curDraft);
+
+      const head = commitGraph.branches[branchSpec];
+      if (!head || !safeHas(commitGraph.parents, head)) {
+        commitGraph.branches[branchSpec] = last(sortedPkgVersions).id;
+      }
+    }
+
+    return commitGraph;
+  }
+
+  /**
+   * Applies `updater` to the project's commit graph and persists the result.
+   * The commit graph lives in the project row's extraData, so two concurrent read/updates
+   * (e.g. a publish racing a branch creation) otherwise starts from the same snapshot and
+   * the last one to commit drops the other's changes; lock the project row first to
+   * serialize them.
+   */
+  async updateCommitGraphForProject(
+    projectId: ProjectId,
+    updater: (commitGraph: Draft<CommitGraph>) => void,
+    branchSpecs: (BranchId | MainBranchId)[] = []
+  ) {
+    await this.lockProjectRow(projectId);
+    await this.maybeUpdateCommitGraphForProject(
+      projectId,
+      updater,
+      branchSpecs
+    );
+  }
+
+  private async maybeUpdateCommitGraphForProject(
+    projectId: ProjectId,
+    updater: (commitGraph: Draft<CommitGraph>) => void,
+    branchSpecs: (BranchId | MainBranchId)[] = []
+  ) {
+    let project = await this.getProjectById(projectId, undefined);
+    const needsRepair = async () =>
+      !project.extraData?.commitGraph ||
+      this.shouldRepairCommitGraphForBranches(
+        projectId,
+        project.extraData.commitGraph,
+        branchSpecs
+      );
+    let repairedGraph: CommitGraph | undefined = undefined;
+    if (await needsRepair()) {
+      // Repairing rebuilds the graph from the pkgVersion rows and writes it back to
+      // the project row, so it must be serialized with concurrent publishes.
+      // Lock the project row and the pkg rows, then re-read and re-check, since another
+      // transaction may have already repaired the graph while we waited for the locks.
+      await this.lockProjectRow(projectId);
+      await this.lockPkgRowsForProject(projectId);
+      project = await this.getProjectById(projectId, undefined);
+      if (await needsRepair()) {
+        repairedGraph = await this.repairCommitGraphForProject(
+          projectId,
+          project.extraData?.commitGraph
+            ? jsonClone(project.extraData.commitGraph)
+            : undefined
+        );
+      }
+    }
+
+    const initialDag = JSON.stringify(project.extraData?.commitGraph);
+    const curDraft = createDraft(project.extraData ?? {});
+    if (repairedGraph) {
+      curDraft.commitGraph = repairedGraph;
+    }
+    updater(
+      ensure(
+        curDraft.commitGraph,
+        "commitGraph was just repaired if it didn't exist"
+      )
+    );
+    const changed = JSON.stringify(curDraft.commitGraph) !== initialDag;
     project.extraData = finishDraft(curDraft);
     if (changed) {
       await this.entMgr.save(project);
@@ -7900,7 +8096,7 @@ export class DbMgr implements MigrationDbMgr {
       projectId,
       hostUrl: pkgVersion.hostUrl,
     });
-    await this.maybeUpdateCommitGraphForProject(projectId, (dag) => {
+    await this.updateCommitGraphForProject(projectId, (dag) => {
       dag.branches[branch.id] = pkgVersion.id;
     });
     await this.entMgr.save(branch);
@@ -7929,7 +8125,9 @@ export class DbMgr implements MigrationDbMgr {
     const sourceBranch = await this.getBranchById(sourceBranchId);
     const projectId = sourceBranch.projectId;
     await this.checkProjectPerms(projectId, "content", "create branch");
-    const graph = await this.getCommitGraphForProject(projectId);
+    const graph = await this.getCommitGraphForProject(projectId, [
+      sourceBranchId,
+    ]);
     const pkgVersionId = graph.branches[sourceBranchId];
     const pkgVersion = await this.getPkgVersionById(pkgVersionId);
     const newBranch = await this.createBranch(projectId, {
@@ -8132,7 +8330,10 @@ export class DbMgr implements MigrationDbMgr {
       `from-${projectId}`
     );
 
-    const graph = await this.getCommitGraphForProject(projectId);
+    const graph = await this.getCommitGraphForProject(projectId, [
+      fromBranchId ?? MainBranchId,
+      toBranchId ?? MainBranchId,
+    ]);
 
     const lowestCommonAncestor = getLowestCommonAncestor(
       projectId,

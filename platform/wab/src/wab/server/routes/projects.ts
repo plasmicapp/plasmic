@@ -1082,7 +1082,7 @@ async function importFullProjectData(
   if (tmpBranch) {
     await mgr.deleteBranch(tmpBranch.id);
   }
-  await mgr.maybeUpdateCommitGraphForProject(newProject.id, (graph) => {
+  await mgr.updateCommitGraphForProject(newProject.id, (graph) => {
     graph.branches = Object.fromEntries(
       withoutNils(
         Object.entries(projectData.commitGraph.branches).map(
@@ -1994,8 +1994,9 @@ export async function listUnpublishedProjectRevisions(
     : undefined;
 
   const pkg = await mgr.getPkgByProjectId(projectId);
+  // tryGetPkgVersion to avoid throwing when the branch has no published pkg version yet
   const latest = pkg
-    ? await mgr.getPkgVersion(pkg.id, undefined, undefined, {
+    ? await mgr.tryGetPkgVersion(pkg.id, undefined, undefined, {
         branchId,
       })
     : null;
@@ -2362,7 +2363,7 @@ export async function revertToVersion(req: Request, res: Response) {
     });
 
     // Update commit graph
-    await mgr.maybeUpdateCommitGraphForProject(projectId, (dag) => {
+    await mgr.updateCommitGraphForProject(projectId, (dag) => {
       dag.branches[branchId ?? MainBranchId] = pkgVersion.id;
     });
 
