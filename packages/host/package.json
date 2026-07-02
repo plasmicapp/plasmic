@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "plasmic library for app hosting",
   "repository": {
     "type": "git",

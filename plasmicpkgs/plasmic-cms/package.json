@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-cms",
-  "version": "0.0.320",
+  "version": "0.0.321",
   "description": "Plasmic CMS components",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,13 +35,13 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.8",
+    "@plasmicapp/host": "2.0.9",
     "@plasmicapp/query": "0.1.86",
     "@types/node": "^17.0.45",
     "@types/react": "^18"
   },
   "dependencies": {
-    "@plasmicpkgs/cms": "0.0.29",
+    "@plasmicpkgs/cms": "0.0.30",
     "dayjs": "^1.10.7"
   },
   "peerDependencies": {

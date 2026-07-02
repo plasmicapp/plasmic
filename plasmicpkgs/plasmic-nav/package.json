@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-nav",
-  "version": "0.0.221",
+  "version": "0.0.222",
   "description": "Plasmic mobile navigation menu and registration calls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.8",
+    "@plasmicapp/host": "2.0.9",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "tsdx": "^0.14.1",
