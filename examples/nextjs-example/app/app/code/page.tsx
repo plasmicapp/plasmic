@@ -1,7 +1,7 @@
 import { ContentServerComponent } from "@/components/ContentServerComponent";
 import { ContentUsePlasmicQueryData } from "@/components/ContentUsePlasmicQueryData";
 import { PLASMIC } from "@/plasmic-init";
-import { PlasmicClientRootProvider } from "@/plasmic-init-client";
+import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
 import { fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
@@ -20,7 +20,7 @@ export default async function CodePage({
   const { prefetchedData } = await fetchData();
   const pageMeta = prefetchedData.entryCompMetas[0];
   return withExtractPlasmicQueryData(
-    <PlasmicClientRootProvider
+    <ClientPlasmicRootProvider
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={searchParams}
@@ -45,7 +45,7 @@ export default async function CodePage({
           ),
         }}
       />
-    </PlasmicClientRootProvider>,
+    </ClientPlasmicRootProvider>,
     {
       pathname,
       searchParams,
@@ -67,7 +67,7 @@ async function fetchData() {
 /**
  * Helper function to extract Plasmic data.
  *
- * Given the <PlasmicClientRootProvider> element and current pathname + search
+ * Given the <ClientPlasmicRootProvider> element and current pathname + search
  * params, returns:
  * - The extracted query data, if `plasmicSsr` search param is set
  * - A copy of the root provider element with the extracted query data, otherwise
@@ -125,7 +125,7 @@ async function withExtractPlasmicQueryData(
     `${prepassHost}${pathname}?${newSearchParams.toString()}`
   );
 
-  // Provide the query data to <PlasmicClientRootProvider>
+  // Provide the query data to <ClientPlasmicRootProvider>
   return React.cloneElement(plasmicRootProvider, {
     prefetchedQueryData,
   });

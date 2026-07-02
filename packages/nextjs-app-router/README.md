@@ -33,14 +33,14 @@ export default async function PlasmicLoaderPage({
   const pageMeta = prefetchedData.entryCompMetas[0];
 
   return withExtractPlasmicQueryData(
-    <PlasmicClientRootProvider
+    <ClientPlasmicRootProvider
       prefetchedData={prefetchedData}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={searchParams}
     >
       <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicClientRootProvider>,
+    </ClientPlasmicRootProvider>,
     {
       pathname,
       searchParams,
@@ -56,7 +56,7 @@ async function fetchPlasmicComponentData(catchall: string[] | undefined) {
 /**
  * Helper function to extract Plasmic data.
  *
- * Given the <PlasmicClientRootProvider> element and current pathname + search
+ * Given the <ClientPlasmicRootProvider> element and current pathname + search
  * params, returns:
  * - The extracted query data, if `plasmicSsr` search param is set
  * - A copy of the root provider element with the extracted query data, otherwise
@@ -114,7 +114,7 @@ async function withExtractPlasmicQueryData(
     `${prepassHost}${pathname}?${newSearchParams.toString()}`
   );
 
-  // Provide the query data to <PlasmicClientRootProvider>
+  // Provide the query data to <ClientPlasmicRootProvider>
   return React.cloneElement(plasmicRootProvider, {
     prefetchedQueryData,
   });

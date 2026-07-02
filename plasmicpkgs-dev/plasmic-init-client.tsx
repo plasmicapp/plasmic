@@ -38,7 +38,7 @@ if (useDevNames) {
 }
 
 /**
- * PlasmicClientRootProvider is a Client Component that passes in the loader for you.
+ * ClientPlasmicRootProvider is a Client Component that passes in the loader for you.
  *
  * Why? Props passed from Server to Client Components must be serializable.
  * https://beta.nextjs.org/docs/rendering/server-and-client-components#passing-props-from-server-to-client-components-serialization
@@ -62,26 +62,26 @@ if (useDevNames) {
  * }
  * ```
  *
- * Therefore, we define PlasmicClientRootProvider as a Client Component (this file is marked "use client").
- * PlasmicClientRootProvider wraps the PlasmicRootProvider and passes in the loader for you,
+ * Therefore, we define ClientPlasmicRootProvider as a Client Component (this file is marked "use client").
+ * ClientPlasmicRootProvider wraps the PlasmicRootProvider and passes in the loader for you,
  * while allowing your Server Component to pass in prefetched data and other serializable props:
  *
  * ```tsx
  * import { PLASMIC } from "@/plasmic-init";
- * import { PlasmicClientRootProvider } from "@/plasmic-init-client"; // changed
+ * import { ClientPlasmicRootProvider } from "@/plasmic-init-client"; // changed
  * export default function MyPage() {
  *   const prefetchedData = await PLASMIC.fetchComponentData("YourPage");
  *   return (
- *     <PlasmicClientRootProvider // don't pass in loader
+ *     <ClientPlasmicRootProvider // don't pass in loader
  *       prefetchedData={prefetchedData}
  *     >
  *       {yourContent()}
- *     </PlasmicClientRootProvider>;
+ *     </ClientPlasmicRootProvider>;
  *   );
  * }
  * ```
  */
-export function PlasmicClientRootProvider(
+export function ClientPlasmicRootProvider(
   props: Omit<React.ComponentProps<typeof PlasmicRootProvider>, "loader">
 ) {
   return (

@@ -1,7 +1,7 @@
 import { usePlasmicData } from "/src/lib/plasmic";
 import {
-  PlasmicClientComponent,
-  PlasmicClientRootProvider,
+  ClientPlasmicComponent,
+  ClientPlasmicRootProvider,
 } from "/src/lib/plasmic-helpers.client";
 
 export default function IndexPage() {
@@ -10,11 +10,11 @@ export default function IndexPage() {
   const data = usePlasmicData("/");
   const { plasmicData, queryData } = data;
   return (
-    <PlasmicClientRootProvider
+    <ClientPlasmicRootProvider
       prefetchedData={plasmicData}
       prefetchedQueryData={queryData}
     >
-      <PlasmicClientComponent component={plasmicData.entryCompMetas[0].name} />
-    </PlasmicClientRootProvider>
+      <ClientPlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+    </ClientPlasmicRootProvider>
   );
 }

@@ -1,11 +1,11 @@
 import { PLASMIC } from "@/plasmic-init";
-import { PlasmicClientRootProvider } from "@/plasmic-init-client";
+import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
 import "@/styles/globals.css";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 
 export default async function Homepage() {
   return (
-    <PlasmicClientRootProvider
+    <ClientPlasmicRootProvider
       prefetchedData={await PLASMIC.fetchComponentData(
         "Layout",
         "Card",
@@ -30,6 +30,6 @@ export default async function Homepage() {
           ),
         }}
       />
-    </PlasmicClientRootProvider>
+    </ClientPlasmicRootProvider>
   );
 }

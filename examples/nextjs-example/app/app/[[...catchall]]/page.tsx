@@ -1,5 +1,5 @@
 import { PLASMIC } from "@/plasmic-init";
-import { PlasmicClientRootProvider } from "@/plasmic-init-client";
+import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
@@ -49,7 +49,7 @@ export default async function PlasmicLoaderPage({
 }: LoaderPageProps) {
   const { pageMeta, prefetchedData } = await fetchData(params.catchall);
   return (
-    <PlasmicClientRootProvider
+    <ClientPlasmicRootProvider
       prefetchedData={prefetchedData}
       pageParams={pageMeta.params}
       pageQuery={searchParams}
@@ -78,7 +78,7 @@ export default async function PlasmicLoaderPage({
             : undefined
         }
       />
-    </PlasmicClientRootProvider>
+    </ClientPlasmicRootProvider>
   );
 }
 

@@ -1,8 +1,8 @@
 import { HydrogenRouteProps } from "@shopify/hydrogen";
 import { usePlasmicData } from "/src/lib/plasmic";
 import {
-  PlasmicClientComponent,
-  PlasmicClientRootProvider,
+  ClientPlasmicComponent,
+  ClientPlasmicRootProvider,
 } from "/src/lib/plasmic-helpers.client";
 
 export default function PlasmicPage({ params, response }: HydrogenRouteProps) {
@@ -17,11 +17,11 @@ export default function PlasmicPage({ params, response }: HydrogenRouteProps) {
   }
   const { plasmicData, queryData } = data;
   return (
-    <PlasmicClientRootProvider
+    <ClientPlasmicRootProvider
       prefetchedData={plasmicData}
       prefetchedQueryData={queryData}
     >
-      <PlasmicClientComponent component={plasmicData.entryCompMetas[0].name} />
-    </PlasmicClientRootProvider>
+      <ClientPlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+    </ClientPlasmicRootProvider>
   );
 }
