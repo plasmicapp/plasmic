@@ -76,6 +76,8 @@ export const FullCodeEditor = React.forwardRef(
 
     const options: monaco.editor.IStandaloneEditorConstructionOptions = {
       theme: "vs",
+      // Prevents completion/hover popups from being clipped.
+      fixedOverflowWidgets: true,
       folding: folding,
       stickyScroll: {
         enabled: false, // doesn't work well with hidden wrapper lines
