@@ -1,15 +1,15 @@
-import { ensure } from "@/wab/shared/common";
-import { parseScreenSpec } from "@/wab/shared/css-size";
 import { RSH, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { ensure } from "@/wab/shared/common";
+import { expandRuleSets } from "@/wab/shared/core/styles";
+import { TplColumnsTag } from "@/wab/shared/core/tpls";
+import { parseScreenSpec } from "@/wab/shared/css-size";
 import {
   ColumnsConfig,
   ColumnsConfigParams,
   TplTag,
   Variant,
 } from "@/wab/shared/model/classes";
-import { expandRuleSets } from "@/wab/shared/core/styles";
-import { TplColumnsTag } from "@/wab/shared/core/tpls";
 import { clamp, isEqual, isUndefined, range, sum } from "lodash";
 
 export const hasMaxWidthVariant = (variant: Variant): boolean => {
@@ -182,7 +182,7 @@ export function redistributeColumns(
       Math.max(Math.floor(COL_NUMBER * (colSize / colsSum)), 1)
     );
     // If there are missing cols, probably because it was not possible to redistribute properly to COL_NUMBER
-    // just distribute the lenght to the first columns
+    // just distribute the length to the first columns
     const proportionalSum = sum(proportionalCols);
     const missingCols = COL_NUMBER - proportionalSum;
     const redistributedCols = proportionalCols.map(

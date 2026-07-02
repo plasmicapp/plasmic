@@ -1062,7 +1062,7 @@ export function checkTplIntegrity(
     return `[${path.map((tpl) => summarizeTpl(tpl)).join(" > ")}]`;
   }
   function rec(path: TplNode[]) {
-    const tpl = ensure(L.last(path), "Path should atleast have root");
+    const tpl = ensure(L.last(path), "Path should at least have root");
     switchType(tpl)
       .when([TplTag, TplComponent], (_tpl) => {
         const children = $$$(_tpl).children().toArrayOfTplNodes();
@@ -1276,7 +1276,7 @@ export function fixParentPointers(root: TplNode) {
   walkTpls(root, {
     pre(tpl, path) {
       if (tpl !== root) {
-        tpl.parent = ensure(L.last(path), "Path should atleast have root");
+        tpl.parent = ensure(L.last(path), "Path should at least have root");
       }
     },
   });

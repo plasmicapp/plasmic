@@ -61,7 +61,7 @@ export interface BaseComboboxProps
   Setting popover's open state to true in not enough unless, unless it has previously been opened via user interaction with combobox.
   Also, <Combobox> does not support an `isOpen` prop either.
 
-  So, we use this custom hook to access the combobox's internal state via ComboBoxStateContext and change the `open` state manually via tha available `open` method.
+  So, we use this custom hook to access the combobox's internal state via ComboBoxStateContext and change the `open` state manually via the available `open` method.
 
   Note: It cannot be used as a hook like useAutoOpen() within the BaseSelect component
   because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.

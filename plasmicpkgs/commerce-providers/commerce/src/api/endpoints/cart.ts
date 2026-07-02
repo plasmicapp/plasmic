@@ -54,8 +54,8 @@ const cartEndpoint: GetAPISchema<any, CartSchema<any>>['endpoint']['handler'] =
 
       const message =
         error instanceof CommerceAPIError
-          ? 'An unexpected error ocurred with the Commerce API'
-          : 'An unexpected error ocurred'
+          ? 'An unexpected error occurred with the Commerce API'
+          : 'An unexpected error occurred'
 
       res.status(500).json({ data: null, errors: [{ message }] })
     }

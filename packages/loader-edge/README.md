@@ -1,3 +1,3 @@
 # @plasmicapp/loader-edge
 
-Library to perform A/B instrumentation on edge enviroment.
+Library to perform A/B instrumentation on edge environment.

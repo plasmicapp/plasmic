@@ -86,17 +86,17 @@ export function getActiveVariation(opts: {
         const seed = opts.traits[PLASMIC_SEED];
         const buckets: string[] = [];
         const totalBuckets = opts.seedRange ?? 1;
-        let avaiableBuckets = totalBuckets;
+        let availableBuckets = totalBuckets;
         for (let i = 0; i < numSlices; i++) {
           const slice = split.slices[i];
           const numBuckets = Math.min(
             Math.floor(slice.prob * totalBuckets),
-            avaiableBuckets
+            availableBuckets
           );
           for (let j = 0; j < numBuckets; j++) {
             buckets.push(slice.id);
           }
-          avaiableBuckets -= numBuckets;
+          availableBuckets -= numBuckets;
         }
         if (buckets.length > 0) {
           // We need to stable shuffle the buckets to ensure that the order of the

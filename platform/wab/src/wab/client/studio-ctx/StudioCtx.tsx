@@ -3338,7 +3338,7 @@ export class StudioCtx extends WithDbCtx {
   uiCopilotEnabled(): boolean {
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
-      // enableUiCopilot flag is false by default and overriden for plasmic users only,
+      // enableUiCopilot flag is false by default and overridden for plasmic users only,
       // we will enable it when we decide to release this feature to all user
       this.appCtx.appConfig.enableUiCopilot ||
       (!!team && checkIsOrgOnPaidTierOrTrial(team))
@@ -3347,7 +3347,7 @@ export class StudioCtx extends WithDbCtx {
 
   chatCopilotEnabled() {
     return (
-      // enableUiCopilot flag is false by default and overriden for plasmic users only,
+      // enableUiCopilot flag is false by default and overridden for plasmic users only,
       // we will enable it when we decide to release this feature to all user
       this.appCtx.appConfig.enableChatCopilot
     );
@@ -7414,7 +7414,7 @@ export class StudioCtx extends WithDbCtx {
     async (op: DataOp, opts?: Parameters<typeof executePlasmicDataOp>[1]) => {
       // Custom in-studio executePlasmicDataOp. For now, it will point to localhost
       // instead of the production host. Soon, it will instead point to a studio endpoint
-      // instead of the public server-data endpoint, so that it can make priviledged
+      // instead of the public server-data endpoint, so that it can make privileged
       // data requests as an app end user.
       const appUserCtx = this.currentAppUserCtx;
       if (op.roleId) {

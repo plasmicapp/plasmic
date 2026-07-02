@@ -2233,7 +2233,7 @@ export async function getPkgVersionPublishStatus(req: Request, res: Response) {
         }
       } catch (e) {
         // if we catch an error while decoding the url, we are going to consider that
-        // that the redirection is succesful The exception is going to be sent to
+        // that the redirection is successful The exception is going to be sent to
         // sentry
         isRedirectingToLatest = true;
         Sentry.captureException(e);

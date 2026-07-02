@@ -1073,7 +1073,7 @@ export const siteToUsedDataSources = maybeComputedFn(
 
 interface CCVariantInfo {
   component: Component;
-  /** A code component style variant's selectors, mapped to thier metas. */
+  /** A code component style variant's selectors, mapped to their metas. */
   keysToMetas: Map<string, CodeComponentVariantMeta>;
 }
 

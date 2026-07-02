@@ -157,7 +157,7 @@ export const CopilotUiResponseSchema = z.object({
 export type CopilotUiResponse = z.infer<typeof CopilotUiResponseSchema>;
 
 // This util function is added for transformation to add the 'data: CopilotUiActions' in the QueryCopilotUiResponse
-// for backward compatability. When the client logic is migrated from QueryCopilotUiResponse.data to QueryCopilotUiResponse.response
+// for backward compatibility. When the client logic is migrated from QueryCopilotUiResponse.data to QueryCopilotUiResponse.response
 // we can remove this
 export const copilotUiResponseToActions = (
   copilotUiResponse: CopilotUiResponse

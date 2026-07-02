@@ -179,7 +179,7 @@ export interface PageParamsProviderProps {
   query?: Record<string, string | string[] | undefined>;
 
   /**
-   * Defaults to false. If true, query params are derived from `location.search` sync
+   * Defaults to false. If true, query params derived from `location.search` sync
    * with client-side history changes. `query` prop is used as a fallback during SSR.
    */
   trackQueryParams?: boolean;

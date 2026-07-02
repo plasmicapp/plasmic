@@ -41,7 +41,7 @@ export function serializeCustomFunctionsAndLibs(ctx: SerializerBaseContext) {
   // `exportOpts`:
   // - If `useCustomFunctionsStub` is set, it means we will import the functions
   //   from a common "stub". It happens in:
-  //      - Live preview: We just read all code fuctions from `window` and
+  //      - Live preview: We just read all code functions from `window` and
   //        export them from `./custom-functions`.
   //      - Loader: For user-registered functions, we import them from the
   //        `@plasmicapp/loader-runtime-registry`, but for hostless functions,

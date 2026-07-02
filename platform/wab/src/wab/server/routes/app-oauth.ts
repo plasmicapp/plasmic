@@ -349,7 +349,7 @@ export async function upsertEndUser(req: Request, res: Response) {
             externalId: identifier.externalId!,
           },
       roleId,
-      // We dont' consider this rule as manually added, which won't appear in the PermissionsTab
+      // We don't consider this rule as manually added, which won't appear in the PermissionsTab
       // unless the user interacts with it in the Users tab
       /* manuallyAdded */ false
     );
