@@ -431,10 +431,10 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/nextjs-app-router@1.0.26":
-  version "1.0.26"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.26.tgz#8aa6fd00498d50cb83330475b5a6ba18235fb492"
-  integrity sha512-x7H/6pbQHXgkrAD39jXtg1FNeRA2Zo+5OJMBJZ8aS25tapidfA1jcK9W7rGxFryXfelvNEze84/WN+T046N0dQ==
+"@plasmicapp/nextjs-app-router@1.0.27":
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.27.tgz#4232208dcc865ba81fe968e41e7e9e5a92d16478"
+  integrity sha512-ulhKE/dxyMNUM5zO0TPY+lzQ7SPa65VHOC/LaXWhAoFYLjWnPnuZhqSvVXKxn5pFMz0vZ+EgpR7NBFeNTDbP+g==
   dependencies:
     "@plasmicapp/prepass" "1.0.26"
     "@plasmicapp/query" "0.1.86"
@@ -464,17 +464,17 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.20.tgz#602d120e9e60f38d62f42ed2f1a415e4d21d125f"
-  integrity sha512-q9QR9D4JiQbG9guty5m4ieFDlLgzGJ4fev97MbBorT6IPjOfhp2iiYhvELAvKQKBxm1deCrh5n5H9PrAhRJ5QA==
+"@plasmicapp/react-web@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.21.tgz#923df82b7d3f031ec6b3e9af40021040404ca2fe"
+  integrity sha512-oFFdtWK981a+VJeWVRf8icCKbY83i7LHTSKiT20fGRcSqgbYrKvQJxOPsGRGATRP3SQRasW11nQHPggb0/EPtg==
   dependencies:
     "@plasmicapp/auth-react" "0.0.29"
     "@plasmicapp/data-sources" "1.0.18"
     "@plasmicapp/data-sources-context" "0.1.24"
     "@plasmicapp/host" "2.0.9"
     "@plasmicapp/loader-splits" "1.0.74"
-    "@plasmicapp/nextjs-app-router" "1.0.26"
+    "@plasmicapp/nextjs-app-router" "1.0.27"
     "@plasmicapp/prepass" "1.0.26"
     "@plasmicapp/query" "0.1.86"
     "@react-aria/checkbox" "^3.15.5"
