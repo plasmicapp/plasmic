@@ -863,14 +863,16 @@ export function createAddCustomFunctionFromMeta(
     previewVideoUrl: meta.videoUrl,
     projectIds,
     createDraftQuery: (sc) =>
-      installAndCreateDraftQuery(
-        sc,
-        packageMeta,
-        (deps) => {
-          const fns = deps.flatMap((d) => d.site.customFunctions);
-          return fns.find((f) => f.isQuery) ?? fns[0];
-        },
-        meta.displayName
+      sc.app.withSpinner(
+        installAndCreateDraftQuery(
+          sc,
+          packageMeta,
+          (deps) => {
+            const fns = deps.flatMap((d) => d.site.customFunctions);
+            return fns.find((f) => f.isQuery) ?? fns[0];
+          },
+          meta.displayName
+        )
       ),
   };
 }
