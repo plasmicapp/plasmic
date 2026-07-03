@@ -374,7 +374,7 @@ export function ServerQueriesTooltip() {
         an API or CMS.
       </p>
       <p>
-        <a target={"_blank"} href="https://docs.plasmic.app/learn/integrations">
+        <a target={"_blank"} href="https://docs.plasmic.app/learn/data-queries">
           Learn more in the docs
         </a>
         .
