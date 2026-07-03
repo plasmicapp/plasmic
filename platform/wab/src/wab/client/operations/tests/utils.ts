@@ -26,7 +26,7 @@ export function setupComponentWithTplTree(tplTree: TplTag) {
   Tpls.trackComponentSite(component, site);
   Tpls.trackComponentRoot(component);
   const tplMgr = new TplMgr({ site });
-  const vtm = createVariantTplMgr(site, tplMgr);
+  const vtm = createVariantTplMgr(site, tplMgr, component);
   return { component, site, tplMgr, vtm };
 }
 

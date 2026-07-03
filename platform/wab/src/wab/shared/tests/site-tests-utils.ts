@@ -3,6 +3,7 @@ import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { Bundler } from "@/wab/shared/bundler";
 import { Bundle } from "@/wab/shared/bundles";
 import {
+  Component,
   CustomFunction,
   Site,
   isKnownProjectDependency,
@@ -61,15 +62,25 @@ export const createTplMgr = (site: Site) => new TplMgr({ site });
 
 const emptyVariants = {
   getTargetVariants: () => [],
-  getPinnedVariants: () => {},
+  getPinnedVariants: () => new Map(),
 };
 
-export const createVariantTplMgr = (site: Site, tplMgr: TplMgr) => {
+/**
+ * @param component - When provided, the frame stack is bound to this real
+ *   component, so vtm operations that look up a tpl's containing frame (e.g.
+ *   ensureCurrentVariantSetting) work for tpls in its tree. Otherwise a fake
+ *   "jest-root" stub is used, which only supports frame-independent operations.
+ */
+export const createVariantTplMgr = (
+  site: Site,
+  tplMgr: TplMgr,
+  component?: Component
+) => {
   return new VariantTplMgr(
     [
       {
         // @ts-ignore
-        component: {
+        component: component ?? {
           name: "jest-root",
           variants: [],
         },

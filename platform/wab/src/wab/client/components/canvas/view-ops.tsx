@@ -46,6 +46,23 @@ import {
   ExtractComponentResult,
   extractComponent as extractComponentOp,
 } from "@/wab/client/operations/extract-component";
+import {
+  CantInsertTplReason,
+  InsertTplCtx,
+  adoptFixedPositionType as adoptFixedPositionTypeOp,
+  adoptFreePositionType as adoptFreePositionTypeOp,
+  adoptParentContainerStyleForVariant as adoptParentContainerStyleForVariantOp,
+  adoptParentContainerStyle as adoptParentContainerStyleOp,
+  adoptRelativePositionType as adoptRelativePositionTypeOp,
+  adoptStickyPositionType as adoptStickyPositionTypeOp,
+  canInsertTplAsChild,
+  canInsertTplAsSibling,
+  clearAllStyles as clearAllStylesOp,
+  convertTextBlockToContainer as convertTextBlockToContainerOp,
+  copyMixins as copyMixinsOp,
+  insertTplAsChild,
+  transferStyleProps as transferStylePropsOp,
+} from "@/wab/client/operations/insert-tpl";
 import { renameTpl } from "@/wab/client/operations/rename-tpl";
 import { validateComponentExtraction } from "@/wab/client/operations/utils/validate-component-extraction";
 import { validateTplRemoval } from "@/wab/client/operations/utils/validate-tpl-removal";
@@ -71,13 +88,8 @@ import {
   isMixedArena,
 } from "@/wab/shared/Arenas";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
+import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import {
-  RSH,
-  RuleSetHelpers,
-  hasTypography,
-} from "@/wab/shared/RuleSetHelpers";
-import {
-  getAncestorTplSlot,
   getParentOrSlotSelection,
   getSingleTextBlockFromArg,
   getSlotParams,
@@ -103,7 +115,6 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { arrayRemove } from "@/wab/shared/collections";
 import {
   hasMaxWidthVariant,
   hasNonResponsiveColumnsStyle,
@@ -159,16 +170,9 @@ import {
 } from "@/wab/shared/core/states";
 import {
   CONTENT_LAYOUT_FULL_BLEED,
-  CONTENT_LAYOUT_WIDTH_OPTIONS,
   WRAP_AS_PARENT_PROPS,
-  contentLayoutChildProps,
   defaultCopyableStyleNames,
-  flexChildProps,
-  getAllDefinedStyles,
-  gridChildProps,
-  ignoredConvertablePlainTextProps,
   slotCssProps,
-  typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import { isValidStylePropForTpl } from "@/wab/shared/core/style-props-tpl";
 import { px } from "@/wab/shared/core/styles";
@@ -188,7 +192,6 @@ import {
   slotContentValNode,
 } from "@/wab/shared/core/val-nodes";
 import {
-  asTpl,
   asTplOrSlotSelection,
   equivTplOrSlotSelection,
 } from "@/wab/shared/core/vals";
@@ -220,9 +223,6 @@ import {
   ContainerType,
   PositionLayoutType,
   convertSelfContainerType,
-  convertToAbsolutePosition,
-  convertToRelativePosition,
-  convertToSlotContent,
   getRshContainerType,
   getRshPositionType,
   isContainerTypeVariantable,
@@ -273,16 +273,13 @@ import {
 } from "@/wab/shared/variant-sort";
 import {
   TplVisibility,
-  clearTplVisibility,
   getEffectiveTplVisibility,
-  getTplVisibilityAsDescendant,
-  getVariantSettingVisibility,
   isVisibilityHidden,
   setTplVisibility,
 } from "@/wab/shared/visibility-utils";
 import { notification } from "antd";
 import $ from "jquery";
-import L, { clamp, isArray, merge } from "lodash";
+import L, { clamp, isArray } from "lodash";
 import pluralize from "pluralize";
 import React from "react";
 
@@ -2894,89 +2891,55 @@ export class ViewOps {
     return this.viewCtx().focusedTplOrSlotSelection();
   }
 
+  /**
+   * Context for the pure insert-tpl operation, wiring in the Studio-only
+   * leaves: canvas DOM offsets and the "Show default slot contents" UI gate.
+   */
+  private insertTplCtx(): InsertTplCtx {
+    return {
+      vtm: this.viewCtx().variantTplMgr(),
+      tplMgr: this.tplMgr(),
+      getDomOffset: (tpl) => this.getTplDomOffset(tpl),
+      canEditSlotDefaultContents: (slot) =>
+        !(
+          Tpls.getTplOwnerComponent(slot) ===
+            this.viewCtx().currentComponent() &&
+          !this.viewCtx().showingDefaultSlotContentsFor(
+            this.viewCtx().currentTplComponent()
+          )
+        ),
+    };
+  }
+
+  private notifyCantInsert(title: string, reason: CantInsertTplReason) {
+    if (reason.type === "ComponentCycle") {
+      showError(new ComponentCycleUserError());
+    } else if (reason.type === "NestedSlots") {
+      showError(new NestedTplSlotsError());
+    } else {
+      notification.error({
+        message: title,
+        description: renderCantAddMsg(reason),
+      });
+    }
+  }
+
   canInsertAsChild(
     newItem: TplNode,
     targetTplOrSlotSelection: TplNode | SlotSelection,
     showErrors: boolean
   ) {
-    const canAdd = canAddChildrenAndWhy(targetTplOrSlotSelection, newItem);
-    if (canAdd !== true) {
-      if (showErrors) {
-        notification.error({
-          message: "Cannot insert here",
-          description: renderCantAddMsg(canAdd),
-        });
-      }
-      return false;
-    }
-
-    if (
-      isKnownTplNode(targetTplOrSlotSelection) &&
-      Tpls.isTplColumns(targetTplOrSlotSelection) &&
-      !Tpls.isTplColumn(newItem)
-    ) {
-      if (showErrors) {
-        notification.error({
-          message: `Cannot insert into Columns.`,
-          description: `Columns can only have children elements of type Column.`,
-        });
-      }
-      return false;
-    }
-
-    if (
-      !(
-        isKnownTplNode(targetTplOrSlotSelection) &&
-        Tpls.isTplColumns(targetTplOrSlotSelection)
-      ) &&
-      Tpls.isTplColumn(newItem)
-    ) {
-      if (showErrors) {
-        notification.error({
-          message: `Cannot insert Column.`,
-          description: `Responsive columns must be kept together.`,
-        });
-      }
-      return false;
-    }
-
-    if (
-      Tpls.isTplSlot(targetTplOrSlotSelection) &&
-      Tpls.getTplOwnerComponent(targetTplOrSlotSelection) ===
-        this.viewCtx().currentComponent() &&
-      !this.viewCtx().showingDefaultSlotContentsFor(
-        this.viewCtx().currentTplComponent()
-      )
-    ) {
-      if (showErrors) {
-        notification.error({
-          message: `Cannot insert into this slot.`,
-          description: `If you want to edit the default contents, turn on "Show default slot contents".`,
-        });
-      }
-      return false;
-    }
-    const destOwner = Tpls.getTplOwnerComponent(
-      asTpl(targetTplOrSlotSelection)
+    const reason = canInsertTplAsChild(
+      newItem,
+      targetTplOrSlotSelection,
+      this.insertTplCtx()
     );
-    const hasComponentCycle = Tpls.detectComponentCycle(destOwner, [newItem]);
-    if (hasComponentCycle) {
+    if (reason !== true) {
       if (showErrors) {
-        showError(new ComponentCycleUserError());
+        this.notifyCantInsert("Cannot insert here", reason);
       }
       return false;
     }
-
-    if (
-      Tpls.ancestorsUp(asTpl(targetTplOrSlotSelection)).some(Tpls.isTplSlot) &&
-      Tpls.flattenTpls(newItem).some(Tpls.isTplSlot)
-    ) {
-      if (showErrors) {
-        showError(new NestedTplSlotsError());
-      }
-      return false;
-    }
-
     return true;
   }
 
@@ -2985,53 +2948,14 @@ export class ViewOps {
     target: TplNode | SlotSelection,
     showErrors: boolean
   ) {
-    const canAdd = canAddSiblingsAndWhy(target, newItem);
-    if (canAdd !== true) {
+    const reason = canInsertTplAsSibling(newItem, target, this.insertTplCtx());
+    if (reason !== true) {
       if (showErrors) {
-        notification.error({
-          message: "Cannot insert sibling here",
-          description: renderCantAddMsg(canAdd),
-        });
+        this.notifyCantInsert("Cannot insert sibling here", reason);
       }
       return false;
     }
-
-    // Column can only be sibling of another column
-    if (
-      !(isKnownTplNode(target) && Tpls.isTplColumn(target)) &&
-      Tpls.isTplColumn(newItem)
-    ) {
-      if (showErrors) {
-        notification.error({
-          message: `Cannot insert Column here.`,
-          description: `Responsive columns must be kept together.`,
-        });
-      }
-      return false;
-    }
-    if (
-      isKnownTplNode(target) &&
-      Tpls.isTplColumn(target) &&
-      !Tpls.isTplColumn(newItem)
-    ) {
-      if (showErrors) {
-        notification.error({
-          message: `Cannot insert sibling here.`,
-          description: `Column elements can only have siblings of type Column.`,
-        });
-      }
-      return false;
-    }
-
-    if (target instanceof SlotSelection) {
-      return false;
-    } else {
-      const targetParent = ensure(
-        getParentOrSlotSelection(target),
-        "Unexpected undefined value of parent/slotSelection for target"
-      );
-      return this.canInsertAsChild(newItem, targetParent, showErrors);
-    }
+    return true;
   }
 
   getValidInsertLocsForItem(newItem: TplNode, target: TplNode | SlotSelection) {
@@ -3638,105 +3562,16 @@ export class ViewOps {
       afterNode?: TplNode;
     } = {}
   ) {
-    opts = merge({ keepFree: true }, opts);
+    const result = insertTplAsChild(
+      newNode,
+      newParent,
+      this.insertTplCtx(),
+      opts
+    );
     assert(
-      this.canInsertAsChild(newNode, newParent, false),
+      result.result === "success",
       "Should be able to insert newParent as parent of newNode"
     );
-    const existingParent = newNode.parent;
-    const isNewNode = !existingParent;
-    if (Tpls.isTplTextBlock(newParent)) {
-      // Break up text block into a container and text, so we can insert more content
-      newParent = ensure(
-        this.convertTextBlockToContainer(newParent),
-        "Unexpected undefined tpl after converting text to container"
-      );
-    }
-    if (
-      Tpls.isTplSlot(newParent) &&
-      Tpls.isTplTextBlock(newNode, "div") &&
-      newParent.defaultContents.length === 0 &&
-      Tpls.hasOnlyStyles(newNode, typographyCssProps, {
-        excludeProps: ignoredConvertablePlainTextProps,
-      })
-    ) {
-      // When adding a text block into a TplSlot, we're going to forcibly adopt
-      // its styles for the TplSlot
-      this.copyMixins(newNode, newParent);
-      this.transferStyleProps(newNode, newParent, typographyCssProps);
-      this.clearAllStyles(newNode);
-    }
-
-    this.adoptLayoutParentContainerStyle(newNode, newParent, opts);
-    if (
-      isKnownTplNode(newParent) &&
-      (Tpls.isTplSlot(newParent) || getAncestorTplSlot(newParent, true))
-    ) {
-      // If newNode is going to become defaultContent of something, then only keep
-      // its base variant setting
-      this.viewCtx().variantTplMgr().ensureSlotDefaultContentSetting(newNode);
-    }
-    if (opts.beforeNode) {
-      $$$(opts.beforeNode).before(newNode);
-    } else if (opts.afterNode) {
-      $$$(opts.afterNode).after(newNode);
-    } else if (newParent !== existingParent) {
-      if (opts.prepend) {
-        $$$(newParent).prepend(newNode);
-      } else {
-        $$$(newParent).append(newNode);
-      }
-    }
-
-    this.postInsertAsChildUpdates(newNode, newParent, isNewNode);
-  }
-
-  private postInsertAsChildUpdates(
-    newNode: TplNode,
-    newParent: TplNode | SlotSelection,
-    isNewNode: boolean
-  ) {
-    if (
-      isKnownTplNode(newParent) &&
-      Tpls.isTplColumns(newParent) &&
-      Tpls.isTplColumn(newNode)
-    ) {
-      redistributeColumnsSizes(newParent, this.viewCtx().variantTplMgr());
-      // We clear the tpl column visibility when it's added,
-      // so that we don't have empty spaces by default when the
-      // user is recording a variant and adding new column.
-      const vtm = this.viewCtx().variantTplMgr();
-      const baseVs = vtm.ensureBaseVariantSetting(newNode);
-      clearTplVisibility(newNode, baseVs.variants);
-    }
-
-    if (isNewNode && Tpls.isTplVariantable(newNode)) {
-      this.fixupNewlyInsertedNode(newNode);
-    }
-  }
-
-  private fixupNewlyInsertedNode(newNode: TplNode) {
-    const vtm = this.viewCtx().variantTplMgr();
-    const curCombo = vtm.getTargetVariantComboForNode(newNode, {
-      forVisibility: true,
-    });
-    if (!isBaseVariant(curCombo)) {
-      // If this is a new node for a non-base variant, then we may have set its
-      // visibility to not visible in the base variant, so that it is only visible
-      // in this current combo.  But that is redundant if it is being added to a subtree
-      // that is already invisible in the base variant, so we clear the visibility setting
-      // from both its base and cur variants if some ancestor node is already invisible
-      // in the base variant.
-      const baseVs = vtm.ensureBaseVariantSetting(newNode);
-      if (
-        getVariantSettingVisibility(baseVs) !== TplVisibility.Visible &&
-        getTplVisibilityAsDescendant(newNode, baseVs.variants, false) !==
-          TplVisibility.Visible
-      ) {
-        clearTplVisibility(newNode, curCombo);
-        clearTplVisibility(newNode, baseVs.variants);
-      }
-    }
   }
 
   // Make sure that in all variant settings of tpl, props are all set to default
@@ -3767,15 +3602,7 @@ export class ViewOps {
   }
 
   private copyMixins(fromNode: TplNode, toNode: TplNode) {
-    const vtm = this.viewCtx().variantTplMgr();
-    for (const fromVs of fromNode.vsettings) {
-      if (fromVs.variants.some((v) => isPrivateStyleVariant(v))) {
-        // Only transfer non-private variants
-        continue;
-      }
-      vtm.ensureVariantSetting(toNode, fromVs.variants).rs.mixins =
-        fromVs.rs.mixins.slice(0);
-    }
+    copyMixinsOp(fromNode, toNode, this.insertTplCtx());
   }
 
   private transferStyleProps(
@@ -3784,25 +3611,13 @@ export class ViewOps {
     props?: string[],
     clearProps?: string[]
   ) {
-    const vtm = this.viewCtx().variantTplMgr();
-    for (const fromVs of fromNode.vsettings) {
-      // Only transfer non-private variants
-      if (fromVs.variants.some((v) => isPrivateStyleVariant(v))) {
-        continue;
-      }
-      const fromExp = RSH(fromVs.rs, fromNode);
-      for (const prop of props || getAllDefinedStyles(fromVs.rs)) {
-        if (fromExp.has(prop)) {
-          RSH(vtm.ensureVariantSetting(toNode, fromVs.variants).rs, toNode).set(
-            prop,
-            fromExp.get(prop)
-          );
-          if (!clearProps || clearProps.includes(prop)) {
-            fromExp.clear(prop);
-          }
-        }
-      }
-    }
+    transferStylePropsOp(
+      fromNode,
+      toNode,
+      this.insertTplCtx(),
+      props,
+      clearProps
+    );
   }
 
   /**
@@ -4252,45 +4067,7 @@ export class ViewOps {
   }
 
   private clearAllStyles(tpl: TplNode) {
-    tpl.vsettings.forEach((vs) => {
-      vs.rs.values = {};
-      vs.rs.mixins = [];
-      vs.rs.animations = null;
-    });
-  }
-
-  private adoptLayoutParentContainerStyle(
-    child: TplNode,
-    parent: TplNode | SlotSelection,
-    opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean } = {}
-  ) {
-    const layoutParent = $$$(parent)
-      .layoutParent({ includeSelf: true })
-      .maybeOne();
-    const curLayoutParent = $$$(child)
-      .layoutParent({ includeSelf: false })
-      .maybeOne();
-
-    if (layoutParent === curLayoutParent) {
-      // If the layout parent hasn't changed, then we will preserve existing styles
-      // instead of resetting them
-      return;
-    }
-
-    const layoutChildren = $$$(child).layoutContent().toArray();
-    if (Tpls.isTplTag(layoutParent)) {
-      for (const layoutChild of layoutChildren) {
-        if (Tpls.isTplVariantable(layoutChild)) {
-          this.adoptParentContainerStyle(layoutChild, layoutParent, opts);
-        }
-      }
-    } else if (layoutParent instanceof SlotSelection) {
-      for (const layoutChild of layoutChildren) {
-        if (Tpls.isTplVariantable(layoutChild)) {
-          this.convertToSlotContent(layoutChild);
-        }
-      }
-    }
+    clearAllStylesOp(tpl);
   }
 
   /**
@@ -4302,57 +4079,12 @@ export class ViewOps {
     layoutParent: TplTag,
     opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean }
   ) {
-    if (!Tpls.isTplTagOrComponent(layoutChild)) {
-      return;
-    }
-
-    const vtm = this.viewCtx().variantTplMgr();
-
-    vtm.ensureBaseVariantSetting(layoutChild);
-    vtm.ensureCurrentVariantSetting(layoutChild);
-
-    // If we are re-parenting, then we must fix up and adapt to the new parent
-    // for all variants.  Else if we are in the same parent, then we are only
-    // moving absolute position or the relative ordering of the child, so we
-    // should only target the current variant.
-    const curLayoutParent = $$$(layoutChild).layoutParent().maybeOneTpl();
-    const variantCombos =
-      curLayoutParent === layoutParent
-        ? [vtm.getTargetVariantComboForNode(layoutChild)]
-        : layoutChild.vsettings.map((vs) => vs.variants);
-
-    // We loop through and adopt parent style for all relavant variants
-    for (const variantCombo of variantCombos) {
-      this.adoptParentContainerStyleForVariant(
-        layoutChild,
-        layoutParent,
-        variantCombo,
-        opts
-      );
-    }
-  }
-
-  private convertToSlotContent(child: TplNode, variantCombo?: VariantCombo) {
-    const vtm = this.viewCtx().variantTplMgr();
-    const combos = variantCombo
-      ? [variantCombo]
-      : child.vsettings.map((vs) => vs.variants);
-
-    for (const combo of combos) {
-      // If adding to a slot, then slot children is always relatively positioned
-      const effectiveExp = vtm.effectiveVariantSetting(child, combo).rsh();
-      if (
-        getRshPositionType(effectiveExp) !== PositionLayoutType.auto ||
-        ["left", "top", "bottom", "right"].some((prop) =>
-          effectiveExp.has(prop)
-        )
-      ) {
-        convertToSlotContent(
-          effectiveExp,
-          RSH(vtm.ensureVariantSetting(child, combo).rs, child)
-        );
-      }
-    }
+    adoptParentContainerStyleOp(
+      layoutChild,
+      layoutParent,
+      opts,
+      this.insertTplCtx()
+    );
   }
 
   /**
@@ -4364,74 +4096,13 @@ export class ViewOps {
     variantCombo: VariantCombo,
     opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean }
   ) {
-    if (!Tpls.isTplTagOrComponent(layoutChild)) {
-      return;
-    }
-    const vtm = this.viewCtx().variantTplMgr();
-    const effectiveParentExp = vtm
-      .effectiveVariantSetting(layoutParent, variantCombo)
-      .rsh();
-    const parentContainerType = getRshContainerType(effectiveParentExp);
-    const effectiveChildExp = vtm
-      .effectiveVariantSetting(layoutChild, variantCombo)
-      .rsh();
-    const childPositionType = getRshPositionType(effectiveChildExp);
-
-    // Clear irrelevant styles that may have come from
-    // being a child of a different layout
-    const exp = RSH(
-      vtm.ensureVariantSetting(layoutChild, variantCombo).rs,
-      layoutChild
+    adoptParentContainerStyleForVariantOp(
+      layoutChild,
+      layoutParent,
+      variantCombo,
+      opts,
+      this.insertTplCtx()
     );
-    if (parentContainerType !== ContainerLayoutType.contentLayout) {
-      exp.clearAll(contentLayoutChildProps);
-      const width = exp.getRaw("width");
-      if (width && CONTENT_LAYOUT_WIDTH_OPTIONS.includes(width)) {
-        exp.set("width", "stretch");
-      }
-    }
-    if (parentContainerType !== ContainerLayoutType.grid) {
-      exp.clearAll(gridChildProps);
-    }
-    if (!parentContainerType.includes("flex")) {
-      exp.clearAll(flexChildProps);
-    }
-
-    // Fixed elements aren't affected by their parent style changes
-    if (childPositionType === PositionLayoutType.fixed) {
-      return;
-    }
-
-    // as sticky works with both layout types, we just adopt it
-    // recalculating the offset
-    if (childPositionType === PositionLayoutType.sticky) {
-      this.adoptStickyPositionType(layoutChild, variantCombo);
-      return;
-    }
-
-    const newChildPosType =
-      opts.forceFree ||
-      parentContainerType === ContainerLayoutType.free ||
-      (opts.keepFree && childPositionType === PositionLayoutType.free)
-        ? "free"
-        : "auto";
-    if (newChildPosType === "free") {
-      let offset: Pt | "current" | undefined = opts.parentOffset;
-      if (!offset) {
-        if (layoutChild.parent === layoutParent) {
-          // If this is the same parent, then by default when going to freely-positioned,
-          // we use the current offset of the DOM
-          offset = "current";
-        } else {
-          // Else if we are re-parenting, and there's no offset specified, then the best
-          // we can do is at the origin!
-          offset = new Pt(0, 0);
-        }
-      }
-      this.adoptFreePositionType(layoutChild, variantCombo, offset);
-    } else {
-      this.adoptRelativePositionType(layoutChild, variantCombo);
-    }
   }
 
   /**
@@ -4458,46 +4129,7 @@ export class ViewOps {
     variants: Variant[],
     parentOffset?: Pt | "current"
   ) {
-    const vtm = this.viewCtx().variantTplMgr();
-    const effectiveExp = vtm.effectiveVariantSetting(node, variants).rsh();
-    const curPosType = getRshPositionType(effectiveExp);
-
-    // We want to avoid creating a new VariantSetting if the effective VS is already
-    // correct
-    const mkExp = () => RSH(vtm.ensureVariantSetting(node, variants).rs, node);
-
-    if (curPosType !== PositionLayoutType.free) {
-      const exp = mkExp();
-      convertToAbsolutePosition(exp);
-      if (!parentOffset) {
-        parentOffset = this.getTplDomOffset(node);
-      }
-    }
-
-    let offset: { x: number; y: number } | undefined;
-
-    // Ignore offset if it's coming from a fixed element
-    if (curPosType === PositionLayoutType.fixed) {
-      offset = { x: 0, y: 0 };
-    } else {
-      if (parentOffset === "current") {
-        offset = this.getTplDomOffset(node);
-      } else {
-        offset = parentOffset;
-      }
-    }
-
-    if (
-      offset &&
-      (effectiveExp.get("left") !== `${offset.x}px` ||
-        effectiveExp.get("top") !== `${offset.y}px`)
-    ) {
-      const exp = mkExp();
-      exp.set("left", `${offset.x}px`);
-      exp.set("top", `${offset.y}px`);
-      exp.clear("right");
-      exp.clear("bottom");
-    }
+    adoptFreePositionTypeOp(node, variants, this.insertTplCtx(), parentOffset);
   }
 
   /**
@@ -4508,16 +4140,7 @@ export class ViewOps {
     node: TplTag | TplComponent,
     variantCombo: VariantCombo
   ) {
-    const vtm = this.viewCtx().variantTplMgr();
-    const effectiveExp = vtm.effectiveVariantSetting(node, variantCombo).rsh();
-    const curPosType = getRshPositionType(effectiveExp);
-    if (
-      curPosType !== PositionLayoutType.auto ||
-      ["left", "top", "right", "bottom"].some((prop) => effectiveExp.has(prop))
-    ) {
-      const exp = RSH(vtm.ensureVariantSetting(node, variantCombo).rs, node);
-      convertToRelativePosition(effectiveExp, exp);
-    }
+    adoptRelativePositionTypeOp(node, variantCombo, this.insertTplCtx());
   }
 
   /**
@@ -4529,25 +4152,7 @@ export class ViewOps {
     node: TplTag | TplComponent,
     variantCombo: VariantCombo
   ) {
-    const vtm = this.viewCtx().variantTplMgr();
-    const effectiveExp = vtm.effectiveVariantSetting(node, variantCombo).rsh();
-    const curPosType = getRshPositionType(effectiveExp);
-
-    if (curPosType !== PositionLayoutType.fixed) {
-      const exp = RSH(vtm.ensureVariantSetting(node, variantCombo).rs, node);
-
-      const offset = this.getTplDomOffset(node) || { x: 0, y: 0 };
-      exp.set("left", `${offset.x}px`);
-      exp.set("top", `${offset.y}px`);
-      exp.clear("right");
-      exp.clear("bottom");
-
-      if (!effectiveExp.has("z-index")) {
-        exp.set("z-index", "1");
-      }
-
-      exp.set("position", "fixed");
-    }
+    adoptFixedPositionTypeOp(node, variantCombo, this.insertTplCtx());
   }
 
   /**
@@ -4557,34 +4162,7 @@ export class ViewOps {
     node: TplTag | TplComponent,
     variantCombo: VariantCombo
   ) {
-    const vtm = this.viewCtx().variantTplMgr();
-    const effectiveExp = vtm.effectiveVariantSetting(node, variantCombo).rsh();
-    const curPosType = getRshPositionType(effectiveExp);
-
-    if (curPosType !== PositionLayoutType.sticky) {
-      const exp = RSH(vtm.ensureVariantSetting(node, variantCombo).rs, node);
-
-      let offset: { x: number; y: number } | undefined;
-      if (
-        curPosType === PositionLayoutType.fixed ||
-        curPosType === PositionLayoutType.auto
-      ) {
-        offset = { x: 0, y: 0 };
-      } else {
-        offset = this.getTplDomOffset(node) || { x: 0, y: 0 };
-      }
-
-      exp.set("left", `${offset.x}px`);
-      exp.set("top", `${offset.y}px`);
-      exp.clear("right");
-      exp.clear("bottom");
-
-      if (!effectiveExp.has("z-index")) {
-        exp.set("z-index", "1");
-      }
-
-      exp.set("position", "sticky");
-    }
+    adoptStickyPositionTypeOp(node, variantCombo, this.insertTplCtx());
   }
 
   convertContainerType(
@@ -4674,106 +4252,18 @@ export class ViewOps {
     tpl: Tpls.TplTextTag,
     inferFlexStyleFromChild = false
   ) {
-    if (Tpls.hasTextAncestor(tpl)) {
+    const container = convertTextBlockToContainerOp(
+      tpl,
+      this.insertTplCtx(),
+      inferFlexStyleFromChild
+    );
+    if (!container) {
       notification.error({
         message: "Cannot convert text inside rich text block to a container.",
         description: "This feature is not supported at the moment.",
       });
       return undefined;
     }
-    const container = tpl as TplTag;
-    container.type = "other";
-    const vtm = this.viewCtx().variantTplMgr();
-    const textChildNode = vtm.mkTplTagX(
-      "div",
-      { type: Tpls.TplTagType.Text },
-      undefined,
-      true
-    );
-    textChildNode.children = container.children;
-    container.children = [];
-    Tpls.fixParentPointers(textChildNode);
-    const owningComponent = $$$(container).tryGetOwningComponent();
-    const privateStyleVariantsMap = new Map<Variant, Variant>();
-    for (const vs of container.vsettings) {
-      const variantCombo = vs.variants.map((v) => {
-        if (privateStyleVariantsMap.has(v)) {
-          return ensure(
-            privateStyleVariantsMap.get(v),
-            "Should check if privateStyleVariantsMap contains variant"
-          );
-        }
-        if (isPrivateStyleVariant(v) && owningComponent) {
-          const newVariant = this.tplMgr().createPrivateStyleVariant(
-            owningComponent,
-            textChildNode,
-            maybe(v.selectors, (s) => [...s])
-          );
-          privateStyleVariantsMap.set(v, newVariant);
-          return newVariant;
-        }
-        return v;
-      });
-      const childVs = vtm.ensureVariantSetting(
-        textChildNode,
-        variantCombo,
-        vtm.getOwningComponentForNewNode()
-      );
-      // Move the text and typography styling from parent to child vs
-      childVs.text = vs.text;
-      vs.text = undefined;
-
-      const parentExpr = RSH(vs.rs, container);
-      const childExpr = RSH(childVs.rs, container);
-
-      if (inferFlexStyleFromChild) {
-        // `button` without text-align is assumed to have `text-align:
-        // center` from default user agent styles.
-        if (parentExpr.has("text-align") || container.tag === "button") {
-          const align = parentExpr.get("text-align") || "center";
-          if (align === "center") {
-            parentExpr.set("justify-content", "center");
-          } else if (align === "right") {
-            parentExpr.set("justify-content", "flex-end");
-          }
-        }
-      }
-
-      for (const prop of typographyCssProps) {
-        if (parentExpr.has(prop)) {
-          const val = parentExpr.getRaw(prop);
-          if (val) {
-            childExpr.set(prop, val);
-          }
-          parentExpr.clear(prop);
-        } else if (container.tag === "button") {
-          childExpr.set("text-align", "center");
-        }
-      }
-
-      for (const mixin of vs.rs.mixins) {
-        if (hasTypography(RSH(mixin.rs, container))) {
-          childVs.rs.mixins.push(mixin);
-          arrayRemove(vs.rs.mixins, mixin);
-        }
-      }
-    }
-
-    // On the base variant, set the default container type.
-    const baseVs = vtm.ensureBaseVariantSetting(container);
-    const parentType = getContainerType(container.parent, this.viewCtx());
-    if (parentType && parentType !== "free" && !inferFlexStyleFromChild) {
-      convertSelfContainerType(RSH(baseVs.rs, container), parentType);
-    } else {
-      convertSelfContainerType(RSH(baseVs.rs, container), "flex-row");
-    }
-    $$$(container).append(textChildNode);
-    this.adoptParentContainerStyleForVariant(
-      textChildNode,
-      container,
-      baseVs.variants,
-      {}
-    );
     return container;
   }
 
