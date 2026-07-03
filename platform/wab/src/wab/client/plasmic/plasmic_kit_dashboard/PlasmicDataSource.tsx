@@ -50,18 +50,24 @@ export const PlasmicDataSource__VariantProps = new Array<VariantPropType>(
   "readOnly"
 );
 
-export type PlasmicDataSource__ArgsType = { children?: React.ReactNode };
+export type PlasmicDataSource__ArgsType = {
+  children?: React.ReactNode;
+  menuButton?: React.ReactNode;
+};
 type ArgPropType = keyof PlasmicDataSource__ArgsType;
-export const PlasmicDataSource__ArgProps = new Array<ArgPropType>("children");
+export const PlasmicDataSource__ArgProps = new Array<ArgPropType>(
+  "children",
+  "menuButton"
+);
 
 export type PlasmicDataSource__OverridesType = {
   root?: Flex__<"div">;
-  freeBox?: Flex__<"div">;
   svg?: Flex__<"svg">;
 };
 
 export interface DefaultDataSourceProps {
   children?: React.ReactNode;
+  menuButton?: React.ReactNode;
   readOnly?: SingleBooleanChoiceArg<"readOnly">;
   className?: string;
 }
@@ -119,8 +125,13 @@ function PlasmicDataSource__RenderFunc(props: {
   });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
+  const [isRootFocusWithin, triggerRootFocusWithinProps] = useTrigger(
+    "useFocusedWithin",
+    {}
+  );
   const triggers = {
     hover_root: isRootHover,
+    focusWithin_root: isRootFocusWithin,
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -140,13 +151,18 @@ function PlasmicDataSource__RenderFunc(props: {
         sty.root,
         { [sty.rootreadOnly]: hasVariant($state, "readOnly", "readOnly") }
       )}
-      data-plasmic-trigger-props={[triggerRootHoverProps]}
+      data-plasmic-trigger-props={[
+        triggerRootHoverProps,
+        triggerRootFocusWithinProps,
+      ]}
     >
       <div
-        data-plasmic-name={"freeBox"}
-        data-plasmic-override={overrides.freeBox}
-        className={classNames("all", sty.freeBox, {
-          [sty.freeBoxreadOnly]: hasVariant($state, "readOnly", "readOnly"),
+        className={classNames("all", sty.freeBox__vUr6W, {
+          [sty.freeBoxreadOnly__vUr6WxkCNh]: hasVariant(
+            $state,
+            "readOnly",
+            "readOnly"
+          ),
         })}
       >
         {renderPlasmicSlot({
@@ -154,13 +170,7 @@ function PlasmicDataSource__RenderFunc(props: {
           value: args.children,
         })}
       </div>
-      {(
-        hasVariant($state, "readOnly", "readOnly") && triggers.hover_root
-          ? true
-          : triggers.hover_root
-          ? true
-          : false
-      ) ? (
+      <div className={classNames("all", sty.freeBox__fgqCy)}>
         <PencilSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
@@ -169,14 +179,18 @@ function PlasmicDataSource__RenderFunc(props: {
           })}
           role={"img"}
         />
-      ) : null}
+
+        {renderPlasmicSlot({
+          defaultContents: null,
+          value: args.menuButton,
+        })}
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "freeBox", "svg"],
-  freeBox: ["freeBox"],
+  root: ["root", "svg"],
   svg: ["svg"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -184,7 +198,6 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  freeBox: "div";
   svg: "svg";
 };
 
@@ -199,8 +212,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataSource__VariantsArgs;
     args?: PlasmicDataSource__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDataSource__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicDataSource__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicDataSource__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -249,7 +261,6 @@ export const PlasmicDataSource = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    freeBox: makeNodeComponent("freeBox"),
     svg: makeNodeComponent("svg"),
 
     // Metadata about props expected for PlasmicDataSource

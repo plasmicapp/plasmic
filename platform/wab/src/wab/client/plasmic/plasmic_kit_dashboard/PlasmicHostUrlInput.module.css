@@ -29,7 +29,6 @@
   height: auto;
   width: auto;
   white-space: pre;
-  padding-bottom: 0px;
 }
 .clearButton:global(.__wab_instance) {
   position: relative;
