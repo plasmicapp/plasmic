@@ -10,7 +10,7 @@ import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { assert, ensure, isNonNil, isPrefixArray } from "@/wab/shared/common";
+import { assert, ensure, isNonNil } from "@/wab/shared/common";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   getComponentDataQueryByVarName,
@@ -24,13 +24,13 @@ import {
   StatefulQueryResult,
   unwrapStatefulQueryResult,
 } from "@/wab/shared/core/custom-functions";
-import {
-  alwaysOmitKeys,
-  flattenedKeys,
-  omittedKeysIfEmpty,
-} from "@/wab/shared/core/exprs";
+import { alwaysOmitKeys, omittedKeysIfEmpty } from "@/wab/shared/core/exprs";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { findStateIn$State, getStateByVarName } from "@/wab/shared/core/states";
+import {
+  findStateIn$State,
+  getStateByVarName,
+  getStateVarName,
+} from "@/wab/shared/core/states";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
@@ -50,11 +50,11 @@ import {
 } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { ChoiceValue, DataMeta, mkMetaName } from "@plasmicapp/host";
-import { isArray, isPlainObject, partition } from "lodash";
+import { isArray, isPlainObject } from "lodash";
 
 export type supportedTypes =
   PlasmicDataPickerColumnItem__VariantMembers["variableType"];
-export const allowedTypes = [
+const allowedTypes = [
   "string",
   "number",
   "boolean",
@@ -64,7 +64,7 @@ export const allowedTypes = [
   "func",
 ];
 
-export const allowedSymbols = [
+const allowedSymbols = [
   UNINITIALIZED_NUMBER,
   UNINITIALIZED_STRING,
   UNINITIALIZED_BOOLEAN,
@@ -76,9 +76,17 @@ export type ColumnItem = {
   value: any;
   pathPrefix: (string | number)[];
   label?: string;
+  /** Shown in place of the item's fields when its data failed to resolve. */
+  errorMessage?: string;
 };
 
-export type keyInfo = {
+export type Column = {
+  selectedItem: number | undefined;
+  columnItems: ColumnItem[];
+  errorMessage?: string;
+};
+
+type keyInfo = {
   key: string;
   label?: string;
 };
@@ -185,56 +193,20 @@ export function getSupportedObjectKeys(
     : [];
 }
 
+/** Items shown in a column for `data` at `pathPrefix`, one per supported key. */
 export function mkColumnItems(
   data: Record<string, any>,
   pathPrefix: (string | number)[],
-  opts: DataPickerOpts,
-  flatten?: boolean,
-  extraObjectPathsToFlat?: (string | number)[][]
+  opts: DataPickerOpts
 ): ColumnItem[] {
-  const keys = getSupportedObjectKeys(data, opts, undefined, pathPrefix);
-  if (flatten) {
-    const [flattenKeys, normalKeys] = partition(
-      keys,
-      (x) =>
-        flattenedKeys.has(x.key) ||
-        extraObjectPathsToFlat?.some((objPath) =>
-          isPrefixArray([...pathPrefix, x.key], objPath)
-        )
-    );
-    return [
-      ...flattenKeys.flatMap(({ key }) =>
-        mkColumnItems(
-          data[key],
-          [...pathPrefix, key],
-          opts,
-          flatten,
-          extraObjectPathsToFlat
-        )
-      ),
-      ...normalKeys.map(({ key, label }) => {
-        return {
-          name: key,
-          label: extraObjectPathsToFlat?.some(
-            (objPath) =>
-              isPrefixArray(pathPrefix, objPath) && pathPrefix.length > 0
-          )
-            ? [...pathPrefix.slice(1), label ?? key].join(" → ")
-            : label,
-          value: data[key],
-          pathPrefix,
-        };
-      }),
-    ];
-  }
-  return keys.map(({ key, label }) => {
-    return {
+  return getSupportedObjectKeys(data, opts, undefined, pathPrefix).map(
+    ({ key, label }) => ({
       name: key,
-      label: label,
+      label,
       value: data[key],
       pathPrefix,
-    };
-  });
+    })
+  );
 }
 
 export function isTypeSupported(
@@ -243,12 +215,63 @@ export function isTypeSupported(
   return allowedTypes.includes(variableType);
 }
 
-export function parseItem(key: string) {
-  return isNaN(Number(key)) ? key : Number(key);
+export function getItemPath(item: ColumnItem): (string | number)[] {
+  const key = isNaN(Number(item.name)) ? item.name : Number(item.name);
+  return item.pathPrefix.concat(key);
 }
 
-export function getItemPath(path: (string | number)[], key: string) {
-  return path.concat(parseItem(key));
+/**
+ * Columns to show if item is selected.
+ *
+ * Could be sub-items or an error message.
+ */
+export function getItemChildColumns(
+  item: ColumnItem,
+  opts: DataPickerOpts
+): Column[] {
+  // An errored item shows its message instead of empty fields.
+  if (item.errorMessage !== undefined) {
+    return [
+      {
+        selectedItem: undefined,
+        columnItems: [],
+        errorMessage: item.errorMessage,
+      },
+    ];
+  }
+  return mkListColumn(item.value, getItemPath(item), opts);
+}
+
+/**
+ * Formats an error into a readable message for display in the picker.
+ */
+export function formatErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  try {
+    return JSON.stringify(error, null, 2) ?? String(error);
+  } catch {
+    return String(error);
+  }
+}
+
+/** Column shown after selecting `value` at `path`: its fields, or none for a leaf. */
+function mkListColumn(
+  value: any,
+  path: (string | number)[],
+  opts: DataPickerOpts
+): Column[] {
+  if (!isListType(getVariableType(value))) {
+    return [];
+  }
+  const columnItems = mkColumnItems(value, path, opts);
+  return columnItems.length > 0
+    ? [{ selectedItem: undefined, columnItems }]
+    : [];
 }
 
 export function getVariableType(value: any) {
@@ -418,7 +441,7 @@ export function extractExpectedValues(
 // TODO: Obviate getSourceUiId.
 
 /**
- * Given the path of a data picker row (e.g. `["$q", "myQuery"]`),
+ * Given the path of a data picker row (e.g. `["$q", "myQuery", "data"]`),
  * finds the relevant model in the Site and returns its UiId.
  */
 export function getSourceUiId(
@@ -471,7 +494,12 @@ export function getSourceUiId(
       return param ? mkModelUiId(param) : undefined;
     }
     case "$q": {
-      if (!component || itemPath.length !== 2 || typeof name !== "string") {
+      // Accept `$q.<name>` or `$q.<name>.data`
+      const isQueryPath =
+        typeof name === "string" &&
+        (itemPath.length === 2 ||
+          (itemPath.length === 3 && itemPath[2] === "data"));
+      if (!component || !isQueryPath) {
         return undefined;
       }
       const query = getComponentServerQueryByVarName(component, name);
@@ -485,11 +513,23 @@ export function getSourceUiId(
       return query ? mkModelUiId(query) : undefined;
     }
     case "$state": {
-      if (!component || itemPath.length !== 2 || typeof name !== "string") {
+      if (!component || typeof name !== "string") {
         return undefined;
       }
-      const state = getStateByVarName(component, name);
-      return state ? mkModelUiId(state.param) : undefined;
+      // Accept `$state.<componentState>`
+      if (itemPath.length === 2) {
+        const state = getStateByVarName(component, name);
+        return state ? mkModelUiId(state.param) : undefined;
+      }
+      // Accept `$state.<element>.<elementState>`
+      if (itemPath.length === 3 && typeof itemPath[2] === "string") {
+        const varName = `${name}.${itemPath[2]}`;
+        const state = component.states.find(
+          (s) => getStateVarName(s) === varName
+        );
+        return state ? mkModelUiId(state.param) : undefined;
+      }
+      return undefined;
     }
     default:
       return undefined;

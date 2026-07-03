@@ -691,26 +691,24 @@ export function removeComponentStateOnly(
   remove(component.states, state);
 }
 
-export function getKeysToFlatForDollarState(component: Component) {
-  return component.states.map((state) => {
-    if (state.tplNode) {
-      const dataReps = Tpls.ancestorsUp(state.tplNode).filter(
-        Tpls.isTplRepeated
-      ).length;
-      if (!dataReps) {
-        return [
-          "$state",
-          toVarName(
-            ensure(
-              state.tplNode.name,
-              "TplNode with public states must be named"
-            )
-          ),
-        ];
-      }
-    }
-    return ["$state"];
-  });
+/**
+ * Names of component instances under `$state` whose implicit members are surfaced at the
+ * top level of the data picker. A tpl node inside a repeater is excluded, since its
+ * states are indexed by position and can't be flattened.
+ */
+export function getFlattenedStateNames(component: Component): Set<string> {
+  const stateNames = component.states
+    .filter(
+      (state) =>
+        state.tplNode &&
+        !Tpls.ancestorsUp(state.tplNode).some(Tpls.isTplRepeated)
+    )
+    .map((state) =>
+      toVarName(
+        ensure(state.tplNode?.name, "TplNode with public states must be named")
+      )
+    );
+  return new Set(stateNames);
 }
 
 /**

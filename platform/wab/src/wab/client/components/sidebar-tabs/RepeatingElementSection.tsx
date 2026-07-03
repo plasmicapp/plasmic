@@ -120,7 +120,6 @@ export const RepeatingElementSection = observer(function (props: {
                 forDataRepCollection: true,
               })}
               schema={viewCtx.customFunctionsSchema()}
-              flatten={true}
               key={tpl.uid}
               context="Array of elements to then be iterated"
             />

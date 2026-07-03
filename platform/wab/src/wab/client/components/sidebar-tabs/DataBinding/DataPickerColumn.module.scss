@@ -1,0 +1,18 @@
+@import "src/wab/styles/tokens";
+
+.columnError {
+  padding: 8px 12px;
+  color: $tomato9;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.columnErrorTitle {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.columnErrorMessage {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

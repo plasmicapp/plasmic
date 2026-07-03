@@ -24,7 +24,6 @@ interface DataPickerEditorProps {
   viewCtx?: ViewCtx;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
-  flatten?: boolean;
   onUnlink?: () => void;
   isDisabled?: boolean;
   disabledTooltip?: React.ReactNode | (() => React.ReactNode);
@@ -57,7 +56,6 @@ export const InternalDataPickerEditor = observer(
       viewCtx,
       data,
       schema,
-      flatten,
       onUnlink,
       isDisabled,
       disabledTooltip,
@@ -129,7 +127,6 @@ export const InternalDataPickerEditor = observer(
             onCancel={() => setVisible(false)}
             data={data}
             schema={schema}
-            flatten={flatten}
             hideStateSwitch={hideStateSwitch}
             onUnlink={
               onUnlink

@@ -433,7 +433,6 @@ const TextContentRow = observer(function TextContentRow(props: {
                   disabledTooltip={disabledTooltip}
                   data={viewCtx.getCanvasEnvForTpl(tpl)}
                   schema={viewCtx.customFunctionsSchema()}
-                  flatten={true}
                   key={tpl.uid}
                   context="The text content to be displayed"
                 />

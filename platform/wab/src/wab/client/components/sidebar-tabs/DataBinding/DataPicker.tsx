@@ -9,9 +9,12 @@ import DataPickerColumn from "@/wab/client/components/sidebar-tabs/DataBinding/D
 import DataPickerGlobalSearchResultsItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem";
 import DataPickerSelectedItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerSelectedItem";
 import {
+  Column,
   ColumnItem,
   DataPickerOpts,
   evalExpr,
+  formatErrorMessage,
+  getItemChildColumns,
   getItemPath,
   getSupportedObjectKeys,
   getVariableType,
@@ -19,7 +22,6 @@ import {
   isListType,
   isTypeSupported,
   mkColumnItems,
-  parseItem,
   prepareEnvForDataPicker,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -33,9 +35,10 @@ import {
 import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { DATA_QUERY_LOWER, VARIABLE_LOWER } from "@/wab/shared/Labels";
-import { arrayEq, ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
+import { ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
+import { UnwrappedQueryResult } from "@/wab/shared/core/custom-functions";
 import { flattenedKeys } from "@/wab/shared/core/exprs";
-import { getKeysToFlatForDollarState } from "@/wab/shared/core/states";
+import { getFlattenedStateNames } from "@/wab/shared/core/states";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   pathToString,
@@ -44,17 +47,11 @@ import {
   transformDataTokensInCode,
   transformDataTokensToDisplay,
 } from "@/wab/shared/eval/expression-parser";
-import { Interaction } from "@/wab/shared/model/classes";
+import { Component, Interaction } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { head, mapValues } from "lodash";
-import deepGet from "lodash/get";
+import { head, mapValues, partition } from "lodash";
 import * as React from "react";
 import { useUpdateEffect } from "react-use";
-
-type Column = {
-  selectedItem: number | undefined;
-  columnItems: ColumnItem[];
-};
 
 type SelectedItem = {
   column: number;
@@ -99,7 +96,6 @@ export interface DataPickerProps
   onCancel: () => void;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
-  flatten?: boolean;
   onUnlink?: () => void;
   onDelete?: () => void;
   hideStateSwitch?: boolean;
@@ -122,7 +118,6 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     onCancel,
     data,
     schema,
-    flatten = true,
     onUnlink,
     onDelete,
     hideStateSwitch,
@@ -135,10 +130,6 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     context,
   } = props;
   const viewCtx = useViewCtxMaybe();
-  const extraObjectPathsToFlatten =
-    flatten && viewCtx?.component
-      ? getKeysToFlatForDollarState(viewCtx.component)
-      : undefined;
 
   // Transform value from storage format to display format for DataPicker UI
   const displayValue = React.useMemo(() => {
@@ -191,6 +182,12 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
       ),
     [data, schema, viewCtx?.currentComponent(), focusedTpl]
   );
+  // fixedData unwraps `$q` with `unwrapStatefulQueryResult`, but the code
+  // editor preview needs real query results so `$q.x.data` throws on error.
+  const codePreviewData = React.useMemo(
+    () => (fixedData && data?.$q ? { ...fixedData, $q: data.$q } : fixedData),
+    [fixedData, data]
+  );
   const [showAdvancedFields, setShowAdvancedFields] = React.useState(false);
   const opts: DataPickerOpts = {
     showAdvancedFields,
@@ -202,23 +199,8 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
   const itemsRef = React.useRef<HTMLDivElement>(null);
   const searchboxRef = React.useRef<TextboxRef>(null);
   const editorRef = React.useRef<FullCodeEditor>(null);
-  const getFixedInitialColumns = (val: DataPickerValueType) => {
-    const initialColumns = getInitialColumns(
-      val,
-      opts,
-      fixedData,
-      flatten,
-      extraObjectPathsToFlatten
-    );
-    if (initialColumns.length >= 1) {
-      const len = initialColumns[0].columnItems.length;
-      const item = initialColumns[0].selectedItem;
-      initialColumns[0].columnItems.reverse();
-      initialColumns[0].selectedItem =
-        item !== undefined ? len - item - 1 : undefined;
-    }
-    return initialColumns;
-  };
+  const getFixedInitialColumns = (val: DataPickerValueType) =>
+    getFixedInitialColumnsFor(val, opts, fixedData, viewCtx?.component);
   const [columns, setColumns] = React.useState<Array<Column>>(() =>
     getFixedInitialColumns(displayValue)
   );
@@ -245,67 +227,66 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
       newColumns: Column[],
       depth: number
     ) => {
-      currentColumnItems.forEach(
-        ({ name: key, value: val, pathPrefix }, index) => {
-          const itemPath = getItemPath(pathPrefix, key);
-          const variableType = getVariableType(val);
-          if (!isTypeSupported(variableType)) {
-            return;
-          }
-          const keyCount = isListType(variableType)
-            ? getSupportedObjectKeys(val, opts).length
-            : 0;
-          const nextColumns = isListType(variableType)
-            ? mkColumnItems(val, itemPath, opts)
-            : [];
-          const previewValue = !isListType(variableType)
-            ? evalExpr(
-                itemPath,
-                ensure(fixedData, "Should only be called if data exists")
-              )
-            : keyCount + ` item${keyCount === 1 ? "" : "s"}`;
-
-          // The join matches the format used in DataPickerGlobalSearchResultsItem
-          if (matcher.matches(itemPath.join(" / "))) {
-            searchResults.push({
-              itemPath,
-              previewValue: previewValue,
-              variableType: variableType,
-              matcher: matcher,
-              onClick: () => {
-                setQuery("");
-                setDraft(pathToString(itemPath));
-                setColumns([
-                  ...newColumns,
-                  {
-                    selectedItem: index,
-                    columnItems: currentColumnItems,
-                  },
-                  ...(isListType(variableType)
-                    ? [
-                        {
-                          selectedItem: undefined,
-                          columnItems: nextColumns,
-                        },
-                      ]
-                    : []),
-                ]);
-              },
-              depth,
-            });
-          }
-          if (isListType(variableType)) {
-            createSearchResult(
-              nextColumns,
-              newColumns.concat({
-                selectedItem: index,
-                columnItems: currentColumnItems,
-              }),
-              depth + 1
-            );
-          }
+      currentColumnItems.forEach((item, index) => {
+        const path = getItemPath(item);
+        const val = item.value;
+        const variableType = getVariableType(val);
+        if (!isTypeSupported(variableType)) {
+          return;
         }
-      );
+        const keyCount = isListType(variableType)
+          ? getSupportedObjectKeys(val, opts).length
+          : 0;
+        const nextColumns = isListType(variableType)
+          ? mkColumnItems(val, path, opts)
+          : [];
+        const previewValue = !isListType(variableType)
+          ? evalExpr(
+              path,
+              ensure(fixedData, "Should only be called if data exists")
+            )
+          : keyCount + ` item${keyCount === 1 ? "" : "s"}`;
+
+        // The join matches the format used in DataPickerGlobalSearchResultsItem
+        if (matcher.matches(path.join(" / "))) {
+          searchResults.push({
+            itemPath: path,
+            previewValue: previewValue,
+            variableType: variableType,
+            matcher: matcher,
+            onClick: () => {
+              setQuery("");
+              setDraft(pathToString(path));
+              setColumns([
+                ...newColumns,
+                {
+                  selectedItem: index,
+                  columnItems: currentColumnItems,
+                },
+                ...(isListType(variableType)
+                  ? [
+                      {
+                        selectedItem: undefined,
+                        columnItems: nextColumns,
+                      },
+                    ]
+                  : []),
+              ]);
+            },
+            depth,
+          });
+        }
+        if (isListType(variableType)) {
+          createSearchResult(
+            nextColumns,
+            newColumns.concat({
+              selectedItem: index,
+              columnItems: currentColumnItems,
+            }),
+            depth + 1
+          );
+        }
+      });
     };
 
     createSearchResult(
@@ -327,29 +308,11 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
       const oldColumns = columns.slice(0, column + 1);
       oldColumns[column].selectedItem = item;
       const curSelectedItem = oldColumns[column].columnItems[item];
-      const selectedItemValue = curSelectedItem.value;
-      const selectedPath = getItemPath(
-        curSelectedItem.pathPrefix,
-        curSelectedItem.name
-      );
-      const variableType = getVariableType(selectedItemValue);
-      const newColumn: Column[] =
-        isListType(variableType) &&
-        getSupportedObjectKeys(selectedItemValue, opts).length > 0
-          ? [
-              {
-                selectedItem: undefined,
-                columnItems: mkColumnItems(
-                  selectedItemValue,
-                  selectedPath,
-                  opts
-                ),
-              },
-            ]
-          : [];
-
-      setColumns([...oldColumns, ...newColumn]);
-      setDraft(pathToString(selectedPath));
+      setColumns([
+        ...oldColumns,
+        ...getItemChildColumns(curSelectedItem, opts),
+      ]);
+      setDraft(pathToString(getItemPath(curSelectedItem)));
       setQuery("");
       searchboxRef.current?.focus();
     },
@@ -457,6 +420,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
           codeEditor={{
             editorRef: editorRef,
             data: fixedData,
+            previewData: codePreviewData,
             schema,
             defaultValue: draft ?? stringValue ?? "",
             onSave: trySave,
@@ -556,15 +520,15 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
         saveButton={{
           id: "data-picker-save-btn",
           onClick: () => {
-            let itemPath = currentItemPath;
+            let savedPath = currentItemPath;
             if (viewCtx) {
-              itemPath = transformDataTokenPathToBundle(
-                itemPath,
+              savedPath = transformDataTokenPathToBundle(
+                savedPath,
                 viewCtx.site,
                 viewCtx.siteInfo.id
               );
             }
-            onChange(itemPath);
+            onChange(savedPath);
           },
         }}
         searchbox={{
@@ -598,14 +562,11 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
               if (selectedItem.item === undefined) {
                 onItemSelectedHandle(selectedItem.column, 0);
               } else {
-                const variableType = getVariableType(
-                  columns[selectedItem.column].columnItems[selectedItem.item]
-                    .value
-                );
+                const selItem =
+                  columns[selectedItem.column].columnItems[selectedItem.item];
+                const nextColumn = selItem.value;
+                const variableType = getVariableType(nextColumn);
                 if (isListType(variableType)) {
-                  const nextColumn =
-                    columns[selectedItem.column].columnItems[selectedItem.item]
-                      .value;
                   const nextColumnKeys = getSupportedObjectKeys(
                     nextColumn,
                     opts
@@ -631,13 +592,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
         searchResults={{
           ref: (_) => itemsRef.current?.scrollTo({ left: 10000 }),
           children: searchResults.map((_props, idx) => {
-            return (
-              <DataPickerGlobalSearchResultsItem
-                {..._props}
-                key={idx}
-                flatten={flatten}
-              />
-            );
+            return <DataPickerGlobalSearchResultsItem {..._props} key={idx} />;
           }),
         }}
         hasExpectedValues={!!expectedValues}
@@ -650,184 +605,168 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
   );
 }
 
-function getInitialColumns(
-  value: (string | number)[] | string | null | undefined,
+/**
+ * Builds the initial columns then reverses column 0's items (and remaps its
+ * `selectedItem`) to match how the top-level column is rendered.
+ */
+function getFixedInitialColumnsFor(
+  value: DataPickerValueType,
   opts: DataPickerOpts,
-  data?: Record<string, any>,
-  flatten?: boolean,
-  extraObjectPathsToFlat?: (string | number)[][]
+  data: Record<string, any> | undefined,
+  component: Component | undefined
+): Column[] {
+  const initialColumns = getInitialColumns(value, opts, data, component);
+  const [firstColumn] = initialColumns;
+  if (firstColumn) {
+    const { columnItems, selectedItem } = firstColumn;
+    columnItems.reverse();
+    firstColumn.selectedItem =
+      selectedItem === undefined
+        ? undefined
+        : columnItems.length - selectedItem - 1;
+  }
+  return initialColumns;
+}
+
+function getInitialColumns(
+  value: DataPickerValueType,
+  opts: DataPickerOpts,
+  data: Record<string, any> | undefined,
+  component: Component | undefined
 ): Column[] {
   if (!data) {
     return [];
   }
-  if (!value || typeof value === "string" || value.length === 0) {
-    const objectKeys = getSupportedObjectKeys(data, opts);
-    if (objectKeys.length === 0) {
-      return [];
-    }
-    return [
-      {
-        selectedItem: undefined,
-        columnItems: mkColumnItems(
-          data,
-          [],
-          opts,
-          flatten,
-          extraObjectPathsToFlat
-        ),
-      },
-    ];
+  // A non-array `value` (string code, null) means no current selection.
+  let savedPath: (string | number)[] =
+    !value || typeof value === "string" ? [] : value;
+  // Older exprs may reference `$q.<name>` directly; its picker row is `$q.<name>.data`.
+  if (savedPath.length === 2 && savedPath[0] === "$q") {
+    savedPath = [...savedPath, "data"];
   }
-
-  if (value.length === 1) {
-    const objectKeys = getSupportedObjectKeys(data, opts);
-    if (objectKeys.length === 0) {
-      return [];
-    }
-    const columnItems = mkColumnItems(
-      data,
-      [],
-      opts,
-      flatten,
-      extraObjectPathsToFlat
-    );
-    let selectedItem: number | undefined = undefined;
-    if (
-      !flatten ||
-      !flattenedKeys.has(value[0].toString()) ||
-      extraObjectPathsToFlat?.some((objPath) => isPrefixArray(value, objPath))
-    ) {
-      selectedItem = columnItems.findIndex(
-        (item) => item.name === value[0].toString()
-      );
-      selectedItem = selectedItem !== -1 ? selectedItem : undefined;
-    }
-    const variableType = getVariableType(
-      selectedItem !== undefined ? columnItems[selectedItem].value : undefined
-    );
-    return [
-      {
-        columnItems: columnItems,
-        selectedItem: selectedItem,
-      },
-      ...(isListType(variableType) && selectedItem !== undefined
-        ? [
-            {
-              columnItems: mkColumnItems(
-                columnItems[selectedItem].value,
-                getItemPath(
-                  columnItems[selectedItem].pathPrefix,
-                  columnItems[selectedItem].name
-                ),
-                opts
-              ),
-              selectedItem: undefined,
-            },
-          ]
-        : []),
-    ];
+  const rootItems = mkRootColumnItems(data, opts, component);
+  if (rootItems.length === 0) {
+    return [];
   }
+  return walkColumns(rootItems, savedPath, opts);
+}
 
-  const createInitialColumns = (
-    currentNode: Record<string, any>,
-    pathPrefix: (string | number)[]
-  ): Column[] => {
-    const index = pathPrefix.length;
-    if (index >= value.length) {
-      const objectKeys = getSupportedObjectKeys(
-        currentNode,
-        opts,
-        undefined,
-        pathPrefix
-      );
-      if (objectKeys.length === 0) {
-        return [];
-      }
-      const columnItems = mkColumnItems(currentNode, pathPrefix, opts);
-      return [
-        {
-          columnItems: columnItems,
-          selectedItem: undefined,
-        },
-      ];
-    }
+/**
+ * The picker's first column, and the only level aware of different kinds of data.
+ * `$`-containers are inlined, `$q` queries become their `.data` item (carrying any error),
+ * and `$state` surfaces named component implicit states. Everything below is built generically.
+ */
+function mkRootColumnItems(
+  data: Record<string, any>,
+  opts: DataPickerOpts,
+  component: Component | undefined
+): ColumnItem[] {
+  const keys = getSupportedObjectKeys(data, opts, undefined, []);
+  // Inlined containers' members are promoted ahead of the root's own items.
+  const [flattened, normal] = partition(keys, ({ key }) =>
+    flattenedKeys.has(key)
+  );
+  return [
+    ...flattened.flatMap(({ key }) =>
+      key === "$q"
+        ? mkQueryColumnItems(data[key], opts)
+        : key === "$state"
+        ? mkStateColumnItems(data[key], opts, component)
+        : mkColumnItems(data[key], [key], opts)
+    ),
+    ...normal.map(({ key, label }) => ({
+      name: key,
+      label,
+      value: data[key],
+      pathPrefix: [],
+    })),
+  ];
+}
 
-    if (flatten && index === 0) {
-      const key = value[index].toString();
-      const columnItems = mkColumnItems(
-        currentNode,
-        [],
-        opts,
-        flatten,
-        extraObjectPathsToFlat
-      );
-      let realKey = key;
-      let prefix = pathPrefix;
-      let idx = index;
-      while (
-        flattenedKeys.has(realKey) ||
-        extraObjectPathsToFlat?.some((objPath) =>
-          isPrefixArray([...prefix, realKey], objPath)
-        )
-      ) {
-        prefix = [...prefix, realKey];
-        realKey = value[idx + 1].toString();
-        idx = idx + 1;
-      }
-      const selectedItem = columnItems.findIndex(
-        (x) => x.name === realKey && arrayEq(x.pathPrefix, prefix)
-      );
-      if (selectedItem === -1) {
-        return columnItems.length > 0
-          ? [
-              {
-                columnItems: columnItems,
-                selectedItem: undefined,
-              },
-            ]
-          : [];
-      }
+/** Special case for $q: each query's root column item is `$q.<name>.data` */
+function mkQueryColumnItems(
+  queries: Record<string, any>,
+  opts: DataPickerOpts
+): ColumnItem[] {
+  return mkColumnItems(queries, ["$q"], opts).map((item) => {
+    const query = item.value as UnwrappedQueryResult;
+    return {
+      name: "data",
+      label: item.label ?? item.name,
+      value: query?.data,
+      pathPrefix: ["$q", item.name],
+      errorMessage:
+        query?.error !== undefined
+          ? formatErrorMessage(query.error)
+          : undefined,
+    };
+  });
+}
 
-      const itemPath = key !== realKey ? getItemPath(prefix, realKey) : [key];
-      const variableType = getVariableType(columnItems[selectedItem].value);
-      return [
-        {
-          columnItems: columnItems,
-          selectedItem: selectedItem !== -1 ? selectedItem : undefined,
-        },
-        ...(isListType(variableType)
-          ? createInitialColumns(
-              key !== realKey
-                ? deepGet(currentNode, itemPath)
-                : currentNode[key],
-              itemPath
-            )
-          : []),
-      ];
-    }
-    const key = value[index].toString();
-    const children = getSupportedObjectKeys(
-      currentNode,
-      opts,
-      undefined,
-      pathPrefix
-    );
-    const selectedItem = children.findIndex((x) => x.key === key);
-    const itemPath = getItemPath(pathPrefix, key);
-    const variableType = getVariableType(currentNode[key]);
+/**
+ * Items for `$state`, where the implicit states of `component`'s named tpl nodes
+ * are inlined one more level with a `comp → member` label so the hidden component
+ * name stays visible.
+ */
+function mkStateColumnItems(
+  states: Record<string, any>,
+  opts: DataPickerOpts,
+  component: Component | undefined
+): ColumnItem[] {
+  const flattenedStateNames = component
+    ? getFlattenedStateNames(component)
+    : undefined;
+  const items = mkColumnItems(states, ["$state"], opts);
+  const [surfaced, normal] = partition(items, (item) =>
+    flattenedStateNames?.has(item.name)
+  );
+  return [
+    ...surfaced.flatMap((stateItem) =>
+      mkColumnItems(stateItem.value, getItemPath(stateItem), opts).map(
+        (item) => ({
+          ...item,
+          label: [stateItem.name, item.label ?? item.name].join(" → "),
+        })
+      )
+    ),
+    ...normal,
+  ];
+}
 
-    return [
-      {
-        columnItems: mkColumnItems(currentNode, pathPrefix, opts),
-        selectedItem: selectedItem !== -1 ? selectedItem : undefined,
-      },
-      ...(isListType(variableType)
-        ? createInitialColumns(currentNode[key], itemPath)
-        : []),
-    ];
+/**
+ * Walks `savedPath` one column at a time. Each column selects the item whose path
+ * is a prefix of `savedPath`, then descends into that item's child column and continues.
+ * Inlined containers (`$state`, $q's `.data`, etc.) are absorbed by the root items
+ * themselves, so this stays a uniform prefix match at every level.
+ */
+function walkColumns(
+  columnItems: ColumnItem[],
+  savedPath: (string | number)[],
+  opts: DataPickerOpts
+): Column[] {
+  const selectedItem = columnItems.findIndex((item) =>
+    isPrefixArray(getItemPath(item), savedPath)
+  );
+  const column: Column = {
+    columnItems,
+    selectedItem: selectedItem === -1 ? undefined : selectedItem,
   };
-
-  return createInitialColumns(data, []);
+  if (selectedItem === -1) {
+    return [column];
+  }
+  const item = columnItems[selectedItem];
+  const selectedPath = getItemPath(item);
+  const childColumns = getItemChildColumns(item, opts);
+  const [childColumn] = childColumns;
+  if (!childColumn) {
+    return [column];
+  }
+  // Recurse into the child column only when the saved path continues past this item and
+  // the child is a real list. Otherwise show the child column with nothing selected.
+  return savedPath.length > selectedPath.length &&
+    childColumn.errorMessage === undefined
+    ? [column, ...walkColumns(childColumn.columnItems, savedPath, opts)]
+    : [column, ...childColumns];
 }
 
 function getLastSelectedItem(columns: Column[]): SelectedItem {
@@ -855,10 +794,16 @@ function getCurrentItemPath(columns: Column[]): (string | number)[] {
       columns[i].columnItems[
         ensure(columns[i].selectedItem, "Should have item selected in column")
       ];
-    return [...selectedItem.pathPrefix, parseItem(selectedItem.name)];
+    return getItemPath(selectedItem);
   }
   return ["undefined"];
 }
 
 const DataPicker = React.forwardRef(DataPicker_);
 export default DataPicker;
+
+export const _testonly = {
+  getCurrentItemPath,
+  getFixedInitialColumnsFor,
+  getInitialColumns,
+};

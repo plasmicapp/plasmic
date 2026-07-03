@@ -358,7 +358,6 @@ function VisibilitySection_(props: {
                 forDataRepCollection: true,
               })}
               schema={viewCtx.customFunctionsSchema()}
-              flatten={true}
               key={tpl.uid}
               visible={isDataPickerVisible}
               setVisible={setIsDataPickerVisible}

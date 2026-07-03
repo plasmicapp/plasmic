@@ -20,22 +20,20 @@ import { autorun, observable, runInAction } from "mobx";
 const { getCustomCodeFactory } = _testonly;
 
 describe("unwrapStatefulQueryResult", () => {
-  it("returns loading true in initial state", () => {
+  it("does not surface the suspense promise as error in initial state", () => {
     const result = new StatefulQueryResult();
     expect(unwrapStatefulQueryResult(result)).toEqual({
-      isLoading: true,
       data: undefined,
-      error: expect.any(Promise),
+      error: undefined,
     });
   });
 
-  it("returns loading true when loading", () => {
+  it("does not surface the suspense promise as error while loading", () => {
     const result = new StatefulQueryResult();
     result.loadingPromise("my-key", { then: () => {} } as Promise<unknown>);
     expect(unwrapStatefulQueryResult(result)).toEqual({
-      isLoading: true,
       data: undefined,
-      error: expect.any(Promise),
+      error: undefined,
     });
   });
 
@@ -43,7 +41,6 @@ describe("unwrapStatefulQueryResult", () => {
     const result = new StatefulQueryResult();
     result.resolvePromise("my-key", { rows: [1, 2, 3] });
     expect(unwrapStatefulQueryResult(result)).toEqual({
-      isLoading: false,
       data: { rows: [1, 2, 3] },
       error: undefined,
     });
@@ -54,7 +51,6 @@ describe("unwrapStatefulQueryResult", () => {
     const err = new Error("HttpError: 404");
     result.rejectPromise("my-key", err);
     expect(unwrapStatefulQueryResult(result)).toEqual({
-      isLoading: false,
       data: undefined,
       error: err,
     });

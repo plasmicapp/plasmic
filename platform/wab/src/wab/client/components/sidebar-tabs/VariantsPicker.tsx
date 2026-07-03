@@ -363,7 +363,6 @@ export const VariantPicker = observer(function VariantPicker(props: {
               disabledTooltip={disabledTooltip}
               data={viewCtx.getCanvasEnvForTpl(tpl)}
               schema={viewCtx.customFunctionsSchema()}
-              flatten={true}
               key={tpl.uid}
               expectedValues={getExpectedValuesForVariantGroup(group)}
             />

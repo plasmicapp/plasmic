@@ -285,7 +285,6 @@ export const ImageSection = observer(function ImageSection(props: {
                   setVisible={setIsDataPickerVisible}
                   data={viewCtx.getCanvasEnvForTpl(tpl)}
                   schema={viewCtx.customFunctionsSchema()}
-                  flatten={true}
                   key={tpl.uid}
                   context="The image URL"
                 />

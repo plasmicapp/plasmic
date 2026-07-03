@@ -491,7 +491,6 @@ export function VariableEditor(props: {
       )}
       <DataPickerEditor
         viewCtx={viewCtx}
-        flatten={true}
         data={filteredData}
         initialMode={"dataPicking"}
         hideStateSwitch={true}
@@ -705,7 +704,6 @@ export function ExprEditor(props: {
 
   return (
     <DataPickerEditor
-      flatten={true}
       data={data}
       schema={schema}
       initialMode={initialMode}

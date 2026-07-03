@@ -9,10 +9,7 @@ import {
   objsEq,
   removeWhere,
 } from "@/wab/shared/common";
-import {
-  StatefulQueryResult,
-  unwrapStatefulQueryResult,
-} from "@/wab/shared/core/custom-functions";
+import { StatefulQueryResult } from "@/wab/shared/core/custom-functions";
 import { CanvasEnv } from "@/wab/shared/eval";
 import { TplNode } from "@/wab/shared/model/classes";
 import { isEqual, uniq } from "lodash";
@@ -108,14 +105,12 @@ function computeNonStableFields(ctx: RenderingCtx): NonStableFieldsFromCtx {
     env: {
       ...ctx.env,
       $queries: Object.fromEntries(Object.entries(ctx.env.$queries)),
-      // Snapshot the current state of each StatefulQueryResult so that
-      // oneLevelDeepComparison will detect changes.
+      // Snapshot the current state of each StatefulQueryResult so oneLevelDeepComparison
+      // detects changes. This is decoupled from the data picker's unwrap representation,
+      // which collapses initial/loading to the same { data: undefined, error: undefined }.
       $q: Object.fromEntries(
         Object.entries(ctx.env.$q).map(
-          ([k, v]: [string, StatefulQueryResult]) => [
-            k,
-            unwrapStatefulQueryResult(v),
-          ]
+          ([k, v]: [string, StatefulQueryResult]) => [k, v.current]
         )
       ),
     },

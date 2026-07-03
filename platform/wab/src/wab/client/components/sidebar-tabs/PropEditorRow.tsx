@@ -1095,7 +1095,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         visible={isDataPickerVisible}
         setVisible={setIsDataPickerVisible}
         data={canvasEnv}
-        flatten={true}
         expectedValues={extractExpectedValues(propType, enumValues)}
         schema={schema}
       />

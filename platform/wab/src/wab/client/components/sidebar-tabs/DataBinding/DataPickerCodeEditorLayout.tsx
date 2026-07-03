@@ -23,6 +23,8 @@ export interface DataPickerCodeEditorLayoutProps
   extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {
   editorRef: React.RefObject<FullCodeEditor>;
   data: object;
+  /** Env for code preview, with real`$q` query results so access throws on error. */
+  previewData: object | undefined;
   defaultValue: string;
   onSave: (val: string) => boolean;
   schema?: DataPickerTypesSchema;
@@ -37,6 +39,7 @@ function DataPickerCodeEditorLayout_(
   const {
     editorRef,
     data,
+    previewData,
     defaultValue,
     onSave,
     schema,
@@ -90,7 +93,7 @@ function DataPickerCodeEditorLayout_(
           <CodePreview
             viewCtx={studioCtx.focusedViewCtx()}
             value={`(${currentValue})`}
-            data={data}
+            data={previewData ?? data}
           />
         ) : (
           renderInspector(runCodeContext.stepValue)

@@ -39,7 +39,7 @@ import type {
   QueryExecutionContext,
 } from "@plasmicapp/data-sources";
 import {
-  _StatefulQueryResult as StatefulQueryResult,
+  _safeExecResult as safeExecResult,
   throwIfPlasmicUndefinedDataError,
 } from "@plasmicapp/data-sources";
 import { groupBy, pick, pickBy } from "lodash";
@@ -365,29 +365,25 @@ export function fixCustomFunctionsInTpl(
 }
 
 /**
- * A plain-object snapshot of a StatefulQueryResult. Unlike StatefulQueryResult,
- * this is safe to compare by value — the `data` getter on StatefulQueryResult
- * throws (for Suspense/error-boundary semantics), so we catch and surface the
- * thrown value as `error` instead, making all fields readable without side effects.
+ * A plain-object snapshot of a StatefulQueryResult's data/error. The `data` getter on
+ * StatefulQueryResult throws the suspense promise while loading and the rejection error
+ * when errored. We use `safeExecResult` to map those into plain fields, treating the
+ * suspense promise as "not an error": loading query = `{ data: undefined, error: undefined }`
  */
-export interface UnwrappedQueryResult extends Omit<PlasmicQueryResult, "key"> {
+export interface UnwrappedQueryResult {
+  /** Resolved data, or undefined while loading/errored. */
+  data: unknown;
+  /** Real rejection error, otherwse undefined. */
   error: unknown;
 }
 
 export function unwrapStatefulQueryResult(
-  result: StatefulQueryResult
+  result: PlasmicQueryResult
 ): UnwrappedQueryResult {
-  let data: unknown = undefined;
-  let error: unknown = undefined;
-  try {
-    data = result.data;
-  } catch (e) {
-    error = e;
-  }
+  const r = safeExecResult(() => result.data);
   return {
-    isLoading: result.isLoading,
-    data,
-    error,
+    data: "data" in r ? r.data : undefined,
+    error: "error" in r ? r.error : undefined,
   };
 }
 

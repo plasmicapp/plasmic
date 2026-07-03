@@ -337,12 +337,8 @@ test.describe("server queries", () => {
       );
       await dataPicker.waitFor({ state: "visible" });
 
-      // Select fullGreeting2 > data — this verifies the duplicated
-      // query is available in the data picker
-      await models.studio.rightPanel.selectPathInDataPicker([
-        "fullGreeting2",
-        "data",
-      ]);
+      // Select fullGreeting2 to verify the duplicated query is available in the picker.
+      await models.studio.rightPanel.selectPathInDataPicker(["fullGreeting2"]);
 
       // Verify the text element shows the query result on the canvas
       await expect(

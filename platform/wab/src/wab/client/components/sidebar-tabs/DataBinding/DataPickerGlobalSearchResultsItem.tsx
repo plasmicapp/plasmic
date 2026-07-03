@@ -18,26 +18,20 @@ export interface DataPickerGlobalSearchResultsItemProps
   variableType: supportedTypes;
   matcher: Matcher;
   onClick: () => void;
-  flatten?: boolean;
 }
 
 function DataPickerGlobalSearchResultsItem_(
   props: DataPickerGlobalSearchResultsItemProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { itemPath, previewValue, variableType, matcher, onClick, flatten } =
-    props;
+  const { itemPath, previewValue, variableType, matcher, onClick } = props;
   if (!isArray(itemPath)) {
     return null;
   }
 
+  // Drop the leading segment when it's a flattened container ($state, etc.)
   const label = itemPath
-    .slice(
-      flatten && itemPath.length > 0 && flattenedKeys.has(itemPath[0] as string)
-        ? 1
-        : 0,
-      itemPath.length
-    )
+    .slice(flattenedKeys.has(String(itemPath[0])) ? 1 : 0)
     .join(" / ");
 
   return (

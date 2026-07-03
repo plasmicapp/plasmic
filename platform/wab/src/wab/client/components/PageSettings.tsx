@@ -169,7 +169,6 @@ const ImageAssetPickerWithDynamicValue = observer(
               visible={isDataPickerVisible}
               setVisible={setIsDataPickerVisible}
               data={pageMetaEnv}
-              flatten={true}
               schema={sc.customFunctionsSchema()}
             />
             {evaluatedImage && (
