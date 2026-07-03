@@ -6,11 +6,11 @@ import {
   VersionToSync,
 } from "@/wab/server/loader/resolve-projects";
 import { logger } from "@/wab/server/observability";
-import { withSpan } from "@/wab/server/util/apm-util";
 import {
   loaderBundleCacheCounter,
   loaderCodegenCacheCounter,
 } from "@/wab/server/promstats";
+import { withSpan } from "@/wab/server/util/apm-util";
 import { upsertS3CacheEntry } from "@/wab/server/util/s3-util";
 import {
   CachedCodegenOutputBundle,
@@ -179,9 +179,8 @@ async function genLoaderCodeBundleForProjectVersions(
     platform: (opts.platform ??
       LOADER_CODEGEN_OPTS_DEFAULTS.platform) as ExportOpts["platform"],
     platformOptions: opts.platformOptions,
-    defaultExportHostLessComponents: opts.loaderVersion > 2 ? false : true,
-    useComponentSubstitutionApi: opts.loaderVersion >= 6 ? true : false,
-    useGlobalVariantsSubstitutionApi: opts.loaderVersion >= 7 ? true : false,
+    useComponentSubstitutionApi: true,
+    useGlobalVariantsSubstitutionApi: true,
     useCodeComponentHelpersRegistry: opts.loaderVersion >= 10 ? true : false,
     ...(opts.i18nKeyScheme && {
       localization: {

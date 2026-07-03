@@ -190,9 +190,6 @@ export interface ExportOpts {
   // or actually import the package
   hostLessComponentsConfig: "stub" | "package";
 
-  // Should be true when the loader version doesn't support host-less components
-  defaultExportHostLessComponents?: boolean;
-
   // Configuration around localization
   localization?: {
     keyScheme: LocalizationKeyScheme;

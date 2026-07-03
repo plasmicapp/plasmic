@@ -536,9 +536,6 @@ export function makeComponentImportName(
     return `{ getPlasmicComponent as getPlasmicComponent__${aliasedName} }`;
   }
   if (isCodeComponent(c)) {
-    if (isHostLessCodeComponent(c) && opts.defaultExportHostLessComponents) {
-      return aliasedName;
-    }
     if (
       (!isHostLessCodeComponent(c) && opts.codeComponentStubs) ||
       c.codeComponentMeta.defaultExport

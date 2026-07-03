@@ -108,26 +108,30 @@ describe("loader", () => {
 
     const versionedRes = await publicApi.rawReq(
       "get",
-      "/api/v1/loader/code/versioned?cb=21&platform=nextjs&loaderVersion=0"
+      "/api/v1/loader/code/versioned?cb=21&platform=nextjs&loaderVersion=7"
     );
     expect(versionedRes.status()).toEqual(400);
   });
 
   it("resolves polyfill project", async () => {
-    const res = await publicApi.getPublishedLoaderAssets([polyfillProject], {});
+    const res = await publicApi.getPublishedLoaderAssets([polyfillProject], {
+      loaderVersion: "7",
+    });
     expect(res.status()).toEqual(200);
     const body = await res.json();
     expect(body.redirectUrl).toEqual(
-      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=0&projectId=${polyfillProject.id}%400.0.1`
+      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=7&projectId=${polyfillProject.id}%400.0.1`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
 
   it("resolves 1 project", async () => {
-    const res = await publicApi.getPublishedLoaderAssets([projects[0]], {});
+    const res = await publicApi.getPublishedLoaderAssets([projects[0]], {
+      loaderVersion: "7",
+    });
     expect(res.status()).toEqual(302);
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=0&projectId=${projects[0].id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=7&projectId=${projects[0].id}%400.0.2`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -144,11 +148,13 @@ describe("loader", () => {
     }
 
     // request in reverse order
-    const res = await publicApi.getPublishedLoaderAssets([b, a], {});
+    const res = await publicApi.getPublishedLoaderAssets([b, a], {
+      loaderVersion: "7",
+    });
     expect(res.status()).toEqual(302);
     // expect in sorted order
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=0&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=7&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });

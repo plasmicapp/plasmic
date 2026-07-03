@@ -16,7 +16,7 @@ describe("Prefill cloudfront", () => {
         await sudo.upsertLoaderPublishmentEntities({
           projectIds: publishment.projectIds,
           platform: publishment.platform,
-          loaderVersion: 1,
+          loaderVersion: 7,
           browserOnly: false,
           i18nKeyScheme: undefined,
           i18nTagPrefix: undefined,
@@ -25,7 +25,7 @@ describe("Prefill cloudfront", () => {
         await sudo.upsertLoaderPublishmentEntities({
           projectIds: publishment.projectIds,
           platform: publishment.platform,
-          loaderVersion: 1,
+          loaderVersion: 7,
           browserOnly: false,
           i18nKeyScheme: undefined,
           i18nTagPrefix: undefined,
@@ -105,7 +105,7 @@ describe("Prefill cloudfront", () => {
                 platform: "react",
                 projectIds: ["p1"],
                 browserOnly: true,
-                loaderVersion: 1,
+                loaderVersion: 7,
               },
             ];
           });

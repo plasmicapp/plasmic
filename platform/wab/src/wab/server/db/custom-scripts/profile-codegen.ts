@@ -32,7 +32,6 @@ export async function profileCodegen(em: EntityManager, projectId: ProjectId) {
             ...LOADER_CODEGEN_OPTS_DEFAULTS,
             platform: "nextjs",
             platformOptions: {},
-            defaultExportHostLessComponents: false,
             useComponentSubstitutionApi: true,
             useGlobalVariantsSubstitutionApi: true,
             useCodeComponentHelpersRegistry: true,
