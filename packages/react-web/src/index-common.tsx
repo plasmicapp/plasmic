@@ -49,3 +49,14 @@ export { useTrigger } from "./render/triggers";
 export * from "./states";
 // Using any while classnames package is not updated to have the correct types exported
 export const classNames: any = _classNames;
+
+/**
+ * Props for generated page components.
+ * @internal
+ */
+export type ParamsRecord = Record<string, string | string[] | undefined>;
+/** @internal */
+export interface PlasmicPageProps {
+  params?: Promise<ParamsRecord> | ParamsRecord;
+  searchParams?: Promise<ParamsRecord> | ParamsRecord;
+}
