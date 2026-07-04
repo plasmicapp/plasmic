@@ -939,7 +939,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -1154,7 +1154,7 @@ importers:
         specifier: 0.1.86
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
