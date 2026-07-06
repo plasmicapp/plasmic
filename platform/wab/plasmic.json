@@ -8358,14 +8358,29 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__KeyframesFilled.tsx"
         },
         {
-          "id": "dv3Bkq7gSf1e",
-          "name": "CurlyBracesIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces.tsx"
-        },
-        {
           "id": "M5K-Io2qEu6p",
           "name": "FunctionSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__FunctionSvg.tsx"
+        },
+        {
+          "id": "rljnOq5L08E4",
+          "name": "BracesIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Braces.tsx"
+        },
+        {
+          "id": "lKC5OWnoiZna",
+          "name": "BracketsIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Brackets.tsx"
+        },
+        {
+          "id": "7bLQ-ay2DVAE",
+          "name": "NullIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Null.tsx"
+        },
+        {
+          "id": "9S59ztobsQvK",
+          "name": "ParenthesesIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Parentheses.tsx"
         }
       ],
       "images": [],
@@ -9052,7 +9067,7 @@
       "projectId": "w2GXN278dkQ2gQTVQnPehW",
       "projectApiToken": "XlpYxXeJBssbtNoLCawek4y1zywRmLqnhwf9ryxOaiQ3L99h4nH3LpZISJwqHOCvZIxcvX1CWe2QVnUrfg",
       "projectName": "[PlasmicKit] Data Binding",
-      "version": "feat/link-to-source",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/plasmic_plasmic_kit_data_binding.css",
       "components": [
         {
@@ -9130,19 +9145,6 @@
             "modulePath": "wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerGlobalSearchResultsItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "gWylXtol8Lf",
-          "name": "DataPickerValueTypeIcon",
-          "type": "managed",
-          "projectId": "w2GXN278dkQ2gQTVQnPehW",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerValueTypeIcon.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/DataBinding/DataPickerValueTypeIcon.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerValueTypeIcon.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -11775,6 +11777,6 @@
   },
   "wrapPagesWithGlobalContexts": true,
   "preserveJsImportExtensions": false,
-  "cliVersion": "0.1.364",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.364/dist/plasmic.schema.json"
+  "cliVersion": "0.1.366",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.366/dist/plasmic.schema.json"
 }

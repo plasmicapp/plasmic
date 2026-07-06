@@ -27,46 +27,12 @@
   column-gap: 4px;
   min-width: 0;
 }
-.dataPickerValueTypeIcon:global(.__wab_instance) {
-  position: relative;
+.icon {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-fVn5vRhXJxQ);
   flex-shrink: 0;
-}
-.dataPickerValueTypeIconstep_notPlayed:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_string:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_number:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_boolean:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_object:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_array:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_undefined:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconvariableType_func:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.dataPickerValueTypeIconisSelected:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.root:hover .dataPickerValueTypeIcon:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.rootisSelected:hover
-  .dataPickerValueTypeIconisSelected:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.textstep_notPlayed {
-  margin-right: 0px;
 }
 .freeBox___2XUqB {
   display: flex;

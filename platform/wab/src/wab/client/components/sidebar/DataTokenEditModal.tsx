@@ -7,7 +7,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import Textbox from "@/wab/client/components/widgets/Textbox";
-import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
+import { DataTokenIcon } from "@/wab/client/icons";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   DataTokenType,
@@ -100,7 +100,7 @@ export const DataTokenEditModal = observer(function DataTokenEditModal(props: {
   const titleContent = (
     <>
       <Icon
-        icon={CurlyBracesIcon}
+        icon={DataTokenIcon}
         className="data-token-fg custom-svg-icon--lg monochrome-exempt"
       />
       <SimpleTextbox

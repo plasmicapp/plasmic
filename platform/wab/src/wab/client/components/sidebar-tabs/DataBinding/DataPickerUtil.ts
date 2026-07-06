@@ -1,5 +1,19 @@
 import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
-import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
+import { SvgIcon } from "@/wab/client/components/widgets/Icon";
+import {
+  DataQueryIcon,
+  DataTokenIcon,
+  PropIcon,
+  StateIcon,
+  UrlIcon,
+} from "@/wab/client/icons";
+import BracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Braces";
+import BracketsIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Brackets";
+import FunctionSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__FunctionSvg";
+import HashtagSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__HashtagSvg";
+import NullIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Null";
+import SquareCheckSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SquareCheckSvg";
+import TextSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TextSvg";
 import {
   UiId,
   mkModelUiId,
@@ -51,18 +65,6 @@ import {
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { ChoiceValue, DataMeta, mkMetaName } from "@plasmicapp/host";
 import { isArray, isPlainObject } from "lodash";
-
-export type supportedTypes =
-  PlasmicDataPickerColumnItem__VariantMembers["variableType"];
-const allowedTypes = [
-  "string",
-  "number",
-  "boolean",
-  "undefined",
-  "object",
-  "array",
-  "func",
-];
 
 const allowedSymbols = [
   UNINITIALIZED_NUMBER,
@@ -209,12 +211,6 @@ export function mkColumnItems(
   );
 }
 
-export function isTypeSupported(
-  variableType: string
-): variableType is supportedTypes {
-  return allowedTypes.includes(variableType);
-}
-
 export function getItemPath(item: ColumnItem): (string | number)[] {
   const key = isNaN(Number(item.name)) ? item.name : Number(item.name);
   return item.pathPrefix.concat(key);
@@ -274,9 +270,60 @@ function mkListColumn(
     : [];
 }
 
-export function getVariableType(value: any) {
-  if (!isNonNil(value)) {
+const dataPickerSupportedVariableTypes = {
+  null: { previewVariant: "undefined", icon: NullIcon },
+  undefined: { previewVariant: "undefined", icon: NullIcon },
+  boolean: { previewVariant: "boolean", icon: SquareCheckSvgIcon },
+  number: { previewVariant: "number", icon: HashtagSvgIcon },
+  string: { previewVariant: "string", icon: TextSvgIcon },
+  object: { previewVariant: "object", icon: BracesIcon },
+  array: { previewVariant: "array", icon: BracketsIcon },
+  function: { previewVariant: "func", icon: FunctionSvgIcon },
+} as const;
+
+export type DataPickerSupportedVariableType =
+  keyof typeof dataPickerSupportedVariableTypes;
+
+export function isTypeSupported(
+  variableType: VariableType
+): variableType is DataPickerSupportedVariableType {
+  return variableType in dataPickerSupportedVariableTypes;
+}
+
+export function toDataPickerPreviewVariant(
+  variableType: DataPickerSupportedVariableType
+) {
+  return dataPickerSupportedVariableTypes[variableType].previewVariant;
+}
+
+export function variableTypeToIcon(
+  variableType: DataPickerSupportedVariableType
+): SvgIcon {
+  return dataPickerSupportedVariableTypes[variableType].icon;
+}
+
+/** `typeof` types plus a few useful types. */
+export type VariableType =
+  // typeof
+  | "undefined"
+  | "boolean"
+  | "number"
+  | "bigint"
+  | "string"
+  | "symbol"
+  | "object"
+  | "function"
+  // extended
+  | "null"
+  | "array"
+  | "react-element";
+
+/** A better `typeof`. This could be moved to commons later. */
+export function getVariableType(value: any): VariableType {
+  if (value === undefined) {
     return "undefined";
+  } else if (value === null) {
+    return "null";
   } else if (Array.isArray(value)) {
     return "array";
   } else if (typeof value === "object" && value.$$typeof) {
@@ -295,11 +342,11 @@ export function getVariableType(value: any) {
   } else if (value === UNINITIALIZED_OBJECT) {
     return "object";
   }
-  const valueType = typeof value;
-  return valueType === "function" ? "func" : valueType;
+  return typeof value;
 }
 
-export function isListType(type: string) {
+/** If type has a nested column / list of sub-items. */
+export function isListType(type: VariableType) {
   return type === "object" || type === "array";
 }
 
@@ -434,11 +481,11 @@ export function extractExpectedValues(
   return enumValues?.toString();
 }
 
-// This function is only necessary because we currently pass around
-// env: Record<string, any>. If we passed around a more structured env with
-// direct references to modes, we wouldn't need this lookup from itemPath to
-// model.
-// TODO: Obviate getSourceUiId.
+// getSourceUiId and getDollarVarIcon are only necessary because we currently
+// pass around env: Record<string, any>. If we passed around a more structured
+// env with direct references to modes, we wouldn't need this lookup from
+// itemPath to model.
+// TODO: Obviate getSourceUiId, getDollarVarIcon
 
 /**
  * Given the path of a data picker row (e.g. `["$q", "myQuery", "data"]`),
@@ -530,6 +577,38 @@ export function getSourceUiId(
         return state ? mkModelUiId(state.param) : undefined;
       }
       return undefined;
+    }
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Given the path of a data picker row (e.g. `["$q", "myQuery", "data"]`),
+ * chooses the corresponding icon.
+ */
+export function getDollarVarIcon(
+  itemPath: (string | number)[]
+): SvgIcon | undefined {
+  const dollarVar = itemPath[0];
+  switch (dollarVar) {
+    case "$dataTokens":
+      return DataTokenIcon;
+    case "$q":
+    case "$queries":
+      return DataQueryIcon;
+    case "$props":
+      return PropIcon;
+    case "$state":
+      return StateIcon;
+    case "$ctx": {
+      const name = itemPath[1];
+      return name === "params" ||
+        name === "query" ||
+        name === "pagePath" ||
+        name === "pageRoute"
+        ? UrlIcon
+        : undefined;
     }
     default:
       return undefined;

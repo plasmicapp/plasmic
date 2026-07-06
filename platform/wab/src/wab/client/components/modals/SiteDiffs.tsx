@@ -15,7 +15,6 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import TextInputIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__TextInput";
 import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
-import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
 import RocketsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RocketSvg";
 import { MIXIN_CAP } from "@/wab/shared/Labels";
 import { ensure, withoutNils, xSetDefault } from "@/wab/shared/common";
@@ -27,6 +26,8 @@ import type {
 import L, { uniq } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
+
+import { DataTokenIcon } from "@/wab/client/icons";
 
 export const SiteDiffs = observer(function SideDiffs(props: {
   diffs: ChangeLogEntry[];
@@ -144,7 +145,7 @@ export function objIcon(obj: SemVerSiteElement, tplIcon?: React.ReactNode) {
   } else if (obj.type === "Element") {
     return <span className={className}>{tplIcon}</span>;
   } else if (obj.type === "Data token") {
-    return <Icon className={className} icon={CurlyBracesIcon} />;
+    return <Icon className={className} icon={DataTokenIcon} />;
   } else {
     return <Icon className={className} icon={ArrowRightIcon} />;
   }

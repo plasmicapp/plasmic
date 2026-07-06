@@ -1,10 +1,12 @@
 import cn from "classnames";
 import React from "react";
 
+export type SvgIcon = React.ComponentType<React.ComponentProps<"svg">>;
+
 export function Icon(
   props: React.ComponentProps<"svg"> & {
     monochromeExempt?: boolean;
-    icon: React.ComponentType<React.ComponentProps<"svg">>;
+    icon: SvgIcon;
     size?: number | string;
   }
 ) {

@@ -5,11 +5,11 @@
 import { classNames } from "@plasmicapp/react-web";
 import React from "react";
 
-export type FunctionSvgIconProps = React.ComponentProps<"svg"> & {
+export type NullIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function FunctionSvgIcon(props: FunctionSvgIconProps) {
+export function NullIcon(props: NullIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -29,12 +29,12 @@ export function FunctionSvgIcon(props: FunctionSvgIconProps) {
         strokeLinejoin={"round"}
         strokeWidth={"1.5"}
         d={
-          "M14.25 6.98c0-1.338-.528-2.23-2.111-2.23s-1.889 1-2.111 2.23c-.097.538-.28 2.335-.47 4.27M4.75 17.02c0 1.338.528 2.23 2.111 2.23S8.813 18 8.972 17.02c.09-.553.343-3.276.587-5.77m0 0H6.75m2.809 0h2.691m1.5 2.5L16 16m0 0 2.25 2.25M16 16l2.25-2.25M16 16l-2.25 2.25"
+          "M16.75 12a4.75 4.75 0 1 1-9.5 0 4.75 4.75 0 0 1 9.5 0m-9 4.25 8.5-8.5"
         }
       ></path>
     </svg>
   );
 }
 
-export default FunctionSvgIcon;
+export default NullIcon;
 /* prettier-ignore-end */

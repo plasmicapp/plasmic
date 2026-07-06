@@ -4,6 +4,7 @@ import {
   ColumnItem,
   DataPickerOpts,
   evalExpr,
+  getDollarVarIcon,
   getItemPath,
   getSourceUiId,
   getSupportedObjectKeys,
@@ -157,6 +158,7 @@ function DataPickerColumn_(
                   key={pathToString(path)}
                   itemName={label ?? key}
                   variableType={variableType}
+                  icon={columnIndex === 0 ? getDollarVarIcon(path) : undefined}
                   previewValue={previewValue}
                   isSelected={isSelected}
                   onClick={() => onItemSelected(columnIndex, index)}

@@ -12,6 +12,7 @@ import {
   Column,
   ColumnItem,
   DataPickerOpts,
+  DataPickerSupportedVariableType,
   evalExpr,
   formatErrorMessage,
   getItemChildColumns,
@@ -32,7 +33,6 @@ import {
   DefaultDataPickerProps,
   PlasmicDataPicker,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPicker";
-import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { DATA_QUERY_LOWER, VARIABLE_LOWER } from "@/wab/shared/Labels";
 import { ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
@@ -61,7 +61,7 @@ type SelectedItem = {
 type SearchResultItem = {
   itemPath: (string | number)[];
   previewValue: string | undefined;
-  variableType: PlasmicDataPickerColumnItem__VariantMembers["variableType"];
+  variableType: DataPickerSupportedVariableType;
   matcher: Matcher;
   onClick: () => void;
   depth: number;

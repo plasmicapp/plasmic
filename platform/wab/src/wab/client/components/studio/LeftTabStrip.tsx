@@ -3,6 +3,7 @@ import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
 import { AnonymousAvatar, Avatar } from "@/wab/client/components/studio/Avatar";
 import { FigmaModalContent } from "@/wab/client/components/studio/FigmaModalContent";
 import LeftTabButton from "@/wab/client/components/studio/LeftTabButton";
+import { DataTokenIcon } from "@/wab/client/icons";
 import { isIntercomEnabled } from "@/wab/client/intercom";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
@@ -15,7 +16,6 @@ import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plasmi
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg";
-import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
 import DevicessvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg";
 import DotsHorizontalCirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg";
 import DownloadsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg";
@@ -147,7 +147,7 @@ Help
         dataTokens: {
           type: "item",
           tabKey: "dataTokens",
-          icon: <CurlyBracesIcon />,
+          icon: <DataTokenIcon />,
           label: "Data tokens",
           cond: studioCtx.showDataTokens() && canViewTab("dataTokens"),
         },

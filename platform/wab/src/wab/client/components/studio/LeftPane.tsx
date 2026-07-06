@@ -25,9 +25,9 @@ import { providesSidebarPopupSetting } from "@/wab/client/components/style-contr
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { ListStack } from "@/wab/client/components/widgets/ListStack";
 import { useResizableHandle } from "@/wab/client/hooks/useResizableHandle";
+import { DataTokenIcon } from "@/wab/client/icons";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
-import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
 import PlasmicLeftPane from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPane";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
@@ -277,7 +277,7 @@ const getFindReferencesProps = (
       displayName: token.name,
       icon: (
         <Icon
-          icon={CurlyBracesIcon}
+          icon={DataTokenIcon}
           className="data-token-fg custom-svg-icon--lg monochrome-exempt"
         />
       ),

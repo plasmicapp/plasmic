@@ -1,4 +1,10 @@
 import {
+  DataPickerSupportedVariableType,
+  toDataPickerPreviewVariant,
+  variableTypeToIcon,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { Icon, SvgIcon } from "@/wab/client/components/widgets/Icon";
+import {
   DefaultDataPickerColumnItemProps,
   PlasmicDataPickerColumnItem,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
@@ -12,13 +18,18 @@ import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { Interaction } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
+import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 export interface DataPickerColumnItemProps
-  extends DefaultDataPickerColumnItemProps {
+  extends Omit<DefaultDataPickerColumnItemProps, "variableType"> {
   onClick: () => void;
   itemName?: string;
+  variableType: DataPickerSupportedVariableType;
+  /** Icon to use. If missing, defaults to using the item's variableType. */
+  icon?: SvgIcon;
+  /** Preview value as text. Renders in one line under itemName. */
   previewValue?: string;
   columnIndex?: number;
   interaction?: Interaction;
@@ -32,6 +43,8 @@ function DataPickerColumnItem_(
 ) {
   const {
     columnIndex,
+    variableType,
+    icon,
     previewValue,
     itemName,
     interaction,
@@ -43,6 +56,17 @@ function DataPickerColumnItem_(
     <PlasmicDataPickerColumnItem
       root={{ ref, "data-test-id": `${columnIndex}-${itemName}` }}
       {...rest}
+      variableType={toDataPickerPreviewVariant(variableType)}
+      icon={{
+        render: ({ className }) => (
+          <Icon
+            icon={icon ?? variableTypeToIcon(variableType)}
+            size={16}
+            className={cn("dimfg", className)}
+            aria-hidden
+          />
+        ),
+      }}
       itemName={itemName}
       previewValue={previewValue ?? null}
       hasLink={onJumpToSource ? "hasLink" : undefined}
