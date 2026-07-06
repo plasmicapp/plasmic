@@ -1,6 +1,6 @@
-// Import necessary types from ApiSchema
 import type {
   InitServerInfo,
+  PlayerViewInfo,
   ServerSessionsInfo,
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
@@ -16,9 +16,9 @@ type MessageHandler<T> = (data: T) => unknown | Promise<unknown>;
  */
 export type ClientToServerEvents = {
   subscribe: MessageHandler<{
-    namespace: string;
-    projectIds?: string[];
-    studio?: boolean;
+    namespace: "projects";
+    projectIds: string[];
+    studio: boolean;
   }>;
   view: MessageHandler<UpdatePlayerViewRequest>;
 };
@@ -52,6 +52,8 @@ export type BroadcastPayload = {
 export interface SocketData {
   user?: any;
   sessionID?: string;
+  playerId?: number;
+  viewInfo?: PlayerViewInfo;
 }
 
 /**

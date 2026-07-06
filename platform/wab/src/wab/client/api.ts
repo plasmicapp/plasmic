@@ -1,11 +1,11 @@
-import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
 import {
+  LocalStorageKey,
   codegenTypeKey,
   copyFromProjectKey,
   githubTokenKey,
-  LocalStorageKey,
   storageViewAsKey,
 } from "@/wab/client/LocalStorageKey";
+import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
 import {
   SerializableClipboardData,
   serializeClipboardItems,
@@ -181,31 +181,17 @@ export class Api extends SharedApi {
   private queue = new PushPullQueue<{ eventName: string; data: unknown }>();
 
   /**
-   * This method proxies the websocket. This is a very simple model where we
-   * assume a single socket and a static set of events that are being listened
-   * for - basically just enough to serve
+   * This method proxies the websocket, creating it if needed. This is a very
+   * simple model where we assume a single socket and a static set of events
+   * that are being listened for - basically just enough to serve
    * StudioCtx.startListeningForSocketEvents.
    *
-   * The socket connect and event listening must happen synchronously or else
-   * messages may be missed (I think - don't know socket.io well).
-   *
-   * Each call returns one EventWithData bundle (or never returns if someone
-   * calls closeSocket). So you're expected to call this in a loop.
+   * Each call returns one EventWithData bundle, or undefined once someone
+   * calls closeSocket. So you're expected to call this in a loop.
    */
   async listenSocket(
-    eventNames: (keyof ServerToClientEvents)[],
-    connected: boolean
-  ): Promise<{ eventName: string; data: unknown }> {
-    if (this.socket && !connected) {
-      // Not connected, even though the socket exists; disconnect the existing
-      // socket and create a new one. This happens if we navigate from a studio
-      // page to a dashboard and back to a studio page. When we navigate away
-      // from a studio page, we don't have a chance to disconnect yet, because
-      // the host iframe just gets removed and there's nothing we can hook into
-      // to disconnect first :-/
-      this.socket.disconnect();
-      this.socket = undefined;
-    }
+    eventNames: (keyof ServerToClientEvents)[]
+  ): Promise<{ eventName: string; data: unknown } | undefined> {
     if (!this.socket) {
       this.socket = connect({
         path: "/api/v1/socket",
@@ -222,7 +208,10 @@ export class Api extends SharedApi {
 
   async closeSocket() {
     this.socket?.close();
+    this.socket = undefined;
 
+    // Close existing queue before reassigning.
+    this.queue.close();
     this.queue = new PushPullQueue();
   }
 

@@ -20,9 +20,15 @@ export async function drainQueue(queue: AsyncQueue<any>) {
  */
 export class PushPullQueue<T> {
   private itemsReceived: T[] = [];
-  private waitingResolvers: ((item: T) => void)[] = [];
+  private waitingResolvers: ((item: T | undefined) => void)[] = [];
+  private closed = false;
 
-  push(item: T) {
+  /** Pushes an item to the queue for the next puller. */
+  push(item: T): void {
+    if (this.closed) {
+      return;
+    }
+
     const resolver = this.waitingResolvers.shift();
     if (resolver) {
       resolver(item);
@@ -31,14 +37,27 @@ export class PushPullQueue<T> {
     }
   }
 
-  async pull(): Promise<T> {
+  /**
+   * Pulls the next item from the queue.
+   * Returns undefined if closed and the queue is drained.
+   */
+  async pull(): Promise<T | undefined> {
     const item = this.itemsReceived.shift();
     if (item) {
       return Promise.resolve(item);
+    } else if (this.closed) {
+      return undefined;
     } else {
       return new Promise((resolve) => {
         this.waitingResolvers.push(resolve);
       });
     }
+  }
+
+  /** Closes this queue, causing future pulls to return undefined. */
+  close() {
+    this.closed = true;
+    this.waitingResolvers.forEach((resolve) => resolve(undefined));
+    this.waitingResolvers.length = 0;
   }
 }

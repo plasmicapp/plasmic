@@ -15,10 +15,8 @@ import { logger } from "@/wab/server/observability";
 import { parseProjectIdsAndTokensHeader } from "@/wab/server/routes/util";
 import {
   InitServerInfo,
-  PlayerViewInfo,
   ServerPlayerInfo,
   ServerSessionsInfo,
-  UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
 import type {
   BroadcastPayload,
@@ -26,13 +24,7 @@ import type {
   ServerToClientEvents,
   SocketData,
 } from "@/wab/shared/api/socket";
-import {
-  ensure,
-  maybe,
-  removeWhere,
-  spawnWrapper,
-  withoutNils,
-} from "@/wab/shared/common";
+import { ensure, maybe, spawnWrapper, withoutNils } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
@@ -57,13 +49,11 @@ export class ProjectsSocket {
     {},
     SocketData
   >;
-  private socketToPlayerViewInfo = new WeakMap<Socket, PlayerViewInfo>();
-  private socketToPlayerId = new WeakMap<Socket, number>();
   /**
-   * room (`projects/${projectId}`) -> client socket list
+   * room (`projects/${projectId}`) -> client sockets
    */
-  private roomToSockets = new Map<string, Socket[]>();
-  private sessionIdToSockets = new Map<string, Socket[]>();
+  private readonly roomToSockets = new Map<string, Set<Socket>>();
+  private readonly sessionIdToSockets = new Map<string, Set<Socket>>();
   private nextPlayerId = 0;
 
   constructor(config: Config, appName: string) {
@@ -95,7 +85,7 @@ export class ProjectsSocket {
         this.set(
           { app: appName },
           Array.from(self.roomToSockets.values()).reduce(
-            (a, b) => a + b.length,
+            (a, b) => a + b.size,
             0
           )
         );
@@ -109,7 +99,7 @@ export class ProjectsSocket {
         this.set(
           { app: appName },
           Array.from(self.sessionIdToSockets.values()).reduce(
-            (a, b) => a + b.length,
+            (a, b) => a + b.size,
             0
           )
         );
@@ -140,7 +130,9 @@ export class ProjectsSocket {
   disconnectSession(sessionId: string) {
     // On logout/login, we should close all existing connections to make sure
     // it'll reconnect with the right permissions
-    this.sessionIdToSockets.get(sessionId)?.forEach((s) => s.disconnect(true));
+    this.sessionIdToSockets
+      .get(sessionId)
+      ?.forEach((socket) => socket.disconnect(true));
   }
 
   broadcast(payload: BroadcastPayload) {
@@ -151,91 +143,124 @@ export class ProjectsSocket {
     }
   }
 
-  private trackSocket(map: Map<string, Socket[]>, key: string, socket: Socket) {
-    map.set(key, [...(map.get(key) ?? []), socket]);
-  }
-
-  private untrackSocket(
-    map: Map<string, Socket[]>,
+  private trackSocket(
+    map: Map<string, Set<Socket>>,
     key: string,
     socket: Socket
   ) {
-    maybe(map.get(key), (sockets) => removeWhere(sockets, (s) => s === socket));
+    let sockets = map.get(key);
+    if (!sockets) {
+      sockets = new Set();
+      map.set(key, sockets);
+    }
+    sockets.add(socket);
+  }
+
+  private untrackSocket(
+    map: Map<string, Set<Socket>>,
+    key: string,
+    socket: Socket
+  ) {
+    const sockets = map.get(key);
+    if (!sockets) {
+      return;
+    }
+    sockets.delete(socket);
+    if (sockets.size === 0) {
+      map.delete(key);
+    }
   }
 
   private async onConnect(socket: Socket) {
-    const playerId = this.getPlayerId(socket);
+    const playerId = this.nextPlayerId++;
+    socket.data.playerId = playerId;
+    const sessionId = ensure(
+      socket.request["sessionID"],
+      "SessionID should not be undefined"
+    );
+    logger().info(`Starting session ${sessionId}`);
 
-    socket.on("subscribe", async (args: any) => {
-      if (args.namespace === "projects") {
-        // When a client connects and subscribes to listening to projects, we
-        // join the socket to the associated rooms
-        const hasPermissions = await verifyProjectPermissions(
-          socket,
-          args.projectIds
-        );
-        if (hasPermissions) {
-          const sessionId = ensure(
-            socket.request["sessionID"],
-            "SessionID should not be undefined"
-          );
-          logger().info(`Starting session ${sessionId}`);
-          this.trackSocket(this.sessionIdToSockets, sessionId, socket);
-          logger().info(
-            `Subscribing user ${getSocketUserName(
-              ensure(socket.handshake["user"], "User should not be undefined")
-            )} to ${args.projectIds}`
-          );
-          for (const projectId of args.projectIds) {
-            const room = `projects/${projectId}`;
-            await socket.join(room);
-          }
-          if (args.studio) {
-            // We subscribe for changes from Studio and from cli
-            socket.on("view", (data: UpdatePlayerViewRequest) => {
-              const room = `projects/${data.projectId}`;
-              this.socketToPlayerViewInfo.set(socket, {
-                branchId: data.branchId ?? undefined,
-                arenaInfo: data.arena ?? undefined,
-                selectionInfo: data.selection ?? undefined,
-                cursorInfo: data.cursor ?? undefined,
-                positionInfo: data.position ?? undefined,
-              });
-              this.broadcastPlayerSessions(room);
-            });
-            socket.on("disconnect", () => {
-              this.untrackSocket(this.sessionIdToSockets, sessionId, socket);
-              for (const projectId of args.projectIds) {
-                const room = `projects/${projectId}`;
-                this.untrackSocket(this.roomToSockets, room, socket);
-                this.socketToPlayerViewInfo.delete(socket);
-                this.socketToPlayerId.delete(socket);
-                if (this.roomToSockets.get(room)?.length === 0) {
-                  this.roomToSockets.delete(room);
-                } else {
-                  this.broadcastPlayerSessions(room);
-                }
-              }
-            });
-
-            for (const projectId of args.projectIds) {
-              const room = `projects/${projectId}`;
-              if (await shouldShowPlayer(socket, projectId)) {
-                this.trackSocket(this.roomToSockets, room, socket);
-              }
-              this.broadcastPlayerSessions(room);
-            }
-          }
-        } else {
-          socket.emit(
-            "error",
-            `No read access to projects ${args.projectIds.join(", ")}`
-          );
-          socket.disconnect(true);
+    // First track the socket by session ID.
+    // The socket starts unauthorized and hasn't joined any rooms yet.
+    this.trackSocket(this.sessionIdToSockets, sessionId, socket);
+    socket.on("disconnecting", () => {
+      this.untrackSocket(this.sessionIdToSockets, sessionId, socket);
+      for (const room of socket.rooms) {
+        if (room.startsWith("projects/")) {
+          this.untrackSocket(this.roomToSockets, room, socket);
+          this.broadcastPlayerSessions(room);
         }
-      } else {
+      }
+    });
+
+    // Subscribe to rooms by project ID.
+    socket.on("subscribe", async (args) => {
+      if (args.namespace !== "projects") {
         socket.emit("error", "Unknown reason for connection");
         socket.disconnect(true);
+        return;
+      }
+
+      const user = ensure(
+        socket.handshake["user"],
+        "User should not be undefined"
+      );
+
+      // Check the user has all permissions to all projects.
+      const hasPermissions = await verifyProjectPermissions(
+        user,
+        args.projectIds
+      );
+      // Check socket still connected after await.
+      if (!socket.connected) {
+        return;
+      }
+
+      if (!hasPermissions) {
+        socket.emit(
+          "error",
+          `No read access to projects ${args.projectIds.join(", ")}`
+        );
+        socket.disconnect(true);
+        return;
+      }
+
+      logger().info(
+        `Subscribing user ${getSocketUserName(user)} to ${args.projectIds}`
+      );
+      for (const projectId of args.projectIds) {
+        const room = `projects/${projectId}`;
+        await socket.join(room);
+        // Check socket still connected after await.
+        if (!socket.connected) {
+          return;
+        }
+      }
+
+      if (args.studio) {
+        // We subscribe for changes from Studio and from cli
+        socket.on("view", (data) => {
+          socket.data.viewInfo = {
+            branchId: data.branchId ?? undefined,
+            arenaInfo: data.arena ?? undefined,
+            selectionInfo: data.selection ?? undefined,
+            cursorInfo: data.cursor ?? undefined,
+            positionInfo: data.position ?? undefined,
+          };
+          this.broadcastPlayerSessions(`projects/${data.projectId}`);
+        });
+
+        for (const projectId of args.projectIds) {
+          const room = `projects/${projectId}`;
+          if (await shouldShowPlayer(user, projectId)) {
+            // Check socket still connected after await.
+            if (!socket.connected) {
+              return;
+            }
+            this.trackSocket(this.roomToSockets, room, socket);
+          }
+          this.broadcastPlayerSessions(room);
+        }
       }
     });
 
@@ -252,28 +277,23 @@ export class ProjectsSocket {
     );
   }
 
-  private getPlayerId(socket: Socket) {
-    if (this.socketToPlayerId.has(socket)) {
-      return this.socketToPlayerId.get(socket)!;
-    }
-    const id = this.nextPlayerId++;
-    this.socketToPlayerId.set(socket, id);
-    return id;
-  }
-
   private buildPlayerInfo(socket: Socket) {
+    const playerId = ensure(
+      socket.data.playerId,
+      "playerId should be set on connect"
+    );
     const playerInfo = maybe(
       socket.handshake["user"]?.actor,
       (actor): ServerPlayerInfo | undefined =>
         actor.type === "NormalUser"
           ? {
-              playerId: this.getPlayerId(socket),
+              playerId,
               type: "NormalUser",
               userId: actor.userId,
             }
           : actor.type === "AnonUser"
           ? {
-              playerId: this.getPlayerId(socket),
+              playerId,
               type: "AnonUser",
             }
           : undefined
@@ -281,14 +301,14 @@ export class ProjectsSocket {
     if (!playerInfo) {
       return undefined;
     }
-    playerInfo.viewInfo = this.socketToPlayerViewInfo.get(socket);
+    playerInfo.viewInfo = socket.data.viewInfo;
     return playerInfo;
   }
 
   private broadcastPlayerSessions(room: string) {
     const playerSessions: ServerSessionsInfo = {
       sessions: withoutNils(
-        (this.roomToSockets.get(room) ?? []).map((socket) =>
+        Array.from(this.roomToSockets.get(room) ?? [], (socket) =>
           this.buildPlayerInfo(socket)
         )
       ),
@@ -369,8 +389,10 @@ async function withDbMgr<T>(user: SocketUser, f: (mgr: DbMgr) => Promise<T>) {
   });
 }
 
-async function verifyProjectPermissions(socket: Socket, projectIds: string[]) {
-  const user = ensure(socket.handshake["user"], "User should not be undefined");
+async function verifyProjectPermissions(
+  user: SocketUser,
+  projectIds: string[]
+) {
   return await withDbMgr(user, async (mgr) => {
     try {
       await Promise.all(
@@ -390,8 +412,7 @@ async function verifyProjectPermissions(socket: Socket, projectIds: string[]) {
 // Don't show @plasmic.app users if they're opening non-plasmic projects
 // (as it could be surprising to the users seeing an unexpected avatar when
 // we're debugging issues on their projects)
-async function shouldShowPlayer(socket: Socket, projectId: string) {
-  const user = ensure(socket.handshake["user"], "User should not be undefined");
+async function shouldShowPlayer(user: SocketUser, projectId: string) {
   if (user.actor.type === "AnonUser") {
     return true;
   }
