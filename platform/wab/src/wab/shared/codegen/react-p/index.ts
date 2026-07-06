@@ -139,7 +139,6 @@ import {
   makeProjectModuleImports,
   makeRenderFuncName,
   makeRootResetClassName,
-  makeServerPageSkeletonPropsName,
   makeStyleTokensClassNames,
   makeStyleTokensProviderImports,
   makeStylesImports,
@@ -2728,8 +2727,7 @@ function serializePageAwareSkeletonWrapperTs(
   }
   if (isNextJs) {
     if (ctx.useRSC) {
-      const skeletonPropsName = makeServerPageSkeletonPropsName(component);
-      componentPropsSig = `{ params, searchParams }: ${skeletonPropsName}`;
+      componentPropsSig = `{ params, searchParams }: PlasmicPageProps`;
       componentBodyPrefix = `const ctx = await makeAppRouterPageCtx({ params, searchParams });`;
       serverExports = serializeAppRouterGenerateMetadata(ctx);
       if (isDynamicRoute) {
@@ -2744,8 +2742,7 @@ function serializePageAwareSkeletonWrapperTs(
       </PageParamsProvider__>`;
       plasmicModuleImports.push(
         "makeAppRouterPageCtx",
-        "generateDynamicMetadata",
-        skeletonPropsName
+        "generateDynamicMetadata"
       );
       if (ctx.hasServerQueries) {
         plasmicModuleImports.push("serverQueryTree");

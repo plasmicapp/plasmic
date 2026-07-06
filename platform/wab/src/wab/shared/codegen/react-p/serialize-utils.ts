@@ -636,10 +636,6 @@ export function makeDefaultExternalPropsName(component: Component) {
   return `Default${getExportedComponentName(component)}Props`;
 }
 
-export function makeServerPageSkeletonPropsName(component: Component) {
-  return `${getExportedComponentName(component)}ServerSkeletonProps`;
-}
-
 export function makePlasmicIsPreviewRootComponent() {
   return `__plasmicIsPreviewRoot`;
 }

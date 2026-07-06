@@ -423,11 +423,9 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
 }
 
 
+import type { ParamsRecord, PlasmicPageProps } from "@plasmicapp/react-web";
 
-function mkPathFromRouteAndParams(
-  route: string,
-  params: Record<string, string | string[] | undefined>
-) {
+function mkPathFromRouteAndParams(route: string, params: ParamsRecord) {
   if (!params) {
     return route;
   }
@@ -446,12 +444,7 @@ function mkPathFromRouteAndParams(
   return path;
 }
 
-export interface SeoServerSkeletonProps {
-  params?: Promise<Record<string, string | string[] | undefined>>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}
-
-export async function makeAppRouterPageCtx({ params, searchParams }: SeoServerSkeletonProps) {
+export async function makeAppRouterPageCtx({ params, searchParams }: PlasmicPageProps) {
   const pageRoute = "/seo";
   const pageParams = (await params) ?? {};
   const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
@@ -465,7 +458,7 @@ export async function makeAppRouterPageCtx({ params, searchParams }: SeoServerSk
   return ctx;
 }
 
-export type PlasmicSeoServerProps = DefaultSeoProps & SeoServerSkeletonProps;
+export type PlasmicSeoServerProps = DefaultSeoProps & PlasmicPageProps;
 
 export function PlasmicSeoServer(props: PlasmicSeoServerProps) {
   
@@ -565,11 +558,9 @@ type PlasmicPageMetadata = {
   };
 };
 
+import type { ParamsRecord, PlasmicPageProps } from "@plasmicapp/react-web";
 
-function mkPathFromRouteAndParams(
-  route: string,
-  params: Record<string, string | string[] | undefined>
-) {
+function mkPathFromRouteAndParams(route: string, params: ParamsRecord) {
   if (!params) {
     return route;
   }
@@ -588,12 +579,7 @@ function mkPathFromRouteAndParams(
   return path;
 }
 
-export interface GenerateMetadataProps {
-  params?: Promise<Record<string, string | string[] | undefined>>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}
-
-export async function makeAppRouterPageCtx({ params, searchParams }: GenerateMetadataProps) {
+export async function makeAppRouterPageCtx({ params, searchParams }: PlasmicPageProps) {
   const pageRoute = "/seo";
   const pageParams = (await params) ?? {};
   const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
@@ -607,8 +593,11 @@ export async function makeAppRouterPageCtx({ params, searchParams }: GenerateMet
   return ctx;
 }
 
-export async function generateMetadata(props: GenerateMetadataProps): Promise<PlasmicPageMetadata> {
-  const { params, searchParams } = props;
+export async function generateMetadata(props: {
+  params?: Promise<ParamsRecord> | ParamsRecord;
+  query?: Promise<ParamsRecord> | ParamsRecord;
+}): Promise<PlasmicPageMetadata> {
+  const { params, query: searchParams } = props;
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
   const metadata = generateDynamicMetadata({}, ctx);
   return metadata;
@@ -1111,8 +1100,9 @@ column-gap: var(--mixin-QRKsNlwSCB5i_column-gap);
     
     
     
-    import { PlasmicSeoServer, makeAppRouterPageCtx, generateDynamicMetadata, SeoServerSkeletonProps } from "./PlasmicSeoServer"; // plasmic-import: yjEpnuKb4eHY/rscServer
+    import { PlasmicSeoServer, makeAppRouterPageCtx, generateDynamicMetadata } from "./PlasmicSeoServer"; // plasmic-import: yjEpnuKb4eHY/rscServer
     import type { Metadata, ResolvingMetadata } from "next";
+import type { PlasmicPageProps } from "@plasmicapp/react-web";
 
     
 
@@ -1120,7 +1110,7 @@ column-gap: var(--mixin-QRKsNlwSCB5i_column-gap);
 
 
 export async function generateMetadata(
-  { params, searchParams }: SeoServerSkeletonProps,
+  { params, searchParams }: PlasmicPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
@@ -1132,7 +1122,7 @@ export async function generateMetadata(
 
     
 
-    async function Seo({ params, searchParams }: SeoServerSkeletonProps) {
+    async function Seo({ params, searchParams }: PlasmicPageProps) {
       // Use PlasmicSeo to render this component as it was
       // designed in Plasmic, by activating the appropriate variants,
       // attaching the appropriate event handlers, etc.  You

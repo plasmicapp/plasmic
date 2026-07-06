@@ -119,8 +119,7 @@ describe("Code generation of server queries", () => {
   describe("serializeMakeAppRouterPageCtx", () => {
     function serializePageCtx(component: ReturnType<typeof mkComponent>) {
       return serializeMakeAppRouterPageCtx(
-        { component } as SerializerBaseContext,
-        "PageProps",
+        { component, exportOpts: {} } as SerializerBaseContext,
         { usesSearchParams: pageReferencesSearchParams(component) }
       );
     }
@@ -138,7 +137,9 @@ describe("Code generation of server queries", () => {
       const component = makePageWithDynamicText("$ctx.params.slug");
 
       expect(pageReferencesSearchParams(component)).toBe(false);
-      expect(serializePageCtx(component)).toContain("query: {},");
+      const serialized = serializePageCtx(component);
+      expect(serialized).toContain("query: {},");
+      expect(serialized).not.toContain("await searchParams");
     });
 
     it("awaits searchParams when server query args reference $ctx.query", () => {
