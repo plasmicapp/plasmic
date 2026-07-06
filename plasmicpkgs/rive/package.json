@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/rive",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "Plasmic registration call for rive animation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.9",
+    "@plasmicapp/host": "2.0.10",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "tsdx": "^0.14.1",
