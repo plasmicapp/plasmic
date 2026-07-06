@@ -718,7 +718,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "-D5TfCBTB7qi": {
           "type": { "__ref": "NPo8s5tZFljj" },
@@ -873,7 +874,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "cTR1FMni5ZP9": { "name": "text", "__type": "Text" },
         "KPzK_LFiNNNi": {
@@ -1273,7 +1275,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -1992,7 +1994,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "PPXuw2UN0cLp": {
           "type": { "__ref": "ZmVnONBo4gzn" },
@@ -2147,7 +2150,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "wxVX6-zgDMz1": { "name": "text", "__type": "Text" },
         "ozts0i4Wd-92": {
@@ -2489,7 +2493,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -3224,7 +3228,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "9ZNbINiR1HO3": {
           "__type": "PropParam",
@@ -3379,7 +3384,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "tIVBbEB-Ui-N": { "__type": "Text", "name": "text" },
         "lNd7odEmpzIg": {
@@ -3926,7 +3932,7 @@
         "1705b711-4aea-4e36-96ac-250836d3173c",
         "38d66ef0-19fc-4194-bc9a-fda03b69df6b"
       ],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

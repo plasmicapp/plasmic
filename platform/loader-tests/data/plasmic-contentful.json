@@ -480,7 +480,8 @@
           },
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "H67ZJ0j8hcu8": {
           "type": { "__ref": "oicWWX8nlR-a" },
@@ -551,7 +552,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "fTkdSQhbYWDv": {
           "type": { "__ref": "49mqd_M3YLkG" },
@@ -685,7 +687,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "x9BhiZVfi0JO": {
           "variants": [{ "__ref": "a36eONfZCyRj" }],
@@ -986,7 +989,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -1716,7 +1719,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "TcWfC2sQs35s": {
           "type": { "__ref": "TxNr-uf12rnC" },
@@ -1871,7 +1875,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "EoHM27zs30fG": { "name": "text", "__type": "Text" },
         "VJJ0m81yFxcH": {
@@ -3299,7 +3304,7 @@
         }
       },
       "deps": ["b7175497-daf3-4b57-bd37-ec3cbe13be6c"],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

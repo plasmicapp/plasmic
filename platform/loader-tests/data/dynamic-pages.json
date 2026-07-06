@@ -1324,7 +1324,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "62876009": { "name": "title", "uuid": "VyIm0_aYsK", "__type": "Var" },
         "62876010": { "name": "text", "__type": "Text" },
@@ -1563,7 +1564,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

@@ -726,7 +726,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53903010": {
             "type": { "__ref": "53903028" },
@@ -881,7 +882,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53903018": {
             "name": "title",
@@ -2667,7 +2669,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -3412,7 +3414,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53903010": {
             "type": { "__ref": "53903028" },
@@ -3567,7 +3570,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53903018": {
             "name": "title",
@@ -5005,7 +5009,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -5733,7 +5737,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53903010": {
             "type": { "__ref": "53903028" },
@@ -5888,7 +5893,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53903018": {
             "name": "title",
@@ -7845,7 +7851,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

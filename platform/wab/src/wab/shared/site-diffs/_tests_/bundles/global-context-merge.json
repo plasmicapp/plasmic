@@ -711,7 +711,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -866,7 +867,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -1007,7 +1009,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "0.0.1",
@@ -1737,7 +1739,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -1892,7 +1895,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -2172,7 +2176,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "eCJaS3ruXAuc": {
             "variants": [{ "__ref": "u1X-vg-VO0Ac" }],
@@ -2269,7 +2274,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -2983,7 +2988,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -3138,7 +3144,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -3418,7 +3425,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "ivdl0USvCJJp": {
             "variants": [{ "__ref": "u1X-vg-VO0Ac" }],
@@ -3515,7 +3523,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

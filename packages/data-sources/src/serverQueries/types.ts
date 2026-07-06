@@ -53,13 +53,13 @@ export interface QueryComponentNode {
   children: QueryNode[];
 }
 
-export type SerializedServerRenderingConfig = boolean;
+export type SerializedSubtreePrefetchingConfig = boolean;
 
 /** @internal */
 export interface QueryCodeComponentNode {
   type: "codeComponent";
   propsContext: Record<string, ContextFn<unknown>>;
-  serverRenderingConfig?: SerializedServerRenderingConfig;
+  subtreePrefetchingConfig?: SerializedSubtreePrefetchingConfig;
   children: QueryNode[];
 }
 

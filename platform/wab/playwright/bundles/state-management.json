@@ -10031,7 +10031,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "64092010": {
           "type": { "__ref": "64092028" },
@@ -10186,7 +10187,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "64092018": { "name": "title", "uuid": "kQl2B_SpuJ", "__type": "Var" },
         "64092019": { "name": "text", "__type": "Text" },
@@ -21459,7 +21461,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

@@ -707,7 +707,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "LjY9pS6jJcma": {
           "__type": "PropParam",
@@ -862,7 +863,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "Jmyxb2QnBjKQ": { "__type": "Text", "name": "text" },
         "xHGDu29Rmzw2": {
@@ -1670,7 +1672,7 @@
         "eWxy7ITden5Q": { "__type": "RawText", "markers": [], "text": "Home" }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

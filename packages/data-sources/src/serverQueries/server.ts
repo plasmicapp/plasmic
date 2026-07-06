@@ -196,7 +196,7 @@ function executeCodeComponentNode(
   node: QueryCodeComponentNode,
   params: ExecuteNodeParams
 ): DiscoveredQuery[] {
-  if (node.serverRenderingConfig === false) {
+  if (node.subtreePrefetchingConfig === false) {
     return [];
   }
 

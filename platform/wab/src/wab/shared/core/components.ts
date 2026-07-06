@@ -496,6 +496,7 @@ export function cloneCodeComponentMeta(
         isAttachment: codeMeta.isAttachment,
         providesData: codeMeta.providesData,
         isRepeatable: codeMeta.isRepeatable,
+        subtreePrefetchingConfig: codeMeta.subtreePrefetchingConfig,
         hasRef: codeMeta.hasRef,
         styleSections: codeMeta.styleSections,
         helpers: cloneCodeComponentHelpers(codeMeta.helpers),

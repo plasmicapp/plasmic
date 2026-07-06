@@ -1563,6 +1563,9 @@ function refreshCodeComponentMeta(
       c.codeComponentMeta.isAttachment = !!meta.isAttachment;
       c.codeComponentMeta.providesData = !!meta.providesData;
       c.codeComponentMeta.isRepeatable = meta.isRepeatable ?? true;
+      // Default to null to avoid unnecessary bundle changes
+      c.codeComponentMeta.subtreePrefetchingConfig =
+        (meta as any).subtreePrefetchingConfig ?? null;
       c.codeComponentMeta.styleSections =
         meta.styleSections === false ? false : meta.styleSections ? true : null;
       c.codeComponentMeta.defaultDisplay = meta.defaultDisplay ?? null;
@@ -3663,6 +3666,7 @@ export function mkCodeComponent(
       isAttachment: !isGlobalContextMeta(meta) && !!meta.isAttachment,
       providesData: !!meta.providesData,
       isRepeatable: isGlobalContextMeta(meta) || (meta.isRepeatable ?? true),
+      subtreePrefetchingConfig: (meta as any).subtreePrefetchingConfig ?? null,
       hasRef: !!(meta as any).refActions,
       refActions: (meta as any).refActions
         ? Object.keys((meta as any).refActions)

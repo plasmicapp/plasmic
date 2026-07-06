@@ -708,7 +708,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "0IlJ_9tLQJ6M": {
           "__type": "PropParam",
@@ -863,7 +864,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "m0xO5cJlChzP": { "__type": "Text", "name": "text" },
         "yyyT_ScLR78G": {
@@ -1289,7 +1291,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

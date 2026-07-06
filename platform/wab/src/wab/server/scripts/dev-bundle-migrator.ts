@@ -32,6 +32,8 @@ const paths = [
   "src/wab/shared/codegen/__tests__/bundles/data-tokens-page-meta.json",
   "src/wab/shared/codegen/__tests__/bundles/global-variant-test.json",
   "src/wab/shared/codegen/__tests__/bundles/style-token-overrides.json",
+  "src/wab/shared/codegen/__tests__/bundles/animations-test.json",
+  "src/wab/shared/codegen/__tests__/bundles/imported-project-default-theme-styles.json",
   "src/wab/server/pkg-mgr/data/plume-master-pkg.json",
   "src/wab/server/pkg-mgr/data/plexus-master-pkg.json",
   "playwright/bundles/state-management.json",

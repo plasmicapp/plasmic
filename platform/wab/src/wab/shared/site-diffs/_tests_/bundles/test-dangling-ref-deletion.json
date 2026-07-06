@@ -712,7 +712,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "SdsW0SKfOFyr": {
             "type": { "__ref": "Tm1uNqrbdVTy" },
@@ -867,7 +868,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "uAmInqHSZJKQ": { "name": "text", "__type": "Text" },
           "hpIkPElKkDHI": {
@@ -1185,7 +1187,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "aEdkqeH2BR6MwHyjD3tm6K",
       "version": "0.0.1",
@@ -1915,7 +1917,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "SdsW0SKfOFyr": {
             "type": { "__ref": "Tm1uNqrbdVTy" },
@@ -2070,7 +2073,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "uAmInqHSZJKQ": { "name": "text", "__type": "Text" },
           "hpIkPElKkDHI": {
@@ -2379,7 +2383,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -3093,7 +3097,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "SdsW0SKfOFyr": {
             "__type": "PropParam",
@@ -3248,7 +3253,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "uAmInqHSZJKQ": { "__type": "Text", "name": "text" },
           "hpIkPElKkDHI": {
@@ -3557,7 +3563,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

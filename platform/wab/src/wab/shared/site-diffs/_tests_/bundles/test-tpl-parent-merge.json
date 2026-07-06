@@ -712,7 +712,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "tM26pBGnQzmh": {
             "type": { "__ref": "Py-Ki33T4zqs" },
@@ -867,7 +868,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "HsMlqvXjJ-Sh": { "name": "text", "__type": "Text" },
           "FfXq4rE9IJIl": {
@@ -1259,7 +1261,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "pC2jRmcov3iBGmrqWaP53P",
       "version": "0.0.1",
@@ -1989,7 +1991,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "tM26pBGnQzmh": {
             "type": { "__ref": "Py-Ki33T4zqs" },
@@ -2144,7 +2147,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "HsMlqvXjJ-Sh": { "name": "text", "__type": "Text" },
           "FfXq4rE9IJIl": {
@@ -2566,7 +2570,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -3280,7 +3284,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "tM26pBGnQzmh": {
             "type": { "__ref": "Py-Ki33T4zqs" },
@@ -3435,7 +3440,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "HsMlqvXjJ-Sh": { "name": "text", "__type": "Text" },
           "FfXq4rE9IJIl": {
@@ -3818,7 +3824,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

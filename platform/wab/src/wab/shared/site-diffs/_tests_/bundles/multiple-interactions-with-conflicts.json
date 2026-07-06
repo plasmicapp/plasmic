@@ -712,7 +712,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "ykne7coBH4SB": {
             "type": { "__ref": "bs8KwBeBZpQ7" },
@@ -867,7 +868,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "uVJ55-AszkGF": { "name": "text", "__type": "Text" },
           "750EStEfP0Ru": {
@@ -2184,7 +2186,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "7Z38ZNJhfCuQ4JaULZaWDi",
       "version": "0.0.1",
@@ -2914,7 +2916,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "ykne7coBH4SB": {
             "type": { "__ref": "bs8KwBeBZpQ7" },
@@ -3069,7 +3072,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "uVJ55-AszkGF": { "name": "text", "__type": "Text" },
           "750EStEfP0Ru": {
@@ -4573,7 +4577,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -5287,7 +5291,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "ykne7coBH4SB": {
             "type": { "__ref": "bs8KwBeBZpQ7" },
@@ -5442,7 +5447,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "uVJ55-AszkGF": { "name": "text", "__type": "Text" },
           "750EStEfP0Ru": {
@@ -6989,7 +6995,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

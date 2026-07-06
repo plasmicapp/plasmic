@@ -277,7 +277,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -547,7 +548,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -1467,7 +1469,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -6519,7 +6522,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6989,7 +6992,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -7259,7 +7263,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -8143,7 +8148,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -13110,7 +13116,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -13380,7 +13386,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -13650,7 +13657,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -14543,7 +14551,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "__type": "CodeComponentMeta",
-            "refActions": []
+            "refActions": [],
+            "subtreePrefetchingConfig": null
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -19782,7 +19791,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

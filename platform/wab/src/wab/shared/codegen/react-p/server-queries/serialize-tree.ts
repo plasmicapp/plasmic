@@ -155,8 +155,8 @@ function serializeServerNode(
         .map((c) => serializeServerNode(c, ctx, scopedItemVars))
         .join(", ");
       const configStr =
-        node.serverRenderingConfig !== undefined
-          ? `\n  serverRenderingConfig: ${node.serverRenderingConfig},`
+        node.subtreePrefetchingConfig === false
+          ? `\n  subtreePrefetchingConfig: false,`
           : "";
       return `{
   type: "codeComponent",

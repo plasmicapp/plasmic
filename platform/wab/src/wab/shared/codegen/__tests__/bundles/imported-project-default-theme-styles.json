@@ -177,7 +177,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "s-gX6pA7z7TL": {
           "uuid": "8-AEyJehkOzc",
@@ -450,7 +451,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "n9eVlWHM34DI": {
           "uuid": "Zl8oflu0lqy2",
@@ -1357,7 +1359,7 @@
         }
       },
       "deps": [],
-      "version": "254-migrate-transforms"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -1651,7 +1653,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "Hl66tSuo_8kI": {
           "uuid": "hcNt2qsQJHCn",
@@ -1924,7 +1927,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "ccns3L7sJjQ4": {
           "uuid": "H4l8QlkYHjJ6",
@@ -4033,7 +4037,7 @@
         }
       },
       "deps": ["fe9182ad-8468-4b96-88dd-835191fba3cd"],
-      "version": "254-migrate-transforms"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -4490,7 +4494,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "OPmj7qtBp3_b": {
           "uuid": "hy0GJdeoHgqD",
@@ -4763,7 +4768,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "oqlTcfAXqLG2": {
           "uuid": "sNztrQtRc1zi",
@@ -6410,7 +6416,7 @@
         }
       },
       "deps": ["4c72165d-dadc-4ccd-a65a-5c27f46afc73"],
-      "version": "254-migrate-transforms"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

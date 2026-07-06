@@ -235,6 +235,12 @@ export interface CodeComponentMeta<P> {
    */
   isRepeatable?: boolean;
   /**
+   * Whether `executePlasmicQueries` should prefetch $q queries in this
+   * component's subtree during SSR/SSG. If unset, defaults to true. When false,
+   * `executePlasmicQueries` skips $q queries in the slot contents.
+   */
+  subtreePrefetchingConfig?: boolean;
+  /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
    * to the file in the project (relative to the root directory).

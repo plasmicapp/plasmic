@@ -790,6 +790,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     isContext: "generic",
     isHostLess: "generic",
     isRepeatable: "generic",
+    subtreePrefetchingConfig: "generic",
     providesData: "generic",
     refProp: "generic",
     hasRef: "generic",

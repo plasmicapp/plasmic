@@ -117,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -832,7 +832,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "eXdBitUTwczt": {
           "__type": "PropParam",
@@ -987,7 +988,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "j0Lz8Cb6FYHh": { "__type": "Text", "name": "text" },
         "zgGxdGujCBJU": {
@@ -1653,7 +1655,7 @@
         }
       },
       "deps": ["b2e01d10-3282-4f9f-87d8-bce7a95e80a3"],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

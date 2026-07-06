@@ -417,6 +417,7 @@ CodeComponentMeta
   providesData: Bool
   hasRef: Bool
   isRepeatable: Bool
+  subtreePrefetchingConfig: Bool?
   styleSections: Bool?
   helpers: CodeComponentHelper?
   # where Any is PlasmicElement|PlasmicElement[]

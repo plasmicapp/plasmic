@@ -179,7 +179,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "ZeTMh1wSNr1j": {
             "uuid": "FMl9MXW343mh",
@@ -452,7 +453,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "0GJqiU6xYXkO": {
             "uuid": "m_SwUqOMMuwB",
@@ -1520,7 +1522,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "wHtfg2nLs5zqybWknqMXbm",
       "version": "6.0.0",
@@ -1704,7 +1706,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "ZeTMh1wSNr1j": {
             "uuid": "FMl9MXW343mh",
@@ -1977,7 +1980,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "0GJqiU6xYXkO": {
             "uuid": "m_SwUqOMMuwB",
@@ -3045,7 +3049,7 @@
           }
         },
         "deps": [],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "wHtfg2nLs5zqybWknqMXbm",
       "version": "4.1.0",
@@ -3339,7 +3343,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "iVgviOD2y313": {
             "uuid": "7dNVhxXEfmzt",
@@ -3612,7 +3617,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "CGTKnrhUwnGJ": {
             "uuid": "EgSmz5VbPf14",
@@ -4539,7 +4545,7 @@
           }
         },
         "deps": ["a1a67f8a-ec8a-402a-87da-eb8b7ebf18e8"],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "uGrWS46cRJ2qquYfzAsaTw",
       "version": "6.1.0",
@@ -4833,7 +4839,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "iVgviOD2y313": {
             "uuid": "7dNVhxXEfmzt",
@@ -5106,7 +5113,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "CGTKnrhUwnGJ": {
             "uuid": "EgSmz5VbPf14",
@@ -6479,7 +6487,7 @@
           }
         },
         "deps": ["e59019e7-b245-4e0c-b862-91a12b98b3c5"],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       },
       "projectId": "uGrWS46cRJ2qquYfzAsaTw",
       "version": "6.2.0",
@@ -6877,7 +6885,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "iVgviOD2y313": {
             "uuid": "7dNVhxXEfmzt",
@@ -7150,7 +7159,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "CGTKnrhUwnGJ": {
             "uuid": "EgSmz5VbPf14",
@@ -8514,7 +8524,7 @@
           }
         },
         "deps": ["e59019e7-b245-4e0c-b862-91a12b98b3c5"],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     },
     {
@@ -8805,7 +8815,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "iVgviOD2y313": {
             "uuid": "7dNVhxXEfmzt",
@@ -9078,7 +9089,8 @@
             "defaultSlotContents": {},
             "variants": {},
             "refActions": [],
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "subtreePrefetchingConfig": null
           },
           "CGTKnrhUwnGJ": {
             "uuid": "EgSmz5VbPf14",
@@ -10442,7 +10454,7 @@
           }
         },
         "deps": ["e59019e7-b245-4e0c-b862-91a12b98b3c5"],
-        "version": "256-add-custom-function-is-mutation"
+        "version": "257-add-code-component-subtree-prefetching-config"
       }
     }
   ]

@@ -82,12 +82,27 @@ export default async function PlasmicLoaderPage({ params }: LoaderPageProps) {
     }
   );
 
+  // Expose the executeServerQueries cache so loader tests can assert which subtrees the server
+  // prefetched (vs skipped). Only emitted when there is prefetched data, so other app-router
+  // loader tests are unaffected.
+  const prefetchedQueriesJson =
+    prefetchedQueryData && Object.keys(prefetchedQueryData).length > 0
+      ? JSON.stringify(prefetchedQueryData)
+      : null;
+
   return (
     <ClientPlasmicRootProvider
       prefetchedData={prefetchedData}
       prefetchedQueryData={prefetchedQueryData}
       pageParams={pageMeta.params}
     >
+      {prefetchedQueriesJson && (
+        <script
+          type="application/json"
+          id="plasmic-prefetched-server-queries"
+          dangerouslySetInnerHTML={{ __html: prefetchedQueriesJson }}
+        />
+      )}
       <PlasmicComponent component={pageMeta.displayName} />
     </ClientPlasmicRootProvider>
   );

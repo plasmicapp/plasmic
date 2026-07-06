@@ -9,7 +9,7 @@ export type DynamicExprCode = string;
 
 /**
  * Corresponds to <DataProvider name="..." data={...}> or code components
- * that provide data context via serverRendering registration.
+ * that provide data context via subtree prefetching registration.
  */
 export interface ServerDataProviderContextNode {
   type: "dataProvider";
@@ -62,20 +62,18 @@ export interface ServerComponentNode {
 }
 
 /**
- * Code component that may have special server rendering behavior. Register with
- * serverRendering: boolean to control whether they should be server rendered.
+ * Code component whose subtree query prefetching can be disabled.
  */
 export interface ServerCodeComponentNode {
   type: "codeComponent";
   component: Component;
   propsContext: Record<string, DynamicExprCode>;
-  /** Whether the code component should be server rendered. */
-  serverRenderingConfig?: ServerRenderingConfig;
+  /** Whether Plasmic should prefetch queries in this component's subtree. */
+  subtreePrefetchingConfig: SubtreePrefetchingConfig;
   children: ServerNode[];
 }
 
-// Configures how a code component behaves during server rendering.
-export type ServerRenderingConfig = boolean;
+export type SubtreePrefetchingConfig = boolean;
 
 /**
  * Union type of all possible server node types
@@ -103,14 +101,4 @@ export interface ServerQueryTree {
 export interface ServerQueryCollectionContext {
   site: Site;
   componentMap: Map<string, Component>;
-  // Code component registrations with serverRendering configs
-  codeComponentMeta: Map<Component, CodeComponentServerMeta>;
-}
-
-/**
- * Metadata about a code component's server rendering behavior
- */
-export interface CodeComponentServerMeta {
-  // Whether the component should be server rendered
-  serverRendering?: ServerRenderingConfig;
 }

@@ -645,7 +645,7 @@ describe("executePlasmicQueries (tree)", () => {
     });
   });
 
-  it("codeComponent with serverRenderingConfig=false skips all children", async () => {
+  it("codeComponent with subtreePrefetchingConfig=false skips all children", async () => {
     const fetchData = async () => ({ data: "should not run" });
 
     const rootNode: QueryComponentNode = {
@@ -656,7 +656,7 @@ describe("executePlasmicQueries (tree)", () => {
       children: [
         {
           type: "codeComponent",
-          serverRenderingConfig: false,
+          subtreePrefetchingConfig: false,
           propsContext: {},
           children: [
             {

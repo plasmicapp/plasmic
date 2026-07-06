@@ -1,7 +1,6 @@
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import {
-  CodeComponentServerMeta,
   DynamicExprCode,
   ServerCodeComponentNode,
   ServerComponentNode,
@@ -43,8 +42,7 @@ import {
  * 4. Track data provider contexts used in query parameters
  */
 export function collectComponentServerQueries(
-  params: Pick<SerializerBaseContext, "site" | "component" | "exprCtx">,
-  codeComponentMeta?: Map<Component, CodeComponentServerMeta>
+  params: Pick<SerializerBaseContext, "site" | "component" | "exprCtx">
 ): ServerQueryTree {
   const { site, component, exprCtx } = params;
   const componentMap = new Map<string, Component>();
@@ -55,7 +53,6 @@ export function collectComponentServerQueries(
   const ctx: ServerQueryCollectionContext = {
     site,
     componentMap,
-    codeComponentMeta: codeComponentMeta ?? new Map(),
   };
 
   const rootNode = collectComponentNode(ctx, component, exprCtx, {});
@@ -171,13 +168,7 @@ function collectTplComponent(
 
   if (isCodeComponent(component)) {
     // Handle code components
-    resultNodes = collectCodeComponent(
-      ctx,
-      node,
-      propsContext,
-      slotChildren,
-      exprCtx
-    );
+    resultNodes = collectCodeComponent(node, propsContext, slotChildren);
   } else {
     // Handle Plasmic components
     const componentNode = collectComponentNode(
@@ -218,20 +209,18 @@ function collectTplComponent(
  * Collects server nodes for a code component.
  */
 function collectCodeComponent(
-  ctx: ServerQueryCollectionContext,
   node: TplComponent,
   propsContext: Record<string, DynamicExprCode>,
-  slotChildren: ServerNode[],
-  _exprCtx: ExprCtx
+  slotChildren: ServerNode[]
 ): ServerNode[] {
   const component = node.component;
-  const meta = ctx.codeComponentMeta.get(component);
 
   const codeComponentNode: ServerCodeComponentNode = {
     type: "codeComponent",
     component,
     propsContext,
-    serverRenderingConfig: meta?.serverRendering ?? true,
+    subtreePrefetchingConfig:
+      component.codeComponentMeta?.subtreePrefetchingConfig ?? true,
     children: slotChildren,
   };
 

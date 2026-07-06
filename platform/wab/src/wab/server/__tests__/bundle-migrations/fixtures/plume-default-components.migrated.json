@@ -738,6 +738,7 @@
       "providesData": false,
       "hasRef": false,
       "isRepeatable": false,
+      "subtreePrefetchingConfig": null,
       "styleSections": false,
       "helpers": null,
       "defaultSlotContents": {},
@@ -893,6 +894,7 @@
       "providesData": false,
       "hasRef": false,
       "isRepeatable": true,
+      "subtreePrefetchingConfig": null,
       "styleSections": false,
       "helpers": null,
       "defaultSlotContents": {},
@@ -23960,5 +23962,5 @@
     }
   },
   "deps": [],
-  "version": "256-add-custom-function-is-mutation"
+  "version": "257-add-code-component-subtree-prefetching-config"
 }

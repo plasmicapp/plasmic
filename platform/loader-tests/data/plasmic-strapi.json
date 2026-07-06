@@ -220,7 +220,8 @@
           },
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "26311012": {
           "type": { "__ref": "26311035" },
@@ -291,7 +292,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "26311016": {
           "type": { "__ref": "WGwGSS8z4Lmw" },
@@ -404,7 +406,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "26311022": {
           "variants": [{ "__ref": "60773007" }],
@@ -828,7 +831,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -2143,7 +2146,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "AcVTemeI-JCw": {
           "type": { "__ref": "HqDjyyv5AniH" },
@@ -2298,7 +2302,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "L0BITkG4b8d5": { "name": "text", "__type": "Text" },
         "Ei6kS8oEPKXr": {
@@ -3044,7 +3049,7 @@
         }
       },
       "deps": ["6acc467a-ae43-4b00-9fe2-d90e71958278"],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

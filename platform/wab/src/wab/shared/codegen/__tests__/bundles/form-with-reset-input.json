@@ -11255,7 +11255,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "63011010": {
           "type": { "__ref": "63011028" },
@@ -11410,7 +11411,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "63011018": { "name": "title", "uuid": "FabHFh-IiQ", "__type": "Var" },
         "63011019": { "name": "text", "__type": "Text" },
@@ -12368,7 +12370,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

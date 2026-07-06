@@ -743,7 +743,8 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "OPdOEodOGulq": {
       "__type": "PropParam",
@@ -898,7 +899,8 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "HSKQiG40NpD3": { "__type": "Text", "name": "text" },
     "vXNDxr27bd8C": {
@@ -2178,7 +2180,8 @@
         "children": { "type": "text", "value": "Some text..." }
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "v7hIyuJ0crPn": {
       "__type": "SlotParam",
@@ -2272,7 +2275,8 @@
         "children": { "type": "text", "value": "Heading" }
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "KduweZF6b2Au": {
       "__type": "SlotParam",
@@ -2366,7 +2370,8 @@
         "children": { "type": "text", "value": "Some text..." }
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "jNXtIh6qmpD5": {
       "__type": "SlotParam",
@@ -2437,7 +2442,8 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "i2MY6DAp4qsC": {
       "__type": "SlotParam",
@@ -2531,7 +2537,8 @@
         "placementLeft": { "__ref": "m-h1_w93yZ6O" },
         "placementRight": { "__ref": "CIXFrc4Ijr6h" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "2w9C0kUtmU20": {
       "__type": "PropParam",
@@ -2625,7 +2632,8 @@
         "children": [{ "type": "text", "value": "Select an item" }]
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "flcO9oZUpHaU": {
       "__type": "PropParam",
@@ -2992,7 +3000,8 @@
         "focusVisible": { "__ref": "oWem6E5kLLWM" },
         "disabled": { "__ref": "I-M4xgdFSr4p" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "JllGFy83iZuQ": {
       "__type": "PropParam",
@@ -3326,7 +3335,8 @@
         ]
       },
       "variants": { "disabled": { "__ref": "LGvg8H14akbp" } },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "_EJTkOV3SVHe": {
       "__type": "PropParam",
@@ -3594,7 +3604,8 @@
         "focusVisible": { "__ref": "NJix-KjiMoz2" },
         "disabled": { "__ref": "jHYKLL7P7J3K" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "ZLVfAvxq6BGG": {
       "__type": "SlotParam",
@@ -3667,7 +3678,8 @@
         "children": { "type": "text", "value": "Label" }
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "1qhxjkmS6wT-": {
       "__type": "PropParam",
@@ -3821,7 +3833,8 @@
         "selected": { "__ref": "-pWt-ZBaR4-v" },
         "disabled": { "__ref": "dXnr82cDHpVp" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "wwe8bzYv_tiK": {
       "__type": "SlotParam",
@@ -4046,7 +4059,8 @@
         ]
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "hHX7e_Totljv": {
       "__type": "SlotParam",
@@ -4326,7 +4340,8 @@
         "focused": { "__ref": "8FICfkTkGTH8" },
         "focusVisible": { "__ref": "XirKfoe6MmkW" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "W2VqdwCldUR2": {
       "__type": "SlotParam",
@@ -4572,7 +4587,8 @@
         "placementLeft": { "__ref": "OJy-92lAzTUN" },
         "placementRight": { "__ref": "erJfZ29H7FMv" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "OccMVjgrLJrv": {
       "__type": "PropParam",
@@ -5162,7 +5178,8 @@
         "hovered": { "__ref": "06YAvkUrUTqK" },
         "disabled": { "__ref": "a6i_MKuzAyM3" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "iAlWTnlXMdv9": {
       "__type": "PropParam",
@@ -5815,7 +5832,8 @@
         "hovered": { "__ref": "M6u19u8i55K_" },
         "disabled": { "__ref": "hlL9gnqnqYfl" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "jFE8qckWy91-": {
       "__type": "PropParam",
@@ -6130,7 +6148,8 @@
         "disabled": { "__ref": "8TgpZFZ9Q5aV" },
         "readonly": { "__ref": "_IW7bH_v-ztZ" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "U8hPV1X1OY6Y": {
       "__type": "PropParam",
@@ -6511,7 +6530,8 @@
         "selected": { "__ref": "TaNKKXke4RlR" },
         "readonly": { "__ref": "LhuVuPXTSBhr" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "Bo7PXWPCLBcd": {
       "__type": "PropParam",
@@ -6938,7 +6958,8 @@
         "disabled": { "__ref": "iWm2PmdvfevR" },
         "readonly": { "__ref": "TE3FqdYdDvOD" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "1JE2OsoUyP-A": {
       "__type": "PropParam",
@@ -7129,7 +7150,8 @@
         "disabled": { "__ref": "jyiQEYhqX_0D" },
         "readonly": { "__ref": "qzJd_EyepgEm" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "noEPu1hz-AGU": {
       "__type": "PropParam",
@@ -7541,7 +7563,8 @@
         "disabled": { "__ref": "EcSk_UepuyDD" },
         "readonly": { "__ref": "IP7tA5IIEOQ7" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "1_6EKRiLknji": {
       "__type": "PropParam",
@@ -8306,7 +8329,8 @@
         "disabled": { "__ref": "CLMwkMtLyQBO" },
         "readonly": { "__ref": "_D4SoskZ34qs" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "1br4K9-A-4KI": {
       "__type": "SlotParam",
@@ -8537,7 +8561,8 @@
         }
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "lS-Qj3908pj8": {
       "__type": "SlotParam",
@@ -8891,7 +8916,8 @@
         "placementLeft": { "__ref": "61UsbUwssOYH" },
         "placementRight": { "__ref": "aTDmCvyCVnUW" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "TpGiUPZY8zXM": {
       "__type": "SlotParam",
@@ -9081,7 +9107,8 @@
         ]
       },
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "bY3H2VzK-zzh": {
       "__type": "SlotParam",
@@ -9152,7 +9179,8 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": { "disabled": { "__ref": "IMoXvFpJ5bst" } },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "bGRZWJztFeCk": {
       "__type": "PropParam",
@@ -9313,7 +9341,8 @@
         "focusVisible": { "__ref": "iY9UAUeaPIwF" },
         "disabled": { "__ref": "ZBkt5BpxO8_4" }
       },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "FloImOO5Mh19": {
       "__type": "SlotParam",
@@ -9486,7 +9515,8 @@
         ]
       },
       "variants": { "hovered": { "__ref": "vIAC8hVdwW2M" } },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "J5vy-5dmOvWs": {
       "__type": "PropParam",
@@ -9796,7 +9826,8 @@
         ]
       },
       "variants": { "disabled": { "__ref": "cyYXgpqD-224" } },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "UVE3lCFVz7Q9": {
       "__type": "PropParam",
@@ -10093,7 +10124,8 @@
         ]
       },
       "variants": { "disabled": { "__ref": "f4PgX4asvCjL" } },
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "7eWz-PjYEr8F": {
       "__type": "TplTag",
@@ -10143,7 +10175,8 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
-      "refActions": []
+      "refActions": [],
+      "subtreePrefetchingConfig": null
     },
     "gFsR5kx2FRUy": {
       "__type": "RenderableType",
@@ -15133,5 +15166,5 @@
     "iV2sWwaSguNr": { "__type": "RawText", "markers": [], "text": "Button" }
   },
   "deps": [],
-  "version": "256-add-custom-function-is-mutation"
+  "version": "257-add-code-component-subtree-prefetching-config"
 }

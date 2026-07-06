@@ -117,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -298,7 +298,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "wz9SNSbn3yOc": {
           "uuid": "TPKGdmgP6HSy",
@@ -556,7 +557,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "Ns5jYs59AJxZ": {
           "uuid": "kLJr9Rhm4R9q",
@@ -2692,7 +2694,7 @@
         }
       },
       "deps": ["e3ce0173-4a2b-49d7-94de-203f89ff7556"],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

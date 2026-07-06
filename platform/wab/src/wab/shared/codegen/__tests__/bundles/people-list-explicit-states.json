@@ -9275,7 +9275,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "36693010": {
           "type": { "__ref": "36693028" },
@@ -9430,7 +9431,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "subtreePrefetchingConfig": null
         },
         "36693018": { "name": "title", "uuid": "nbehY6yq5O", "__type": "Var" },
         "36693019": { "name": "text", "__type": "Text" },
@@ -13400,7 +13402,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]

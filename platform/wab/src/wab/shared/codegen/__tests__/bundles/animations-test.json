@@ -324,7 +324,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "yDtxWvNAVoJ_": {
           "uuid": "QG4_OGucsyMZ",
@@ -597,7 +598,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "e5Z_YmsOVT2x": {
           "uuid": "GKuemYaPBvo9",
@@ -9277,7 +9279,7 @@
         }
       },
       "deps": [],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ],
   [
@@ -9551,7 +9553,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "lBwSGcPNepZK": {
           "uuid": "50A91Qysdwtu",
@@ -9824,7 +9827,8 @@
           "defaultSlotContents": {},
           "variants": {},
           "refActions": [],
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "subtreePrefetchingConfig": null
         },
         "zQgORnkS8W5m": {
           "uuid": "yLNdDKU6FH0y",
@@ -10747,7 +10751,7 @@
         }
       },
       "deps": ["299f5000-56d4-4437-9ccb-7d9de2feb41b"],
-      "version": "256-add-custom-function-is-mutation"
+      "version": "257-add-code-component-subtree-prefetching-config"
     }
   ]
 ]
