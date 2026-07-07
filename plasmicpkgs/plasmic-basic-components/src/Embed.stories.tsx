@@ -256,6 +256,90 @@ ${makeStatusAndScript(3)}`,
   },
 };
 
+/**
+ * Repro for the Embed HTML script-rehydration race.
+ *
+ * The rehydration effect loads embedded scripts sequentially, `await`-ing each
+ * external (`src`) script's load event before continuing. It captures the
+ * `<script>` nodes up front and, each iteration, does
+ * `ensure(oldScript.parentNode).replaceChild(...)`.
+ *
+ * If the `code` prop changes while an earlier script's load is still pending,
+ * React re-applies `dangerouslySetInnerHTML` and detaches the captured nodes.
+ * When the pending load then resolves, the loop advances to a now-detached node
+ * whose `parentNode` is `null`, and `ensure()` throws
+ * "Value must not be undefined or null". Because the loop runs inside a
+ * fire-and-forget async IIFE, this surfaces as an *unhandled promise rejection*
+ * (a React error boundary cannot catch it).
+ *
+ * This story drives exactly that sequence with generic scripts served via MSW,
+ * and fails if the rejection occurs. It is expected to FAIL on the current
+ * implementation (reproducing the bug) and to PASS once the rehydration loop
+ * tolerates detached nodes / cancels on cleanup.
+ */
+export const RaceOnCodeChangeWhileScriptLoading: Story = {
+  name: "Race: code change while a script is loading",
+  args: {
+    // The first script (script1) loads slowly, so the loop is still awaiting
+    // its load event when we change the code prop; script2 is the node that
+    // gets detached and later blows up.
+    code: `<div data-testid="count">0</div>
+${makeStatusAndScript(1)}
+${makeStatusAndScript(2)}`,
+  },
+  parameters: {
+    msw: {
+      handlers: [makeScriptResolver(1, 800), makeScriptResolver(2, 50)],
+    },
+  },
+  play: async ({ canvas, step }) => {
+    const rehydrationRejections: string[] = [];
+    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason;
+      rehydrationRejections.push(
+        String((reason instanceof Error ? reason.message : reason) ?? "")
+      );
+    };
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+
+    try {
+      await step(
+        "Wait until script1 is loading (the loop is awaiting its load event)",
+        async () => {
+          await waitFor(() =>
+            expect(canvas.getByTestId("status1")).toHaveTextContent("loading")
+          );
+          expect(canvas.getByTestId("status2")).toHaveTextContent("initial");
+        }
+      );
+
+      await step(
+        "Change the code prop while script1 is still loading",
+        async () => {
+          // Detaches the <script> nodes the in-flight loop captured.
+          await userEvent.click(canvas.getByText("Change code prop"));
+        }
+      );
+
+      await step(
+        "Once script1's load resolves, the loop must not throw on the detached node",
+        async () => {
+          // script1 resolves at ~800ms; give the loop time to advance to the
+          // detached script2 node.
+          await delay(1200);
+          expect(
+            rehydrationRejections.filter(
+              (message) => message === "Value must not be undefined or null"
+            )
+          ).toEqual([]);
+        }
+      );
+    } finally {
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
+    }
+  },
+};
+
 function simulateSsr(
   root: HTMLElement,
   reactElement: React.ReactElement
