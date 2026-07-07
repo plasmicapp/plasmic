@@ -61,7 +61,7 @@ const argv = yargs
     boolean: true,
   })
   .option("appDir", {
-    describe: "(Next.js) Use app directory (experimental)?",
+    describe: "(Next.js) Use app directory?",
     boolean: true,
   })
   .strict()
@@ -212,8 +212,7 @@ async function run(): Promise<void> {
 
   const platformOptions: PlatformOptions = {};
   if (platform === "nextjs") {
-    // TODO: re-enable when app dir is released
-    const showAppDirQuestion = false;
+    const showAppDirQuestion = true;
     if (showAppDirQuestion) {
       platformOptions.nextjs = {
         appDir: await maybePrompt({
