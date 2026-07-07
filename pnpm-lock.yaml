@@ -607,9 +607,6 @@ importers:
       '@plasmicapp/loader-react':
         specifier: 2.0.13
         version: link:../loader-react
-      '@plasmicapp/nextjs-app-router':
-        specifier: 1.0.27
-        version: link:../nextjs-app-router
       '@plasmicapp/watcher':
         specifier: 1.0.85
         version: link:../watcher
@@ -799,9 +796,6 @@ importers:
       '@plasmicapp/loader-splits':
         specifier: 1.0.74
         version: link:../loader-splits
-      '@plasmicapp/nextjs-app-router':
-        specifier: 1.0.27
-        version: link:../nextjs-app-router
       '@plasmicapp/prepass':
         specifier: 1.0.26
         version: link:../prepass

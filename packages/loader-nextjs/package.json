@@ -78,7 +78,6 @@
     "@plasmicapp/loader-core": "2.0.3",
     "@plasmicapp/loader-edge": "1.0.80",
     "@plasmicapp/loader-react": "2.0.13",
-    "@plasmicapp/nextjs-app-router": "1.0.27",
     "@plasmicapp/watcher": "1.0.85",
     "server-only": "0.0.1"
   },
