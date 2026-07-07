@@ -464,6 +464,117 @@ export class RightPanel extends BaseModel {
     await this.propSubmitButton.click();
   }
 
+  /**
+   * Creates a choice or multiChoice component prop with the given options.
+   */
+  async addChoiceComponentProp(opts: {
+    propName: string;
+    propType?: "choice" | "multiChoice";
+    options: string[];
+    defaultValue?: string | string[];
+    previewValue?: string | string[];
+  }) {
+    await this.switchToComponentDataTab();
+    await this.addPropButton.click();
+    await this.selectPropType(opts.propType ?? "choice");
+    await this.propNameInput.fill(opts.propName);
+
+    for (let i = 0; i < opts.options.length; i++) {
+      await this.frame
+        .locator('[data-test-id="component-prop-choices-add-btn"]')
+        .click();
+      const itemInput = this.frame
+        .locator(`[data-test-id="component-prop-choices-${i}"]`)
+        .getByRole("textbox")
+        .first();
+      await itemInput.fill(opts.options[i]);
+      await itemInput.press("Enter");
+    }
+
+    if (opts.defaultValue !== undefined) {
+      await this.selectChoiceValue(
+        this.frame.locator('[data-test-id="default-value"]'),
+        opts.defaultValue
+      );
+    }
+    if (opts.previewValue !== undefined) {
+      await this.selectChoiceValue(
+        this.frame.locator('[data-test-id="preview-value"]'),
+        opts.previewValue
+      );
+    }
+
+    await this.propSubmitButton.click();
+  }
+
+  /**
+   * Selects value(s) in a single/multi-choice editor
+   */
+  async selectChoiceValue(container: Locator, value: string | string[]) {
+    const values = Array.isArray(value) ? value : [value];
+    const anyOptionVisible = () =>
+      this.frame
+        .getByRole("option")
+        .first()
+        .isVisible()
+        .catch(() => false);
+
+    await container.first().click();
+    await this.page.waitForTimeout(200);
+    if (!(await anyOptionVisible())) {
+      await container.locator("input").first().click();
+      await this.page.waitForTimeout(200);
+    }
+
+    for (const v of values) {
+      await this.frame
+        .getByRole("option", { name: v, exact: true })
+        .first()
+        .click();
+      await this.page.waitForTimeout(200);
+    }
+
+    // A still-open (multi-select) dropdown overlays the controls below it.
+    // Tab out to close it (avoids Escape, which could close the modal).
+    await this.page.keyboard.press("Tab");
+    await this.page.waitForTimeout(200);
+  }
+
+  /**
+   * Renames an allowed value (by index) in the open choice prop modal.
+   */
+  async renameChoiceComponentPropOption(index: number, value: string) {
+    const itemInput = this.frame
+      .locator(`[data-test-id="component-prop-choices-${index}"]`)
+      .getByRole("textbox")
+      .last();
+    await itemInput.fill(value);
+    await itemInput.press("Enter");
+  }
+
+  /**
+   * Removes an allowed value (by index) in the open choice prop modal.
+   */
+  async removeChoiceComponentPropOption(index: number) {
+    await this.frame
+      .locator(`[data-test-id="component-prop-choices-${index}-remove"]`)
+      .last()
+      .click({ force: true });
+  }
+
+  async submitPropModal() {
+    await this.propSubmitButton.first().click();
+    await this.propSubmitButton.waitFor({ state: "detached", timeout: 5000 });
+  }
+
+  /**
+   * Sets a choice value on a component instance prop.
+   */
+  async setInstanceChoiceValue(propName: string, value: string | string[]) {
+    const propRow = await this.getPropEditorRow(propName);
+    await this.selectChoiceValue(propRow, value);
+  }
+
   async switchToSettingsTab() {
     await this.settingsTabButton.click();
   }
@@ -553,7 +664,11 @@ export class RightPanel extends BaseModel {
 
   async openComponentPropModal(propName: string) {
     await this.switchToComponentDataTab();
-    await this.frame.getByText(propName).click({ button: "right" });
+    await this.frame
+      .locator('[data-test-id="props-section"]')
+      .getByText(propName, { exact: true })
+      .first()
+      .click({ button: "right" });
     await this.frame.getByText("Configure prop").click();
   }
 

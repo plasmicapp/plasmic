@@ -1,5 +1,5 @@
 import { ArrayPrimitiveEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ArrayPrimitiveEditor";
-import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
+import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import ParamSection from "@/wab/client/components/sidebar-tabs/StateManagement/ParamSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
@@ -21,6 +21,7 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   getPropTypeType,
+  isPlainObjectPropType,
   PropTypeType,
   StudioPropType,
   wabTypeToPropType,
@@ -90,6 +91,7 @@ const COMPONENT_PARAM_TYPES_CONFIG = [
   { value: "bool", label: "Toggle", jsonType: "boolean" },
   { value: "any", label: "Object", jsonType: "any" }, // any / Object = JsonValue, NOT JsonObject
   { value: "choice", label: "Choice", jsonType: "any" }, // string | number | boolean
+  { value: "multiChoice", label: "Multi-Choice", jsonType: "any" }, // string[] | number[] | boolean[]
   {
     value: "queryData",
     label: "Query data",
@@ -207,6 +209,14 @@ export function ComponentPropModal(props: {
   );
 
   const paramTypeData = getComponentParamTypeOption(paramType);
+  const isChoiceType = paramType === "choice" || paramType === "multiChoice";
+
+  const createParamType = () => {
+    if (isChoiceType) {
+      return typeFactory[paramType as "choice" | "multiChoice"](choices);
+    }
+    return typeFactory[paramType]();
+  };
 
   const [defaultExpr, setDefaultExpr] = React.useState<Expr | undefined>(
     existingParam && existingParam.defaultExpr
@@ -254,17 +264,25 @@ export function ComponentPropModal(props: {
     );
     const oldVal = getValueString(oldItem);
     const newVal = getValueString(newItem);
+    const validValues = new Set(values.map((v) => String(getValue(v))));
+
+    const remapExpr = (expr: Expr | undefined): Expr | undefined => {
+      const val = exprDisplayVal(expr, paramTypeData);
+      if (!Array.isArray(val)) {
+        return String(val) === oldVal ? jsonExprToExpr(newVal) : expr;
+      }
+      const remapped = val
+        .map((v) => (String(v) === oldVal ? newVal : v))
+        .filter(
+          // Remove invalid values
+          (v): v is ChoiceValue => v !== undefined && validValues.has(String(v))
+        );
+      return codeLit(remapped);
+    };
 
     if (oldVal !== undefined) {
-      const defaultVal = exprStrVal(defaultExpr);
-      const previewVal = exprStrVal(previewExpr);
-
-      if (defaultVal === oldVal) {
-        setDefaultExpr(jsonExprToExpr(newVal));
-      }
-      if (previewVal === oldVal) {
-        setPreviewExpr(jsonExprToExpr(newVal));
-      }
+      setDefaultExpr(remapExpr(defaultExpr));
+      setPreviewExpr(remapExpr(previewExpr));
     }
 
     setChoices(values);
@@ -343,9 +361,7 @@ export function ComponentPropModal(props: {
             .filter((arg) => arg.name !== "")
             .map((arg) => typeFactory.arg(arg.name, typeFactory[arg.type]()))
         )
-      : paramType === "choice"
-      ? typeFactory[paramType](choices)
-      : typeFactory[paramType]();
+      : createParamType();
 
     const name = studioCtx
       .tplMgr()
@@ -409,9 +425,7 @@ export function ComponentPropModal(props: {
   let propEditorType =
     paramType === "eventHandler"
       ? undefined
-      : paramType === "choice"
-      ? wabTypeToPropType(type ?? typeFactory[paramType](choices))
-      : wabTypeToPropType(type ?? typeFactory[paramType]());
+      : wabTypeToPropType(type ?? createParamType());
   if (getPropTypeType(propEditorType) === "dataSourceOpData") {
     propEditorType = wabTypeToPropType(typeFactory["any"]());
   }
@@ -575,7 +589,7 @@ export function ComponentPropModal(props: {
               return (
                 <>
                   <AdvancedToggle advanced={advanced} onChange={setAdvanced} />
-                  {paramType === "choice" && (
+                  {isChoiceType && (
                     <ArrayPrimitiveEditor
                       label={"Allowed Values"}
                       values={choices.map(getValue)}
@@ -703,19 +717,46 @@ const PropValueEditorWithMenu: React.FC<{
   disableDynamicValue,
 }) => {
   const displayVal = exprDisplayVal(value, propTypeData);
+  const isMultiSelect =
+    isPlainObjectPropType(propType) &&
+    propType.type === "choice" &&
+    propType.multiSelect === true;
 
+  const valueSetState = displayVal === undefined ? "isUnset" : "isSet";
   return (
     <div className="generic-prop-editor" data-test-id={attr}>
       {choices.length ? (
-        <EnumPropEditor
-          value={displayVal?.toString()}
-          valueSetState={displayVal === undefined ? "isUnset" : "isSet"}
-          onChange={(val) => {
-            onChange(jsonExprToExpr(val));
-          }}
-          options={choices}
-          className={"form-control"}
-        />
+        isMultiSelect ? (
+          <ChoicePropEditor
+            multiSelect={true}
+            attr={attr}
+            valueSetState={valueSetState}
+            onChange={(val) => {
+              onChange(jsonExprToExpr(val));
+            }}
+            options={choices}
+            value={
+              displayVal == null
+                ? undefined
+                : (Array.isArray(displayVal) ? displayVal : [displayVal]).map(
+                    String
+                  )
+            }
+            defaultValueHint={[]}
+          />
+        ) : (
+          <ChoicePropEditor
+            multiSelect={false}
+            attr={attr}
+            valueSetState={valueSetState}
+            onChange={(val) => {
+              onChange(jsonExprToExpr(val));
+            }}
+            options={choices}
+            value={displayVal?.toString()}
+            defaultValueHint=""
+          />
+        )
       ) : (
         <PropValueEditor
           attr={attr}

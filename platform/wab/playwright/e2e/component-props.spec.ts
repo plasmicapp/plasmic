@@ -65,6 +65,14 @@ test.describe("component-props", () => {
       propName: "imageProp",
       propType: "img",
     });
+    await models.studio.createComponentProp({
+      propName: "choiceProp",
+      propType: "choice",
+    });
+    await models.studio.createComponentProp({
+      propName: "multiChoiceProp",
+      propType: "multiChoice",
+    });
   });
 
   test("can show preview values, default values correctly", async ({
@@ -385,5 +393,105 @@ test.describe("component-props", () => {
     await expect(
       rightPanel.getByText("someProp", { exact: true })
     ).toBeVisible();
+  });
+
+  test("can create, edit, and use a single-choice prop", async ({ models }) => {
+    const studio = models.studio;
+    await studio.leftPanel.addComponent("SingleChoiceComp");
+
+    await studio.rightPanel.addChoiceComponentProp({
+      propName: "size",
+      propType: "choice",
+      options: ["small", "medium", "large"],
+      defaultValue: "small",
+      previewValue: "large",
+    });
+
+    // Render the prop value so we can assert on it.
+    await studio.insertTextWithDynamic("`size = ${$props.size}`");
+    const componentBody = studio.frame
+      .locator("iframe")
+      .first()
+      .contentFrame()
+      .locator("body");
+    // The artboard shows the preview value.
+    await expect(componentBody.getByText("size = large")).toBeVisible();
+
+    await studio.rightPanel.openComponentPropModal("size");
+
+    // Editing the allowed values migrates the default/preview.
+    // Rename "large" -> "huge": the preview follows the rename.
+    await studio.rightPanel.renameChoiceComponentPropOption(2, "huge");
+    await studio.rightPanel.submitPropModal();
+    await expect(componentBody.getByText("size = huge")).toBeVisible();
+
+    // Remove "huge": the preview is unset, so the artboard falls back to the
+    // default ("small").
+    await studio.rightPanel.openComponentPropModal("size");
+    await studio.rightPanel.removeChoiceComponentPropOption(2);
+    await studio.rightPanel.submitPropModal();
+    await expect(componentBody.getByText("size = small")).toBeVisible();
+
+    // Instance on a page: defaults to "small", and the value can be set.
+    await studio.leftPanel.createNewPage("SingleChoicePage");
+    await studio.leftPanel.insertNode("SingleChoiceComp");
+    const pageBody = studio.frame
+      .locator("iframe")
+      .nth(1)
+      .contentFrame()
+      .locator("body");
+    await expect(pageBody.getByText("size = small")).toBeVisible();
+
+    await studio.rightPanel.setInstanceChoiceValue("size", "medium");
+    await expect(pageBody.getByText("size = medium")).toBeVisible();
+  });
+
+  test("can create, edit, and use a multi-choice prop", async ({ models }) => {
+    const studio = models.studio;
+    await studio.leftPanel.addComponent("MultiChoiceComp");
+
+    await studio.rightPanel.addChoiceComponentProp({
+      propName: "tags",
+      propType: "multiChoice",
+      options: ["a", "b", "c"],
+      defaultValue: ["a"],
+      previewValue: ["a", "b"],
+    });
+
+    await studio.insertTextWithDynamic("`tags = ${$props.tags}`");
+    const componentBody = studio.frame
+      .locator("iframe")
+      .first()
+      .contentFrame()
+      .locator("body");
+    // A multi value renders as a comma-joined array.
+    await expect(componentBody.getByText("tags = a,b")).toBeVisible();
+
+    // Editing the allowed values keeps the multi default/preview shape.
+    // Rename "a" -> "x": the preview remaps element-wise (["a","b"] -> ["x","b"])
+    await studio.rightPanel.openComponentPropModal("tags");
+    await studio.rightPanel.renameChoiceComponentPropOption(0, "x");
+    await studio.rightPanel.submitPropModal();
+    await expect(componentBody.getByText("tags = x,b")).toBeVisible();
+
+    // Remove "b": it's dropped from the preview array (["x","b"] -> ["x"]).
+    await studio.rightPanel.openComponentPropModal("tags");
+    await studio.rightPanel.removeChoiceComponentPropOption(1);
+    await studio.rightPanel.submitPropModal();
+    await expect(
+      componentBody.getByText("tags = x", { exact: true })
+    ).toBeVisible();
+
+    await studio.leftPanel.createNewPage("MultiChoicePage");
+    await studio.leftPanel.insertNode("MultiChoiceComp");
+    const pageBody = studio.frame
+      .locator("iframe")
+      .nth(1)
+      .contentFrame()
+      .locator("body");
+    await expect(pageBody.getByText("tags = x", { exact: true })).toBeVisible();
+
+    await studio.rightPanel.setInstanceChoiceValue("tags", ["x", "c"]);
+    await expect(pageBody.getByText("tags = x,c")).toBeVisible();
   });
 });
