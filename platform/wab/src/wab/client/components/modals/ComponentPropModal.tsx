@@ -57,7 +57,7 @@ import {
   Param,
 } from "@/wab/shared/model/classes";
 import {
-  isChoiceType,
+  isOptionsType,
   typeDisplayName,
   typeFactory,
 } from "@/wab/shared/model/model-util";
@@ -231,7 +231,7 @@ export function ComponentPropModal(props: {
   );
 
   const [choices, setChoices] = React.useState<ChoiceOptions>(
-    existingParam && isChoiceType(existingParam.type)
+    existingParam && isOptionsType(existingParam.type)
       ? (existingParam.type.options as ChoiceOptions)
       : []
   );
@@ -357,7 +357,7 @@ export function ComponentPropModal(props: {
 
       if (existingParam) {
         studioCtx.tplMgr().renameParam(component, existingParam, name);
-        if (newParamType.name === "choice") {
+        if (isOptionsType(newParamType)) {
           newParamType.options = choices;
         }
         if (isKnownPropParam(existingParam)) {
@@ -390,7 +390,7 @@ export function ComponentPropModal(props: {
         return success();
       }
     });
-    if (existingParam && newParamType.name === "choice") {
+    if (existingParam && isOptionsType(newParamType)) {
       checkOptionsUsage(name);
     }
   };

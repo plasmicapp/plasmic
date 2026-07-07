@@ -67,6 +67,7 @@ import {
 import {
   isAnyType,
   isChoiceType,
+  isMultiChoiceType,
   wabToTsType,
 } from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
@@ -848,6 +849,30 @@ export function getComponentArgFromHtmlProp(
         `Component "${componentName}" prop "${propName}" must be one of ${JSON.stringify(
           options
         )} but got ${JSON.stringify(value)}`
+      );
+    }
+    return [param, code(JSON.stringify(value))];
+  }
+
+  if (isMultiChoiceType(param.type)) {
+    const options = param.type.options.map((opt) =>
+      typeof opt === "object" ? opt.value : opt
+    );
+    if (!Array.isArray(value)) {
+      throw new Error(
+        `Component "${componentName}" prop "${propName}" expects an array but got ${JSON.stringify(
+          value
+        )}`
+      );
+    }
+    const invalidValues = value.filter(
+      (v) => !options.some((opt) => opt === v)
+    );
+    if (invalidValues.length > 0) {
+      throw new Error(
+        `Component "${componentName}" prop "${propName}" values must be from ${JSON.stringify(
+          options
+        )} but got invalid values: ${JSON.stringify(invalidValues)}`
       );
     }
     return [param, code(JSON.stringify(value))];

@@ -33,7 +33,6 @@ import {
   TplTag,
   Variant,
   VariantSetting,
-  isKnownChoice,
   isKnownImageAssetRef,
   isKnownPropParam,
   isKnownRawText,
@@ -44,6 +43,7 @@ import {
   isAnyType,
   isBoolType,
   isNumType,
+  isOptionsType,
 } from "@/wab/shared/model/model-util";
 import {
   getDataPlasmicProject,
@@ -397,7 +397,7 @@ function buildComponentProps(component: Component): PropJson[] {
   return component.params
     .filter((param) => isKnownPropParam(param))
     .map((param) => {
-      const options = isKnownChoice(param.type)
+      const options = isOptionsType(param.type)
         ? (param.type.options as string[])
         : undefined;
       const prop: PropJson = {

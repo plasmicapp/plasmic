@@ -161,6 +161,7 @@ import {
   Interaction,
   ClassNamePropType as ModelClassNamePropType,
   StyleScopeClassNamePropType as ModelStyleScopeClassNamePropType,
+  MultiChoice,
   NamedState,
   Num,
   Param,
@@ -186,6 +187,7 @@ import {
   isKnownClassNamePropType,
   isKnownCustomCode,
   isKnownEventHandler,
+  isKnownMultiChoice,
   isKnownPropParam,
   isKnownRenderFuncType,
   isKnownRenderableType,
@@ -2670,16 +2672,18 @@ function mapParamTypeToArgType(
     return typeFactory.any();
   }
   if (propType.type === "choice") {
-    return typeFactory.choice(
-      Array.isArray(propType.options)
-        ? isArrayOfLiterals(propType.options)
-          ? propType.options
-          : propType.options.map((op) => ({
-              label: op.label,
-              value: op.value,
-            }))
-        : ["Dynamic options"]
-    );
+    const options = Array.isArray(propType.options)
+      ? isArrayOfLiterals(propType.options)
+        ? propType.options
+        : propType.options.map((op) => ({
+            label: op.label,
+            value: op.value,
+          }))
+      : ["Dynamic options"];
+    // Use MultiChoice when explicitly true (see propTypeToWabType)
+    return propType.multiSelect === true
+      ? typeFactory.multiChoice(options)
+      : typeFactory.choice(options);
   } else if ((propType.type as any) === "code") {
     return convertTsToWabType("string") as ArgType["type"];
   }
@@ -4203,17 +4207,21 @@ export function propTypeToWabType(
               }
             }
             case "choice": {
+              const options = Array.isArray(type.options)
+                ? isArrayOfLiterals(type.options)
+                  ? type.options
+                  : (type.options as ChoiceObject[]).map((op) => ({
+                      label: op.label,
+                      value: op.value,
+                    }))
+                : ["Dynamic options"];
               return success(
-                typeFactory.choice(
-                  Array.isArray(type.options)
-                    ? isArrayOfLiterals(type.options)
-                      ? type.options
-                      : (type.options as ChoiceObject[]).map((op) => ({
-                          label: op.label,
-                          value: op.value,
-                        }))
-                    : ["Dynamic options"]
-                )
+                // Multi only when explicitly true; anything else — including a
+                // context-dependent (function) multiSelect we can't resolve here —
+                // is treated as single.
+                type.multiSelect === true
+                  ? typeFactory.multiChoice(options)
+                  : typeFactory.choice(options)
               );
             }
             case "cardPicker":
@@ -4350,11 +4358,12 @@ export function wabTypeToPropType(type: Type): StudioPropType<any> {
     .when(Text, () => "string" as const)
     .when(BoolType, () => "boolean" as const)
     .when(Num, () => "number" as const)
-    .when(Choice, (choiceType) => ({
+    .when([Choice, MultiChoice], (t) => ({
       type: "choice" as const,
-      options: isArrayOfLiterals(choiceType.options)
-        ? choiceType.options
-        : choiceType.options.map((op) => ({
+      multiSelect: isKnownMultiChoice(t) ? true : undefined,
+      options: isArrayOfLiterals(t.options)
+        ? t.options
+        : t.options.map((op) => ({
             label: op.label as string,
             value: op.value,
           })),

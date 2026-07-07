@@ -26,6 +26,9 @@ Type
     Choice
       @Const name: 'choice'
       options: [String | Number | Bool] | [Map[String, String | Number | Bool]]
+    MultiChoice
+      @Const name: 'multiChoice'
+      options: [String | Number | Bool] | [Map[String, String | Number | Bool]]
   Img
     @Const name: 'img'
   ComponentInstance

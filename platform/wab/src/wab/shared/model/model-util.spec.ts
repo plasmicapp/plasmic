@@ -67,6 +67,53 @@ describe("wabToTsType", () => {
     });
   });
 
+  describe("multiChoice", () => {
+    it("emits an array union for primitive options", () => {
+      expect(
+        wabToTsType(typeFactory.multiChoice(["red", "blue", "green"]))
+      ).toBe(`("red"|"blue"|"green")[]`);
+    });
+
+    it("emits an array union of values for {label, value} options", () => {
+      expect(
+        wabToTsType(
+          typeFactory.multiChoice([
+            { label: "Red", value: "red" },
+            { label: "Blue", value: "blue" },
+            { label: "Green", value: "green" },
+          ])
+        )
+      ).toBe(`("red"|"blue"|"green")[]`);
+    });
+
+    it("handles a mix of primitive and object options", () => {
+      expect(
+        wabToTsType(
+          typeFactory.multiChoice([
+            "red",
+            { label: "Blue", value: "blue" },
+            "green",
+          ] as any)
+        )
+      ).toBe(`("red"|"blue"|"green")[]`);
+    });
+
+    it("supports number-typed values", () => {
+      expect(
+        wabToTsType(
+          typeFactory.multiChoice([
+            { label: "One", value: 1 },
+            { label: "Two", value: 2 },
+          ])
+        )
+      ).toBe(`(1|2)[]`);
+    });
+
+    it("falls back to string[] when there are no options", () => {
+      expect(wabToTsType(typeFactory.multiChoice([]))).toBe("string[]");
+    });
+  });
+
   describe("function types", () => {
     it("emits () => void for a function with no params", () => {
       expect(wabToTsType(typeFactory.func())).toBe("() => void");

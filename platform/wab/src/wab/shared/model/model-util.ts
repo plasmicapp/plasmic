@@ -40,6 +40,7 @@ import {
   isKnownDefaultStylesClassNamePropType,
   isKnownFunctionType,
   isKnownImg,
+  isKnownMultiChoice,
   isKnownNum,
   isKnownPlumeInstance,
   isKnownQueryData,
@@ -48,6 +49,7 @@ import {
   isKnownStyleScopeClassNamePropType,
   isKnownText,
   LabeledSelector,
+  MultiChoice,
   Num,
   PlumeInstance,
   QueryData,
@@ -101,6 +103,8 @@ export const typeFactory = {
   href: () => new HrefType({ name: "href" }),
   target: () => new TargetType({ name: "target" }),
   choice: (options: ChoiceOptions) => new Choice({ name: "choice", options }),
+  multiChoice: (options: ChoiceOptions) =>
+    new MultiChoice({ name: "multiChoice", options }),
   instance: (component: Component) =>
     new ComponentInstance({ name: "instance", component }),
   plumeInstance: (plumeType: string) =>
@@ -195,6 +199,14 @@ export function isChoiceType(type: Type): type is Choice {
   return isKnownChoice(type) && type.name === "choice";
 }
 
+export function isMultiChoiceType(type: Type): type is MultiChoice {
+  return isKnownMultiChoice(type) && type.name === "multiChoice";
+}
+
+export function isOptionsType(type: Type): type is Choice | MultiChoice {
+  return isChoiceType(type) || isMultiChoiceType(type);
+}
+
 export function isImageType(type: Type): type is Img {
   return isKnownImg(type) && type.name === "img";
 }
@@ -234,6 +246,12 @@ export function wabToTsType(type: Type, forCodeGen?: boolean): string {
             .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
             .join("|")
         : "string"
+      : isMultiChoiceType(type)
+      ? type.options.length > 0
+        ? `(${type.options
+            .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
+            .join("|")})[]`
+        : "string[]"
       : wabToTsTypeMap[type.name] || "any";
   return forCodeGen && typeName === wabToTsTypeMap.renderable
     ? "React.ReactNode"
@@ -332,6 +350,11 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
       !shortDescription
         ? `choice of ${t.options.map((v) => jsLiteral(v)).join(", ")}`
         : `choice`
+    )
+    .when(MultiChoice, (t) =>
+      !shortDescription
+        ? `multi-choice of ${t.options.map((v) => jsLiteral(v)).join(", ")}`
+        : `multi-choice`
     )
     .when(
       ComponentInstance,
@@ -505,6 +528,10 @@ export function typesEqual(t1: Type, t2: Type): boolean {
   }
   if (isChoiceType(t1)) {
     assert(isChoiceType(t2), typesDidntMatchMessage);
+    return isEqual(t1.options, t2.options);
+  }
+  if (isMultiChoiceType(t1)) {
+    assert(isMultiChoiceType(t2), typesDidntMatchMessage);
     return isEqual(t1.options, t2.options);
   }
   if (isKnownPlumeInstance(t1)) {

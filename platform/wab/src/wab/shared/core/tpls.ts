@@ -53,6 +53,7 @@ import {
   isKnownVarRef,
   isKnownVirtualRenderExpr,
   Marker,
+  MultiChoice,
   NodeMarker,
   ObjectPath,
   Param,
@@ -1580,8 +1581,8 @@ export function cloneType<T extends Type>(type_: T): T {
   return switchType<Type>(type)
     .when([Scalar, Img, HrefType], () => typeFactory[type.name]())
     .when([AnyType, QueryData, TargetType], () => typeFactory[type.name]())
-    .when(Choice, (t) =>
-      typeFactory.choice(
+    .when([Choice, MultiChoice], (t) =>
+      typeFactory[t.name](
         isArrayOfLiterals(t.options)
           ? t.options
           : t.options.map((op) => ({

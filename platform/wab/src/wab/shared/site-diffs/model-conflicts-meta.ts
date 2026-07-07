@@ -257,6 +257,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   Img: immutableClass<classes.Img>(),
   AnyType: immutableClass<classes.AnyType>(),
   Choice: immutableClass<classes.Choice>(),
+  MultiChoice: immutableClass<classes.MultiChoice>(),
   DateString: immutableClass<classes.DateString>(),
   DateRangeStrings: immutableClass<classes.DateRangeStrings>(),
   ComponentInstance: immutableClass<classes.ComponentInstance>(),
