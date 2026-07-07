@@ -3,7 +3,7 @@
 import {
   DefaultUserListProps,
   PlasmicUserList,
-} from "@/wab/client/plasmic/user_mentions/PlasmicUserList";
+} from "@/wab/client/plasmic/plasmic_kit_user_mentions/PlasmicUserList";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

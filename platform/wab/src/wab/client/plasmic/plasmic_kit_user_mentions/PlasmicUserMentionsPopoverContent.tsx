@@ -176,8 +176,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicUserMentionsPopoverContent__VariantsArgs;
     args?: PlasmicUserMentionsPopoverContent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicUserMentionsPopoverContent__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicUserMentionsPopoverContent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicUserMentionsPopoverContent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -3,7 +3,7 @@
 import {
   DefaultCollapsableSectionProps,
   PlasmicCollapsableSection,
-} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicCollapsableSection";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicCollapsableSection";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 

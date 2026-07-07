@@ -10,9 +10,9 @@ import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/ProjectPan
 import { Matcher } from "@/wab/client/components/view-common";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import { DefaultFolderItemProps } from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicFolderItem";
 import PlasmicNavigationDropdown from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicNavigationDropdown";
-import { DefaultFolderItemProps } from "@/wab/client/plasmic/project_panel/PlasmicFolderItem";
-import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
+import PlasmicSearchInput from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicSearchInput";
 import {
   StudioCtx,
   calculateNextVersionKey,

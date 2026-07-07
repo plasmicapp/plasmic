@@ -7,7 +7,7 @@ import {
 import {
   DefaultFolderItemProps,
   PlasmicFolderItem,
-} from "@/wab/client/plasmic/project_panel/PlasmicFolderItem";
+} from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicFolderItem";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";

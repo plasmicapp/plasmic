@@ -242,8 +242,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicHiliteTabs__VariantsArgs;
     args?: PlasmicHiliteTabs__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicHiliteTabs__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicHiliteTabs__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicHiliteTabs__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

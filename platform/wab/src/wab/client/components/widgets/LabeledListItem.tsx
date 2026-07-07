@@ -4,7 +4,7 @@ import { MenuMaker } from "@/wab/client/components/widgets";
 import {
   DefaultLabeledListItemProps,
   PlasmicLabeledListItem,
-} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicLabeledListItem";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicLabeledListItem";
 import { UiActionsWrapper } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import { UiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { combineProps, swallowClick } from "@/wab/commons/components/ReactUtil";

@@ -4,7 +4,7 @@ import UserListItem from "@/wab/client/components/user-mentions/UserListItem";
 import {
   DefaultUserMentionsPopoverContentProps,
   PlasmicUserMentionsPopoverContent,
-} from "@/wab/client/plasmic/user_mentions/PlasmicUserMentionsPopoverContent";
+} from "@/wab/client/plasmic/plasmic_kit_user_mentions/PlasmicUserMentionsPopoverContent";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";

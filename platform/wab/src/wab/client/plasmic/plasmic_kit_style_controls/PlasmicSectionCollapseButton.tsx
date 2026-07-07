@@ -168,8 +168,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSectionCollapseButton__VariantsArgs;
     args?: PlasmicSectionCollapseButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSectionCollapseButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicSectionCollapseButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicSectionCollapseButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

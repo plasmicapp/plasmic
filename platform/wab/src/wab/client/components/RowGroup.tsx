@@ -4,7 +4,7 @@ import { MenuType, useContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   DefaultRowGroupProps,
   PlasmicRowGroup,
-} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowGroup";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicRowGroup";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";

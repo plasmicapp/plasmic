@@ -30,7 +30,7 @@ test.describe("routing", () => {
 
     const selectedArenaItem = models.studio.frame
       .locator(
-        ".src-wab-client-plasmic-plasmic_kit_new_design_system_former_style_controls-PlasmicRowItem-module__rootisSelected-l93xlm"
+        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__rootisSelected"]'
       )
       .filter({ hasText: "Custom arena 1" });
 
@@ -65,7 +65,7 @@ test.describe("routing", () => {
     await models.studio.projectPanel();
     const myComponentItem = models.studio.frame
       .locator(
-        ".src-wab-client-plasmic-plasmic_kit_new_design_system_former_style_controls-PlasmicRowItem-module__root-HS42rE"
+        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__root-"]'
       )
       .filter({ hasText: "MyComponent" });
     await myComponentItem.click();
@@ -77,7 +77,7 @@ test.describe("routing", () => {
     await models.studio.projectPanel();
     const myPageItem = models.studio.frame
       .locator(
-        ".src-wab-client-plasmic-plasmic_kit_new_design_system_former_style_controls-PlasmicRowItem-module__root-HS42rE"
+        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__root-"]'
       )
       .filter({ hasText: "/my/page" });
     await myPageItem.click();

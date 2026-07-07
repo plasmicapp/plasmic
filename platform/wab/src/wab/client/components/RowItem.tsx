@@ -4,7 +4,7 @@ import { MenuType, useContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   DefaultRowItemProps,
   PlasmicRowItem,
-} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowItem";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicRowItem";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 

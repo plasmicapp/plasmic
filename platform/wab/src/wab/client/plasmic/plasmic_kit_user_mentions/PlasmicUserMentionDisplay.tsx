@@ -27,7 +27,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import "../user_mentions/plasmic.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
+import "../plasmic_kit_user_mentions/plasmic.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
 import sty from "./PlasmicUserMentionDisplay.module.css"; // plasmic-import: HSPuw3LccxMD/css
 
 createPlasmicElementProxy;
@@ -138,8 +138,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicUserMentionDisplay__VariantsArgs;
     args?: PlasmicUserMentionDisplay__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicUserMentionDisplay__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicUserMentionDisplay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicUserMentionDisplay__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

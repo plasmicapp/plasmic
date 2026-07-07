@@ -379,8 +379,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicRowItem__VariantsArgs;
     args?: PlasmicRowItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicRowItem__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicRowItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicRowItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

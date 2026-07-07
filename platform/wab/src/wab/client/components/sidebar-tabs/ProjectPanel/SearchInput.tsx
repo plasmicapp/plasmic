@@ -3,7 +3,7 @@
 import {
   DefaultSearchInputProps,
   PlasmicSearchInput,
-} from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
+} from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicSearchInput";
 import * as React from "react";
 import { mergeProps } from "react-aria";
 

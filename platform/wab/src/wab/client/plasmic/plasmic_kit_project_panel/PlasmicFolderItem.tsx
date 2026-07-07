@@ -353,8 +353,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFolderItem__VariantsArgs;
     args?: PlasmicFolderItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicFolderItem__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicFolderItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicFolderItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

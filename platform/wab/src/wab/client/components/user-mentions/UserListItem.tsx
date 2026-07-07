@@ -4,7 +4,7 @@ import {
   DefaultUserListItemProps,
   PlasmicUserListItem,
   PlasmicUserListItem__OverridesType,
-} from "@/wab/client/plasmic/user_mentions/PlasmicUserListItem";
+} from "@/wab/client/plasmic/plasmic_kit_user_mentions/PlasmicUserListItem";
 import * as React from "react";
 
 export interface UserListItemProps extends DefaultUserListItemProps {

@@ -3,7 +3,7 @@
 import {
   DefaultHiliteTabsProps,
   PlasmicHiliteTabs,
-} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicHiliteTabs";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicHiliteTabs";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 

@@ -30,7 +30,7 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-impor
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import "../project_panel/plasmic_project_panel.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
+import "../plasmic_kit_project_panel/plasmic_project_panel.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicNavigationDropdown.module.css"; // plasmic-import: Kyrn_lAAwr/css
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
@@ -331,8 +331,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicNavigationDropdown__VariantsArgs;
     args?: PlasmicNavigationDropdown__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicNavigationDropdown__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicNavigationDropdown__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicNavigationDropdown__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

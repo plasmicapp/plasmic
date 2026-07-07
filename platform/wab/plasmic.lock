@@ -4207,11 +4207,6 @@
         },
         {
           "assetId": "m8VxGcigeLAEXFe8c12w5Q",
-          "type": "projectCss",
-          "checksum": "565e143ab9f13d7d134e76ee0d755b8c"
-        },
-        {
-          "assetId": "m8VxGcigeLAEXFe8c12w5Q",
           "checksum": "30a27268906306d35abe43f8c9db8e1e",
           "type": "projectModule"
         },
@@ -4219,6 +4214,11 @@
           "assetId": "m8VxGcigeLAEXFe8c12w5Q",
           "checksum": "04a773058877d497d347aff58d97f9e3",
           "type": "styleTokensProvider"
+        },
+        {
+          "assetId": "m8VxGcigeLAEXFe8c12w5Q",
+          "type": "projectCss",
+          "checksum": "565e143ab9f13d7d134e76ee0d755b8c"
         }
       ],
       "projectId": "m8VxGcigeLAEXFe8c12w5Q",
@@ -9920,7 +9920,7 @@
     },
     {
       "projectId": "gmeH6XgPaBtkt51HunAo4g",
-      "version": "18.31.0",
+      "version": "18.32.0",
       "dependencies": {},
       "lang": "ts",
       "fileLocks": [

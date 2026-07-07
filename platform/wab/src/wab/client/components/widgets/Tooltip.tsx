@@ -3,7 +3,7 @@
 import {
   DefaultTooltipProps,
   PlasmicTooltip,
-} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicTooltip";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicTooltip";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
