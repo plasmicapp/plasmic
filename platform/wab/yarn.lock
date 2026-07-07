@@ -3406,19 +3406,6 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/nextjs-app-router@1.0.27":
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.27.tgz#4232208dcc865ba81fe968e41e7e9e5a92d16478"
-  integrity sha512-ulhKE/dxyMNUM5zO0TPY+lzQ7SPa65VHOC/LaXWhAoFYLjWnPnuZhqSvVXKxn5pFMz0vZ+EgpR7NBFeNTDbP+g==
-  dependencies:
-    "@plasmicapp/prepass" "1.0.26"
-    "@plasmicapp/query" "0.1.86"
-    cross-port-killer "1.4.0"
-    cross-spawn "^7.0.3"
-    get-port "^7.0.0"
-    node-html-parser "^6.1.5"
-    yargs "^17.7.2"
-
 "@plasmicapp/prepass@1.0.26":
   version "1.0.26"
   resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.26.tgz#6a5a4a216c32bd868fa36acc75ac5364f6483533"
@@ -3439,17 +3426,16 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^1.0.23":
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.23.tgz#9db327613b01f2e128e1cadce2515bfbdb2073d9"
-  integrity sha512-9AAwaeA4dCjjHvG4qxLHr9mjYQ3lgTXBzfrst+ncJN3p41PZIrNBoN4pM91/SxMM7Fz761RN1yaTBi77q2+pPw==
+"@plasmicapp/react-web@^1.0.24":
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.24.tgz#523e915c780ab5d4501ef688cf2bf4a823a2ffa0"
+  integrity sha512-S0wIExnRAStL1T/i0XC1C7i24WQz0UiNAJU3OH5yvjaWfZei+Qsb8IRjRybQXnd825uXfQ+7af/RM/HQdeLLzA==
   dependencies:
     "@plasmicapp/auth-react" "0.0.29"
     "@plasmicapp/data-sources" "1.0.19"
     "@plasmicapp/data-sources-context" "0.1.24"
     "@plasmicapp/host" "2.0.10"
     "@plasmicapp/loader-splits" "1.0.74"
-    "@plasmicapp/nextjs-app-router" "1.0.27"
     "@plasmicapp/prepass" "1.0.26"
     "@plasmicapp/query" "0.1.86"
     "@react-aria/checkbox" "^3.15.5"
@@ -3475,10 +3461,10 @@
     dlv "^1.1.3"
     valtio "^1.6.4"
 
-"@plasmicpkgs/antd5@^0.0.360":
-  version "0.0.360"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.360.tgz#bd59be40dba3a488937a7a58e65ff5dee894882e"
-  integrity sha512-Pmf5a2Wpyd0rOQ6X640H59tAw4HCue+QzzW1saK1/ggjxVsIt7nirusqbSwdMh1POWFrDM/8+s0ht3oJi5QBkA==
+"@plasmicpkgs/antd5@^0.0.361":
+  version "0.0.361"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.361.tgz#c2784671399dc4fb07b5dfb21130c883e5b2545f"
+  integrity sha512-EUFj6JP1sm9nm0B4CBy6gi7LChv4VUAd+YoEtCksZUmSmwW6xCmb2YjTiuD8Z0x+uocmqjQY5m0vAFKD7NVWuQ==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -10328,11 +10314,6 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-port-killer@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/cross-port-killer/-/cross-port-killer-1.4.0.tgz#9e37b79c613b830e08122e342d31d5dadc3c7b67"
-  integrity sha512-ujqfftKsSeorFMVI6JP25xMBixHEaDWVK+NarRZAGnJjR5AhebRQU+g+k/Lj8OHwM6f+wrrs8u5kkCdI7RLtxQ==
-
 cross-spawn@^7.0.0, cross-spawn@^7.0.3, cross-spawn@^7.0.6:
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.6.tgz#8a58fe78f00dcd70c370451759dfbfaf03e8ee9f"
@@ -12290,7 +12271,7 @@ get-port@^5.1.1:
   resolved "https://registry.yarnpkg.com/get-port/-/get-port-5.1.1.tgz#0469ed07563479de6efb986baf053dcd7d4e3193"
   integrity sha512-g/Q1aTSDOxFpchXC4i8ZWvxA1lnPqx/JHqcpIw0/LX9T8x/GBbi6YnlN5nhaKIFkT8oFsscUKgDJYxfwfS6QsQ==
 
-get-port@^7.0.0, get-port@^7.2.0:
+get-port@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/get-port/-/get-port-7.2.0.tgz#db0d52eb2d89890cdc010ed0e9a6f2d4b78cbbe7"
   integrity sha512-afP4W205ONCuMoPBqcR6PSXnzX35KTcJygfJfcp+QY+uwm3p20p1YczWXhlICIzGMCxYBQcySEcOgsJcrkyobg==
@@ -15498,14 +15479,6 @@ node-html-parser@^3.3.6:
   integrity sha512-VkWDHvNgFGB3mbQGMyzqRE1i/BG7TKX9wRXC8e/v8kL0kZR/Oy6RjYxXH91K6/+m3g8iQ8dTqRy75lTYoA2Cjg==
   dependencies:
     css-select "^4.1.3"
-    he "1.2.0"
-
-node-html-parser@^6.1.5:
-  version "6.1.13"
-  resolved "https://registry.yarnpkg.com/node-html-parser/-/node-html-parser-6.1.13.tgz#a1df799b83df5c6743fcd92740ba14682083b7e4"
-  integrity sha512-qIsTMOY4C/dAa5Q5vsobRpOOvPfC4pB61UVW2uSwZNUp0QU/jCekTal1vMmbO0DgdHeLUJpv/ARmDqErVxA3Sg==
-  dependencies:
-    css-select "^5.1.0"
     he "1.2.0"
 
 node-int64@^0.4.0:
@@ -21170,7 +21143,7 @@ yargs@^16.0.0, yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yargs@^17.0.1, yargs@^17.3.1, yargs@^17.7.2:
+yargs@^17.0.1, yargs@^17.3.1:
   version "17.7.2"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.2.tgz#991df39aca675a192b816e1e0363f9d75d2aa269"
   integrity sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==
