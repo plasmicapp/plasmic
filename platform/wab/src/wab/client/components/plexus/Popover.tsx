@@ -3,7 +3,7 @@
 import {
   DefaultPopoverProps,
   PlasmicPopover,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPopover";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicPopover";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

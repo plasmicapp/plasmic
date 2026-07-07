@@ -3,7 +3,7 @@
 import {
   DefaultPlexusButtonProps,
   PlasmicPlexusButton,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPlexusButton";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicPlexusButton";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

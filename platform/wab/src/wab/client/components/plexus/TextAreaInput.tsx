@@ -1,7 +1,7 @@
 import {
   DefaultTextAreaInputProps,
   PlasmicTextAreaInput,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicTextAreaInput";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicTextAreaInput";
 import * as React from "react";
 
 type NativeTextAreaProps = Omit<

@@ -185,8 +185,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicOverlayArrow__VariantsArgs;
     args?: PlasmicOverlayArrow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicOverlayArrow__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicOverlayArrow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicOverlayArrow__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

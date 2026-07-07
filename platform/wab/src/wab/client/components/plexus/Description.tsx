@@ -3,7 +3,7 @@
 import {
   DefaultDescriptionProps,
   PlasmicDescription,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDescription";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicDescription";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

@@ -43,7 +43,7 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCombobox.module.css"; // plasmic-import: zIW2sbKF4DAY/css
 
-import ChevronDownIcon from "../plasmic_kit_design_system_deprecated/icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
+import ChevronDownIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
 
 createPlasmicElementProxy;
 
@@ -417,8 +417,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCombobox__VariantsArgs;
     args?: PlasmicCombobox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCombobox__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCombobox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCombobox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

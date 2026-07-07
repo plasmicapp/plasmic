@@ -1009,8 +1009,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPlexusButton__VariantsArgs;
     args?: PlasmicPlexusButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPlexusButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicPlexusButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicPlexusButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

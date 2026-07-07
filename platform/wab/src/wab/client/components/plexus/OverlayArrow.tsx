@@ -3,7 +3,7 @@
 import {
   DefaultOverlayArrowProps,
   PlasmicOverlayArrow,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicOverlayArrow";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicOverlayArrow";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

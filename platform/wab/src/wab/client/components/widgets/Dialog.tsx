@@ -3,7 +3,7 @@
 import {
   DefaultDialogProps,
   PlasmicDialog,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDialog";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicDialog";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

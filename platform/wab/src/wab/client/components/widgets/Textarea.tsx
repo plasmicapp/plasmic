@@ -2,7 +2,7 @@ import {
   DefaultTextareaProps,
   PlasmicTextarea,
   PlasmicTextarea__OverridesType,
-} from "@/wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicTextarea";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicTextarea";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
