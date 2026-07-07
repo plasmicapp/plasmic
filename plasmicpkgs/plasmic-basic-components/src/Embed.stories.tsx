@@ -257,25 +257,25 @@ ${makeStatusAndScript(3)}`,
 };
 
 /**
- * Repro for the Embed HTML script-rehydration race.
+ * Regression test for the Embed HTML script-rehydration race.
  *
  * The rehydration effect loads embedded scripts sequentially, `await`-ing each
  * external (`src`) script's load event before continuing. It captures the
  * `<script>` nodes up front and, each iteration, does
  * `ensure(oldScript.parentNode).replaceChild(...)`.
  *
- * If the `code` prop changes while an earlier script's load is still pending,
- * React re-applies `dangerouslySetInnerHTML` and detaches the captured nodes.
- * When the pending load then resolves, the loop advances to a now-detached node
- * whose `parentNode` is `null`, and `ensure()` throws
+ * Previously, if the `code` prop changed while an earlier script's load was
+ * still pending, React re-applied `dangerouslySetInnerHTML` and detached the
+ * captured nodes. When the pending load then resolved, the loop advanced to a
+ * now-detached node whose `parentNode` was `null`, and `ensure()` threw
  * "Value must not be undefined or null". Because the loop runs inside a
- * fire-and-forget async IIFE, this surfaces as an *unhandled promise rejection*
- * (a React error boundary cannot catch it).
+ * fire-and-forget async IIFE, this surfaced as an *unhandled promise rejection*
+ * (a React error boundary cannot catch it). The fix skips `<script>` nodes
+ * whose `parentNode` has become null instead of asserting.
  *
  * This story drives exactly that sequence with generic scripts served via MSW,
- * and fails if the rejection occurs. It is expected to FAIL on the current
- * implementation (reproducing the bug) and to PASS once the rehydration loop
- * tolerates detached nodes / cancels on cleanup.
+ * and fails if the rejection occurs. It reproduced the bug before the fix and
+ * passes now that the rehydration loop tolerates detached nodes.
  */
 export const RaceOnCodeChangeWhileScriptLoading: Story = {
   name: "Race: code change while a script is loading",
