@@ -1,5 +1,5 @@
 {
-  "version": "2.0.15",
+  "version": "2.0.16",
   "name": "@plasmicapp/loader-nextjs",
   "description": "Plasmic loader SDK for Next.js",
   "license": "MIT",

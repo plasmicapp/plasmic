@@ -933,7 +933,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.23
+        specifier: 1.0.24
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -973,7 +973,7 @@ importers:
   plasmicpkgs-dev:
     dependencies:
       '@plasmicapp/loader-nextjs':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../packages/loader-nextjs
       '@plasmicpkgs/cms':
         specifier: 0.0.31
@@ -1148,7 +1148,7 @@ importers:
         specifier: 0.1.86
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.23
+        specifier: 1.0.24
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
