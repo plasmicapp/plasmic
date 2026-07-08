@@ -107,6 +107,7 @@ import {
   getImportedCodeComponentHelperName,
   getImportedComponentName,
   getNormalizedComponentName,
+  getPageSearchParamsUsage,
   getPlatformImportComponents,
   getReactWebNamedImportsForRender,
   getSkeletonModuleFileName,
@@ -2733,10 +2734,22 @@ function serializePageAwareSkeletonWrapperTs(
       if (isDynamicRoute) {
         serverExports = `${serializeAppRouterGenerateStaticParamsSkeleton()}\n${serverExports}`;
       }
+      // When a page only reads `$ctx.query` in the render tree, makeAppRouterPageCtx keeps
+      // `query` empty so the page is statically generated, and we opt into `trackQueryParams`
+      // so they resolve from the browser on client. If `$ctx.query` is read on the server for
+      // metadata/server queries they get real values from `searchParams` and the page is
+      // rendered dynamically.
+      const searchParamsUsage = getPageSearchParamsUsage(component);
+      const trackQueryParams =
+        searchParamsUsage.inRenderTree && !searchParamsUsage.outsideRenderTree;
+      const pageParamsProviderProps = [
+        `route={ctx.pageRoute}`,
+        `params={ctx.params}`,
+        `query={ctx.query}`,
+        ...(trackQueryParams ? [`trackQueryParams`] : []),
+      ].join("\n        ");
       content = `<PageParamsProvider__
-        route={ctx.pageRoute}
-        params={ctx.params}
-        query={ctx.query}
+        ${pageParamsProviderProps}
       >
         ${content}
       </PageParamsProvider__>`;

@@ -13,11 +13,11 @@ import {
 } from "@/wab/shared/codegen/react-p/page-metadata";
 import { serializeGeneratePageMetadataBody } from "@/wab/shared/codegen/react-p/page-metadata/serializer";
 import {
+  getPageSearchParamsUsage,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
   makeTaggedPlasmicImport,
   pagePathConflictsWithAppRouter,
-  pageReferencesSearchParams,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { collectComponentServerQueries } from "@/wab/shared/codegen/react-p/server-queries/collect";
 import {
@@ -106,7 +106,8 @@ function serializeServerQueriesServerWrapper(
   const componentBody = !ctx.hasServerQueries
     ? ""
     : serializeServerComponentBody(ctx);
-  const usesSearchParams = pageReferencesSearchParams(component);
+  const usesSearchParams =
+    getPageSearchParamsUsage(component).outsideRenderTree;
 
   return `
 /* eslint-disable */
@@ -302,7 +303,8 @@ function serializeLoaderGenerateMetadataSection(
   if (!isPageComponent(component) || !component.pageMeta) {
     return "";
   }
-  const usesSearchParams = pageReferencesSearchParams(component);
+  const usesSearchParams =
+    getPageSearchParamsUsage(component).outsideRenderTree;
 
   const metadataQueryTreeDecl = hasServerQueries
     ? `\nconst metadataQueryTree = { ...serverQueryTree, children: [] };\n`

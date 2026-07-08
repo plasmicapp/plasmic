@@ -32,10 +32,15 @@ import {
   isPageComponent,
 } from "@/wab/shared/core/components";
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
-import { findExprsInComponent, flattenExprs } from "@/wab/shared/core/tpls";
+import {
+  findExprsInComponent,
+  findExprsInTree,
+  flattenExprs,
+} from "@/wab/shared/core/tpls";
 import { parseExpr } from "@/wab/shared/eval/expression-parser";
 import {
   Component,
+  Expr,
   ImageAsset,
   TplNode,
   Variant,
@@ -431,26 +436,56 @@ export function pagePathConflictsWithAppRouter(
 }
 
 /**
- * Returns true if the page, including referenced components, uses `$ctx.query`
+ * Returns true if `expr` (or any expr nested within it) reads `$ctx.query`.
  */
-export function pageReferencesSearchParams(component: Component): boolean {
+function exprReferencesSearchParams(expr: Expr): boolean {
+  for (const subExpr of flattenExprs(expr)) {
+    const info = parseExpr(subExpr);
+    if (
+      info.usedDollarVarKeys.$ctx?.has("query") ||
+      info.usesUnknownDollarVarKeys.$ctx
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export interface PageSearchParamsUsage {
+  /** `$ctx.query` is read in the render tree of the page or a referenced component. */
+  inRenderTree: boolean;
+  /** `$ctx.query` is read outside render, e.g. in a query, metadata, param default. */
+  outsideRenderTree: boolean;
+}
+
+/**
+ * Detects if the page (including referenced components) reads `$ctx.query`.
+ */
+export function getPageSearchParamsUsage(
+  component: Component
+): PageSearchParamsUsage {
+  const usage = { inRenderTree: false, outsideRenderTree: false };
   if (!isPageComponent(component)) {
-    return false;
+    return usage;
   }
   for (const comp of componentToDeepReferenced(component)) {
+    const renderExprs = new Set(
+      findExprsInTree(comp.tplTree).map((ref) => ref.expr)
+    );
     for (const { expr } of findExprsInComponent(comp)) {
-      for (const subExpr of flattenExprs(expr)) {
-        const info = parseExpr(subExpr);
-        if (
-          info.usedDollarVarKeys.$ctx?.has("query") ||
-          info.usesUnknownDollarVarKeys.$ctx
-        ) {
-          return true;
+      if (exprReferencesSearchParams(expr)) {
+        if (renderExprs.has(expr)) {
+          usage.inRenderTree = true;
+        } else {
+          usage.outsideRenderTree = true;
+        }
+        if (usage.inRenderTree && usage.outsideRenderTree) {
+          return usage;
         }
       }
     }
   }
-  return false;
+  return usage;
 }
 
 export function isDynamicPagePath(pagePath: string | undefined): boolean {
