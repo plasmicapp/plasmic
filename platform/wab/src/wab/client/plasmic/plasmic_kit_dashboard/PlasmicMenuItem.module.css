@@ -11,7 +11,6 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  background: #ffffff00;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
@@ -21,13 +20,13 @@
   padding: 8px;
 }
 .freeBoxselected {
-  background: var(--token-yqAf_E0HIjU);
+  background: var(--token-8MEyDjsqznQc);
 }
 .root:hover .freeBox {
   background: var(--token-Ik3bdE1e1Uy);
 }
 .rootselected:hover .freeBoxselected {
-  background: var(--token-dqEx_KxIoYV);
+  background: var(--token-8MEyDjsqznQc);
 }
 .circle {
   position: relative;
@@ -39,7 +38,7 @@
   border-radius: 1000px;
 }
 .circleselected {
-  background: var(--token-N3uwCfNqv);
+  background: var(--token-mwrqWBxg1aja);
 }
 .icon {
   position: relative;
@@ -47,18 +46,19 @@
   max-width: 100%;
   width: 16px;
   height: 16px;
-  color: var(--token-UunsGa2Y3t3);
+  color: var(--token-RTPypKCJE4bm);
   flex-shrink: 0;
 }
 .iconselected {
-  color: var(--token-VUsIDivgUss);
+  color: var(--token-mwrqWBxg1aja);
 }
 .slotTargetChildren {
   font-weight: 400;
+  color: var(--token-dED0FYPw-qtp);
 }
 .slotTargetChildrenselected {
   font-weight: 500;
-  color: var(--token-krbUYvO2lx2);
+  color: var(--token-mwrqWBxg1aja);
 }
 .rootselected:hover .slotTargetChildrenselected {
   color: var(--token-0IloF6TmFvF);

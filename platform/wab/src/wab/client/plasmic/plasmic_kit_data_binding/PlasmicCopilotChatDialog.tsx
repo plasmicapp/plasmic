@@ -112,7 +112,6 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
             data-plasmic-override={overrides.copilotPromptInput}
             className={classNames("__wab_instance", sty.copilotPromptInput)}
             placeholder={'"Create a landing page, hero section, ..."'}
-            withAdminOverrides={true}
           />
         </div>
       }

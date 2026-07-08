@@ -301,6 +301,11 @@ function PlasmicCopilotMsg__RenderFunc(props: {
               data-plasmic-name={"applyBtn"}
               data-plasmic-override={overrides.applyBtn}
               className={classNames("all", "__wab_text", sty.applyBtn, {
+                [sty.applyBtnfeedback_submitted]: hasVariant(
+                  $state,
+                  "feedback",
+                  "submitted"
+                ),
                 [sty.applyBtnrightMargin]: hasVariant(
                   $state,
                   "rightMargin",

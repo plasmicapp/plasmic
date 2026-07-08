@@ -45,8 +45,14 @@ function generateOutput(
       if (dupTokens.length === 1) {
         return code;
       } else {
-        console.warn(`Token "${varName}" has ${dupTokens.length} duplicates`);
-        return code + ` // WARNING: ${dupTokens.length} duplicates`;
+        const dupProjects = dupTokens.map((t) => t.meta.projectId).join(",");
+        const codeWithComment = dupTokens.every(
+          (t) => t.value === dupTokens[0].value
+        )
+          ? code + ` // warning: duplicates in ${dupProjects}`
+          : code + ` // ERROR: non-matching duplicates in ${dupProjects}`;
+        console.warn(codeWithComment);
+        return codeWithComment;
       }
     })
     .map((line) => line + "\n")

@@ -62,7 +62,7 @@
   display: flex;
   position: relative;
   width: 100%;
-  color: var(--token-7wESQh_g4);
+  color: var(--token-dED0FYPw-qtp);
   height: 18px;
   font-family: "Inter", sans-serif;
   text-align: left;
@@ -89,8 +89,11 @@
 .textboxvalueSetState_isUnset {
   color: var(--token-4f35RzFNq);
 }
+.root:focus-within .textbox {
+  outline: none;
+}
 .root .textbox::placeholder {
-  color: var(--token-vtL-9XzNub);
+  color: var(--token-RTPypKCJE4bm);
 }
 .root .textbox:focus {
   outline: none;

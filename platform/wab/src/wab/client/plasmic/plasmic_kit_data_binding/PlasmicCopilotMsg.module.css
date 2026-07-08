@@ -30,7 +30,7 @@
   justify-content: center;
   height: auto;
   max-width: 1024px;
-  background: #eaf6ff;
+  background: var(--token-8MEyDjsqznQc);
   width: 100%;
   min-width: 0;
   border-radius: 12px;
@@ -39,7 +39,7 @@
 .freeBoxuserPrompt__enc1MkOhWl {
   align-items: flex-start;
   justify-content: center;
-  background: var(--token-N3uwCfNqv);
+  background: var(--token-qP8a3gYPq7fd);
 }
 .freeBox__jAuZ {
   width: 100%;
@@ -71,7 +71,7 @@
 }
 .promptuserPrompt {
   font-family: "Inter", sans-serif;
-  color: var(--token-p-rw5DRJTx);
+  color: var(--token-sVzFDRV7ByQj);
   font-weight: 500;
 }
 .freeBox___4B4Sb {
@@ -94,7 +94,7 @@
   height: auto;
   max-width: 100%;
   font-weight: 700;
-  color: #0091ff;
+  color: var(--token-qP8a3gYPq7fd);
   cursor: pointer;
   border-radius: 4px;
   padding: 4px;
@@ -116,14 +116,14 @@
 .feedbackTextboxfeedback_submitting:global(.__wab_instance) {
   display: flex;
 }
-.svg___9X1Y6 {
+.svg__phXLj {
   display: flex;
   position: relative;
   object-fit: cover;
   width: 1.25rem;
   height: 1.25rem;
 }
-.svg__pGeCu {
+.svg__qIpWc {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -140,7 +140,7 @@
 .submitFeedbackBtnfeedback_submitting:global(.__wab_instance) {
   display: flex;
 }
-.svg__plZr {
+.svg__wkdEs {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -149,7 +149,7 @@
 .textfeedback_submitting__saa5NYy9Lu {
   width: auto;
 }
-.svg__b7LhH {
+.svg__c2Eei {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -176,7 +176,7 @@
   max-width: 100%;
   width: 40px;
   height: 40px;
-  color: #0091ff;
+  color: var(--token-qP8a3gYPq7fd);
   flex-shrink: 0;
 }
 .text__mlsa {

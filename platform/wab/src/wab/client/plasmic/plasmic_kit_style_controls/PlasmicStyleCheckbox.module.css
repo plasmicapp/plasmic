@@ -18,7 +18,7 @@
   object-fit: cover;
   width: 16px;
   height: 16px;
-  color: var(--token-7wESQh_g4);
+  color: var(--token-dED0FYPw-qtp);
   opacity: 1;
   flex-shrink: 0;
   margin: 0px;
@@ -27,13 +27,13 @@
   color: var(--token-D666zt2IZPL);
 }
 .checkboxvalueSetState_isSet {
-  color: var(--token-AEygAh2U_);
+  color: var(--token-dED0FYPw-qtp);
 }
 .checkboxvalueSetState_isUnset {
   color: var(--token-4f35RzFNq);
 }
 .checkboxvalueSetState_isInherited {
-  color: var(--token-s0HBak9It);
+  color: var(--token-RTPypKCJE4bm);
 }
 .root:focus-within .checkbox {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
@@ -48,7 +48,7 @@
   justify-content: flex-start;
 }
 .slotTargetChildren {
-  color: var(--token-7wESQh_g4);
+  color: var(--token-dED0FYPw-qtp);
   white-space: pre;
 }
 .slotTargetChildren > :global(.__wab_text),
@@ -112,11 +112,11 @@
   overflow: hidden;
 }
 .slotTargetChildrenvalueSetState_isSet {
-  color: var(--token-AEygAh2U_);
+  color: var(--token-dED0FYPw-qtp);
 }
 .slotTargetChildrenvalueSetState_isUnset {
   color: var(--token-4f35RzFNq);
 }
 .slotTargetChildrenvalueSetState_isInherited {
-  color: var(--token-s0HBak9It);
+  color: var(--token-RTPypKCJE4bm);
 }

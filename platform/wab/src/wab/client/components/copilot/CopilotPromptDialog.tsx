@@ -205,11 +205,10 @@ function CopilotPromptDialog<Response>({
           maxLength,
           rows: 1,
           autoFocus: true,
-          onChange: (value) =>
+          onChange: (e) =>
             setCopilotPrompt({
               ...copilotPrompt,
-              // onChange value is typed as string, but it's initially value triggered as undefined.
-              prompt: value ?? "",
+              prompt: e.target.value,
             }),
           onKeyDown: async (e) => {
             if (isValidPrompt && isSubmitKeyCombo(e)) {

@@ -14,7 +14,7 @@
   border-width: 0px;
 }
 .root:hover:hover {
-  background: var(--token-G18pc1ITl);
+  background: var(--token-8MEyDjsqznQc);
 }
 .svg {
   position: relative;
@@ -34,5 +34,5 @@
   transform: rotate3d(0, 0, 1, 180deg);
 }
 .root:hover .svg {
-  color: var(--token-N3uwCfNqv);
+  color: var(--token-mwrqWBxg1aja);
 }

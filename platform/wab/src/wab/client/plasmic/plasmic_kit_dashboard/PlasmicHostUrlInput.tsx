@@ -19,6 +19,7 @@ import {
   deriveRenderOpts,
   Flex as Flex__,
   generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
@@ -135,7 +136,8 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         path: "urlInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props["defaultValue"],
       },
     ],
     [$props, $ctx, $refs]
@@ -233,6 +235,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
             }
           }}
           placeholder={"https://my-app.com/plasmic-host"}
+          value={generateStateValueProp($state, ["urlInput", "value"])}
         />
 
         <Button

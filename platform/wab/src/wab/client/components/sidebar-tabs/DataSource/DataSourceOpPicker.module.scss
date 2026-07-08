@@ -2,7 +2,7 @@
 @import "../../../../styles/_vars.sass";
 
 .trashIcon {
-  color: $neutral-secondary;
+  color: $sand11;
   position: absolute;
   right: 10px;
   top: 50%;
@@ -12,7 +12,7 @@
   height: 15px;
 
   &:hover {
-    color: $neutral-primary;
+    color: $sand12;
   }
 }
 

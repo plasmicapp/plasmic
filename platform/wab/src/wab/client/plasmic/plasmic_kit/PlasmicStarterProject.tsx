@@ -68,18 +68,18 @@ export const PlasmicStarterProject__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicStarterProject__ArgsType = {
-  instruction?: React.ReactNode;
-  name?: React.ReactNode;
   preview?: React.ReactNode;
   children?: React.ReactNode;
+  name?: React.ReactNode;
+  instruction?: React.ReactNode;
   previewIcon?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicStarterProject__ArgsType;
 export const PlasmicStarterProject__ArgProps = new Array<ArgPropType>(
-  "instruction",
-  "name",
   "preview",
   "children",
+  "name",
+  "instruction",
   "previewIcon"
 );
 
@@ -93,10 +93,10 @@ export type PlasmicStarterProject__OverridesType = {
 };
 
 export interface DefaultStarterProjectProps {
-  instruction?: React.ReactNode;
-  name?: React.ReactNode;
   preview?: React.ReactNode;
   children?: React.ReactNode;
+  name?: React.ReactNode;
+  instruction?: React.ReactNode;
   previewIcon?: React.ReactNode;
   type?: SingleChoiceArg<"first" | "second" | "third" | "noBorder">;
   icon?: SingleChoiceArg<"withIcon" | "unnamedVariant">;

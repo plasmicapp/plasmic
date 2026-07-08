@@ -160,8 +160,11 @@ function NewPageModal(props: NewPageModalProps) {
               placeholder: "Describe the page you want to create...",
               rows: 3,
               autoFocus: true,
-              onChange: (value) =>
-                setPageInfo((prev) => ({ ...prev, prompt: value ?? "" })),
+              onChange: (e) =>
+                setPageInfo((prev) => ({
+                  ...prev,
+                  prompt: e.target.value ?? "",
+                })),
             }}
           />
         </NewComponentSection>

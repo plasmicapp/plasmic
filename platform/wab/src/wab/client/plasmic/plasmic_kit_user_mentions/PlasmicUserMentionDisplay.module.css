@@ -1,19 +1,14 @@
 .root {
-  display: inline-flex;
+  display: flex;
   position: relative;
-  width: auto;
-  height: auto;
   justify-self: flex-start;
-  border-bottom: 1px dotted var(--token-ewevznWxvl9h);
+  border-bottom: 1px dotted var(--token-dED0FYPw-qtp);
 }
 .slotTargetChildren {
-  color: var(--token-ewevznWxvl9h);
-  font-size: var(--token-A0Cg7LpJPdae);
-  line-height: var(--token-TxckqK7aktpC);
+  color: var(--token-dED0FYPw-qtp);
+  font-size: var(--token-XviUmtZ5j0iF);
+  line-height: var(--token-ND9WWUwuMDcO);
 }
 .text__gSlk {
   position: relative;
-  width: auto;
-  height: auto;
-  max-width: 100%;
 }

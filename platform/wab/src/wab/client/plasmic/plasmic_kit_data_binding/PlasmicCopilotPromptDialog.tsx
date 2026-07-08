@@ -466,7 +466,12 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   <CopilotMsg
                     className={classNames(
                       "__wab_instance",
-                      sty.copilotMsg__sfkbS
+                      sty.copilotMsg__sfkbS,
+                      {
+                        [sty.copilotMsgstate_history_type_ui__sfkbSFmeFiGWzJo]:
+                          hasVariant($state, "type", "ui") &&
+                          hasVariant($state, "state", "history"),
+                      }
                     )}
                     userPrompt={true}
                   />
@@ -474,7 +479,12 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   <CopilotMsg
                     className={classNames(
                       "__wab_instance",
-                      sty.copilotMsg__yboe1
+                      sty.copilotMsg__yboe1,
+                      {
+                        [sty.copilotMsgstate_history_type_ui__yboe1FmeFiGWzJo]:
+                          hasVariant($state, "type", "ui") &&
+                          hasVariant($state, "state", "history"),
+                      }
                     )}
                     rightMargin={true}
                   />
@@ -658,6 +668,9 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   "state",
                   "quotaExceeded"
                 ),
+                [sty.quotaExceededMsgstate_quotaExceeded_type_ui]:
+                  hasVariant($state, "type", "ui") &&
+                  hasVariant($state, "state", "quotaExceeded"),
                 [sty.quotaExceededMsgstate_ready]: hasVariant(
                   $state,
                   "state",

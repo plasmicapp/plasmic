@@ -243,6 +243,11 @@ function PlasmicRowItem__RenderFunc(props: {
         data-plasmic-name={"labelContainer"}
         data-plasmic-override={overrides.labelContainer}
         className={classNames("all", sty.labelContainer, {
+          [sty.labelContainerisSelected]: hasVariant(
+            $state,
+            "isSelected",
+            "isSelected"
+          ),
           [sty.labelContainermenuSize_small]: hasVariant(
             $state,
             "menuSize",
@@ -258,7 +263,13 @@ function PlasmicRowItem__RenderFunc(props: {
         {renderPlasmicSlot({
           defaultContents: "Some very long item label",
           value: args.children,
-          className: classNames(sty.slotTargetChildren),
+          className: classNames(sty.slotTargetChildren, {
+            [sty.slotTargetChildrenisSelected]: hasVariant(
+              $state,
+              "isSelected",
+              "isSelected"
+            ),
+          }),
         })}
       </div>
       <div

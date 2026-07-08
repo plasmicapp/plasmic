@@ -9162,32 +9162,6 @@
           "componentType": "component"
         },
         {
-          "id": "VDe4OfA0wv",
-          "name": "WrapRepeatedElementModal",
-          "type": "managed",
-          "projectId": "w2GXN278dkQ2gQTVQnPehW",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicWrapRepeatedElementModal.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/DataBinding/WrapRepeatedElementModal.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicWrapRepeatedElementModal.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "QcDtYmEqee",
-          "name": "WrapRepeatedElementOption",
-          "type": "managed",
-          "projectId": "w2GXN278dkQ2gQTVQnPehW",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicWrapRepeatedElementOption.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/DataBinding/WrapRepeatedElementOption.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicWrapRepeatedElementOption.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "SdMPiPjcB9G",
           "name": "CopilotCodePrompt",
           "type": "managed",
@@ -10113,7 +10087,7 @@
           "id": "-FL3eYTbC6",
           "name": "Fetcher",
           "displayName": "plasmic-data-source-fetcher",
-          "componentImportPath": "@plasmicapp/data-sources"
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
       "splitsProviderFilePath": "",
@@ -11236,41 +11210,9 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicCollaboratorsHoverContent.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        },
-        {
-          "id": "cM5sxCWVKPdr",
-          "name": "OverlayArrow",
-          "type": "managed",
-          "projectId": "ehckhYnyDHgCBbV47m9bkf",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicOverlayArrow.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/pricing/OverlayArrow.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicOverlayArrow.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "31iPGD-XvzCj",
-          "name": "Tooltip",
-          "type": "managed",
-          "projectId": "ehckhYnyDHgCBbV47m9bkf",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicTooltip.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/pricing/Tooltip.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicTooltip.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
         }
       ],
-      "icons": [
-        {
-          "id": "__cfj0L7f3_q",
-          "name": "TriangleFilledIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_pricing/icons/PlasmicIcon__TriangleFilled.tsx"
-        }
-      ],
+      "icons": [],
       "images": [],
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicGlobalContextsProvider.tsx",

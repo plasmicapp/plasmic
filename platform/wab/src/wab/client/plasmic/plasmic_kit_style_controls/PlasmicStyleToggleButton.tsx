@@ -67,15 +67,15 @@ export const PlasmicStyleToggleButton__VariantProps =
   );
 
 export type PlasmicStyleToggleButton__ArgsType = {
+  styleValue?: string;
   children?: React.ReactNode;
   label?: React.ReactNode;
-  styleValue?: string;
 };
 type ArgPropType = keyof PlasmicStyleToggleButton__ArgsType;
 export const PlasmicStyleToggleButton__ArgProps = new Array<ArgPropType>(
+  "styleValue",
   "children",
-  "label",
-  "styleValue"
+  "label"
 );
 
 export type PlasmicStyleToggleButton__OverridesType = {
@@ -85,9 +85,9 @@ export type PlasmicStyleToggleButton__OverridesType = {
 };
 
 export interface DefaultStyleToggleButtonProps {
+  styleValue?: string;
   children?: React.ReactNode;
   label?: React.ReactNode;
-  styleValue?: string;
   valueSetState?: SingleChoiceArg<"isUnset" | "isSet" | "isInherited">;
   isDisabled?: SingleBooleanChoiceArg<"isDisabled">;
   showLabel?: SingleBooleanChoiceArg<"showLabel">;

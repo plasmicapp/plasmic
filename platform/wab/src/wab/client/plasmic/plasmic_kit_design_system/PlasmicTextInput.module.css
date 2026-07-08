@@ -10,6 +10,7 @@
   transition-property: box-shadow;
   transition-duration: 0.5s;
   min-height: 32px;
+  outline-style: none;
   min-width: 0;
   -webkit-transition-property: box-shadow;
   -webkit-transition-duration: 0.5s;
@@ -20,11 +21,8 @@
 .ariaInput[data-disabled][data-disabled]:global(.__wab_instance) {
   cursor: not-allowed;
 }
-.ariaInput[data-hovered][data-hovered]:global(.__wab_instance) {
-  box-shadow: inset 0px 0px 0px 1px #2ec0ff;
-}
 .ariaInput[data-focused][data-focused]:global(.__wab_instance) {
-  box-shadow: inset 0px 0px 0px 1px #2ec0ff;
+  box-shadow: inset 0px 0px 0px 1px var(--token-WqsKGtAj1ZMI);
 }
 .ariaInputtype_soft:global(.__wab_instance) {
   background: var(--token-iCBCh1BQyu-W);

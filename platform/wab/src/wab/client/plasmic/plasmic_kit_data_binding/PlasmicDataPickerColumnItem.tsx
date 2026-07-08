@@ -329,6 +329,11 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
               data-plasmic-name={"itemName"}
               data-plasmic-override={overrides.itemName}
               className={classNames("all", "__wab_text", sty.itemName, {
+                [sty.itemNameisSelected]: hasVariant(
+                  $state,
+                  "isSelected",
+                  "isSelected"
+                ),
                 [sty.itemNameisSelected_variableType_func]:
                   hasVariant($state, "variableType", "func") &&
                   hasVariant($state, "isSelected", "isSelected"),
@@ -531,6 +536,11 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
               hasVariant($state, "step", "played") ? ResetIcon : PlaySvgIcon
             }
             className={classNames("all", sty.svg__gIs5H, {
+              [sty.svgisSelected__gIs5HUtDu]: hasVariant(
+                $state,
+                "isSelected",
+                "isSelected"
+              ),
               [sty.svgstep_notPlayed__gIs5Hc2TI9]: hasVariant(
                 $state,
                 "step",

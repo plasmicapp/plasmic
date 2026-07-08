@@ -13,7 +13,7 @@
   padding: 0px;
 }
 .rootisSelected {
-  border-color: var(--token-N3uwCfNqv);
+  border-color: var(--token-qP8a3gYPq7fd);
 }
 .rootlarge {
   width: 360px;
@@ -36,7 +36,7 @@
   flex-shrink: 0;
 }
 .freeBoxisSelected__mWjoK5OaEf {
-  border-bottom-color: var(--token-G18pc1ITl);
+  border-bottom-color: var(--token-8MEyDjsqznQc);
 }
 .freeBoxlarge__mWjoKeGuqC {
   height: 210px;
@@ -52,13 +52,13 @@
   padding: 8px;
 }
 .freeBoxisSelected__sxDqT5OaEf {
-  background: var(--token-G18pc1ITl);
+  background: var(--token-8MEyDjsqznQc);
 }
 .root:hover .freeBox__sxDqT {
   background: var(--token-bV4cCeIniS6);
 }
 .root:focus .freeBox__sxDqT {
-  background: var(--token-G18pc1ITl);
+  background: var(--token-8MEyDjsqznQc);
   outline: none;
 }
 .slotTargetTitleisSelected {
@@ -86,5 +86,5 @@
   height: auto;
   outline: none;
   border-radius: 8px;
-  border: 2px dashed var(--token-N3uwCfNqv);
+  border: 2px dashed var(--token-qP8a3gYPq7fd);
 }

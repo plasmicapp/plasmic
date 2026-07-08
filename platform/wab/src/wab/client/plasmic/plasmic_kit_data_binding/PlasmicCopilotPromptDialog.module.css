@@ -111,7 +111,7 @@
 .svgstate_historyEmpty__yiwDtWeNsL {
   color: #1b1b18;
 }
-.svg__uFxHy {
+.svg__uJrHx {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -128,7 +128,7 @@
   width: 24px;
   height: 24px;
 }
-.svg__qaF4O {
+.svg__bvcRo {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -295,6 +295,10 @@
   display: block;
   border-radius: 12px;
   padding: 8px;
+}
+.quotaExceededMsgstate_quotaExceeded_type_ui {
+  background: var(--token-EkvAIUHn8RM1);
+  color: var(--token-wY6pUTGZH-gG);
 }
 .reply:global(.__wab_instance) {
   position: relative;

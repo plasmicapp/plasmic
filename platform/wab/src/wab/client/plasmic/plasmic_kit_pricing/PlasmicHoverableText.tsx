@@ -18,8 +18,6 @@ import {
   createPlasmicElementProxy,
   deriveRenderOpts,
   Flex as Flex__,
-  generateStateOnChangeProp,
-  generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
   SingleBooleanChoiceArg,
@@ -28,7 +26,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Tooltip from "../../components/pricing/Tooltip"; // plasmic-import: 31iPGD-XvzCj/component
+import { Tooltip } from "../../components/plexus/Tooltip"; // plasmic-import: EBbuUzYSewBk/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/styleTokensProvider
 
@@ -115,12 +113,6 @@ function PlasmicHoverableText__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.above,
       },
-      {
-        path: "tooltip.isOpen",
-        type: "private",
-        variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => false,
-      },
     ],
     [$props, $ctx, $refs]
   );
@@ -152,21 +144,7 @@ function PlasmicHoverableText__RenderFunc(props: {
         ),
         value: args.popover,
       })}
-      isOpen={generateStateValueProp($state, ["tooltip", "isOpen"])}
-      onOpenChange={async (...eventArgs: any) => {
-        generateStateOnChangeProp($state, ["tooltip", "isOpen"]).apply(
-          null,
-          eventArgs
-        );
-
-        if (
-          eventArgs.length > 1 &&
-          eventArgs[1] &&
-          eventArgs[1]._plasmic_state_init_
-        ) {
-          return;
-        }
-      }}
+      showArrow={true}
       trigger={
         <div
           data-plasmic-name={"dottedUnderlineBorder"}
@@ -213,7 +191,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicHoverableText__VariantsArgs;
     args?: PlasmicHoverableText__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicHoverableText__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicHoverableText__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicHoverableText__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
