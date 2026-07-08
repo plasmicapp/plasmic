@@ -111,6 +111,8 @@ module.exports = {
     "node_modules",
     "storybook-static",
 
+    // Examples lint themselves via their own `next lint`; also skipped in
+    // .lintstagedrc.js since eslint resolves `extends` before ignores.
     "examples/",
     "internal/",
     "packages/host/src/type-utils.ts",

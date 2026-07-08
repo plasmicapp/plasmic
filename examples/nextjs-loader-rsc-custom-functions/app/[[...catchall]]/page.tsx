@@ -1,5 +1,5 @@
 import { PLASMIC } from "@/plasmic-init";
-import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
+import { PlasmicClientRootProvider } from "@/plasmic-init-client";
 import {
   ComponentRenderData,
   PlasmicComponent,
@@ -72,7 +72,7 @@ export default async function PlasmicLoaderPage({
   );
 
   return (
-    <ClientPlasmicRootProvider
+    <PlasmicClientRootProvider
       prefetchedData={componentData}
       prefetchedQueryData={prefetchedQueryData}
       pageRoute={pageMeta.path}
@@ -80,7 +80,7 @@ export default async function PlasmicLoaderPage({
       trackQueryParams
     >
       <PlasmicComponent component={pageMeta.displayName} />
-    </ClientPlasmicRootProvider>
+    </PlasmicClientRootProvider>
   );
 }
 

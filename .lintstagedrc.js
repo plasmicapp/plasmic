@@ -1,5 +1,15 @@
 module.exports = {
-  "*.{js,jsx,ts,tsx,cjs,mjs,cts,mts}": ["eslint --fix", "prettier --write"],
+  "*.{js,jsx,ts,tsx,cjs,mjs,cts,mts}": (files) => {
+    // Examples lint themselves via `next lint`; the monorepo eslint can't
+    // load their eslint-config-next (`extends` resolves before ignores).
+    const eslintable = files.filter((f) => !/(^|\/)examples\//.test(f));
+    const cmds = [];
+    if (eslintable.length) {
+      cmds.push(`eslint --fix ${eslintable.map((f) => `"${f}"`).join(" ")}`);
+    }
+    cmds.push(`prettier --write ${files.map((f) => `"${f}"`).join(" ")}`);
+    return cmds;
+  },
   "*.{json,css,less,scss,md,toml,xml,yml,yaml}": ["prettier --write"],
   "Dockerfile*": ["hadolint --failure-threshold=error"],
 
