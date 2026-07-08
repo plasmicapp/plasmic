@@ -444,14 +444,14 @@ const DEFAULT_DEVFLAGS = {
   enableUiCopilot: false,
   enableChatCopilot: false,
   uiCopilotModelProviderOpts: {
-    provider: "OpenAI",
-    modelName: "gpt-4.1",
+    provider: "VertexAnthropic",
+    modelName: "claude-haiku-4-5",
     maxTokens: 32000,
     temperature: 0,
   } as ModelProviderOpts,
   chatCopilotModelProviderOpts: {
-    provider: "Anthropic",
-    modelName: "claude-sonnet-4-20250514",
+    provider: "VertexAnthropic",
+    modelName: "claude-sonnet-5",
     maxTokens: 32000,
     temperature: 0,
   } as ModelProviderOpts,
