@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-intercom",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "Plasmic intercom components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.10",
+    "@plasmicapp/host": "2.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",
