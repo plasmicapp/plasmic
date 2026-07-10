@@ -487,10 +487,64 @@ export const CanvasFrame = observer(function CanvasFrame({
             })();
           `;
 
+          // Artboard iframes have no network response, so PerformanceNavigationTiming
+          // looks like a bfcache restore. transferSize, responseStart and encodedBodySize
+          // are all 0 and deliveryType is "cache". In Next 16 the React debug channel reads
+          // these, thinks it was restored from cache, and calls location.reload() which
+          // orphans the artboard and leaves it blank. We spoof PerformanceNavigationTiming
+          // to avoid this.
+          //
+          // Different Next versions key off different fields (as of July 2026):
+          //   transferSize === 0                     -> reload  (16.2.7 - 16.2.10, wasServedFromCache)
+          //   responseStart === 0 && responseEnd > 0 -> reload  (canary, "Safari tab-duplication" branch)
+          //   deliveryType === "cache"               -> reload  (canary)
+          const spoofFreshNavigationTimingScript = `
+            (() => {
+              if (typeof PerformanceNavigationTiming === "undefined") return;
+              const proto = PerformanceNavigationTiming.prototype;
+              const spoof = (prop, value) => {
+                try {
+                  Object.defineProperty(proto, prop, { configurable: true, get: () => value });
+                } catch (e) {}
+              };
+              spoof("transferSize", 1);
+              spoof("encodedBodySize", 1);
+              spoof("responseStart", 1);
+              spoof("deliveryType", "");
+            })();
+          `;
+
+          // Stub dev-server HMR connections to avoid replacing the document written by
+          // Studio. Next 12+ and Turbopack use WebSocket; webpack-hot-middleware (Gatsby)
+          // uses EventSource. Runs before the framework boots.
+          const disableHmrScript = `
+            (() => {
+              const isHmr = (url) => /[^a-zA-Z]hmr($|[^a-zA-Z])/.test(url);
+              window.EventSource = class extends EventSource {
+                constructor(url, config) {
+                  if (isHmr(url)) {
+                    return { onerror() {}, onmessage() {}, onopen() {}, close() {} };
+                  }
+                  super(url, config);
+                }
+              };
+              window.WebSocket = class extends WebSocket {
+                constructor(url, protocols) {
+                  if (isHmr(url)) {
+                    return { addEventListener() {}, removeEventListener() {}, send() {}, close() {}, readyState: 3 };
+                  }
+                  super(url, protocols);
+                }
+              };
+            })();
+          `;
+
           const finalHtml = html.replace(
             headRegexp,
             `$&
             <script>
+              ${spoofFreshNavigationTimingScript}
+              ${disableHmrScript}
               ${gatsbyDevModeServiceWorkerFixScript}
 
               window.history.replaceState({}, "", "${

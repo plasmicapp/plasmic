@@ -201,39 +201,22 @@ function _PlasmicCanvasHost() {
 
 interface PlasmicCanvasHostProps {
   /**
-   * Webpack hmr uses EventSource to	listen to hot reloads, but that
-   * resultsin a persistent	connection from	each window.  In Plasmic
-   * Studio, if a project is configured to use app-hosting with a
-   * nextjs or gatsby server running in dev mode, each artboard will
-   * be holding a persistent connection to the dev server.
-   * Because browsers	have a limit to	how many connections can
-   * be held	at a time by domain, this means	after X	artboards, new
-   * artboards will freeze and not load.
-   *
-   * By default, <PlasmicCanvasHost /> will globally mutate
-   * window.EventSource to avoid using EventSource for HMR, which you
-   * typically don't need for your custom host page.  If you do still
-   * want to retain HRM, then youc an pass enableWebpackHmr={true}.
+   * @deprecated HMR handling is now managed by Plasmic Studio. This prop is
+   * retained for backward compatibility and has no effect.
    */
   enableWebpackHmr?: boolean;
 }
 
 export const PlasmicCanvasHost: React.FunctionComponent<
   PlasmicCanvasHostProps
-> = (props) => {
-  const { enableWebpackHmr } = props;
+> = () => {
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null
   );
   React.useEffect(() => {
     setNode(<_PlasmicCanvasHost />);
   }, []);
-  return (
-    <>
-      {!enableWebpackHmr && <DisableWebpackHmr />}
-      {node}
-    </>
-  );
+  return <>{node}</>;
 };
 
 type RenderErrorListener = (err: Error) => void;
@@ -280,34 +263,6 @@ class ErrorBoundary extends React.Component<
       return <>{this.props.children}</>;
     }
   }
-}
-
-function DisableWebpackHmr() {
-  if (process.env.NODE_ENV === "production") {
-    return null;
-  }
-  return (
-    <script
-      type="text/javascript"
-      dangerouslySetInnerHTML={{
-        __html: `
-      if (typeof window !== "undefined") {
-        const RealEventSource = window.EventSource;
-        window.EventSource = function(url, config) {
-          if (/[^a-zA-Z]hmr($|[^a-zA-Z])/.test(url)) {
-            console.warn("Plasmic: disabled EventSource request for", url);
-            return {
-              onerror() {}, onmessage() {}, onopen() {}, close() {}
-            };
-          } else {
-            return new RealEventSource(url, config);
-          }
-        }
-      }
-      `,
-      }}
-    ></script>
-  );
 }
 
 function deriveCanvasContextValue(): PlasmicCanvasContextValue | false {
