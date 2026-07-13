@@ -112,6 +112,10 @@ NODE_ENV=development
 
 Run `pnpm install` in the root folder, then `yarn install` in `./platform/wab`
 
+#### Configuring Git and Git hooks
+
+The root `pnpm install` also sets up the repository's Git hooks through Husky. In a fresh Git worktree, run it at the worktree root before your first commit. The generated, gitignored `.husky/_` directory is absent until the install runs, so Git silently skips the hooks.
+
 ### 3. Seeding the database
 
 In the `./platform/wab` run:
