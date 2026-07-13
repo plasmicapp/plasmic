@@ -2,7 +2,7 @@
 @import "./plasmic_kit_icons/plasmic_q_4_icons.css"; /* plasmic-import: oT38tGyqov9SPWHpf3Y2Rf/projectcss */
 @import "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; /* plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss */
 @import "./react_aria/plasmic.css"; /* plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss */
-@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&family=IBM+Plex+Mono%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600&family=IBM+Plex+Mono%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600&display=swap");
 
 .plasmic_tokens_tXkSR39sgCDWSitZxC5xFV {
   --token-aDa535tnF: 32px;
@@ -29,7 +29,7 @@
   --plasmic-token-sans-serif: var(--token-NQPeu56hWEVO);
   --token-y-e1zIVKHJyd: 12px;
   --plasmic-token-font-md: var(--token-y-e1zIVKHJyd);
-  --token-wCNdq3-87nVE: 16px;
+  --token-wCNdq3-87nVE: 1.33;
   --plasmic-token-line-height-md: var(--token-wCNdq3-87nVE);
   --token-XviUmtZ5j0iF: 10px;
   --plasmic-token-font-sm: var(--token-XviUmtZ5j0iF);
@@ -37,7 +37,7 @@
   --plasmic-token-line-height-sm: var(--token-ND9WWUwuMDcO);
   --token-UgD7DVJpT4oO: 16px;
   --plasmic-token-font-lg: var(--token-UgD7DVJpT4oO);
-  --token-ArhjzHzow-J7: 1.4;
+  --token-ArhjzHzow-J7: 1.5;
   --plasmic-token-line-height-lg: var(--token-ArhjzHzow-J7);
   --token-Le11TVejD2x2: var(--token-S8OnTYk9S2Q);
   --plasmic-token-destructive-destructive: var(--token-Le11TVejD2x2);

@@ -50,17 +50,15 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
         <PlasmicCommentPostFormDialog
           {...props}
           commentsDialogHead={{
+            name: threadSubject.name || "Unnamed",
+            type: summarizeTpl(
+              threadSubject,
+              openedNewThread.viewCtx
+                .effectiveCurrentVariantSetting(threadSubject)
+                .rsh()
+            ),
             close: {
               onClick: () => commentsCtx.closeNewThreadDialog(),
-            },
-            commentsHeader: {
-              name: threadSubject.name || "Unnamed",
-              type: summarizeTpl(
-                threadSubject,
-                openedNewThread.viewCtx
-                  .effectiveCurrentVariantSetting(threadSubject)
-                  .rsh()
-              ),
             },
           }}
           commentPostForm={{

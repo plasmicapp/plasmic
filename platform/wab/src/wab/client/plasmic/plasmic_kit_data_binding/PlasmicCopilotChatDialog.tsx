@@ -24,6 +24,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { CopilotPromptInput } from "../../components/copilot/CopilotPromptInput"; // plasmic-import: pnV7KLVDUyoz/component
 import { Dialog } from "../../components/widgets/Dialog"; // plasmic-import: en2IIw2C3_aI/component
+import DialogHeader from "../../components/widgets/DialogHeader"; // plasmic-import: 5TapYEMkYCfR/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
@@ -32,7 +33,8 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotChatDialog.module.css"; // plasmic-import: zXJ41ZVTz7ne/css
 
-import CloseIcon from "./icons/PlasmicIcon__Close"; // plasmic-import: q7EuAkDIhNK0/icon
+import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
 
 createPlasmicElementProxy;
 
@@ -48,9 +50,9 @@ export const PlasmicCopilotChatDialog__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCopilotChatDialog__OverridesType = {
   root?: Flex__<typeof Dialog>;
-  h3?: Flex__<"h3">;
+  dialogHeader?: Flex__<typeof DialogHeader>;
+  text?: Flex__<"div">;
   closeBtn?: Flex__<typeof IconButton>;
-  svg?: Flex__<"svg">;
   chatContent?: Flex__<"div">;
   copilotPromptInput?: Flex__<typeof CopilotPromptInput>;
 };
@@ -106,54 +108,68 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
         />
       }
       footer={
-        <div className={classNames("all", sty.freeBox__knEax)}>
+        <div className={classNames("all", sty.freeBox__ecH)}>
           <CopilotPromptInput
             data-plasmic-name={"copilotPromptInput"}
             data-plasmic-override={overrides.copilotPromptInput}
-            className={classNames("__wab_instance", sty.copilotPromptInput)}
             placeholder={'"Create a landing page, hero section, ..."'}
           />
         </div>
       }
-      heading={
-        <div className={classNames("all", sty.freeBox__oh2N9)}>
-          <h3
-            data-plasmic-name={"h3"}
-            data-plasmic-override={overrides.h3}
-            className={classNames(
-              "all",
-              "h3",
-              "h3__w2GXN",
-              "__wab_text",
-              sty.h3
-            )}
-          >
-            {"Copilot chat"}
-          </h3>
-          <IconButton
-            data-plasmic-name={"closeBtn"}
-            data-plasmic-override={overrides.closeBtn}
-            className={classNames("__wab_instance", sty.closeBtn)}
-            size={"small"}
-          >
-            <CloseIcon
-              data-plasmic-name={"svg"}
-              data-plasmic-override={overrides.svg}
-              className={classNames("all", sty.svg)}
-              role={"img"}
-            />
-          </IconButton>
-        </div>
+      header={
+        <DialogHeader
+          data-plasmic-name={"dialogHeader"}
+          data-plasmic-override={overrides.dialogHeader}
+          actions={
+            <IconButton
+              data-plasmic-name={"closeBtn"}
+              data-plasmic-override={overrides.closeBtn}
+              className={classNames("__wab_instance", sty.closeBtn)}
+              withBackgroundHover={true}
+            >
+              <CloseIcon
+                className={classNames("all", sty.svg__lay1O)}
+                role={"img"}
+              />
+            </IconButton>
+          }
+          className={classNames("__wab_instance", sty.dialogHeader)}
+          heading={
+            <div className={classNames("all", sty.freeBox__aSj44)}>
+              <SparklesSvgIcon
+                className={classNames("all", sty.svg__h4Gbc)}
+                role={"img"}
+              />
+
+              <div
+                data-plasmic-name={"text"}
+                data-plasmic-override={overrides.text}
+                className={classNames("all", "__wab_text", sty.text)}
+              >
+                {"Plasmic AI"}
+              </div>
+            </div>
+          }
+          subheading={null}
+        />
       }
+      show={["header", "footer"]}
     />
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "h3", "closeBtn", "svg", "chatContent", "copilotPromptInput"],
-  h3: ["h3"],
-  closeBtn: ["closeBtn", "svg"],
-  svg: ["svg"],
+  root: [
+    "root",
+    "dialogHeader",
+    "text",
+    "closeBtn",
+    "chatContent",
+    "copilotPromptInput",
+  ],
+  dialogHeader: ["dialogHeader", "text", "closeBtn"],
+  text: ["text"],
+  closeBtn: ["closeBtn"],
   chatContent: ["chatContent"],
   copilotPromptInput: ["copilotPromptInput"],
 } as const;
@@ -162,9 +178,9 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: typeof Dialog;
-  h3: "h3";
+  dialogHeader: typeof DialogHeader;
+  text: "div";
   closeBtn: typeof IconButton;
-  svg: "svg";
   chatContent: "div";
   copilotPromptInput: typeof CopilotPromptInput;
 };
@@ -230,9 +246,9 @@ export const PlasmicCopilotChatDialog = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    h3: makeNodeComponent("h3"),
+    dialogHeader: makeNodeComponent("dialogHeader"),
+    text: makeNodeComponent("text"),
     closeBtn: makeNodeComponent("closeBtn"),
-    svg: makeNodeComponent("svg"),
     chatContent: makeNodeComponent("chatContent"),
     copilotPromptInput: makeNodeComponent("copilotPromptInput"),
 

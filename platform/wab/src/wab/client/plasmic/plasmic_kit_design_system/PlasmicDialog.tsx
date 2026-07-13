@@ -15,7 +15,7 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  SingleBooleanChoiceArg,
+  MultiChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -27,7 +27,8 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { BaseDialog } from "@plasmicpkgs/react-aria/skinny/registerDialog";
-import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,28 +38,22 @@ import sty from "./PlasmicDialog.module.css"; // plasmic-import: en2IIw2C3_aI/cs
 createPlasmicElementProxy;
 
 export type PlasmicDialog__VariantMembers = {
-  noBorderRadius: "noBorderRadius";
+  show: "header" | "footer";
 };
 export type PlasmicDialog__VariantsArgs = {
-  noBorderRadius?: SingleBooleanChoiceArg<"noBorderRadius">;
+  show?: MultiChoiceArg<"header" | "footer">;
 };
 type VariantPropType = keyof PlasmicDialog__VariantsArgs;
-export const PlasmicDialog__VariantProps = new Array<VariantPropType>(
-  "noBorderRadius"
-);
+export const PlasmicDialog__VariantProps = new Array<VariantPropType>("show");
 
 export type PlasmicDialog__ArgsType = {
-  showHeader?: boolean;
-  showFooter?: boolean;
-  heading?: React.ReactNode;
+  header?: React.ReactNode;
   content?: React.ReactNode;
   footer?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicDialog__ArgsType;
 export const PlasmicDialog__ArgProps = new Array<ArgPropType>(
-  "showHeader",
-  "showFooter",
-  "heading",
+  "header",
   "content",
   "footer"
 );
@@ -69,12 +64,10 @@ export type PlasmicDialog__OverridesType = {
 };
 
 export interface DefaultDialogProps {
-  showHeader?: boolean;
-  showFooter?: boolean;
-  heading?: React.ReactNode;
+  header?: React.ReactNode;
   content?: React.ReactNode;
   footer?: React.ReactNode;
-  noBorderRadius?: SingleBooleanChoiceArg<"noBorderRadius">;
+  show?: MultiChoiceArg<"header" | "footer">;
   className?: string;
 }
 
@@ -91,10 +84,7 @@ function PlasmicDialog__RenderFunc(props: {
   const args = React.useMemo(
     () =>
       Object.assign(
-        {
-          showHeader: true,
-          showFooter: true,
-        },
+        {},
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
         )
@@ -114,11 +104,10 @@ function PlasmicDialog__RenderFunc(props: {
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
-        path: "noBorderRadius",
+        path: "show",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.noBorderRadius,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.show,
       },
     ],
     [$props, $ctx, $refs]
@@ -148,34 +137,45 @@ function PlasmicDialog__RenderFunc(props: {
         styleTokensClassNames,
         sty.root,
         {
-          [sty.rootnoBorderRadius]: hasVariant(
-            $state,
-            "noBorderRadius",
-            "noBorderRadius"
-          ),
+          [sty.rootshow_footer]: hasVariant($state, "show", "footer"),
+          [sty.rootshow_header]: hasVariant($state, "show", "header"),
         }
       )}
     >
-      {renderPlasmicSlot({
-        defaultContents: (
-          <h3
-            className={classNames(
-              "all",
-              "h3",
-              "h3__tXkSR",
-              "__wab_text",
-              sty.h3__yugkh
-            )}
-          >
-            {"Heading"}
-          </h3>
-        ),
-        value: args.heading,
-      })}
+      {(hasVariant($state, "show", "header") ? true : false)
+        ? renderPlasmicSlot({
+            defaultContents: (
+              <div className={classNames("all", "__wab_text", sty.text__yugkh)}>
+                {"Header"}
+              </div>
+            ),
+            value: args.header,
+          })
+        : null}
+      <ListSectionSeparator
+        className={classNames(
+          "__wab_instance",
+          sty.listSectionSeparator__ib9Q,
+          {
+            [sty.listSectionSeparatorshow_header__ib9Q9B6S6]: hasVariant(
+              $state,
+              "show",
+              "header"
+            ),
+          }
+        )}
+      />
+
       <div
         data-plasmic-name={"scrollableContent"}
         data-plasmic-override={overrides.scrollableContent}
-        className={classNames("all", sty.scrollableContent)}
+        className={classNames("all", sty.scrollableContent, {
+          [sty.scrollableContentshow_header]: hasVariant(
+            $state,
+            "show",
+            "header"
+          ),
+        })}
       >
         {renderPlasmicSlot({
           defaultContents: (
@@ -193,14 +193,35 @@ function PlasmicDialog__RenderFunc(props: {
           value: args.content,
         })}
       </div>
-      {renderPlasmicSlot({
-        defaultContents: (
-          <div className={classNames("all", "__wab_text", sty.text__uLxOp)}>
-            {"Enter some text"}
-          </div>
-        ),
-        value: args.footer,
-      })}
+      <ListSectionSeparator
+        className={classNames(
+          "__wab_instance",
+          sty.listSectionSeparator___9CStf,
+          {
+            [sty.listSectionSeparatorshow_footer___9CStfh6DAq]: hasVariant(
+              $state,
+              "show",
+              "footer"
+            ),
+            [sty.listSectionSeparatorshow_header___9CStf9B6S6]: hasVariant(
+              $state,
+              "show",
+              "header"
+            ),
+          }
+        )}
+      />
+
+      {(hasVariant($state, "show", "footer") ? true : false)
+        ? renderPlasmicSlot({
+            defaultContents: (
+              <div className={classNames("all", "__wab_text", sty.text__uLxOp)}>
+                {"Footer"}
+              </div>
+            ),
+            value: args.footer,
+          })
+        : null}
     </BaseDialog>
   ) as React.ReactElement | null;
 }
@@ -228,7 +249,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDialog__VariantsArgs;
     args?: PlasmicDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

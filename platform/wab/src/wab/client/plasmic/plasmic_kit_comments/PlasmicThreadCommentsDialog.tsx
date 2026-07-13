@@ -25,7 +25,6 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import CommentPost from "../../components/comments/CommentPost"; // plasmic-import: l_AKXl2AAu/component
 import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import { CommentsDialogHead } from "../../components/comments/CommentsDialogHead"; // plasmic-import: tccr1SFVw_AY/component
 import ThreadComments from "../../components/comments/ThreadComments"; // plasmic-import: QY53tkpvLv/component
@@ -57,8 +56,6 @@ export type PlasmicThreadCommentsDialog__OverridesType = {
   root?: Flex__<typeof Dialog>;
   commentsDialogHead?: Flex__<typeof CommentsDialogHead>;
   threadComments?: Flex__<typeof ThreadComments>;
-  commentPost?: Flex__<typeof CommentPost>;
-  freeBox?: Flex__<"div">;
   replyForm?: Flex__<typeof CommentPostForm>;
 };
 
@@ -126,7 +123,7 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       content={
-        <React.Fragment>
+        <div className={classNames("all", sty.freeBox__aLeEa)}>
           {(hasVariant($state, "hover", "hover") ? false : true) ? (
             <ThreadComments
               data-plasmic-name={"threadComments"}
@@ -136,23 +133,16 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
               })}
             />
           ) : null}
-          {(hasVariant($state, "hover", "hover") ? true : false) ? (
-            <CommentPost
-              data-plasmic-name={"commentPost"}
-              data-plasmic-override={overrides.commentPost}
-              className={classNames("__wab_instance", {
-                [sty.commentPosthover]: hasVariant($state, "hover", "hover"),
-              })}
-            />
-          ) : null}
-        </React.Fragment>
+        </div>
       }
       footer={
         <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames("all", sty.freeBox, {
-            [sty.freeBoxhover]: hasVariant($state, "hover", "hover"),
+          className={classNames("all", sty.freeBox___3WKao, {
+            [sty.freeBoxhover___3WKaojKoXe]: hasVariant(
+              $state,
+              "hover",
+              "hover"
+            ),
           })}
         >
           <CommentPostForm
@@ -164,7 +154,7 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
           />
         </div>
       }
-      heading={
+      header={
         <CommentsDialogHead
           data-plasmic-name={"commentsDialogHead"}
           data-plasmic-override={overrides.commentsDialogHead}
@@ -174,24 +164,15 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
           })}
         />
       }
-      showFooter={false}
+      show={["header", "footer"]}
     />
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: [
-    "root",
-    "commentsDialogHead",
-    "threadComments",
-    "commentPost",
-    "freeBox",
-    "replyForm",
-  ],
+  root: ["root", "commentsDialogHead", "threadComments", "replyForm"],
   commentsDialogHead: ["commentsDialogHead"],
   threadComments: ["threadComments"],
-  commentPost: ["commentPost"],
-  freeBox: ["freeBox", "replyForm"],
   replyForm: ["replyForm"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -201,8 +182,6 @@ type NodeDefaultElementType = {
   root: typeof Dialog;
   commentsDialogHead: typeof CommentsDialogHead;
   threadComments: typeof ThreadComments;
-  commentPost: typeof CommentPost;
-  freeBox: "div";
   replyForm: typeof CommentPostForm;
 };
 
@@ -269,8 +248,6 @@ export const PlasmicThreadCommentsDialog = Object.assign(
     // Helper components rendering sub-elements
     commentsDialogHead: makeNodeComponent("commentsDialogHead"),
     threadComments: makeNodeComponent("threadComments"),
-    commentPost: makeNodeComponent("commentPost"),
-    freeBox: makeNodeComponent("freeBox"),
     replyForm: makeNodeComponent("replyForm"),
 
     // Metadata about props expected for PlasmicThreadCommentsDialog

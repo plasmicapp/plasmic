@@ -62,7 +62,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
               onClick: () => commentsCtx.closeCommentThreadDialog(),
               "data-test-id": "thread-comment-dialog-close-btn",
             },
-            commentsHeader: subjectInfo
+            ...(subjectInfo
               ? {
                   name: subjectInfo.subject.name || "Unnamed element",
                   type: openedThread.viewCtx
@@ -77,7 +77,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
               : {
                   name: "Deleted element",
                   type: "",
-                },
+                }),
             canUpdateHistory: canUpdateThreadHistory,
             threadHistoryStatus: {
               commentThread: selectedThread,

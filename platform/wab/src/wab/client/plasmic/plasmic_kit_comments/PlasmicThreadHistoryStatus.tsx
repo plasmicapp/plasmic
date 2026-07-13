@@ -172,7 +172,6 @@ function PlasmicThreadHistoryStatus__RenderFunc(props: {
             isLoading={
               hasVariant($state, "isLoading", "isLoading") ? true : undefined
             }
-            size={"medium"}
             type={
               hasVariant($state, "resolved", "resolved") ? ["black"] : undefined
             }

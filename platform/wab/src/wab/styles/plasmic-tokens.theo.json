@@ -233,7 +233,7 @@
     {
       "name": "Line-height-LG",
       "type": "lineheight",
-      "value": "1.4",
+      "value": "1.5",
       "category": "lineheight",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -243,7 +243,7 @@
     {
       "name": "Line-height-MD",
       "type": "lineheight",
-      "value": "16px",
+      "value": "1.33",
       "category": "lineheight",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",

@@ -93,9 +93,7 @@ function PlasmicCommentPostFormDialog__RenderFunc(props: {
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames("__wab_instance", sty.root)}
-      content={null}
-      footer={
+      content={
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
@@ -108,14 +106,14 @@ function PlasmicCommentPostFormDialog__RenderFunc(props: {
           />
         </div>
       }
-      heading={
+      footer={null}
+      header={
         <CommentsDialogHead
           data-plasmic-name={"commentsDialogHead"}
           data-plasmic-override={overrides.commentsDialogHead}
-          className={classNames("__wab_instance", sty.commentsDialogHead)}
         />
       }
-      showFooter={false}
+      show={["header"]}
     />
   ) as React.ReactElement | null;
 }

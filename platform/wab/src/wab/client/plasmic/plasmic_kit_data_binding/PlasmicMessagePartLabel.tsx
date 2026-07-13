@@ -36,7 +36,7 @@ import sty from "./PlasmicMessagePartLabel.module.css"; // plasmic-import: Ht1M6
 
 import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmic-import: gU-8UYs9RllyJ/icon
 import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
-import SparklesIcon from "./icons/PlasmicIcon__Sparkles"; // plasmic-import: udef47udLQ/icon
+import Sparkles3Icon from "./icons/PlasmicIcon__Sparkles3"; // plasmic-import: udef47udLQ/icon
 import SpinnerIcon from "./icons/PlasmicIcon__Spinner"; // plasmic-import: EfDOV4MDLj/icon
 
 createPlasmicElementProxy;
@@ -151,7 +151,7 @@ function PlasmicMessagePartLabel__RenderFunc(props: {
             ? CheckCircleIcon
             : hasVariant($state, "state", "loading")
             ? SpinnerIcon
-            : SparklesIcon
+            : Sparkles3Icon
         }
         className={classNames("all", sty.svg, {
           [sty.svgstate_done]: hasVariant($state, "state", "done"),

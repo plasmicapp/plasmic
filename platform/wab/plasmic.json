@@ -1946,6 +1946,19 @@
           "componentType": "component"
         },
         {
+          "id": "5TapYEMkYCfR",
+          "name": "DialogHeader",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicDialogHeader.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/widgets/DialogHeader.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicDialogHeader.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
           "id": "sbyrU_8SkoWY",
           "name": "PlexusButton",
           "type": "managed",
@@ -2990,7 +3003,7 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Keyboard.tsx"
         },
         {
-          "id": "mZMZr0AmTY",
+          "id": "msFJe6Nhnq3J",
           "name": "IconIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Icon.tsx"
         },
@@ -3318,31 +3331,6 @@
           "id": "4Dff0T6Uj",
           "name": "EdgeHandleLeftwardIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleLeftward.tsx"
-        },
-        {
-          "id": "eayXbyej4Q",
-          "name": "Icon4Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Icon4.tsx"
-        },
-        {
-          "id": "GblhqXeZ9m",
-          "name": "Icon5Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Icon5.tsx"
-        },
-        {
-          "id": "zOPv4eezG5",
-          "name": "Icon6Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Icon6.tsx"
-        },
-        {
-          "id": "hPBDwf8f70",
-          "name": "Icon7Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Icon7.tsx"
-        },
-        {
-          "id": "ZPpW4b17Mv",
-          "name": "Icon8Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Icon8.tsx"
         },
         {
           "id": "y6Ei15gXp_-T",
@@ -7117,11 +7105,6 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg.tsx"
         },
         {
-          "id": "f0RrtBrXp",
-          "name": "CheckSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckSvg.tsx"
-        },
-        {
           "id": "xZrB9_0ir",
           "name": "ChevronDownSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg.tsx"
@@ -8355,6 +8338,11 @@
           "id": "9S59ztobsQvK",
           "name": "ParenthesesIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Parentheses.tsx"
+        },
+        {
+          "id": "f0RrtBrXp",
+          "name": "CheckSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckSvg.tsx"
         }
       ],
       "images": [],
@@ -9342,19 +9330,9 @@
       ],
       "icons": [
         {
-          "id": "aeyQLybWj1P",
-          "name": "CheckSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckSvg.tsx"
-        },
-        {
-          "id": "T7O74SQvscm",
-          "name": "IconIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Icon.tsx"
-        },
-        {
           "id": "udef47udLQ",
-          "name": "SparklesIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Sparkles.tsx"
+          "name": "Sparkles3Icon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Sparkles3.tsx"
         },
         {
           "id": "EfDOV4MDLj",
@@ -9363,23 +9341,13 @@
         },
         {
           "id": "ZTW8iKylgI",
-          "name": "Icon4Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Icon4.tsx"
+          "name": "ThumbsUpIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__ThumbsUp.tsx"
         },
         {
           "id": "mPucsZbX6V",
-          "name": "Icon5Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Icon5.tsx"
-        },
-        {
-          "id": "q7EuAkDIhNK0",
-          "name": "CloseIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Close.tsx"
-        },
-        {
-          "id": "wG4t1pwzYNjU",
-          "name": "ArrowRightSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__ArrowRightSvg.tsx"
+          "name": "ThumbsDownIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__ThumbsDown.tsx"
         }
       ],
       "images": [
@@ -11646,12 +11614,6 @@
         "name": "Screen",
         "projectId": "p8FkKgCnyuat1kHSEYAKfW",
         "contextFilePath": "wab/client/plasmic/plasmic_kit_merge_flow/PlasmicGlobalVariant__Screen.tsx"
-      },
-      {
-        "id": "36nw8KCcgswV1",
-        "name": "Screen",
-        "projectId": "BP7V3EkXPURJVwwMyWoHn",
-        "contextFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicGlobalVariant__Screen.tsx"
       },
       {
         "id": "DJ0PzuYE_I5xyS",

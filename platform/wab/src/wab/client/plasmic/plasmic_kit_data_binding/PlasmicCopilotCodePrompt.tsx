@@ -30,7 +30,7 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotCodePrompt.module.css"; // plasmic-import: SdMPiPjcB9G/css
 
-import SparklesIcon from "./icons/PlasmicIcon__Sparkles"; // plasmic-import: udef47udLQ/icon
+import Sparkles3Icon from "./icons/PlasmicIcon__Sparkles3"; // plasmic-import: udef47udLQ/icon
 
 createPlasmicElementProxy;
 
@@ -123,7 +123,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
           >
             {"Generate design"}
           </div>
-          <SparklesIcon
+          <Sparkles3Icon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
             className={classNames("all", sty.svg)}

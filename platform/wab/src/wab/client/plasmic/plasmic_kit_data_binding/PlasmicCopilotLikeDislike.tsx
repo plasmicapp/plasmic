@@ -33,8 +33,8 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotLikeDislike.module.css"; // plasmic-import: -LDNJojbDZD/css
 
-import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ZTW8iKylgI/icon
-import Icon5Icon from "./icons/PlasmicIcon__Icon5"; // plasmic-import: mPucsZbX6V/icon
+import ThumbsDownIcon from "./icons/PlasmicIcon__ThumbsDown"; // plasmic-import: mPucsZbX6V/icon
+import ThumbsUpIcon from "./icons/PlasmicIcon__ThumbsUp"; // plasmic-import: ZTW8iKylgI/icon
 
 createPlasmicElementProxy;
 
@@ -141,7 +141,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
         disabled={hasVariant($state, "state", "dislike") ? true : undefined}
         size={"small"}
       >
-        <Icon4Icon
+        <ThumbsUpIcon
           className={classNames("all", sty.svg__tYoHl, {
             [sty.svgstate_dislike__tYoHl5IumH]: hasVariant(
               $state,
@@ -163,7 +163,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
         disabled={hasVariant($state, "state", "like") ? true : undefined}
         size={"small"}
       >
-        <Icon5Icon
+        <ThumbsDownIcon
           className={classNames("all", sty.svg__uQuhx, {
             [sty.svgstate_dislike__uQuhx5IumH]: hasVariant(
               $state,

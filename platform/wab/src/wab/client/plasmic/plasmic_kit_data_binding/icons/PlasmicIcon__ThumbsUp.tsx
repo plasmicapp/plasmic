@@ -5,11 +5,11 @@
 import { classNames } from "@plasmicapp/react-web";
 import React from "react";
 
-export type Icon4IconProps = React.ComponentProps<"svg"> & {
+export type ThumbsUpIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon4Icon(props: Icon4IconProps) {
+export function ThumbsUpIcon(props: ThumbsUpIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -38,5 +38,5 @@ export function Icon4Icon(props: Icon4IconProps) {
   );
 }
 
-export default Icon4Icon;
+export default ThumbsUpIcon;
 /* prettier-ignore-end */
