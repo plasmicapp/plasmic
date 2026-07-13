@@ -34,7 +34,8 @@
 /platform/sub/typedoc.json.gz
 /platform/sub/typedoc/
 bower_components/
-node_modules/
+# No trailing slash so node_modules symlinks are ignored too, not just directories
+node_modules
 .pnpm-store/
 lerna-debug.log
 storybook-static/

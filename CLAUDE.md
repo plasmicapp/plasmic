@@ -32,5 +32,5 @@ Plasmic is an open-source visual web builder. This monorepo contains:
 
 ## Instructions for AI assistant
 
-- Do not worry about styling/formatting. All files will be formatted to the same style in git hooks.
+- Do not worry about styling/formatting. All files will be formatted to the same style in git hooks, which husky manages via the generated, gitignored `.husky/_` directory. In a fresh worktree that directory doesn't exist and git silently skips all hooks, so run `pnpm install` at the worktree root before your first commit.
 - When searching files, you should almost never look through node_modules/ files and other gitignored files unless you have a explicit reason to.
