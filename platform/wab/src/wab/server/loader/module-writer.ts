@@ -131,15 +131,22 @@ async function writeCodeBundleToDisk(
   output: CachedCodegenOutputBundle
 ) {
   for (const comp of output.components) {
-    await fs.writeFile(
-      path.join(dir, comp.renderModuleFileName),
-      comp.renderModule
-    );
-    await fs.writeFile(
-      path.join(dir, comp.skeletonModuleFileName),
-      comp.skeletonModule
-    );
-    await fs.writeFile(path.join(dir, comp.cssFileName), comp.cssRules);
+    if (comp.renderModule) {
+      await fs.writeFile(
+        path.join(dir, comp.renderModuleFileName),
+        comp.renderModule
+      );
+      // The render module imports its css module unconditionally, so the css
+      // must be written whenever the render module is, even when the rules are empty.
+      // Without a render module, the css module is dead code and is skipped.
+      await fs.writeFile(path.join(dir, comp.cssFileName), comp.cssRules);
+    }
+    if (comp.skeletonModule) {
+      await fs.writeFile(
+        path.join(dir, comp.skeletonModuleFileName),
+        comp.skeletonModule
+      );
+    }
 
     if (comp.rscMetadata?.serverQueriesExecFunc) {
       await fs.writeFile(

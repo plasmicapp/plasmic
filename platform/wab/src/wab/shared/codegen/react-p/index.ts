@@ -253,6 +253,7 @@ import {
   hasGlobalActions,
   hasLoginInteractions,
   isCodeComponent,
+  isContextCodeComponent,
   isHostLessCodeComponent,
   isPageComponent,
   tryGetVariantGroupValueFromArg,
@@ -818,6 +819,66 @@ export function exportReactPresentational(
     hasServerQueries,
   };
 
+  const isCodeComponentStub =
+    opts.codeComponentStubs &&
+    isCodeComponent(component) &&
+    !isHostLessCodeComponent(component);
+  const componentName = makePlasmicComponentName(component);
+  const styleImportName = makeCssFileName(
+    opts.idFileNames ? makeComponentCssIdFileName(component) : componentName,
+    opts
+  );
+
+  return {
+    id: component.uuid,
+    componentName: getExportedComponentName(component),
+    plasmicName: getNormalizedComponentName(component),
+    displayName: component.name,
+    // Code component stubs only render a skeleton without render/css modules.
+    renderModule: isCodeComponentStub
+      ? ""
+      : serializeRenderModule(ctx, referencedComponents),
+    skeletonModule: isCodeComponentStub
+      ? serializeSkeletonCodeComponentStub(ctx, opts)
+      : serializeSkeletonWrapperTs(ctx, opts),
+    cssRules: isCodeComponentStub ? "" : serializeCssRules(ctx),
+    renderModuleFileName: `${
+      opts.idFileNames
+        ? makeComponentRenderIdFileName(component)
+        : componentName
+    }.tsx`,
+    skeletonModuleFileName: getSkeletonModuleFileName(component, opts),
+    cssFileName: styleImportName,
+    scheme: "blackbox",
+    nameInIdToUuid: {},
+    isPage,
+    isGlobalContextProvider: component.codeComponentMeta?.isContext ?? false,
+    plumeType: component.plumeInfo?.type,
+    path: component.pageMeta?.path,
+    ...(ctx.exportOpts.codeComponentStubs
+      ? { isCode: isCodeComponent(component) }
+      : {}),
+    ...(isPage && {
+      pageMetadata: makePageMetadataOutput(ctx),
+    }),
+    metadata: component.metadata,
+    rscMetadata: getRscMetadata(ctx),
+  };
+}
+
+/**
+ * Serializes the Plasmic* render module for a component: the presentational
+ * module carrying the design's render function, the variants/args/overrides
+ * types, and the component css imports.
+ */
+function serializeRenderModule(
+  ctx: SerializerBaseContext,
+  referencedComponents: Component[]
+) {
+  const { component, site, siteCtx, projectConfig } = ctx;
+  const opts = ctx.exportOpts;
+  const isPage = isPageComponent(component);
+
   const projectModuleBundle = ensure(
     projectConfig.projectModuleBundle,
     "projectModuleBundle missing"
@@ -840,7 +901,6 @@ export function exportReactPresentational(
   const renderFunc = serializeRenderFunc(ctx, referencedComponents);
   const descendantsLookup = serializeDescendantsLookup(ctx);
   const nodeComponents = serializeNodeComponents(ctx);
-  const skeletonModule = serializeSkeletonWrapperTs(ctx, opts);
   const { customFunctionsAndLibsImport, serializedCustomFunctionsAndLibs } =
     serializeCustomFunctionsAndLibs(ctx);
 
@@ -855,10 +915,6 @@ export function exportReactPresentational(
   );
 
   const componentName = makePlasmicComponentName(component);
-  const styleImportName = makeCssFileName(
-    opts.idFileNames ? makeComponentCssIdFileName(component) : componentName,
-    opts
-  );
   const plumeType = component.plumeInfo?.type as PlumeType | undefined;
   const plumePlugin = getPlumeCodegenPlugin(component);
 
@@ -906,7 +962,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
   // we append a "__" suffix in case there's any name collision with other
   // components that we may be importing into this file. We don't need
   // to worry about non-components, as we don't expect name collisions there.
-  const renderModule = `
+  return `
 /* eslint-disable */
 /* tslint:disable */
 // @ts-nocheck
@@ -1083,37 +1139,6 @@ ${opts.platform === "tanstack" ? serializeTanStackHead(ctx, component) : ""}
 export default ${componentName};
 /* prettier-ignore-end */
 `;
-
-  return {
-    id: component.uuid,
-    componentName: getExportedComponentName(component),
-    plasmicName: getNormalizedComponentName(component),
-    displayName: component.name,
-    renderModule,
-    skeletonModule,
-    rscMetadata: getRscMetadata(ctx),
-    cssRules: serializeCssRules(ctx),
-    renderModuleFileName: `${
-      opts.idFileNames
-        ? makeComponentRenderIdFileName(component)
-        : componentName
-    }.tsx`,
-    skeletonModuleFileName: getSkeletonModuleFileName(component, opts),
-    cssFileName: styleImportName,
-    scheme: "blackbox",
-    nameInIdToUuid: {},
-    isPage,
-    isGlobalContextProvider: component.codeComponentMeta?.isContext ?? false,
-    plumeType: component.plumeInfo?.type,
-    path: component.pageMeta?.path,
-    ...(ctx.exportOpts.codeComponentStubs
-      ? { isCode: isCodeComponent(component) }
-      : {}),
-    ...(isPage && {
-      pageMetadata: makePageMetadataOutput(ctx),
-    }),
-    metadata: component.metadata,
-  };
 }
 
 /**
@@ -2945,6 +2970,53 @@ function serializePageAwareSkeletonWrapperTs(
   `;
 }
 
+/**
+ * Serializes the skeleton module for a user's code component stub.
+ * Renders its children for a context component or an empty fragment otherwise.
+ */
+function serializeSkeletonCodeComponentStub(
+  ctx: SerializerBaseContext,
+  opts: ExportOpts
+) {
+  const { component } = ctx;
+  const componentName = getExportedComponentName(component);
+
+  const componentSubstitutionApi = opts.useComponentSubstitutionApi
+    ? `import { components } from "@plasmicapp/loader-runtime-registry";
+
+    let __hasWarnedMissingCodeComponent = false;
+
+    export function getPlasmicComponent() {
+      if (!components["${
+        component.uuid
+      }"] && !__hasWarnedMissingCodeComponent) {
+        console.warn("Warning: Code component ${getComponentDisplayName(
+          component
+        )} is not registered. Make sure to call \`PLASMIC.registerComponent\` for all used code components in your page.");
+        __hasWarnedMissingCodeComponent = true;
+      }
+      return components["${component.uuid}"] ?? ${componentName};
+    }`
+    : "";
+
+  return `
+    // This module is auto-generated by Plasmic; please do not edit!
+    import * as React from "react";
+
+    const ${componentName} = ${
+    isContextCodeComponent(component)
+      ? `(props) => <React.Fragment>{props.children}</React.Fragment>;`
+      : `() => <React.Fragment />;`
+  }
+
+    ${componentSubstitutionApi}
+
+    ${serializeCodeComponentHelperRegistry(ctx, opts)}
+
+    export default ${componentName};
+  `;
+}
+
 function serializeSkeletonWrapperTs(
   ctx: SerializerBaseContext,
   opts: ExportOpts
@@ -2970,38 +3042,15 @@ function serializeSkeletonWrapperTs(
   const componentSubstitutionApi = opts.useComponentSubstitutionApi
     ? `import { components } from "@plasmicapp/loader-runtime-registry";
 
-    ${
-      isCodeComponent(component) && !isHostLessCodeComponent(component)
-        ? "let __hasWarnedMissingCodeComponent = false;"
-        : ""
-    }
-
     export function getPlasmicComponent() {
-      ${
-        isCodeComponent(component) && !isHostLessCodeComponent(component)
-          ? `if (!components["${
-              component.uuid
-            }"] && !__hasWarnedMissingCodeComponent) {
-        console.warn("Warning: Code component ${getComponentDisplayName(
-          component
-        )} is not registered. Make sure to call \`PLASMIC.registerComponent\` for all used code components in your page.");
-        __hasWarnedMissingCodeComponent = true;
-      }`
-          : ""
-      }
       return components["${component.uuid}"] ?? ${componentName};
     }`
     : "";
 
-  const codeComponentHelperRegistry =
-    opts.useCodeComponentHelpersRegistry &&
-    isCodeComponentWithHelpers(component)
-      ? `import { codeComponentHelpers } from "@plasmicapp/loader-runtime-registry";
-
-    export function getCodeComponentHelper() {
-      return codeComponentHelpers["${component.uuid}"];
-    }`
-      : "";
+  const codeComponentHelperRegistry = serializeCodeComponentHelperRegistry(
+    ctx,
+    opts
+  );
 
   if (isPageComponent(component) && isPageAwarePlatform(opts.platform)) {
     return serializePageAwareSkeletonWrapperTs(
@@ -3093,6 +3142,20 @@ function serializeSkeletonWrapperTs(
     `
     }
   `;
+}
+
+function serializeCodeComponentHelperRegistry(
+  ctx: SerializerBaseContext,
+  opts: ExportOpts
+) {
+  return opts.useCodeComponentHelpersRegistry &&
+    isCodeComponentWithHelpers(ctx.component)
+    ? `import { codeComponentHelpers } from "@plasmicapp/loader-runtime-registry";
+
+    export function getCodeComponentHelper() {
+      return codeComponentHelpers["${ctx.component.uuid}"];
+    }`
+    : "";
 }
 
 function makeCodegenRuleNamer(ctx: SerializerBaseContext) {

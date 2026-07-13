@@ -108,7 +108,7 @@ describe("loader", () => {
 
     const versionedRes = await publicApi.rawReq(
       "get",
-      "/api/v1/loader/code/versioned?cb=21&platform=nextjs&loaderVersion=7"
+      "/api/v1/loader/code/versioned?cb=22&platform=nextjs&loaderVersion=7"
     );
     expect(versionedRes.status()).toEqual(400);
   });
@@ -120,7 +120,7 @@ describe("loader", () => {
     expect(res.status()).toEqual(200);
     const body = await res.json();
     expect(body.redirectUrl).toEqual(
-      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=7&projectId=${polyfillProject.id}%400.0.1`
+      `/api/v1/loader/code/versioned?cb=22&platform=react&loaderVersion=7&projectId=${polyfillProject.id}%400.0.1`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -131,7 +131,7 @@ describe("loader", () => {
     });
     expect(res.status()).toEqual(302);
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=7&projectId=${projects[0].id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=22&platform=react&loaderVersion=7&projectId=${projects[0].id}%400.0.2`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -154,7 +154,7 @@ describe("loader", () => {
     expect(res.status()).toEqual(302);
     // expect in sorted order
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=21&platform=react&loaderVersion=7&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=22&platform=react&loaderVersion=7&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -188,7 +188,7 @@ describe("loader", () => {
     );
     expect(redirectRes.status()).toEqual(302);
     expect(redirectRes.headers()["location"]).toEqual(
-      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=21&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=22&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
     );
     expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
 
@@ -208,7 +208,7 @@ describe("loader", () => {
     );
     expect(redirectRes.status()).toEqual(302);
     expect(redirectRes.headers()["location"]).toEqual(
-      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=21&embedHydrate=1&hydrate=1&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=22&embedHydrate=1&hydrate=1&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
     );
     expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
 
@@ -228,7 +228,7 @@ describe("loader", () => {
     );
     expect(redirectRes.status()).toEqual(302);
     expect(redirectRes.headers()["location"]).toEqual(
-      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/NonExistentComponent?cb=21&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/NonExistentComponent?cb=22&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
     );
     expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
 
