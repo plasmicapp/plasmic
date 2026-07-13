@@ -17,6 +17,7 @@ import {
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { ProjectId } from "@/wab/shared/ApiSchema";
+import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import {
@@ -32,6 +33,7 @@ import {
   allAnimationSequences,
   getResponsiveStrategy,
 } from "@/wab/shared/core/sites";
+import { validateStylesForTpl } from "@/wab/shared/core/style-props-tpl";
 import {
   mkRuleSet,
   tryGetAnimationSequenceUuidFromCssVar,
@@ -94,7 +96,11 @@ export interface HtmlToTplResult {
    * Finalize deferred changes that must happen inside studioCtx.change():
    * animation sequences, variant styles, and image asset attachment.
    */
-  finalize: (opts: { component: Component; tplMgr: TplMgr }) => void;
+  finalize: (opts: {
+    component: Component;
+    tplMgr: TplMgr;
+    ccRegistry: CodeComponentsRegistry;
+  }) => void;
 }
 
 /**
@@ -194,7 +200,8 @@ export async function htmlToTpl(
             processedVariantCombo,
             safeStyles,
             unsafeStyles,
-            animations
+            animations,
+            finalizeOpts.ccRegistry
           );
         }
       }
@@ -291,10 +298,14 @@ function applyVariantStyles(
   variantCombo: VariantCombo,
   safeStyles: Record<string, string>,
   unsafeStyles: Record<string, string>,
-  animations: Animation[] | null
+  animations: Animation[] | null,
+  ccRegistry: CodeComponentsRegistry
 ) {
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
-  RSH(vs.rs, tpl).merge(safeStyles);
+  // Only styles Studio allows on this tpl may enter the RuleSet; the rest
+  // are silently dropped since the paste flow has no error channel at the moment.
+  const { valid } = validateStylesForTpl(safeStyles, tpl, vs, ccRegistry);
+  RSH(vs.rs, tpl).merge(valid);
 
   if (Object.keys(unsafeStyles).length > 0) {
     vs.attrs["style"] = code(JSON.stringify(unsafeStyles));

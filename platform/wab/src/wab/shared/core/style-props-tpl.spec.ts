@@ -15,9 +15,11 @@ import {
   isTransitionValidForTpl,
   isTypographyValidForTpl,
   isValidStylePropForTpl,
+  validateStylesForTpl,
 } from "@/wab/shared/core/style-props-tpl";
-import { TplTagType, mkTplComponent, mkTplTagX } from "@/wab/shared/core/tpls";
+import { mkTplComponent, mkTplTagX, TplTagType } from "@/wab/shared/core/tpls";
 import { CodeComponentMeta } from "@/wab/shared/model/classes";
+import { mkBaseVariant, mkVariantSetting } from "@/wab/shared/Variants";
 import {
   TEST_GLOBAL_VARIANT,
   mkTestVariantSetting as vs,
@@ -139,6 +141,131 @@ describe("isMarginValidForTpl", () => {
     expect(
       isMarginValidForTpl(mkTplTagX("div", { type: TplTagType.Column }))
     ).toBe(false);
+  });
+});
+
+describe("validateStylesForTpl", () => {
+  const styles = {
+    marginTop: "10px",
+    marginLeft: "20px",
+    color: "red",
+    display: "flex",
+  };
+
+  it("keeps all styles valid for a regular tag", () => {
+    expect(
+      validateStylesForTpl(styles, mkTplTagX("div"), vs(), ccRegistry)
+    ).toEqual({
+      valid: styles,
+      invalid: {},
+    });
+  });
+
+  it("splits out margin styles for a component root", () => {
+    const component = mkComponent({
+      name: "TestRoot",
+      type: ComponentType.Plain,
+      tplTree: mkTplTagX("div"),
+    });
+    expect(
+      validateStylesForTpl(styles, component.tplTree, vs(), ccRegistry)
+    ).toEqual({
+      valid: { color: "red", display: "flex" },
+      invalid: { marginTop: "10px", marginLeft: "20px" },
+    });
+  });
+
+  it("splits out all restricted styles for a column", () => {
+    expect(
+      validateStylesForTpl(
+        styles,
+        mkTplTagX("div", { type: TplTagType.Column }),
+        vs(),
+        ccRegistry
+      )
+    ).toEqual({
+      valid: {},
+      invalid: styles,
+    });
+  });
+
+  it("splits out typography styles other than color for an icon", () => {
+    expect(
+      validateStylesForTpl(
+        { color: "red", fontSize: "16px", opacity: "0.5" },
+        mkIconTpl(),
+        vs(),
+        ccRegistry
+      )
+    ).toEqual({
+      valid: { color: "red", opacity: "0.5" },
+      invalid: { fontSize: "16px" },
+    });
+  });
+
+  it("splits out non-positioning styles for a plain component instance", () => {
+    expect(
+      validateStylesForTpl(
+        {
+          width: "100px",
+          marginTop: "10px",
+          background: "red",
+          fontSize: "16px",
+        },
+        mkPlainComponentTpl(),
+        vs(),
+        ccRegistry
+      )
+    ).toEqual({
+      valid: { width: "100px", marginTop: "10px" },
+      invalid: { background: "red", fontSize: "16px" },
+    });
+  });
+
+  it("validates state-dependent styles against the post-merge ruleset", () => {
+    expect(
+      validateStylesForTpl(
+        { display: "flex", flexDirection: "column", rowGap: "8px" },
+        mkTplTagX("div"),
+        vs(),
+        ccRegistry
+      )
+    ).toEqual({
+      valid: { display: "flex", flexDirection: "column", rowGap: "8px" },
+      invalid: {},
+    });
+  });
+
+  it("validates state-dependent styles against base variant styles", () => {
+    const tpl = mkTplTagX("div");
+    tpl.vsettings.push(
+      mkVariantSetting({
+        variants: [mkBaseVariant()],
+        styles: { display: "flex", "flex-direction": "column" },
+      })
+    );
+    const targetVs = vs();
+    tpl.vsettings.push(targetVs);
+    expect(
+      validateStylesForTpl({ rowGap: "8px" }, tpl, targetVs, ccRegistry)
+    ).toEqual({
+      valid: { rowGap: "8px" },
+      invalid: {},
+    });
+  });
+
+  it("splits out flex styles when the tpl is not a flex container", () => {
+    expect(
+      validateStylesForTpl(
+        { flexDirection: "column" },
+        mkTplTagX("div"),
+        vs(),
+        ccRegistry
+      )
+    ).toEqual({
+      valid: {},
+      invalid: { flexDirection: "column" },
+    });
   });
 });
 
@@ -386,6 +513,17 @@ describe("isValidStylePropForTpl", () => {
     ).toBe(true);
     // layout
     expect(
+      isValidStylePropForTpl("display", mkTplTagX("div"), baseVs, ccRegistry)
+    ).toBe(true);
+    expect(
+      isValidStylePropForTpl(
+        "display",
+        mkCodeComponentTpl(),
+        baseVs,
+        ccRegistry
+      )
+    ).toBe(true);
+    expect(
       isValidStylePropForTpl(
         "flex-direction",
         mkTplTagX("div"),
@@ -413,10 +551,10 @@ describe("isValidStylePropForTpl", () => {
 
   it("is false for inapplicable prop+element combinations, invalid props", () => {
     const baseVs = vs();
-    // typography on icon
+    // typography on icon (except color, which has its dedicated control)
     expect(
       isValidStylePropForTpl("color", mkIconTpl(), baseVs, ccRegistry)
-    ).toBe(false);
+    ).toBe(true);
     expect(
       isValidStylePropForTpl("font-size", mkIconTpl(), baseVs, ccRegistry)
     ).toBe(false);
@@ -477,6 +615,22 @@ describe("isValidStylePropForTpl", () => {
       isValidStylePropForTpl("object-fit", mkTplTagX("div"), baseVs, ccRegistry)
     ).toBe(false);
     // layout mismatch
+    expect(
+      isValidStylePropForTpl(
+        "display",
+        mkPlainComponentTpl(),
+        baseVs,
+        ccRegistry
+      )
+    ).toBe(false);
+    expect(
+      isValidStylePropForTpl(
+        "display",
+        mkTplTagX("span", { type: TplTagType.Text }),
+        baseVs,
+        ccRegistry
+      )
+    ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "flex-direction",

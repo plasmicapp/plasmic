@@ -1,6 +1,10 @@
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isTypographyNode } from "@/wab/shared/SlotUtils";
+import {
+  mkVariantSetting,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
@@ -19,6 +23,7 @@ import {
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import * as Tpls from "@/wab/shared/core/tpls";
+import { normProp } from "@/wab/shared/css";
 import { isGridTag } from "@/wab/shared/grid-utils";
 import {
   ContainerLayoutType,
@@ -47,6 +52,11 @@ export function isValidStylePropForTpl(
   }
 
   if (typographyCssProps.includes(prop)) {
+    // Icon color is editable via its dedicated control even though the
+    // typography section is hidden for icons.
+    if (prop === "color" && Tpls.isTplIcon(tpl)) {
+      return true;
+    }
     return isTypographyValidForTpl(tpl);
   }
 
@@ -73,6 +83,7 @@ export function isValidStylePropForTpl(
   }
 
   if (
+    prop === "display" ||
     FLEX_CONTAINER_PROPS.includes(prop) ||
     GAP_PROPS.includes(prop) ||
     gridCssProps.includes(prop)
@@ -81,6 +92,10 @@ export function isValidStylePropForTpl(
       Tpls.isTplContainer(tpl) || Tpls.isTplCodeComponent(tpl);
     if (!isContainerOrCodeComponentTpl) {
       return false;
+    }
+
+    if (prop === "display") {
+      return true;
     }
 
     if (FLEX_CONTAINER_PROPS.includes(prop)) {
@@ -287,6 +302,46 @@ export function isPaddingValidForTpl(
 
 export function isMarginValidForTpl(tpl: TplTag | TplComponent): boolean {
   return !Tpls.isComponentRoot(tpl) && !Tpls.isTplColumn(tpl);
+}
+
+/**
+ * Splits styles (keyed by camelCase prop) into those that can be applied to
+ * the given tpl and those that Studio does not allow for it, per
+ * {@link isValidStylePropForTpl}. Each prop is validated against the ruleset
+ * as it would look after merging all the given styles on top of the base and
+ * target variant styles, so styles that establish state (display: flex) can
+ * be written in the same batch as styles that depend on it (flex-direction),
+ * or live in the base variant while the dependent style targets another
+ * variant. Callers decide what to do with the invalid styles (drop them,
+ * report them, etc.).
+ */
+export function validateStylesForTpl(
+  styles: Record<string, string>,
+  tpl: TplNode,
+  vs: VariantSetting,
+  ccRegistry: CodeComponentsRegistry
+): { valid: Record<string, string>; invalid: Record<string, string> } {
+  const mergedVs = mkVariantSetting({
+    variants: vs.variants,
+    styles: {
+      ...tryGetBaseVariantSetting(tpl)?.rs.values,
+      ...vs.rs.values,
+      ...Object.fromEntries(
+        Object.entries(styles).map(([prop, value]) => [normProp(prop), value])
+      ),
+    },
+  });
+
+  const valid: Record<string, string> = {};
+  const invalid: Record<string, string> = {};
+  for (const [prop, value] of Object.entries(styles)) {
+    if (isValidStylePropForTpl(normProp(prop), tpl, mergedVs, ccRegistry)) {
+      valid[prop] = value;
+    } else {
+      invalid[prop] = value;
+    }
+  }
+  return { valid, invalid };
 }
 
 function isStyleSectionEnabled(

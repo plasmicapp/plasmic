@@ -41,6 +41,7 @@ export async function pasteFromWebImporter(
         result.finalize({
           component,
           tplMgr: viewCtx.tplMgr(),
+          ccRegistry: studioCtx.codeComponentsRegistry,
         });
 
         return success(
