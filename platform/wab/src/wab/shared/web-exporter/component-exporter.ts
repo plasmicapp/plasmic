@@ -11,7 +11,12 @@ import {
   isPageComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/shared/core/components";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
+import { stripParens, tryExtractJson } from "@/wab/shared/core/exprs";
+import {
+  getStateOnChangePropName,
+  getStateVarName,
+  isPublicState,
+} from "@/wab/shared/core/states";
 import {
   generateAnimationPropValue,
   isStylePropApplicable,
@@ -24,7 +29,9 @@ import {
 import { normProp } from "@/wab/shared/css";
 import {
   Component,
+  CustomCode,
   Expr,
+  ObjectPath,
   RuleSet,
   Site,
   TplComponent,
@@ -33,11 +40,14 @@ import {
   TplTag,
   Variant,
   VariantSetting,
+  isKnownCustomCode,
   isKnownImageAssetRef,
+  isKnownObjectPath,
   isKnownPropParam,
   isKnownRawText,
   isKnownRenderExpr,
   isKnownStyleTokenRef,
+  isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import {
   isAnyType,
@@ -51,10 +61,14 @@ import {
 } from "@/wab/shared/web-exporter/component-utils";
 import {
   type ComponentJson,
+  type CustomCodeExprJson,
   type ElementJson,
   type ElementOverrideJson,
+  type ExprJson,
+  type ObjectPathExprJson,
   type PageMetaJson,
   type PropJson,
+  type StateJson,
   type VariantDefJson,
   type VariantOverrideJson,
 } from "@/wab/shared/web-exporter/schema";
@@ -421,6 +435,75 @@ function buildComponentProps(component: Component): PropJson[] {
     });
 }
 
+/**
+ * Serializes a dynamic expression structurally. Only the classes used in state
+ * initial values are covered at the moment (CustomCode, ObjectPath, TemplatedString)
+ * any other Expr yields undefined.
+ */
+export function buildExprJson(expr: Expr): ExprJson | undefined {
+  if (isKnownCustomCode(expr) || isKnownObjectPath(expr)) {
+    return buildFallbackableExprJson(expr);
+  }
+  if (isKnownTemplatedString(expr)) {
+    return {
+      __type: "TemplatedString",
+      text: expr.text.map((part) =>
+        typeof part === "string" ? part : buildFallbackableExprJson(part)
+      ),
+    };
+  }
+  return undefined;
+}
+
+function buildFallbackableExprJson(
+  expr: CustomCode | ObjectPath
+): CustomCodeExprJson | ObjectPathExprJson {
+  const exprJson: CustomCodeExprJson | ObjectPathExprJson = isKnownObjectPath(
+    expr
+  )
+    ? { __type: "ObjectPath", path: [...expr.path] }
+    : { __type: "CustomCode", code: stripParens(expr.code) };
+  const fallback = expr.fallback ? buildExprJson(expr.fallback) : undefined;
+  if (fallback) {
+    exprJson.fallback = fallback;
+  }
+  return exprJson;
+}
+
+function buildComponentStates(component: Component): StateJson[] {
+  return component.states.map((state) => {
+    const stateJson: StateJson = {
+      __type: "State",
+      name: getStateVarName(state),
+      uuid: state.param.uuid,
+      variableType: state.variableType as StateJson["variableType"],
+      accessType: state.accessType as StateJson["accessType"],
+    };
+    if (state.param.defaultExpr) {
+      const staticValue = extractExprValue(state.param.defaultExpr, {
+        json: true,
+      });
+      const initialValue =
+        staticValue !== undefined
+          ? staticValue
+          : buildExprJson(state.param.defaultExpr);
+      if (initialValue !== undefined) {
+        stateJson.initialValue = initialValue;
+      }
+    }
+    if (isPublicState(state)) {
+      const onChangeProp = getStateOnChangePropName(state);
+      if (onChangeProp) {
+        stateJson.onChangeProp = onChangeProp;
+      }
+    }
+    if (state.tplNode) {
+      stateJson.elementUuid = state.tplNode.uuid;
+    }
+    return stateJson;
+  });
+}
+
 interface SerializableVariant {
   /** The model variant, used to read its per-element overrides. */
   variant: Variant;
@@ -547,6 +630,7 @@ export function buildComponentResource(
 ): ComponentJson {
   const pageMeta = buildPageMeta(component);
   const fromProject = getDataPlasmicProject(opts.site, component);
+  const states = buildComponentStates(component);
   const variantSettings = buildVariantOverrides(component);
   return {
     __type: "Component",
@@ -557,6 +641,7 @@ export function buildComponentResource(
     ...(fromProject ? { fromProject } : {}),
     props: buildComponentProps(component),
     variants: buildComponentVariantDefs(component),
+    ...(states.length > 0 ? { states } : {}),
     baseVariantTplTree: component.tplTree
       ? tplToHtml(component.tplTree, opts.site)
       : "",

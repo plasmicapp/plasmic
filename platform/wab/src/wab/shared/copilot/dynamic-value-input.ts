@@ -1,8 +1,10 @@
 import {
+  codeLit,
   customCode,
   simplifyTemplatedString,
   TemplatedStringPropEditorValue,
 } from "@/wab/shared/core/exprs";
+import { tryJsonParse } from "@/wab/shared/core/lang";
 import {
   getDynamicBindings,
   isDynamicValue,
@@ -13,6 +15,7 @@ import {
 } from "@/wab/shared/eval/expression-parser";
 import {
   CustomCode,
+  Expr,
   ObjectPath,
   TemplatedString,
 } from "@/wab/shared/model/classes";
@@ -82,6 +85,21 @@ export function parseDynamicStringInput(
 
   // Anything else: treat as a bare JS expression.
   return buildDynamicExprFromJsSnippet(input);
+}
+
+/**
+ * Like `parseDynamicStringInput`, but always yields a model `Expr` for
+ * model fields typed as `Expr` (e.g. `Param.defaultExpr`). Statically-known
+ * values become unparenthesized literal exprs, which downstream code can
+ * recognize as static using `tryExtractJson`.
+ */
+export function parseDynamicStringInputToExpr(input: DynamicStringInput): Expr {
+  const jsonValue = tryJsonParse(input);
+  if (jsonValue !== undefined) {
+    return codeLit(jsonValue);
+  }
+  const parsed = parseDynamicStringInput(input);
+  return typeof parsed === "string" ? codeLit(parsed) : parsed;
 }
 
 function templateLiteralToValue(

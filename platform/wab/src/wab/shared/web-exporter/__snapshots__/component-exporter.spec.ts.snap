@@ -158,6 +158,31 @@ exports[`Component Serialization serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="color" uuid="IkSf7FFJigLO" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="size" uuid="U8MYosd_X-T3" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="iconStart" uuid="7BqzedN_frg3" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="iconEnd" uuid="u3iQUAcRGEnq" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="roundedFull" uuid="OzLG-vmn_dla" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="type" uuid="PJFGvVd7EaVj" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="flatSide" uuid="wDMqi5T-bV4K" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="P4urRFgjF3wU" data-plasmic-component="plasmicReactAriaButton" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-props="{}" style="position: relative; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); display: flex; cursor: pointer; box-sizing: border-box; min-width: var(--token-J8bgk1cLaZ5G); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; outline-style: none; padding-bottom: 0rem; padding-top: 0rem; padding-right: 0rem; padding-left: 0rem; text-decoration-line: none; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)">
   <slot name="children">
     <div id="zhn6dj3FeLUL" label="soft background" style="display: block; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; background: linear-gradient(var(--token-o3a6NOLIofKT), var(--token-o3a6NOLIofKT)); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
@@ -758,6 +783,13 @@ exports[`Component Serialization serializes all components 1`] = `
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaCheckbox.isSelected" uuid="PARs2uSgmnFT" variableType="boolean" accessType="writable" onChangeProp="onChange" elementUuid="wSXrGkHnJdlR"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="wSXrGkHnJdlR" data-plasmic-component="plasmicReactAriaCheckbox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox" data-props="{}" style="object-fit: cover; cursor: pointer; flex-direction: row; justify-content: flex-start; align-items: center; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="n1iOLNRviVTt" style="position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: var(--token-aR8bR72wtSYZ); border-top-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-left-radius: var(--token-aR8bR72wtSYZ)">
@@ -793,6 +825,13 @@ exports[`Component Serialization serializes all components 1`] = `
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaCheckboxGroup.value" uuid="9jCOvXOQ2Ocf" variableType="array" accessType="writable" onChangeProp="onChange" elementUuid="EQwO08BkwohB"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="EQwO08BkwohB" data-plasmic-component="plasmicReactAriaCheckboxGroup" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox Group" data-props="{}" style="position: relative; display: flex; flex-direction: column; box-sizing: border-box; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
     <plasmic-component id="98XO1OPKAiCe" data-plasmic-component="label" style="position: relative; plasmic-display-none: false">
@@ -878,6 +917,22 @@ exports[`Component Serialization serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaComboBox.isOpen" uuid="vzyiFOUgHYmh" variableType="boolean" accessType="writable" onChangeProp="onOpenChange" elementUuid="6toPxJJ_4YJU"></State>
+      </ITEM>
+      <ITEM>
+        <State name="ariaComboBox.selectedValue" uuid="BhDADAjRzJxn" variableType="text" accessType="writable" onChangeProp="onChange" elementUuid="6toPxJJ_4YJU"></State>
+      </ITEM>
+      <ITEM>
+        <State name="type" uuid="xCeagevuQTtB" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="ariaInput.value" uuid="TAsubwsZBR2P" variableType="text" accessType="private" elementUuid="7-j7NzxcA8qX"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="6toPxJJ_4YJU" data-plasmic-component="plasmicReactAriaCombobox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria ComboBox" data-props="{}" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
     <plasmic-component id="4xLgaE-4M0Kx" data-plasmic-component="label" style="plasmic-display-none: false">
@@ -972,6 +1027,19 @@ exports[`Component Serialization serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaDialogTrigger.isOpen" uuid="WWAR4e_xlUN9" variableType="boolean" accessType="writable" onChangeProp="onOpenChange" elementUuid="WAQLbjkAZ5OA"></State>
+      </ITEM>
+      <ITEM>
+        <State name="ariaModal.isOpen" uuid="46ap1DPcso29" variableType="boolean" accessType="private" elementUuid="8STuIQigZ3vG"></State>
+      </ITEM>
+      <ITEM>
+        <State name="noTrigger" uuid="FQboRceNgjg0" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="WAQLbjkAZ5OA" data-plasmic-component="plasmicReactAriaDialogTrigger" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Dialog Trigger" style="position: relative">
   <slot name="trigger">
     <slot-target name="Trigger" id="UPso8XRDR1_Z">
@@ -1086,6 +1154,28 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="checkboxGroup.value" uuid="Oo0lBIeCoYNS" variableType="array" accessType="private" elementUuid="ECPnnoz-UM9u"></State>
+      </ITEM>
+      <ITEM>
+        <State name="select.isOpen" uuid="yc8sYA0eqrKm" variableType="boolean" accessType="private" elementUuid="yVNoh5O3v0cb"></State>
+      </ITEM>
+      <ITEM>
+        <State name="select.value" uuid="WOY2lJ0Yqhme" variableType="text" accessType="private" elementUuid="yVNoh5O3v0cb"></State>
+      </ITEM>
+      <ITEM>
+        <State name="slider.value" uuid="AcyX6gq17aAH" variableType="number" accessType="private" elementUuid="hq7D0qhcWq23"></State>
+      </ITEM>
+      <ITEM>
+        <State name="_switch.isSelected" uuid="T3QpCOeNbhfu" variableType="boolean" accessType="private" elementUuid="nDAyQ6rOezVl"></State>
+      </ITEM>
+      <ITEM>
+        <State name="textField.value" uuid="VCVk-pWKGnsx" variableType="text" accessType="private" elementUuid="uQEzkCsn4RFC"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
   <section id="7weorkEjgQjD" style="display: plasmic-content-layout; position: relative; width: plasmic-layout-full-bleed; height: wrap; padding-left: 0px; padding-right: 0px; padding-bottom: 96px; padding-top: 96px; grid-row-gap: 16px; align-content: flex-start; justify-items: center">
     <h1 id="KU_MhnoNNJco" style="position: relative; width: stretch; height: wrap; margin-bottom: 32px; color: red">Welcome to your first page.</h1>
@@ -1224,6 +1314,16 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="size" uuid="xeuC9qu3goTG" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="requirementIndicator" uuid="4yYNFG03QrEW" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="ZRhv_StjR968" data-plasmic-component="plasmicReactAriaLabel" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="position: relative; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn)">
   <slot name="children">
     <div id="adSiQfuy-R05" style="position: relative; display: flex; flex-direction: row; column-gap: var(--token-iV97hAoHAnKd)">
@@ -1359,6 +1459,13 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaListBox.selectedValue" uuid="qsjHch3ojaTf" variableType="text" accessType="private" elementUuid="iTMcsV4DmNw0"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="SWsDzMhdhEVr" data-plasmic-component="plasmicReactAriaPopover" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-props="{&quot;shouldFlip&quot;:true,&quot;placement&quot;:&quot;bottom&quot;}" style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token--0yvAvGYfFhX); width: 300px; box-sizing: border-box; object-fit: cover; background: linear-gradient(var(--token-48p0Jlumb6Of), var(--token-48p0Jlumb6Of)); border-top-left-radius: var(--token-yk7m7bwFJ02R); border-top-right-radius: var(--token-yk7m7bwFJ02R); border-bottom-right-radius: var(--token-yk7m7bwFJ02R); border-bottom-left-radius: var(--token-yk7m7bwFJ02R); position: relative; overflow: auto; box-shadow: 0px 0px 12px 0px #00000040, 0px 0px 0px 0.5px var(--token-lQAqvQ-ZHuDc)">
   <slot name="children">
     <plasmic-component id="iTMcsV4DmNw0" data-plasmic-component="plasmicReactAriaListbox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria ListBox" data-props="{&quot;selectionMode&quot;:&quot;single&quot;}" style="box-sizing: border-box; object-fit: cover; max-width: 100%; width: stretch; outline-style: none">
@@ -1435,6 +1542,19 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaDialogTrigger.isOpen" uuid="O7tuIIZ_EZem" variableType="boolean" accessType="writable" onChangeProp="onOpenChange" elementUuid="6A5IRex_ZR1p"></State>
+      </ITEM>
+      <ITEM>
+        <State name="ariaModal.isOpen" uuid="a47VEnYBuvqj" variableType="boolean" accessType="private" elementUuid="PHvR-wvOnOUX"></State>
+      </ITEM>
+      <ITEM>
+        <State name="noTrigger" uuid="_9d__MCN3Qr4" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="6A5IRex_ZR1p" data-plasmic-component="plasmicReactAriaDialogTrigger" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Dialog Trigger" style="position: relative">
   <slot name="trigger">
     <slot-target name="Trigger" id="ZTA2-vbNl2Ib">
@@ -1508,6 +1628,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="dark" uuid="vFLPtsGMDc6c" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="4e5blTBKaGaB" data-plasmic-component="plasmicReactAriaOverlayArrow" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="max-width: 100%; object-fit: cover; position: relative">
   <slot name="children">
     <svg id="-2SFIm9VX_6T" style="color: var(--token-48p0Jlumb6Of); width: 10px; height: 10px; transform: translate3d(0px, 3px, 0px)"></svg>
@@ -1565,6 +1692,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaDialogTrigger.isOpen" uuid="hBnA9ChRWOJ2" variableType="boolean" accessType="writable" onChangeProp="onOpenChange" elementUuid="HZQuYqG0j_TX"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="HZQuYqG0j_TX" data-plasmic-component="plasmicReactAriaDialogTrigger" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Dialog Trigger" style="position: relative">
   <slot name="trigger">
     <slot-target name="Trigger" id="fskV7PlbGiJY">
@@ -1652,6 +1786,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaRadioGroup.value" uuid="Zgka_BaU1U1J" variableType="array" accessType="writable" onChangeProp="onChange" elementUuid="VjDG6dqVYVzS"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="VjDG6dqVYVzS" data-plasmic-component="plasmicReactAriaRadioGroup" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria RadioGroup" data-props="{}" style="display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
     <plasmic-component id="bCm9NLAz0F27" data-plasmic-component="label" style="plasmic-display-none: false">
@@ -1728,6 +1869,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaRangeSlider.value" uuid="-szCRSoc-rJp" variableType="array" accessType="writable" onChangeProp="onChange" elementUuid="ZRpvtB4bErD6"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="ZRpvtB4bErD6" data-plasmic-component="plasmicReactAriaSliderRangeSlider" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Range Slider" data-props="{}" style="width: stretch; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); min-width: 200px; row-gap: var(--token-50jqnrkhPFjk)">
   <slot name="children">
     <div id="3TgD8bjSRxmw" style="display: flex; flex-direction: row; position: relative; justify-content: space-between; column-gap: var(--token-J8bgk1cLaZ5G)">
@@ -1804,6 +1952,19 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaSelect.isOpen" uuid="4SNnUAN6pQ9S" variableType="boolean" accessType="writable" onChangeProp="onOpenChange" elementUuid="P6ldrdX5EJky"></State>
+      </ITEM>
+      <ITEM>
+        <State name="ariaSelect.selectedValue" uuid="MTY4BeRazZTi" variableType="text" accessType="writable" onChangeProp="onChange" elementUuid="P6ldrdX5EJky"></State>
+      </ITEM>
+      <ITEM>
+        <State name="type" uuid="wN7Z5EgViD0q" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="P6ldrdX5EJky" data-plasmic-component="plasmicReactAriaSelect" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Select" data-props="{}" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
     <plasmic-component id="R5T8SPB0kYCp" data-plasmic-component="label" style="plasmic-display-none: false">
@@ -1892,6 +2053,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaSlider.value" uuid="z4733k960gUc" variableType="number" accessType="writable" onChangeProp="onChange" elementUuid="QE2I6Xu6adAX"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="QE2I6Xu6adAX" data-plasmic-component="plasmicReactAriaSlider" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Slider" data-props="{}" style="position: relative; box-sizing: border-box; min-width: 200px; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; row-gap: var(--token-50jqnrkhPFjk)">
   <slot name="children">
     <div id="kJh_0nOiQS0j" style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; plasmic-display-none: false; column-gap: var(--token-J8bgk1cLaZ5G)">
@@ -1974,6 +2142,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaSwitch.isSelected" uuid="-KQ--oGB1A43" variableType="boolean" accessType="writable" onChangeProp="onChange" elementUuid="qOaYUalmx_Mw"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="qOaYUalmx_Mw" data-plasmic-component="plasmicReactAriaSwitch" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Switch" data-props="{}" style="object-fit: cover; position: relative; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; flex-direction: column; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
     <div id="D_1vN78LfWR4" style="position: relative; display: flex; flex-direction: row; justify-content: flex-start; align-items: flex-start; column-gap: var(--token-J8bgk1cLaZ5G)">
@@ -2157,6 +2332,28 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaTextField.value" uuid="kZEkBx_AeP79" variableType="text" accessType="writable" onChangeProp="onChange" elementUuid="NESDFXPGRUxY"></State>
+      </ITEM>
+      <ITEM>
+        <State name="multiLine" uuid="J1a1T5Z8YB1I" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="iconStart" uuid="DTutseiE33YO" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="iconEnd" uuid="F7UoM0SVW78t" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="textInput.value" uuid="XuImg2hy1a8s" variableType="text" accessType="private" elementUuid="GW_pTiEM-XJh"></State>
+      </ITEM>
+      <ITEM>
+        <State name="textAreaInput.value" uuid="EIuW-EPUVDN0" variableType="text" accessType="private" elementUuid="owbUg8BLCrEo"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="NESDFXPGRUxY" data-plasmic-component="plasmicReactAriaTextField" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria TextField" data-props="{}" style="display: flex; flex-direction: column; box-sizing: border-box; width: stretch; position: relative; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
     <plasmic-component id="KhtStgTAP5Ec" data-plasmic-component="label" style="position: relative; plasmic-display-none: false">
@@ -2419,6 +2616,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaInput.value" uuid="sEAycUKOkOJe" variableType="text" accessType="writable" onChangeProp="onChange" elementUuid="PzECf6Nfa4vE"></State>
+      </ITEM>
+      <ITEM>
+        <State name="type" uuid="VaTmIkYmhT5D" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="flat" uuid="OEGc6nTXW6iW" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="padded" uuid="r-xmHdoZz34s" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="PzECf6Nfa4vE" data-plasmic-component="plasmicReactAriaInput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Input" data-props="{}" style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); box-sizing: border-box; border-bottom-left-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-top-left-radius: var(--token--0yvAvGYfFhX); box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); border-left-style: none; border-bottom-style: none; border-right-style: none; border-top-style: none; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; position: relative; outline-style: none"></plasmic-component>]]></baseVariantTplTree>
   <variantSettings>
     <ARRAY>
@@ -2649,6 +2862,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaTextArea.value" uuid="L1AvEltDyZ2_" variableType="text" accessType="writable" onChangeProp="onChange" elementUuid="yx_4PVCh-WFR"></State>
+      </ITEM>
+      <ITEM>
+        <State name="type" uuid="nL4iCiwXiGhz" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="flat" uuid="0n_s_cw8rZW-" variableType="variant" accessType="private"></State>
+      </ITEM>
+      <ITEM>
+        <State name="padded" uuid="oBTFGRh7fjdp" variableType="variant" accessType="private"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="yx_4PVCh-WFR" data-plasmic-component="plasmicReactAriaTextarea" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria TextArea" data-props="{}" style="box-sizing: border-box; object-fit: cover; position: relative; box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none"></plasmic-component>]]></baseVariantTplTree>
   <variantSettings>
     <ARRAY>
@@ -2828,6 +3057,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variants>
     <ARRAY></ARRAY>
   </variants>
+  <states>
+    <ARRAY>
+      <ITEM>
+        <State name="ariaTooltip.isOpen" uuid="a_wqJulunKCd" variableType="boolean" accessType="writable" onChangeProp="onOpenChange" elementUuid="1FRybYqMkhR8"></State>
+      </ITEM>
+    </ARRAY>
+  </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="1FRybYqMkhR8" data-plasmic-component="plasmicReactAriaTooltip" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Tooltip" data-props="{}" style="box-sizing: border-box; position: relative; color: #FFFFFF">
   <slot name="children">
     <slot-target name="Trigger" id="9W1eMj9WY8CK">
@@ -2965,6 +3201,57 @@ exports[`Component Serialization serializes all components 2`] = `
         "name": "openLinkInNewTab",
         "type": "boolean",
         "uuid": "yy2_KKU6W4Gr",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "color",
+        "uuid": "IkSf7FFJigLO",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "size",
+        "uuid": "U8MYosd_X-T3",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "iconStart",
+        "uuid": "7BqzedN_frg3",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "iconEnd",
+        "uuid": "u3iQUAcRGEnq",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "roundedFull",
+        "uuid": "OzLG-vmn_dla",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "type",
+        "uuid": "PJFGvVd7EaVj",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "flatSide",
+        "uuid": "wDMqi5T-bV4K",
+        "variableType": "variant",
       },
     ],
     "type": "plain",
@@ -3935,6 +4222,17 @@ exports[`Component Serialization serializes all components 2`] = `
         "uuid": "ZAeKaaZ-U1Jk",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "wSXrGkHnJdlR",
+        "name": "ariaCheckbox.isSelected",
+        "onChangeProp": "onChange",
+        "uuid": "PARs2uSgmnFT",
+        "variableType": "boolean",
+      },
+    ],
     "type": "plain",
     "uuid": "eTjAMScYpz_5",
     "variants": [],
@@ -4011,6 +4309,17 @@ exports[`Component Serialization serializes all components 2`] = `
         "name": "readOnly",
         "type": "boolean",
         "uuid": "1bmahVfmcwBn",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "EQwO08BkwohB",
+        "name": "ariaCheckboxGroup.value",
+        "onChangeProp": "onChange",
+        "uuid": "9jCOvXOQ2Ocf",
+        "variableType": "array",
       },
     ],
     "type": "plain",
@@ -4116,6 +4425,41 @@ exports[`Component Serialization serializes all components 2`] = `
         "name": "readOnly",
         "type": "boolean",
         "uuid": "cf0G1VdfjZ0R",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "6toPxJJ_4YJU",
+        "name": "ariaComboBox.isOpen",
+        "onChangeProp": "onOpenChange",
+        "uuid": "vzyiFOUgHYmh",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "6toPxJJ_4YJU",
+        "name": "ariaComboBox.selectedValue",
+        "onChangeProp": "onChange",
+        "uuid": "BhDADAjRzJxn",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "type",
+        "uuid": "xCeagevuQTtB",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "7-j7NzxcA8qX",
+        "name": "ariaInput.value",
+        "uuid": "TAsubwsZBR2P",
+        "variableType": "text",
       },
     ],
     "type": "plain",
@@ -4260,6 +4604,32 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "uuid": "r4xxnbDzdJgo",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "WAQLbjkAZ5OA",
+        "name": "ariaDialogTrigger.isOpen",
+        "onChangeProp": "onOpenChange",
+        "uuid": "WWAR4e_xlUN9",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "8STuIQigZ3vG",
+        "name": "ariaModal.isOpen",
+        "uuid": "46ap1DPcso29",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "noTrigger",
+        "uuid": "FQboRceNgjg0",
+        "variableType": "variant",
+      },
+    ],
     "type": "plain",
     "uuid": "66fbwz7FPx2e",
     "variantSettings": [
@@ -4351,6 +4721,56 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       "path": "/",
     },
     "props": [],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "ECPnnoz-UM9u",
+        "name": "checkboxGroup.value",
+        "uuid": "Oo0lBIeCoYNS",
+        "variableType": "array",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "yVNoh5O3v0cb",
+        "name": "select.isOpen",
+        "uuid": "yc8sYA0eqrKm",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "yVNoh5O3v0cb",
+        "name": "select.value",
+        "uuid": "WOY2lJ0Yqhme",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "hq7D0qhcWq23",
+        "name": "slider.value",
+        "uuid": "AcyX6gq17aAH",
+        "variableType": "number",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "nDAyQ6rOezVl",
+        "name": "_switch.isSelected",
+        "uuid": "T3QpCOeNbhfu",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "uQEzkCsn4RFC",
+        "name": "textField.value",
+        "uuid": "VCVk-pWKGnsx",
+        "variableType": "text",
+      },
+    ],
     "type": "page",
     "uuid": "ypvAo6PBDTFP",
     "variantSettings": [
@@ -4450,6 +4870,22 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 </plasmic-component>",
     "name": "Label",
     "props": [],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "size",
+        "uuid": "xeuC9qu3goTG",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "requirementIndicator",
+        "uuid": "4yYNFG03QrEW",
+        "variableType": "variant",
+      },
+    ],
     "type": "plain",
     "uuid": "JVCv_cilvEWB",
     "variantSettings": [
@@ -4660,6 +5096,16 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         "uuid": "HAatoUv1hSxL",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "iTMcsV4DmNw0",
+        "name": "ariaListBox.selectedValue",
+        "uuid": "qsjHch3ojaTf",
+        "variableType": "text",
+      },
+    ],
     "type": "plain",
     "uuid": "8w0OrLGU6fuW",
     "variants": [],
@@ -4777,6 +5223,32 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "uuid": "wSBJUtL_n4l2",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "6A5IRex_ZR1p",
+        "name": "ariaDialogTrigger.isOpen",
+        "onChangeProp": "onOpenChange",
+        "uuid": "O7tuIIZ_EZem",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "PHvR-wvOnOUX",
+        "name": "ariaModal.isOpen",
+        "uuid": "a47VEnYBuvqj",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "noTrigger",
+        "uuid": "_9d__MCN3Qr4",
+        "variableType": "variant",
+      },
+    ],
     "type": "plain",
     "uuid": "JMMmDTbwlNba",
     "variants": [
@@ -4801,6 +5273,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 </plasmic-component>",
     "name": "Overlay Arrow",
     "props": [],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "dark",
+        "uuid": "vFLPtsGMDc6c",
+        "variableType": "variant",
+      },
+    ],
     "type": "plain",
     "uuid": "1tPqNrfR1BwC",
     "variantSettings": [
@@ -4908,6 +5389,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         ],
         "type": "enum",
         "uuid": "ouxVEFx2FrBF",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "HZQuYqG0j_TX",
+        "name": "ariaDialogTrigger.isOpen",
+        "onChangeProp": "onOpenChange",
+        "uuid": "hBnA9ChRWOJ2",
+        "variableType": "boolean",
       },
     ],
     "type": "plain",
@@ -5025,6 +5517,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "uuid": "g4a-_aqB_-M-",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "VjDG6dqVYVzS",
+        "name": "ariaRadioGroup.value",
+        "onChangeProp": "onChange",
+        "uuid": "Zgka_BaU1U1J",
+        "variableType": "array",
+      },
+    ],
     "type": "plain",
     "uuid": "tNAN12ZT21NW",
     "variants": [],
@@ -5135,6 +5638,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "uuid": "mtQnjh3gIgbk",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "ZRpvtB4bErD6",
+        "name": "ariaRangeSlider.value",
+        "onChangeProp": "onChange",
+        "uuid": "-szCRSoc-rJp",
+        "variableType": "array",
+      },
+    ],
     "type": "plain",
     "uuid": "9TpJxmLV-WtC",
     "variants": [],
@@ -5224,6 +5738,33 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "name": "ariaLabel",
         "type": "text",
         "uuid": "lbgAs4SojKA2",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "P6ldrdX5EJky",
+        "name": "ariaSelect.isOpen",
+        "onChangeProp": "onOpenChange",
+        "uuid": "4SNnUAN6pQ9S",
+        "variableType": "boolean",
+      },
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "P6ldrdX5EJky",
+        "name": "ariaSelect.selectedValue",
+        "onChangeProp": "onChange",
+        "uuid": "MTY4BeRazZTi",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "type",
+        "uuid": "wN7Z5EgViD0q",
+        "variableType": "variant",
       },
     ],
     "type": "plain",
@@ -5357,6 +5898,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "uuid": "tf9Eo6ah2BL2",
       },
     ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "QE2I6Xu6adAX",
+        "name": "ariaSlider.value",
+        "onChangeProp": "onChange",
+        "uuid": "z4733k960gUc",
+        "variableType": "number",
+      },
+    ],
     "type": "plain",
     "uuid": "O3lbnxqQd9_J",
     "variants": [],
@@ -5445,6 +5997,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "name": "ariaLabel",
         "type": "text",
         "uuid": "7ft7dweSwtUq",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "qOaYUalmx_Mw",
+        "name": "ariaSwitch.isSelected",
+        "onChangeProp": "onChange",
+        "uuid": "-KQ--oGB1A43",
+        "variableType": "boolean",
       },
     ],
     "type": "plain",
@@ -5650,6 +6213,54 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "name": "ariaLabel",
         "type": "text",
         "uuid": "1xESXiUetCDz",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "NESDFXPGRUxY",
+        "name": "ariaTextField.value",
+        "onChangeProp": "onChange",
+        "uuid": "kZEkBx_AeP79",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "multiLine",
+        "uuid": "J1a1T5Z8YB1I",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "iconStart",
+        "uuid": "DTutseiE33YO",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "iconEnd",
+        "uuid": "F7UoM0SVW78t",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "GW_pTiEM-XJh",
+        "name": "textInput.value",
+        "uuid": "XuImg2hy1a8s",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "elementUuid": "owbUg8BLCrEo",
+        "name": "textAreaInput.value",
+        "uuid": "EIuW-EPUVDN0",
+        "variableType": "text",
       },
     ],
     "type": "plain",
@@ -5871,6 +6482,38 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "name": "ariaLabel",
         "type": "text",
         "uuid": "J4K4kt4q2EaE",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "PzECf6Nfa4vE",
+        "name": "ariaInput.value",
+        "onChangeProp": "onChange",
+        "uuid": "sEAycUKOkOJe",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "type",
+        "uuid": "VaTmIkYmhT5D",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "flat",
+        "uuid": "OEGc6nTXW6iW",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "padded",
+        "uuid": "r-xmHdoZz34s",
+        "variableType": "variant",
       },
     ],
     "type": "plain",
@@ -6151,6 +6794,38 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "name": "ariaLabel",
         "type": "text",
         "uuid": "6Go6pans-5xS",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "yx_4PVCh-WFR",
+        "name": "ariaTextArea.value",
+        "onChangeProp": "onChange",
+        "uuid": "L1AvEltDyZ2_",
+        "variableType": "text",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "type",
+        "uuid": "nL4iCiwXiGhz",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "flat",
+        "uuid": "0n_s_cw8rZW-",
+        "variableType": "variant",
+      },
+      {
+        "__type": "State",
+        "accessType": "private",
+        "name": "padded",
+        "uuid": "oBTFGRh7fjdp",
+        "variableType": "variant",
       },
     ],
     "type": "plain",
@@ -6457,6 +7132,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         ],
         "type": "enum",
         "uuid": "LBien6Xm-Qfz",
+      },
+    ],
+    "states": [
+      {
+        "__type": "State",
+        "accessType": "writable",
+        "elementUuid": "1FRybYqMkhR8",
+        "name": "ariaTooltip.isOpen",
+        "onChangeProp": "onOpenChange",
+        "uuid": "a_wqJulunKCd",
+        "variableType": "boolean",
       },
     ],
     "type": "plain",

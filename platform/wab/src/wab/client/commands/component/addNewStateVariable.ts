@@ -1,7 +1,8 @@
 import { getComponentContext } from "@/wab/client/commands/context-utils";
 import { Command } from "@/wab/client/commands/types";
-import { mkInitialState } from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
-import { addComponentState } from "@/wab/shared/core/states";
+import { createComponentState } from "@/wab/client/operations/create-component-state";
+import { assert } from "@/wab/shared/common";
+import { DEFAULT_STATE_VARIABLE_NAME } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
 
 export const addNewStateVariableCommand: Command<
@@ -23,10 +24,15 @@ export const addNewStateVariableCommand: Command<
   context: getComponentContext,
   execute: async (studioCtx, _, { component }) => {
     return await studioCtx.change(({ success }) => {
-      const newState = mkInitialState(studioCtx, component);
-      addComponentState(studioCtx.site, component, newState);
+      const result = createComponentState({
+        site: studioCtx.site,
+        component,
+        tplMgr: studioCtx.tplMgr(),
+        name: DEFAULT_STATE_VARIABLE_NAME,
+      });
+      assert(result.result === "success", "Failed to create state variable");
 
-      return success(newState);
+      return success(result.state);
     });
   },
 };

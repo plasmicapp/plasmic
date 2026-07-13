@@ -12,10 +12,12 @@ import {
   maybeUploadImage,
 } from "@/wab/client/dom-utils";
 import { deleteComponent } from "@/wab/client/operations/delete-component";
+import { deleteComponentState } from "@/wab/client/operations/delete-component-state";
 import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
 import { deleteStyleToken } from "@/wab/client/operations/delete-style-token";
 import { deleteVariant } from "@/wab/client/operations/delete-variant";
 import { deleteVariantGroup } from "@/wab/client/operations/delete-variant-group";
+import { updateComponentState } from "@/wab/client/operations/update-component-state";
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
@@ -114,11 +116,10 @@ import {
   visitComponentRefs,
 } from "@/wab/shared/core/sites";
 import {
-  StateType,
+  NormalStateVariableType,
+  StateAccessType,
   findImplicitUsages,
   isStateUsedInExpr,
-  removeComponentState,
-  updateStateAccessType,
 } from "@/wab/shared/core/states";
 import {
   extractAnimationSequenceUsages,
@@ -148,6 +149,7 @@ import {
   ComponentServerQuery,
   ComponentVariantGroup,
   DataToken,
+  Expr,
   GlobalVariantGroup,
   ImageAsset,
   Mixin,
@@ -163,7 +165,6 @@ import {
   isKnownComponentVariantGroup,
   isKnownEventHandler,
 } from "@/wab/shared/model/classes";
-import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
 import {
   getFrameColumnIndex,
   removeManagedFramesFromPageArenaForVariants,
@@ -1077,57 +1078,55 @@ export class SiteOps {
     );
   }
 
-  updateState(state: State, update: Partial<StateType>) {
-    const { accessType, ...rest } = update;
-
+  updateState(
+    state: State,
+    update: {
+      accessType?: StateAccessType;
+      variableType?: NormalStateVariableType;
+      initialValue?: Expr | null;
+    }
+  ) {
     const component = ensure(
       this.site.components.find((c) => c.states.includes(state)),
       "Expected some component to contain the given state"
     );
 
-    if (accessType === "private") {
-      const implicitUsages = findImplicitUsages(this.site, state);
-      if (implicitUsages.length > 0) {
-        const components = L.uniq(
-          implicitUsages.map((usage) => usage.component)
-        );
-        notification.error({
-          message: 'Cannot set access type to "private"',
-          description: `Variable is referenced in ${components
-            .map((c) => getComponentDisplayName(c))
-            .join(", ")}.`,
-        });
-        return;
-      }
+    const result = updateComponentState(state, update, {
+      site: this.site,
+      component,
+      tplMgr: this.tplMgr,
+    });
+    if (result.result === "error") {
+      notification.error({
+        message: update.accessType
+          ? `Cannot set access type to "${update.accessType}"`
+          : update.initialValue !== undefined
+          ? "Cannot set initial value"
+          : "Cannot update variable",
+        description: result.message,
+      });
     }
-
-    if (accessType && state.accessType !== accessType) {
-      updateStateAccessType(this.site, component, state, accessType);
-    }
-    if (update.variableType) {
-      state.param.type = convertVariableTypeToWabType(update.variableType);
-    }
-    Object.assign(state, rest);
   }
 
   removeState(component: Component, state: State) {
-    const refs = findExprsInComponent(component).filter(({ expr }) =>
-      isStateUsedInExpr(state, expr)
-    );
-    if (refs.length > 0) {
+    const result = deleteComponentState(state, {
+      site: this.site,
+      component,
+    });
+    if (result.result === "error") {
       const viewCtx = this.studioCtx.focusedViewCtx();
-      const maybeNode = refs.find((r) => r.node)?.node;
+      const refNode = result.referencingNode;
       const key = mkUuid();
       notification.error({
         key,
         message: "Cannot delete variable",
         description: (
           <>
-            It is referenced in the current component.{" "}
-            {viewCtx?.component === component && maybeNode ? (
+            {result.message}{" "}
+            {viewCtx?.component === component && refNode ? (
               <a
                 onClick={() => {
-                  viewCtx.setStudioFocusByTpl(maybeNode);
+                  viewCtx.setStudioFocusByTpl(refNode);
                   notification.close(key);
                 }}
               >
@@ -1139,18 +1138,6 @@ export class SiteOps {
       });
       return false;
     }
-    const implicitUsages = findImplicitUsages(this.site, state);
-    if (implicitUsages.length > 0) {
-      const components = L.uniq(implicitUsages.map((usage) => usage.component));
-      notification.error({
-        message: "Cannot delete variable",
-        description: `It is referenced in ${components
-          .map((c) => getComponentDisplayName(c))
-          .join(", ")}.`,
-      });
-      return false;
-    }
-    removeComponentState(this.site, component, state);
     return true;
   }
 

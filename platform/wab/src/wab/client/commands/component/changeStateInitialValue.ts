@@ -26,7 +26,7 @@ export const changeStateInitialValueCommand: Command<
   context: getComponentStatesContext,
   execute: async (studioCtx, { expr }, { state }) => {
     return await studioCtx.change(({ success }) => {
-      state.param.defaultExpr = expr;
+      studioCtx.siteOps().updateState(state, { initialValue: expr ?? null });
       return success();
     });
   },

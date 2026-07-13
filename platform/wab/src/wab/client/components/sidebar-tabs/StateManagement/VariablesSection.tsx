@@ -12,55 +12,18 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { DefaultVariablesSectionProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariablesSection";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
 import { ensure } from "@/wab/shared/common";
-import { codeLit } from "@/wab/shared/core/exprs";
-import { mkParamsForState } from "@/wab/shared/core/lang";
-import {
-  DEFAULT_STATE_ACCESS_TYPE,
-  DEFAULT_STATE_VARIABLE_NAME,
-  DEFAULT_STATE_VARIABLE_TYPE,
-  genOnChangeParamName,
-  getDefaultValueForStateVariableType,
-  mkState,
-} from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-
-export function mkInitialState(sc: StudioCtx, component: Component) {
-  const name = sc
-    .tplMgr()
-    .getUniqueParamName(component, DEFAULT_STATE_VARIABLE_NAME);
-
-  const onChangeProp = sc
-    .tplMgr()
-    .getUniqueParamName(component, genOnChangeParamName(name));
-
-  const { valueParam, onChangeParam } = mkParamsForState({
-    name,
-    onChangeProp,
-    variableType: DEFAULT_STATE_VARIABLE_TYPE,
-    accessType: DEFAULT_STATE_ACCESS_TYPE,
-    defaultExpr: codeLit(
-      getDefaultValueForStateVariableType(DEFAULT_STATE_VARIABLE_TYPE)
-    ),
-  });
-
-  return mkState({
-    param: valueParam,
-    onChangeParam,
-    variableType: DEFAULT_STATE_VARIABLE_TYPE,
-    accessType: DEFAULT_STATE_ACCESS_TYPE,
-  });
-}
 
 export interface VariablesSectionProps extends DefaultVariablesSectionProps {
   component: Component;

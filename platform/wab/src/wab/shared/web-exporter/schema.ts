@@ -1,4 +1,8 @@
 import { tokenTypes } from "@/wab/commons/StyleToken";
+import {
+  STATE_ACCESS_TYPES,
+  STATE_VARIABLE_TYPES,
+} from "@/wab/shared/core/states";
 import { z } from "zod";
 
 /**
@@ -116,6 +120,7 @@ export function componentSummarySchema() {
     .omit({
       props: true,
       variants: true,
+      states: true,
       baseVariantTplTree: true,
       variantSettings: true,
       pageMeta: true,
@@ -152,6 +157,10 @@ export function componentSchema() {
     variants: z
       .array(variantDefSchema())
       .describe("Component variant definitions (group + element variants)."),
+    states: z
+      .array(stateSchema())
+      .optional()
+      .describe("Component state variables ($state), when any exist."),
     baseVariantTplTree: z
       .string()
       .describe("Base-variant tpl tree as HTML markup."),
@@ -204,6 +213,111 @@ export function propSchema() {
   });
 }
 export type PropJson = z.infer<ReturnType<typeof propSchema>>;
+
+export function stateSchema() {
+  return z.object({
+    __type: z.literal("State"),
+    name: z
+      .string()
+      .describe(
+        'Variable name, as accessed via `$state` (implicit states use a dotted path, e.g. "myInput.value").'
+      ),
+    uuid: z
+      .string()
+      .describe("State UUID (the UUID of the state's value param)."),
+    variableType: z
+      .enum(STATE_VARIABLE_TYPES)
+      .describe('Value type. "variant" states back a component variant group.'),
+    accessType: z
+      .enum(STATE_ACCESS_TYPES)
+      .describe(
+        "private: internal only; readonly: parent components can read it; writable: exposed as a prop (controlled-component style)."
+      ),
+    initialValue: z
+      .union([z.any(), exprSchema()])
+      .optional()
+      .describe(
+        "Initial value: the real typed value when statically known, otherwise a serialized dynamic expression."
+      ),
+    onChangeProp: z
+      .string()
+      .optional()
+      .describe(
+        "Change-handler prop name, present for public (non-private) states."
+      ),
+    elementUuid: z
+      .string()
+      .optional()
+      .describe(
+        "Present for implicit states: UUID of the element (component instance or input tag) whose state this mirrors."
+      ),
+  });
+}
+export type StateJson = z.infer<ReturnType<typeof stateSchema>>;
+
+/**
+ * A dynamic expression, serialized structurally. Only the expression classes
+ * related state initial values are covered at the moment (CustomCode, ObjectPath,
+ * TemplatedString).
+ */
+
+export type ExprJson =
+  | CustomCodeExprJson
+  | ObjectPathExprJson
+  | TemplatedStringExprJson;
+
+export type CustomCodeExprJson = {
+  __type: "CustomCode";
+  code: string;
+  fallback?: ExprJson;
+};
+export type ObjectPathExprJson = {
+  __type: "ObjectPath";
+  path: (string | number)[];
+  fallback?: ExprJson;
+};
+export type TemplatedStringExprJson = {
+  __type: "TemplatedString";
+  text: (string | CustomCodeExprJson | ObjectPathExprJson)[];
+};
+
+// Single instances so the recursive `z.lazy` reference below resolves to the
+// same object every time. Otherwise, zod-to-json-schema can't detect
+// recursion.
+const fallbackSchema: z.ZodType<ExprJson | undefined> = z
+  .lazy(() => exprSchema())
+  .optional()
+  .describe("Fallback expression used when evaluation fails.");
+
+const customCodeExprSchema = z.object({
+  __type: z.literal("CustomCode"),
+  code: z.string().describe("JS expression over $-vars."),
+  fallback: fallbackSchema,
+});
+const objectPathExprSchema = z.object({
+  __type: z.literal("ObjectPath"),
+  path: z
+    .array(z.union([z.string(), z.number()]))
+    .describe(
+      'Member-access path, e.g. ["$ctx", "params", "slug"] for $ctx.params.slug.'
+    ),
+  fallback: fallbackSchema,
+});
+const templatedStringExprSchema = z.object({
+  __type: z.literal("TemplatedString"),
+  text: z
+    .array(z.union([z.string(), customCodeExprSchema, objectPathExprSchema]))
+    .describe("Interleaved literal strings and expression parts."),
+});
+const exprSchemaSingleton = z.discriminatedUnion("__type", [
+  customCodeExprSchema,
+  objectPathExprSchema,
+  templatedStringExprSchema,
+]);
+
+export function exprSchema() {
+  return exprSchemaSingleton;
+}
 
 export function variantDefSchema() {
   return z.discriminatedUnion("__type", [
@@ -389,6 +503,7 @@ export function invalidResourceSchema() {
         "VariantGroup",
         "Animation",
         "Prop",
+        "State",
       ])
       .describe(
         "Kind of resource that could not be found (matches its __type)."

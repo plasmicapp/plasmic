@@ -84,7 +84,11 @@ import { smartHumanize } from "@/wab/shared/strs";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { isArray } from "lodash";
 
-export const STATE_VARIABLE_TYPES = [
+/**
+ * Variable types assignable to explicit user-managed states; "variant" states
+ * are only ever created as part of a variant group.
+ */
+export const NORMAL_STATE_VARIABLE_TYPES = [
   "text",
   "number",
   "boolean",
@@ -92,13 +96,16 @@ export const STATE_VARIABLE_TYPES = [
   "object",
   "dateString",
   "dateRangeStrings",
+] as const;
+export const STATE_VARIABLE_TYPES = [
+  ...NORMAL_STATE_VARIABLE_TYPES,
   "variant",
 ] as const;
-export const DEFAULT_STATE_VARIABLE_TYPE = STATE_VARIABLE_TYPES[0];
 export type StateVariableType = (typeof STATE_VARIABLE_TYPES)[number];
+export type NormalStateVariableType =
+  (typeof NORMAL_STATE_VARIABLE_TYPES)[number];
 
 export const STATE_ACCESS_TYPES = ["private", "readonly", "writable"] as const;
-export const DEFAULT_STATE_ACCESS_TYPE = STATE_ACCESS_TYPES[0];
 export type StateAccessType = (typeof STATE_ACCESS_TYPES)[number];
 
 export const DEFAULT_STATE_VARIABLE_NAME = "variable";
