@@ -37,11 +37,11 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_left_pane.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicAddDrawerItem.module.css"; // plasmic-import: isQPD0RPCw/css
 
-import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
 import AfterSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__AfterSvg"; // plasmic-import: RYZCFr_yc/icon
 import BeforeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BeforeSvg"; // plasmic-import: AobbKyfJE/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+import imageYqfhPdeAw from "../plasmic_kit_style_controls/images/image.png"; // plasmic-import: YQFHPdeAw/picture
 
 createPlasmicElementProxy;
 
@@ -60,17 +60,17 @@ export const PlasmicAddDrawerItem__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicAddDrawerItem__ArgsType = {
-  children?: React.ReactNode;
-  icon?: React.ReactNode;
-  actions?: React.ReactNode;
   previewImage?: React.ReactNode;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+  actions?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicAddDrawerItem__ArgsType;
 export const PlasmicAddDrawerItem__ArgProps = new Array<ArgPropType>(
-  "children",
+  "previewImage",
   "icon",
-  "actions",
-  "previewImage"
+  "children",
+  "actions"
 );
 
 export type PlasmicAddDrawerItem__OverridesType = {
@@ -80,10 +80,10 @@ export type PlasmicAddDrawerItem__OverridesType = {
 };
 
 export interface DefaultAddDrawerItemProps {
-  children?: React.ReactNode;
-  icon?: React.ReactNode;
-  actions?: React.ReactNode;
   previewImage?: React.ReactNode;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+  actions?: React.ReactNode;
   isHighlighted?: SingleBooleanChoiceArg<"isHighlighted">;
   showPreviewImage?: SingleBooleanChoiceArg<"showPreviewImage">;
   className?: string;
@@ -193,10 +193,10 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
               displayMinWidth={"0"}
               displayWidth={"100%"}
               src={{
-                src: image49X6ZsC5Ww5,
-                fullWidth: 150,
-                fullHeight: 150,
-                aspectRatio: 1,
+                src: imageYqfhPdeAw,
+                fullWidth: 1500,
+                fullHeight: 1001,
+                aspectRatio: undefined,
               }}
             />
           ),
@@ -298,8 +298,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAddDrawerItem__VariantsArgs;
     args?: PlasmicAddDrawerItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicAddDrawerItem__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicAddDrawerItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicAddDrawerItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -11,7 +11,7 @@ export const changeStateInitialValueCommand: Command<
     state: State;
   }
 > = {
-  // @ts-expect-error - args.expr type depends on the type of the selected state. Should be fixed in Omnibar UI integration.
+  // @ts-expect-error - args.expr type depends on the type of the selected state. Should be fixed when a command UI is integrated.
   meta: ({ state }) => {
     return {
       id: `component.changeStateInitialValue.${state.uid}`,

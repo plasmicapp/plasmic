@@ -18,8 +18,11 @@ import {
   createPlasmicElementProxy,
   deriveRenderOpts,
   Flex as Flex__,
+  hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
   StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -35,10 +38,16 @@ import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy
 
 createPlasmicElementProxy;
 
-export type PlasmicDialogHeader__VariantMembers = {};
-export type PlasmicDialogHeader__VariantsArgs = {};
+export type PlasmicDialogHeader__VariantMembers = {
+  grabbable: "grabbable";
+};
+export type PlasmicDialogHeader__VariantsArgs = {
+  grabbable?: SingleBooleanChoiceArg<"grabbable">;
+};
 type VariantPropType = keyof PlasmicDialogHeader__VariantsArgs;
-export const PlasmicDialogHeader__VariantProps = new Array<VariantPropType>();
+export const PlasmicDialogHeader__VariantProps = new Array<VariantPropType>(
+  "grabbable"
+);
 
 export type PlasmicDialogHeader__ArgsType = {
   heading?: React.ReactNode;
@@ -61,6 +70,7 @@ export interface DefaultDialogHeaderProps {
   heading?: React.ReactNode;
   subheading?: React.ReactNode;
   actions?: React.ReactNode;
+  grabbable?: SingleBooleanChoiceArg<"grabbable">;
   className?: string;
 }
 
@@ -94,6 +104,26 @@ function PlasmicDialogHeader__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "grabbable",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.grabbable,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
+
   const styleTokensClassNames = _useStyleTokens();
 
   return (
@@ -108,7 +138,8 @@ function PlasmicDialogHeader__RenderFunc(props: {
         "plasmic_default_styles",
         "plasmic_mixins",
         styleTokensClassNames,
-        sty.root
+        sty.root,
+        { [sty.rootgrabbable]: hasVariant($state, "grabbable", "grabbable") }
       )}
     >
       <div

@@ -15,8 +15,6 @@ import {
   notifyInstallableFailure,
   notifyInstallableSuccess,
 } from "@/wab/client/components/modals/codeComponentModals";
-import { shouldShowHostLessPackage } from "@/wab/client/components/omnibar/Omnibar";
-import OmnibarAddItem from "@/wab/client/components/omnibar/OmnibarAddItem";
 import { getPlumeImage } from "@/wab/client/components/plume/plume-display-utils";
 import { useServerQueryBottomModals } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import {
@@ -35,6 +33,7 @@ import {
   createInstallOnlyPackage,
   isInsertable,
   makePlumeInsertables,
+  shouldShowHostLessPackage,
 } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import AddDrawerItem from "@/wab/client/components/studio/add-drawer/AddDrawerItem";
 import {
@@ -954,41 +953,19 @@ const Row = React.memo(function Row(props: {
                     </DraggableInsertable>
                   )}
                 >
-                  {showPreview ? (
-                    <OmnibarAddItem
-                      title={matcher.boldSnippets(item.label)}
-                      hoverText={
-                        item["hostLessPackageInfo"]?.syntheticPackage
-                          ? "Show package"
-                          : "Install package"
-                      }
-                      _new={item.isNew}
-                      installOnly={item["isPackage"]}
-                      preview={
-                        item.previewImageUrl
-                          ? "image"
-                          : item.previewVideoUrl
-                          ? "video"
-                          : undefined
-                      }
-                      previewImageUrl={item.previewImageUrl}
-                      previewVideoUrl={item.previewVideoUrl}
-                      focused={highlightedItemIndex === itemIndex}
-                    />
-                  ) : (
-                    <AddDrawerItem
-                      key={item.key}
-                      studioCtx={studioCtx}
-                      item={item}
-                      matcher={matcher}
-                      isHighlighted={highlightedItemIndex === itemIndex}
-                      validTplLocs={validTplLocs}
-                      onInserted={(tplNode) => {
-                        onInserted(item, tplNode);
-                      }}
-                      indent={indent}
-                    />
-                  )}
+                  <AddDrawerItem
+                    key={item.key}
+                    variant={showPreview ? "card" : "row"}
+                    studioCtx={studioCtx}
+                    item={item}
+                    matcher={matcher}
+                    isHighlighted={highlightedItemIndex === itemIndex}
+                    validTplLocs={validTplLocs}
+                    onInserted={(tplNode) => {
+                      onInserted(item, tplNode);
+                    }}
+                    indent={indent}
+                  />
                 </MaybeWrap>
               </li>
             </MaybeWrap>

@@ -1,5 +1,4 @@
 import { BottomModalButtons } from "@/wab/client/components/BottomModal";
-import { shouldShowHostLessPackage } from "@/wab/client/components/omnibar/Omnibar";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { PropValueEditorContextData } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
@@ -14,7 +13,10 @@ import {
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/useServerQueryOp";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
+import {
+  createFakeHostLessComponent,
+  shouldShowHostLessPackage,
+} from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";

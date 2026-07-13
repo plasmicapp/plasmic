@@ -28,12 +28,12 @@ import MessagesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plasmic
 import Paintbrush2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Paintbrush2Svg";
 import PhotosvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__PhotoSvg";
 import SearchSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg";
+import SplitSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SplitSvg";
 import WarningTrianglesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import {
   DefaultLeftTabStripProps,
   PlasmicLeftTabStrip,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftTabStrip";
-import IconIcon from "@/wab/client/plasmic/plasmic_kit_left_pane/icons/PlasmicIcon__Icon";
 import DiamondsIcon from "@/wab/client/plasmic/plasmic_kit_merge_flow/icons/PlasmicIcon__Diamonds";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { PlayerData } from "@/wab/client/studio-ctx/multiplayer-ctx";
@@ -225,7 +225,7 @@ Help
         splits: {
           type: "item",
           tabKey: "splits",
-          icon: <IconIcon />,
+          icon: <SplitSvgIcon />,
           label: "Split content",
           cond:
             isLoggedIn &&

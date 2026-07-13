@@ -261,15 +261,16 @@ test.describe("dynamic-initial-value", () => {
     await page.waitForTimeout(500);
 
     // Navigate into Form/Slot:"children", then insert a form-item.
-    // First form item insertion shows an omnibar to pick the inner control;
-    // pick Text.
+    // First form item insertion shows the component presets modal to pick the
+    // inner control; pick Text.
     await models.studio.leftPanel.switchToTreeTab();
     await models.studio.leftPanel.selectTreeNode(["Form", `Slot: "children"`]);
     await models.studio.leftPanel.insertNode("plasmic-antd5-form-item", {
       expectDrawerToClose: false,
     });
     await models.studio.frame
-      .locator('[data-test-id="omnibar-add-Text"]')
+      .getByRole("dialog")
+      .getByRole("button", { name: "Text", exact: true })
       .click();
     await page.waitForTimeout(500);
 

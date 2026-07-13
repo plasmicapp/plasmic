@@ -30,7 +30,7 @@ import { DevContainer } from "@/wab/client/components/dev";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
-import { OmnibarOverlay } from "@/wab/client/components/omnibar/OmnibarOverlay";
+import { ComponentPresetsModal } from "@/wab/client/components/insert-panel/ComponentPresetsModal";
 import {
   ComponentOrPageTab,
   StyleTab,
@@ -1824,7 +1824,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
         {studioCtx.currentArena && (
           <>
             <InsertPanelWrapper />
-            <OmnibarOverlay />
+            <ComponentPresetsModal />
           </>
         )}
         <GlobalCssVariables />

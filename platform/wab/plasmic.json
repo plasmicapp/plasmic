@@ -537,15 +537,22 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicListSeperator.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        }
-      ],
-      "icons": [
+        },
         {
-          "id": "CD14l2YUnk",
-          "name": "IconIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/icons/PlasmicIcon__Icon.tsx"
+          "id": "P3v3AgRgKU4U",
+          "name": "AddDrawerCardItem",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerCardItem.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/studio/add-drawer/AddDrawerCardItem.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerCardItem.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
+      "icons": [],
       "images": [
         {
           "id": "9D5nIFKHJ",
@@ -4936,103 +4943,6 @@
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicStyleTokensProvider.tsx",
       "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_project_panel/plasmic.tsx",
-      "dataTokensFilePath": ""
-    },
-    {
-      "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-      "projectName": "[PlasmicKit] Omnibar",
-      "version": "latest",
-      "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/plasmic_plasmic_kit_omnibar.css",
-      "components": [
-        {
-          "id": "KnUjAGcQKT",
-          "name": "OmnibarAddItem",
-          "type": "managed",
-          "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarAddItem.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/omnibar/OmnibarAddItem.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarAddItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "qx4iENdAfF",
-          "name": "OmnibarGroup",
-          "type": "managed",
-          "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarGroup.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/omnibar/OmnibarGroup.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarGroup.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "A2li_iO_iw",
-          "name": "OmnibarCommandItem",
-          "type": "managed",
-          "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarCommandItem.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/omnibar/OmnibarCommandItem.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarCommandItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "paIlCoZKcm",
-          "name": "Omnibar",
-          "type": "managed",
-          "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibar.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/omnibar/Omnibar.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibar.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "hrLkFMfsYv",
-          "name": "OmnibarTabHeader",
-          "type": "managed",
-          "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarTabHeader.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/omnibar/OmnibarTabHeader.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarTabHeader.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        }
-      ],
-      "icons": [],
-      "images": [],
-      "projectApiToken": "1UWteYNm5YQAm3k1Bg1iSPDkZUU7QqZV2aAhmCpwQnY10Txx9Gkw3lo7CXsDX63QuZo5EDsnOAfqKUzVDOuQ",
-      "codeComponents": [
-        {
-          "id": "6FV4bnzp21",
-          "name": "PlasmicHead",
-          "displayName": "hostless-plasmic-head",
-          "componentImportPath": "@plasmicapp/react-web"
-        },
-        {
-          "id": "vfzEC59DF8",
-          "name": "Fetcher",
-          "displayName": "plasmic-data-source-fetcher",
-          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
-        }
-      ],
-      "indirect": false,
-      "globalContextsFilePath": "",
-      "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_omnibar/plasmic.tsx",
       "dataTokensFilePath": ""
     },
     {
@@ -11566,12 +11476,6 @@
         "name": "CodegenType",
         "projectId": "dyzP6dbCdycwJpqiR2zkwe",
         "contextFilePath": "wab/client/plasmic/plasmic_kit_docs_portal/PlasmicGlobalVariant__CodegenType.tsx"
-      },
-      {
-        "id": "0tMEAYfWN538",
-        "name": "Screen",
-        "projectId": "fQPf2UiMEMhB52C8QQXwWe",
-        "contextFilePath": "wab/client/plasmic/plasmic_kit_omnibar/PlasmicGlobalVariant__Screen.tsx"
       },
       {
         "id": "n2dxsui6xhqx",

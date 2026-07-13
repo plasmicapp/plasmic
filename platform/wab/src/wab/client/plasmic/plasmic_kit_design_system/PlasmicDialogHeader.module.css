@@ -7,6 +7,12 @@
   min-width: 0;
   padding: var(--token-O2OprmOFWLju) var(--token-8b4HJYZr1yuK);
 }
+.rootgrabbable {
+  cursor: grab;
+}
+.rootgrabbable:active:active {
+  cursor: grabbing;
+}
 .freeBox {
   display: flex;
   flex-direction: column;

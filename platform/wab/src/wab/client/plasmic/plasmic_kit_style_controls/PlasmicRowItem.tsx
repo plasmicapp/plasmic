@@ -30,11 +30,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import "./plasmic_plasmic_kit_styles_pane.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicRowItem.module.css"; // plasmic-import: gkx-PRZnjFPo/css
 
 import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
@@ -390,7 +390,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicRowItem__VariantsArgs;
     args?: PlasmicRowItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicRowItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicRowItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicRowItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

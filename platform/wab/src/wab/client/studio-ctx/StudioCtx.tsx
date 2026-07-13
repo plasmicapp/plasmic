@@ -49,7 +49,6 @@ import {
   PaywallError,
   maybeShowPaywall,
 } from "@/wab/client/components/modals/PricingModal";
-import { OmnibarState } from "@/wab/client/components/omnibar/Omnibar";
 import {
   DataPickerTypesSchema,
   extraTsFilesSymbol,
@@ -3202,27 +3201,19 @@ export class StudioCtx extends WithDbCtx {
     this.keyDown[StudioCtx.CTRL] || this.keyDown[StudioCtx.META];
 
   //
-  // Managing the "Omnibar"
+  // Managing the component presets modal
   //
-  private _omnibarState = observable<OmnibarState>({
-    show: false,
-    includedGroupKeys: undefined,
-    excludedGroupKeys: undefined,
-  });
-  getOmnibarState(): OmnibarState {
-    return this._omnibarState;
-  }
-  hideOmnibar(): void {
-    this._omnibarState.show = false;
-    this._omnibarState.includedGroupKeys = undefined;
-  }
-  showOmnibar(): void {
-    this._omnibarState.show = true;
-    this._omnibarState.includedGroupKeys = undefined;
+  private _presetsModalComponent = observable.box<CodeComponent | undefined>(
+    undefined
+  );
+  getPresetsModalComponent(): CodeComponent | undefined {
+    return this._presetsModalComponent.get();
   }
   showPresetsModal(component: CodeComponent): void {
-    this._omnibarState.show = true;
-    this._omnibarState.includedGroupKeys = ["presets-" + component.uuid];
+    this._presetsModalComponent.set(component);
+  }
+  hidePresetsModal(): void {
+    this._presetsModalComponent.set(undefined);
   }
   getCurrentTeam(): ApiTeam | undefined {
     return this.appCtx.getAllTeams().find((t) => t.id === this.siteInfo.teamId);
@@ -6567,7 +6558,7 @@ export class StudioCtx extends WithDbCtx {
     ) {
       const goToSettings = async () => {
         await this.change(({ success }) => {
-          this.hideOmnibar();
+          this.hidePresetsModal();
           this.switchLeftTab("settings", { highlight: true });
           return success();
         });

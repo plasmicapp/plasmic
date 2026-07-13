@@ -129,6 +129,37 @@ import { notification } from "antd";
 import { mapValues, uniqBy } from "lodash";
 import * as React from "react";
 
+/**
+ * Whether a hostless package should be listed in insert UIs (insert panel,
+ * component store, server query picker).
+ *
+ * Packages are shown by default. A package marked `hidden` is only shown to
+ * users whose email domain is in `whitelistDomains` or whose team is in
+ * `whitelistTeams`.
+ */
+export function shouldShowHostLessPackage(
+  studioCtx: StudioCtx,
+  meta: HostLessPackageInfo
+) {
+  if (meta.hidden) {
+    if (meta.whitelistDomains) {
+      const domain = studioCtx.appCtx.selfInfo?.email.split("@")[1];
+      if (domain && meta.whitelistDomains.includes(domain)) {
+        return true;
+      }
+    }
+    if (
+      meta.whitelistTeams &&
+      studioCtx.siteInfo.teamId &&
+      meta.whitelistTeams.includes(studioCtx.siteInfo.teamId)
+    ) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
 export function createAddTplImage(asset: ImageAsset): AddTplItem {
   return {
     type: AddItemType.tpl as const,
@@ -1145,7 +1176,7 @@ export function maybeShowGlobalContextNotification(
   const key = "global-context-notification";
   const goToSettings = async () => {
     await studioCtx.change(({ success }) => {
-      studioCtx.hideOmnibar();
+      studioCtx.hidePresetsModal();
       studioCtx.switchLeftTab("settings", { highlight: true });
       notification.close(key);
       return success();

@@ -10,10 +10,10 @@
   min-width: 0;
   min-height: 0;
   border-radius: 4px;
-  border: 1px solid var(--token-d0cmIJuLq);
+  border: 1px solid var(--token-CE-OiWjNhspe);
 }
 .rootfocused {
-  box-shadow: 0px 0px 0px 1px var(--token-aXoFvdAMYy);
+  box-shadow: 0px 0px 0px 1px var(--token-WqsKGtAj1ZMI);
 }
 .rootpreview_image {
   width: 100%;
@@ -28,9 +28,9 @@
   border: 1px solid transparent;
 }
 .rootpreview_video {
-  background: var(--token-rn7cv75TwH);
+  background: var(--token-p-rw5DRJTx);
 }
-.freeBox__ncMfp {
+.freeBox___0Wb1V {
   transform: none;
   position: absolute;
   left: -50px;
@@ -38,17 +38,17 @@
   z-index: 10;
   display: none;
 }
-.freeBox_new__ncMfpPk6FP {
+.freeBox_new___0Wb1VJWc5Q {
   display: flex;
 }
-.text___2WwvC {
+.text__zha4Z {
   background: var(--token-S8OnTYk9S2Q);
   transform: rotate3d(0, 0, 1, -45deg);
   box-shadow: 0px 4px 10px 0px #0000007a;
-  color: var(--token-fhe5G_Aqui);
+  color: var(--token-iR8SeEwQZ);
   padding: 2px 60px;
 }
-.freeBox__rhXeC {
+.freeBox__e9Vri {
   display: flex;
   position: relative;
   flex-direction: column;
@@ -61,7 +61,7 @@
   min-height: 0;
   padding: 8px;
 }
-.freeBox__m1Yl {
+.freeBox__dwpaf {
   position: relative;
   flex-direction: column;
   align-items: center;
@@ -70,19 +70,19 @@
   min-height: 0;
   display: none;
 }
-.freeBoxpreview_image__m1Ylc086T {
+.freeBoxpreview_image__dwpafPmz0C {
   display: flex;
 }
-.freeBoxpreview_video__m1YLyZaKg {
+.freeBoxpreview_video__dwpafyZr3N {
   display: flex;
 }
-.img__mRf6Q {
+.img__o95F {
   position: relative;
   object-fit: contain;
   max-width: 100%;
   max-height: 100%;
 }
-.img__mRf6Q > picture > img {
+.img__o95F > picture > img {
   object-fit: contain;
 }
 .img {
@@ -119,7 +119,7 @@
 }
 .slotTargetTitle {
   font-size: 11px;
-  color: var(--token-6QxBZ9qV1n);
+  color: var(--token-RTPypKCJE4bm);
 }
 .slotTargetTitlepreview_image {
   text-align: center;
@@ -127,7 +127,7 @@
 .slotTargetTitlepreview_video {
   text-align: center;
 }
-.freeBox__ssHQl {
+.freeBox__csvlT {
   position: absolute;
   flex-direction: column;
   align-items: center;
@@ -148,10 +148,10 @@
   padding: 8px;
 }
 .rootinstallOnly_preview_image:hover
-  .freeBoxinstallOnly_preview_image__ssHQlA84VlC086T {
+  .freeBoxinstallOnly_preview_image__csvlT6KfQvPmz0C {
   display: flex;
 }
-.text__nsmVm {
+.text__swHcI {
   position: relative;
   width: 100%;
   height: auto;

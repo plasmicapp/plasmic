@@ -478,7 +478,6 @@ const DEFAULT_DEVFLAGS = {
   importedTokenOverrides: false,
   insert2022Q4: true,
   sso: false,
-  omnibar: false,
   paywalls: false,
   showIntroSplash: false,
   skipInvariants: false,
