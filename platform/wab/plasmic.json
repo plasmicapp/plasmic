@@ -291,19 +291,6 @@
           "componentType": "component"
         },
         {
-          "id": "wXKvVcr82I",
-          "name": "LeftPagesPanel",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPagesPanel.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar/LeftPagesPanel.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPagesPanel.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "V25hk8i--ck",
           "name": "PublishDialogContent",
           "type": "managed",

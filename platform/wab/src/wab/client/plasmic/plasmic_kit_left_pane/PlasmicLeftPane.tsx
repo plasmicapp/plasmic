@@ -31,7 +31,6 @@ import LeftComponentsPanel from "../../components/sidebar/LeftComponentsPanel"; 
 import LeftGeneralDataTokensPanel from "../../components/sidebar/LeftGeneralDataTokensPanel"; // plasmic-import: WwK9TyWdjIfT/component
 import LeftGeneralTokensPanel from "../../components/sidebar/LeftGeneralTokensPanel"; // plasmic-import: bDbzY5jXLz/component
 import LeftLintIssuesPanel from "../../components/sidebar/LeftLintIssuesPanel"; // plasmic-import: xymZo1AIeU/component
-import LeftPagesPanel from "../../components/sidebar/LeftPagesPanel"; // plasmic-import: wXKvVcr82I/component
 import LeftSettingsPanel from "../../components/sidebar/LeftSettingsPanel"; // plasmic-import: EeT-6P6YTW/component
 import LeftSplitsPanel from "../../components/sidebar/LeftSplitsPanel"; // plasmic-import: OzaoSbFLbl/component
 import { MixinsPanel as LeftMixinsPanel } from "../../components/sidebar/MixinControls"; // plasmic-import: ZsFxxgE4E8/component
@@ -128,7 +127,6 @@ export type PlasmicLeftPane__OverridesType = {
   leftImportsPanel?: Flex__<typeof LeftImportsPanel>;
   leftVersionsPanel?: Flex__<typeof LeftVersionsPanel>;
   leftComponentsPanel?: Flex__<typeof LeftComponentsPanel>;
-  leftPagesPanel?: Flex__<typeof LeftPagesPanel>;
   leftSettingsPanel?: Flex__<typeof LeftSettingsPanel>;
   leftSplitsPanel?: Flex__<typeof LeftSplitsPanel>;
   leftLintIssuesPanel?: Flex__<typeof LeftLintIssuesPanel>;
@@ -614,30 +612,6 @@ function PlasmicLeftPane__RenderFunc(props: {
               })}
             />
           ) : null}
-          {(
-            hasVariant($state, "type", "settings")
-              ? true
-              : hasVariant($state, "type", "pages")
-              ? true
-              : false
-          ) ? (
-            <LeftPagesPanel
-              data-plasmic-name={"leftPagesPanel"}
-              data-plasmic-override={overrides.leftPagesPanel}
-              className={classNames("__wab_instance", sty.leftPagesPanel, {
-                [sty.leftPagesPaneltype_pages]: hasVariant(
-                  $state,
-                  "type",
-                  "pages"
-                ),
-                [sty.leftPagesPaneltype_settings]: hasVariant(
-                  $state,
-                  "type",
-                  "settings"
-                ),
-              })}
-            />
-          ) : null}
           <LeftSettingsPanel
             data-plasmic-name={"leftSettingsPanel"}
             data-plasmic-override={overrides.leftSettingsPanel}
@@ -734,7 +708,6 @@ const PlasmicDescendants = {
     "leftImportsPanel",
     "leftVersionsPanel",
     "leftComponentsPanel",
-    "leftPagesPanel",
     "leftSettingsPanel",
     "leftSplitsPanel",
     "leftLintIssuesPanel",
@@ -767,7 +740,6 @@ const PlasmicDescendants = {
     "leftImportsPanel",
     "leftVersionsPanel",
     "leftComponentsPanel",
-    "leftPagesPanel",
     "leftSettingsPanel",
     "leftSplitsPanel",
     "leftLintIssuesPanel",
@@ -784,7 +756,6 @@ const PlasmicDescendants = {
     "leftImportsPanel",
     "leftVersionsPanel",
     "leftComponentsPanel",
-    "leftPagesPanel",
     "leftSettingsPanel",
     "leftSplitsPanel",
     "leftLintIssuesPanel",
@@ -799,7 +770,6 @@ const PlasmicDescendants = {
   leftImportsPanel: ["leftImportsPanel"],
   leftVersionsPanel: ["leftVersionsPanel"],
   leftComponentsPanel: ["leftComponentsPanel"],
-  leftPagesPanel: ["leftPagesPanel"],
   leftSettingsPanel: ["leftSettingsPanel"],
   leftSplitsPanel: ["leftSplitsPanel"],
   leftLintIssuesPanel: ["leftLintIssuesPanel"],
@@ -828,7 +798,6 @@ type NodeDefaultElementType = {
   leftImportsPanel: typeof LeftImportsPanel;
   leftVersionsPanel: typeof LeftVersionsPanel;
   leftComponentsPanel: typeof LeftComponentsPanel;
-  leftPagesPanel: typeof LeftPagesPanel;
   leftSettingsPanel: typeof LeftSettingsPanel;
   leftSplitsPanel: typeof LeftSplitsPanel;
   leftLintIssuesPanel: typeof LeftLintIssuesPanel;
@@ -914,7 +883,6 @@ export const PlasmicLeftPane = Object.assign(
     leftImportsPanel: makeNodeComponent("leftImportsPanel"),
     leftVersionsPanel: makeNodeComponent("leftVersionsPanel"),
     leftComponentsPanel: makeNodeComponent("leftComponentsPanel"),
-    leftPagesPanel: makeNodeComponent("leftPagesPanel"),
     leftSettingsPanel: makeNodeComponent("leftSettingsPanel"),
     leftSplitsPanel: makeNodeComponent("leftSplitsPanel"),
     leftLintIssuesPanel: makeNodeComponent("leftLintIssuesPanel"),

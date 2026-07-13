@@ -117,12 +117,6 @@
 .leftComponentsPanel:global(.__wab_instance) {
   position: relative;
 }
-.leftPagesPanel:global(.__wab_instance) {
-  position: relative;
-}
-.leftPagesPaneltype_settings:global(.__wab_instance) {
-  display: none;
-}
 .leftSettingsPanel:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
