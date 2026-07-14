@@ -78,6 +78,7 @@ export function LabeledItem(props: {
   contentAlignment?: "right";
   noMenuButton?: boolean;
   icon?: React.ReactNode;
+  noContent?: boolean;
 }) {
   const {
     children,
@@ -95,6 +96,7 @@ export function LabeledItem(props: {
     noMenuButton,
     contentAlignment,
     icon,
+    noContent,
   } = props;
   const indicators = ensureArray(props.definedIndicator);
   const contextMenuProps = useContextMenu({ menu });
@@ -131,6 +133,7 @@ export function LabeledItem(props: {
       showMoreActions={!!props.rightExtras}
       moreActionButtons={props.rightExtras}
       noLabel={!hasLabel}
+      noContent={noContent}
       nesting={indentLabel ? "labelOnly" : undefined}
       contentAlignment={contentAlignment}
       padding={withoutNils([

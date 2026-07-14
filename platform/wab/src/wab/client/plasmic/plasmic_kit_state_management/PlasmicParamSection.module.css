@@ -109,6 +109,28 @@
   width: 1.25rem;
   height: 1.25rem;
 }
+.freeBox__lq6Dj {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+}
+.freeBoxspecialParamType_choice__lq6DJqvgXu {
+  display: flex;
+}
+.text__fuiYb {
+  animation: none;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
 .freeBox__dmbqJ {
   position: relative;
   flex-direction: column;

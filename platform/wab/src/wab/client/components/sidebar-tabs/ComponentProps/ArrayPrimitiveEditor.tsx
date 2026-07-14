@@ -1,10 +1,7 @@
+import { PlexusButton } from "@/wab/client/components/plexus/PlexusButton";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
-import LabeledItem from "@/wab/client/components/sidebar-tabs/StateManagement/LabeledItem";
-import {
-  ListBox,
-  ListBoxItem,
-  PlainLinkButton,
-} from "@/wab/client/components/widgets";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import {
@@ -31,12 +28,12 @@ export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
 }: ArrayPrimitiveEditorProps) {
   const addNewElement = () => {
     let newVal: ChoiceValue = "";
-    // Add a number if current values are numbers
+    // Auto-increment if the current values are all numeric
     if (
       values.length &&
       values.every((v) => !isNaN(parseFloat(v.toString())))
     ) {
-      newVal = Number(values[values.length - 1]) + 1;
+      newVal = String(Number(values[values.length - 1]) + 1);
     }
     onChange([...(values ?? []), newVal]);
   };
@@ -46,54 +43,57 @@ export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
   const handleValueChange = (index: number, newVal: string) => {
     onChange(arrayReplaceAt(values, index, newVal));
   };
-
   return (
-    <LabeledItem
-      aria-label={label ?? ""}
+    <LabeledItemRow
+      layout={"vertical"}
+      noContent={values.length === 0}
       label={
-        <div className={"flex-fill flex-row justify-between"}>
+        <div className={"flex-fill flex-row flex-vcenter gap-m"}>
           <div>{label ?? ""}</div>
-          <PlainLinkButton
-            onClick={addNewElement}
-            type="button"
-            data-test-id={`${dataTestId}-add-btn`}
-          >
-            <Icon icon={PlusIcon} /> {"Add"}
-          </PlainLinkButton>
+          <span data-test-id={`${dataTestId}-add-btn`}>
+            <PlexusButton
+              onClick={addNewElement}
+              start={<Icon icon={PlusIcon} />}
+              iconStart={true}
+              label={null}
+              size={"extraSmall"}
+              type={"clear"}
+              color={"neutral"}
+              ariaLabel={"Add"}
+            />
+          </span>
         </div>
       }
-      layout={"vertical"}
-      value={
-        <ListBox
-          appendPrepend={"append"}
-          onReorder={(from, to) => {
-            handleReorder(from, to);
-          }}
-          data-test-id={dataTestId}
-        >
-          {values.map((value, index) => {
-            return (
-              <ListBoxItem
-                data-test-id={`${dataTestId}-${index}`}
-                mainContent={
-                  <PropValueEditor
-                    label={"item"}
-                    attr={"item"}
-                    propType={"string"}
-                    value={value}
-                    onChange={(val) => handleValueChange(index, val as string)}
-                  />
-                }
-                index={index}
-                key={index}
-                onRemove={() => {
-                  onChange(arrayRemoveAt(values, index));
-                }}
-              />
-            );
-          })}
-        </ListBox>
-      }
-    />
+    >
+      <ListBox
+        appendPrepend={"append"}
+        onReorder={(from, to) => {
+          handleReorder(from, to);
+        }}
+        data-test-id={dataTestId}
+      >
+        {values.map((value, index) => {
+          return (
+            <ListBoxItem
+              data-test-id={`${dataTestId}-${index}`}
+              mainContent={
+                <PropValueEditor
+                  label={"item"}
+                  attr={"item"}
+                  propType={"string"}
+                  value={value}
+                  onChange={(val) => handleValueChange(index, val as string)}
+                />
+              }
+              index={index}
+              key={index}
+              onRemove={() => {
+                onChange(arrayRemoveAt(values, index));
+              }}
+            />
+          );
+        })}
+      </ListBox>
+    </LabeledItemRow>
   );
 });

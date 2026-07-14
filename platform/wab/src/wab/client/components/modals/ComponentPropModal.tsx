@@ -497,10 +497,22 @@ export function ComponentPropModal(props: {
             ? "eventHandler"
             : paramType === "text" && isLocalizationEnabled
             ? "localizable"
+            : isChoiceType
+            ? "choice"
             : undefined
         }
         hideEventArgs={!!type && paramType === "eventHandler"}
         showAdvancedSection={true}
+        choiceSettings={
+          isChoiceType ? (
+            <ArrayPrimitiveEditor
+              label={"Allowed Values"}
+              values={choices.map(getValue)}
+              onChange={onChangeChoices}
+              data-test-id={"component-prop-choices"}
+            />
+          ) : undefined
+        }
         overrides={{
           name: {
             props: {
@@ -587,17 +599,7 @@ export function ComponentPropModal(props: {
           advancedSection: {
             render: () => {
               return (
-                <>
-                  <AdvancedToggle advanced={advanced} onChange={setAdvanced} />
-                  {isChoiceType && (
-                    <ArrayPrimitiveEditor
-                      label={"Allowed Values"}
-                      values={choices.map(getValue)}
-                      onChange={onChangeChoices}
-                      data-test-id={"component-prop-choices"}
-                    />
-                  )}
-                </>
+                <AdvancedToggle advanced={advanced} onChange={setAdvanced} />
               );
             },
           },

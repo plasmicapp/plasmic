@@ -53,7 +53,7 @@ import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; /
 createPlasmicElementProxy;
 
 export type PlasmicParamSection__VariantMembers = {
-  specialParamType: "eventHandler" | "localizable";
+  specialParamType: "eventHandler" | "localizable" | "choice";
   isInvalid: "isInvalid";
   hidePropType: "hidePropType";
   hideDefaultValue: "hideDefaultValue";
@@ -62,7 +62,7 @@ export type PlasmicParamSection__VariantMembers = {
   fixedParamType: "fixedParamType";
 };
 export type PlasmicParamSection__VariantsArgs = {
-  specialParamType?: SingleChoiceArg<"eventHandler" | "localizable">;
+  specialParamType?: SingleChoiceArg<"eventHandler" | "localizable" | "choice">;
   isInvalid?: SingleBooleanChoiceArg<"isInvalid">;
   hidePropType?: SingleBooleanChoiceArg<"hidePropType">;
   hideDefaultValue?: SingleBooleanChoiceArg<"hideDefaultValue">;
@@ -83,14 +83,16 @@ export const PlasmicParamSection__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicParamSection__ArgsType = {
   componentName?: string;
-  defaultArgs?: React.ReactNode;
+  choiceSettings?: React.ReactNode;
   plusIcon?: React.ReactNode;
+  defaultArgs?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicParamSection__ArgsType;
 export const PlasmicParamSection__ArgProps = new Array<ArgPropType>(
   "componentName",
-  "defaultArgs",
-  "plusIcon"
+  "choiceSettings",
+  "plusIcon",
+  "defaultArgs"
 );
 
 export type PlasmicParamSection__OverridesType = {
@@ -110,9 +112,10 @@ export type PlasmicParamSection__OverridesType = {
 
 export interface DefaultParamSectionProps {
   componentName?: string;
-  defaultArgs?: React.ReactNode;
+  choiceSettings?: React.ReactNode;
   plusIcon?: React.ReactNode;
-  specialParamType?: SingleChoiceArg<"eventHandler" | "localizable">;
+  defaultArgs?: React.ReactNode;
+  specialParamType?: SingleChoiceArg<"eventHandler" | "localizable" | "choice">;
   isInvalid?: SingleBooleanChoiceArg<"isInvalid">;
   hidePropType?: SingleBooleanChoiceArg<"hidePropType">;
   hideDefaultValue?: SingleBooleanChoiceArg<"hideDefaultValue">;
@@ -410,6 +413,31 @@ function PlasmicParamSection__RenderFunc(props: {
         }
       />
 
+      {(hasVariant($state, "specialParamType", "choice") ? true : false) ? (
+        <div
+          className={classNames("all", sty.freeBox__lq6Dj, {
+            [sty.freeBoxspecialParamType_choice__lq6DJqvgXu]: hasVariant(
+              $state,
+              "specialParamType",
+              "choice"
+            ),
+            [sty.freeBoxspecialParamType_localizable__lq6DJlJaHq]: hasVariant(
+              $state,
+              "specialParamType",
+              "localizable"
+            ),
+          })}
+        >
+          {renderPlasmicSlot({
+            defaultContents: (
+              <div className={classNames("all", "__wab_text", sty.text__fuiYb)}>
+                {"Choice settings go here..."}
+              </div>
+            ),
+            value: args.choiceSettings,
+          })}
+        </div>
+      ) : null}
       <div
         className={classNames("all", sty.freeBox__dmbqJ, {
           [sty.freeBoxspecialParamType_eventHandler__dmbqJmsWcM]: hasVariant(
@@ -863,8 +891,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicParamSection__VariantsArgs;
     args?: PlasmicParamSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicParamSection__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicParamSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicParamSection__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
