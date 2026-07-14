@@ -155,6 +155,7 @@ import {
   doesFrameVariantMatch,
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,
+  getArenaContaining,
   getArenaFrames,
   getArenaName,
   getArenaType,
@@ -489,7 +490,15 @@ interface ArenaViewInfo {
   lastAccess: number;
   isAlive: boolean;
   lastViewSnapshot: StudioViewportSnapshot | undefined;
+  /**
+   * Renders hidden and is garbage-collected before user-visited arenas.
+   * Used for copilot context read.
+   */
+  isBackground?: boolean;
 }
+
+/** See StudioCtx.getArenaStatus. */
+export type ArenaStatus = "visible" | "background" | "cached" | "dead";
 
 interface StudioViewportSnapshot {
   readonly focusedArenaFrame?: ArenaFrame;
@@ -1711,7 +1720,7 @@ export class StudioCtx extends WithDbCtx {
   pruneInvalidViewCtxs() {
     const allLiveFrames = new Set(
       getSiteArenas(this.site)
-        .filter((arena) => this.isArenaAlive(arena))
+        .filter((arena) => this.getArenaStatus(arena) !== "dead")
         .flatMap((arena) => getArenaFrames(arena))
     );
     const liveVcs = this.viewCtxs.filter((vc) =>
@@ -1852,6 +1861,16 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private arenaViewStates = observable.map<AnyArena, ArenaViewInfo>();
+
+  // The arena of the active background read, kept alive so GC doesn't dispose the ViewCtx
+  // being read. One background read occurs at a time (see withBackgroundViewCtxForComponent).
+  private pinnedBackgroundArena: AnyArena | undefined;
+
+  // Runs background reads one at a time, so they don't thrash each other's arenas.
+  private serializeBackgroundRead = asyncMaxAtATime(
+    1,
+    (run: () => Promise<unknown>) => run()
+  );
 
   getCurrentStudioViewportSnapshot(): StudioViewportSnapshot {
     return {
@@ -2396,6 +2415,7 @@ export class StudioCtx extends WithDbCtx {
       this.arenaViewStates.set(arena, {
         ...viewState,
         isAlive: true,
+        isBackground: false,
       });
 
       if (!this.watchPlayerId) {
@@ -2453,18 +2473,26 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
-  isArenaAlive = computedFn(
-    (arena: AnyArena) => {
-      return this.arenaViewStates.get(arena)?.isAlive ?? false;
+  /**
+   * The render state of an arena:
+   * - "visible": current arena, shown to the user.
+   * - "background": rendered hidden, alive only for background reads.
+   * - "cached": alive from a previous visit, rendered display:none
+   * - "dead": not rendered at all.
+   */
+  getArenaStatus = computedFn(
+    (arena: AnyArena): ArenaStatus => {
+      if (this.currentArena === arena) {
+        // switchToArena always marks the current arena alive and non-background.
+        return "visible";
+      }
+      const info = this.arenaViewStates.get(arena);
+      if (!info?.isAlive) {
+        return "dead";
+      }
+      return info.isBackground ? "background" : "cached";
     },
-    { name: "isArenaAlive" }
-  );
-
-  isArenaVisible = computedFn(
-    (arena: AnyArena) => {
-      return this.currentArena === arena;
-    },
-    { name: "isArenaVisible" }
+    { name: "getArenaStatus" }
   );
 
   addArena(prefix?: string) {
@@ -2487,11 +2515,21 @@ export class StudioCtx extends WithDbCtx {
       const entries = Array.from<[AnyArena, ArenaViewInfo]>(
         this.arenaViewStates.entries()
       );
+      // Evict background arenas before user-visited ones, so they can't evict arenas the
+      // user is actively visiting. Background arenas are not evicted outright so repeated
+      // copilot reads reuse the live ViewCtx instead of re-rendering the arena.
+      // The in-flight background read's arena is skipped after slicing victims, so
+      // keeping it doesn't promote a different (user-visited) arena into the victim slot.
       const arenasToFree = orderBy(
         entries.filter(([arena, _info]) => arena !== this.currentArena),
-        ([_arena, info]) => info.lastAccess,
-        "asc"
-      ).slice(0, this.arenaViewStates.size - DEVFLAGS.liveArenas);
+        [
+          ([_arena, info]) => (info.isBackground ? 0 : 1),
+          ([_arena, info]) => info.lastAccess,
+        ],
+        ["asc", "asc"]
+      )
+        .slice(0, this.arenaViewStates.size - DEVFLAGS.liveArenas)
+        .filter(([arena, _info]) => arena !== this.pinnedBackgroundArena);
       for (const [arena, info] of arenasToFree) {
         console.log("Garbage collecting arena", getArenaName(arena));
         this.arenaViewStates.set(arena, {
@@ -2780,6 +2818,136 @@ export class StudioCtx extends WithDbCtx {
     }
 
     return viewCtx;
+  }
+
+  /**
+   * Returns an existing live ViewCtx whose frame renders `component` as its root.
+   * Searches all live arenas not just the focused one.
+   */
+  tryGetLiveViewCtxForComponent(component: Component): ViewCtx | undefined {
+    return this.viewCtxs.find(
+      (vc) => !vc.isDisposed && vc.component === component
+    );
+  }
+
+  /**
+   * Marks `arena` alive so its frames mount and evaluate without becoming visible.
+   * Unlike `changeArena`, this doesn't touch `currentArena`, viewport, focus, undo log, etc.
+   */
+  ensureArenaAliveInBackground(arena: AnyArena) {
+    if (arena === this.currentArena) {
+      return;
+    }
+    const viewState = this.arenaViewStates.get(arena);
+    this.arenaViewStates.set(arena, {
+      lastViewSnapshot: viewState?.lastViewSnapshot,
+      lastAccess: new Date().getTime(),
+      isAlive: true,
+      // Keep non-background status for visited arenas to avoid demoting them during GC.
+      isBackground: viewState?.isAlive ? viewState.isBackground : true,
+    });
+    this.drainCanvasFrameForArena(arena);
+  }
+
+  /** Resolves the arena and frame that render `component` as a root, or undefined
+   * if none exists. Frame components live in mixed arenas; others use their
+   * dedicated arena. */
+  private resolveArenaFrameForComponent(
+    component: Component
+  ): { arena: AnyArena; frame: ArenaFrame } | undefined {
+    if (isFrameComponent(component)) {
+      // Frame components only exist in mixed arenas, find the arena owning its frame.
+      for (const mixedArena of this.site.arenas) {
+        const match = getArenaFrames(mixedArena).find(
+          (f) => f.container.component === component
+        );
+        if (match) {
+          return { arena: mixedArena, frame: match };
+        }
+      }
+      return undefined;
+    }
+    // Use the shared resolver rather than this.getDedicatedArena, which
+    // gates on edit access, so background reads work for read-only users.
+    const dedicatedArena = getDedicatedArena(this.site, component);
+    if (!dedicatedArena) {
+      return undefined;
+    }
+    // If the arena was left in focused mode, FocusModeLayout only mounts
+    // the focused frame, so await that one instead of the base frame.
+    const frame =
+      dedicatedArena._focusedFrame ??
+      getComponentArenaBaseFrame(dedicatedArena);
+    if (!frame) {
+      return undefined;
+    }
+    return { arena: dedicatedArena, frame };
+  }
+
+  private getArenaForViewCtx(viewCtx: ViewCtx): AnyArena | undefined {
+    return getArenaContaining(this.site, viewCtx.arenaFrame());
+  }
+
+  /**
+   * Resolves a ViewCtx rendering `component` together with the arena hosting it.
+   * Reuses a live ViewCtx when one exists, otherwise marks the component's dedicated
+   * arena alive in the background and waits for its frame to mount and load. Returns
+   * undefined if no arena can be resolved for the component.
+   */
+  private async loadBackgroundViewCtxForComponent(
+    component: Component,
+    opts?: { timeoutMs?: number }
+  ): Promise<{ viewCtx: ViewCtx; arena: AnyArena } | undefined> {
+    const existing = this.tryGetLiveViewCtxForComponent(component);
+    if (existing) {
+      const arena = this.getArenaForViewCtx(existing);
+      if (arena) {
+        return { viewCtx: existing, arena };
+      }
+    }
+    const resolved = this.resolveArenaFrameForComponent(component);
+    if (!resolved) {
+      return undefined;
+    }
+    const { arena, frame } = resolved;
+    this.ensureArenaAliveInBackground(arena);
+    // awaitViewCtxForFrame has no timeout of its own; time out instead of
+    // hanging if e.g. the host never loads.
+    const timeoutMs = opts?.timeoutMs ?? 30000;
+    const viewCtx = await withTimeout(
+      this.awaitViewCtxForFrame(frame),
+      `Timed out waiting for component "${component.name}" to render`,
+      timeoutMs
+    );
+    return { viewCtx, arena };
+  }
+
+  /**
+   * Runs `cb` with a ViewCtx rendering `component`, without changing the visible arena.
+   * The ViewCtx's arena is kept alive for the whole call to avoid GC, and reads are
+   * serialized so background arenas don't thrash. Returns undefined if no arena resolves.
+   */
+  withBackgroundViewCtxForComponent<T>(
+    component: Component,
+    cb: (viewCtx: ViewCtx) => Promise<T>,
+    opts?: { timeoutMs?: number }
+  ): Promise<T | undefined> {
+    return this.serializeBackgroundRead(async () => {
+      const resolved = await this.loadBackgroundViewCtxForComponent(
+        component,
+        opts
+      );
+      if (!resolved) {
+        return undefined;
+      }
+      this.pinnedBackgroundArena = resolved.arena;
+      try {
+        return await cb(resolved.viewCtx);
+      } finally {
+        this.pinnedBackgroundArena = undefined;
+        this.maybeGarbageCollectArenas();
+      }
+    }) as Promise<T | undefined>;
   }
 
   async setStudioFocusOnTpl(
@@ -7342,14 +7510,16 @@ export class StudioCtx extends WithDbCtx {
   private canvasLoadQueue = asynclib.queue(
     safeCallbackify(async (_: {}) => {
       return requestIdleCallbackAsync(async () => {
-        // Find a request to load for the current arena.  If none, then just
-        // bail; even if there are outstanding load requests, if they are for
-        // other arenas, then their iframes are invisible, and Chrome may not
-        // load them anyway.  We will get back to them later when we switch
-        // back to that arena (see switchArena()).
-        const nextRequest = this.canvasLoadRequests.find(
-          (r) => r.arena === this.currentArena
-        );
+        // Find a request to load for the current arena, or a background arena.
+        // If none, bail; even if there are outstanding load requests, if they are
+        // for other arenas, then their iframes are display:none, and Chrome
+        // may not load them anyway. We will get back to them later when we
+        // switch back to that arena (see switchArena()).
+        const nextRequest =
+          this.canvasLoadRequests.find((r) => r.arena === this.currentArena) ??
+          this.canvasLoadRequests.find(
+            (r) => this.getArenaStatus(r.arena) === "background"
+          );
         if (!nextRequest) {
           return;
         }
@@ -7375,7 +7545,8 @@ export class StudioCtx extends WithDbCtx {
                 // Great!
                 return "done";
               }
-              if (nextRequest.arena !== this.currentArena) {
+              const arenaStatus = this.getArenaStatus(nextRequest.arena);
+              if (arenaStatus !== "visible" && arenaStatus !== "background") {
                 // nextRequest may never finish loading because its iframe is
                 // no longer visible.  Resolve this promise, so that we don't
                 // wait for it forever.

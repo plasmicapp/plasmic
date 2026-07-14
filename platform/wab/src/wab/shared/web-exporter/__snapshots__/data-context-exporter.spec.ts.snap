@@ -1,0 +1,615 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildDataContextResource depth=5 reaches query row fields ($q.name.data[0].field) 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "children": [
+                    {
+                      "__type": "DataPath",
+                      "name": "id",
+                      "type": "number",
+                      "value": "1",
+                    },
+                    {
+                      "__type": "DataPath",
+                      "name": "customer",
+                      "type": "string",
+                      "value": ""Ada"",
+                    },
+                  ],
+                  "name": "0",
+                  "type": "object",
+                },
+              ],
+              "length": 1,
+              "name": "data",
+              "type": "array",
+            },
+            {
+              "__type": "DataPath",
+              "name": "isLoading",
+              "type": "boolean",
+              "value": "false",
+            },
+          ],
+          "name": "orders",
+          "type": "object",
+        },
+      ],
+      "name": "$q",
+      "type": "object",
+    },
+  ],
+  "scope": "root",
+}
+`;
+
+exports[`buildDataContextResource element scope: primitives, nested objects, $$ stripping, depth truncation 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "elementUuid": "T1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "title",
+          "type": "string",
+          "value": ""Hello"",
+        },
+        {
+          "__type": "DataPath",
+          "name": "count",
+          "type": "number",
+          "value": "3",
+        },
+      ],
+      "name": "$props",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "isOpen",
+          "type": "boolean",
+          "value": "false",
+        },
+      ],
+      "name": "$state",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "children": [
+                    {
+                      "__type": "DataPath",
+                      "name": "id",
+                      "type": "number",
+                      "value": "1",
+                    },
+                    {
+                      "__type": "DataPath",
+                      "name": "name",
+                      "type": "string",
+                      "value": ""Ada"",
+                    },
+                  ],
+                  "name": "0",
+                  "type": "object",
+                },
+              ],
+              "length": 1,
+              "name": "data",
+              "type": "array",
+            },
+            {
+              "__type": "DataPath",
+              "name": "isLoading",
+              "type": "boolean",
+              "value": "false",
+            },
+            {
+              "__type": "DataPath",
+              "name": "error",
+              "type": "null",
+              "value": "null",
+            },
+          ],
+          "name": "users",
+          "type": "object",
+        },
+      ],
+      "name": "$queries",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "name": "slug",
+              "type": "string",
+              "value": ""my-page"",
+            },
+          ],
+          "name": "params",
+          "type": "object",
+        },
+      ],
+      "name": "$ctx",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "id",
+          "type": "number",
+          "value": "1",
+        },
+        {
+          "__type": "DataPath",
+          "name": "name",
+          "type": "string",
+          "value": ""Ada"",
+        },
+      ],
+      "name": "currentItem",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "name": "currentIndex",
+      "type": "number",
+      "value": "0",
+    },
+  ],
+  "scope": "element",
+}
+`;
+
+exports[`buildDataContextResource element scope: unwraps $q StatefulQueryResult instances 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "elementUuid": "T1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "name": "ok",
+                  "type": "boolean",
+                  "value": "true",
+                },
+              ],
+              "name": "data",
+              "type": "object",
+            },
+            {
+              "__type": "DataPath",
+              "name": "error",
+              "type": "undefined",
+              "value": "undefined",
+            },
+            {
+              "__type": "DataPath",
+              "name": "isLoading",
+              "type": "boolean",
+              "value": "false",
+            },
+          ],
+          "name": "status",
+          "type": "object",
+        },
+      ],
+      "name": "$q",
+      "type": "object",
+    },
+  ],
+  "scope": "element",
+}
+`;
+
+exports[`buildDataContextResource hides react-element values (slot content shown in tpl tree, not bindable data) 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "elementUuid": "T1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "name": "$props",
+      "type": "object",
+    },
+  ],
+  "scope": "element",
+}
+`;
+
+exports[`buildDataContextResource promotes __plasmic_meta_<key>.label and drops hidden/advanced fields 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "elementUuid": "T1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "children": [
+                    {
+                      "__type": "DataPath",
+                      "name": "id",
+                      "type": "number",
+                      "value": "1",
+                    },
+                  ],
+                  "name": "0",
+                  "type": "object",
+                },
+              ],
+              "length": 1,
+              "name": "data",
+              "type": "array",
+            },
+            {
+              "__type": "DataPath",
+              "name": "isLoading",
+              "type": "boolean",
+              "value": "false",
+            },
+          ],
+          "label": "Users",
+          "name": "users",
+          "type": "object",
+        },
+      ],
+      "name": "$queries",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "visibleField",
+          "type": "number",
+          "value": "1",
+        },
+      ],
+      "name": "$state",
+      "type": "object",
+    },
+  ],
+  "scope": "element",
+}
+`;
+
+exports[`buildDataContextResource root scope: keeps $state and filters $queries/$q to component-owned names 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "title",
+          "type": "string",
+          "value": ""Hello"",
+        },
+      ],
+      "name": "$props",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "isOpen",
+          "type": "boolean",
+          "value": "false",
+        },
+      ],
+      "name": "$state",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "name": "0",
+                  "type": "number",
+                  "value": "1",
+                },
+                {
+                  "__type": "DataPath",
+                  "name": "1",
+                  "type": "number",
+                  "value": "2",
+                },
+                {
+                  "__type": "DataPath",
+                  "name": "2",
+                  "type": "number",
+                  "value": "3",
+                },
+              ],
+              "length": 3,
+              "name": "data",
+              "type": "array",
+            },
+          ],
+          "name": "mine",
+          "type": "object",
+        },
+      ],
+      "name": "$queries",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "name": "ok",
+                  "type": "boolean",
+                  "value": "true",
+                },
+              ],
+              "name": "data",
+              "type": "object",
+            },
+          ],
+          "name": "serverMine",
+          "type": "object",
+        },
+      ],
+      "name": "$q",
+      "type": "object",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "name": "slug",
+              "type": "string",
+              "value": ""x"",
+            },
+          ],
+          "name": "params",
+          "type": "object",
+        },
+      ],
+      "name": "$ctx",
+      "type": "object",
+    },
+  ],
+  "scope": "root",
+}
+`;
+
+exports[`buildDataContextResource truncates arrays past maxArrayItems and objects past maxKeysPerObject 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "0",
+          "type": "number",
+          "value": "1",
+        },
+        {
+          "__type": "DataPath",
+          "name": "1",
+          "type": "number",
+          "value": "2",
+        },
+        {
+          "__type": "DataPath",
+          "name": "2",
+          "type": "number",
+          "value": "3",
+        },
+        {
+          "__type": "DataPath",
+          "name": "…",
+          "omittedCount": 4,
+          "truncated": true,
+        },
+      ],
+      "length": 7,
+      "name": "items",
+      "type": "array",
+    },
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "name": "key0",
+          "type": "number",
+          "value": "0",
+        },
+        {
+          "__type": "DataPath",
+          "name": "key1",
+          "type": "number",
+          "value": "1",
+        },
+        {
+          "__type": "DataPath",
+          "name": "key2",
+          "type": "number",
+          "value": "2",
+        },
+        {
+          "__type": "DataPath",
+          "name": "…",
+          "omittedCount": 2,
+          "truncated": true,
+        },
+      ],
+      "name": "wide",
+      "type": "object",
+    },
+  ],
+  "scope": "element",
+}
+`;
+
+exports[`buildDataContextResource unwraps $q StatefulQueryResult instances to data/isLoading/error 1`] = `
+{
+  "__type": "DataContext",
+  "componentUuid": "C1",
+  "paths": [
+    {
+      "__type": "DataPath",
+      "children": [
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "children": [
+                {
+                  "__type": "DataPath",
+                  "children": [
+                    {
+                      "__type": "DataPath",
+                      "name": "id",
+                      "type": "number",
+                      "value": "1",
+                    },
+                    {
+                      "__type": "DataPath",
+                      "name": "name",
+                      "type": "string",
+                      "value": ""Ada"",
+                    },
+                  ],
+                  "name": "0",
+                  "type": "object",
+                },
+              ],
+              "length": 1,
+              "name": "data",
+              "type": "array",
+            },
+            {
+              "__type": "DataPath",
+              "name": "error",
+              "type": "undefined",
+              "value": "undefined",
+            },
+            {
+              "__type": "DataPath",
+              "name": "isLoading",
+              "type": "boolean",
+              "value": "false",
+            },
+          ],
+          "name": "orders",
+          "type": "object",
+        },
+        {
+          "__type": "DataPath",
+          "children": [
+            {
+              "__type": "DataPath",
+              "name": "data",
+              "type": "undefined",
+              "value": "undefined",
+            },
+            {
+              "__type": "DataPath",
+              "name": "error",
+              "type": "undefined",
+              "value": "undefined",
+            },
+            {
+              "__type": "DataPath",
+              "name": "isLoading",
+              "type": "boolean",
+              "value": "true",
+            },
+          ],
+          "name": "pending",
+          "type": "object",
+        },
+      ],
+      "name": "$q",
+      "type": "object",
+    },
+  ],
+  "scope": "root",
+}
+`;

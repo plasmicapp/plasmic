@@ -38,7 +38,7 @@ import {
   StatefulQueryResult,
   unwrapStatefulQueryResult,
 } from "@/wab/shared/core/custom-functions";
-import { alwaysOmitKeys, omittedKeysIfEmpty } from "@/wab/shared/core/exprs";
+import { omittedKeysIfEmpty } from "@/wab/shared/core/exprs";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   findStateIn$State,
@@ -46,6 +46,17 @@ import {
   getStateVarName,
 } from "@/wab/shared/core/states";
 import { isTplComponent } from "@/wab/shared/core/tpls";
+import type {
+  DataPickerOpts,
+  DataPickerSupportedVariableType,
+  VariableType,
+} from "@/wab/shared/data-picker/data-picker-types";
+import {
+  dataPickerShouldHideKey,
+  getVariableType,
+  isListType,
+  isTypeSupported,
+} from "@/wab/shared/data-picker/data-picker-types";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import {
@@ -56,22 +67,17 @@ import {
   VariantGroup,
   isKnownNamedState,
 } from "@/wab/shared/model/classes";
-import {
-  UNINITIALIZED_BOOLEAN,
-  UNINITIALIZED_NUMBER,
-  UNINITIALIZED_OBJECT,
-  UNINITIALIZED_STRING,
-} from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { ChoiceValue, DataMeta, mkMetaName } from "@plasmicapp/host";
 import { isArray, isPlainObject } from "lodash";
 
-const allowedSymbols = [
-  UNINITIALIZED_NUMBER,
-  UNINITIALIZED_STRING,
-  UNINITIALIZED_BOOLEAN,
-  UNINITIALIZED_OBJECT,
-];
+export {
+  dataPickerShouldHideKey,
+  getVariableType,
+  isListType,
+  isTypeSupported,
+};
+export type { DataPickerOpts, DataPickerSupportedVariableType, VariableType };
 
 export type ColumnItem = {
   name: string;
@@ -91,10 +97,6 @@ export type Column = {
 type keyInfo = {
   key: string;
   label?: string;
-};
-
-export type DataPickerOpts = {
-  showAdvancedFields: boolean;
 };
 
 export function hasAdvancedFields(data: any, seen: Set<any> = new Set()) {
@@ -123,37 +125,6 @@ export function hasAdvancedFields(data: any, seen: Set<any> = new Set()) {
     }
   }
   return false;
-}
-
-export function dataPickerShouldHideKey(
-  key: string,
-  data: Record<string, any>,
-  pathPrefix: (string | number)[] | undefined,
-  opts: DataPickerOpts
-) {
-  if (key === "$$" && !pathPrefix?.length) {
-    return true;
-  }
-  if (key.startsWith("__plasmic")) {
-    return true;
-  }
-  if (data[key]?.isPlasmicUndefinedDataProxy) {
-    return true;
-  }
-  const meta: DataMeta | undefined = data[mkMetaName(key)];
-  if (isNonNil(meta)) {
-    if (meta.hidden) {
-      return true;
-    }
-    if (!opts.showAdvancedFields && meta.advanced) {
-      return true;
-    }
-  }
-  if (alwaysOmitKeys.has([...(pathPrefix ?? []), key].join("."))) {
-    return true;
-  }
-  const variableType = getVariableType(data[key]);
-  return !isTypeSupported(variableType) && !allowedSymbols.includes(data[key]);
 }
 
 export function getSupportedObjectKeys(
@@ -279,16 +250,10 @@ const dataPickerSupportedVariableTypes = {
   object: { previewVariant: "object", icon: BracesIcon },
   array: { previewVariant: "array", icon: BracketsIcon },
   function: { previewVariant: "func", icon: FunctionSvgIcon },
-} as const;
-
-export type DataPickerSupportedVariableType =
-  keyof typeof dataPickerSupportedVariableTypes;
-
-export function isTypeSupported(
-  variableType: VariableType
-): variableType is DataPickerSupportedVariableType {
-  return variableType in dataPickerSupportedVariableTypes;
-}
+} as const satisfies Record<
+  DataPickerSupportedVariableType,
+  { previewVariant: string; icon: SvgIcon }
+>;
 
 export function toDataPickerPreviewVariant(
   variableType: DataPickerSupportedVariableType
@@ -300,54 +265,6 @@ export function variableTypeToIcon(
   variableType: DataPickerSupportedVariableType
 ): SvgIcon {
   return dataPickerSupportedVariableTypes[variableType].icon;
-}
-
-/** `typeof` types plus a few useful types. */
-export type VariableType =
-  // typeof
-  | "undefined"
-  | "boolean"
-  | "number"
-  | "bigint"
-  | "string"
-  | "symbol"
-  | "object"
-  | "function"
-  // extended
-  | "null"
-  | "array"
-  | "react-element";
-
-/** A better `typeof`. This could be moved to commons later. */
-export function getVariableType(value: any): VariableType {
-  if (value === undefined) {
-    return "undefined";
-  } else if (value === null) {
-    return "null";
-  } else if (Array.isArray(value)) {
-    return "array";
-  } else if (typeof value === "object" && value.$$typeof) {
-    // We make a special effort to detect React elements, which often come
-    // in from $props with renderable params. Walking React elements can be
-    // dangerous because their props can lead to canvas-rendering objects
-    // we store in element props, which may lead to walking the Site data model
-    // or even other DOM trees and the top `window`.
-    return "react-element";
-  } else if (value === UNINITIALIZED_STRING) {
-    return "string";
-  } else if (value === UNINITIALIZED_NUMBER) {
-    return "number";
-  } else if (value === UNINITIALIZED_BOOLEAN) {
-    return "boolean";
-  } else if (value === UNINITIALIZED_OBJECT) {
-    return "object";
-  }
-  return typeof value;
-}
-
-/** If type has a nested column / list of sub-items. */
-export function isListType(type: VariableType) {
-  return type === "object" || type === "array";
 }
 
 export function evalExpr(path: (string | number)[], data: Record<string, any>) {
@@ -371,11 +288,17 @@ export function getExpectedValuesForVariantGroup(group: VariantGroup) {
 
 export function prepareEnvForDataPicker(
   viewCtx: ViewCtx | undefined,
-  data?: Record<string, any>,
-  component?: Component,
-  tpl?: TplNode | null
-) {
-  if (!data || !component) {
+  data: Record<string, any>,
+  component: Component | undefined,
+  tpl?: TplNode | null,
+  opts?: {
+    /** Leave $q entries as raw StatefulQueryResult instances instead of
+     * unwrapping them to {data, error} snapshots. The copilot data-context
+     * exporter uses this so it can preserve each query's isLoading state. */
+    keepStatefulQueries?: boolean;
+  }
+): Record<string, any> {
+  if (!component) {
     return data;
   }
   const { dataTokensEnv, ...fixedData } = data;
@@ -415,7 +338,7 @@ export function prepareEnvForDataPicker(
   }
   // Omit fields from StatefulQueryResult instances in $q.
   // Only expose the fields in the PlasmicQueryResult interface.
-  if ("$q" in fixedData && fixedData.$q) {
+  if (!opts?.keepStatefulQueries && "$q" in fixedData && fixedData.$q) {
     fixedData.$q = Object.fromEntries(
       Object.entries(fixedData.$q as Record<string, any>).map(
         ([name, query]: [string, StatefulQueryResult]) => [

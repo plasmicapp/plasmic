@@ -12,7 +12,12 @@ import { SiteInfo } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/shared/core/sites";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
-import { ArenaFrame, Site } from "@/wab/shared/model/classes";
+import {
+  ArenaFrame,
+  Component,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { createMemoryHistory } from "history";
 
 export function fakeApp() {
@@ -112,4 +117,36 @@ export function fakeStudioCtx(opts?: {
   };
 
   return { studioCtx, ...dbCtxDeps };
+}
+
+/**
+ * Stubs studioCtx.withBackgroundViewCtxForComponent to override canvas env per component
+ * or Tpl without setting up a full ViewCtx. The fake ViewCtx is never stale and syncs
+ * immediately, so waitForCanvasEnvSettled only waits on pending query promises in the env.
+ *
+ * Pass `noViewCtx: true` to simulate a component with no resolvable arena
+ * (the real method returns undefined without calling the callback in that case).
+ */
+export function stubBackgroundViewCtxForComponent(
+  studioCtx: StudioCtx,
+  envProvider: (
+    component: Component,
+    tpl: TplNode
+  ) => Record<string, unknown> | undefined,
+  opts?: { noViewCtx?: boolean }
+) {
+  studioCtx.withBackgroundViewCtxForComponent = (async (
+    component: Component,
+    cb: (viewCtx: ViewCtx) => Promise<unknown>
+  ) => {
+    if (opts?.noViewCtx) {
+      return undefined;
+    }
+    const fakeViewCtx = {
+      getCanvasEnvForTpl: (tpl: TplNode) => envProvider(component, tpl),
+      isStale: () => false,
+      awaitSync: async () => undefined,
+    } as unknown as ViewCtx;
+    return cb(fakeViewCtx);
+  }) as StudioCtx["withBackgroundViewCtxForComponent"];
 }

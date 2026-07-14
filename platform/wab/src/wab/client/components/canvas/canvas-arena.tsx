@@ -4,7 +4,6 @@ import { FocusModeLayout } from "@/wab/client/components/studio/arenas/FocusMode
 import { FreeFramesLayout } from "@/wab/client/components/studio/arenas/FreeFramesLayout";
 import { PageArenaLayout } from "@/wab/client/components/studio/arenas/PageArenaLayout";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx, unexpected } from "@/wab/shared/common";
 import {
   AnyArena,
   isComponentArena,
@@ -12,6 +11,7 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import { cx, unexpected } from "@/wab/shared/common";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
@@ -23,18 +23,21 @@ export const CanvasArenaShell = observer(function CanvasArenaShell(props: {
 }) {
   const { studioCtx, arena, onFrameLoad } = props;
   const isDevMode = studioCtx.isDevMode;
-  const isVisible = studioCtx.isArenaVisible(arena);
-  const isAlive = studioCtx.isArenaAlive(arena);
+  const status = studioCtx.getArenaStatus(arena);
 
   return (
     <div
       data-arena-uid={arena.uid}
       className={cx(
-        isVisible ? "canvas-editor__frames" : "display-none",
+        status === "visible"
+          ? "canvas-editor__frames"
+          : status === "background"
+          ? "canvas-editor__frames canvas-editor__frames--background"
+          : "display-none",
         isDevMode ? undefined : "invisible"
       )}
     >
-      {isAlive && (
+      {status !== "dead" && (
         <CanvasArena
           studioCtx={studioCtx}
           arena={arena}

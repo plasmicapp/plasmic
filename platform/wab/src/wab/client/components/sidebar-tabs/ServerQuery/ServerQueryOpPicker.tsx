@@ -271,9 +271,9 @@ export const ServerQueryOpDraftForm = observer(
         cleanDataForPreview(
           prepareEnvForDataPicker(
             viewCtx,
-            data,
+            data ?? {},
             exprCtx.component ?? undefined
-          ) ?? {}
+          )
         ),
       [viewCtx, data, exprCtx.component]
     );
