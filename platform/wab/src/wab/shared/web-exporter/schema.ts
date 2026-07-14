@@ -105,6 +105,11 @@ export function projectSchema() {
       .array(animationSummarySchema())
       .optional()
       .describe("Animation sequences (own + imported), when requested."),
+    dataQueryFunctions: dataQueryFunctionsSchema()
+      .optional()
+      .describe(
+        "Installed and installable custom functions usable by createDataQuery, when requested."
+      ),
     importedProjects: z
       .array(importedProjectSchema())
       .describe("Imported (direct dependency) projects; always included."),
@@ -669,4 +674,72 @@ export function importedProjectSchema() {
 }
 export type ImportedProjectJson = z.infer<
   ReturnType<typeof importedProjectSchema>
+>;
+
+/** Custom functions usable in data queries: installed and installable. */
+export function dataQueryFunctionsSchema() {
+  return z.object({
+    __type: z.literal("DataQueryFunctions"),
+    installed: z
+      .array(installedFunctionSchema())
+      .describe("Custom functions already registered in the project."),
+    installable: z
+      .array(installableFunctionSchema())
+      .describe(
+        "Custom functions available from hostless packages not yet installed."
+      ),
+  });
+}
+export type DataQueryFunctionsJson = z.infer<
+  ReturnType<typeof dataQueryFunctionsSchema>
+>;
+
+export function installedFunctionSchema() {
+  return z.object({
+    __type: z.literal("InstalledFunction"),
+    id: z
+      .string()
+      .describe("Stable function id, used to bind the function to a query."),
+    displayName: z.string().optional(),
+    namespace: z.string().optional(),
+    importPath: z.string().optional(),
+    description: z.string().optional(),
+    isQuery: z.boolean(),
+    isMutation: z.boolean(),
+    params: z.array(functionParamSchema()).describe("Function parameters."),
+  });
+}
+export type InstalledFunctionJson = z.infer<
+  ReturnType<typeof installedFunctionSchema>
+>;
+
+export function functionParamSchema() {
+  return z.object({
+    __type: z.literal("FunctionParam"),
+    name: z.string(),
+    type: z.string().describe("Param type tag."),
+    displayName: z.string().optional(),
+    description: z.string().optional(),
+    defaultValue: z.string().optional(),
+    options: z
+      .string()
+      .optional()
+      .describe("Comma-separated choices, for choice params."),
+  });
+}
+export type FunctionParamJson = z.infer<ReturnType<typeof functionParamSchema>>;
+
+export function installableFunctionSchema() {
+  return z.object({
+    __type: z.literal("InstallableFunction"),
+    id: z
+      .string()
+      .describe("Stable id used to install and bind via createDataQuery."),
+    displayName: z.string(),
+    packageProjectId: z.string().optional(),
+    description: z.string().optional(),
+  });
+}
+export type InstallableFunctionJson = z.infer<
+  ReturnType<typeof installableFunctionSchema>
 >;

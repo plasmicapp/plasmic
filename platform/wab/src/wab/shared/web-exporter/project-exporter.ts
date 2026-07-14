@@ -19,6 +19,7 @@ import {
   type AnimationJson,
   type AnimationSummaryJson,
   type ComponentSummaryJson,
+  type DataQueryFunctionsJson,
   type GlobalVariantGroupJson,
   type ProjectJson,
   type ScreenBreakpointJson,
@@ -32,9 +33,12 @@ import {
  * flattened view: each requested key lists the project's own resources plus
  * those of every imported (direct dependency) project; imported resources carry
  * a `fromProject` id.
+ *
+ * `customFunctions` is pre-built by the caller, since it requires StudioCtx.
  */
 export function buildProjectResource(
   site: Site,
+  customFunctions: DataQueryFunctionsJson | undefined,
   opts: {
     projectId: string;
     components?: boolean;
@@ -168,6 +172,7 @@ export function buildProjectResource(
     ...(globalVariantGroups ? { globalVariantGroups } : {}),
     ...(tokens ? { tokens } : {}),
     ...(animations ? { animations } : {}),
+    ...(customFunctions ? { dataQueryFunctions: customFunctions } : {}),
     importedProjects: site.projectDependencies.map((dep) => ({
       __type: "ImportedProject",
       id: dep.projectId,

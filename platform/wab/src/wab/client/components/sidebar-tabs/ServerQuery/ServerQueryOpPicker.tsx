@@ -2,6 +2,10 @@ import { BottomModalButtons } from "@/wab/client/components/BottomModal";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { PropValueEditorContextData } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import {
+  getInstallableCustomFunctions,
+  InstallableCustomFunction,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/installable-custom-functions";
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker.module.scss";
 import {
   getServerQueryParamRowItems,
@@ -11,12 +15,9 @@ import {
   ServerQueryOpArgs,
   useServerQueryOp,
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/useServerQueryOp";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
-import {
-  createFakeHostLessComponent,
-  shouldShowHostLessPackage,
-} from "@/wab/client/components/studio/add-drawer/AddDrawer";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -28,7 +29,6 @@ import {
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { CUSTOM_CODE_QUERY_CAP } from "@/wab/shared/Labels";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import {
   getPropTypeDefaultValue,
@@ -38,32 +38,30 @@ import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   cx,
-  ensureArray,
   mkShortId,
   spawn,
   switchType,
   withoutFalsy,
 } from "@/wab/shared/common";
 import {
-  StatefulQueryState,
   getCustomFunctionParams,
+  StatefulQueryState,
 } from "@/wab/shared/core/custom-functions";
 import {
-  ExprCtx,
   clone,
   codeLit,
   customCode,
+  ExprCtx,
   stripParens,
 } from "@/wab/shared/core/exprs";
 import { InvalidArg } from "@/wab/shared/core/invalid-arg";
-import { isHostlessPackageInstalled } from "@/wab/shared/core/project-deps";
 import {
   customFunctionId,
   makeCustomCodeQueryKey,
 } from "@/wab/shared/core/query-ids";
 import { flattenExprs } from "@/wab/shared/core/tpls";
-import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
+import { CUSTOM_CODE_QUERY_CAP } from "@/wab/shared/Labels";
 import {
   ArgType,
   ComponentServerQuery,
@@ -73,9 +71,9 @@ import {
   Expr,
   FunctionArg,
   Interaction,
+  isKnownComponentServerQuery,
   Site,
   TplTag,
-  isKnownComponentServerQuery,
 } from "@/wab/shared/model/classes";
 import { convertToFunction } from "@/wab/shared/parser-utils";
 import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
@@ -191,48 +189,10 @@ function getDraftFromOp(
     .result();
 }
 
-interface AvailableCustomFunctionInfo {
-  item: HostLessComponentInfo;
-  projectIds: string[];
-}
-
 const INSTALLABLE_PREFIX = "install-custom-function-";
 
 function getAllCustomFunctions(site: Site) {
   return allCustomFunctions(site).map((fnInfo) => fnInfo.customFunction);
-}
-
-/**
- * Get all available custom functions from hostless packages that are not yet installed
- */
-function getAvailableCustomFunctions(
-  studioCtx: StudioCtx
-): AvailableCustomFunctionInfo[] {
-  const hostLessComponentsMeta =
-    studioCtx.appCtx.appConfig.hostLessComponents ??
-    DEVFLAGS.hostLessComponents ??
-    [];
-  const availableCustomFunctions: AvailableCustomFunctionInfo[] = [];
-
-  for (const meta of hostLessComponentsMeta) {
-    const isInstalled = isHostlessPackageInstalled(
-      meta,
-      studioCtx.site.projectDependencies
-    );
-    // Only show packages that should be visible
-    if (isInstalled || !shouldShowHostLessPackage(studioCtx, meta)) {
-      continue;
-    }
-    const projectIds = ensureArray(meta.projectId);
-
-    // Get custom function items from this package
-    for (const item of meta.items) {
-      if (item.isCustomFunction && !item.hidden && !item.hiddenOnStore) {
-        availableCustomFunctions.push({ item, projectIds });
-      }
-    }
-  }
-  return availableCustomFunctions;
 }
 
 export const ServerQueryOpDraftForm = observer(
@@ -282,7 +242,7 @@ export const ServerQueryOpDraftForm = observer(
 
     const [isInstalling, setIsInstalling] = React.useState(false);
     const installableFunctions = React.useMemo(
-      () => getAvailableCustomFunctions(studioCtx),
+      () => getInstallableCustomFunctions(studioCtx),
       [studioCtx.site.projectDependencies.length]
     );
     const availableFunctions = React.useMemo(
@@ -477,7 +437,7 @@ export const ServerQueryOpDraftForm = observer(
     );
 
     const handleInstallCustomFunction = async (
-      customFunctionInfo: AvailableCustomFunctionInfo
+      customFunctionInfo: InstallableCustomFunction
     ) => {
       setIsInstalling(true);
       try {
