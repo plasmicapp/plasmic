@@ -1,7 +1,11 @@
 import { Bundler } from "@/wab/shared/bundler";
 import { Site } from "@/wab/shared/model/classes";
 import { toJson } from "@/wab/shared/model/model-tree-util";
-import { typeFactory, wabToTsType } from "@/wab/shared/model/model-util";
+import {
+  normalizeToChoiceObjects,
+  typeFactory,
+  wabToTsType,
+} from "@/wab/shared/model/model-util";
 import { readFileSync } from "fs";
 
 describe("model-util", () => {
@@ -155,6 +159,25 @@ describe("wabToTsType", () => {
       expect(wabToTsType(typeFactory.renderable(), true)).toBe(
         "React.ReactNode"
       );
+    });
+  });
+
+  describe("normalizeToChoiceObjects", () => {
+    it("keeps values raw and stringifies only the label", () => {
+      expect(normalizeToChoiceObjects(["a", 1, true])).toEqual([
+        { value: "a", label: "a" },
+        { value: 1, label: "1" },
+        { value: true, label: "true" },
+      ]);
+    });
+
+    it("passes through {value, label} objects and falls back to value", () => {
+      expect(
+        normalizeToChoiceObjects([{ value: "x", label: "X" }, { value: "y" }])
+      ).toEqual([
+        { value: "x", label: "X" },
+        { value: "y", label: "y" },
+      ]);
     });
   });
 });

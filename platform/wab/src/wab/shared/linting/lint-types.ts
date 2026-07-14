@@ -68,6 +68,13 @@ export interface UnprotectedDataQueryLintIssue extends BaseLintIssue {
   expectedRole: string;
 }
 
+export interface LinkedPropDriftLintIssue extends BaseLintIssue {
+  type: "linked-prop-drift";
+  component: Component;
+  tpl: TplNode;
+  propName: string;
+}
+
 export type LintIssue =
   | NonCssScreenVariantOverrideLintIssue
   | SuboptimalVariantedVisibilityLintIssue
@@ -75,6 +82,7 @@ export type LintIssue =
   | InvalidDomNestingLintIssue
   | InvisibleElementLintIssue
   | ChoicePropValuesLintIssue
-  | UnprotectedDataQueryLintIssue;
+  | UnprotectedDataQueryLintIssue
+  | LinkedPropDriftLintIssue;
 
 export type LintIssueType = LintIssue["type"];

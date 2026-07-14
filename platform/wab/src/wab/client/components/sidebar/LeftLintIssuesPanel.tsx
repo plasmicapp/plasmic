@@ -61,6 +61,7 @@ const issueTypeToLabel: { [key in LintIssueType]: string } = {
   "choice-prop-values": "Component prop allowed values",
   "invisible-element": "Always-invisible elements",
   "unprotected-data-query": "Unprotected data queries",
+  "linked-prop-drift": "Linked prop type mismatch",
 };
 
 const hiddenIssueTypes: LintIssueType[] = ["suboptimal-varianted-visibility"];

@@ -494,4 +494,57 @@ test.describe("component-props", () => {
     await studio.rightPanel.setInstanceChoiceValue("tags", ["x", "c"]);
     await expect(pageBody.getByText("tags = x,c")).toBeVisible();
   });
+
+  test("warns and reconciles a linked choice prop when its options drift", async ({
+    models,
+  }) => {
+    const { studio } = models;
+
+    await studio.leftPanel.addComponent("Inner");
+    await studio.rightPanel.addChoiceComponentProp({
+      propName: "size",
+      propType: "choice",
+      options: ["small", "medium", "large"],
+      defaultValue: "small",
+    });
+
+    await studio.leftPanel.addComponent("Parent");
+    await studio.leftPanel.insertNode("Inner");
+    await studio.rightPanel.renameTreeNode("myCard", { fromRightPanel: true });
+    await studio.rightPanel.switchToSettingsTab();
+    await studio.frame
+      .locator('[data-plasmic-prop="size"]')
+      .first()
+      .click({ button: "right" });
+    await studio.allowExternalAccess();
+    await studio.createNewProp();
+    await studio.rightPanel.propSubmitButton.click();
+
+    // Drift the source: drop "large" from Inner's `size`, so the linked Parent
+    // prop's options no longer match.
+    await studio.leftPanel.editComponentWithName("Inner");
+    await studio.rightPanel.openComponentPropModal("size");
+    await studio.rightPanel.removeChoiceComponentPropOption(2);
+    await studio.rightPanel.submitPropModal();
+
+    await expect(
+      studio.frame.getByText("Linked props out of sync")
+    ).toBeVisible();
+    await studio.frame.getByText("Review in Issues tab").click();
+
+    await expect(
+      studio.frame.getByText("no longer matches the linked component prop")
+    ).toBeVisible();
+    await studio.frame.getByText("Element myCard").click();
+
+    await studio.rightPanel.switchToSettingsTab();
+    const warning = studio.frame.locator(
+      '[data-test-id="linked-prop-warning"]'
+    );
+    await expect(warning).toBeVisible();
+
+    await warning.click();
+    await studio.confirmButton.click();
+    await expect(warning).not.toBeVisible();
+  });
 });

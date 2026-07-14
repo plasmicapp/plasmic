@@ -2,6 +2,7 @@ import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { lintInvalidNesting } from "@/wab/shared/linting/invalid-nesting/lint-invalid-nesting-tpl";
 import { lintChoicePropValues } from "@/wab/shared/linting/lint-choice-prop-values";
 import { lintInvisibleElements } from "@/wab/shared/linting/lint-invisible-elements";
+import { lintLinkedProps } from "@/wab/shared/linting/lint-linked-props";
 import { lintScreenVariantOverrides } from "@/wab/shared/linting/lint-screen-variant-overrides";
 import { LintIssue } from "@/wab/shared/linting/lint-types";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
@@ -26,6 +27,7 @@ export const lintSite = maybeComputedFn(
     issues.push(...lintInvalidNesting(site));
     issues.push(...lintInvisibleElements(site));
     issues.push(...lintChoicePropValues(site, studioCtx));
+    issues.push(...lintLinkedProps(site));
     return issues;
   },
   {

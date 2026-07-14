@@ -63,7 +63,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
 import { Type as ModelType } from "@/wab/shared/model/model-meta";
-import { ChoiceOptions } from "@plasmicapp/host";
+import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
 import L, {
   isArray,
   isBoolean,
@@ -205,6 +205,22 @@ export function isMultiChoiceType(type: Type): type is MultiChoice {
 
 export function isOptionsType(type: Type): type is Choice | MultiChoice {
   return isChoiceType(type) || isMultiChoiceType(type);
+}
+
+/**
+ * Normalizes a choice/multiChoice prop's `options` — which may be bare values or
+ * `{ value, label }` objects — into a consistent `{ value, label }` shape.
+ */
+export function normalizeToChoiceObjects(
+  options: Array<ChoiceValue | { [key: string]: ChoiceValue }>
+): { value: ChoiceValue; label: string }[] {
+  return options.map((o) => {
+    const isObj = typeof o === "object";
+    return {
+      value: isObj ? o.value : o,
+      label: String(isObj ? o.label ?? o.value : o),
+    };
+  });
 }
 
 export function isImageType(type: Type): type is Img {

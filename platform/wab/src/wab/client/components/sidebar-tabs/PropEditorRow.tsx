@@ -22,6 +22,7 @@ import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIco
 import { CreateNewMenuItemContent } from "@/wab/client/components/menu-builder";
 import { makeDataTokensSubMenu } from "@/wab/client/components/sidebar-tabs/DataBinding/data-tokens-context-menu";
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { reconcileLinkedProp } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
 import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
 import {
   getValueSetState,
@@ -69,7 +70,6 @@ import {
   isOneOf,
   leftZip,
   maybe,
-  strictZip,
   swallow,
   switchType,
   tuple,
@@ -124,6 +124,7 @@ import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import { RESET_CAP } from "@/wab/shared/Labels";
+import { isLinkCompatible } from "@/wab/shared/linked-props";
 import {
   getChoicePropOptions,
   valueInOptions,
@@ -145,7 +146,6 @@ import {
   isKnownCustomCode,
   isKnownExpr,
   isKnownFunctionExpr,
-  isKnownFunctionType,
   isKnownObjectPath,
   isKnownQueryData,
   isKnownRenderExpr,
@@ -170,9 +170,9 @@ import {
   VarRef,
 } from "@/wab/shared/model/classes";
 import {
+  isOptionsType,
   isRenderableType,
   typeFactory,
-  typesEqual,
 } from "@/wab/shared/model/model-util";
 import { hashExpr } from "@/wab/shared/site-diffs";
 import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
@@ -623,29 +623,6 @@ interface PropEditorRowProps {
   tooltip?: React.ReactNode;
 }
 
-function canLinkPropToParam(type: Type, existingParam: Param) {
-  const existingType = existingParam.type;
-  if (isKnownFunctionType(existingType) !== isKnownFunctionType(type)) {
-    return false;
-  }
-  if (isKnownFunctionType(type) && isKnownFunctionType(existingType)) {
-    // both types are function types
-    if (type.params.length !== existingType.params.length) {
-      return false;
-    }
-    return strictZip(type.params, existingType.params).every(
-      ([argType1, argType2]) =>
-        // Not using typesEqual because it is more strict
-        // For example, it checks if the function arg names are equal
-        argType1.type.name === argType2.type.name
-    );
-  }
-  if (type.name === "href") {
-    return typesEqual(type, existingType);
-  }
-  return true;
-}
-
 function isPropOptionInvalid(
   propType: StudioPropType<any>,
   propVal: any,
@@ -659,9 +636,14 @@ function isPropOptionInvalid(
   return !valueInOptions(choicePropOptions, propVal);
 }
 
-function WarnInvalid(props: { message: string }) {
+function WarnInvalid(props: { message: string; onClick?: () => void }) {
   return (
-    <div className="invalid-arg-icon">
+    <div
+      className="invalid-arg-icon"
+      onClick={props.onClick}
+      style={props.onClick ? { cursor: "pointer" } : undefined}
+      data-test-id={props.onClick ? "linked-prop-warning" : undefined}
+    >
       <Tooltip title={props.message}>
         <WarningIcon />
       </Tooltip>
@@ -961,7 +943,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         canLinkToProp && (
           <Menu.SubMenu title={<span>Allow external access</span>}>
             {getRealParams(ownerComponent)
-              .filter((p) => canLinkPropToParam(wabType, p))
+              .filter((p) => isLinkCompatible(wabType, p.type))
               .map((param) => (
                 <Menu.Item
                   key={param.uid}
@@ -1109,6 +1091,31 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     ccContextData,
   });
 
+  const linkDrift =
+    !!referencedParam &&
+    !!wabType &&
+    !isLinkCompatible(wabType, referencedParam.type);
+
+  // Drift between two options types (changed choices, or single↔multi) is the
+  // one case we can auto-fix: the outer adopts the inner's options.
+  const onReconcileLink =
+    linkDrift &&
+    viewCtx &&
+    ownerComponent &&
+    referencedParam &&
+    wabType &&
+    isOptionsType(wabType) &&
+    isOptionsType(referencedParam.type)
+      ? () =>
+          void reconcileLinkedProp({
+            viewCtx,
+            innerType: wabType,
+            innerName: label,
+            outerParam: referencedParam,
+            outerComponent: ownerComponent,
+          })
+      : undefined;
+
   const renderDefaultEditor = () => {
     return (
       <PropValueEditor
@@ -1184,6 +1191,13 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               <WarnInvalid message={getInvalidArgErrorMessage(invalidArg)} />
             ) : invalidVal ? (
               <WarnInvalid message="Prop value not allowed" />
+            ) : referencedParam && linkDrift ? (
+              <WarnInvalid
+                message={`Type mismatch with linked prop "${
+                  referencedParam.variable.name
+                }"${onReconcileLink ? ". Click to update." : ""}`}
+                onClick={onReconcileLink}
+              />
             ) : null}
             {isFlattenedObjectProp ? (
               renderDefaultEditor()

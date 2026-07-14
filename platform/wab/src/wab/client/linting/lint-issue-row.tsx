@@ -15,6 +15,7 @@ import {
   InvalidDomNestingLintIssue,
   InvalidTplNestingLintIssue,
   InvisibleElementLintIssue,
+  LinkedPropDriftLintIssue,
   LintIssue,
   LintIssueType,
   NonCssScreenVariantOverrideLintIssue,
@@ -40,6 +41,8 @@ export function renderLintIssue(issue: LintIssue) {
     return <ChoicePropValuesLintIssueRow issue={issue} />;
   } else if (issue.type === "unprotected-data-query") {
     return <UnprotectedDataQuerytLintIssueRow issue={issue} />;
+  } else if (issue.type === "linked-prop-drift") {
+    return <LinkedPropDriftLintIssueRow issue={issue} />;
   } else {
     return null;
   }
@@ -56,6 +59,8 @@ export function getLintIssueIcon(type: LintIssueType) {
     return ERROR_ICON;
   } else if (type === "unprotected-data-query") {
     return <Icon icon={UnlockIcon} />;
+  } else if (type === "linked-prop-drift") {
+    return ERROR_ICON;
   } else {
     return null;
   }
@@ -70,6 +75,8 @@ export function getLintIssueTypeName(type: LintIssueType) {
     return "Invisible element";
   } else if (type === "unprotected-data-query") {
     return "Unprotected data query";
+  } else if (type === "linked-prop-drift") {
+    return "Linked prop type mismatch";
   } else {
     return null;
   }
@@ -160,6 +167,13 @@ const PROP_ALLOWED_VALUES_INSTRUCTIONS = (
   <p>
     A choice prop changed its allowed values, and the current prop value is not
     valid.
+  </p>
+);
+
+const LINKED_PROP_DRIFT_INSTRUCTIONS = (
+  <p>
+    This prop is linked to a component prop whose type no longer matches.
+    Re-link it, or update the component prop to match.
   </p>
 );
 
@@ -298,6 +312,28 @@ const ChoicePropValuesLintIssueRow = observer(
       <>
         <p>{content}</p>
         {PROP_ALLOWED_VALUES_INSTRUCTIONS}
+      </>
+    );
+  }
+);
+
+const LinkedPropDriftLintIssueRow = observer(
+  function LinkedPropDriftLintIssueRow(props: {
+    issue: LinkedPropDriftLintIssue;
+  }) {
+    const { issue } = props;
+    const content = (
+      <>
+        <TplLink component={issue.component} tpl={issue.tpl} /> prop{" "}
+        <strong>{issue.propName}</strong> no longer matches the linked component
+        prop
+      </>
+    );
+    return renderIssueListItem(
+      content,
+      <>
+        <p>{content}</p>
+        {LINKED_PROP_DRIFT_INSTRUCTIONS}
       </>
     );
   }

@@ -17,6 +17,10 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
     autoOpen: true,
     autoOpen2: true,
 
+    // component-props.spec.ts
+    // The Issues tab content is gated behind this flag.
+    linting: true,
+
     // imported-token-overrides.spec.ts
     importedTokenOverrides: true,
 
