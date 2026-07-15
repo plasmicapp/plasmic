@@ -10,6 +10,11 @@ import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import {
+  LinkedPropIndicator,
+  LinkToPropMenuItem,
+  UnlinkFromPropMenuItem,
+} from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
+import {
   URLParamTooltip,
   URLParamType,
 } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
@@ -19,7 +24,6 @@ import {
 } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 
-import { CreateNewMenuItemContent } from "@/wab/client/components/menu-builder";
 import { makeDataTokensSubMenu } from "@/wab/client/components/sidebar-tabs/DataBinding/data-tokens-context-menu";
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { reconcileLinkedProp } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
@@ -35,7 +39,6 @@ import { InlineIcon } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
-import LinkIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Link";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
@@ -926,39 +929,26 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
           </Menu.Item>
         )}
       {!readOnly && referencedParam && ownerComponent && (
-        <Menu.Item onClick={() => onChange(undefined)}>
-          <span>
-            Unlink from component prop{" "}
-            <strong>
-              {getComponentDisplayName(ownerComponent)}.
-              {referencedParam.variable.name}
-            </strong>
-          </span>
-        </Menu.Item>
+        <UnlinkFromPropMenuItem
+          ownerComponent={ownerComponent}
+          referencedParam={referencedParam}
+          onUnlink={() => onChange(undefined)}
+        />
       )}
       {!readOnly &&
         ownerComponent &&
         (isPageComponent(ownerComponent) || isPlainComponent(ownerComponent)) &&
         !referencedParam &&
         canLinkToProp && (
-          <Menu.SubMenu title={<span>Allow external access</span>}>
-            {getRealParams(ownerComponent)
-              .filter((p) => isLinkCompatible(wabType, p.type))
-              .map((param) => (
-                <Menu.Item
-                  key={param.uid}
-                  onClick={() => {
-                    onChange(new VarRef({ variable: param.variable }));
-                  }}
-                >
-                  <strong>{param.variable.name}</strong>
-                </Menu.Item>
-              ))}
-            {getRealParams(ownerComponent).length > 0 && <Menu.Divider />}
-            <Menu.Item onClick={() => setNewParamModalVisible(true)}>
-              <CreateNewMenuItemContent entity="prop" />
-            </Menu.Item>
-          </Menu.SubMenu>
+          <LinkToPropMenuItem
+            availableParams={getRealParams(ownerComponent).filter((p) =>
+              isLinkCompatible(wabType, p.type)
+            )}
+            onLinkExisting={(param) =>
+              onChange(new VarRef({ variable: param.variable }))
+            }
+            onCreateNew={() => setNewParamModalVisible(true)}
+          />
         )}
       {renderDataTokensSubMenu()}
       {!readOnly &&
@@ -1039,16 +1029,10 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     );
     assert(ownerComponent, "referenced params should have an owner component");
     return (
-      <div className="flex flex-align-start labeled-item__value-vpadding">
-        <Icon icon={LinkIcon} className="mr-ch dimfg" />
-        <span>
-          Linked to{" "}
-          <strong>
-            {getComponentDisplayName(ownerComponent)}.
-            {referencedParam.variable.name}
-          </strong>
-        </span>
-      </div>
+      <LinkedPropIndicator
+        ownerComponent={ownerComponent}
+        referencedParam={referencedParam}
+      />
     );
   };
 
@@ -1290,13 +1274,9 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                   if (!newParam) {
                     return;
                   }
-                  viewCtx.change(() => {
-                    newParam.description = "metaProp";
-                    const _expr = new VarRef({
-                      variable: newParam.variable,
-                    });
-                    onChange(_expr);
-                  });
+                  viewCtx.change(() =>
+                    onChange(new VarRef({ variable: newParam.variable }))
+                  );
                 }}
               />
             )}

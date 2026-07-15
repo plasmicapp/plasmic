@@ -1,13 +1,17 @@
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { mkParam } from "@/wab/shared/core/lang";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
-import { StateParam } from "@/wab/shared/model/classes";
+import { PropParam, StateParam } from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import {
   CodeComponentVariant,
   ensureValidCombo,
   isMaybeInteractiveCodeComponentVariant,
+  isParamCompatibleWithVariantGroup,
   mkBaseVariant,
   mkComponentVariantGroup,
   mkVariant,
+  variantGroupToLinkedPropType,
 } from "@/wab/shared/Variants";
 
 function getComponentWithVariantGroups() {
@@ -242,4 +246,159 @@ describe("Variants", () => {
       ]);
     });
   });
+
+  describe("variantGroupToLinkedPropType", () => {
+    it("maps a standalone (toggle) group to a bool prop", () => {
+      const standaloneGroup = mkLinkGroup({
+        name: "Locked",
+        variants: ["Locked"],
+      });
+      expect(variantGroupToLinkedPropType(standaloneGroup).name).toBe("bool");
+    });
+
+    it("maps a single-select group to a choice over the variant names", () => {
+      const singleGroup = mkLinkGroup({
+        name: "Theme",
+        variants: ["primary", "secondary"],
+      });
+      const type = variantGroupToLinkedPropType(singleGroup);
+      expect(type.name).toBe("choice");
+      expect((type as any).options).toEqual([
+        { label: "primary", value: "primary" },
+        { label: "secondary", value: "secondary" },
+      ]);
+    });
+
+    it("maps a multi-select group to a multiChoice over the variant names", () => {
+      const multiGroup = mkLinkGroup({
+        name: "Theme",
+        variants: ["primary", "secondary"],
+        multi: true,
+      });
+      const type = variantGroupToLinkedPropType(multiGroup);
+      expect(type.name).toBe("multiChoice");
+      expect((type as any).options).toEqual([
+        { label: "primary", value: "primary" },
+        { label: "secondary", value: "secondary" },
+      ]);
+    });
+  });
+
+  describe("isParamCompatibleWithVariantGroup", () => {
+    // Standalone: a single variant whose name equals the group's param name.
+    const standaloneGroup = mkLinkGroup({
+      name: "Locked",
+      variants: ["Locked"],
+    });
+    const singleGroup = mkLinkGroup({
+      name: "Theme",
+      variants: ["primary", "secondary"],
+    });
+    const multiGroup = mkLinkGroup({
+      name: "Theme",
+      variants: ["primary", "secondary"],
+      multi: true,
+    });
+
+    describe("standalone (toggle) group", () => {
+      it("matches a bool param", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.bool()),
+            standaloneGroup
+          )
+        ).toBe(true);
+      });
+      it("rejects a choice param", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.choice(["Locked"])),
+            standaloneGroup
+          )
+        ).toBe(false);
+      });
+      it("rejects a text param", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.text()),
+            standaloneGroup
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("single-select group", () => {
+      it("matches a choice param with the same options", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.choice(["primary", "secondary"])),
+            singleGroup
+          )
+        ).toBe(true);
+      });
+      it("rejects a multiChoice param (single/multi mismatch)", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.multiChoice(["primary", "secondary"])),
+            singleGroup
+          )
+        ).toBe(false);
+      });
+      it("rejects a choice param with different options", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.choice(["primary", "tertiary"])),
+            singleGroup
+          )
+        ).toBe(false);
+      });
+      it("rejects a bool param", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.bool()),
+            singleGroup
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("multi-select group", () => {
+      it("matches a multiChoice param with the same options", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.multiChoice(["primary", "secondary"])),
+            multiGroup
+          )
+        ).toBe(true);
+      });
+      it("rejects a choice param (single/multi mismatch)", () => {
+        expect(
+          isParamCompatibleWithVariantGroup(
+            linkPropParam(typeFactory.choice(["primary", "secondary"])),
+            multiGroup
+          )
+        ).toBe(false);
+      });
+    });
+  });
 });
+
+function linkPropParam(type: PropParam["type"]) {
+  return mkParam({ name: "p", type, paramType: "prop" });
+}
+
+function mkLinkGroup(opts: {
+  name: string;
+  variants: string[];
+  multi?: boolean;
+}) {
+  return mkComponentVariantGroup({
+    param: mkParam({
+      name: opts.name,
+      type: typeFactory.text(),
+      paramType: "state",
+    }),
+    multi: opts.multi ?? false,
+    variants: opts.variants.map((name) => mkVariant({ name })),
+  });
+}

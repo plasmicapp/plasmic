@@ -112,6 +112,7 @@ import {
   extractParamsFromPagePath,
   findStateForParam,
   getComponentDisplayName,
+  getComponentForVariantGroup,
   getFolderComponentDisplayName,
   getSubComponents,
   isCodeComponent,
@@ -248,7 +249,6 @@ import {
   VariantsRef,
   ensureKnownEventHandler,
   ensureKnownVariantGroup,
-  ensureKnownVariantsRef,
   isKnownArenaFrame,
   isKnownComponent,
   isKnownEventHandler,
@@ -902,7 +902,12 @@ export class TplMgr {
           if (arg.param !== group.param) {
             continue;
           }
-          const r = ensureKnownVariantsRef(arg.expr);
+          if (!isKnownVariantsRef(arg.expr)) {
+            // Skip linked (VarRef) because the user will manually trigger the re-conciliation
+            // Skip dynamic value (CustomCode / ObjectPath) because that's user's custom code
+            continue;
+          }
+          const r = arg.expr;
           const adjustedVariants = multi ? r.variants : r.variants.slice(0, 1);
           arg.expr = mkVariantGroupArgExpr(adjustedVariants);
         }
@@ -2211,7 +2216,7 @@ export class TplMgr {
 
     if (group.type === VariantGroupType.Component) {
       const component = ensure(
-        this.site().components.find((c) => c.variantGroups.includes(group)),
+        getComponentForVariantGroup(this.site(), group),
         "Expected some component to contain the given variant group"
       );
       this.renameParam(component, group.param, name || "Unnamed Group");

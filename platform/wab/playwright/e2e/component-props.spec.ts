@@ -361,38 +361,189 @@ test.describe("component-props", () => {
     const { studio } = models;
     const rightPanel = studio.rightPanel.frame;
 
-    await studio.leftPanel.addComponent("Inner");
-    await studio.createComponentProp({
-      propName: "someProp",
-      propType: "text",
+    await test.step("prop link creation", async () => {
+      await studio.leftPanel.addComponent("Inner");
+      await studio.createComponentProp({
+        propName: "someProp",
+        propType: "text",
+      });
+      await studio.insertTextWithDynamic("`${$props.someProp}`");
+
+      await studio.leftPanel.addComponent("Parent");
+      await studio.leftPanel.insertNode("Inner");
+      await studio.rightPanel.renameTreeNode("myCard", {
+        fromRightPanel: true,
+      });
+
+      // Right-click Inner's `someProp` on the instance → Allow external access → Create new prop.
+      await studio.rightPanel.switchToSettingsTab();
+      const someProp = studio.frame
+        .locator('[data-plasmic-prop="someProp"]')
+        .first();
+      await someProp.click({ button: "right" });
+      await studio.allowExternalAccess();
+      await studio.createNewProp();
+
+      const propName = "myCard / someProp";
+
+      // The new-prop modal should be prefilled with `<tplName> / <propName>`,
+      await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
+        propName
+      );
+      await studio.rightPanel.propSubmitButton.click();
+
+      await studio.rightPanel.switchToComponentDataTab();
+      await expect(
+        rightPanel.getByText("myCard", { exact: true })
+      ).toBeVisible();
+      // Groups are collapsed by default. Click to expand
+      rightPanel.getByText("myCard", { exact: true }).click();
+      await expect(
+        rightPanel.getByText("someProp", { exact: true })
+      ).toBeVisible();
     });
 
-    await studio.leftPanel.addComponent("Parent");
-    await studio.leftPanel.insertNode("Inner");
-    await studio.rightPanel.renameTreeNode("myCard", { fromRightPanel: true });
+    await test.step("test prop linking works in canvas and live preview", async () => {
+      await studio.leftPanel.createNewPage("Preview");
+      await studio.leftPanel.insertNode("Parent");
+      // 2 components (Inner, Parent) + the Preview page → page is iframe #2.
+      const pageFrame = studio.frame.locator("iframe").nth(2).contentFrame();
 
-    // Right-click Inner's `someProp` on the instance → Allow external access → Create new prop.
-    await studio.rightPanel.switchToSettingsTab();
-    const someProp = studio.frame
-      .locator('[data-plasmic-prop="someProp"]')
-      .first();
-    await someProp.click({ button: "right" });
-    await studio.allowExternalAccess();
-    await studio.createNewProp();
+      const propName = "myCard / someProp";
 
-    // The new-prop modal should be prefilled with `<tplName> / <propName>`,
-    await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
-      "myCard / someProp"
-    );
-    await studio.rightPanel.propSubmitButton.click();
+      await studio.rightPanel.setDataPlasmicProp(propName, "hello canvas");
+      await expect(pageFrame.getByText("hello canvas")).toBeVisible();
 
-    await studio.rightPanel.switchToComponentDataTab();
-    await expect(rightPanel.getByText("myCard", { exact: true })).toBeVisible();
-    // Groups are collapsed by default. Click to expand
-    rightPanel.getByText("myCard", { exact: true }).click();
-    await expect(
-      rightPanel.getByText("someProp", { exact: true })
-    ).toBeVisible();
+      await studio.rightPanel.setDataPlasmicProp(propName, "hello live", {
+        reset: true,
+      });
+      await expect(pageFrame.getByText("hello live")).toBeVisible();
+
+      await studio.withinLiveMode(async (liveFrame) => {
+        await expect(liveFrame.getByText("hello live")).toBeVisible();
+      });
+    });
+  });
+
+  test("allow external access on a variant auto-groups the linked prop under the tpl name", async ({
+    models,
+  }) => {
+    const { studio } = models;
+    const rightPanel = studio.rightPanel.frame;
+
+    await test.step("create variants", async () => {
+      await studio.leftPanel.addComponent("Inner");
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.addVariantToGroup("Theme", "Primary");
+      await studio.rightPanel.addVariantToGroup("Theme", "Secondary");
+      await studio.rightPanel.resetVariants();
+      await studio.insertTextNodeWithContent("base-theme");
+
+      // Edit the text within each variant so the rendered output differs
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.selectVariant("Primary");
+      await studio.editText("primary-theme");
+      await studio.rightPanel.deselectVariant("Theme", "Primary");
+      await studio.rightPanel.selectVariant("Secondary");
+      await studio.editText("secondary-theme");
+      await studio.rightPanel.deselectVariant("Theme", "Secondary");
+
+      // Also add a standalone *toggle* variant, on its own node so its output
+      // is independently observable when later forwarded as a bool.
+      await studio.rightPanel.addToggleVariant("Locked");
+      await studio.rightPanel.resetVariants();
+      await studio.insertTextNodeWithContent("unlocked-text");
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.selectVariant("Locked");
+      await studio.editText("locked-text");
+      await studio.rightPanel.deselectVariant("Locked", "Locked");
+    });
+
+    await test.step("link variants to props", async () => {
+      await studio.leftPanel.addComponent("Parent");
+      await studio.leftPanel.insertNode("Inner");
+      await studio.rightPanel.renameTreeNode("myCard", {
+        fromRightPanel: true,
+      });
+
+      // Right-click the "Theme" variant row → Allow external access → Create new prop.
+      const variantRow = rightPanel
+        .locator('[data-test-id="variants-picker-section"]')
+        .getByText("Theme", { exact: true });
+      await variantRow.click({ button: "right" });
+      await studio.allowExternalAccess();
+      await studio.createNewProp();
+
+      const propName = "myCard / Theme";
+
+      // The new-prop modal is prefilled with `<tplName> / <groupName>`.
+      await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
+        propName
+      );
+      await studio.rightPanel.propSubmitButton.click();
+
+      // After save, the variant row shows the linked-state UI.
+      await expect(
+        rightPanel
+          .locator('[data-test-id="variants-picker-section"]')
+          .getByText(/Linked to/)
+      ).toBeVisible();
+
+      const lockedRow = rightPanel
+        .locator('[data-test-id="variants-picker-section"]')
+        .getByText("Locked", { exact: true });
+      await lockedRow.click({ button: "right" });
+      await studio.allowExternalAccess();
+      await studio.createNewProp();
+      await expect(studio.rightPanel.propNameInput.first()).toHaveValue(
+        "myCard / Locked"
+      );
+      await studio.rightPanel.propSubmitButton.click();
+
+      // Parent now has both new owner props, grouped under "myCard".
+      await studio.rightPanel.switchToComponentDataTab();
+      const propsSection = rightPanel.locator('[data-test-id="props-section"]');
+      await expect(
+        propsSection.getByText("myCard", { exact: true })
+      ).toBeVisible();
+      // Groups are collapsed by default. Click to expand
+      propsSection.getByText("myCard", { exact: true }).click();
+      await expect(
+        propsSection.getByText("Theme", { exact: true })
+      ).toBeVisible();
+      await expect(
+        propsSection.getByText("Locked", { exact: true })
+      ).toBeVisible();
+    });
+
+    await test.step("test variant linking works in canvas and live preview", async () => {
+      await studio.leftPanel.createNewPage("Preview");
+      await studio.leftPanel.insertNode("Parent");
+      // 2 components (Inner, Parent) + the Preview page → page is iframe #2.
+      const pageFrame = studio.frame.locator("iframe").nth(2).contentFrame();
+
+      const propName = "myCard / Theme";
+
+      await studio.rightPanel.setDataPlasmicProp(propName, "primary");
+      await expect(pageFrame.getByText("primary-theme")).toBeVisible();
+
+      await studio.rightPanel.setDataPlasmicProp(propName, "secondary", {
+        reset: true,
+      });
+      await expect(pageFrame.getByText("secondary-theme")).toBeVisible();
+
+      await expect(pageFrame.getByText("unlocked-text")).toBeVisible();
+      await rightPanel
+        .locator('[data-plasmic-prop="myCard / Locked"]')
+        .last()
+        .click();
+      await expect(pageFrame.getByText("locked-text")).toBeVisible();
+
+      await studio.withinLiveMode(async (liveFrame) => {
+        await expect(liveFrame.getByText("secondary-theme")).toBeVisible();
+        await expect(liveFrame.getByText("locked-text")).toBeVisible();
+      });
+    });
   });
 
   test("can create, edit, and use a single-choice prop", async ({ models }) => {
@@ -546,5 +697,261 @@ test.describe("component-props", () => {
     await warning.click();
     await studio.confirmButton.click();
     await expect(warning).not.toBeVisible();
+  });
+
+  test("variant link warns and auto-syncs the linked prop options when variants drift", async ({
+    models,
+  }) => {
+    const { studio } = models;
+    const rightPanel = studio.rightPanel.frame;
+    const variantsSection = rightPanel.locator(
+      '[data-test-id="variants-picker-section"]'
+    );
+    const warningButton = rightPanel.locator(
+      '[data-test-id="linked-prop-warning"]'
+    );
+
+    await test.step("set up Inner with two variants", async () => {
+      await studio.leftPanel.addComponent("Inner");
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.addVariantToGroup("Theme", "Primary");
+      await studio.rightPanel.addVariantToGroup("Theme", "Secondary");
+      await studio.rightPanel.resetVariants();
+      await studio.insertTextNodeWithContent("base-theme");
+    });
+
+    await test.step("link Theme variant group to a new owner prop on Parent", async () => {
+      await studio.leftPanel.addComponent("Parent");
+      await studio.leftPanel.insertNode("Inner");
+      await studio.rightPanel.renameTreeNode("myCard", {
+        fromRightPanel: true,
+      });
+
+      const variantRow = variantsSection.getByText("Theme", { exact: true });
+      await variantRow.click({ button: "right" });
+      await studio.allowExternalAccess();
+      await studio.createNewProp();
+      await studio.rightPanel.propSubmitButton.click();
+
+      await expect(variantsSection.getByText(/Linked to/)).toBeVisible();
+      // No drift yet — warning should not be shown.
+      await expect(warningButton).not.toBeVisible();
+    });
+
+    await test.step("add a third variant on Inner to drift the link", async () => {
+      await studio.openComponentInNewFrame("Inner", {
+        editInNewArtboard: true,
+      });
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.addVariantToGroup("Theme", "Tertiary");
+    });
+
+    await test.step("drift surfaces in the Issues tab, which links to the tpl", async () => {
+      // Adding the variant fired the drift toast; follow it into the Issues
+      // panel and jump to the affected instance from there.
+      await expect(
+        studio.frame.getByText("Linked props out of sync")
+      ).toBeVisible();
+      await studio.frame.getByText("Review in Issues tab").click();
+      await expect(
+        studio.frame.getByText("no longer matches the linked component prop")
+      ).toBeVisible();
+      await studio.frame.getByText("Element myCard").click();
+
+      await expect(variantsSection.getByText(/Linked to/)).toBeVisible();
+      await expect(warningButton).toBeVisible();
+    });
+
+    await test.step("clicking the warning opens the confirm modal with the diff", async () => {
+      await warningButton.click();
+
+      await expect(studio.frame.getByText("Update linked prop")).toBeVisible();
+      await expect(studio.frame.getByText(/Adding:.*Tertiary/)).toBeVisible();
+    });
+
+    await test.step("confirming the modal syncs the options and clears the warning", async () => {
+      await studio.frame.locator('[data-test-id="confirm"]').click();
+      await expect(warningButton).not.toBeVisible();
+    });
+  });
+
+  test("flipping a linked variant group between single- and multi-select converts the owner prop and migrates instance values", async ({
+    models,
+  }) => {
+    const { studio } = models;
+    const rightPanel = studio.rightPanel.frame;
+    const variantsSection = rightPanel.locator(
+      '[data-test-id="variants-picker-section"]'
+    );
+    const warningButton = rightPanel.locator(
+      '[data-test-id="linked-prop-warning"]'
+    );
+
+    await test.step("set up Inner with a single-select Theme group", async () => {
+      await studio.leftPanel.addComponent("Inner");
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.addVariantToGroup("Theme", "Primary");
+      await studio.rightPanel.addVariantToGroup("Theme", "Secondary");
+      await studio.rightPanel.resetVariants();
+      await studio.insertTextNodeWithContent("base-theme");
+
+      // Give Primary distinct rendered text so an instance's forwarded value is
+      // observable — that's what lets us prove the value survives the type
+      // conversion (not just that the drift warning clears).
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.selectVariant("Primary");
+      await studio.editText("primary-theme");
+      await studio.rightPanel.deselectVariant("Theme", "Primary");
+
+      // Give Secondary its own distinct text on a *separate* node, so that when
+      // multiple values are set the two variants are independently observable
+      // (and so we can prove the extra value is dropped on collapse to single).
+      await studio.insertTextNodeWithContent("secondary-base");
+      await studio.rightPanel.switchToComponentDataTab();
+      await studio.rightPanel.selectVariant("Secondary");
+      await studio.editText("secondary-theme");
+      await studio.rightPanel.deselectVariant("Theme", "Secondary");
+    });
+
+    await test.step("link Theme (single-select) to a new owner prop on Parent", async () => {
+      await studio.leftPanel.addComponent("Parent");
+      await studio.leftPanel.insertNode("Inner");
+      await studio.rightPanel.renameTreeNode("myCard", {
+        fromRightPanel: true,
+      });
+
+      const variantRow = variantsSection.getByText("Theme", { exact: true });
+      await variantRow.click({ button: "right" });
+      await studio.allowExternalAccess();
+      await studio.createNewProp();
+      await studio.rightPanel.propSubmitButton.click();
+
+      await expect(variantsSection.getByText(/Linked to/)).toBeVisible();
+      // In sync (single-select group ↔ single choice prop) — no warning yet.
+      await expect(warningButton).not.toBeVisible();
+    });
+
+    await test.step("place a Parent instance and set the linked prop (single-select)", async () => {
+      await studio.leftPanel.createNewPage("Preview");
+      await studio.leftPanel.insertNode("Parent");
+
+      // Set the linked single-choice prop to "Primary" (a scalar value) and
+      // confirm it drives the Inner Primary variant on the instance.
+      const linkedProp = rightPanel
+        .locator('[data-plasmic-prop="myCard / Theme"]')
+        .last();
+      await studio.rightPanel.selectChoiceValue(linkedProp, ["Primary"]);
+      await studio.switchArena("Preview");
+      await studio.withinLiveMode(async (liveFrame) => {
+        await expect(liveFrame.getByText("primary-theme")).toBeVisible();
+      });
+    });
+
+    await test.step("flip Inner's Theme group to multi-select", async () => {
+      // "Edit in new artboard" is only offered from a mixed arena; we're on the
+      // Preview page arena here, so open the component's own arena instead.
+      await studio.openComponentInNewFrame("Inner", {
+        editInNewArtboard: false,
+      });
+      await studio.rightPanel.toggleVariantGroupMultiSelect("Theme");
+    });
+
+    await test.step("warning appears on the now-out-of-sync link in Parent", async () => {
+      await studio.openComponentInNewFrame("Parent", {
+        editInNewArtboard: false,
+      });
+      await studio.leftPanel.switchToTreeTab();
+      await studio.leftPanel.selectTreeNode(["myCard"]);
+
+      await expect(variantsSection.getByText(/Linked to/)).toBeVisible();
+      await expect(warningButton).toBeVisible();
+    });
+
+    await test.step("confirm dialog announces the single→multi switch", async () => {
+      await warningButton.click();
+
+      await expect(studio.frame.getByText("Update linked prop")).toBeVisible();
+      await expect(studio.frame.getByText(/Switching to/)).toBeVisible();
+      await expect(studio.frame.getByText(/multi-select/)).toBeVisible();
+    });
+
+    await test.step("confirming converts the prop to multiChoice and clears the warning", async () => {
+      await studio.frame.locator('[data-test-id="confirm"]').click();
+      await expect(warningButton).not.toBeVisible();
+    });
+
+    await test.step("the instance value survives the single→multi conversion", async () => {
+      // The scalar "Primary" should have been coerced to ["Primary"], so the
+      // instance still activates the Primary variant.
+      await studio.switchArena("Preview");
+      await studio.withinLiveMode(async (liveFrame) => {
+        await expect(liveFrame.getByText("primary-theme")).toBeVisible();
+      });
+    });
+
+    await test.step("add a second value on the instance now that the prop is multi-select", async () => {
+      // With the prop now multiChoice the instance can hold multiple values;
+      // add "Secondary" so the stored value becomes ["Primary", "Secondary"].
+      await studio.switchArena("Preview");
+      await studio.leftPanel.switchToTreeTab();
+      await studio.leftPanel.selectTreeNode(["Parent"]);
+
+      // Open the multi-select dropdown via its input rather than clicking the
+      // editor body — the body overlaps the existing "Primary" pill's remove
+      // button, and hitting it would drop Primary and leave only Secondary.
+      const linkedProp = rightPanel
+        .locator('[data-plasmic-prop="myCard / Theme"]')
+        .last();
+      await linkedProp.locator("input").first().click();
+      await rightPanel
+        .getByRole("option", { name: "Secondary", exact: true })
+        .first()
+        .click();
+      await studio.page.keyboard.press("Tab");
+
+      // Both variants are now active → both nodes render their variant text.
+      await studio.withinLiveMode(async (liveFrame) => {
+        await expect(liveFrame.getByText("primary-theme")).toBeVisible();
+        await expect(liveFrame.getByText("secondary-theme")).toBeVisible();
+      });
+    });
+
+    await test.step("flip Inner's Theme group back to single-select", async () => {
+      await studio.openComponentInNewFrame("Inner", {
+        editInNewArtboard: false,
+      });
+      await studio.rightPanel.toggleVariantGroupMultiSelect("Theme");
+    });
+
+    await test.step("warning reappears and the dialog announces the multi→single switch", async () => {
+      await studio.openComponentInNewFrame("Parent", {
+        editInNewArtboard: false,
+      });
+      await studio.leftPanel.switchToTreeTab();
+      await studio.leftPanel.selectTreeNode(["myCard"]);
+
+      await expect(warningButton).toBeVisible();
+      await warningButton.click();
+
+      await expect(studio.frame.getByText("Update linked prop")).toBeVisible();
+      await expect(studio.frame.getByText(/Switching to/)).toBeVisible();
+      await expect(studio.frame.getByText(/single-select/)).toBeVisible();
+    });
+
+    await test.step("confirming converts the prop back to single choice and clears the warning", async () => {
+      await studio.frame.locator('[data-test-id="confirm"]').click();
+      await expect(warningButton).not.toBeVisible();
+    });
+
+    await test.step("the multi value gracefully collapses to a single string on multi→single", async () => {
+      // ["Primary", "Secondary"] must collapse to the scalar "Primary" (the
+      // first still-valid value). Primary stays active; the now-invalid extra
+      // Secondary value is dropped, so its variant is no longer rendered.
+      await studio.switchArena("Preview");
+      await studio.withinLiveMode(async (liveFrame) => {
+        await expect(liveFrame.getByText("primary-theme")).toBeVisible();
+        await expect(liveFrame.getByText("secondary-theme")).not.toBeVisible();
+      });
+    });
   });
 });

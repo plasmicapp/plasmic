@@ -8,6 +8,7 @@ import {
 } from "@/wab/shared/linting/lint-linked-props";
 import { Arg, PropParam, VarRef } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
+import { mkComponentVariantGroup, mkVariant } from "@/wab/shared/Variants";
 
 // Builds a site with an Outer component that instantiates Inner and links
 // Inner's prop (the inner) to Outer's prop (the outer) via a VarRef.
@@ -53,6 +54,55 @@ function siteWithLink(
   const site = createSite();
   site.components.push(inner, outer);
   return { site, inner, innerParam, outer, outerParam };
+}
+
+// Builds a site with an Outer component that instantiates Inner and links
+// Inner's variant group (the inner) to Outer's prop (the outer) via a VarRef.
+function siteWithVariantLink(opts: {
+  variants: string[];
+  multi?: boolean;
+  outerType: PropParam["type"];
+}) {
+  const groupParam = mkParam({
+    name: "Theme",
+    type: typeFactory.text(),
+    paramType: "state",
+  });
+  const group = mkComponentVariantGroup({
+    param: groupParam,
+    multi: opts.multi ?? false,
+    variants: opts.variants.map((name) => mkVariant({ name })),
+  });
+  const inner = mkComponent({
+    name: "Inner",
+    type: ComponentType.Plain,
+    params: [groupParam],
+    variantGroups: [group],
+    tplTree: () => mkTplTag("div"),
+  });
+  const outerParam = mkParam({
+    name: "OuterProp",
+    type: opts.outerType,
+    paramType: "prop",
+  });
+  const outer = mkComponent({
+    name: "Outer",
+    type: ComponentType.Plain,
+    params: [outerParam],
+    tplTree: (base) => {
+      const tplComp = mkTplComponent(inner, base);
+      tplComp.vsettings[0].args.push(
+        new Arg({
+          param: groupParam,
+          expr: new VarRef({ variable: outerParam.variable }),
+        })
+      );
+      return mkTplTag("div", [tplComp]);
+    },
+  });
+  const site = createSite();
+  site.components.push(inner, outer);
+  return { site, inner, groupParam, outer, outerParam };
 }
 
 describe("lintLinkedProps", () => {
@@ -149,5 +199,42 @@ describe("findLinkedPropIssuesForParam", () => {
     expect(findLinkedPropIssuesForParam(site, inner, unrelated)).toHaveLength(
       0
     );
+  });
+});
+
+describe("lintLinkedProps (variant groups)", () => {
+  it("does not flag an in-sync single-select variant link", () => {
+    const { site } = siteWithVariantLink({
+      variants: ["primary", "secondary"],
+      outerType: typeFactory.choice(["primary", "secondary"]),
+    });
+    expect(lintLinkedProps(site)).toHaveLength(0);
+  });
+
+  it("flags a single-select variant link whose options drifted", () => {
+    const { site } = siteWithVariantLink({
+      variants: ["primary", "secondary"],
+      outerType: typeFactory.choice(["primary", "tertiary"]),
+    });
+    const issues = lintLinkedProps(site);
+    expect(issues).toHaveLength(1);
+    expect(issues[0].propName).toBe("Theme");
+  });
+
+  it("does not flag an in-sync multi-select variant link", () => {
+    const { site } = siteWithVariantLink({
+      variants: ["primary", "secondary"],
+      multi: true,
+      outerType: typeFactory.multiChoice(["primary", "secondary"]),
+    });
+    expect(lintLinkedProps(site)).toHaveLength(0);
+  });
+
+  it("flags a single/multi mismatch", () => {
+    const { site } = siteWithVariantLink({
+      variants: ["primary", "secondary"],
+      outerType: typeFactory.multiChoice(["primary", "secondary"]),
+    });
+    expect(lintLinkedProps(site)).toHaveLength(1);
   });
 });

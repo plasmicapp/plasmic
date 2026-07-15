@@ -364,6 +364,7 @@ import {
   isKnownStyleTokenRef,
   isKnownTplComponent,
   isKnownTplTag,
+  isKnownVarRef,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import {
@@ -3345,7 +3346,11 @@ function conditionalComponentArgs(
         }
       } else {
         variantArgNames.add(varName);
-        if (isKnownCustomCode(arg.expr) || isKnownObjectPath(arg.expr)) {
+        if (
+          isKnownCustomCode(arg.expr) ||
+          isKnownObjectPath(arg.expr) ||
+          isKnownVarRef(arg.expr)
+        ) {
           entry.push([arg.expr, vs.variants]);
         } else if (r.vg.multi) {
           entry.push([

@@ -13,6 +13,7 @@ export function MultiSelectEnumPropEditor(props: {
   defaultValueHint?: string[];
   disabled?: boolean;
   showDropdownArrow?: boolean;
+  "data-plasmic-prop"?: string;
 }) {
   const {
     value,

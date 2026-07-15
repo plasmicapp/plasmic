@@ -175,7 +175,7 @@ const getValueString = (
 ): string | undefined =>
   item !== undefined ? String(getValue(item)) : undefined;
 
-export function ComponentPropModal(props: {
+export interface ComponentPropModalProps {
   studioCtx: StudioCtx;
   component: Component;
   visible: boolean;
@@ -184,7 +184,10 @@ export function ComponentPropModal(props: {
   type?: Param["type"];
   centeredModal?: boolean;
   suggestedName?: string;
-}) {
+  suggestedDefaultExpr?: Expr | undefined;
+}
+
+export function ComponentPropModal(props: ComponentPropModalProps) {
   const {
     studioCtx,
     component,
@@ -193,6 +196,7 @@ export function ComponentPropModal(props: {
     existingParam,
     centeredModal,
     suggestedName,
+    suggestedDefaultExpr,
   } = props;
 
   const componentParamTypes = studioCtx.appCtx.appConfig.enableDataQueries
@@ -220,9 +224,7 @@ export function ComponentPropModal(props: {
   };
 
   const [defaultExpr, setDefaultExpr] = React.useState<Expr | undefined>(
-    existingParam && existingParam.defaultExpr
-      ? existingParam.defaultExpr
-      : undefined
+    existingParam?.defaultExpr ?? suggestedDefaultExpr
   );
   const [previewExpr, setPreviewExpr] = React.useState<Expr | undefined>(
     existingParam && existingParam.previewExpr
@@ -242,9 +244,7 @@ export function ComponentPropModal(props: {
   );
 
   const [choices, setChoices] = React.useState<ChoiceOptions>(
-    existingParam && isOptionsType(existingParam.type)
-      ? (existingParam.type.options as ChoiceOptions)
-      : []
+    type && isOptionsType(type) ? (type.options as ChoiceOptions) : []
   );
 
   const [advanced, setAdvanced] = React.useState(

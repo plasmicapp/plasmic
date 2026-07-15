@@ -1,11 +1,14 @@
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import LinkIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Link";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { arrayRemove } from "@/wab/shared/collections";
-import { mkUuid } from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import { cloneType, findAllInstancesOfComponent } from "@/wab/shared/core/tpls";
 import { findLinkedPropIssuesForParam } from "@/wab/shared/linting/lint-linked-props";
@@ -16,9 +19,9 @@ import {
   normalizeToChoiceObjects,
 } from "@/wab/shared/model/model-util";
 import { ChoiceValue } from "@plasmicapp/host";
-import { notification } from "antd";
+import { Menu, Tooltip, notification } from "antd";
 import L from "lodash";
-import * as React from "react";
+import React from "react";
 
 /**
  * Reshapes a stored linked-prop value to the given valid option values and
@@ -77,7 +80,8 @@ export async function reconcileLinkedProp(opts: {
     message: (
       <div>
         <p>
-          Update <strong>{outerParam.variable.name}</strong> to match{" "}
+          Update <strong>{outerParam.variable.name}</strong> in{" "}
+          <strong>{getComponentDisplayName(outerComponent)}</strong> to match{" "}
           <strong>{innerName}</strong>?
         </p>
         {added.length > 0 && (
@@ -153,7 +157,9 @@ export function notifyLinkedPropDrift(
     return;
   }
   const componentNames = L.uniq(issues.map((i) => i.component.name));
-  const key = mkUuid();
+  // Stable per-param key: repeated drift notifications for the same param
+  // replace the existing toast instead of stacking duplicates.
+  const key = `linked-prop-drift-${innerParam.uuid}`;
   notification.warning({
     key,
     message: "Linked props out of sync",
@@ -174,4 +180,82 @@ export function notifyLinkedPropDrift(
     ),
     duration: 10,
   });
+}
+
+export function LinkedPropIndicator(props: {
+  ownerComponent: Component;
+  referencedParam: Param;
+  warning?: string;
+  onWarningClick?: () => void;
+}) {
+  const { ownerComponent, referencedParam, warning, onWarningClick } = props;
+  return (
+    <div className="flex flex-align-start labeled-item__value-vpadding">
+      <Icon icon={LinkIcon} className="mr-ch dimfg" />
+      <span>
+        Linked to{" "}
+        <strong>
+          {getComponentDisplayName(ownerComponent)}.
+          {referencedParam.variable.name}
+        </strong>
+      </span>
+      {warning && (
+        <Tooltip title={warning}>
+          {onWarningClick ? (
+            <IconButton
+              onClick={onWarningClick}
+              className="ml-ch"
+              data-test-id="linked-prop-warning"
+            >
+              <Icon icon={WarningIcon} className="icon-warning" />
+            </IconButton>
+          ) : (
+            <Icon icon={WarningIcon} className="icon-warning ml-ch" />
+          )}
+        </Tooltip>
+      )}
+    </div>
+  );
+}
+
+export function LinkToPropMenuItem(props: {
+  availableParams: Param[];
+  onLinkExisting: (param: Param) => void;
+  onCreateNew: () => void;
+}) {
+  const { availableParams, onLinkExisting, onCreateNew } = props;
+  return (
+    <Menu.SubMenu title={<span>Allow external access</span>}>
+      {availableParams.map((param) => (
+        <Menu.Item key={param.uid} onClick={() => onLinkExisting(param)}>
+          <strong>{param.variable.name}</strong>
+        </Menu.Item>
+      ))}
+      {availableParams.length > 0 && <Menu.Divider />}
+      <Menu.Item onClick={onCreateNew}>
+        <div className="flex flex-vcenter">
+          <Icon icon={PlusIcon} className="mr-sm" /> Create new prop
+        </div>
+      </Menu.Item>
+    </Menu.SubMenu>
+  );
+}
+
+export function UnlinkFromPropMenuItem(props: {
+  ownerComponent: Component;
+  referencedParam: Param;
+  onUnlink: () => void;
+}) {
+  const { ownerComponent, referencedParam, onUnlink } = props;
+  return (
+    <Menu.Item onClick={onUnlink}>
+      <span>
+        Unlink from component prop{" "}
+        <strong>
+          {getComponentDisplayName(ownerComponent)}.
+          {referencedParam.variable.name}
+        </strong>
+      </span>
+    </Menu.Item>
+  );
 }

@@ -63,6 +63,7 @@ export function ChoicePropEditor<T extends ChoiceValue>(
         value={value}
         defaultValueHint={defaultValueHint}
         showDropdownArrow
+        data-plasmic-prop={attr}
       />
     );
   }

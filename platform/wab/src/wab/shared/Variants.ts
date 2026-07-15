@@ -1,5 +1,11 @@
+import {
+  FramePinManager,
+  withoutIrrelevantScreenVariants,
+} from "@/wab/shared/PinManager";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { siteCCVariantsToInfos } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -19,15 +25,16 @@ import {
   getNamespacedComponentName,
 } from "@/wab/shared/core/components";
 import {
+  UNINITIALIZED_VALUE,
   allGlobalVariantGroups,
   getResponsiveStrategy,
-  UNINITIALIZED_VALUE,
   writeable,
 } from "@/wab/shared/core/sites";
 import { isVariantUsedInSplits } from "@/wab/shared/core/splits";
 import { getPseudoSelector, mkRuleSet } from "@/wab/shared/core/styles";
 import { isTplTag, summarizeTplTag } from "@/wab/shared/core/tpls";
-import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
+import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/css-size";
+import { isLinkCompatible } from "@/wab/shared/linked-props";
 import {
   ArenaFrame,
   Arg,
@@ -38,6 +45,7 @@ import {
   GlobalVariantGroup,
   GlobalVariantGroupParam,
   ObjectPath,
+  Param,
   Rep,
   RichText,
   Site,
@@ -49,12 +57,9 @@ import {
   VariantGroupState,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import {
-  FramePinManager,
-  withoutIrrelevantScreenVariants,
-} from "@/wab/shared/PinManager";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
-import { $$$ } from "@/wab/shared/TplQuery";
+import { ChoiceObject } from "@plasmicapp/host";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";
 import type { OverrideProperties, SetNonNullable } from "type-fest";
@@ -116,6 +121,41 @@ export function isBaseVariant(variants: Variant | VariantCombo) {
 export function canHaveStyleOrCodeComponentVariant(component: Component) {
   const tplRoot = component.tplTree;
   return isTplTag(tplRoot) || isTplRootWithCodeComponentVariants(tplRoot);
+}
+
+/**
+ * The prop type a linked owner prop must have to mirror `group`:
+ * - standalone (toggle) group → `bool`
+ * - single-select group → `choice` over the variant names
+ * - multi-select group → `multiChoice` over the variant names
+ */
+export function variantGroupToLinkedPropType(
+  group: VariantGroup
+): Param["type"] {
+  if (isStandaloneVariantGroup(group)) {
+    return typeFactory.bool();
+  }
+  const options = variantGroupToChoiceObjects(group);
+  return group.multi
+    ? typeFactory.multiChoice(options)
+    : typeFactory.choice(options);
+}
+
+/** Whether the outer `param` is link-compatible with the inner variant `group`. */
+export function isParamCompatibleWithVariantGroup(
+  param: Param,
+  group: VariantGroup
+): boolean {
+  return isLinkCompatible(variantGroupToLinkedPropType(group), param.type);
+}
+
+function variantGroupToChoiceObjects(
+  group: VariantGroup
+): ChoiceObject<string>[] {
+  return group.variants.map((v) => ({
+    label: v.name,
+    value: toVarName(v.name),
+  }));
 }
 
 export function isStandaloneVariantGroup(

@@ -30,6 +30,7 @@ import {
   mkVariant,
   mkVariantSetting,
   splitVariantCombo,
+  variantGroupToLinkedPropType,
 } from "@/wab/shared/Variants";
 import {
   findAllDataSourceOpExprForComponent,
@@ -2122,6 +2123,26 @@ export function getVariantGroupByVarName(component: Component, name: string) {
 
 export function findVariantGroupForParam(component: Component, param: Param) {
   return component.variantGroups.find((g) => g.param === param);
+}
+
+export function getComponentForVariantGroup(
+  site: Site,
+  group: VariantGroup
+): Component | undefined {
+  return site.components.find((c) => c.variantGroups.some((g) => g === group));
+}
+
+/**
+ * A param's real type. A variant group's param stores a placeholder type
+ * instead of the choice/multiChoice/bool that mirrors its variants, so we
+ * return that mirror; other params already hold their real type.
+ */
+export function getRealParamType(
+  component: Component,
+  param: Param
+): Param["type"] {
+  const group = findVariantGroupForParam(component, param);
+  return group ? variantGroupToLinkedPropType(group) : param.type;
 }
 
 export function findStateForParam(component: Component, param: Param) {

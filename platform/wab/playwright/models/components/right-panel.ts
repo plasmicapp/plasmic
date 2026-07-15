@@ -438,6 +438,47 @@ export class RightPanel extends BaseModel {
     await variantRow.click();
   }
 
+  /**
+   * Reset all targeted variants on the current component back to base.
+   * Switches to the Component Data tab first, since variant rows are only
+   * visible there.
+   */
+  async resetVariants() {
+    await this.switchToComponentDataTab();
+    const baseVariant = this.frame
+      .locator('[data-test-class="variant-row"]')
+      .filter({ hasText: "Base" });
+    if (await baseVariant.isVisible()) {
+      await baseVariant.click();
+    } else {
+      const activeVariants = this.frame.locator(
+        '[data-test-class="variant-pin-button-deactivate"]'
+      );
+      const count = await activeVariants.count();
+      for (let i = 0; i < count; i++) {
+        await activeVariants.nth(0).click();
+      }
+    }
+  }
+
+  /**
+   * Deselect (i.e. stop targeting) a specific variant within a variant group.
+   * No-op if the variant isn't currently targeted.
+   */
+  async deselectVariant(groupName: string, variantName: string) {
+    await this.switchToComponentDataTab();
+    const variantGroup = this.frame
+      .locator('[data-test-class="variants-section"]')
+      .filter({ hasText: groupName });
+    const variant = variantGroup
+      .locator('[data-test-class="variant-row"]')
+      .filter({ hasText: variantName })
+      .locator('button[data-test-class="variant-record-button-stop"]');
+    if (await variant.isVisible()) {
+      await variant.click();
+    }
+  }
+
   async addComponentProp(
     propName: string,
     propType: string,
@@ -768,17 +809,40 @@ export class RightPanel extends BaseModel {
     }
   }
 
-  async addVariantGroup(groupName: string) {
+  async addVariantGroup(
+    groupName: string,
+    firstVariantName?: string,
+    opts?: { multi?: boolean }
+  ) {
     await this.addVariantGroupButton.click();
 
     await this.page.waitForTimeout(500);
 
-    const singleOption = this.frame
+    // The add-group dropdown offers "single-select" and "multi-select" options.
+    const option = this.frame
       .locator(".ant-dropdown-menu")
-      .getByText("single");
-    await singleOption.click({ force: true });
+      .getByText(opts?.multi ? "multi" : "single");
+    await option.click({ force: true });
 
     await this.page.keyboard.type(groupName);
+    await this.page.keyboard.press("Enter");
+    if (firstVariantName) {
+      await this.page.keyboard.type(firstVariantName);
+      await this.page.keyboard.press("Enter");
+    }
+  }
+
+  /**
+   * Adds a standalone "toggle" variant
+   */
+  async addToggleVariant(variantName: string) {
+    await this.addVariantGroupButton.click();
+    await this.page.waitForTimeout(500);
+    await this.frame
+      .locator(".ant-dropdown-menu")
+      .getByText("toggle")
+      .click({ force: true });
+    await this.page.keyboard.type(variantName);
     await this.page.keyboard.press("Enter");
   }
 
@@ -786,13 +850,32 @@ export class RightPanel extends BaseModel {
     const variantGroupWidget = this.frame
       .locator('[data-test-class="variants-section"]')
       .filter({ hasText: groupName });
-    const addVariantButton = variantGroupWidget.locator(
-      '[data-test-class="add-variant-button"]'
-    );
-    await addVariantButton.click();
+    if ((await variantGroupWidget.count()) > 0) {
+      const addVariantButton = variantGroupWidget.locator(
+        '[data-test-class="add-variant-button"]'
+      );
+      await addVariantButton.click();
 
-    await this.page.keyboard.type(variantName);
-    await this.page.keyboard.press("Enter");
+      await this.page.keyboard.type(variantName);
+      await this.page.keyboard.press("Enter");
+    } else {
+      await this.addVariantGroup(groupName, variantName);
+    }
+  }
+
+  /**
+   * Flips a variant group between single- and multi-select via its context menu
+   * ("Change type to single-select" / "…multi-select").
+   */
+  async toggleVariantGroupMultiSelect(groupName: string) {
+    await this.switchToComponentDataTab();
+    await this.frame
+      .locator('[data-test-class="variants-section"]')
+      .filter({ hasText: groupName })
+      .getByText(groupName, { exact: true })
+      .first()
+      .click({ button: "right" });
+    await this.frame.getByText("Change type to").click();
   }
 
   async configureProjectAppHost(page: string) {

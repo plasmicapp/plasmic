@@ -52,7 +52,6 @@ test.describe("components", () => {
 
     // Add a variant group + variant to the Widget component.
     await models.studio.rightPanel.switchToComponentDataTab();
-    await models.studio.rightPanel.addVariantGroup("WidgetRole");
     await models.studio.rightPanel.addVariantToGroup("WidgetRole", "Blah");
 
     // Select the page artboard, add a second Widget instance, and position it.

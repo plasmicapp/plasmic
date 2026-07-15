@@ -281,7 +281,14 @@ export class LeftPanel extends BaseModel {
 
   async switchToComponentsTab() {
     await this.assetsTabButton.hover();
-    await this.componentsTabButton.click();
+    const isActive =
+      (await this.componentsTabButton.getAttribute("data-state-isselected")) ===
+      "true";
+    if (!isActive) {
+      await this.componentsTabButton.click();
+    } else {
+      await this.addButton.hover(); // to blur the assets tab button
+    }
   }
 
   async switchToDataTokensTab() {

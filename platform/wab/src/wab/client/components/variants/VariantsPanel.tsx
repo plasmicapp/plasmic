@@ -1,34 +1,35 @@
-import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import {
-  SidebarSection,
-  SidebarSectionHandle,
-} from "@/wab/client/components/sidebar/SidebarSection";
 import {
   StyleOrCodeComponentVariantLabel,
   VariantLabel,
 } from "@/wab/client/components/VariantControls";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { notifyLinkedPropDrift } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
+import {
+  SidebarSection,
+  SidebarSectionHandle,
+} from "@/wab/client/components/sidebar/SidebarSection";
 import { EditableGroupLabel } from "@/wab/client/components/variants/EditableGroupLabel";
 import { StandaloneVariant } from "@/wab/client/components/variants/StandaloneVariantGroup";
 import { SuperComponentVariantsSection } from "@/wab/client/components/variants/SuperComponentVariantsSection";
-import {
-  makeVariantGroupMenu,
-  makeVariantMenu,
-  VariantDataPicker,
-} from "@/wab/client/components/variants/variant-menu";
 import VariantComboRow from "@/wab/client/components/variants/VariantComboRow";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
-import {
-  ComponentArenaVariantsController,
-  CustomVariantsController,
-  makeVariantsController,
-  PageArenaVariantsController,
-} from "@/wab/client/components/variants/VariantsController";
 import VariantSection, {
   makeReadOnlySection,
 } from "@/wab/client/components/variants/VariantSection";
 import {
-  IconLinkButton,
+  ComponentArenaVariantsController,
+  CustomVariantsController,
+  PageArenaVariantsController,
+  makeVariantsController,
+} from "@/wab/client/components/variants/VariantsController";
+import {
+  VariantDataPicker,
+  makeVariantGroupMenu,
+  makeVariantMenu,
+} from "@/wab/client/components/variants/variant-menu";
+import {
   IFrameAwareDropdownMenu,
+  IconLinkButton,
 } from "@/wab/client/components/widgets";
 import {
   GlobalVariantsTooltip,
@@ -47,6 +48,20 @@ import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIc
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { VariantPinState } from "@/wab/shared/PinManager";
+import { VariantOptionsType } from "@/wab/shared/TplMgr";
+import {
+  StyleOrCodeComponentVariant,
+  canHaveStyleOrCodeComponentVariant,
+  getBaseVariant,
+  isBaseVariant,
+  isGlobalVariantGroup,
+  isScreenVariantGroup,
+  isStandaloneVariantGroup,
+  moveVariant,
+  moveVariantGroup,
+  variantComboKey,
+} from "@/wab/shared/Variants";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
@@ -64,29 +79,15 @@ import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Component,
   ComponentVariantGroup,
-  isKnownTplTag,
   ObjectPath,
   ProjectDependency,
   TplComponent,
   TplTag,
   Variant,
   VariantGroup,
+  isKnownTplTag,
 } from "@/wab/shared/model/classes";
-import { VariantPinState } from "@/wab/shared/PinManager";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
-import { VariantOptionsType } from "@/wab/shared/TplMgr";
-import {
-  canHaveStyleOrCodeComponentVariant,
-  getBaseVariant,
-  isBaseVariant,
-  isGlobalVariantGroup,
-  isScreenVariantGroup,
-  isStandaloneVariantGroup,
-  moveVariant,
-  moveVariantGroup,
-  StyleOrCodeComponentVariant,
-  variantComboKey,
-} from "@/wab/shared/Variants";
 import { Menu } from "antd";
 import sortBy from "lodash/sortBy";
 import { observer } from "mobx-react";
@@ -1090,13 +1091,17 @@ const ComponentVariantGroupSection = observer(
           justAdded
             ? undefined
             : () =>
-                studioCtx.change(({ success }) => {
-                  const variant = studioCtx
-                    .tplMgr()
-                    .createVariant(component, group);
-                  onAddedVariant(variant);
-                  return success();
-                })
+                studioCtx
+                  .change(({ success }) => {
+                    const variant = studioCtx
+                      .tplMgr()
+                      .createVariant(component, group);
+                    onAddedVariant(variant);
+                    return success();
+                  })
+                  .then(() =>
+                    notifyLinkedPropDrift(studioCtx, component, group.param)
+                  )
         }
         hasCodeExpression={hasCodeExpression}
         exprButton={{
@@ -1116,12 +1121,16 @@ const ComponentVariantGroupSection = observer(
           group,
           onToggleMulti: () =>
             spawn(
-              studioCtx.change(({ success }) => {
-                studioCtx
-                  .siteOps()
-                  .updateVariantGroupMulti(group, !group.multi);
-                return success();
-              })
+              studioCtx
+                .change(({ success }) => {
+                  studioCtx
+                    .siteOps()
+                    .updateVariantGroupMulti(group, !group.multi);
+                  return success();
+                })
+                .then(() =>
+                  notifyLinkedPropDrift(studioCtx, component, group.param)
+                )
             ),
 
           onRemove: () =>

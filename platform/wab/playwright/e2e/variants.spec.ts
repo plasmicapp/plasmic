@@ -75,10 +75,9 @@ test.describe("variants", () => {
       .filter({ hasText: "Base" })
       .click();
 
-    await models.studio.rightPanel.addVariantGroup("Role");
     await models.studio.rightPanel.addVariantToGroup("Role", "Primary");
     await models.studio.rightPanel.addVariantToGroup("Role", "Secondary");
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
     await models.studio.rightPanel.switchToComponentDataTab();
 
@@ -95,7 +94,7 @@ test.describe("variants", () => {
     await models.studio.rightPanel.switchToDesignTab();
     await chooseFont(models, "Courier");
 
-    await deselectVariant(models, "Role", "Primary");
+    await models.studio.rightPanel.deselectVariant("Role", "Primary");
 
     await models.studio.frame
       .locator('[data-event="variantspanel-variant-row"]', {
@@ -118,12 +117,11 @@ test.describe("variants", () => {
     );
     await expect(frame.locator("span").first()).toHaveCSS("font-size", "36px");
 
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
-    await models.studio.rightPanel.addVariantGroup("Size");
     await models.studio.rightPanel.addVariantToGroup("Size", "small");
     await models.studio.rightPanel.addVariantToGroup("Size", "large");
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
     await models.studio.frame
       .locator('[data-test-class="variants-section"]', { hasText: "small" })
@@ -131,7 +129,7 @@ test.describe("variants", () => {
     await models.studio.rightPanel.chooseFontSize("10px");
     await models.studio.rightPanel.switchToComponentDataTab();
     await expect(frame.locator("span").first()).toHaveCSS("font-size", "10px");
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
     await models.studio.frame
       .locator('[data-test-class="variants-section"]', { hasText: "Primary" })
@@ -144,7 +142,7 @@ test.describe("variants", () => {
     await page.waitForTimeout(100);
     await expect(frame.locator("span").first()).toHaveCSS("font-size", "11px");
 
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
     await models.studio.frame
       .locator('[data-test-class="variant-row"]', { hasText: "Secondary" })
@@ -217,7 +215,7 @@ test.describe("variants", () => {
       );
     });
 
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
     await models.studio.frame
       .locator('[data-test-class="variant-row"]', { hasText: "Secondary" })
@@ -245,7 +243,7 @@ test.describe("variants", () => {
       .locator(".ant-notification-notice-close-x")
       .click();
 
-    await resetVariants(models);
+    await models.studio.rightPanel.resetVariants();
 
     await page.waitForTimeout(500);
     await models.studio.rightPanel.switchToComponentDataTab();
@@ -310,41 +308,6 @@ test.describe("variants", () => {
     await checkEndState();
   });
 });
-
-async function resetVariants(models: PageModels) {
-  await models.studio.rightPanel.switchToComponentDataTab();
-  const baseVariant = models.studio.frame
-    .locator('[data-test-class="variant-row"]')
-    .filter({ hasText: "Base" });
-  if (await baseVariant.isVisible()) {
-    await baseVariant.click();
-  } else {
-    const activeVariants = models.studio.frame.locator(
-      '[data-test-class="variant-pin-button-deactivate"]'
-    );
-    const count = await activeVariants.count();
-    for (let i = 0; i < count; i++) {
-      await activeVariants.nth(0).click();
-    }
-  }
-}
-async function deselectVariant(
-  models: PageModels,
-  groupName: string,
-  variantName: string
-) {
-  await models.studio.rightPanel.switchToComponentDataTab();
-  const variantGroup = models.studio.frame
-    .locator('[data-test-class="variants-section"]')
-    .filter({ hasText: groupName });
-  const variant = variantGroup
-    .locator('[data-test-class="variant-row"]')
-    .filter({ hasText: variantName })
-    .locator('button[data-test-class="variant-record-button-stop"]');
-  if (await variant.isVisible()) {
-    await variant.click();
-  }
-}
 
 async function chooseFont(models: PageModels, fontName: string) {
   await models.studio.rightPanel.switchToDesignTab();

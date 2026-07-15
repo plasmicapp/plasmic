@@ -4,6 +4,7 @@ import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { toast } from "@/wab/client/components/Messages";
 import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
 import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
+import { notifyLinkedPropDrift } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
 import {
@@ -98,6 +99,7 @@ import {
   PageComponent,
   findStateForParam,
   getComponentDisplayName,
+  getComponentForVariantGroup,
   isCodeComponent,
   isPageComponent,
   isPlumeComponent,
@@ -1272,6 +1274,7 @@ export class SiteOps {
   }
 
   async removeVariant(component: Component, variant: Variant) {
+    const group = variant.parent;
     const result = await deleteVariant(
       variant,
       component,
@@ -1296,6 +1299,11 @@ export class SiteOps {
           description: result.message,
         });
       }
+      return;
+    }
+
+    if (group) {
+      notifyLinkedPropDrift(this.studioCtx, component, group.param);
     }
   }
 
@@ -1304,13 +1312,18 @@ export class SiteOps {
       this.tryRenameVariantGroup(variant.parent!, newName);
     } else {
       this.tplMgr.renameVariant(variant, newName);
+      const group = variant.parent;
+      const component = group && getComponentForVariantGroup(this.site, group);
+      if (group && component) {
+        notifyLinkedPropDrift(this.studioCtx, component, group.param);
+      }
     }
   }
 
   tryRenameVariantGroup(group: VariantGroup, newName: string) {
     if (group.type === VariantGroupType.Component) {
       const component = ensure(
-        this.site.components.find((c) => c.variantGroups.includes(group)),
+        getComponentForVariantGroup(this.site, group),
         "Expected some component to contain the given variant group"
       );
       if (isPlumeComponent(component)) {

@@ -1,4 +1,5 @@
 import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { getRealParamType } from "@/wab/shared/core/components";
 import { extractReferencedParam } from "@/wab/shared/core/exprs";
 import {
   findAllInstancesOfComponent,
@@ -72,11 +73,17 @@ function driftedLinkIssue(
   tpl: TplNode,
   arg: Arg
 ): { issue: LinkedPropDriftLintIssue; outerParam: Param } | undefined {
-  if (!isKnownVarRef(arg.expr)) {
+  if (!isTplComponent(tpl) || !isKnownVarRef(arg.expr)) {
     return undefined;
   }
   const outerParam = extractReferencedParam(outerComponent, arg.expr);
-  if (!outerParam || isLinkCompatible(arg.param.type, outerParam.type)) {
+  if (
+    !outerParam ||
+    isLinkCompatible(
+      getRealParamType(tpl.component, arg.param),
+      outerParam.type
+    )
+  ) {
     return undefined;
   }
   return {
