@@ -20,7 +20,7 @@ import { deleteVariant } from "@/wab/client/operations/delete-variant";
 import { deleteVariantGroup } from "@/wab/client/operations/delete-variant-group";
 import { updateComponentState } from "@/wab/client/operations/update-component-state";
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { extractDataTokenUsages } from "@/wab/commons/DataToken";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
@@ -1428,8 +1428,63 @@ export class SiteOps {
     this.studioCtx.pruneInvalidViewCtxs();
   }
 
-  updateVariantGroupMulti(group: VariantGroup, multi: boolean) {
-    this.tplMgr.updateVariantGroupMulti(group, multi);
+  updateVariantGroupMulti(group: VariantGroup, multi: boolean): void {
+    const failure = this.tplMgr.updateVariantGroupMulti(group, multi);
+    if (failure) {
+      const containingComponent = this.tplMgr.findComponentContainingTpl(
+        failure.tpl
+      );
+      const key = mkUuid();
+      const containingComponentName = containingComponent
+        ? getComponentDisplayName(containingComponent)
+        : "another component";
+
+      notification.error({
+        key,
+        message: "Unable to change variant group type to single-choice",
+        description: (
+          <>
+            <p>
+              Change not applied because{" "}
+              <strong>{containingComponentName}</strong> dynamically sets the
+              variant value for{" "}
+              <strong>
+                {getComponentDisplayName(failure.tpl.component)}.
+                {failure.arg.param.variable.name}
+              </strong>
+              .
+            </p>
+            {containingComponent ? (
+              <a
+                onClick={async () => {
+                  this.studioCtx.switchRightTab(RightTabKey.settings);
+                  await this.studioCtx.setStudioFocusOnTpl(
+                    containingComponent,
+                    failure.tpl
+                  );
+                  const focusedViewCtx = this.studioCtx.focusedViewCtx();
+                  if (focusedViewCtx) {
+                    focusedViewCtx.postEval(() => {
+                      if (focusedViewCtx.focusedTpl() === failure.tpl) {
+                        focusedViewCtx.highlightParams = {
+                          tpl: failure.tpl,
+                          params: [failure.arg.param],
+                        };
+                      }
+                    });
+                  }
+                  notification.close(key);
+                }}
+              >
+                [Go to reference]
+              </a>
+            ) : null}
+          </>
+        ),
+        duration: 10,
+      });
+      return;
+    }
 
     if (!multi) {
       // If we're switching from multi to single, then make sure we only

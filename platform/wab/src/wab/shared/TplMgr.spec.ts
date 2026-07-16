@@ -1,3 +1,4 @@
+import { mkArenaFrame, mkMixedArena } from "@/wab/shared/Arenas";
 import { TplMgr, ensureBaseVariant, uniquePagePath } from "@/wab/shared/TplMgr";
 import { mkVariantSetting } from "@/wab/shared/Variants";
 import {
@@ -7,15 +8,19 @@ import {
   mkServerQuery,
 } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { mkVar } from "@/wab/shared/core/lang";
 import { createSite } from "@/wab/shared/core/sites";
 import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Arg,
   ComponentServerQuery,
+  CustomCode,
+  ObjectPath,
   QueryInvalidationExpr,
   QueryRef,
   TplComponent,
+  VarRef,
   VariantGroup,
   VariantsRef,
   ensureKnownTplTag,
@@ -204,6 +209,155 @@ describe("TplMgr", () => {
       expect(componentRoot.vsettings).not.toContain(vs4);
       expect(componentRoot.vsettings).not.toContain(vs5);
     });
+  });
+});
+
+describe("TplMgr.updateVariantGroupMulti", () => {
+  const setup = (groupMulti: boolean) => {
+    const site = createSite();
+    const mgr = new TplMgr({ site: site });
+
+    const referencedComponent = mkComponent({
+      tplTree: mkTplTagX("div", {}),
+      type: ComponentType.Plain,
+    });
+    mgr.attachComponent(referencedComponent);
+
+    const group = mgr.createVariantGroup({ component: referencedComponent });
+    group.multi = groupMulti;
+    const variant1 = mgr.createVariant(referencedComponent, group);
+    const variant2 = mgr.createVariant(referencedComponent, group);
+
+    const containingComponent = mkComponent({
+      tplTree: mkTplTagX("div", {}),
+      type: ComponentType.Plain,
+    });
+    mgr.attachComponent(containingComponent);
+    const containingRoot = ensureKnownTplTag(containingComponent.tplTree);
+
+    const addTpl = (expr: Arg["expr"]) => {
+      const tpl = mkTplComponentX({
+        component: referencedComponent,
+        baseVariant: ensureBaseVariant(containingComponent),
+        args: [
+          new Arg({
+            param: group.param,
+            expr,
+          }),
+        ],
+      });
+      containingRoot.children.push(tpl);
+      return tpl;
+    };
+
+    const getArg = (tpl: TplComponent) => {
+      return tpl.vsettings[0].args.find((a) => a.param === group.param);
+    };
+
+    const addFrame = () => {
+      const frame = mkArenaFrame({
+        site,
+        name: "Test frame",
+        component: containingComponent,
+        width: 100,
+        height: 100,
+        targetVariants: [ensureBaseVariant(containingComponent)],
+        pinnedVariants: {
+          [variant1.uuid]: true,
+          [variant2.uuid]: true,
+        },
+      });
+      site.arenas.push(mkMixedArena("Test arena", [frame]));
+      return frame;
+    };
+
+    return {
+      mgr,
+      group,
+      variant1,
+      variant2,
+      addTpl,
+      getArg,
+      addFrame,
+    };
+  };
+
+  it("trims VariantsRef to at most one variant when converting multi to single", () => {
+    const { mgr, group, variant1, variant2, addTpl, getArg } = setup(true);
+    const tpl = addTpl(new VariantsRef({ variants: [variant1, variant2] }));
+
+    expect(mgr.updateVariantGroupMulti(group, false)).toBeUndefined();
+
+    const arg = getArg(tpl);
+    expect((arg?.expr as VariantsRef).variants).toEqual([variant1]);
+    expect(group.multi).toBe(false);
+  });
+
+  it("keeps existing VariantsRef list when converting single to multi", () => {
+    const { mgr, group, variant1, variant2, addTpl, getArg } = setup(false);
+    const tpl = addTpl(new VariantsRef({ variants: [variant1, variant2] }));
+
+    expect(mgr.updateVariantGroupMulti(group, true)).toBeUndefined();
+
+    const arg = getArg(tpl);
+    expect((arg?.expr as VariantsRef).variants).toEqual([variant1, variant2]);
+    expect(group.multi).toBe(true);
+  });
+
+  it("allows single to multi while preserving a dynamic expression", () => {
+    const { mgr, group, addTpl, getArg } = setup(false);
+    const dynamicExpr = new ObjectPath({
+      path: ["$ctx", "activeVariant"],
+      fallback: null,
+    });
+    const tpl = addTpl(dynamicExpr);
+
+    expect(mgr.updateVariantGroupMulti(group, true)).toBeUndefined();
+
+    const arg = getArg(tpl);
+    expect(arg?.expr).toBe(dynamicExpr);
+    expect(group.multi).toBe(true);
+  });
+
+  it("refuses multi to single atomically when a dynamic expression exists", () => {
+    const { mgr, group, variant1, variant2, addTpl, getArg, addFrame } =
+      setup(true);
+    const validTpl = addTpl(
+      new VariantsRef({ variants: [variant1, variant2] })
+    );
+    const dynamicExpr = new CustomCode({
+      code: "$props.activeVariant",
+      fallback: null,
+    });
+    const dynamicTpl = addTpl(dynamicExpr);
+    const frame = addFrame();
+    const initialPins = { ...frame.pinnedVariants };
+
+    const result = mgr.updateVariantGroupMulti(group, false);
+
+    expect(result).toEqual({
+      tpl: dynamicTpl,
+      arg: getArg(dynamicTpl),
+    });
+    expect(group.multi).toBe(true);
+    expect((getArg(validTpl)?.expr as VariantsRef).variants).toEqual([
+      variant1,
+      variant2,
+    ]);
+    expect(getArg(dynamicTpl)?.expr).toBe(dynamicExpr);
+    expect(frame.pinnedVariants).toEqual(initialPins);
+  });
+
+  it("skips a linked VarRef and still converts multi to single", () => {
+    const { mgr, group, addTpl, getArg } = setup(true);
+    const linkedExpr = new VarRef({ variable: mkVar("linkedProp") });
+    const tpl = addTpl(linkedExpr);
+
+    expect(mgr.updateVariantGroupMulti(group, false)).toBeUndefined();
+
+    // The VarRef is preserved as-is and the group is converted.
+    expect(getArg(tpl)?.expr).toBe(linkedExpr);
+    expect(group.multi).toBe(false);
   });
 });
 

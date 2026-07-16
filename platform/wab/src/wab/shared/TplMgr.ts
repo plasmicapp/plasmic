@@ -257,6 +257,7 @@ import {
   isKnownStyleToken,
   isKnownTheme,
   isKnownTplNode,
+  isKnownVarRef,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
@@ -301,6 +302,11 @@ export function ensureBaseVariant(comp: Component) {
     comp.variants.push(mkBaseVariant());
   }
   return comp.variants[0];
+}
+
+export interface VariantGroupMultiUpdateFailure {
+  tpl: TplComponent;
+  arg: Arg;
 }
 
 export const getTplComponentArg = (
@@ -889,29 +895,48 @@ export class TplMgr {
     removeComponentState(this.site(), component, state);
   }
 
-  updateVariantGroupMulti(group: VariantGroup, multi: boolean) {
+  updateVariantGroupMulti(
+    group: VariantGroup,
+    multi: boolean
+  ): VariantGroupMultiUpdateFailure | undefined {
     if (group.multi === multi) {
       return;
     }
 
     // Convert all existing TplComponent.args referencing this variant group between
     // single value and array value
+    const argsToUpdate: Array<{ arg: Arg; variantsRef: VariantsRef }> = [];
     for (const [vs, tpl] of this.findAllVariantSettings({ ordered: false })) {
       if (isTplComponent(tpl)) {
         for (const arg of vs.args) {
           if (arg.param !== group.param) {
             continue;
           }
-          if (!isKnownVariantsRef(arg.expr)) {
+          if (isKnownVarRef(arg.expr)) {
             // Skip linked (VarRef) because the user will manually trigger the re-conciliation
-            // Skip dynamic value (CustomCode / ObjectPath) because that's user's custom code
             continue;
           }
-          const r = arg.expr;
-          const adjustedVariants = multi ? r.variants : r.variants.slice(0, 1);
-          arg.expr = mkVariantGroupArgExpr(adjustedVariants);
+
+          if (!isKnownVariantsRef(arg.expr)) {
+            // This arg sets the variant dynamically, so we can't tell how many variants it resolves to.
+            if (!multi) {
+              // multi -> single refused, because we can't guarantee
+              // that the user's custom code resolves to at most one variant
+              return { tpl, arg };
+            }
+            continue;
+          }
+
+          argsToUpdate.push({ arg, variantsRef: arg.expr });
         }
       }
+    }
+
+    for (const { arg, variantsRef } of argsToUpdate) {
+      const adjustedVariants = multi
+        ? variantsRef.variants
+        : variantsRef.variants.slice(0, 1);
+      arg.expr = mkVariantGroupArgExpr(adjustedVariants);
     }
     group.multi = multi;
 
@@ -930,6 +955,8 @@ export class TplMgr {
         }
       }
     }
+
+    return undefined;
   }
 
   updateScreenVariantQuery(variant: Variant, query: string) {
