@@ -447,13 +447,11 @@ const DEFAULT_DEVFLAGS = {
     provider: "VertexAnthropic",
     modelName: "claude-haiku-4-5",
     maxTokens: 32000,
-    temperature: 0,
   } as ModelProviderOpts,
   chatCopilotModelProviderOpts: {
     provider: "VertexAnthropic",
     modelName: "claude-sonnet-5",
     maxTokens: 32000,
-    temperature: 0,
   } as ModelProviderOpts,
 
   hostLessWorkspaceId: undefined as WorkspaceId | undefined,
