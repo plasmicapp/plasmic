@@ -1568,10 +1568,6 @@ export async function getProjectRev(req: Request, res: Response) {
     owner = await mgr.tryGetUserById(project.createdById);
   }
   const latestRevisionSynced = await getLatestRevisionSynced(mgr, projectId);
-  // Make sure this revision bundle is up to date.
-  if (!dontMigrateProject) {
-    await getMigratedBundle(rev);
-  }
 
   const appAuthConfig = await mgr.getPublicAppAuthConfig(projectId);
   const hasAppAuth = !!appAuthConfig;
