@@ -2,32 +2,52 @@ import { MIGRATION_POOL_NAME } from "@/wab/server/db/DbCon";
 import { Request, Response } from "express-serve-static-core";
 import { Counter, Gauge, Histogram } from "prom-client";
 import { getConnection } from "typeorm";
+import type { WorkerPool } from "workerpool";
 
 export const DEFAULT_HISTOGRAM_BUCKETS = [
   0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 20, 30, 60, 90, 120, 150, 180,
 ];
 
+// Long alphanumeric path segments with a digit are ids (e.g. base58 project ids)
+// that url-value-parser's masks don't recognize. Requiring a digit avoids masking
+// long camelCase route words.
+export const METRICS_PATH_ID_MASK = /^(?=.*\d)[a-zA-Z0-9]{16,}$/;
+
+function normalizeMetricPath(path: string) {
+  return path
+    .split("/")
+    .map((part) => (METRICS_PATH_ID_MASK.test(part) ? "#val" : part))
+    .join("/");
+}
+
 const liveRequests = new Gauge({
   name: "http_request_live",
   help: "Number of live requests being served",
-  labelNames: ["path", "app", "url"],
+  labelNames: ["path", "app"],
 });
 
 const recentRequestTags: Record<string, number> = {};
 
 export class WabPromLiveRequestsGauge {
+  private tags: { path: string; app: string } | undefined;
+
   constructor(private name: string) {}
 
   onReqStart(request: Request) {
     request.startTime = process.hrtime.bigint();
-    liveRequests.inc(this.getReqTags(request), 1);
+    // Compute tags once so inc and dec use the same labels, even if
+    // routing middlewares rewrite request.path.
+    this.tags = { path: normalizeMetricPath(request.path), app: this.name };
+    liveRequests.inc(this.tags, 1);
   }
 
-  onReqEnd(request: Request, response: Response) {
-    const tags = this.getReqTags(request);
-    liveRequests.dec(tags, 1);
+  onReqEnd(_request: Request, _response: Response) {
+    if (!this.tags) {
+      return;
+    }
+    liveRequests.dec(this.tags, 1);
 
-    recentRequestTags[JSON.stringify(tags)] = new Date().getTime();
+    recentRequestTags[JSON.stringify(this.tags)] = new Date().getTime();
 
     this.cleanupObsoleteTags();
   }
@@ -36,8 +56,7 @@ export class WabPromLiveRequestsGauge {
     // Clean up all tags that are older than 1 minute, if their gauge is
     // 0. This is so we avoid tracking metrics forever, even long after
     // request is no longer live. We really only want a snapshot of the
-    // requests that are currently live! This is expensive to track
-    // because url is one of the tags, and that has very high dimensionality.
+    // requests that are currently live!
     // We use a timeout instead of removing it immediately from liveRequests
     // because we want the scraper to have a chance to come and see that the
     // gauge value has dropped to 0.
@@ -51,10 +70,6 @@ export class WabPromLiveRequestsGauge {
         }
       }
     }
-  }
-
-  private getReqTags(request: Request) {
-    return { path: request.path, app: this.name, url: request.originalUrl };
   }
 }
 
@@ -118,6 +133,37 @@ export class WabPromTimer {
     return this.timer();
   }
 }
+
+const trackedWorkerPools = new Map<string, WorkerPool>();
+
+/**
+ * Exports the pool's pending/active task counts as gauges, collected at scrape time.
+ */
+export function trackWorkerPool(pool: string, workerPool: WorkerPool) {
+  trackedWorkerPools.set(pool, workerPool);
+}
+
+new Gauge({
+  name: "workerpool_pending_tasks",
+  help: "Number of tasks queued in the worker pool, waiting for a worker",
+  labelNames: ["pool"],
+  collect() {
+    for (const [pool, workerPool] of trackedWorkerPools) {
+      this.set({ pool }, workerPool.stats().pendingTasks);
+    }
+  },
+});
+
+new Gauge({
+  name: "workerpool_active_tasks",
+  help: "Number of tasks currently running on worker pool workers",
+  labelNames: ["pool"],
+  collect() {
+    for (const [pool, workerPool] of trackedWorkerPools) {
+      this.set({ pool }, workerPool.stats().activeTasks);
+    }
+  },
+});
 
 export function trackPostgresPool(app: string) {
   const pgPoolTotal = new Gauge({

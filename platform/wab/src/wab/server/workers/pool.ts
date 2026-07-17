@@ -1,4 +1,5 @@
 import { Config } from "@/wab/server/config";
+import { trackWorkerPool } from "@/wab/server/promstats";
 import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import type { workerBuildAssets } from "@/wab/server/workers/build-loader-assets";
 import type { workerGenCode } from "@/wab/server/workers/codegen";
@@ -53,6 +54,8 @@ export function createWorkerPool(config: Config) {
     workerType: "thread",
     maxWorkers: config.genericWorkerPoolSize,
   });
+  trackWorkerPool("loader", loaderPool);
+  trackWorkerPool("generic", genericPool);
 
   const wrapper = new WorkerPoolWrapper(loaderPool, genericPool);
   return wrapper as any as PlasmicWorkerPool;

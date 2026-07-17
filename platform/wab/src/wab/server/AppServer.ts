@@ -29,6 +29,7 @@ import "@/wab/server/extensions";
 import { initAnalyticsFactory, logger } from "@/wab/server/observability";
 import {
   DEFAULT_HISTOGRAM_BUCKETS,
+  METRICS_PATH_ID_MASK,
   WabPromLiveRequestsGauge,
   getTemplatedEndpointFromExpressRoutePath,
   incHttpRequestCount,
@@ -488,7 +489,7 @@ export function addPromMetricsMiddleware(app: express.Application) {
   app.use(
     safeCast<RequestHandler>(async (req: Request, res, next) => {
       // Live requests for all routes after this middleware will be tracked.
-      const liveRequestsGauge = new WabPromLiveRequestsGauge(app.get("name"));
+      const liveRequestsGauge = new WabPromLiveRequestsGauge(name);
       liveRequestsGauge.onReqStart(req);
       // 'close' event is emitted in all HTTP request scenarios
       // https://nodejs.org/api/http.html#httprequesturl-options-callback
@@ -509,20 +510,15 @@ export function addPromMetricsMiddleware(app: express.Application) {
       customLabels: {
         route: null,
         projectId: null,
-        // Also keep track of url for codegen, as the set of
-        // urls codegen uses is reasonably small
-        ...(name === "codegen" && {
-          url: null,
-        }),
       },
       includeMethod: true,
       includeStatusCode: true,
       includePath: true,
+      urlValueParser: {
+        extraMasks: [METRICS_PATH_ID_MASK],
+      },
       transformLabels: (labels, req, _res) => {
         labels.route = req.route?.path;
-        if (name === "codegen") {
-          labels.url = req.originalUrl;
-        }
         Object.assign(labels, req.promLabels ?? {});
       },
       promClient: {
