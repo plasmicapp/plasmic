@@ -248,7 +248,12 @@ test.describe("Auto Open", () => {
       );
       await expect(getAutoOpenBanner(models)).toBeVisible();
 
-      await models.studio.selectRootNode();
+      // Deselect via outline tree instead of clicking the canvas since the modal covers the center
+      await models.studio.leftPanel.switchToTreeTab();
+      await models.studio.leftPanel.treeRoot
+        .locator(".tpltree__label")
+        .first()
+        .click();
       await assertHidden(pageFrame, modalHiddenContent);
       await assertHidden(pageFrame, selectHiddenContent);
       await assertHidden(pageFrame, tooltipHiddenContent);

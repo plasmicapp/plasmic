@@ -731,8 +731,10 @@ export class VariantTplMgr {
     const baseVariant = this.getBaseVariantForNewNode();
     const tpl = mkTplComponentX({ ...props, baseVariant });
     const exp = RSH(this.ensureBaseVariantSetting(tpl).rs, tpl);
-    exp.set("max-width", "100%");
-    if (isCodeComponent(props.component)) {
+    if (!exp.has("max-width")) {
+      exp.set("max-width", "100%");
+    }
+    if (isCodeComponent(props.component) && !exp.has("object-fit")) {
       exp.set("object-fit", "cover");
     }
     this.initializeVariantsForNewTpl(tpl);
