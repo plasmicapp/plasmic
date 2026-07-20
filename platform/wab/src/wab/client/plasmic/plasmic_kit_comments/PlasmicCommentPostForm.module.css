@@ -3,12 +3,11 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  width: 300px;
-  height: auto;
-  max-width: 100%;
   position: relative;
   row-gap: 8px;
-  background: #ffffff;
+  background: var(--token-iR8SeEwQZ);
+  width: 100%;
+  min-width: 0;
 }
 .freeBox__njtN0 {
   display: flex;
@@ -28,11 +27,11 @@
 .bodyInputisPreviewing:global(.__wab_instance):global(.__wab_instance) {
   display: none;
 }
-.svg___9Ja2V {
+.svg__adz5S {
   position: relative;
   height: 1em;
 }
-.svg__d1Cvs {
+.svg___8EqDs {
   position: relative;
   height: 1em;
 }
@@ -83,7 +82,7 @@
   color: #60646c;
   height: 1em;
 }
-.svg__snlYl {
+.svg___68Oqp {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -101,7 +100,7 @@
   color: #60646c;
   height: 1em;
 }
-.svg__xJvT {
+.svg___8NChS {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -119,7 +118,7 @@
   color: #60646c;
   height: 1em;
 }
-.svg__xYuG8 {
+.svg__ne0G1 {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -136,7 +135,7 @@
 .previewButton:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;
 }
-.svg__rFwfn {
+.svg__fpTbH {
   position: relative;
   height: 1em;
 }
@@ -144,7 +143,7 @@
   white-space: pre;
   padding-right: 0px;
 }
-.svg__umoFf {
+.svg___4YBiF {
   position: relative;
   height: 1em;
 }
@@ -155,25 +154,25 @@
 .cancelButtonisEditing:global(.__wab_instance):global(.__wab_instance) {
   display: flex;
 }
-.svg__pmFjt {
+.svg__mxfT {
   position: relative;
   height: 1em;
 }
 .text___9U10X {
   white-space: pre;
 }
-.svg__snWsk {
+.svg__mge6S {
   position: relative;
   height: 1em;
 }
-.svg__iYfgn {
+.svg__cg1V {
   position: relative;
   height: 1em;
 }
 .text__zljgi {
   white-space: pre;
 }
-.svg__p1Lge {
+.svg__thvbE {
   position: relative;
   height: 1em;
 }

@@ -4,8 +4,6 @@
   flex-direction: column;
   outline-style: none;
   background: var(--token-rqQDmopteQdV);
-  max-height: 90vh;
-  width: 300px;
   border-radius: var(--token-8b4HJYZr1yuK);
   border: 1px solid var(--token-CE-OiWjNhspe);
 }

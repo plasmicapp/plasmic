@@ -1,6 +1,6 @@
+import { isWithinKeyboardInteractiveElement } from "@/wab/client/dom-utils";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { cx } from "@/wab/shared/common";
-import $ from "jquery";
 import * as React from "react";
 
 interface DevContainerProps {
@@ -18,7 +18,10 @@ export class DevContainer extends React.Component<DevContainerProps, {}> {
     return (
       <div
         onContextMenu={(e) => {
-          if ($(e.target).closest("input").length === 0) {
+          // Disable context menu within Studio for most elements except
+          // keyboard interactive elements, where it's nice to have options
+          // like copy/paste functionality.
+          if (!isWithinKeyboardInteractiveElement(e.target as Element)) {
             e.preventDefault();
           }
         }}

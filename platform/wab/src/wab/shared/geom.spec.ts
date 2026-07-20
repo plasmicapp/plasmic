@@ -1,4 +1,21 @@
-import { Box, findSpaceForRectSweepRight, mergeSpans, Pt } from "@/wab/shared/geom";
+import {
+  Box,
+  findSpaceForRectSweepRight,
+  mergeSpans,
+  Pt,
+} from "@/wab/shared/geom";
+
+describe("Pt", () => {
+  describe("moveBy", () => {
+    it("returns a moved point", () => {
+      expect(new Pt(1, 2).moveBy(3, 4)).toEqual(new Pt(4, 6));
+    });
+    it("returns the same instance if unmoved", () => {
+      const p = new Pt(1, 2);
+      expect(p.moveBy(0, 0)).toBe(p);
+    });
+  });
+});
 
 describe("Box", () => {
   describe("adjustSides", () => {
@@ -16,6 +33,28 @@ describe("Box", () => {
         height: 110,
         width: 9,
       });
+    });
+  });
+  describe("clamp", () => {
+    const box = new Box(0, 0, 5, 10);
+    it("clamps points outside the box to the closest point within it", () => {
+      expect(box.clamp(new Pt(-5, 5))).toEqual(new Pt(0, 5));
+      expect(box.clamp(new Pt(3, 15))).toEqual(new Pt(3, 10));
+      expect(box.clamp(new Pt(-5, 15))).toEqual(new Pt(0, 10));
+      expect(box.clamp(new Pt(20, -20))).toEqual(new Pt(5, 0));
+    });
+    it("returns the same instance for points already within the box", () => {
+      const inside = new Pt(3, 5);
+      expect(box.clamp(inside)).toBe(inside);
+      // edges/corners are inclusive
+      [
+        new Pt(0, 0),
+        new Pt(0, 10),
+        new Pt(5, 0),
+        new Pt(5, 10),
+        new Pt(0, 1),
+        new Pt(4, 10),
+      ].forEach((pt) => expect(box.clamp(pt)).toBe(pt));
     });
   });
   describe("intersection", () => {

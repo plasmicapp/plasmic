@@ -1,5 +1,5 @@
 import { ensure, last, pairwise, tuple } from "@/wab/shared/common";
-import { max, min, minBy, sortBy } from "lodash";
+import { clamp, max, min, minBy, sortBy } from "lodash";
 
 export interface Offset {
   top: number;
@@ -40,7 +40,11 @@ export class Pt implements Transformable<Pt> {
     return `Pt[x=${this.x},y=${this.y}]`;
   }
   moveBy(dx: number, dy: number) {
-    return new Pt(this.x + dx, this.y + dy);
+    if (dx === 0 && dy === 0) {
+      return this;
+    } else {
+      return new Pt(this.x + dx, this.y + dy);
+    }
   }
   plus(vec: Pt) {
     return this.moveBy(vec.x, vec.y);
@@ -336,13 +340,23 @@ export class Box implements Transformable<Box> {
   midpt() {
     return new Pt(this.xmid(), this.ymid());
   }
-  contains(p: /*TWZ*/ Pt | Pt | Pt) {
+  contains(p: Pt) {
     return (
       this.left() <= p.x &&
       p.x < this.right() &&
       this.top() <= p.y &&
       p.y < this.bottom()
     );
+  }
+  /** Clamps a point to the closest point within this box. */
+  clamp(p: Pt) {
+    const clampedX = clamp(p.x, this.left(), this.right());
+    const clampedY = clamp(p.y, this.top(), this.bottom());
+    if (clampedX === p.x && clampedY === p.y) {
+      return p;
+    } else {
+      return new Pt(clampedX, clampedY);
+    }
   }
   leftHalf() {
     return new Box(this.t, this.l, this.w / 2, this.h);

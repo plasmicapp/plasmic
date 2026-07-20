@@ -14,6 +14,8 @@ $node-outline-border: $node-outline-border-thickness solid $node-outline-color
 $node-measure-border-color: $tomato9
 
 $scroll-width: 7px
+$top-pane-height: 3rem
+$focused-toolbar-height: 50px
 $right-pane-content-width: 280px
 $right-pane-padding: 8px
 $right-pane-width: $right-pane-content-width + $scroll-width + $right-pane-padding * 2
@@ -1710,10 +1712,107 @@ a.btn-link
   z-index: 1000
   background: rgba(0,0,0,0) // TODO temp? to help guide dev
 
-.modal-screen
+.floating-window-screen
   @include tpl-full-screen
-  background: rgba(0,0,0,.5)
-  display: none
+  z-index: 900
+  pointer-events: none
+
+// Floating window positioning:
+// - Default to open just below the top pane.
+// - In focused mode, account for the toolbar height.
+.floating-window
+  position: absolute
+  --anchor-top: calc(#{$top-pane-height} + 10px)
+  top: var(--anchor-top)
+  right: calc($right-pane-width + 10px)
+  min-width: min-content
+  display: flex
+  flex-direction: column
+  pointer-events: auto
+.floating-window--focused
+  --anchor-top: calc(#{$top-pane-height} + #{$focused-toolbar-height} + 10px)
+.floating-window--auto-height
+  max-height: calc(100vh - var(--anchor-top) - 10px)
+.floating-window__content
+  display: flex
+  flex-direction: column
+  min-width: 0
+  min-height: 0
+  flex: 1 1 auto
+  > *
+    min-height: 0
+    flex: 1 1 auto
+
+// Floating window styling:
+// - Drop shadow, more when active
+// - Semi-translucent when not active
+.floating-window
+  opacity: 0.75
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.15))
+
+  transition: opacity 0.15s ease, filter 0.15s ease
+
+  // hover or focus-within = active
+  &:hover, &:focus-within
+    opacity: 1
+    filter: drop-shadow(0 3px 10px rgba(0,0,0,.2))
+
+.floating-window--resizer--n
+  position: absolute
+  top: -4px
+  left: 8px
+  right: 8px
+  height: 8px
+  cursor: ns-resize
+.floating-window--resizer--s
+  position: absolute
+  bottom: -4px
+  left: 8px
+  right: 8px
+  height: 8px
+  cursor: ns-resize
+.floating-window--resizer--e
+  position: absolute
+  top: 8px
+  bottom: 8px
+  right: -4px
+  width: 8px
+  cursor: ew-resize
+.floating-window--resizer--w
+  position: absolute
+  top: 8px
+  bottom: 8px
+  left: -4px
+  width: 8px
+  cursor: ew-resize
+.floating-window--resizer--ne
+  position: absolute
+  top: -4px
+  right: -4px
+  width: 12px
+  height: 12px
+  cursor: nesw-resize
+.floating-window--resizer--nw
+  position: absolute
+  top: -4px
+  left: -4px
+  width: 12px
+  height: 12px
+  cursor: nwse-resize
+.floating-window--resizer--se
+  position: absolute
+  bottom: -4px
+  right: -4px
+  width: 12px
+  height: 12px
+  cursor: nwse-resize
+.floating-window--resizer--sw
+  position: absolute
+  bottom: -4px
+  left: -4px
+  width: 12px
+  height: 12px
+  cursor: nesw-resize
 
 @mixin hover-outline
   &:hover
@@ -4026,29 +4125,6 @@ $color-stops-width: 100%
   & > *
     position: relative
 
-  .CommentDialogContainer
-    position: absolute
-    top: 10px
-    right: 10px
-    z-index: 999
-    height: calc(100% - 20px)
-    pointer-events: none
-
-    > *
-      pointer-events: auto
-
-.CopilotChatDialogContainer
-  position: absolute
-  top: 3rem
-  right: 4px
-  height: calc(100% - 3rem)
-
-  > section
-    height: 100%
-    // Dialog component in [PlasmicKit] Design system sets max-height to 90vh; for CommentsDialog
-    // !important could be removed when we fix the default max-height in above Dialog.
-    max-height: 100vh !important
-
 .canvas-editor__canvas-container
   .CopilotUiPromptDialog
     z-index: 10
@@ -4058,10 +4134,6 @@ $color-stops-width: 100%
 .canvas-editor__canvas-container__focus_mode
   grid-template-rows: 50px auto
   grid-template-areas: "topbar" "clipper"
-
-  .CommentDialogContainer
-      top: 60px
-      height: calc(100% - 70px)
 
   .CopilotUiPromptDialog
     z-index: 10

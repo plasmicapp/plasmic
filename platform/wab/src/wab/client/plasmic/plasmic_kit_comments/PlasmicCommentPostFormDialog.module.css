@@ -1,3 +1,6 @@
+.root:global(.__wab_instance):global(.__wab_instance) {
+  min-width: 300px;
+}
 .freeBox {
   display: flex;
   flex-direction: row;
@@ -8,5 +11,4 @@
 }
 .commentPostForm:global(.__wab_instance) {
   position: relative;
-  flex-shrink: 0;
 }

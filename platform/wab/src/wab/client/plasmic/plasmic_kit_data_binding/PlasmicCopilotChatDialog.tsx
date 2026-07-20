@@ -128,16 +128,16 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
               withBackgroundHover={true}
             >
               <CloseIcon
-                className={classNames("all", sty.svg__lay1O)}
+                className={classNames("all", sty.svg__vnato)}
                 role={"img"}
               />
             </IconButton>
           }
-          className={classNames("__wab_instance", sty.dialogHeader)}
+          grabbable={true}
           heading={
-            <div className={classNames("all", sty.freeBox__aSj44)}>
+            <div className={classNames("all", sty.freeBox___3PZhd)}>
               <SparklesSvgIcon
-                className={classNames("all", sty.svg__h4Gbc)}
+                className={classNames("all", sty.svg__tbVrl)}
                 role={"img"}
               />
 

@@ -18,6 +18,7 @@ import {
   TopBarPromptBillingArgs,
   getTiersAndPromptBilling,
 } from "@/wab/client/components/modals/PricingModal";
+import { FloatingWindowLayer } from "@/wab/client/components/widgets/FloatingWindow";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import {
   TopFrameApi,
@@ -133,6 +134,7 @@ export function TopFrameChrome({
   didShowRegenerateSecretTokenModal,
   ...rest
 }: TopFrameChromeProps) {
+  const { hostFrameApiReady } = useTopFrameCtx();
   const location = useLocation();
   const fullPreview = !!parseRoute(
     APP_ROUTES.projectFullPreview,
@@ -358,12 +360,14 @@ export function TopFrameChrome({
                 onCancel={() => topFrameApi.setShowAppAuthModal(false)}
               />
             )}
-            {rest.showCopilotChatModal && (
-              <CopilotChatDialog
-                projectId={project.id}
-                onClose={() => topFrameApi.toggleCopilotChat()}
-              />
-            )}
+            <FloatingWindowLayer>
+              {hostFrameApiReady && rest.showCopilotChatModal && (
+                <CopilotChatDialog
+                  projectId={project.id}
+                  onClose={() => topFrameApi.toggleCopilotChat()}
+                />
+              )}
+            </FloatingWindowLayer>
             <React.Suspense fallback={null}>
               <TopFrameTours
                 appCtx={appCtx}

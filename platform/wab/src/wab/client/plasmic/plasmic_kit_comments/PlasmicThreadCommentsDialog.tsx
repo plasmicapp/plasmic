@@ -18,10 +18,7 @@ import {
   createPlasmicElementProxy,
   deriveRenderOpts,
   Flex as Flex__,
-  hasVariant,
-  SingleBooleanChoiceArg,
   StrictProps,
-  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -38,15 +35,11 @@ import sty from "./PlasmicThreadCommentsDialog.module.css"; // plasmic-import: U
 
 createPlasmicElementProxy;
 
-export type PlasmicThreadCommentsDialog__VariantMembers = {
-  hover: "hover";
-};
-export type PlasmicThreadCommentsDialog__VariantsArgs = {
-  hover?: SingleBooleanChoiceArg<"hover">;
-};
+export type PlasmicThreadCommentsDialog__VariantMembers = {};
+export type PlasmicThreadCommentsDialog__VariantsArgs = {};
 type VariantPropType = keyof PlasmicThreadCommentsDialog__VariantsArgs;
 export const PlasmicThreadCommentsDialog__VariantProps =
-  new Array<VariantPropType>("hover");
+  new Array<VariantPropType>();
 
 export type PlasmicThreadCommentsDialog__ArgsType = {};
 type ArgPropType = keyof PlasmicThreadCommentsDialog__ArgsType;
@@ -60,7 +53,6 @@ export type PlasmicThreadCommentsDialog__OverridesType = {
 };
 
 export interface DefaultThreadCommentsDialogProps {
-  hover?: SingleBooleanChoiceArg<"hover">;
   className?: string;
 }
 
@@ -94,26 +86,6 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
-    () => [
-      {
-        path: "hover",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hover,
-      },
-    ],
-    [$props, $ctx, $refs]
-  );
-
-  const $state = useDollarState(stateSpecs, {
-    $props,
-    $ctx,
-    $queries: {},
-    $q: {},
-    $refs,
-  });
-
   const styleTokensClassNames = _useStyleTokens();
 
   return (
@@ -122,35 +94,22 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
+      className={classNames("__wab_instance", sty.root)}
       content={
         <div className={classNames("all", sty.freeBox__aLeEa)}>
-          {(hasVariant($state, "hover", "hover") ? false : true) ? (
-            <ThreadComments
-              data-plasmic-name={"threadComments"}
-              data-plasmic-override={overrides.threadComments}
-              className={classNames("__wab_instance", sty.threadComments, {
-                [sty.threadCommentshover]: hasVariant($state, "hover", "hover"),
-              })}
-            />
-          ) : null}
+          <ThreadComments
+            data-plasmic-name={"threadComments"}
+            data-plasmic-override={overrides.threadComments}
+            className={classNames("__wab_instance", sty.threadComments)}
+          />
         </div>
       }
       footer={
-        <div
-          className={classNames("all", sty.freeBox___3WKao, {
-            [sty.freeBoxhover___3WKaojKoXe]: hasVariant(
-              $state,
-              "hover",
-              "hover"
-            ),
-          })}
-        >
+        <div className={classNames("all", sty.freeBox___3WKao)}>
           <CommentPostForm
             data-plasmic-name={"replyForm"}
             data-plasmic-override={overrides.replyForm}
-            className={classNames("__wab_instance", sty.replyForm, {
-              [sty.replyFormhover]: hasVariant($state, "hover", "hover"),
-            })}
+            className={classNames("__wab_instance", sty.replyForm)}
           />
         </div>
       }
@@ -159,9 +118,8 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
           data-plasmic-name={"commentsDialogHead"}
           data-plasmic-override={overrides.commentsDialogHead}
           canUpdateHistory={true}
-          className={classNames("__wab_instance", sty.commentsDialogHead, {
-            [sty.commentsDialogHeadhover]: hasVariant($state, "hover", "hover"),
-          })}
+          className={classNames("__wab_instance", sty.commentsDialogHead)}
+          grabbable={true}
         />
       }
       show={["header", "footer"]}

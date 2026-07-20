@@ -1,14 +1,12 @@
 .root:global(.__wab_instance):global(.__wab_instance) {
   animation: none;
-  max-width: 100%;
   position: relative;
-  width: 300px;
+  min-width: 300px;
 }
 .dialogHeader:global(.__wab_instance) {
   animation: none;
-  max-width: 100%;
 }
-.freeBox__aSj44 {
+.freeBox___3PZhd {
   animation: none;
   display: flex;
   flex-direction: row;
@@ -17,7 +15,7 @@
   justify-content: flex-start;
   column-gap: var(--token-vhXSTyxt_gU9);
 }
-.svg__h4Gbc {
+.svg__tbVrl {
   animation: none;
   object-fit: cover;
   color: var(--token-qP8a3gYPq7fd);
@@ -42,13 +40,14 @@
   animation: none;
   margin-right: -8px;
 }
-.svg__lay1O {
+.svg__vnato {
+  animation: none;
   object-fit: cover;
   width: 16px;
   height: 16px;
   color: var(--token-RTPypKCJE4bm);
 }
-.svg__nKA {
+.svg__tfZac {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -77,7 +76,6 @@
   border-bottom-left-radius: var(--token-8b4HJYZr1yuK);
   border-bottom-right-radius: var(--token-8b4HJYZr1yuK);
   padding: var(--token-O2OprmOFWLju) var(--token-8b4HJYZr1yuK);
-  border-top: 1px solid var(--token-sBh7BFhgAybb);
 }
 .copilotPromptInput:global(.__wab_instance) {
   animation: none;

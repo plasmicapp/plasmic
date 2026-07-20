@@ -41,13 +41,15 @@ createPlasmicElementProxy;
 
 export type PlasmicCommentsDialogHead__VariantMembers = {
   canUpdateHistory: "canUpdateHistory";
+  grabbable: "grabbable";
 };
 export type PlasmicCommentsDialogHead__VariantsArgs = {
   canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
+  grabbable?: SingleBooleanChoiceArg<"grabbable">;
 };
 type VariantPropType = keyof PlasmicCommentsDialogHead__VariantsArgs;
 export const PlasmicCommentsDialogHead__VariantProps =
-  new Array<VariantPropType>("canUpdateHistory");
+  new Array<VariantPropType>("canUpdateHistory", "grabbable");
 
 export type PlasmicCommentsDialogHead__ArgsType = {};
 type ArgPropType = keyof PlasmicCommentsDialogHead__ArgsType;
@@ -65,6 +67,7 @@ export type PlasmicCommentsDialogHead__OverridesType = {
 
 export interface DefaultCommentsDialogHeadProps {
   canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
+  grabbable?: SingleBooleanChoiceArg<"grabbable">;
   className?: string;
 }
 
@@ -106,6 +109,12 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.canUpdateHistory,
+      },
+      {
+        path: "grabbable",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.grabbable,
       },
     ],
     [$props, $ctx, $refs]
@@ -178,7 +187,11 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
           "canUpdateHistory",
           "canUpdateHistory"
         ),
+        [sty.rootgrabbable]: hasVariant($state, "grabbable", "grabbable"),
       })}
+      grabbable={
+        hasVariant($state, "grabbable", "grabbable") ? true : undefined
+      }
       heading={
         <div
           data-plasmic-name={"name"}
@@ -242,7 +255,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsDialogHead__VariantsArgs;
     args?: PlasmicCommentsDialogHead__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentsDialogHead__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

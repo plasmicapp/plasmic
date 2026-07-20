@@ -13,6 +13,7 @@ export type LocalStorageKey =
   | "githubState"
   | "githubToken"
   | "plasmic-sso-email"
+  | "plasmic.copilot.dialog-position"
   | "plasmic.tours.top-project-nav"
   | `copy/${ProjectId}`
   | `plasmic.focused.${ProjectId}`
@@ -30,6 +31,9 @@ export const githubStateKey: LocalStorageKey = "githubState";
 export const githubTokenKey: LocalStorageKey = "githubToken";
 
 export const ssoEmailKey: LocalStorageKey = "plasmic-sso-email";
+
+export const copilotDialogPositionKey: LocalStorageKey =
+  "plasmic.copilot.dialog-position";
 
 export const tourSeenTopProjectNavKey: LocalStorageKey =
   "plasmic.tours.top-project-nav";

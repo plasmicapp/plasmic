@@ -1,13 +1,14 @@
 import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
+import { FloatingWindow } from "@/wab/client/components/widgets/FloatingWindow";
 import {
   DefaultThreadCommentsDialogProps,
   PlasmicThreadCommentsDialog,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicThreadCommentsDialog";
-import { OpenedThread } from "@/wab/client/studio-ctx/comments-ctx";
 import {
   canUpdateHistory,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import { OpenedThread } from "@/wab/client/studio-ctx/comments-ctx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
@@ -51,13 +52,15 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
 
   return (
     <OnClickAway onDone={handleClickOutside}>
-      <div
-        className="CommentDialogContainer"
+      <FloatingWindow
+        handleSelector=".CommentDialogDragHandle"
+        focusedMode={studioCtx.focusedMode}
         onClick={markThreadAsInteracted}
         onKeyDown={markThreadAsInteracted}
       >
         <PlasmicThreadCommentsDialog
           commentsDialogHead={{
+            className: "CommentDialogDragHandle",
             close: {
               onClick: () => commentsCtx.closeCommentThreadDialog(),
               "data-test-id": "thread-comment-dialog-close-btn",
@@ -106,7 +109,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
           }}
           {...props}
         />
-      </div>
+      </FloatingWindow>
     </OnClickAway>
   );
 });

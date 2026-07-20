@@ -205,6 +205,56 @@ export const isDescendant = ({
   return false;
 };
 
+const POINTER_INTERACTIVE_SELECTORS = [
+  "a",
+  "button",
+  "input",
+  "select",
+  "textarea",
+  "[role='button']",
+  "[contenteditable]:not([contenteditable='false'])",
+].join(",");
+
+/**
+ * Returns true if `target` is, or is inside, an element that is typically
+ * interacted with via pointer events (all input-like elements)
+ */
+export function isWithinPointerInteractiveElement(target: Element): boolean {
+  return !!target.closest(POINTER_INTERACTIVE_SELECTORS);
+}
+
+const KEYBOARD_INTERACTIVE_SELECTORS = [
+  // input types that accept text editing
+  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types
+  "input:not([type])", // type defaults to text
+  ...[
+    "date",
+    "datetime",
+    "datetime-local",
+    "email",
+    "month",
+    "number",
+    "password",
+    "search",
+    "tel",
+    "text",
+    "time",
+    "url",
+    "week",
+  ].map((type) => `input[type='${type}']`),
+  "textarea",
+  // contenteditable is editable unless explicitly false ("" means true)
+  "[contenteditable]:not([contenteditable='false'])",
+].join(",");
+
+/**
+ * Returns true if `target` is, or is inside, an element that is typically
+ * interacted with via keyboard events (text-based input elements).
+ */
+export function isWithinKeyboardInteractiveElement(target: Element): boolean {
+  return !!target.closest(KEYBOARD_INTERACTIVE_SELECTORS);
+}
+
 export const isContextMenuDescendant = (child: Element) => {
   let node = child.parentNode;
 

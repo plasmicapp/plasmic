@@ -1,3 +1,4 @@
+import { isWithinKeyboardInteractiveElement } from "@/wab/client/dom-utils";
 import { analytics } from "@/wab/client/observability";
 import { Shortcuts } from "@/wab/client/shortcuts/shortcut";
 import Mousetrap, { ExtendedKeyboardEvent } from "mousetrap";
@@ -13,28 +14,6 @@ const FOCUSABLE_DISALLOWED_COMBOS = new Set([
   "enter", // click (e.g. buttons, links)
   "tab", // tab to next focusable element
   "shift+tab", // tab to previous focusable element
-]);
-
-/**
- * Input types that should not trigger shortcuts.
- * These are input types where keyboard interaction is expected.
- *
- * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types
- */
-const INPUT_DISALLOWED_TYPES: ReadonlySet<string> = new Set([
-  "date",
-  "datetime",
-  "datetime-local",
-  "email",
-  "month",
-  "number",
-  "password",
-  "search",
-  "tel",
-  "text",
-  "time",
-  "url",
-  "week",
 ]);
 
 const DISALLOWED_ELEMENT_CLASSES: ReadonlySet<string> = new Set([
@@ -111,11 +90,8 @@ export function bindShortcutHandlers<Action extends string>(
       // Based on Mousetrap's default stopCallback implementation
       // https://github.com/ccampbell/mousetrap/blob/master/mousetrap.js
       const doesInputExpectKeyEvents =
-        element.isContentEditable ||
-        (element instanceof win.HTMLInputElement &&
-          INPUT_DISALLOWED_TYPES.has(element.type)) ||
-        element instanceof win.HTMLSelectElement ||
-        element instanceof win.HTMLTextAreaElement;
+        isWithinKeyboardInteractiveElement(element) ||
+        element instanceof win.HTMLSelectElement;
       if (doesInputExpectKeyEvents) {
         return true;
       }

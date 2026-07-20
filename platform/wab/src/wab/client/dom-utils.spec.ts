@@ -1,5 +1,7 @@
 import {
   deriveImageAssetTypeAndUri,
+  isWithinKeyboardInteractiveElement,
+  isWithinPointerInteractiveElement,
   ResizableImage,
 } from "@/wab/client/dom-utils";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
@@ -252,5 +254,62 @@ describe("deriveImageAssetTypeAndUri", () => {
 
       expect(result).toBeUndefined();
     });
+  });
+});
+
+describe("isWithinKeyboardInteractiveElement/isWithinPointerInteractiveElement", () => {
+  /** Checks the element with id="target", or the first element. */
+  function check(
+    html: string,
+    expected: { pointer: boolean; keyboard: boolean }
+  ): void {
+    const container = document.createElement("div");
+    container.innerHTML = html;
+    const target =
+      container.querySelector("#target") ?? container.firstElementChild!;
+    expect({
+      html,
+      pointer: isWithinPointerInteractiveElement(target),
+      keyboard: isWithinKeyboardInteractiveElement(target),
+    }).toEqual({ html, ...expected });
+  }
+
+  it("matches text-editable elements and their descendants for both", () => {
+    const both = { pointer: true, keyboard: true };
+    check(`<input />`, both); // type defaults to text
+    check(`<input type="text" />`, both);
+    check(`<input type="email" />`, both);
+    check(`<input type="number" />`, both);
+    check(`<textarea></textarea>`, both);
+    check(`<div contenteditable></div>`, both);
+    check(`<div contenteditable><p id="target"></p></div>`, both);
+    check(`<div contenteditable="true"></div>`, both);
+    check(`<div contenteditable="true"><p id="target"></p></div>`, both);
+  });
+
+  it("matches non-text controls for pointer only", () => {
+    const pointerOnly = { pointer: true, keyboard: false };
+    check(`<input type="button" />`, pointerOnly);
+    check(`<input type="submit" />`, pointerOnly);
+    check(`<input type="radio" />`, pointerOnly);
+    check(`<input type="checkbox" />`, pointerOnly);
+    check(`<input type="invalid-type" />`, pointerOnly);
+    check(`<button></button>`, pointerOnly);
+    check(`<button><span id="target"></span></button>`, pointerOnly);
+    check(`<select></select>`, pointerOnly);
+    check(`<a href="#"></a>`, pointerOnly);
+    check(`<div role="button"></div>`, pointerOnly);
+  });
+
+  it("matches non-interactive elements for neither", () => {
+    const neither = { pointer: false, keyboard: false };
+    check(`<div></div>`, neither);
+    check(`<div><p id="target"></p></div>`, neither);
+    check(`<div contenteditable="false"></div>`, neither);
+    check(
+      `<div contenteditable="false"><span id="target"></span></div>`,
+      neither
+    );
+    check(`<p id="target"></p> <input />`, neither);
   });
 });

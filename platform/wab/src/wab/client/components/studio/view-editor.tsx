@@ -48,6 +48,7 @@ import { getContextMenuForFocusedTpl } from "@/wab/client/components/tpl-menu";
 import * as widgets from "@/wab/client/components/widgets";
 import { BrowserAlertBanner } from "@/wab/client/components/widgets/BrowserAlertBanner";
 import { DropdownButton } from "@/wab/client/components/widgets/DropdownButton";
+import { FloatingWindowLayer } from "@/wab/client/components/widgets/FloatingWindow";
 import { AlertBanner } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { clientToFramePt, frameToClientPt } from "@/wab/client/coords";
 import {
@@ -981,6 +982,11 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     // Dispatch Plasmic events if the original event happened inside an iframe
     if (isCanvasIframeEvent(e)) {
       this.props.studioCtx.setWatchPlayerId(null);
+      // Mousedown on the canvas frame may not blur a focused top frame element.
+      // Manually focus this window (studio frame) to ensure the top frame focus
+      // is on the studio iframe.
+      window.focus();
+      // Dispatch custom mousedown event for other handlers.
       document.dispatchEvent(new Event(plasmicIFrameMouseDownEvent));
     }
 
@@ -1895,7 +1901,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   hexColor={watchedPlayer.color}
                 />
               )}
-              <CommentsDialogs studioCtx={studioCtx} />
               {studioCtx.showUiCopilot ? <CopilotUiPrompt /> : null}
               {studioCtx.showDevControls && (
                 <div className="canvas-editor__top-pane">
@@ -1998,6 +2003,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
               <FocusedModeToolbar studioCtx={studioCtx} />
             </div>
             <RightPane studioCtx={studioCtx} disabled={disableRightPane} />
+            <FloatingWindowLayer>
+              <CommentsDialogs studioCtx={studioCtx} />
+            </FloatingWindowLayer>
           </div>
 
           <DevContainer

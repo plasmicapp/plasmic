@@ -25,9 +25,6 @@
   padding: var(--token-XnnXV8YSKg9w);
   border: 1px solid var(--token-JpKJ41ZaDWOC);
 }
-.root:hover:hover {
-  background: var(--token-9jh0BkCENS);
-}
 .rootthread:hover:hover {
   background: var(--token-8MEyDjsqznQc);
   cursor: pointer;
@@ -252,7 +249,7 @@
   object-fit: cover;
   height: 1em;
 }
-.svg__aaLw5 {
+.svg___9MNft {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -278,7 +275,7 @@
   align-self: flex-start;
   display: flex;
 }
-.svg___6Unuk {
+.svg__bfTdl {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -287,7 +284,7 @@
 .texthoverBox {
   color: var(--token-RTPypKCJE4bm);
 }
-.svg__bxvdw {
+.svg___5YKYn {
   display: flex;
   position: relative;
   object-fit: cover;

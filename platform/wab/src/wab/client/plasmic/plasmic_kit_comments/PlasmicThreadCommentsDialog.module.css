@@ -1,8 +1,8 @@
+.root:global(.__wab_instance):global(.__wab_instance) {
+  min-width: 300px;
+}
 .commentsDialogHead:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;
-}
-.commentsDialogHeadhover:global(.__wab_instance):global(.__wab_instance) {
-  display: none;
 }
 .freeBox__aLeEa {
   display: flex;
@@ -24,14 +24,6 @@
   justify-content: flex-start;
   padding: var(--token-O2OprmOFWLju) var(--token-8b4HJYZr1yuK);
 }
-.freeBoxhover___3WKaojKoXe {
-  padding-top: 0px;
-}
 .replyForm:global(.__wab_instance) {
   position: relative;
-  flex-shrink: 0;
-}
-.replyFormhover:global(.__wab_instance) {
-  flex-shrink: 0;
-  display: none;
 }

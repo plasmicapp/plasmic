@@ -132,7 +132,7 @@ testMultiplayer.describe("multiplayer comments", () => {
       // Verify all users see the resolved status
       await forEachAsync(sessions, async (session) => {
         const resolvedLoc = session.models.studio.frame
-          .locator(".CommentDialogContainer")
+          .locator(".floating-window:has(.CommentDialogDragHandle)")
           .getByText("Comment thread resolved.");
         await expect(resolvedLoc).toBeVisible({ timeout: 5000 });
       });

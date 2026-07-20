@@ -1,10 +1,11 @@
 import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
+import { FloatingWindow } from "@/wab/client/components/widgets/FloatingWindow";
 import {
   DefaultCommentPostFormDialogProps,
   PlasmicCommentPostFormDialog,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog";
-import { OpenedNewThread } from "@/wab/client/studio-ctx/comments-ctx";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { OpenedNewThread } from "@/wab/client/studio-ctx/comments-ctx";
 import { getSetOfPinnedVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { ensure } from "@/wab/shared/common";
@@ -42,14 +43,17 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
 
   return (
     <OnClickAway onDone={handleClickOutside}>
-      <div
-        className="CommentDialogContainer"
+      <FloatingWindow
+        handleSelector=".CommentDialogDragHandle"
+        focusedMode={studioCtx.focusedMode}
+        disableHeightResize
         onClick={markThreadAsInteracted}
         onKeyDown={markThreadAsInteracted}
       >
         <PlasmicCommentPostFormDialog
           {...props}
           commentsDialogHead={{
+            className: "CommentDialogDragHandle",
             name: threadSubject.name || "Unnamed",
             type: summarizeTpl(
               threadSubject,
@@ -98,7 +102,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
             ),
           }}
         />
-      </div>
+      </FloatingWindow>
     </OnClickAway>
   );
 });
