@@ -8,20 +8,21 @@ import RefreshsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plasmic
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export const FocusedModeToolbar = observer(
   ({ studioCtx }: { studioCtx: StudioCtx }) => {
     const onChange = (val) =>
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         studioCtx.isInteractiveMode = val;
-        return success();
+        return ok();
       });
 
     const onClick = async () => {
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         studioCtx.refreshFocusedFrameArena();
-        return success();
+        return ok();
       });
     };
 

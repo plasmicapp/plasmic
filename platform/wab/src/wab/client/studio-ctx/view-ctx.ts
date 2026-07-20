@@ -127,6 +127,7 @@ import L, { defer, groupBy, head, isEqual, sortBy } from "lodash";
 import * as mobx from "mobx";
 import { comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { CSSProperties } from "react";
 import type { Editor as SlateEditor } from "slate";
@@ -1293,12 +1294,12 @@ export class ViewCtx extends WithDbCtx {
           defer(async () => {
             if (!this.isDisposed) {
               await this.studioCtx.change(
-                ({ success }) => {
+                () => {
                   if (!this.isDisposed) {
                     this.csEvaluator.runPostEvalTasks();
                     this.updateCtxPostChange();
                   }
-                  return success();
+                  return ok();
                 },
                 {
                   noUndoRecord: true,

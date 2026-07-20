@@ -23,6 +23,7 @@ import { ColumnsConfig } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { clamp } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export const ColumnsWrapControls = observer(
@@ -43,7 +44,7 @@ export const ColumnsWrapControls = observer(
       isReverseValue(exp.get("flex-wrap"));
 
     const handleChangeColsPerRow = async (delta) => {
-      await studioCtx.change<never>(({ success }) => {
+      await studioCtx.change<never>(() => {
         const newColsPerRow = clamp(
           colsSizes.length + delta,
           1,
@@ -56,7 +57,7 @@ export const ColumnsWrapControls = observer(
           },
           viewCtx.variantTplMgr()
         );
-        return success();
+        return ok();
       });
     };
 
@@ -67,7 +68,7 @@ export const ColumnsWrapControls = observer(
             isDisabled={isDisabled}
             isChecked={breakUpRows}
             onChange={async (val) => {
-              await studioCtx.change<never>(({ success }) => {
+              await studioCtx.change<never>(() => {
                 updateCurrentTplColumns(
                   tpl,
                   {
@@ -79,7 +80,7 @@ export const ColumnsWrapControls = observer(
                   },
                   viewCtx.variantTplMgr()
                 );
-                return success();
+                return ok();
               });
             }}
           >
@@ -90,13 +91,13 @@ export const ColumnsWrapControls = observer(
             isDisabled={isDisabled}
             isChecked={isReversed}
             onChange={async (val) => {
-              await studioCtx.change(({ success }) => {
+              await studioCtx.change(() => {
                 if (config.breakUpRows) {
                   exp.set("flex-wrap", `wrap${val ? "-reverse" : ""}`);
                 } else {
                   exp.set("flex-direction", `row${val ? "-reverse" : ""}`);
                 }
-                return success();
+                return ok();
               });
             }}
           >

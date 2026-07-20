@@ -38,6 +38,7 @@ import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 const DataQueryRow = observer(
@@ -61,12 +62,12 @@ const DataQueryRow = observer(
       newOp: DataSourceOpExpr,
       opExprName?: string
     ) => {
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         query.op = newOp;
         if (opExprName && opExprName !== query.name) {
           renameQueryAndFixExprs(component, query, opExprName);
         }
-        return success();
+        return ok();
       });
       dataSourceModal.close();
     };
@@ -173,10 +174,10 @@ function ComponentQueriesSection_(props: {
 
   const handleAddDataQuery = () => {
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         const query = addEmptyQuery(component);
         studioCtx.newlyAddedQuery = query;
-        return success();
+        return ok();
       })
     );
   };

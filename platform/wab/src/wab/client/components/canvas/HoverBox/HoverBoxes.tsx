@@ -103,12 +103,12 @@ import { ArgsProps } from "antd/lib/notification";
 import cn from "classnames";
 import { throttle } from "lodash";
 import { Observer, observer } from "mobx-react";
+import { ok, Result, safeTry } from "neverthrow";
 import * as React from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "react-use";
 import { useHoverIntent } from "react-use-hoverintent";
 import ResizeObserver from "resize-observer-polyfill";
-import { failable } from "ts-failable";
 
 const HoverBoxInner = memo(HoverBoxInner_);
 
@@ -179,51 +179,46 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
     false
   );
 
-  const mkFreestyleManip = () =>
-    failable<FreestyleManipulator, ManipulatorAbortedError>(
-      ({ success, run }) => {
-        const obj = studioCtx.hoverBoxControlledObj;
-        if (isKnownArenaFrame(obj)) {
-          return success(run(mkFreestyleManipForFocusedFrame(studioCtx, obj)));
-        } else {
-          return success(
-            run(
-              mkFreestyleManipForFocusedDomElt(
-                ensure(
-                  viewCtx,
-                  () =>
-                    `mkFreestyleManip is only called when there's a focused viewCtx`
-                ),
-                obj
-              )
-            )
-          );
-        }
-      }
-    );
+  const mkFreestyleManip = (): Result<
+    FreestyleManipulator,
+    ManipulatorAbortedError
+  > => {
+    const obj = studioCtx.hoverBoxControlledObj;
+    if (isKnownArenaFrame(obj)) {
+      return mkFreestyleManipForFocusedFrame(studioCtx, obj);
+    } else {
+      return mkFreestyleManipForFocusedDomElt(
+        ensure(
+          viewCtx,
+          () => `mkFreestyleManip is only called when there's a focused viewCtx`
+        ),
+        obj
+      );
+    }
+  };
 
   const startResize = (part: Corner | Side) => {
     const maybeManipulator = mkFreestyleManip();
-    maybeManipulator.match({
-      failure: () => {
-        setResizePart(undefined);
-        setManipState(undefined);
-      },
-      success: (manipulator) => {
+    maybeManipulator.match(
+      (manipulator) => {
         studioCtx.startUnlogged();
         studioCtx.isResizeDragging = true;
         setResizePart(part);
         setManipState(manipulator.start());
       },
-    });
+      () => {
+        setResizePart(undefined);
+        setManipState(undefined);
+      }
+    );
   };
 
   const dragResize = async (part: Corner | Side, e: XDraggableEvent) => {
     if (manipState) {
-      const maybeAborted = await studioCtx.change<ManipulatorAbortedError>(
-        ({ success, run }) => {
+      const maybeAborted = await studioCtx.change<ManipulatorAbortedError>(() =>
+        safeTry(function* () {
           setManipState(
-            run(mkFreestyleManip()).resize(manipState, part, {
+            (yield* mkFreestyleManip()).resize(manipState, part, {
               deltaFrameX: Math.round(e.data.deltaX / studioCtx.zoom),
               deltaFrameY: Math.round(e.data.deltaY / studioCtx.zoom),
               shiftKey: e.mouseEvent.shiftKey,
@@ -232,10 +227,10 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
               ctrlKey: e.mouseEvent.ctrlKey,
             })
           );
-          return success();
-        }
+          return ok();
+        })
       );
-      if (maybeAborted.result.isError) {
+      if (maybeAborted.isErr()) {
         await stopResize();
       }
     }
@@ -687,13 +682,13 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                               focusedHeight={state?.height}
                               focusedWidth={state?.width}
                               onDragStart={async (side2, edgeType) => {
-                                await studioCtx.change(({ success }) => {
+                                await studioCtx.change(() => {
                                   if (edgeType === "size") {
                                     startResize(side2);
-                                    return success();
+                                    return ok();
                                   } else {
                                     if (!viewCtx || !controlledSpacingObj) {
-                                      return success();
+                                      return ok();
                                     }
                                     const val = maybe(
                                       controlledSpacingObj,
@@ -705,7 +700,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                         )
                                     );
                                     if (!val) {
-                                      return success();
+                                      return ok();
                                     }
                                     const domElt = ensureArray(
                                       viewCtx.renderState.sel2dom(
@@ -756,7 +751,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                         }
                                       );
                                     }
-                                    return success();
+                                    return ok();
                                   }
                                 });
                               }}
@@ -767,33 +762,36 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                   }
                                   const maybeAborted =
                                     await studioCtx.change<ManipulatorAbortedError>(
-                                      ({ success, run }) => {
-                                        const isVertical2 =
-                                          side2 === "left" || side2 === "right";
-                                        setManipState(
-                                          run(mkFreestyleManip()).resize(
-                                            manipState,
-                                            side2,
-                                            {
-                                              deltaFrameX: isVertical2
-                                                ? (side2 === "left" ? -1 : 1) *
-                                                  Math.round(delta)
-                                                : 0,
-                                              deltaFrameY: isVertical2
-                                                ? 0
-                                                : (side2 === "top" ? -1 : 1) *
-                                                  Math.round(delta),
-                                              shiftKey: mode === "all",
-                                              altKey: mode === "symmetric",
-                                              metaKey: false,
-                                              ctrlKey: false,
-                                            }
-                                          )
-                                        );
-                                        return success();
-                                      }
+                                      () =>
+                                        safeTry(function* () {
+                                          const isVertical2 =
+                                            side2 === "left" ||
+                                            side2 === "right";
+                                          setManipState(
+                                            (yield* mkFreestyleManip()).resize(
+                                              manipState,
+                                              side2,
+                                              {
+                                                deltaFrameX: isVertical2
+                                                  ? (side2 === "left"
+                                                      ? -1
+                                                      : 1) * Math.round(delta)
+                                                  : 0,
+                                                deltaFrameY: isVertical2
+                                                  ? 0
+                                                  : (side2 === "top" ? -1 : 1) *
+                                                    Math.round(delta),
+                                                shiftKey: mode === "all",
+                                                altKey: mode === "symmetric",
+                                                metaKey: false,
+                                                ctrlKey: false,
+                                              }
+                                            )
+                                          );
+                                          return ok();
+                                        })
                                     );
-                                  if (maybeAborted.result.isError) {
+                                  if (maybeAborted.isErr()) {
                                     await stopResize();
                                   }
                                 } else {
@@ -867,11 +865,11 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                 if (edgeType === "size") {
                                   await stopResize();
                                 } else {
-                                  await studioCtx.change(({ success }) => {
+                                  await studioCtx.change(() => {
                                     setSpacingDragState(undefined);
                                     studioCtx.stopUnlogged();
                                     studioCtx.isResizeDragging = false;
-                                    return success();
+                                    return ok();
                                   });
                                   setTimeout(
                                     () => notification.close("spacing"),

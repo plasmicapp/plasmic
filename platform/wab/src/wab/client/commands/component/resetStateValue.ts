@@ -2,6 +2,7 @@ import { Command } from "@/wab/client/commands/types";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getStateVarName } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const resetStateValueCommand: Command<
   {},
@@ -34,11 +35,11 @@ export const resetStateValueCommand: Command<
     return component.states.map((state) => ({ component, state, viewCtx }));
   },
   execute: async (studioCtx, _, { state, viewCtx }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       const initialValue = viewCtx.getStateCurrentInitialValue(state);
       viewCtx.setCanvasStateValue(state, initialValue);
 
-      return success();
+      return ok();
     });
   },
 };

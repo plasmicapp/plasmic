@@ -1,6 +1,4 @@
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
-import { ComponentType } from "@/wab/shared/core/components";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -8,6 +6,9 @@ import {
   getBaseVariant,
   isPrivateStyleVariant,
 } from "@/wab/shared/Variants";
+import { ComponentType } from "@/wab/shared/core/components";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { ok } from "neverthrow";
 
 describe("Fixes post change", () => {
   it("updates component.updatedAt", async () => {
@@ -24,10 +25,10 @@ describe("Fixes post change", () => {
 
     await studioCtx.changeObserved(
       () => [component],
-      ({ success }) => {
+      () => {
         // Change directly on the component
         component.name = "NewButton";
-        return success();
+        return ok();
       }
     );
 
@@ -37,10 +38,10 @@ describe("Fixes post change", () => {
 
     await studioCtx.changeObserved(
       () => [component],
-      ({ success }) => {
+      () => {
         // Directly change the tplTree
         component.tplTree = tpls[0];
-        return success();
+        return ok();
       }
     );
 
@@ -50,10 +51,10 @@ describe("Fixes post change", () => {
 
     await studioCtx.changeObserved(
       () => [component],
-      ({ success }) => {
+      () => {
         // Change the tpl tree by accessing the children only should still update the component
         tpls[0].children = [tpls[1]];
-        return success();
+        return ok();
       }
     );
 
@@ -104,9 +105,9 @@ describe("Fixes post change", () => {
     // Set the grid tpl as the component's tplTree (triggers fixups)
     await studioCtx.changeObserved(
       () => [component],
-      ({ success }) => {
+      () => {
         component.tplTree = gridTpl;
-        return success();
+        return ok();
       }
     );
 

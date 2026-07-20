@@ -51,7 +51,7 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
@@ -118,6 +118,7 @@ import { Dropdown, Input, Menu, Tooltip, notification } from "antd";
 import L, { defer, isArray, sortBy } from "lodash";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export type TplComponentPropCtx = {
@@ -1096,9 +1097,9 @@ function TplComponentNameSection_(props: {
       >
         <a
           onClick={() =>
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               studioCtx.switchToComponentArena(tpl.component);
-              return success();
+              return ok();
             })
           }
         >

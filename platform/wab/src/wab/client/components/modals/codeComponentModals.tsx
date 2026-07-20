@@ -36,9 +36,9 @@ import { Component } from "@/wab/shared/model/classes";
 import { typeDisplayName, typesEqual } from "@/wab/shared/model/model-util";
 import { naturalSort } from "@/wab/shared/sort";
 import { Alert, Form, notification } from "antd";
+import { Result, ok, safeTry } from "neverthrow";
 import * as React from "react";
 import semver from "semver";
-import { failableAsync } from "ts-failable";
 
 type RemapComponentResponse = CodeComponent | "delete";
 
@@ -190,75 +190,71 @@ export async function fixMissingCodeComponents(
   studioCtx: StudioCtx,
   missingComponents: CodeComponent[],
   missingContexts: CodeComponent[]
-) {
-  return failableAsync<void, never>(async ({ success }) => {
-    for (const c of missingComponents) {
-      // Loop until it's fixed
-      let fixed = false;
-      while (!fixed) {
-        fixed = await studioCtx.siteOps().tryRemapCodeComponent(
-          c,
-          <>
-            Code component no longer registered: {getComponentDisplayName(c)} (
-            <code>{c.codeComponentMeta?.importPath}</code>)
-          </>
-        );
-      }
-    }
-
-    for (const c of missingContexts) {
-      spawn(
-        studioCtx.change(
-          ({ success: changeSuccess }) => {
-            arrayRemove(
-              studioCtx.site.globalContexts,
-              studioCtx.site.globalContexts.find((tpl) => tpl.component === c)
-            );
-            studioCtx.siteOps().tryRemoveComponent(c);
-            return changeSuccess();
-          },
-          { noUndoRecord: true }
-        )
+): Promise<Result<void, never>> {
+  for (const c of missingComponents) {
+    // Loop until it's fixed
+    let fixed = false;
+    while (!fixed) {
+      fixed = await studioCtx.siteOps().tryRemapCodeComponent(
+        c,
+        <>
+          Code component no longer registered: {getComponentDisplayName(c)} (
+          <code>{c.codeComponentMeta?.importPath}</code>)
+        </>
       );
     }
-    return success();
-  });
+  }
+
+  for (const c of missingContexts) {
+    spawn(
+      studioCtx.change(
+        () => {
+          arrayRemove(
+            studioCtx.site.globalContexts,
+            studioCtx.site.globalContexts.find((tpl) => tpl.component === c)
+          );
+          studioCtx.siteOps().tryRemoveComponent(c);
+          return ok();
+        },
+        { noUndoRecord: true }
+      )
+    );
+  }
+  return ok();
 }
 
 export async function confirmRemovedCodeComponentVariants(
   removedSelectorsByComponent: [Component, string[]][]
-) {
-  return failableAsync<void, never>(async ({ success }) => {
-    let shouldDelete: boolean | undefined;
-    do {
-      shouldDelete = await confirm({
-        title: "Some code component variants have been removed",
-        message: (
-          <>
-            <p>
-              The following code component variants have been removed. Please
-              confirm that the respective styles to each of those selectors are
-              no longer needed.
-            </p>
-            {removedSelectorsByComponent.map(([comp, selectors]) => (
-              <div key={comp.uuid}>
-                <h3>{getComponentDisplayName(comp)}</h3>
-                <ul>
-                  {selectors.map((selector) => (
-                    <li key={selector}>{selector}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </>
-        ),
-      });
-      // The only option that we have is to delete the associated styles, so we
-      // will just keep prompting until the user agrees to delete them
-    } while (!shouldDelete);
+): Promise<Result<void, never>> {
+  let shouldDelete: boolean | undefined;
+  do {
+    shouldDelete = await confirm({
+      title: "Some code component variants have been removed",
+      message: (
+        <>
+          <p>
+            The following code component variants have been removed. Please
+            confirm that the respective styles to each of those selectors are no
+            longer needed.
+          </p>
+          {removedSelectorsByComponent.map(([comp, selectors]) => (
+            <div key={comp.uuid}>
+              <h3>{getComponentDisplayName(comp)}</h3>
+              <ul>
+                {selectors.map((selector) => (
+                  <li key={selector}>{selector}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </>
+      ),
+    });
+    // The only option that we have is to delete the associated styles, so we
+    // will just keep prompting until the user agrees to delete them
+  } while (!shouldDelete);
 
-    return success();
-  });
+  return ok();
 }
 
 export async function confirmRemovedTokens(removedTokens: StyleToken[]) {
@@ -323,31 +319,28 @@ export async function fixInvalidReactVersion(
   studioCtx: StudioCtx,
   hostLessPkgInfo: HostLessPackageInfo
 ) {
-  return failableAsync<void, never>(async ({ run, success }) => {
+  return safeTry<void, never>(async function* () {
     let shouldDelete: FixReactVersionHostLessPackagesResponse = "delete";
     do {
       shouldDelete = await promptFixReactVersionForHostLessPackages({
         hostLessPkgInfo,
       });
     } while (!shouldDelete);
-    run(
-      await studioCtx.change(({ success: deleteSuccess }) => {
-        const dep = studioCtx.site.projectDependencies.find(
-          (projectDep) =>
-            projectDep.site.hostLessPackageInfo === hostLessPkgInfo
-        );
-        spawn(
-          studioCtx.projectDependencyManager.removeByPkgId(
-            ensure(
-              dep,
-              `didn't find the ${hostLessPkgInfo.name} pkg in the list of project dependencies`
-            ).pkgId
-          )
-        );
-        return deleteSuccess();
-      })
-    );
-    return success();
+    yield* await studioCtx.change(() => {
+      const dep = studioCtx.site.projectDependencies.find(
+        (projectDep) => projectDep.site.hostLessPackageInfo === hostLessPkgInfo
+      );
+      spawn(
+        studioCtx.projectDependencyManager.removeByPkgId(
+          ensure(
+            dep,
+            `didn't find the ${hostLessPkgInfo.name} pkg in the list of project dependencies`
+          ).pkgId
+        )
+      );
+      return ok();
+    });
+    return ok();
   });
 }
 

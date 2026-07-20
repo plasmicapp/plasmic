@@ -19,6 +19,7 @@ import { getDisplayNameOfEventHandlerKey } from "@/wab/shared/core/tpls";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import { notification } from "antd";
 import { when } from "mobx";
+import { ok } from "neverthrow";
 import React from "react";
 
 export function hasLinkedSelectable(x: JQuery, viewCtx: ViewCtx) {
@@ -186,7 +187,7 @@ export function showCanvasPageNavigationNotification(
           <p>
             <LinkButton
               onClick={async () => {
-                await studioCtx.change(({ success }) => {
+                await studioCtx.change(() => {
                   // Update the page param preview values on the page to match.
                   // TODO also handle query params
                   if (maybeFound.component.pageMeta) {
@@ -203,7 +204,7 @@ export function showCanvasPageNavigationNotification(
                   }
 
                   studioCtx.switchToComponentArena(maybeFound.component);
-                  return success();
+                  return ok();
                 });
                 notification.close("navigation-notification");
               }}
@@ -267,9 +268,9 @@ export function trapInteractionError(
         studioCtx.isInteractiveMode = false;
       }
       await studioCtx.setStudioFocusOnTpl(component, tpl);
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         studioCtx.switchRightTab(RightTabKey.settings);
-        return success();
+        return ok();
       });
       studioCtx.highlightInteractionRequested.dispatch({
         eventHandler,

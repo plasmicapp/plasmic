@@ -10,6 +10,7 @@ import { assert, spawn } from "@/wab/shared/common";
 import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 export const FontFamilyTokenEditModal = observer(
@@ -30,12 +31,12 @@ export const FontFamilyTokenEditModal = observer(
     const onChange = (val: string) => {
       assert(val !== undefined);
       spawn(
-        studioCtx.change(({ success }) => {
+        studioCtx.change(() => {
           if (newTokenValueAllowed(token, studioCtx.site, val, vsh)) {
             studioCtx.fontManager.useFont(studioCtx, val);
             vsh.updateToken(token, val);
           }
-          return success();
+          return ok();
         })
       );
     };

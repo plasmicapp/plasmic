@@ -19,6 +19,7 @@ import { TplTag } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 interface ContainerGapMetaElement {
@@ -465,14 +466,14 @@ export const GapControl = observer(function GapControl(props: {
           const newValue = Math.round(
             Math.max(0, dragState.value + fixedDelta)
           );
-          await viewCtx.studioCtx.change(({ success }) => {
+          await viewCtx.studioCtx.change(() => {
             const vtm = viewCtx.variantTplMgr();
             const rsh = vtm.targetRshForNode(tpl);
             rsh.set(
               orient === "vert" ? "column-gap" : "row-gap",
               `${newValue}px`
             );
-            return success();
+            return ok();
           });
         }
       }}

@@ -27,10 +27,10 @@ import { CommentsDialogs } from "@/wab/client/components/comments/CommentsDialog
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
 import { CopilotUiPrompt } from "@/wab/client/components/copilot/CopilotUiPrompt";
 import { DevContainer } from "@/wab/client/components/dev";
+import { ComponentPresetsModal } from "@/wab/client/components/insert-panel/ComponentPresetsModal";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
-import { ComponentPresetsModal } from "@/wab/client/components/insert-panel/ComponentPresetsModal";
 import {
   ComponentOrPageTab,
   StyleTab,
@@ -115,6 +115,7 @@ import $ from "jquery";
 import { throttle } from "lodash";
 import { observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React, { createRef } from "react";
 import { createPortal } from "react-dom";
 import ResizeObserver from "resize-observer-polyfill";
@@ -763,9 +764,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           const styleProps =
             await this.viewOps().getPasteStylePropsFromClipboard();
 
-          await this.props.studioCtx.change(({ success }) => {
+          await this.props.studioCtx.change(() => {
             this.viewOps().pasteStyleClip(styleProps);
-            return success();
+            return ok();
           });
         }),
       PASTE_AS_SIBLING: (e: KeyboardEvent) =>

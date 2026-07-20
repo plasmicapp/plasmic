@@ -8,6 +8,7 @@ import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { waitUntil } from "@/wab/shared/common";
 import { flattenTpls } from "@/wab/shared/core/tpls";
 import { isKnownTplSlot } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export async function addTextElement(studioCtx: StudioCtx) {
   const vc = studioCtx.focusedOrFirstViewCtx();
@@ -18,14 +19,14 @@ export async function addTextElement(studioCtx: StudioCtx) {
   const target = flattenTpls(tplTree).find(
     (tpl) => !isKnownTplSlot(tpl) && tpl.name === "mainTextContainer"
   );
-  await studioCtx.change(({ success }) => {
+  await studioCtx.change(() => {
     vc.viewOps.tryInsertInsertableSpec(
       INSERTABLES_MAP[AddItemKey.text] as AddTplItem,
       InsertRelLoc.append,
       undefined,
       target
     );
-    return success();
+    return ok();
   });
 
   studioCtx.setShowAddDrawer(false);

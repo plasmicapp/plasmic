@@ -1,6 +1,7 @@
 import { getComponentContext } from "@/wab/client/commands/context-utils";
 import { booleanPrompt, Command } from "@/wab/client/commands/types";
 import { Component } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const setTrapFocusCommand: Command<
   {
@@ -24,9 +25,9 @@ export const setTrapFocusCommand: Command<
   },
   context: getComponentContext,
   execute: async (studioCtx, { value }, { component }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       component.trapsFocus = value;
-      return success();
+      return ok();
     });
   },
 };

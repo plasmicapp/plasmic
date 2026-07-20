@@ -23,6 +23,7 @@ import {
   shouldEditAsTemplatedString,
 } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
+import { ok } from "neverthrow";
 
 import { makeDataTokensSubMenu } from "@/wab/client/components/sidebar-tabs/DataBinding/data-tokens-context-menu";
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
@@ -877,7 +878,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     const isExprDefined =
       currentExpr &&
       !(isKnownCustomCode(currentExpr) && currentExpr.code === "undefined");
-    await studioCtx.change(({ success }) => {
+    await studioCtx.change(() => {
       let tokenValue = defaultValue;
       if (isExprDefined) {
         const extractedJson = tryExtractJson(currentExpr);
@@ -891,7 +892,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
       });
       switchToDynamicValue({ token, projectId: studioCtx.siteInfo.id });
       setEditDataToken(token);
-      return success();
+      return ok();
     });
   }
 

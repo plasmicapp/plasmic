@@ -52,6 +52,7 @@ import {
 import { Component, Param, isKnownPropParam } from "@/wab/shared/model/classes";
 import { Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { FaCheck } from "react-icons/fa";
@@ -211,9 +212,9 @@ const PropsLevel = observer(function PropsLevel(props: {
   return (
     <SimpleReorderableList
       onReordered={(fromIndex, toIndex) =>
-        studioCtx.change(({ success }) => {
+        studioCtx.change(() => {
           reorderLevel(component, siblings, fromIndex, toIndex);
-          return success();
+          return ok();
         })
       }
       customDragHandle
@@ -346,7 +347,7 @@ const PropRow = observer(function ParamRow(props: {
                 )}
                 onEdit={(val) =>
                   spawn(
-                    studioCtx.change(({ success }) => {
+                    studioCtx.change(() => {
                       if (val) {
                         const newName = renameFolderLeaf(
                           getParamDisplayName(component, param),
@@ -357,7 +358,7 @@ const PropRow = observer(function ParamRow(props: {
                           .renameParam(component, param, newName);
                         expandAncestorsOf(param);
                       }
-                      return success();
+                      return ok();
                     })
                   )
                 }

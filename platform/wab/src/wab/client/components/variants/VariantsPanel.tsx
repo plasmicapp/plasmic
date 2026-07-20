@@ -91,6 +91,7 @@ import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { Menu } from "antd";
 import sortBy from "lodash/sortBy";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { useSessionStorage } from "react-use";
@@ -200,7 +201,7 @@ export const VariantsPanel = observer(
     };
 
     const addVariantGroup = (optionsType: VariantOptionsType) =>
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         const group = studioCtx
           .tplMgr()
           .createVariantGroup({ component, optionsType });
@@ -210,14 +211,14 @@ export const VariantsPanel = observer(
         } else {
           setJustAddedGroup(group);
         }
-        return success();
+        return ok();
       });
 
     const onRenameVariantGroup = async (
       group: VariantGroup,
       newName: string
     ) => {
-      return studioCtx.change(({ success }) => {
+      return studioCtx.change(() => {
         studioCtx.siteOps().tryRenameVariantGroup(group, newName);
 
         if (justAddedGroup === group && !group.variants.length) {
@@ -230,7 +231,7 @@ export const VariantsPanel = observer(
 
         setJustAddedGroup(undefined);
 
-        return success();
+        return ok();
       });
     };
 
@@ -244,7 +245,7 @@ export const VariantsPanel = observer(
         return (
           <SimpleReorderableList
             onReordered={(fromIndex, toIndex) =>
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 moveVariant({
                   site: studioCtx.site,
                   component,
@@ -252,7 +253,7 @@ export const VariantsPanel = observer(
                   fromIndex,
                   toIndex,
                 });
-                return success();
+                return ok();
               })
             }
             customDragHandle
@@ -294,25 +295,25 @@ export const VariantsPanel = observer(
 
     const handleAddGlobalGroupOfVariants = (e) => {
       globalVariantsSectionRef.current?.expand();
-      return void studioCtx.change(({ success }) => {
+      return void studioCtx.change(() => {
         e.stopPropagation();
         const group = studioCtx.tplMgr().createGlobalVariantGroup();
         setJustAddedGroup(isScreenVariantGroup(group) ? undefined : group);
         setExpandGlobals(true);
-        return success();
+        return ok();
       });
     };
 
     const onClickCombo = (combo) =>
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         vcontroller.onClickCombo(combo);
-        return success();
+        return ok();
       });
 
     const onActivateCombo = (combo) =>
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         vcontroller.onActivateCombo(combo);
-        return success();
+        return ok();
       });
 
     const tplRoot = component.tplTree;
@@ -366,9 +367,9 @@ export const VariantsPanel = observer(
                   : undefined
               }
               onClick={() =>
-                studioCtx.change(({ success }) => {
+                studioCtx.change(() => {
                   vcontroller.onClearVariants();
-                  return success();
+                  return ok();
                 })
               }
               label={"Base"}
@@ -376,14 +377,14 @@ export const VariantsPanel = observer(
 
             <SimpleReorderableList
               onReordered={(fromIndex, toIndex) =>
-                studioCtx.change(({ success }) => {
+                studioCtx.change(() => {
                   moveVariantGroup({
                     site: studioCtx.site,
                     component,
                     fromIndex,
                     toIndex,
                   });
-                  return success();
+                  return ok();
                 })
               }
               customDragHandle
@@ -398,30 +399,30 @@ export const VariantsPanel = observer(
                     group={group}
                     pinState={vcontroller.getPinState(group.variants[0])}
                     onClick={() =>
-                      studioCtx.change(({ success }) => {
+                      studioCtx.change(() => {
                         vcontroller.onClickVariant(group.variants[0]);
-                        return success();
+                        return ok();
                       })
                     }
                     onTarget={
                       canChangeVariants ||
                       vcontroller.canToggleTargeting(group.variants[0])
                         ? (target) =>
-                            studioCtx.change(({ success }) => {
+                            studioCtx.change(() => {
                               vcontroller.onTargetVariant(
                                 group.variants[0],
                                 target
                               );
-                              return success();
+                              return ok();
                             })
                         : undefined
                     }
                     onToggle={
                       canChangeVariants
                         ? () =>
-                            studioCtx.change(({ success }) => {
+                            studioCtx.change(() => {
                               vcontroller.onToggleVariant(group.variants[0]);
-                              return success();
+                              return ok();
                             })
                         : undefined
                     }
@@ -453,30 +454,30 @@ export const VariantsPanel = observer(
                           viewCtx={viewCtx}
                           pinState={vcontroller.getPinState(variant)}
                           onClick={() =>
-                            studioCtx.change(({ success }) => {
+                            studioCtx.change(() => {
                               vcontroller.onClickVariant(variant);
-                              return success();
+                              return ok();
                             })
                           }
                           onTarget={
                             canChangeVariants ||
                             vcontroller.canToggleTargeting(variant)
                               ? (target) =>
-                                  studioCtx.change(({ success }) => {
+                                  studioCtx.change(() => {
                                     vcontroller.onTargetVariant(
                                       variant,
                                       target
                                     );
-                                    return success();
+                                    return ok();
                                   })
                               : undefined
                           }
                           onToggle={
                             canChangeVariants
                               ? () =>
-                                  studioCtx.change(({ success }) => {
+                                  studioCtx.change(() => {
                                     vcontroller.onToggleVariant(variant);
-                                    return success();
+                                    return ok();
                                   })
                               : undefined
                           }
@@ -506,7 +507,7 @@ export const VariantsPanel = observer(
                       : "Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
                   }
                   onAddNewVariant={() =>
-                    studioCtx.change(({ success }) => {
+                    studioCtx.change(() => {
                       isTplCodeComponent(tplRoot)
                         ? studioCtx
                             .siteOps()
@@ -515,7 +516,7 @@ export const VariantsPanel = observer(
                               tplRoot.component.name
                             )
                         : studioCtx.siteOps().createStyleVariant(component);
-                      return success();
+                      return ok();
                     })
                   }
                   isQuiet
@@ -530,27 +531,27 @@ export const VariantsPanel = observer(
                       pinState={vcontroller.getPinState(variant)}
                       onClick={() =>
                         justAddedVariant !== variant &&
-                        studioCtx.change(({ success }) => {
+                        studioCtx.change(() => {
                           vcontroller.onClickVariant(variant);
-                          return success();
+                          return ok();
                         })
                       }
                       onTarget={
                         canChangeVariants ||
                         vcontroller.canToggleTargeting(variant)
                           ? (target) =>
-                              studioCtx.change(({ success }) => {
+                              studioCtx.change(() => {
                                 vcontroller.onTargetVariant(variant, target);
-                                return success();
+                                return ok();
                               })
                           : undefined
                       }
                       onToggle={
                         canChangeVariants
                           ? () =>
-                              studioCtx.change(({ success }) => {
+                              studioCtx.change(() => {
                                 vcontroller.onToggleVariant(variant);
-                                return success();
+                                return ok();
                               })
                           : undefined
                       }
@@ -613,11 +614,11 @@ export const VariantsPanel = observer(
                             icon: <Icon icon={ScreenIcon} />,
                             onClickSettings: () =>
                               spawn(
-                                studioCtx.change(({ success }) => {
+                                studioCtx.change(() => {
                                   studioCtx.switchLeftTab("responsiveness", {
                                     highlight: true,
                                   });
-                                  return success();
+                                  return ok();
                                 })
                               ),
                             dep: studioCtx.projectDependencyManager.getOwnerDep(
@@ -651,32 +652,32 @@ export const VariantsPanel = observer(
                                     viewCtx={viewCtx}
                                     pinState={vcontroller.getPinState(variant)}
                                     onClick={() =>
-                                      studioCtx.change(({ success }) => {
+                                      studioCtx.change(() => {
                                         vcontroller.onClickVariant(variant);
-                                        return success();
+                                        return ok();
                                       })
                                     }
                                     onTarget={
                                       canChangeVariants ||
                                       vcontroller.canToggleTargeting(variant)
                                         ? (target) =>
-                                            studioCtx.change(({ success }) => {
+                                            studioCtx.change(() => {
                                               vcontroller.onTargetVariant(
                                                 variant,
                                                 target
                                               );
-                                              return success();
+                                              return ok();
                                             })
                                         : undefined
                                     }
                                     onToggle={
                                       canChangeVariants
                                         ? () =>
-                                            studioCtx.change(({ success }) => {
+                                            studioCtx.change(() => {
                                               vcontroller.onToggleVariant(
                                                 variant
                                               );
-                                              return success();
+                                              return ok();
                                             })
                                         : undefined
                                     }
@@ -827,33 +828,33 @@ const ComponentVariantRow = observer(function ComponentVariantRow(props: {
         component,
         onRemove: () =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               spawn(studioCtx.siteOps().removeVariant(component, variant));
-              return success();
+              return ok();
             })
           ),
 
         onClone: () =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               studioCtx.tplMgr().cloneVariant(component, variant);
-              return success();
+              return ok();
             })
           ),
 
         onCopyTo: (toVariant) =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               studioCtx.tplMgr().copyToVariant(component, variant, toVariant);
-              return success();
+              return ok();
             })
           ),
 
         onMove: (toGroup) =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               studioCtx.tplMgr().moveVariant(component, variant, toGroup);
-              return success();
+              return ok();
             })
           ),
 
@@ -921,9 +922,9 @@ const GlobalVariantRow = observer(function GlobalVariantRow(props: {
         component,
         onCopyTo: (toVariant) =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               studioCtx.tplMgr().copyToVariant(component, variant, toVariant);
-              return success();
+              return ok();
             })
           ),
         // Splits variants can't be removed independently of the split if it's
@@ -931,9 +932,9 @@ const GlobalVariantRow = observer(function GlobalVariantRow(props: {
         onRemove: !isSplitsVariant
           ? () =>
               spawn(
-                studioCtx.change(({ success }) => {
+                studioCtx.change(() => {
                   spawn(studioCtx.siteOps().removeGlobalVariant(variant));
-                  return success();
+                  return ok();
                 })
               )
           : undefined,
@@ -1003,16 +1004,16 @@ const ComponentStyleVariantRow = observer(
           component,
           onRemove: () =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 spawn(studioCtx.siteOps().removeVariant(component, variant));
-                return success();
+                return ok();
               })
             ),
           onCopyTo: (toVariant) =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx.tplMgr().copyToVariant(component, variant, toVariant);
-                return success();
+                return ok();
               })
             ),
 
@@ -1092,12 +1093,12 @@ const ComponentVariantGroupSection = observer(
             ? undefined
             : () =>
                 studioCtx
-                  .change(({ success }) => {
+                  .change(() => {
                     const variant = studioCtx
                       .tplMgr()
                       .createVariant(component, group);
                     onAddedVariant(variant);
-                    return success();
+                    return ok();
                   })
                   .then(() =>
                     notifyLinkedPropDrift(studioCtx, component, group.param)
@@ -1122,11 +1123,11 @@ const ComponentVariantGroupSection = observer(
           onToggleMulti: () =>
             spawn(
               studioCtx
-                .change(({ success }) => {
+                .change(() => {
                   studioCtx
                     .siteOps()
                     .updateVariantGroupMulti(group, !group.multi);
-                  return success();
+                  return ok();
                 })
                 .then(() =>
                   notifyLinkedPropDrift(studioCtx, component, group.param)
@@ -1135,9 +1136,9 @@ const ComponentVariantGroupSection = observer(
 
           onRemove: () =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 spawn(studioCtx.siteOps().removeVariantGroup(component, group));
-                return success();
+                return ok();
               })
             ),
 
@@ -1147,11 +1148,11 @@ const ComponentVariantGroupSection = observer(
               "Variant group is expected to have linked state"
             );
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx.siteOps().updateState(state, {
                   accessType,
                 });
-                return success();
+                return ok();
               })
             );
           },
@@ -1160,7 +1161,7 @@ const ComponentVariantGroupSection = observer(
 
           onEditDynamicValue: () => {
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 if (!group.param.defaultExpr) {
                   group.param.defaultExpr = new ObjectPath({
                     path: ["undefined"],
@@ -1168,16 +1169,16 @@ const ComponentVariantGroupSection = observer(
                   });
                 }
                 setVisibleDataPicker(true);
-                return success();
+                return ok();
               })
             );
           },
 
           onRemoveDynamicValue: () => {
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 group.param.defaultExpr = null;
-                return success();
+                return ok();
               })
             );
           },
@@ -1240,13 +1241,13 @@ const GlobalVariantGroupSection = observer(
         onAddNewVariant={
           !isSplitsGroup
             ? () =>
-                studioCtx.change(({ success }) => {
+                studioCtx.change(() => {
                   const variant = studioCtx.tplMgr().createGlobalVariant(group);
                   if (isScreenVariantGroup(group)) {
                     variant.mediaQuery = new ScreenSizeSpec(0).query();
                   }
                   onAddedVariant(variant);
-                  return success();
+                  return ok();
                 })
             : undefined
         }
@@ -1254,19 +1255,19 @@ const GlobalVariantGroupSection = observer(
           group,
           onToggleMulti: () =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx
                   .siteOps()
                   .updateVariantGroupMulti(group, !group.multi);
-                return success();
+                return ok();
               })
             ),
 
           onRemove: () =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 spawn(studioCtx.siteOps().removeGlobalVariantGroup(group));
-                return success();
+                return ok();
               })
             ),
 

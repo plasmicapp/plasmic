@@ -24,6 +24,7 @@ import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 interface KeyFrameStopsProps {
@@ -78,11 +79,11 @@ const KeyFrameStops_ = (props: KeyFrameStopsProps) => {
 
   const handleChange = (f: () => any) => {
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         f();
         // Sort keyframes by percentage after any change
         sequence.keyframes.sort((a, b) => a.percentage - b.percentage);
-        return success();
+        return ok();
       })
     );
   };

@@ -1,5 +1,11 @@
-import { cx, filterFalsy, spawn, tuple, withoutNils } from "@/wab/shared/common";
 import { ReadablePromise } from "@/wab/commons/control";
+import {
+  cx,
+  filterFalsy,
+  spawn,
+  tuple,
+  withoutNils,
+} from "@/wab/shared/common";
 import { assignIn, groupBy, isFunction, isNil } from "lodash";
 import React, { SyntheticEvent, useState } from "react";
 
@@ -232,9 +238,7 @@ export function combineProps(...propss: { [prop: string]: any }[]) {
   });
 }
 
-export function useReadablePromise<T, Err = Error>(
-  rp: ReadablePromise<T, Err>
-) {
+export function useReadablePromise<T, E = Error>(rp: ReadablePromise<T, E>) {
   const [result, setResult] = useState(rp.result);
   spawn(rp.promise.then(() => setResult(rp.result)));
   return result;

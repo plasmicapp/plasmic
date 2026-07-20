@@ -5,6 +5,7 @@ import {
   stringPrompt,
 } from "@/wab/client/commands/types";
 import { Arena, ComponentArena, PageArena } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export interface RenameArenaProps {
   newName: string;
@@ -31,9 +32,9 @@ export const renameArenaCommand: Command<RenameArenaProps> = {
     return [{}];
   },
   execute: async (studioCtx, args) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       studioCtx.siteOps().tryRenameArenas([args]);
-      return success();
+      return ok();
     });
   },
 };

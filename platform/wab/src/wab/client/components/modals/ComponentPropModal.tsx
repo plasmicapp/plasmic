@@ -67,6 +67,7 @@ import { smartHumanize } from "@/wab/shared/strs";
 import { ChoiceObject, ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
 import { Menu, notification } from "antd";
 import { isNaN } from "lodash";
+import { ok } from "neverthrow";
 import pluralize from "pluralize";
 import React from "react";
 
@@ -339,10 +340,10 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
               To review all issues, go to the
               <a
                 onClick={async () => {
-                  await studioCtx.change(({ success }) => {
+                  await studioCtx.change(() => {
                     studioCtx.switchLeftTab("lint", { highlight: true });
                     notification.close(key);
-                    return success();
+                    return ok();
                   });
                 }}
               >
@@ -368,7 +369,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
       .tplMgr()
       .getUniqueParamName(component, paramName, existingParam);
 
-    await studioCtx.change(({ success }) => {
+    await studioCtx.change(() => {
       const isLocalizableVal =
         paramType === "text" && isLocalizationEnabled ? isLocalizable : false;
 
@@ -385,7 +386,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
         existingParam.previewExpr = previewExpr && clone(previewExpr);
         existingParam.isLocalizable = isLocalizableVal;
         onFinish(existingParam);
-        return success();
+        return ok();
       } else {
         assert(
           !isKnownRenderableType(newParamType) &&
@@ -404,7 +405,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
         });
         component.params.push(param);
         onFinish(param);
-        return success();
+        return ok();
       }
     });
     if (existingParam && isOptionsType(newParamType)) {

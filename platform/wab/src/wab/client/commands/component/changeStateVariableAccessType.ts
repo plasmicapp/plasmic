@@ -7,6 +7,7 @@ import {
   StateAccessType,
 } from "@/wab/shared/core/states";
 import { State } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const changeStateVariableAccessTypeCommand: Command<
   {
@@ -36,13 +37,13 @@ export const changeStateVariableAccessTypeCommand: Command<
   },
   context: getComponentStatesContext,
   execute: async (studioCtx, { accessType }, { state }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       if (accessType) {
         studioCtx.siteOps().updateState(state, {
           accessType,
         });
       }
-      return success();
+      return ok();
     });
   },
 };

@@ -38,9 +38,9 @@ import {
 import { ComponentRegistration } from "@plasmicapp/host";
 import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { type GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
+import { ok } from "neverthrow";
 import path from "path";
 import React from "react";
-import { failable, failableAsync } from "ts-failable";
 
 let componentsUpdatingSlotContents = new WeakSet<CodeComponent>();
 
@@ -49,29 +49,25 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
     componentsUpdatingSlotContents = new WeakSet();
   },
   onMissingCodeComponents: async (_ctx, missingComponents, missingContexts) =>
-    failableAsync(async ({ success }) =>
-      // Not using `failure` because it should be a fatal error anyways
-      success(
-        assert(
-          [...missingComponents, ...missingContexts].filter(
-            (c) => !isBuiltinCodeComponent(c)
-          ).length === 0,
-          () =>
-            "Hostless package removed components " +
-            [...missingComponents, ...missingContexts]
-              .map((c) => c.name)
-              .join(", ")
-        )
+    // Not using `err` because it should be a fatal error anyways
+    ok(
+      assert(
+        [...missingComponents, ...missingContexts].filter(
+          (c) => !isBuiltinCodeComponent(c)
+        ).length === 0,
+        () =>
+          "Hostless package removed components " +
+          [...missingComponents, ...missingContexts]
+            .map((c) => c.name)
+            .join(", ")
       )
     ),
   onInvalidReactVersion: async (_ctx, hostLessPkgInfo) =>
-    failableAsync(async ({ success }) =>
-      // Not using `failure` because it should be a fatal error anyways
-      success(
-        assert(
-          false,
-          `${hostLessPkgInfo.name} requires a React version >= ${hostLessPkgInfo.minimumReactVersion}. Current version is ${React.version}`
-        )
+    // Not using `err` because it should be a fatal error anyways
+    ok(
+      assert(
+        false,
+        `${hostLessPkgInfo.name} requires a React version >= ${hostLessPkgInfo.minimumReactVersion}. Current version is ${React.version}`
       )
     ),
   onInvalidComponentImportNames: (components) =>
@@ -94,10 +90,10 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
           "Missing code component " + c.name
         );
         const maybeError = compareComponentPropsWithMeta(ctx.site, c, meta);
-        if (maybeError.result.isError) {
-          throw maybeError.result.error;
+        if (maybeError.isErr()) {
+          throw maybeError.error;
         }
-        const diff = maybeError.result.value;
+        const diff = maybeError.value;
         return {
           component: c,
           ...diff,
@@ -203,23 +199,23 @@ export async function createSiteForHostlessProject(
     site.components.filter(isCodeComponent).forEach((c) => {
       const meta = componentToMeta.get(c)!;
       const newProps = getNewProps(site, c, meta);
-      if (!newProps.result.isError) {
-        c.params = newProps.result.value.newProps;
+      if (!newProps.isErr()) {
+        c.params = newProps.value.newProps;
         attachRenderableTplSlots(c);
       } else {
-        throw newProps.result.error;
+        throw newProps.error;
       }
 
       const newStates = compareComponentStatesWithMeta(site, c, meta);
-      if (!newStates.result.isError) {
+      if (!newStates.isErr()) {
         // Only need to deal with addedStates, since we're creating a fresh component
-        newStates.result.value.addedStates.forEach((state) => {
+        newStates.value.addedStates.forEach((state) => {
           addComponentState(site, c, state);
           writeable(state.param).state = state;
           ensureKnownPropParam(state.onChangeParam);
         });
       } else {
-        throw newStates.result.error;
+        throw newStates.error;
       }
 
       const slotContents = extractDefaultSlotContents(meta);
@@ -310,7 +306,7 @@ export async function updateHostlessPackage(
 
     const result = await syncCodeComponents(
       {
-        change: async (f) => failable((args) => f(args)),
+        change: async (f) => f(),
         observeComponents: (_) => true,
         codeComponentsRegistry: new CodeComponentsRegistry(
           globalThis,
@@ -324,8 +320,8 @@ export async function updateHostlessPackage(
       ccServerCallbackFns,
       { force: true }
     );
-    if (result.result.isError) {
-      throw result.result.error;
+    if (result.isErr()) {
+      throw result.error;
     }
 
     // Delete global contexts from imported packages

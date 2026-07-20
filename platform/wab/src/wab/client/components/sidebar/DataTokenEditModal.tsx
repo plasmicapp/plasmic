@@ -19,6 +19,7 @@ import { customCode, stripParens } from "@/wab/shared/core/exprs";
 import { DataToken } from "@/wab/shared/model/classes";
 import { isNil } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 /**
@@ -115,9 +116,9 @@ export const DataTokenEditModal = observer(function DataTokenEditModal(props: {
                 token
               ),
             ],
-            ({ success }) => {
+            () => {
               studioCtx.tplMgr().renameDataToken(projectId, token, name);
-              return success();
+              return ok();
             }
           );
         }}

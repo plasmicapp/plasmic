@@ -53,8 +53,8 @@ import { Dictionary, memoize, once } from "lodash";
 import type { IObservableArray, Lambda } from "mobx";
 import type { IAtom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
 import moment from "moment";
+import { Err, Ok, Result, err, ok } from "neverthrow";
 import defaultReact from "react";
-import { IFailable, failable } from "ts-failable";
 
 export interface ChangeNode {
   readonly inst: ObjInst;
@@ -1479,7 +1479,7 @@ export interface IChangeRecorder {
   getRefsToInst(inst: ObjInst, all?: boolean): ObjInst[];
   getChangesSoFar(): ModelChange[];
   withRecording(f: () => void): RecordedChanges;
-  withRecording<E>(f: () => IFailable<void, E>): IFailable<RecordedChanges, E>;
+  withRecording<E>(f: () => Result<void, E>): Result<RecordedChanges, E>;
   dispose(): void;
   setExtraListener(newListener: (change: ModelChange) => void): void;
   maybeObserveComponents(
@@ -1670,8 +1670,10 @@ export class ChangeRecorder implements IChangeRecorder {
   }
 
   withRecording(f: () => void): RecordedChanges;
-  withRecording<E>(f: () => IFailable<void, E>): IFailable<RecordedChanges, E>;
-  withRecording<E>(f: () => void | IFailable<void, E>) {
+  withRecording<E>(f: () => Result<void, E>): Result<RecordedChanges, E>;
+  withRecording<E>(
+    f: () => void | Result<void, E>
+  ): RecordedChanges | Result<RecordedChanges, E> {
     this._isRecording = true;
     const onError = () => {
       // If an error happens, undo the model changes to avoid invalid states.
@@ -1686,22 +1688,20 @@ export class ChangeRecorder implements IChangeRecorder {
         this.prune();
         return res;
       };
-      if (maybeResult && maybeResult.result) {
-        return failable<RecordedChanges, E>(({ success, failure }) => {
-          if (maybeResult.result.isError) {
-            const err = maybeResult.result.error;
+      if (maybeResult instanceof Ok || maybeResult instanceof Err) {
+        if (maybeResult.isErr()) {
+          const error = maybeResult.error;
+          onError();
+          return err(error);
+        } else {
+          try {
+            // succeeded() (which does prune()) may itself fail
+            return ok(succeeded());
+          } catch (err2) {
             onError();
-            return failure(err);
-          } else {
-            try {
-              // succeeded() (which does prune()) may itself fail
-              return success(succeeded());
-            } catch (err2) {
-              onError();
-              return failure(err2);
-            }
+            return err(err2);
           }
-        });
+        }
       } else {
         return succeeded();
       }
@@ -1755,18 +1755,17 @@ export class FakeChangeRecorder implements IChangeRecorder {
     return [] as ModelChange[];
   }
   withRecording(f: () => void): RecordedChanges;
-  withRecording<E>(f: () => IFailable<void, E>): IFailable<RecordedChanges, E>;
-  withRecording<E>(f: () => void | IFailable<void, E>) {
+  withRecording<E>(f: () => Result<void, E>): Result<RecordedChanges, E>;
+  withRecording<E>(
+    f: () => void | Result<void, E>
+  ): RecordedChanges | Result<RecordedChanges, E> {
     const maybeResult = f();
-    if (maybeResult && maybeResult.result) {
-      return failable<RecordedChanges, E>(({ success, failure }) => {
-        if (maybeResult.result.isError) {
-          const err = maybeResult.result.error;
-          return failure(err);
-        } else {
-          return success(emptyRecordedChanges());
-        }
-      });
+    if (maybeResult instanceof Ok || maybeResult instanceof Err) {
+      if (maybeResult.isErr()) {
+        return err(maybeResult.error);
+      } else {
+        return ok(emptyRecordedChanges());
+      }
     } else {
       return emptyRecordedChanges();
     }

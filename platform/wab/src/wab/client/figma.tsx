@@ -44,6 +44,10 @@ import {
   wrapTplNodes,
 } from "@/wab/client/figma-importer/utils";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
+import { FrameViewMode, isMixedArena } from "@/wab/shared/Arenas";
+import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   crunch,
   ensure,
@@ -53,23 +57,28 @@ import {
   uniqueName,
   withoutNilTuples,
 } from "@/wab/shared/common";
-import { unwrap } from "@/wab/commons/failable-utils";
+import {
+  GlobalVariantFrame,
+  RootComponentVariantFrame,
+} from "@/wab/shared/component-frame";
 import {
   ComponentType,
   isContextCodeComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
-import { parseCssNumericNew } from "@/wab/shared/css";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
-import { FrameViewMode, isMixedArena } from "@/wab/shared/Arenas";
-import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
-import { toVarName } from "@/wab/shared/codegen/util";
 import {
-  GlobalVariantFrame,
-  RootComponentVariantFrame,
-} from "@/wab/shared/component-frame";
+  flattenTpls,
+  isTplNamable,
+  isTplVariantable,
+  mkTplComponentX,
+  mkTplTagX,
+  TplTagType,
+  trackComponentRoot,
+} from "@/wab/shared/core/tpls";
+import { parseCssNumericNew } from "@/wab/shared/css";
 import { ARENA_LOWER } from "@/wab/shared/Labels";
 import {
   ensureKnownTplTag,
@@ -83,17 +92,9 @@ import {
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { WaitForClipError } from "@/wab/shared/UserError";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import {
-  flattenTpls,
-  isTplNamable,
-  isTplVariantable,
-  mkTplComponentX,
-  mkTplTagX,
-  TplTagType,
-  trackComponentRoot,
-} from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import { isString } from "lodash";
+import { ok } from "neverthrow";
 import React from "react";
 import { Matrix } from "transformation-matrix";
 
@@ -144,7 +145,7 @@ export async function pasteFromFigma(
     return {
       handled: true,
       success: unwrap(
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           const maybeNode = tplNodeFromFigmaData(
             studioCtx,
             vc.variantTplMgr(),
@@ -166,13 +167,13 @@ export async function pasteFromFigma(
               ]).forEach((usage) =>
                 studioCtx.fontManager.useFont(studioCtx, usage.fontFamily)
               );
-              return success(true);
+              return ok(true);
             } else {
-              return success(false);
+              return ok(false);
             }
           } else {
             showFigmaError();
-            return success(false);
+            return ok(false);
           }
         })
       ),
@@ -193,7 +194,7 @@ export async function pasteFromFigma(
     return {
       handled: true,
       success: unwrap(
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           const newComponent = studioCtx
             .tplMgr()
             .addComponent({ type: ComponentType.Frame });
@@ -224,7 +225,7 @@ export async function pasteFromFigma(
               pruneUnnamedComponent: true,
             });
             showFigmaError();
-            return success(false);
+            return ok(false);
           }
           newComponent.tplTree = maybeNode;
           trackComponentRoot(newComponent);
@@ -265,7 +266,7 @@ export async function pasteFromFigma(
           ]).forEach((usage) =>
             studioCtx.fontManager.useFont(studioCtx, usage.fontFamily)
           );
-          return success(true);
+          return ok(true);
         })
       ),
     };

@@ -1,9 +1,3 @@
-import {
-  allSuccess,
-  firstResult,
-  mapAllSuccess,
-  mapSomeSuccess,
-} from "@/wab/commons/failable-utils";
 import { DeepReadonly } from "@/wab/commons/types";
 import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
 import {
@@ -35,7 +29,7 @@ import {
 } from "@/wab/shared/model/model-meta";
 import { conformsToType } from "@/wab/shared/model/model-util";
 import { flatten, isArray, isEmpty, isNil, isObject, uniq } from "lodash";
-import { IFailable, failable } from "ts-failable";
+import { Result, err, ok } from "neverthrow";
 
 export type { Bundle, BundledInst };
 
@@ -280,109 +274,107 @@ export function checkRefsInBundle(
 export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
   const map = bundle.map || {};
 
-  function checkType(value: any, tp: Type): IFailable<true, string> {
-    return failable<true, string>(({ success, failure }) => {
-      switch (tp.type) {
-        case "String":
-          return typeof value === "string"
-            ? success(true)
-            : failure(`${value} is not a string`);
-        case "StringLiteral":
-          return value === tp.params[0]
-            ? success(true)
-            : failure(
-                `${value} is not a string literal ${JSON.stringify(
-                  tp.params[0]
-                )}`
-              );
-        case "Number":
-          return typeof value === "number"
-            ? success(true)
-            : failure(`${value} is not a number`);
-        case "Bool":
-          return typeof value === "boolean"
-            ? success(true)
-            : failure(`${value} is not a boolean`);
-        case "List":
-        case "Set":
-          if (!Array.isArray(value)) {
-            return failure(`${value} is not an array`);
-          }
-          return firstResult(
-            mapAllSuccess(value, (item) =>
-              checkType(item, ensureInstance(tp.params[0], Type))
-            )
-          );
-        case "Lit":
-          return ["number", "string"].includes(typeof value) ||
-            value === null ||
-            value === undefined
-            ? success(true)
-            : failure(`Lit must be number, string, null or undefined`);
-        case "Optional":
-          if (value !== null && value !== undefined) {
-            return checkType(value, ensureInstance(tp.params[0], Type));
-          } else {
-            return success(true);
-          }
-        case "Map":
-          if (!isLiteralObject(value)) {
-            return failure(`${value} is not a plain object`);
-          }
-          return firstResult(
-            mapAllSuccess(Array.from(Object.entries(value)), (pair) =>
-              firstResult(
-                allSuccess(
-                  checkType(pair[0], ensureInstance(tp.params[0], Type)),
-                  checkType(pair[1], ensureInstance(tp.params[1], Type))
-                )
-              )
-            )
-          );
-        case "Or":
-          return mapSomeSuccess(tp.params, (p) =>
-            checkType(value, ensureInstance(p, Type))
-          ).mapError(
-            () =>
-              `${JSON.stringify(value)} ${
-                typeof value === "object" &&
-                value &&
-                "__ref" in value &&
-                map[value.__ref]
-                  ? `(${map[value.__ref].__type}) `
-                  : ""
-              }does not match any of the types ${tp.params.map((p) =>
-                toTs(ensureInstance(p, Type))
-              )}`
-          );
-        case "Any":
-          return success(true);
-        default: {
-          if (isXref(value)) {
-            // TODO: We do not validate xrefs at the moment.
-            return success(true);
-          }
-
-          const refType = map[value.__ref]?.__type;
-
-          const refCls = meta.clsByName[refType];
-          if (!refCls) {
-            return failure(
-              `${JSON.stringify(map[value.__ref])} (referenced by (${
-                tp.type
-              }): ${JSON.stringify(value)}) has unknown type "${refType}"`
+  function checkType(value: any, tp: Type): Result<true, string> {
+    switch (tp.type) {
+      case "String":
+        return typeof value === "string"
+          ? ok(true)
+          : err(`${value} is not a string`);
+      case "StringLiteral":
+        return value === tp.params[0]
+          ? ok(true)
+          : err(
+              `${value} is not a string literal ${JSON.stringify(tp.params[0])}`
             );
-          }
-          const tpCls = ensure(
-            meta.clsByName[tp.type],
-            () => `Couldn't find class by name ${tp.type}`
-          );
-          return meta.isSubclass(refCls, tpCls)
-            ? success(true)
-            : failure(`Wrong type (got ${refType}, want ${tp.type})`);
+      case "Number":
+        return typeof value === "number"
+          ? ok(true)
+          : err(`${value} is not a number`);
+      case "Bool":
+        return typeof value === "boolean"
+          ? ok(true)
+          : err(`${value} is not a boolean`);
+      case "List":
+      case "Set":
+        if (!Array.isArray(value)) {
+          return err(`${value} is not an array`);
         }
+        return Result.combine(
+          value.map((item) =>
+            checkType(item, ensureInstance(tp.params[0], Type))
+          )
+        ).map(() => true);
+      case "Lit":
+        return ["number", "string"].includes(typeof value) ||
+          value === null ||
+          value === undefined
+          ? ok(true)
+          : err(`Lit must be number, string, null or undefined`);
+      case "Optional":
+        if (value !== null && value !== undefined) {
+          return checkType(value, ensureInstance(tp.params[0], Type));
+        } else {
+          return ok(true);
+        }
+      case "Map":
+        if (!isLiteralObject(value)) {
+          return err(`${value} is not a plain object`);
+        }
+        return Result.combine(
+          Array.from(Object.entries(value)).map((pair) =>
+            Result.combine([
+              checkType(pair[0], ensureInstance(tp.params[0], Type)),
+              checkType(pair[1], ensureInstance(tp.params[1], Type)),
+            ]).map(() => true)
+          )
+        ).map(() => true);
+      case "Or": {
+        const orResults = tp.params.map((p) =>
+          checkType(value, ensureInstance(p, Type))
+        );
+        return (
+          orResults.find((r) => r.isOk()) ??
+          err(
+            `${JSON.stringify(value)} ${
+              typeof value === "object" &&
+              value &&
+              "__ref" in value &&
+              map[value.__ref]
+                ? `(${map[value.__ref].__type}) `
+                : ""
+            }does not match any of the types ${tp.params.map((p) =>
+              toTs(ensureInstance(p, Type))
+            )}`
+          )
+        );
       }
-    });
+      case "Any":
+        return ok(true);
+      default: {
+        if (isXref(value)) {
+          // TODO: We do not validate xrefs at the moment.
+          return ok(true);
+        }
+
+        const refType = map[value.__ref]?.__type;
+
+        const refCls = meta.clsByName[refType];
+        if (!refCls) {
+          return err(
+            `${JSON.stringify(map[value.__ref])} (referenced by (${
+              tp.type
+            }): ${JSON.stringify(value)}) has unknown type "${refType}"`
+          );
+        }
+        const tpCls = ensure(
+          meta.clsByName[tp.type],
+          () => `Couldn't find class by name ${tp.type}`
+        );
+        return meta.isSubclass(refCls, tpCls)
+          ? ok(true)
+          : err(`Wrong type (got ${refType}, want ${tp.type})`);
+      }
+    }
   }
 
   const errors: Array<{
@@ -413,11 +405,11 @@ export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
     const fields = meta.allFields(cls);
     for (const field of fields) {
       const checkResult = checkType(obj[field.name], field.type);
-      if (checkResult.result.isError) {
+      if (checkResult.isErr()) {
         errors.push({
           iid,
           field: field.name,
-          error: new Error(checkResult.result.error),
+          error: new Error(checkResult.error),
         });
       }
     }

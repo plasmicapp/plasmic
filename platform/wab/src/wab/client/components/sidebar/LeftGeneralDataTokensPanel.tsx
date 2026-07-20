@@ -58,6 +58,7 @@ import { DataToken, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { debounce, groupBy } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 // Data Token Controls Context
@@ -175,14 +176,14 @@ const LeftGeneralDataTokensPanel = observer(
       async (type: DataTokenType, folderName?: string) => {
         const folderPath = getFolderWithSlash(folderName);
 
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           const token = studioCtx.tplMgr().addDataToken({
             prefix: folderPath,
             value: dataTypes[type].defaultSerializedValue,
           });
           setJustAdded(token);
           setEditToken(new MutableToken(token));
-          return success();
+          return ok();
         });
       },
       [studioCtx, setJustAdded, setEditToken]
@@ -264,11 +265,11 @@ const LeftGeneralDataTokensPanel = observer(
 
     const onDuplicate = React.useCallback(
       async (token: DataToken) => {
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           const newToken = studioCtx.tplMgr().duplicateDataToken(token);
           setJustAdded(newToken);
           setEditToken(new MutableToken(newToken));
-          return success();
+          return ok();
         });
       },
       [studioCtx, setJustAdded, setEditToken]

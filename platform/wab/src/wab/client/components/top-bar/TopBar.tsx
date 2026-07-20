@@ -1,4 +1,5 @@
 /** @format */
+
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
@@ -38,6 +39,7 @@ import {
 import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import { Menu, Tooltip, notification } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 import useSWR from "swr";
 
@@ -190,9 +192,9 @@ function _TopBar({ preview }: TopBarProps) {
                       key="cleanup"
                       onClick={() => {
                         spawn(
-                          studioCtx.change(({ success }) => {
+                          studioCtx.change(() => {
                             studioCtx.tplMgr().cleanRedundantOverrides();
-                            return success();
+                            return ok();
                           })
                         );
                         notification.info({
@@ -208,14 +210,14 @@ function _TopBar({ preview }: TopBarProps) {
                       key="prune-images"
                       onClick={async () => {
                         spawn(
-                          studioCtx.change(({ success }) => {
+                          studioCtx.change(() => {
                             const pruned = pruneUnusedImageAssets(
                               studioCtx.site
                             );
                             notification.success({
                               message: `Pruned ${pruned.size} assets`,
                             });
-                            return success();
+                            return ok();
                           })
                         );
                       }}
@@ -228,7 +230,7 @@ function _TopBar({ preview }: TopBarProps) {
                       key="cleanup-invisible"
                       onClick={async () => {
                         spawn(
-                          studioCtx.change(({ success }) => {
+                          studioCtx.change(() => {
                             const result = studioCtx
                               .tplMgr()
                               .lintElementVisibilities({
@@ -244,7 +246,7 @@ function _TopBar({ preview }: TopBarProps) {
                                 Object.keys(result.changesByComponent).length
                               }`,
                             });
-                            return success();
+                            return ok();
                           })
                         );
                       }}

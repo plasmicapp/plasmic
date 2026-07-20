@@ -44,6 +44,7 @@ import $ from "jquery";
 import L from "lodash";
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMountedState, useUnmount } from "react-use";
@@ -386,9 +387,9 @@ export const CanvasFrame = observer(function CanvasFrame({
       return;
     }
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         studioCtx.setStudioFocusOnFrame({ frame: arenaFrame });
-        return success();
+        return ok();
       })
     );
   }, [studioCtx]);
@@ -397,9 +398,9 @@ export const CanvasFrame = observer(function CanvasFrame({
       return;
     }
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         studioCtx.setStudioFocusOnlyOnFrame(arenaFrame);
-        return success();
+        return ok();
       })
     );
   }, [studioCtx]);
@@ -439,13 +440,13 @@ export const CanvasFrame = observer(function CanvasFrame({
   };
 
   const stopMove = async () => {
-    await studioCtx.change(({ success }) => {
+    await studioCtx.change(() => {
       if (dragMoveManager.current) {
         dragMoveManager.current.endDrag();
         dragMoveManager.current = undefined;
       }
       studioCtx.setIsDraggingObject(false);
-      return success();
+      return ok();
     });
   };
 

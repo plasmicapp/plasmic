@@ -4,7 +4,8 @@ import {
   PasteResult,
 } from "@/wab/client/clipboard/common";
 import { maybeUploadImage, ResizableImage } from "@/wab/client/dom-utils";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
+import { ok } from "neverthrow";
 
 export async function pasteImage(
   image: ResizableImage,
@@ -23,13 +24,13 @@ export async function pasteImage(
   return {
     handled: true,
     success: unwrap(
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         const asset = studioCtx.siteOps().createImageAsset(imageResult, opts);
         const node = viewCtx.variantTplMgr().mkTplImage({
           asset: asset.asset,
           iconColor: asset.iconColor,
         });
-        return success(
+        return ok(
           viewCtx.viewOps.pasteNode(
             node,
             cursorClientPt,

@@ -4,6 +4,7 @@ import { createComponentState } from "@/wab/client/operations/create-component-s
 import { assert } from "@/wab/shared/common";
 import { DEFAULT_STATE_VARIABLE_NAME } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const addNewStateVariableCommand: Command<
   {},
@@ -23,7 +24,7 @@ export const addNewStateVariableCommand: Command<
   },
   context: getComponentContext,
   execute: async (studioCtx, _, { component }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       const result = createComponentState({
         site: studioCtx.site,
         component,
@@ -32,7 +33,7 @@ export const addNewStateVariableCommand: Command<
       });
       assert(result.result === "success", "Failed to create state variable");
 
-      return success(result.state);
+      return ok(result.state);
     });
   },
 };

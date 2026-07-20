@@ -28,6 +28,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { renameDollarFunctions } from "@/wab/shared/refactoring";
 import { naturalSort } from "@/wab/shared/sort";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 type RemapFunctionResponse = CustomFunction | "delete";
@@ -236,7 +237,7 @@ export async function updateSiteCustomFunctions(props: {
     ]);
 
   await ctx.change(
-    ({ success }) => {
+    () => {
       // Add new functions first, so they can be used for remapping
       for (const customFunction of newFunctions) {
         site.customFunctions.push(customFunction);
@@ -308,7 +309,7 @@ export async function updateSiteCustomFunctions(props: {
           }
         });
       });
-      return success();
+      return ok();
     },
     { noUndoRecord: true }
   );

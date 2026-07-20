@@ -7,8 +7,8 @@ import {
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, spawn } from "@/wab/shared/common";
 import { VariantPinState } from "@/wab/shared/PinManager";
+import { ensure, spawn } from "@/wab/shared/common";
 import {
   Component,
   ComponentVariantGroup,
@@ -16,6 +16,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
@@ -86,40 +87,40 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
           spawn(studioCtx.siteOps().removeVariantGroup(component, props.group)),
         onClone: () =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               const newVariantGroup = tplMgr.cloneVariantGroup(
                 component,
                 props.group
               );
               props.onClone?.(newVariantGroup);
-              return success();
+              return ok();
             })
           ),
         onCopyTo: (toVariant) =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               tplMgr.copyToVariant(
                 component,
                 props.group.variants[0],
                 toVariant
               );
-              return success();
+              return ok();
             })
           ),
         onMove: (toGroup) =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               tplMgr.moveVariant(component, props.group.variants[0], toGroup);
-              return success();
+              return ok();
             })
           ),
         onRename: () =>
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               if (ref.current) {
                 ref.current.setEditing(true);
               }
-              return success();
+              return ok();
             })
           ),
         onChangeAccessType: (accessType) => {
@@ -128,17 +129,17 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
             "Variant group is expected to have linked state"
           );
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               studioCtx.siteOps().updateState(state, {
                 accessType,
               });
-              return success();
+              return ok();
             })
           );
         },
         onEditDynamicValue: () => {
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               if (!props.group.param.defaultExpr) {
                 props.group.param.defaultExpr = new ObjectPath({
                   path: ["undefined"],
@@ -146,16 +147,16 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
                 });
               }
               setVisibleDataPicker(true);
-              return success();
+              return ok();
             })
           );
         },
 
         onRemoveDynamicValue: () => {
           spawn(
-            studioCtx.change(({ success }) => {
+            studioCtx.change(() => {
               props.group.param.defaultExpr = null;
-              return success();
+              return ok();
             })
           );
         },

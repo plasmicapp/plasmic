@@ -57,7 +57,7 @@ import { extractDataCtx } from "@/wab/client/state-management/interactions-meta"
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import {
   StudioPropType,

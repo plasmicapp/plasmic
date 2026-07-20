@@ -151,6 +151,7 @@ import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { groupBy, partition, sortBy, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { FocusScope } from "react-aria";
@@ -545,12 +546,12 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
           value: queryRef,
           onSave: spawnWrapper(
             async (newOp: ServerQueryOp, opExprName?: string) => {
-              await studioCtx.change(({ success }) => {
+              await studioCtx.change(() => {
                 queryRef.op = newOp;
                 if (opExprName) {
                   queryRef.name = opExprName;
                 }
-                return success();
+                return ok();
               });
               serverQueryModals.close(queryRef.uuid);
             }

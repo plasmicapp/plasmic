@@ -2,6 +2,7 @@ import { getComponentStatesContext } from "@/wab/client/commands/context-utils";
 import { Command, stringPrompt } from "@/wab/client/commands/types";
 import { getStateVarName } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const changeStateVariableNameCommand: Command<
   {
@@ -25,7 +26,7 @@ export const changeStateVariableNameCommand: Command<
   },
   context: getComponentStatesContext,
   execute: async (studioCtx, { varName }, { component, state }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       if (varName) {
         studioCtx.tplMgr().renameParam(component, state.param, varName);
         if (state.onChangeParam) {
@@ -40,7 +41,7 @@ export const changeStateVariableNameCommand: Command<
             );
         }
       }
-      return success();
+      return ok();
     });
   },
 };

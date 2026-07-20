@@ -17,6 +17,7 @@ import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { DataToken } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 const DataTokenRow = observer(function _DataTokenRow(props: {
@@ -34,9 +35,9 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
 
   const onFindReferences = () => {
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         studioCtx.findReferencesDataToken = token.base;
-        return success();
+        return ok();
       })
     );
   };

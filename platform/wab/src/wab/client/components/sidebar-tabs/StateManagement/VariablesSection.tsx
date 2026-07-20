@@ -15,7 +15,7 @@ import { DefaultVariablesSectionProps } from "@/wab/client/plasmic/plasmic_kit_s
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
 import { ensure } from "@/wab/shared/common";
 import { Component, State } from "@/wab/shared/model/classes";

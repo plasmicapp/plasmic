@@ -39,6 +39,7 @@ import { ValState } from "@/wab/shared/eval/val-state";
 import { TplNode, Variant } from "@/wab/shared/model/classes";
 import { getImplicitlyActivatedStyleVariants } from "@/wab/shared/Variants";
 import { autorun, computed, observable } from "mobx";
+import { ok } from "neverthrow";
 import React from "react";
 import defer = setTimeout;
 
@@ -114,12 +115,12 @@ export abstract class BaseCliSvrEvaluator {
         if (!viewCtx.isDisposed && !viewCtx.focusedSelectable()) {
           spawn(
             viewCtx.studioCtx.change(
-              ({ success }) => {
+              () => {
                 const focusedTpl = viewCtx.focusedTpl();
                 if (focusedTpl) {
                   viewCtx.setStudioFocusByTpl(focusedTpl);
                 }
-                return success();
+                return ok();
               },
               { noUndoRecord: true }
             )

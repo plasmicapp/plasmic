@@ -17,8 +17,8 @@ export async function moveBundleAssetsToS3<T extends UnsafeBundle>(bundle: T) {
       )
       .map(async (item) => {
         const result = await uploadDataUriToS3(item.dataUri as string);
-        if (!result.result.isError) {
-          item.dataUri = result.result.value;
+        if (!result.isErr()) {
+          item.dataUri = result.value;
         }
       })
   );

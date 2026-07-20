@@ -24,10 +24,7 @@ import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { isMixedArena } from "@/wab/shared/Arenas";
 import { FRAME_CAP } from "@/wab/shared/Labels";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
-import {
-  UnknownComponentError,
-  compareComponentPropsWithMeta,
-} from "@/wab/shared/code-components/code-components";
+import { compareComponentPropsWithMeta } from "@/wab/shared/code-components/code-components";
 import { spawn } from "@/wab/shared/common";
 import {
   CodeComponent,
@@ -48,6 +45,7 @@ import { Component } from "@/wab/shared/model/classes";
 import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { Menu, Popover, notification } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 export const ComponentRow = observer(function ComponentRow(props: {
@@ -148,9 +146,9 @@ export const ComponentRow = observer(function ComponentRow(props: {
           isPlainComponent
             ? () => {
                 spawn(
-                  studioCtx.change(({ success }) => {
+                  studioCtx.change(() => {
                     studioCtx.switchToComponentArena(component);
-                    return success();
+                    return ok();
                   })
                 );
               }
@@ -284,9 +282,9 @@ function buildPlasmicComponentMenuItems(
           onClick={() =>
             studioCtx.changeObserved(
               () => [component],
-              ({ success }) => {
+              () => {
                 studioCtx.siteOps().convertComponentToPage(component);
-                return success();
+                return ok();
               }
             )
           }
@@ -353,8 +351,8 @@ function buildCodeComponentMenuItems(
             component,
             meta
           );
-          diffsOrError.match({
-            success: (diffs) => {
+          diffsOrError.match(
+            (diffs) => {
               if (
                 [diffs.addedProps, diffs.removedProps, diffs.updatedProps].some(
                   (i) => i.length > 0
@@ -373,13 +371,13 @@ function buildCodeComponentMenuItems(
                 });
               }
             },
-            failure: (err: UnknownComponentError) => {
+            (err) => {
               notification.error({
                 message: err.message,
               });
               reportError(err);
-            },
-          });
+            }
+          );
         }}
       >
         <strong>Refresh</strong> registered props
@@ -448,11 +446,11 @@ function buildCommonComponentMenuItems(
           ));
           if (kind) {
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx
                   .siteOps()
                   .promoteComponentToDefaultKind(studioCtx, component, kind);
-                return success();
+                return ok();
               })
             );
           }
@@ -470,9 +468,9 @@ function buildCommonComponentMenuItems(
         <Menu.Item
           key="demote-default-kind"
           onClick={async () => {
-            await studioCtx.change(({ success }) => {
+            await studioCtx.change(() => {
               delete studioCtx.site.defaultComponents[kind];
-              return success();
+              return ok();
             });
           }}
         >
@@ -487,10 +485,10 @@ function buildCommonComponentMenuItems(
       <Menu.Item
         key="set-page-wrapper"
         onClick={async () => {
-          await studioCtx.change(({ success }) => {
+          await studioCtx.change(() => {
             studioCtx.site.pageWrapper =
               studioCtx.site.pageWrapper === component ? undefined : component;
-            return success();
+            return ok();
           });
         }}
       >

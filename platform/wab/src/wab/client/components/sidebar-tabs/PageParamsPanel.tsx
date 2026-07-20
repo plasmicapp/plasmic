@@ -8,6 +8,7 @@ import { ensure } from "@/wab/shared/common";
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 const PageParamsPanel = observer(function PageParamsPanel(props: {
@@ -27,9 +28,9 @@ const PageParamsPanel = observer(function PageParamsPanel(props: {
   }
 
   const changePageParam = async (param: string, value: string) => {
-    await sc.change(({ success }) => {
+    await sc.change(() => {
       pageMeta.params[param] = value;
-      return success();
+      return ok();
     });
   };
 

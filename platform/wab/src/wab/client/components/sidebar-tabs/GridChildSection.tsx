@@ -1,8 +1,8 @@
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   FullRow,
   LabeledStyleItem,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
 import {
   ExpsProvider,
@@ -13,6 +13,7 @@ import { spawn } from "@/wab/shared/common";
 import { NUMBER_UNITS } from "@/wab/shared/css/types";
 import { parseGridChildCssProps } from "@/wab/shared/grid-utils";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export const GridChildSection = observer(function GridChildSection(props: {
@@ -41,7 +42,7 @@ export const GridChildSection = observer(function GridChildSection(props: {
   const handleChange = (prop: "row" | "column", dir: "start" | "end") => {
     return (val) => {
       spawn(
-        studioCtx.change(({ success }) => {
+        studioCtx.change(() => {
           if (!val) {
             expsProvider.targetExp().clear(`grid-${prop}-${dir}`);
           } else {
@@ -53,7 +54,7 @@ export const GridChildSection = observer(function GridChildSection(props: {
               );
           }
 
-          return success();
+          return ok();
         })
       );
     };

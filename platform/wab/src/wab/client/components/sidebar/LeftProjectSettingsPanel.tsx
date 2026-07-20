@@ -52,6 +52,7 @@ import { Menu, notification, Tooltip } from "antd";
 import L from "lodash";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
@@ -427,12 +428,12 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
                             <Menu.Item
                               onClick={async () =>
                                 studioCtx.change(
-                                  ({ success }) =>
+                                  () =>
                                     tplMgr.delArg(
                                       tpl,
                                       tpl.vsettings[0],
                                       p.variable
-                                    ) && success()
+                                    ) && ok()
                                 )
                               }
                             >
@@ -457,14 +458,14 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
                             ? expr
                             : codeLit(expr);
                           spawn(
-                            studioCtx.change(({ success }) => {
+                            studioCtx.change(() => {
                               tplMgr.setArg(
                                 tpl,
                                 tpl.vsettings[0],
                                 p.variable,
                                 newExpr
                               );
-                              return success();
+                              return ok();
                             })
                           );
                           studioCtx.closeGlobalContextNotificationForStarters();

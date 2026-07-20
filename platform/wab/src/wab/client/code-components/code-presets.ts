@@ -1,7 +1,10 @@
 import { elementSchemaToTplAndLogErrors } from "@/wab/client/code-components/code-components";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { withoutNils } from "@/wab/shared/common";
-import { CodeComponent, getComponentDisplayName } from "@/wab/shared/core/components";
+import {
+  CodeComponent,
+  getComponentDisplayName,
+} from "@/wab/shared/core/components";
 import { TplComponent } from "@/wab/shared/model/classes";
 import { CodeComponentElement } from "@plasmicapp/host/dist/element-types";
 import { notification } from "antd";
@@ -40,14 +43,14 @@ export const getComponentPresets = computedFn(function getComponentPresets(
         undefined,
         schema
       );
-      if (maybeTpl.result.isError) {
+      if (maybeTpl.isErr()) {
         notification.error({
           message: "Type error while registering code templates",
-          description: maybeTpl.result.error.message,
+          description: maybeTpl.error.message,
         });
         return undefined;
       }
-      const tpl = maybeTpl.result.value as TplComponent;
+      const tpl = maybeTpl.value as TplComponent;
       return {
         name,
         screenshot: template.previewImg,

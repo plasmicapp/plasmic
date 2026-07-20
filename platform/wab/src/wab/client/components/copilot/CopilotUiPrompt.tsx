@@ -9,6 +9,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { fixJson } from "@/wab/shared/copilot/fix-json";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 function CopilotUiPrompt() {
@@ -82,7 +83,7 @@ function CopilotUiPrompt() {
         const { tokens, html } = response;
 
         spawn(
-          studioCtx.change(({ success }) => {
+          studioCtx.change(() => {
             spawn(
               (async function () {
                 const upsertTokens: UpsertTokenReq[] = tokens.map((t) => ({
@@ -99,7 +100,7 @@ function CopilotUiPrompt() {
               })()
             );
 
-            return success();
+            return ok();
           })
         );
       }}

@@ -11,6 +11,7 @@ import { siteFinalColorTokens } from "@/wab/shared/core/site-style-tokens";
 import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
@@ -61,9 +62,9 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
           <SimpleTextbox
             defaultValue={token.name}
             onValueChange={(name) =>
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx.tplMgr().renameStyleToken(token.base, name);
-                return success();
+                return ok();
               })
             }
             readOnly={!(token instanceof MutableToken)}

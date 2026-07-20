@@ -6,10 +6,11 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentToggle";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/shared/common";
-import { Split } from "@/wab/shared/model/classes";
 import { SplitStatus } from "@/wab/shared/core/splits";
+import { Split } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined
@@ -42,13 +43,13 @@ function ExperimentToggle_(
       checked={split.status === SplitStatus.Running}
       onClick={() => {
         spawn(
-          studioCtx.change(({ success }) => {
+          studioCtx.change(() => {
             if (split.status !== SplitStatus.Running) {
               split.status = SplitStatus.Running;
             } else {
               split.status = SplitStatus.Stopped;
             }
-            return success();
+            return ok();
           })
         );
       }}

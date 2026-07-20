@@ -16,6 +16,7 @@ import { isStyleOrCodeComponentVariant } from "@/wab/shared/Variants";
 import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 enum OutlineProps {
@@ -54,13 +55,13 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
 
   const onClick = async () => {
     if (isVisible) {
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         outlineStyleProps.forEach((prop) => {
           if (sc.hasTargetProp(prop)) {
             exp.clear(prop);
           }
         });
-        return success();
+        return ok();
       });
       setIsOpen(false);
     } else {

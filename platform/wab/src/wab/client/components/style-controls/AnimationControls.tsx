@@ -24,6 +24,7 @@ import { Animation } from "@/wab/shared/model/classes";
 import { naturalSortByName } from "@/wab/shared/sort";
 import { Select } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React, { useMemo } from "react";
 
 interface AnimationControlsProps {
@@ -41,9 +42,9 @@ export const AnimationControls = observer(function AnimationControls(
 
   const handleChange = (f: () => void) => {
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         f();
-        return success();
+        return ok();
       })
     );
 

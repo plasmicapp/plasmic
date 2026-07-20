@@ -127,7 +127,7 @@ import {
   withProvider,
 } from "@/wab/commons/components/ContextUtil";
 import { safeCallbackify } from "@/wab/commons/control";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { isLatest, latestTag, lt } from "@/wab/commons/semver";
 import { DeepReadonly } from "@/wab/commons/types";
 import type { ProjectRevision } from "@/wab/server/entities/Entities";
@@ -435,11 +435,11 @@ import {
   when,
 } from "mobx";
 import { computedFn } from "mobx-utils";
+import { Result, err, ok } from "neverthrow";
 import React, { useContext } from "react";
 import semver from "semver";
 import * as Signals from "signals";
 import { mutate } from "swr";
-import { FailableArgParams, IFailable, failable } from "ts-failable";
 
 (window as any).dbg.classes = classes;
 
@@ -585,9 +585,9 @@ type ModelChangeRequest =
   | RedoModelChangeRequest
   | FetchModelUpdatesRequest;
 
-interface ArbitraryModelChangeRequest<Result = any> {
+interface ArbitraryModelChangeRequest<T = any> {
   type: "change";
-  changeFn: () => IFailable<Result, any>;
+  changeFn: () => Result<T, any>;
   opts?: StudioChangeOpts;
 }
 
@@ -975,7 +975,7 @@ export class StudioCtx extends WithDbCtx {
 
       try {
         return await fetchUrl(hostPageUrl(false));
-      } catch (err) {
+      } catch {
         return await fetchUrl(hostPageUrl(true));
       }
     };
@@ -1286,11 +1286,8 @@ export class StudioCtx extends WithDbCtx {
    * @param opts
    * @returns
    */
-  async changeUnsafe<Result = void>(
-    f: () => Result,
-    opts: StudioChangeOpts = {}
-  ) {
-    const result = await this.change<any, Result>(({ success, failure }) => {
+  async changeUnsafe<T = void>(f: () => T, opts: StudioChangeOpts = {}) {
+    const result = await this.change<any, T>(() => {
       try {
         const res = f();
         if ((res as unknown) instanceof Promise) {
@@ -1299,34 +1296,34 @@ export class StudioCtx extends WithDbCtx {
             "Async changeFn"
           );
         }
-        return success(res);
-      } catch (err) {
-        return failure(err);
+        return ok(res);
+      } catch (e) {
+        return err(e);
       }
     }, opts);
-    return result.match({
-      success: (res) => res,
-      failure: (err) => {
-        throw err;
-      },
-    });
+    return result.match(
+      (res) => res,
+      (e) => {
+        throw e;
+      }
+    );
   }
 
-  async change<E = never, Result = void>(
-    f: (args: FailableArgParams<Result, E>) => IFailable<Result, E>,
+  async change<E = never, T = void>(
+    f: () => Result<T, E>,
     opts: StudioChangeOpts = {}
-  ): Promise<IFailable<Result, E>> {
+  ): Promise<Result<T, E>> {
     return this._change(f, opts);
   }
 
   /**
    * Observes a list of component before applying the changes
    */
-  async changeObserved<E = never, Result = void>(
+  async changeObserved<E = never, T = void>(
     c: () => Component[],
-    f: (args: FailableArgParams<Result, E>) => IFailable<Result, E>,
+    f: () => Result<T, E>,
     opts: StudioChangeOpts = {}
-  ): Promise<IFailable<Result, E>> {
+  ): Promise<Result<T, E>> {
     if (!this.appCtx.appConfig.incrementalObservables) {
       return this._change(f, opts);
     }
@@ -1335,17 +1332,17 @@ export class StudioCtx extends WithDbCtx {
     return this._change(f, opts);
   }
 
-  async _change<E = never, Result = void>(
-    f: (args: FailableArgParams<Result, E>) => IFailable<Result, E>,
+  async _change<E = never, T = void>(
+    f: () => Result<T, E>,
     opts: StudioChangeOpts = {}
-  ): Promise<IFailable<Result, E>> {
+  ): Promise<Result<T, E>> {
     if (this._isChanging) {
       /* reportError(
         new Error("There shouldn't be nested calls of .change()"),
         "Nested changeFn"
       ); */
       this._changeOpts.push(opts);
-      const res = failable<Result, E>((args) => f(args));
+      const res = f();
       await drainQueue(this.modelChangeQueue);
       return res;
     } else {
@@ -1360,22 +1357,22 @@ export class StudioCtx extends WithDbCtx {
         }
       }
       let actualRes: any;
-      const res = new Promise<IFailable<Result, E>>((resolve, reject) => {
-        this.modelChangeQueue.push<IFailable<Result, E>, Error>(
+      const res = new Promise<Result<T, E>>((resolve, reject) => {
+        this.modelChangeQueue.push<Result<T, E>, Error>(
           {
             type: "change",
             changeFn: () => {
-              const iFailable = failable<Result, E>((args) => f(args));
-              if (!iFailable.result.isError) {
-                actualRes = iFailable.result.value;
+              const result = f();
+              if (!result.isErr()) {
+                actualRes = result.value;
               }
-              return iFailable;
+              return result;
             },
             opts,
           },
-          (err, result) => {
-            if (err != null) {
-              reject(err);
+          (e, result) => {
+            if (e != null) {
+              reject(e);
             } else {
               assert(result, "");
               resolve(
@@ -1395,130 +1392,128 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private changeInternal<E>(
-    f: () => IFailable<void, E>,
+    f: () => Result<void, E>,
     opts: StudioChangeOpts = {}
-  ) {
+  ): Result<void, E> {
     assert(!this._isChanging, "isChanging should be false");
-    return failable<void, E>(({ success, failure }) => {
-      // Save some view state about each ViewCtx, so we know which of them
-      // will need to be re-evaluated after f().
-      const previousComponentCtxs = new Map<ViewCtx, ComponentCtx | null>(
-        this.viewCtxs.map((vc) => tuple(vc, vc.currentComponentCtx()))
-      );
-      const vcToSpotlightAndVariantsInfo = new Map<
-        ViewCtx,
-        SpotlightAndVariantsInfo
-      >(this.viewCtxs.map((vc) => tuple(vc, vc.getSpotlightAndVariantsInfo())));
-      const showPlaceholderBeforeChange = this._showSlotPlaceholder.get();
-      const isInteractiveModeBeforeChange = this.isInteractiveMode;
+    // Save some view state about each ViewCtx, so we know which of them
+    // will need to be re-evaluated after f().
+    const previousComponentCtxs = new Map<ViewCtx, ComponentCtx | null>(
+      this.viewCtxs.map((vc) => tuple(vc, vc.currentComponentCtx()))
+    );
+    const vcToSpotlightAndVariantsInfo = new Map<
+      ViewCtx,
+      SpotlightAndVariantsInfo
+    >(this.viewCtxs.map((vc) => tuple(vc, vc.getSpotlightAndVariantsInfo())));
+    const showPlaceholderBeforeChange = this._showSlotPlaceholder.get();
+    const isInteractiveModeBeforeChange = this.isInteractiveMode;
 
-      // First, we perform a runInAction for f(), as well as all associated
-      // changes that are mutating the top-level observables (specifically,
-      // all the TplNodes and view-level observables, but not the ValNodes)
-      const maybeSummary = runInAction(() =>
-        failable<
-          {
-            summary: ChangeSummary;
-            styleChanges: UpsertStyleChanges | undefined;
-          },
-          E
-        >(({ success: suc, failure: fail }) => {
-          this._isChanging = true;
-          this._changeOpts = [opts];
-          try {
-            const maybeChanges = this.recorder.withRecording<E>(f);
-            if (maybeChanges.result.isError) {
-              return fail(maybeChanges.result.error);
-            }
-
-            const [newChanges, summary] = fixupForChanges(
-              this,
-              maybeChanges.result.value
-            );
-
-            if (newChanges.changes.length > 0) {
-              if (!this.isUnlogged()) {
-                logChangedNodes("CHANGES:", newChanges.changes, false);
-                console.log("Change summary", summary);
-              }
-            }
-
-            const styleChanges = this.syncAfterChanges(summary);
-
-            // Record the changes to undo log before we kick off the evaluators.
-            // That's because evaluators may invoke some postEval() handlers that
-            // will create new undo records (for example, viewCtx.selectNewTpl),
-            // and those new records may need to be merged with this record here.
-            if (this.isUnlogged()) {
-              this._queuedUnloggedChanges = mergeRecordedChanges(
-                this._queuedUnloggedChanges,
-                newChanges
-              );
-            } else if (opts.noUndoRecord) {
-              if (this.canUndo()) {
-                this.undoLog.appendChangesToLastRecord({
-                  changes: newChanges,
-                  view: this.currentViewState(),
-                });
-              }
-              this.addToChangeRecords(newChanges);
-            } else {
-              this.recordAndMarkDirty(newChanges);
-            }
-
-            return suc({ summary, styleChanges });
-          } finally {
-            this._isChanging = false;
+    // First, we perform a runInAction for f(), as well as all associated
+    // changes that are mutating the top-level observables (specifically,
+    // all the TplNodes and view-level observables, but not the ValNodes)
+    const maybeSummary = runInAction(
+      (): Result<
+        {
+          summary: ChangeSummary;
+          styleChanges: UpsertStyleChanges | undefined;
+        },
+        E
+      > => {
+        this._isChanging = true;
+        this._changeOpts = [opts];
+        try {
+          const maybeChanges = this.recorder.withRecording<E>(f);
+          if (maybeChanges.isErr()) {
+            return err(maybeChanges.error);
           }
-        })
-      );
 
-      if (maybeSummary.result.isError) {
-        return failure(maybeSummary.result.error);
+          const [newChanges, summary] = fixupForChanges(
+            this,
+            maybeChanges.value
+          );
+
+          if (newChanges.changes.length > 0) {
+            if (!this.isUnlogged()) {
+              logChangedNodes("CHANGES:", newChanges.changes, false);
+              console.log("Change summary", summary);
+            }
+          }
+
+          const styleChanges = this.syncAfterChanges(summary);
+
+          // Record the changes to undo log before we kick off the evaluators.
+          // That's because evaluators may invoke some postEval() handlers that
+          // will create new undo records (for example, viewCtx.selectNewTpl),
+          // and those new records may need to be merged with this record here.
+          if (this.isUnlogged()) {
+            this._queuedUnloggedChanges = mergeRecordedChanges(
+              this._queuedUnloggedChanges,
+              newChanges
+            );
+          } else if (opts.noUndoRecord) {
+            if (this.canUndo()) {
+              this.undoLog.appendChangesToLastRecord({
+                changes: newChanges,
+                view: this.currentViewState(),
+              });
+            }
+            this.addToChangeRecords(newChanges);
+          } else {
+            this.recordAndMarkDirty(newChanges);
+          }
+
+          return ok({ summary, styleChanges });
+        } finally {
+          this._isChanging = false;
+        }
       }
+    );
 
-      const { summary, styleChanges } = maybeSummary.result.value;
+    if (maybeSummary.isErr()) {
+      return err(maybeSummary.error);
+    }
 
-      // Next, we evaluate the ViewCtxs that need to be evaluated.  By now,
-      // after the above runInAction, changes that happened would've marked
-      // the dependencies of evaluation as stale.
+    const { summary, styleChanges } = maybeSummary.value;
 
-      const focusedVC = this.focusedViewCtx();
+    // Next, we evaluate the ViewCtxs that need to be evaluated.  By now,
+    // after the above runInAction, changes that happened would've marked
+    // the dependencies of evaluation as stale.
 
-      const showPlaceholderChanged =
-        showPlaceholderBeforeChange !== this._showSlotPlaceholder.get();
-      const interactiveModeChanged =
-        isInteractiveModeBeforeChange !== this.isInteractiveMode;
+    const focusedVC = this.focusedViewCtx();
 
-      const shouldEvaluate = (vc: ViewCtx) => {
-        return this.shouldEvaluateViewCtx(vc, {
-          summary,
-          showPlaceholderChanged,
-          interactiveModeChanged,
-          previousComponentCtx: previousComponentCtxs.get(vc),
-          previousVcInfo: vcToSpotlightAndVariantsInfo.get(vc),
-        });
-      };
+    const showPlaceholderChanged =
+      showPlaceholderBeforeChange !== this._showSlotPlaceholder.get();
+    const interactiveModeChanged =
+      isInteractiveModeBeforeChange !== this.isInteractiveMode;
 
-      const shouldRestyle = (vc: ViewCtx) => {
-        // Should update vc style if it's never had styles before,
-        // or if there has been style changes
-        return !vc.valState().maybeValSysRoot() || !!styleChanges;
-      };
-
-      // give precedence to the focused viewCtx so that the postEvalTasks added
-      // to the current viewCtx is not cleared when current viewCtx is being
-      // evaluated
-      this.viewCtxs.forEach((vc) => {
-        vc.scheduleSync({
-          eval: shouldEvaluate(vc),
-          styles: shouldRestyle(vc),
-          asap: vc === focusedVC,
-        });
+    const shouldEvaluate = (vc: ViewCtx) => {
+      return this.shouldEvaluateViewCtx(vc, {
+        summary,
+        showPlaceholderChanged,
+        interactiveModeChanged,
+        previousComponentCtx: previousComponentCtxs.get(vc),
+        previousVcInfo: vcToSpotlightAndVariantsInfo.get(vc),
       });
+    };
 
-      return success();
+    const shouldRestyle = (vc: ViewCtx) => {
+      // Should update vc style if it's never had styles before,
+      // or if there has been style changes
+      return !vc.valState().maybeValSysRoot() || !!styleChanges;
+    };
+
+    // give precedence to the focused viewCtx so that the postEvalTasks added
+    // to the current viewCtx is not cleared when current viewCtx is being
+    // evaluated
+    this.viewCtxs.forEach((vc) => {
+      vc.scheduleSync({
+        eval: shouldEvaluate(vc),
+        styles: shouldRestyle(vc),
+        asap: vc === focusedVC,
+      });
     });
+
+    return ok();
   }
 
   observeComponents(components: Component[]) {
@@ -1645,14 +1640,14 @@ export class StudioCtx extends WithDbCtx {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const asyncQueue = asynclib.queue<
       ModelChangeRequest,
-      IFailable<void, Error> | undefined,
+      Result<void, Error> | undefined,
       Error
     >(
       safeCallbackify(async (request: ModelChangeRequest) => {
         if (request.type === "change") {
           const result = this.changeInternal(request.changeFn, request.opts);
-          if (result.result.isError) {
-            showError(result.result.error);
+          if (result.isErr()) {
+            showError(result.error);
           }
           return result;
         } else if (request.type === "fetchModelUpdates") {
@@ -2286,7 +2281,7 @@ export class StudioCtx extends WithDbCtx {
     threadId: string | undefined,
     opts?: StudioChangeOpts
   ) {
-    return this.change(({ success }) => {
+    return this.change(() => {
       const currentArena = this.currentArena;
       if (!arenaType && !arenaName) {
         // A route without arenaType and arenaName is valid for projects without any arenas.
@@ -2320,7 +2315,7 @@ export class StudioCtx extends WithDbCtx {
           this.changeArena(targetArena);
         }
       }
-      return success();
+      return ok();
     }, opts);
   }
 
@@ -2577,12 +2572,12 @@ export class StudioCtx extends WithDbCtx {
           name,
           true
         );
-        syncPlumeComponent(this, comp).match({
-          success: (x) => x,
-          failure: (err) => {
-            throw err;
-          },
-        });
+        syncPlumeComponent(this, comp).match(
+          (x) => x,
+          (e) => {
+            throw e;
+          }
+        );
         return comp;
       } else if (insertableTemplateInfo) {
         const { component: comp, seenFonts } = cloneInsertableTemplateComponent(
@@ -2738,9 +2733,9 @@ export class StudioCtx extends WithDbCtx {
 
         // If it's an artboard, switch to its arena
         if (isFrameComponent(component) && this.currentArena !== arena) {
-          await this.change(({ success }) => {
+          await this.change(() => {
             this.switchToArena(arena, { threadId });
-            return success();
+            return ok();
           });
         }
 
@@ -2755,12 +2750,12 @@ export class StudioCtx extends WithDbCtx {
     const arena =
       componentArena !== this.currentArena
         ? unwrap(
-            await this.change<void, AnyArena | null>(({ success }) => {
+            await this.change<void, AnyArena | null>(() => {
               const switchedArena =
                 this.switchToComponentArena(component, {
                   threadId,
                 }) ?? this.currentArena;
-              return success(switchedArena);
+              return ok(switchedArena);
             })
           )
         : this.currentArena;
@@ -2785,10 +2780,10 @@ export class StudioCtx extends WithDbCtx {
       const vcontroller = makeVariantsController(this);
       if (vcontroller && variants?.length) {
         await this.change(
-          ({ success }) => {
+          () => {
             vcontroller.onActivateCombo(variants);
             vcontroller.onToggleTargetingOfActiveVariants();
-            return success();
+            return ok();
           },
           { noUndoRecord: true }
         );
@@ -2804,9 +2799,9 @@ export class StudioCtx extends WithDbCtx {
       arenaDetails?.arena !== this.currentArena &&
       isMixedArena(arenaDetails?.arena)
     ) {
-      await this.change(({ success }) => {
+      await this.change(() => {
         this.switchToArena(arenaDetails?.arena, { threadId });
-        return success();
+        return ok();
       });
     }
     viewCtx = viewCtx ?? (await this.awaitViewCtxForFrame(frame));
@@ -4585,8 +4580,8 @@ export class StudioCtx extends WithDbCtx {
       },
       players: (data) =>
         this.isAtTip && this.multiplayerCtx.updateSessions(data.sessions),
-      error: (err) => {
-        console.log("Error received from socket", err);
+      error: (e) => {
+        console.log("Error received from socket", e);
       },
       disconnect: async (reason) => {
         // The following events indicate a purposeful disconnect
@@ -4693,35 +4688,32 @@ export class StudioCtx extends WithDbCtx {
       );
     }
 
-    const changeResult = await this.change<void, AnyArena>(
-      ({ success, failure }) => {
-        const arena = getArenaByNameOrUuidOrPath(
-          this.site,
-          arenaInfo.uuidOrName,
-          arenaInfo.type
-        );
-        if (!arena) {
-          return failure();
-        }
+    const arena = getArenaByNameOrUuidOrPath(
+      this.site,
+      arenaInfo.uuidOrName,
+      arenaInfo.type
+    );
+    if (!arena) {
+      return; // Give up on watching player
+    }
 
-        // TODO: https://app.shortcut.com/plasmic/story/37322
-        if (isDedicatedArena(arena)) {
-          arena._focusedFrame = null;
-        }
+    // TODO: https://app.shortcut.com/plasmic/story/37322
+    if (isDedicatedArena(arena)) {
+      arena._focusedFrame = null;
+    }
 
+    const changeResult = await this.change(
+      () => {
         this.switchToArena(arena, { stopWatching: false });
-
-        return success(arena);
+        return ok();
       },
       {
         noUndoRecord: true,
       }
     );
-    if (changeResult.result.isError) {
+    if (changeResult.isErr()) {
       return; // Give up on watching player
     }
-
-    const arena = changeResult.result.value;
 
     this.viewportCtx?.zoomToScalerBox(Box.fromRect(position), {
       smooth,
@@ -5335,9 +5327,9 @@ export class StudioCtx extends WithDbCtx {
       ? await item.asyncExtraInfo(this)
       : undefined;
     if (extraInfo !== false) {
-      await this.change(({ success }) => {
+      await this.change(() => {
         item.factory(this, extraInfo);
-        return success();
+        return ok();
       });
     }
     return extraInfo;
@@ -5743,8 +5735,8 @@ export class StudioCtx extends WithDbCtx {
             changesBundle,
             changes,
           });
-        } catch (err) {
-          reportError(err);
+        } catch (e) {
+          reportError(e);
           this.alertBannerState.set(AlertSpec.InvariantError);
           this.blockChanges = true;
           this.isAtTip = false;
@@ -6166,9 +6158,9 @@ export class StudioCtx extends WithDbCtx {
         ? getArenaByNameOrUuidOrPath(this.site, prevArenaName, undefined)
         : undefined;
       await this.change(
-        ({ success }) => {
+        () => {
           this.switchToArena(prevArena);
-          return success();
+          return ok();
         },
         {
           noUndoRecord: true,
@@ -6725,10 +6717,10 @@ export class StudioCtx extends WithDbCtx {
       })
     ) {
       const goToSettings = async () => {
-        await this.change(({ success }) => {
+        await this.change(() => {
           this.hidePresetsModal();
           this.switchLeftTab("settings", { highlight: true });
-          return success();
+          return ok();
         });
       };
 
@@ -6846,9 +6838,9 @@ export class StudioCtx extends WithDbCtx {
         if (newCurrentArena) {
           spawn(
             this.change(
-              ({ success }) => {
+              () => {
                 this.switchToArena(newCurrentArena);
-                return success();
+                return ok();
               },
               {
                 noUndoRecord: true,
@@ -7051,10 +7043,10 @@ export class StudioCtx extends WithDbCtx {
 
         this.dbCtx().revisionNum = updatedModel.revision;
         this._isRefreshing = false;
-      } catch (err) {
+      } catch (e) {
         this._isRefreshing = false;
-        if (!(err instanceof UnsupportedServerUpdate)) {
-          reportError(err, "Sync updates failed");
+        if (!(e instanceof UnsupportedServerUpdate)) {
+          reportError(e, "Sync updates failed");
         }
         console.log("Failed to sync. Downloading entire bundle...");
         if (hasUnsavedChanges) {
@@ -7396,12 +7388,12 @@ export class StudioCtx extends WithDbCtx {
   }
 
   async createCopilotPageWithPrompt(pageName: string, prompt: string) {
-    await this.change(({ success }) => {
+    await this.change(() => {
       this.addComponent(pageName, {
         type: ComponentType.Page,
       }) as PageComponent;
 
-      return success();
+      return ok();
     });
     this.openUiCopilotDialog(true);
     this.copilotStarterPrompt = prompt;

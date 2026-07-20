@@ -546,8 +546,8 @@ async function ensureImageAssetsOnS3(site: Site) {
         const res = await uploadDataUriToS3(
           ensure(asset.dataUri, "Data URI must not be nullish")
         );
-        if (!res.result.isError) {
-          asset.dataUri = res.result.value;
+        if (!res.isErr()) {
+          asset.dataUri = res.value;
         }
       })
   );

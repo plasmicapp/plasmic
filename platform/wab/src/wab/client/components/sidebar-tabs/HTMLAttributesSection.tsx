@@ -63,6 +63,7 @@ import { notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
 import L, { keyBy, orderBy, uniq, without } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 // Note: these should be JSX attributes, not HTML attributes.
@@ -611,7 +612,7 @@ function InteractionModal({
         }}
         onChange={(newExpr) =>
           spawn(
-            viewCtx.studioCtx.change(({ success }) => {
+            viewCtx.studioCtx.change(() => {
               const expr = getEventHandlerByEventKey(
                 component,
                 tpl,
@@ -632,7 +633,7 @@ function InteractionModal({
               } else {
                 setEventHandlerByEventKey(tpl, eventHandlerKey, newExpr);
               }
-              return success();
+              return ok();
             })
           )
         }

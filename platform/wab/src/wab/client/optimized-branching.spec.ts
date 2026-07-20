@@ -1,5 +1,8 @@
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { mkTokenRef } from "@/wab/commons/StyleToken";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { getBaseVariant, mkVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
 import { arrayRemove } from "@/wab/shared/collections";
 import { ensure, jsonClone, mkUuid } from "@/wab/shared/common";
@@ -7,25 +10,23 @@ import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { createSite, writeable } from "@/wab/shared/core/sites";
 import { flattenTpls, isTplNamable, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
-  isKnownTplSlot,
   Site,
   TplSlot,
   TplTag,
   VariantedValue,
+  isKnownTplSlot,
 } from "@/wab/shared/model/classes";
 import {
+  TestResult,
   applyTestMerge,
   basicSite,
   fetchLastBundleVersion,
   lastBundleVersion,
   testMerge,
-  TestResult,
 } from "@/wab/shared/site-diffs/_tests_/utils";
 import { inferUpdatedComponents } from "@/wab/shared/site-diffs/merge-components";
 import { BranchSide } from "@/wab/shared/site-diffs/merge-core";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { getBaseVariant, mkVariantSetting } from "@/wab/shared/Variants";
+import { ok } from "neverthrow";
 
 beforeAll(async () => {
   await fetchLastBundleVersion();
@@ -57,9 +58,9 @@ async function observedTestMerge({
   const { studioCtx: studioCtxA } = fakeStudioCtx({ site: draftASite });
   await studioCtxA.changeObserved(
     () => draftASite.components,
-    ({ success }) => {
+    () => {
       a(draftASite, new TplMgr({ site: draftASite }));
-      return success();
+      return ok();
     }
   );
   studioCtxA.dispose();
@@ -69,9 +70,9 @@ async function observedTestMerge({
   const { studioCtx: studioCtxB } = fakeStudioCtx({ site: draftBSite });
   await studioCtxB.changeObserved(
     () => draftBSite.components,
-    ({ success }) => {
+    () => {
       b(draftBSite, new TplMgr({ site: draftBSite }));
-      return success();
+      return ok();
     }
   );
   studioCtxB.dispose();

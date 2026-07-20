@@ -553,10 +553,10 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
               const argType = propTypeToWabType(
                 ctx.viewCtx.site,
                 arg.type
-              ).match({
-                success: (val) => val,
-                failure: () => typeFactory.any(),
-              });
+              ).match(
+                (val) => val,
+                () => typeFactory.any()
+              );
               assert(
                 !isKnownRenderableType(argType) && !isRenderFuncType(argType),
                 () =>
@@ -861,10 +861,10 @@ export function generateActionMetaForGlobalAction(
               const argType = propTypeToWabType(
                 ctx.viewCtx.site,
                 arg.type
-              ).match({
-                success: (val) => val,
-                failure: () => typeFactory.any(),
-              });
+              ).match(
+                (val) => val,
+                () => typeFactory.any()
+              );
               assert(
                 !isKnownRenderableType(argType) && !isRenderFuncType(argType),
                 () =>

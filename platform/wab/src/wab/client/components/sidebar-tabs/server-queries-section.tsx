@@ -44,6 +44,7 @@ import {
 import { renameServerQueryAndFixExprs } from "@/wab/shared/refactoring";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 const ServerQueryRow = observer(
@@ -86,12 +87,12 @@ const ServerQueryRow = observer(
       newOp: ServerQueryOp,
       opExprName?: string
     ) => {
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         query.op = newOp;
         if (opExprName && opExprName !== query.name) {
           renameServerQueryAndFixExprs(component, query, opExprName);
         }
-        return success();
+        return ok();
       });
       serverQueryModal.close();
     };
@@ -105,11 +106,11 @@ const ServerQueryRow = observer(
           <Menu.Item
             onClick={() =>
               spawn(
-                studioCtx.change(({ success }) => {
+                studioCtx.change(() => {
                   studioCtx
                     .tplMgr()
                     .duplicateComponentServerQuery(component, query);
-                  return success();
+                  return ok();
                 })
               )
             }
@@ -184,7 +185,7 @@ function ServerQueriesSection_(props: {
 
   const handleAddBlankQuery = () => {
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         const serverQuery = new ComponentServerQuery({
           uuid: mkShortId(),
           name: studioCtx.tplMgr().getUniqueServerQueryName(component, "Query"),
@@ -192,7 +193,7 @@ function ServerQueriesSection_(props: {
         });
 
         component.serverQueries.push(serverQuery);
-        return success();
+        return ok();
       })
     );
   };
@@ -202,7 +203,7 @@ function ServerQueriesSection_(props: {
     sourceQuery: ComponentServerQuery
   ) => {
     spawn(
-      studioCtx.change(({ success }) => {
+      studioCtx.change(() => {
         const { copied, componentVarRefs } = studioCtx
           .tplMgr()
           .copyServerQueryWithDependencies(
@@ -233,7 +234,7 @@ function ServerQueriesSection_(props: {
                 )} that may not exist or differ in this component.`
               : undefined,
         });
-        return success();
+        return ok();
       })
     );
   };

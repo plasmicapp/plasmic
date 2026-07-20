@@ -6,6 +6,7 @@ import {
   NormalStateVariableType,
 } from "@/wab/shared/core/states";
 import { State } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const changeStateVariableTypeCommand: Command<
   {
@@ -34,13 +35,13 @@ export const changeStateVariableTypeCommand: Command<
   },
   context: getComponentStatesContext,
   execute: async (studioCtx, { type }, { state }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       if (type && type !== state.variableType) {
         studioCtx.siteOps().updateState(state, {
           variableType: type,
         });
       }
-      return success();
+      return ok();
     });
   },
 };

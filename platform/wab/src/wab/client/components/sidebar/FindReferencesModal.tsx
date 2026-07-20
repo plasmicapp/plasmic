@@ -44,6 +44,7 @@ import {
 import { Menu } from "antd";
 import L, { sortBy } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { VariableSizeList } from "react-window";
 
@@ -135,9 +136,9 @@ export const FindReferencesModal = observer(
           type: type,
           onClick: () =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx.switchToComponentArena(component);
-                return success();
+                return ok();
               })
             ),
           isSelected: arena === currentArena,
@@ -154,9 +155,9 @@ export const FindReferencesModal = observer(
           type: type,
           onClick: () =>
             spawn(
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx.switchToArena(arena);
-                return success();
+                return ok();
               })
             ),
           isSelected: arena === currentArena,

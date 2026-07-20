@@ -5,7 +5,6 @@ import {
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/shared/common";
 import {
   FrameViewMode,
   isDuplicatableFrame,
@@ -14,12 +13,14 @@ import {
 } from "@/wab/shared/Arenas";
 import { ARENA_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
 import { isFrameWithVariantCombo } from "@/wab/shared/Variants";
+import { ensure } from "@/wab/shared/common";
 import {
   isBaseVariantFrame,
   isGlobalVariantFrame,
 } from "@/wab/shared/component-arenas";
 import { Arena, ArenaFrame } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 export function makeFrameMenu({
@@ -158,11 +159,11 @@ export function makeFrameMenu({
               ),
             });
             if (response) {
-              await viewCtx.studioCtx.change(({ success }) => {
+              await viewCtx.studioCtx.change(() => {
                 viewCtx.studioCtx
                   .siteOps()
                   .removePageArenaVariant(originArena, globalVariant);
-                return success();
+                return ok();
               });
             }
           }}

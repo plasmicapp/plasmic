@@ -31,6 +31,7 @@ import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
 import { sumBy } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
@@ -293,7 +294,7 @@ function StyleOrCodeComponentVariantLabel_(
               onClick={(e) => e.stopPropagation()}
               onBlur={() => {
                 spawn(
-                  studioCtx.change(({ success }) => {
+                  studioCtx.change(() => {
                     if (isCodeComponentVariant(variant)) {
                       variant.codeComponentVariantKeys =
                         chosenSelectors.map(getVariantIdentifier);
@@ -308,7 +309,7 @@ function StyleOrCodeComponentVariantLabel_(
                         component,
                         variant
                       );
-                    return success();
+                    return ok();
                   })
                 );
 

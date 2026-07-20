@@ -1,6 +1,7 @@
 import { Command, stringPrompt } from "@/wab/client/commands/types";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TplComponent, TplTag } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const renameCommand: Command<
   {
@@ -31,9 +32,9 @@ export const renameCommand: Command<
     return [{ tpl: tpl as TplComponent | TplTag, viewCtx }];
   },
   execute: async (studioCtx, { name }, { viewCtx, tpl }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       viewCtx.getViewOps().renameTpl(name, tpl);
-      return success();
+      return ok();
     });
   },
 };

@@ -9,6 +9,7 @@ import {
   tokenTypes,
 } from "@/wab/commons/StyleToken";
 import { StyleToken } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const addTokenCommand: Command<
   {
@@ -40,13 +41,13 @@ export const addTokenCommand: Command<
     return [{}];
   },
   execute: async (studioCtx, { name, tokenType, value }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       const token = studioCtx.tplMgr().addStyleToken({
         name,
         tokenType,
         value,
       });
-      return success(token);
+      return ok(token);
     });
   },
 };

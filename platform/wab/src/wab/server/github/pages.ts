@@ -1,11 +1,11 @@
-import { tryCatchElseAsync, unexpected } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectRepository } from "@/wab/server/entities/Entities";
 import { getGithubApp } from "@/wab/server/github/app";
 import { GithubRef } from "@/wab/server/github/types";
+import { tryCatchElseAsync, unexpected } from "@/wab/shared/common";
 import { Octokit } from "@octokit/core";
 import * as Sentry from "@sentry/node";
-import { failableAsync } from "ts-failable";
+import { Result, err, ok } from "neverthrow";
 
 type SetupGithubPagesError = "domain taken";
 
@@ -58,45 +58,44 @@ async function initPagesBranch(octokit: Octokit, ref: GithubRef) {
  * - There doesn't seem to be a documented way to enable Force HTTPS on the
  *   domain.
  */
-export async function setupGithubPages(ref: GithubRef, domain: string) {
-  return failableAsync<void, SetupGithubPagesError>(
-    async ({ success, failure }) => {
-      const { installationId, owner, repo, branch } = ref;
+export async function setupGithubPages(
+  ref: GithubRef,
+  domain: string
+): Promise<Result<void, SetupGithubPagesError>> {
+  const { installationId, owner, repo, branch } = ref;
 
-      const app = getGithubApp();
-      const octokit = await app.getInstallationOctokit(installationId);
+  const app = getGithubApp();
+  const octokit = await app.getInstallationOctokit(installationId);
 
-      await initPagesBranch(octokit, ref);
+  await initPagesBranch(octokit, ref);
 
-      await octokit.request("POST /repos/{owner}/{repo}/pages", {
-        owner,
-        repo,
-        source: {
-          branch,
-        },
-        mediaType: {
-          previews: ["switcheroo"],
-        },
-      });
+  await octokit.request("POST /repos/{owner}/{repo}/pages", {
+    owner,
+    repo,
+    source: {
+      branch,
+    },
+    mediaType: {
+      previews: ["switcheroo"],
+    },
+  });
 
-      try {
-        await octokit.request("PUT /repos/{owner}/{repo}/pages", {
-          owner,
-          repo,
-          cname: domain,
-          source: {
-            branch,
-            path: "/",
-          } as any,
-        });
-      } catch (err) {
-        if (err.message.includes("is already taken")) {
-          return failure("domain taken");
-        }
-      }
-      return success();
+  try {
+    await octokit.request("PUT /repos/{owner}/{repo}/pages", {
+      owner,
+      repo,
+      cname: domain,
+      source: {
+        branch,
+        path: "/",
+      } as any,
+    });
+  } catch (e) {
+    if (e.message.includes("is already taken")) {
+      return err("domain taken");
     }
-  );
+  }
+  return ok();
 }
 
 export async function tryUpdateCachedCname(
@@ -127,10 +126,10 @@ export async function tryUpdateCachedCname(
         unexpected();
       }
     },
-    catch: async (err) => {
+    catch: async (e) => {
       Sentry.captureException(
         "Could not read CNAME. May be removed, or Pages points to a different branch. Not an error; this is best-effort. Failure was:",
-        err
+        e
       );
     },
     else: async (cname) => {

@@ -5,8 +5,8 @@ import { ComponentPropModal } from "@/wab/client/components/modals/ComponentProp
 import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
 import { updateOrCreateExpr } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import {
@@ -14,11 +14,12 @@ import {
   PropsTooltip,
 } from "@/wab/client/components/widgets/DetailedTooltips";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
-import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
@@ -37,13 +38,13 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   Component,
   ComponentTemplateInfo,
-  isKnownFunctionType,
   Param,
+  isKnownFunctionType,
 } from "@/wab/shared/model/classes";
 import { typeDisplayName } from "@/wab/shared/model/model-util";
-import { getSlotParams } from "@/wab/shared/SlotUtils";
-import { Menu, notification, Tooltip } from "antd";
+import { Menu, Tooltip, notification } from "antd";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export const LegacyComponentParamsSection = observer(
@@ -406,7 +407,7 @@ const ParamRow = observer(function ParamRow(props: {
                 }
 
                 spawn(
-                  studioCtx.change(({ success }) => {
+                  studioCtx.change(() => {
                     param.defaultExpr = updateOrCreateExpr(
                       param.defaultExpr,
                       param.type,
@@ -414,7 +415,7 @@ const ParamRow = observer(function ParamRow(props: {
                       undefined,
                       undefined
                     );
-                    return success();
+                    return ok();
                   })
                 );
               }}

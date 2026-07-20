@@ -4,7 +4,8 @@ import {
   PasteResult,
 } from "@/wab/client/clipboard/common";
 import { htmlToTpl } from "@/wab/client/operations/html-to-tpl";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
+import { ok } from "neverthrow";
 
 export async function pasteFromWebImporter(
   text,
@@ -37,14 +38,14 @@ export async function pasteFromWebImporter(
   return {
     handled: true,
     success: unwrap(
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         result.finalize({
           component,
           tplMgr: viewCtx.tplMgr(),
           ccRegistry: studioCtx.codeComponentsRegistry,
         });
 
-        return success(
+        return ok(
           viewCtx.viewOps.pasteNodes({
             nodes: result.tpls,
             cursorClientPt,

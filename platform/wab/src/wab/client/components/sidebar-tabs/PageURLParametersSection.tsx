@@ -43,6 +43,7 @@ import {
 import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
 import { isEqual, size } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React, { useMemo, useState } from "react";
 
 export type URLParamType = "Path" | "Query" | "Fragment";
@@ -175,18 +176,18 @@ export const PageURLParametersSection = observer(
     const hasAnyParam = pathParams.length + urlSearchParams.length > 0;
 
     const onAdd = async (key: string) => {
-      await sc.change(({ success }) => {
+      await sc.change(() => {
         pageMeta.query[key] = "REPLACEME";
-        return success();
+        return ok();
       });
     };
 
     const handleValueChange = React.useCallback(
       (source: { [key: string]: string }) =>
         (key: string, newValue: string) => {
-          void sc.change(({ success }) => {
+          void sc.change(() => {
             source[key] = newValue;
-            return success();
+            return ok();
           });
         },
       []
@@ -194,9 +195,9 @@ export const PageURLParametersSection = observer(
 
     const handleParamDeletion = React.useCallback(
       (source: { [key: string]: string }) => (key: string) => {
-        void sc.change(({ success }) => {
+        void sc.change(() => {
           delete source[key];
-          return success();
+          return ok();
         });
       },
       []

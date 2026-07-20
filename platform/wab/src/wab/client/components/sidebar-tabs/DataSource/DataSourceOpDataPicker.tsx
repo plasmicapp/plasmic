@@ -15,6 +15,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { renameQueryAndFixExprs } from "@/wab/shared/refactoring";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
+import { ok } from "neverthrow";
 import React, { useContext } from "react";
 
 export function DataSourceOpDataPicker({
@@ -45,7 +46,7 @@ export function DataSourceOpDataPicker({
     <EnumPropEditor
       value={isKnownObjectPath(value) ? value.path[1] : undefined}
       onChange={async (picked) => {
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           function onChangeToQuery(queryName: string | number | boolean) {
             onChange(
               queryName
@@ -67,12 +68,12 @@ export function DataSourceOpDataPicker({
                 parent: query,
                 value: query.op ?? undefined,
                 onSave: async (newOp, opExprName) => {
-                  await studioCtx.change(({ success: success2 }) => {
+                  await studioCtx.change(() => {
                     query.op = newOp;
                     if (opExprName && component && opExprName !== query.name) {
                       renameQueryAndFixExprs(component, query, opExprName);
                     }
-                    return success2();
+                    return ok();
                   });
                   dataSourceModals.close(query.uuid);
                 },
@@ -94,7 +95,7 @@ export function DataSourceOpDataPicker({
           } else {
             onChangeToQuery(picked);
           }
-          return success();
+          return ok();
         });
       }}
       defaultValueHint={"Pick data query"}

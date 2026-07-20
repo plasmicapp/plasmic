@@ -125,6 +125,7 @@ import { Dropdown, Menu } from "antd";
 import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { computedFn } from "mobx-utils";
+import { ok } from "neverthrow";
 import React from "react";
 import { FocusScope } from "react-aria";
 
@@ -718,9 +719,9 @@ function NavigationDropdown_(
 
       if (renameProps.length) {
         spawn(
-          studioCtx.change(({ success }) => {
+          studioCtx.change(() => {
             studioCtx.siteOps().tryRenameArenas(renameProps);
-            return success();
+            return ok();
           })
         );
         const keyChanges = getFolderKeyChanges(folders, pathData);

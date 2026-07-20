@@ -171,10 +171,10 @@ export function useStudioOps(
       const maybeError = elementSchemaToTpl(viewCtx.site, ownerComp, element, {
         codeComponentsOnly: false,
       });
-      if (maybeError.result.isError) {
-        throw new BadRequestError(maybeError.result.error.message);
+      if (maybeError.isErr()) {
+        throw new BadRequestError(maybeError.error.message);
       }
-      const { tpl, warnings: componentWarnings } = maybeError.result.value;
+      const { tpl, warnings: componentWarnings } = maybeError.value;
 
       componentWarnings.forEach((err) => {
         notification.error({

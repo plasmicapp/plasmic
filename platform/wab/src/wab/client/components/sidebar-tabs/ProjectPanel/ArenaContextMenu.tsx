@@ -20,6 +20,7 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { Component } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { Menu } from "antd";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 export const deleteArenas = async (
@@ -36,7 +37,7 @@ export const deleteArenas = async (
 
   await studioCtx.changeObserved(
     () => allRefs,
-    ({ success }) => {
+    () => {
       for (const arena of arenas) {
         if (isDedicatedArena(arena)) {
           studioCtx.siteOps().tryRemoveComponent(arena.component);
@@ -44,7 +45,7 @@ export const deleteArenas = async (
           studioCtx.siteOps().removeMixedArena(arena);
         }
       }
-      return success();
+      return ok();
     }
   );
 };
@@ -183,9 +184,9 @@ export function ArenaContextMenu({
   const onConvertToPage = () =>
     studioCtx.changeObserved(
       () => [component!],
-      ({ success }) => {
+      () => {
         studioCtx.siteOps().convertComponentToPage(component!);
-        return success();
+        return ok();
       }
     );
 
@@ -326,11 +327,11 @@ export function ArenaContextMenu({
                             component
                           ),
                         ],
-                        ({ success }) => {
+                        () => {
                           studioCtx.tplMgr().removeComponentGroup([component], {
                             convertPageHrefToCode: true,
                           });
-                          return success();
+                          return ok();
                         }
                       )
                     }

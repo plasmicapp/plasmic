@@ -1,6 +1,7 @@
 import { getComponentContext } from "@/wab/client/commands/context-utils";
 import { Command, booleanPrompt } from "@/wab/client/commands/types";
 import { Component } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export const setEditableByContentEditorCommand: Command<
   {
@@ -24,9 +25,9 @@ export const setEditableByContentEditorCommand: Command<
   },
   context: getComponentContext,
   execute: async (studioCtx, { value }, { component }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       component.editableByContentEditor = value;
-      return success();
+      return ok();
     });
   },
 };

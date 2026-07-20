@@ -1,7 +1,7 @@
 import { COMMANDS } from "@/wab/client/commands/command";
-import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import RowGroup, { RowGroupProps } from "@/wab/client/components/RowGroup";
 import RowItem from "@/wab/client/components/RowItem";
+import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import { ArenaContextMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/ArenaContextMenu";
 import { FolderContextMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderContextMenu";
 import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
@@ -22,12 +22,13 @@ import {
   isComponentArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import { ARENA_LOWER } from "@/wab/shared/Labels";
 import { ensure, spawn, switchType } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
-import { ARENA_LOWER } from "@/wab/shared/Labels";
 import { Arena, ComponentArena, PageArena } from "@/wab/shared/model/classes";
 import cn from "classnames";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 export const HEADER_HEIGHT = 36;
@@ -235,9 +236,9 @@ export function NavigationArenaRow({
             size="small"
             tooltip="Page settings"
             onClick={() =>
-              studioCtx.change(({ success }) => {
+              studioCtx.change(() => {
                 studioCtx.showPageSettings = arena.component as PageComponent;
-                return success();
+                return ok();
               })
             }
           >

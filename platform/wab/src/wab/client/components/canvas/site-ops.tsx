@@ -190,6 +190,7 @@ import {
 } from "@/wab/shared/visibility-utils";
 import { notification } from "antd";
 import L from "lodash";
+import { ok } from "neverthrow";
 import React from "react";
 
 /**
@@ -209,7 +210,7 @@ export class SiteOps {
 
     await this.studioCtx.changeObserved(
       () => this.site.components,
-      ({ success }) => {
+      () => {
         this.site.activeScreenVariantGroup = group;
         if (prevGroup) {
           const oldToNewVariant = new Map(
@@ -262,7 +263,7 @@ export class SiteOps {
           }
         }
         ensureScreenVariantsOrderOnMatrices(this.site);
-        return success();
+        return ok();
       }
     );
   }
@@ -555,7 +556,7 @@ export class SiteOps {
           )
         );
       },
-      ({ success }) => {
+      () => {
         this.clearFrameComboSettings(frame);
         const index = variant.parent
           ? variant.parent.variants.indexOf(variant)
@@ -586,7 +587,7 @@ export class SiteOps {
           }
         }
         this.fixChromeAfterRemoveFrame();
-        return success();
+        return ok();
       }
     );
   }
@@ -919,7 +920,7 @@ export class SiteOps {
       component.name
     );
 
-    return this.studioCtx.change(({ success }) => {
+    return this.studioCtx.change(() => {
       for (const dep of transitiveDeps) {
         this.studioCtx.projectDependencyManager.addTransitiveDepAsDirectDep(
           dep
@@ -939,7 +940,7 @@ export class SiteOps {
         }
       }
 
-      return success();
+      return ok();
     });
   }
 
@@ -950,9 +951,9 @@ export class SiteOps {
       () => {
         return Array.from(referencersSet ?? []);
       },
-      ({ success }) => {
+      () => {
         this.studioCtx.tplMgr().swapComponents(fromComp, toComp);
-        return success();
+        return ok();
       }
     );
   }
@@ -960,9 +961,9 @@ export class SiteOps {
   async swapPagesLinks(fromPage: PageComponent, toPage: PageComponent) {
     return await this.studioCtx.changeObserved(
       () => [...componentsReferencerToPageHref(this.site, fromPage)],
-      ({ success }) => {
+      () => {
         swapPageLinks(this.studioCtx.site, fromPage, toPage);
-        return success();
+        return ok();
       }
     );
   }
@@ -995,7 +996,7 @@ export class SiteOps {
         () => {
           return Array.from(referencersSet ?? []);
         },
-        ({ success }) => {
+        () => {
           if (componentToRemap === "delete") {
             visitComponentRefs(
               this.studioCtx.site,
@@ -1028,13 +1029,13 @@ export class SiteOps {
             this.tplMgr.swapComponents(component, componentToRemap);
           }
           this.tryRemoveComponent(component);
-          return success();
+          return ok();
         }
       );
     } else {
-      await this.studioCtx.change(({ success }) => {
+      await this.studioCtx.change(() => {
         this.tryRemoveComponent(component);
-        return success();
+        return ok();
       });
     }
     return true;
@@ -1054,10 +1055,10 @@ export class SiteOps {
       () => {
         return this.site.components;
       },
-      ({ success }) => {
+      () => {
         this.tplMgr.upgradeProjectDeps(targetDeps);
         this.studioCtx.ensureAllComponentStackFramesHasOnlyValidVariants();
-        return success();
+        return ok();
       },
       opts
     );
@@ -1072,10 +1073,10 @@ export class SiteOps {
       () => {
         return this.site.components;
       },
-      ({ success }) => {
+      () => {
         this.tplMgr.removeProjectDep(projectDependency);
         this.studioCtx.ensureAllComponentStackFramesHasOnlyValidVariants();
-        return success();
+        return ok();
       }
     );
   }
@@ -1178,9 +1179,9 @@ export class SiteOps {
     ]);
     await this.studioCtx.changeObserved(
       () => componentRef.map(({ ownerComponent }) => ownerComponent),
-      ({ success }) => {
+      () => {
         this.tplMgr.removeComponentQuery(component, query);
-        return success();
+        return ok();
       }
     );
   }
@@ -1220,9 +1221,9 @@ export class SiteOps {
 
     await this.studioCtx.changeObserved(
       () => [],
-      ({ success }) => {
+      () => {
         this.tplMgr.removeComponentServerQuery(component, query);
-        return success();
+        return ok();
       }
     );
   }
@@ -1357,11 +1358,11 @@ export class SiteOps {
       () => {
         return Array.from(findComponentsUsingGlobalVariant(this.site, variant));
       },
-      ({ success }) => {
+      () => {
         this.tplMgr.tryRemoveVariant(variant, undefined);
         this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
         this.studioCtx.pruneInvalidViewCtxs();
-        return success();
+        return ok();
       }
     );
   }
@@ -1389,9 +1390,9 @@ export class SiteOps {
 
     await this.studioCtx.changeObserved(
       () => [],
-      ({ success }) => {
+      () => {
         this.tplMgr.removeSplit(split);
-        return success();
+        return ok();
       }
     );
   }
@@ -1548,14 +1549,14 @@ export class SiteOps {
         component,
         ...componentsReferencerToPageHref(this.site, component),
       ],
-      ({ success }) => {
+      () => {
         this.tplMgr.convertPageToComponent(component);
         toast("Page converted to reusable component.");
         if (isCurrentArena) {
           // Switch to the corresponding component arena!
           this.studioCtx.switchToComponentArena(component);
         }
-        return success();
+        return ok();
       }
     );
   }
@@ -1805,9 +1806,9 @@ export class SiteOps {
           ...summary.frames.map((f) => f.container.component),
         ];
       },
-      ({ success }) => {
+      () => {
         this.tplMgr.swapTokens(fromToken, toToken);
-        return success();
+        return ok();
       }
     );
   }

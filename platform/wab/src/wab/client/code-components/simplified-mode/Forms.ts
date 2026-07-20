@@ -1,5 +1,5 @@
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { unwrap } from "@/wab/commons/failable-utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
 import { unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";

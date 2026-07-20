@@ -19,23 +19,23 @@ export async function uploadImage(req: Request, res: Response) {
   try {
     const { fileBuffer, metadata } = await downscaleImage(imgFile.data);
     const result = await uploadFileToS3(fileBuffer);
-    if (result.result.isError) {
-      throw result.result.error;
+    if (result.isErr()) {
+      throw result.error;
     }
     res.status(200).json({
-      dataUri: result.result.value.url,
+      dataUri: result.value.url,
       width: metadata.width,
       height: metadata.height,
-      mimeType: result.result.value.mimeType,
+      mimeType: result.value.mimeType,
     });
   } catch {
     const result = await uploadFileToS3(imgFile.data);
-    if (result.result.isError) {
-      throw result.result.error;
+    if (result.isErr()) {
+      throw result.error;
     }
     res.status(200).json({
-      dataUri: result.result.value.url,
-      mimeType: result.result.value.mimeType,
+      dataUri: result.value.url,
+      mimeType: result.value.mimeType,
       warning:
         "The image could not be optimized. We recommend lowering the image resolution.",
     });

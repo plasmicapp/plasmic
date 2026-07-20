@@ -127,6 +127,7 @@ import {
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { notification } from "antd";
 import { mapValues, uniqBy } from "lodash";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 /**
@@ -817,18 +818,16 @@ async function createDraftQueryForFunction(
     func: fn,
     args: mkCustomFunctionArgs(studioCtx, fn, "query"),
   });
-  const { result } = await studioCtx.change<never, ComponentServerQuery>(
-    ({ success }) => {
-      const newQuery = new ComponentServerQuery({
-        uuid: mkShortId(),
-        name: studioCtx.tplMgr().getUniqueServerQueryName(component, "Query"),
-        op,
-      });
-      component.serverQueries.push(newQuery);
-      return success(newQuery);
-    }
-  );
-  return result.isError ? undefined : result.value;
+  const result = await studioCtx.change<never, ComponentServerQuery>(() => {
+    const newQuery = new ComponentServerQuery({
+      uuid: mkShortId(),
+      name: studioCtx.tplMgr().getUniqueServerQueryName(component, "Query"),
+      op,
+    });
+    component.serverQueries.push(newQuery);
+    return ok(newQuery);
+  });
+  return result.isErr() ? undefined : result.value;
 }
 
 /**
@@ -964,7 +963,7 @@ async function installHostlessPkgs(sc: StudioCtx, projectIds: string[]) {
     ...projectDependencies.flatMap((dep) => usedHostLessPkgs(dep.site)),
   ]);
 
-  await sc.change(({ success }) => {
+  await sc.change(() => {
     for (const projectDependency of projectDependencies) {
       if (
         !sc.site.projectDependencies.some(
@@ -981,7 +980,7 @@ async function installHostlessPkgs(sc: StudioCtx, projectIds: string[]) {
       sc.site,
       sc.getCodeComponentsAndContextsRegistration()
     );
-    return success();
+    return ok();
   });
   return { deps: projectDependencies, installed: true };
 }
@@ -1144,12 +1143,12 @@ export function makePlumeInsertables(
               component.name,
               isComponentInserted
             );
-          syncPlumeComponent(studioCtx, newComponent).match({
-            success: (x) => x,
-            failure: (err) => {
+          syncPlumeComponent(studioCtx, newComponent).match(
+            (x) => x,
+            (err) => {
               throw err;
-            },
-          });
+            }
+          );
           const tpl = vc
             .variantTplMgr()
             .mkTplComponentWithDefaults(newComponent);
@@ -1175,11 +1174,11 @@ export function maybeShowGlobalContextNotification(
 ) {
   const key = "global-context-notification";
   const goToSettings = async () => {
-    await studioCtx.change(({ success }) => {
+    await studioCtx.change(() => {
       studioCtx.hidePresetsModal();
       studioCtx.switchLeftTab("settings", { highlight: true });
       notification.close(key);
-      return success();
+      return ok();
     });
   };
   const tryExtractDataSourceProp = (c: Component) => {

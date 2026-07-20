@@ -14,6 +14,7 @@ import type {
   Variant,
   VariantGroup,
 } from "@/wab/shared/model/classes";
+import { ok } from "neverthrow";
 
 export interface UsageSummary {
   components?: Component[];
@@ -132,7 +133,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
 
     await studioCtx.changeObserved<never, void>(
       () => affectedComponents,
-      ({ success }) => {
+      () => {
         for (const { resource } of resourcesWithUsage) {
           onDelete(resource);
           messages.push(
@@ -141,7 +142,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
             )}" (uuid: ${resource.uuid}).`
           );
         }
-        return success();
+        return ok();
       }
     );
   }

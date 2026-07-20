@@ -29,11 +29,18 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, ensureArray, mkShortId, spawn, swallow } from "@/wab/shared/common";
-import { ExprCtx, serCompositeExprMaybe } from "@/wab/shared/core/exprs";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  ensure,
+  ensureArray,
+  mkShortId,
+  spawn,
+  swallow,
+} from "@/wab/shared/common";
+import { ExprCtx, serCompositeExprMaybe } from "@/wab/shared/core/exprs";
+import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   DataSourceMeta,
@@ -53,12 +60,12 @@ import {
   NameArg,
   TplComponent,
 } from "@/wab/shared/model/classes";
-import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { DataSourceSchema, TableSchema } from "@plasmicapp/data-sources";
 import { FormType, formTypeDescription } from "@plasmicpkgs/antd5";
 import { notification } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { isString, size } from "lodash";
+import { ok } from "neverthrow";
 import React from "react";
 
 type ConnectionData = {
@@ -331,7 +338,7 @@ export function ConnectToDBTableModal({
       tpl,
       connectionData
     );
-    await viewCtx.studioCtx.change(({ success }) => {
+    await viewCtx.studioCtx.change(() => {
       tplMgr.setArg(
         tpl,
         baseVs,
@@ -340,7 +347,7 @@ export function ConnectToDBTableModal({
       );
       tplMgr.setArg(tpl, baseVs, dataParam.variable, connectionData.dataOp);
       tplMgr.setArg(tpl, baseVs, submitParam.variable, submitExpr);
-      return success();
+      return ok();
     });
   };
 
@@ -604,7 +611,7 @@ function FormDataConnectionBottomModal({
         lookupValue: draft?.lookupValue,
       });
       spawn(
-        studioCtx.change(({ success }) => {
+        studioCtx.change(() => {
           for (const vs of tpl.vsettings) {
             tplMgr.delArg(
               tpl,
@@ -626,7 +633,7 @@ function FormDataConnectionBottomModal({
             ).variable,
             submitExpr
           );
-          return success();
+          return ok();
         })
       );
     }

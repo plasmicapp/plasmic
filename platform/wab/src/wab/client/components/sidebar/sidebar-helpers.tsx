@@ -51,6 +51,7 @@ import {
 import { Select, Tooltip } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { CSSProperties, ReactNode } from "react";
 import type { SetOptional } from "type-fest";
@@ -466,9 +467,9 @@ export const VerticalLabeledStyleDimItem = observer(
           value={value}
           onChange={async (val) => {
             if (val) {
-              await studioCtx.change(({ success }) => {
+              await studioCtx.change(() => {
                 exp.set(styleName, val);
-                return success();
+                return ok();
               });
             }
           }}

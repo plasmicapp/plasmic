@@ -56,6 +56,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Popover } from "antd";
 import { isEmpty } from "lodash";
 import { observer } from "mobx-react";
+import { err, ok } from "neverthrow";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
@@ -144,13 +145,13 @@ function ActionBuilder_(
         newInteractionDefaultName !== interaction.interactionName
       ) {
         spawn(
-          sc.change(({ success }) => {
+          sc.change(() => {
             renameInteractionAndFixExprs(
               interaction,
               newInteractionDefaultName
             );
             setInteractionName(interaction.interactionName);
-            return success();
+            return ok();
           })
         );
       }
@@ -233,12 +234,10 @@ function ActionBuilder_(
                       return;
                     }
                     spawn(
-                      sc.change<Error>(({ success, failure }) => {
+                      sc.change<Error>(() => {
                         const newActionMeta = getActionMeta(sc, val);
                         if (!newActionMeta) {
-                          return failure(
-                            new Error(`Unknown action type ${val}`)
-                          );
+                          return err(new Error(`Unknown action type ${val}`));
                         }
 
                         interaction.actionName = val;
@@ -261,7 +260,7 @@ function ActionBuilder_(
                           );
                         }
 
-                        return success();
+                        return ok();
                       })
                     );
                   },
@@ -326,7 +325,7 @@ function ActionBuilder_(
           onChange: (e) => setInteractionName(e.target.value),
           onBlur: () => {
             spawn(
-              sc.change(({ success }) => {
+              sc.change(() => {
                 if (interactionName === "" && actionMeta) {
                   const defaultInteractionName = actionMeta.getDefaultName?.(
                     component,
@@ -344,7 +343,7 @@ function ActionBuilder_(
                   setInteractionName(interaction.interactionName);
                   setIsInteractionDefaultName(false);
                 }
-                return success();
+                return ok();
               })
             );
             setIsEditingInteractionName(false);
@@ -359,10 +358,10 @@ function ActionBuilder_(
             <StyleToggleButtonGroup
               value={interaction.conditionalMode}
               onChange={(val) =>
-                sc.change(({ success }) => {
+                sc.change(() => {
                   interaction.conditionalMode =
                     val as InteractionConditionalMode;
-                  return success();
+                  return ok();
                 })
               }
             >
@@ -401,14 +400,14 @@ function ActionBuilder_(
                   return;
                 }
                 spawn(
-                  sc.change(({ success }) => {
+                  sc.change(() => {
                     interaction.condExpr = ensureInstance(
                       val,
                       ObjectPath,
                       CustomCode
                     );
                     ensureGenericFuncTypes(eventHandlerExpr, eventHandlerKey);
-                    return success();
+                    return ok();
                   })
                 );
               }}
@@ -447,12 +446,9 @@ function ActionBuilder_(
               ) {
                 return null;
               }
-              const failableType = propTypeToWabType(
-                sc.site,
-                parameterMeta
-              ).result;
+              const failableType = propTypeToWabType(sc.site, parameterMeta);
               assert(
-                !failableType.isError,
+                !failableType.isErr(),
                 `couldn't parse parameter meta: ${parameterMeta}`
               );
               const type = failableType.value;
@@ -477,7 +473,7 @@ function ActionBuilder_(
                         parameterName
                       );
                       spawn(
-                        sc.change(({ success }) => {
+                        sc.change(() => {
                           interaction.args = Object.entries(newArgs).map(
                             ([name, expr]) =>
                               mkNameArg({
@@ -485,7 +481,7 @@ function ActionBuilder_(
                                 expr,
                               })
                           );
-                          return success();
+                          return ok();
                         })
                       );
                     }}
@@ -511,7 +507,7 @@ function ActionBuilder_(
                         parameterName
                       );
                       spawn(
-                        sc.change(({ success }) => {
+                        sc.change(() => {
                           interaction.args = Object.entries(newArgs).map(
                             ([name, expr]) =>
                               mkNameArg({
@@ -523,7 +519,7 @@ function ActionBuilder_(
                             eventHandlerExpr,
                             eventHandlerKey
                           );
-                          return success();
+                          return ok();
                         })
                       );
                     }}

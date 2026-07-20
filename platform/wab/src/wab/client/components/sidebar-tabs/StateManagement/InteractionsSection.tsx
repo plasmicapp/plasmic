@@ -14,6 +14,7 @@ import { Popover } from "antd";
 import Select, { RefSelectProps } from "antd/lib/select";
 import { remove, uniqBy } from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { useState } from "react";
 
@@ -92,9 +93,9 @@ function InteractionsSection_(props: InteractionsSectionProps) {
         mkDefaultInteraction(newEventHandler, component)
       );
       spawn(
-        sc.change(({ success }) => {
+        sc.change(() => {
           setEventHandlerByEventKey(tpl, eventHandlerKey, newEventHandler);
-          return success();
+          return ok();
         })
       );
     }
@@ -156,7 +157,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
             disableFallback
             onDelete={() =>
               spawn(
-                sc.change(({ success }) => {
+                sc.change(() => {
                   const baseVs = ensureBaseVariantSetting(component, tpl);
                   if (isEventHandlerKeyForAttr(eventHandlerKey)) {
                     delete baseVs.attrs[eventHandlerKey.attr];
@@ -177,13 +178,13 @@ function InteractionsSection_(props: InteractionsSectionProps) {
                       `event handler not supported for interactions section ${eventHandlerKey}`
                     );
                   }
-                  return success();
+                  return ok();
                 })
               )
             }
             onChange={(newExpr) =>
               spawn(
-                sc.change(({ success }) => {
+                sc.change(() => {
                   if (!newExpr) {
                     const newEventHandler = new EventHandler({
                       interactions: [],
@@ -219,7 +220,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
                   } else {
                     assert(false, "unexpected expr type for event handler");
                   }
-                  return success();
+                  return ok();
                 })
               )
             }

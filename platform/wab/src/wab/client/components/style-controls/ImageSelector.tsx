@@ -30,6 +30,7 @@ import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Select, Tooltip, notification } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React, { CSSProperties } from "react";
 import validator from "validator";
 
@@ -279,12 +280,12 @@ export const ImageAssetOrUrlPicker = observer(
       if (!imageResult || !opts) {
         return;
       }
-      return studioCtx.change(({ success }) => {
+      return studioCtx.change(() => {
         const asset = studioCtx.siteOps().createImageAsset(imageResult, opts);
         if (asset) {
           onPicked(asset.asset);
         }
-        return success();
+        return ok();
       });
     };
 

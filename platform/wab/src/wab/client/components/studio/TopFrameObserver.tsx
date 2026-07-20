@@ -23,6 +23,7 @@ import { notification } from "antd";
 import { sortBy } from "lodash";
 import { autorun, computed } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 import { mutate as swrMutate } from "swr";
 
@@ -99,7 +100,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         keyScheme,
         tagPrefix
       ) => {
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           studioCtx.site.flags.usePlasmicTranslation = localization;
           if (keyScheme && localization) {
             studioCtx.site.flags.keyScheme = keyScheme;
@@ -113,7 +114,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
               studioCtx.site.flags.usePlasmicTranslation ? "on" : "off"
             }`,
           });
-          return success();
+          return ok();
         });
       },
       async switchToBranch(branch: ApiBranch | undefined): Promise<void> {
@@ -152,9 +153,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       async setDefaultPageRoleId(
         roleId: string | null | undefined
       ): Promise<void> {
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           studioCtx.site.defaultPageRoleId = roleId;
-          return success();
+          return ok();
         });
       },
       async logAsAppUser(appUser: StudioAppUser): Promise<void> {

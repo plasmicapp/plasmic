@@ -75,8 +75,8 @@ import { PlasmicElement } from "@plasmicapp/host";
 import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { type GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { notification } from "antd";
+import { ok, safeTry } from "neverthrow";
 import React from "react";
-import { failable } from "ts-failable";
 
 function onCreateCodeComponent(
   name: string,
@@ -261,7 +261,7 @@ export async function syncCodeComponentsAndHandleErrors(
     opts
   );
 
-  if (!maybeError.result.isError) {
+  if (!maybeError.isErr()) {
     appendCodeComponentMetaToModel(
       studioCtx.site,
       studioCtx.getCodeComponentsAndContextsRegistration()
@@ -269,11 +269,11 @@ export async function syncCodeComponentsAndHandleErrors(
   }
 
   // Handle errors
-  return maybeError.match({
-    success: () => {
+  return maybeError.match(
+    () => {
       /**/
     },
-    failure: safeCast<(err: Error) => void>((err) => {
+    safeCast<(err: Error) => void>((err) => {
       switchType(err)
         .when(DuplicateCodeComponentError, (duplicatedCompErr) => {
           notification.error({
@@ -347,8 +347,8 @@ export async function syncCodeComponentsAndHandleErrors(
       return new Promise((_resolve) => {
         // Never resolve since Studio can have components in invalid states
       });
-    }),
-  });
+    })
+  );
 }
 
 export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
@@ -385,7 +385,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       const existingLibs = [...studioCtx.site.codeLibraries];
 
       const clearSite = async () => {
-        await studioCtx.change(({ success }) => {
+        await studioCtx.change(() => {
           const emptySite: Omit<WritablePart<Site>, "uid" | "typeTag"> = {
             components: [],
             arenas: [],
@@ -417,7 +417,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             theme.styles = [];
             theme.defaultStyle.rs.values = {};
           });
-          return success();
+          return ok();
         });
       };
 
@@ -507,20 +507,20 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       await clearSite();
 
       // Reset the existing components
-      await studioCtx.change(({ success }) => {
+      await studioCtx.change(() => {
         studioCtx.site.components = [...existingComps];
         studioCtx.site.globalContexts = [...existingGlobalContexts];
         studioCtx.site.styleTokens = [...existingStyleTokens];
         studioCtx.site.dataTokens = [...existingDataTokens];
         studioCtx.site.customFunctions = [...existingFunctions];
         studioCtx.site.codeLibraries = [...existingLibs];
-        return success();
+        return ok();
       });
 
       await syncCodeComponentsAndHandleErrors(studioCtx, { force: true });
 
       await studioCtx.change(
-        ({ success }) => {
+        () => {
           const deletedComponents = new Set(studioCtx.site.components);
           studioCtx.site.components = studioCtx.site.components.filter(
             (c) =>
@@ -557,7 +557,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
           removeWhere(studioCtx.site.globalContexts, (tpl) =>
             deletedComponents.has(tpl.component)
           );
-          return success();
+          return ok();
         },
         { noUndoRecord: true }
       );
@@ -596,17 +596,20 @@ export function elementSchemaToTplAndLogErrors(
   component: CodeComponent | undefined,
   rootSchema: PlasmicElement
 ) {
-  return failable<
+  return safeTry<
     TplNode,
     | BadPresetSchemaError
     | UnknownComponentError
     | SelfReferencingComponent
     | UnknownComponentPropError
-  >(({ success, run }) => {
-    const { tpl, warnings } = run(
-      elementSchemaToTpl(site, component, rootSchema, {
+  >(function* () {
+    const { tpl, warnings } = yield* elementSchemaToTpl(
+      site,
+      component,
+      rootSchema,
+      {
         codeComponentsOnly: true,
-      })
+      }
     );
 
     warnings.forEach((err) => {
@@ -619,7 +622,7 @@ export function elementSchemaToTplAndLogErrors(
         reportError(new Error(err.message));
       }
     });
-    return success(tpl);
+    return ok(tpl);
   });
 }
 

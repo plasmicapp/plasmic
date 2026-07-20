@@ -3,6 +3,7 @@ import { confirm } from "@/wab/client/components/quick-modals";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawnWrapper } from "@/wab/shared/common";
 import { notification } from "antd";
+import { ok } from "neverthrow";
 import React from "react";
 
 export async function showPlasmicImgModal(studioCtx: StudioCtx) {
@@ -71,9 +72,9 @@ export async function showPlasmicImgModal(studioCtx: StudioCtx) {
     ),
   });
   if (res) {
-    await studioCtx.change<never>(({ success }) => {
+    await studioCtx.change<never>(() => {
       studioCtx.site.flags.usePlasmicImg = true;
-      return success();
+      return ok();
     });
     const saveResult = await studioCtx.save();
     if (saveResult === "Success") {

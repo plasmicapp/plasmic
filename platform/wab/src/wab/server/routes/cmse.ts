@@ -350,8 +350,8 @@ function mkDataUri(mime: string, charset: string, data: Buffer) {
 async function upload(file: UploadedFile): Promise<CmsUploadedFile> {
   const dataUri = mkDataUri(file.mimetype, file.encoding, file.data);
   const result = await uploadDataUriToS3(dataUri, { imageOnly: false });
-  if (result.result.isError) {
-    throw result.result.error;
+  if (result.isErr()) {
+    throw result.error;
   }
 
   const size = isImageSupported(file.mimetype)
@@ -364,7 +364,7 @@ async function upload(file: UploadedFile): Promise<CmsUploadedFile> {
 
   return {
     name: file.name,
-    url: result.result.value,
+    url: result.value,
     mimetype: file.mimetype,
     size: file.size,
     imageMeta,

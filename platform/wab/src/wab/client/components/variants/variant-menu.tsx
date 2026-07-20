@@ -42,6 +42,7 @@ import {
   isKnownObjectPath,
 } from "@/wab/shared/model/classes";
 import { Menu, Popover } from "antd";
+import { ok } from "neverthrow";
 import React from "react";
 
 export function makeVariantMenu(opts: {
@@ -433,9 +434,9 @@ export function VariantDataPicker(props: {
                 new CustomCode({ code: "undefined", fallback: undefined })
               );
               spawn(
-                studioCtx.change(({ success }) => {
+                studioCtx.change(() => {
                   group.linkedState.param.defaultExpr = newExpr;
-                  return success();
+                  return ok();
                 })
               );
 
@@ -448,9 +449,9 @@ export function VariantDataPicker(props: {
                 group.linkedState.param.defaultExpr.path[0] === "undefined"
               ) {
                 spawn(
-                  studioCtx.change(({ success }) => {
+                  studioCtx.change(() => {
                     group.linkedState.param.defaultExpr = null;
-                    return success();
+                    return ok();
                   })
                 );
               }

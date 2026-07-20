@@ -183,25 +183,22 @@ export class Loadable<T> extends React.Component<
   }
 }
 
-export function ReadablePromiseLoadable<T, Err>({
+export function ReadablePromiseLoadable<T, E>({
   rp,
   contents,
   failureContents = () => null,
   loadingContents = () => <Spinner />,
 }: {
-  rp: ReadablePromise<T, Err>;
+  rp: ReadablePromise<T, E>;
   loadingContents?: () => ReactElement | null;
   contents: (x: T) => ReactElement | null;
-  failureContents?: (x: Err) => ReactElement | null;
+  failureContents?: (x: E) => ReactElement | null;
 }) {
   const result = useReadablePromise(rp);
   if (!result) {
     return loadingContents();
   }
-  return result.match({
-    success: contents,
-    failure: failureContents,
-  });
+  return result.match(contents, failureContents);
 }
 
 export const ObserverLoadable = observer(Loadable);

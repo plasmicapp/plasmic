@@ -26,6 +26,7 @@ import {
   parseGridCssPropsToSpec,
 } from "@/wab/shared/grid-utils";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import React from "react";
 
 export const GridControls = observer(function GridControls(props: {
@@ -68,14 +69,14 @@ export const GridControls = observer(function GridControls(props: {
           value={isFlexible ? "filled" : "fixed"}
           onChange={async (val) => {
             if (!isDisabled) {
-              await studioCtx.change(({ success }) => {
+              await studioCtx.change(() => {
                 sc.exp().set(
                   "grid-template-columns",
                   val === "filled"
                     ? "repeat(auto-fill, minmax(200px, 1fr))"
                     : "repeat(2, minmax(0, 1fr))"
                 );
-                return success();
+                return ok();
               });
             }
           }}
@@ -103,12 +104,12 @@ export const GridControls = observer(function GridControls(props: {
           <DimTokenSpinner
             value={`${templateColumns.size.num}${templateColumns.size.unit}`}
             onChange={async (val) => {
-              await studioCtx.change(({ success }) => {
+              await studioCtx.change(() => {
                 sc.exp().set(
                   "grid-template-columns",
                   `repeat(auto-fill, minmax(${val}, 1fr))`
                 );
-                return success();
+                return ok();
               });
             }}
             noClear
@@ -128,12 +129,12 @@ export const GridControls = observer(function GridControls(props: {
                 : templateColumns.num
             }`}
             onChange={async (val) => {
-              await studioCtx.change(({ success }) => {
+              await studioCtx.change(() => {
                 sc.exp().set(
                   "grid-template-columns",
                   `repeat(${+(val || "1")}, minmax(0, 1fr))`
                 );
-                return success();
+                return ok();
               });
             }}
             noClear

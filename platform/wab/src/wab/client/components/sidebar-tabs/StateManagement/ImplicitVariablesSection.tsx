@@ -14,9 +14,9 @@ import { assert, ensure, spawn } from "@/wab/shared/common";
 import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import {
   Component,
-  isKnownTplNode,
   TplComponent,
   TplTag,
+  isKnownTplNode,
 } from "@/wab/shared/model/classes";
 import { getPlumeElementDef } from "@/wab/shared/plume/plume-registry";
 import { purpleDark8 } from "@/wab/styles/_tokens";
@@ -24,6 +24,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import { computed } from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 
 export interface ImplicitVariablesSectionProps
@@ -94,11 +95,11 @@ const ImplicitVariablesSection = observer(
             doubleClickToEdit
             onEdit={(val) => {
               spawn(
-                sc.change(({ success }) => {
+                sc.change(() => {
                   if (val !== "") {
                     sc.tplMgr().renameTpl(component, tpl, val);
                   }
-                  return success();
+                  return ok();
                 })
               );
               setDefaultEditing(false);

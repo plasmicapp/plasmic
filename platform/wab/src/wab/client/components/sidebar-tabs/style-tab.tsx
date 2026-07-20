@@ -70,6 +70,7 @@ import { selectionControlsColor } from "@/wab/styles/css-variables";
 import { Alert, Button, Menu } from "antd";
 import * as mobx from "mobx";
 import { observer } from "mobx-react";
+import { ok } from "neverthrow";
 import * as React from "react";
 import { createContext, useContext } from "react";
 
@@ -203,7 +204,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
             <Menu.Item
               key={selector.cssSelector}
               onClick={async () => {
-                await studioCtx.change(({ success }) => {
+                await studioCtx.change(() => {
                   // Find or create private style variant with this selector
                   const variant = findOrCreatePrivateStyleVariant(
                     component,
@@ -217,7 +218,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
                   // Pin the variant to turn on recording for it
                   vcontroller?.onClickVariant(variant);
 
-                  return success();
+                  return ok();
                 });
 
                 setShowPrivateStyleVariants(true);
@@ -393,10 +394,10 @@ export const StyleTab = observer(function StyleTab(props: {
     if (tpl && !isTplAttachedToSite(studioCtx.site, tpl)) {
       spawn(
         studioCtx.change<never>(
-          ({ success }) => {
+          () => {
             studioCtx.setStudioFocusOnFrameContents(undefined);
             studioCtx.focusReset.dispatch();
-            return success();
+            return ok();
           },
           {
             noUndoRecord: true,

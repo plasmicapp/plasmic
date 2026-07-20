@@ -98,6 +98,7 @@ import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";
 import { Observer, observer } from "mobx-react";
+import { ok, safeTry } from "neverthrow";
 import * as React from "react";
 
 const insertionStripThickness = 4;
@@ -588,15 +589,15 @@ export class DragMoveManager {
         this.moveStates.push(undefined);
       } else {
         const maybeManip = mkFreestyleManipForFocusedDomElt(vc, object);
-        maybeManip.match({
-          success: (manip) => {
+        maybeManip.match(
+          (manip) => {
             this.moveStates.push(manip.start());
           },
-          failure: () => {
+          () => {
             this.moveStates.push(undefined);
             this._aborted = true;
-          },
-        });
+          }
+        );
       }
 
       this.startingFramePt = clientToFramePt(clientPt, this.vc);
@@ -691,22 +692,25 @@ export class DragMoveManager {
     for (let i = 0; i < this.moveStates.length; i++) {
       const ms = this.moveStates[i];
       if (ms) {
+        const self = this;
         const res = await this.vc.studioCtx.change<ManipulatorAbortedError>(
-          ({ run, success }) => {
-            run(
-              mkFreestyleManipForFocusedDomElt(this.vc, this.objects[i])
-            ).move(ms, {
-              deltaFrameX: framePt.x - this.startingFramePt.x,
-              deltaFrameY: framePt.y - this.startingFramePt.y,
-              shiftKey: modifiers.shiftKey,
-              metaKey: modifiers.metaKey,
-              altKey: modifiers.altKey,
-              ctrlKey: modifiers.ctrlKey,
-            });
-            return success();
-          }
+          () =>
+            safeTry(function* () {
+              (yield* mkFreestyleManipForFocusedDomElt(
+                self.vc,
+                self.objects[i]
+              )).move(ms, {
+                deltaFrameX: framePt.x - self.startingFramePt.x,
+                deltaFrameY: framePt.y - self.startingFramePt.y,
+                shiftKey: modifiers.shiftKey,
+                metaKey: modifiers.metaKey,
+                altKey: modifiers.altKey,
+                ctrlKey: modifiers.ctrlKey,
+              });
+              return ok();
+            })
         );
-        if (res.result.isError) {
+        if (res.isErr()) {
           this._aborted = true;
           this.endDrag();
         }

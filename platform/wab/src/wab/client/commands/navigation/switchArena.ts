@@ -1,6 +1,7 @@
 import { getArenaChoices } from "@/wab/client/commands/arena-utils";
 import { Command, choicePrompt } from "@/wab/client/commands/types";
 import { AnyArena } from "@/wab/shared/Arenas";
+import { ok } from "neverthrow";
 
 export const switchArenaCommand: Command<{
   arena: AnyArena;
@@ -23,9 +24,9 @@ export const switchArenaCommand: Command<{
     return [{}];
   },
   execute: async (studioCtx, { arena }) => {
-    return await studioCtx.change(({ success }) => {
+    return await studioCtx.change(() => {
       studioCtx.switchToArena(arena);
-      return success();
+      return ok();
     });
   },
 };
