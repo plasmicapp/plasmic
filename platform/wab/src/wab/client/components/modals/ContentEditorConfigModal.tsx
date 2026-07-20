@@ -22,7 +22,7 @@ import { Alert, Form, Input } from "antd";
 import { capitalize, omit, uniqBy } from "lodash";
 import React from "react";
 
-const HIDDEN_LEFT_TAB_KEYS: LeftTabUiKey[] = ["outline", "copilot"];
+const HIDDEN_LEFT_TAB_KEYS: LeftTabUiKey[] = ["outline"];
 
 export function ContentEditorConfigModal(props: {
   appCtx: AppCtx;
@@ -607,8 +607,6 @@ function leftTabKeyToLabel(key: LeftTabUiKey) {
       return "Optimize";
     case "lint":
       return "Lint issues";
-    case "copilot":
-      return "Copilot";
     case "figma":
       return "Figma";
     case "expressions":

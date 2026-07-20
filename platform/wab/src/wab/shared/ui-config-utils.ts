@@ -141,7 +141,6 @@ export const LEFT_TAB_PANEL_KEYS = [
   "settings",
   "splits",
   "lint",
-  "copilot",
   "animationSequences",
   "expressions",
 ] as const;
@@ -426,7 +425,6 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
   settings: "hidden",
   splits: "writable",
   lint: "writable",
-  copilot: "hidden",
   expressions: "writable",
   figma: "hidden",
   animationSequences: "hidden",

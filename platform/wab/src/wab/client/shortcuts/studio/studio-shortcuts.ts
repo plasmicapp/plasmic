@@ -101,14 +101,6 @@ export const CHROME_SHORTCUT_GROUP = mkShortcutGroup("Chrome", {
     combos: "mod+k",
     description: "Toggle Copilot!",
   },
-  TOGGLE_COPILOT_CHAT: {
-    combos: "mod+alt+k",
-    description: "Toggle Copilot Chat!",
-  },
-  SWITCH_TO_COPILOT_TAB: {
-    combos: "alt+c",
-    description: "Engage Copilot!",
-  },
   SEARCH_PROJECT_ARENAS: {
     combos: ["p", "alt+p"],
     description: "Search components, pages and arenas",

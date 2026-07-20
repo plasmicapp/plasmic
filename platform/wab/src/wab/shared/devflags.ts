@@ -465,7 +465,6 @@ const DEFAULT_DEVFLAGS = {
 
   // Disabled by default
   posthog: true,
-  copilotTab: false,
   copilotClaude: false,
   codePreview: false,
   demo: false,

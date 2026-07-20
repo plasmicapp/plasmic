@@ -9,7 +9,6 @@ import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import SlackIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slack";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
-import WandIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wand";
 import KeyboardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Keyboard";
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
 import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
@@ -103,8 +102,6 @@ const LeftTabStrip = observer(function LeftTabStrip(props: LeftTabStripProps) {
 
   /*
   Outline
-
-Copilot
 
 Issues
 
@@ -279,13 +276,6 @@ Help
       tabKey: "outline",
       icon: <TreeIcon />,
       label: "Outline",
-    },
-    copilot: {
-      type: "item",
-      tabKey: "copilot",
-      icon: <WandIcon />,
-      label: "Copilot",
-      cond: studioCtx.appCtx.appConfig.copilotTab && canViewTab("copilot"),
     },
     lint: {
       type: "item",
