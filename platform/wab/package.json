@@ -304,7 +304,7 @@
     "js-cookie": "^3.0.5",
     "js-string-escape": "^1.0.1",
     "jsdom": "^22.1.0",
-    "jsonrepair": "^2.2.1",
+    "jsonrepair": "^3.15.0",
     "jsonwebtoken": "9.0.3",
     "lodash": "^4.18.1",
     "lusca": "^1.6.1",

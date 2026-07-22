@@ -1,6 +1,14 @@
 import { fixJson } from "@/wab/shared/copilot/fix-json";
 
 describe("fixJson", () => {
+  it("returns valid JSON unchanged", () => {
+    expect(fixJson("{}")).toBe("{}");
+    expect(fixJson("[]")).toBe("[]");
+    expect(fixJson('{"featured":true}')).toBe('{"featured":true}');
+    expect(fixJson('{"props":{}}')).toBe('{"props":{}}');
+    expect(fixJson('{"items":[]}')).toBe('{"items":[]}');
+    expect(fixJson('  {"a": 1}\n')).toBe('{"a": 1}');
+  });
   it("returns the correct closing brackets for a partial JSON string", () => {
     const bad =
       '{"name": "John \\"Doe\\"","age": 30, "hobbies": ["reading [books] {{"';

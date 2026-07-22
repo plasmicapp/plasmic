@@ -34,7 +34,7 @@ import { DATA_SOURCE_CAP, DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import { Alert, Form, FormInstance, Input, notification } from "antd";
-import jsonrepair from "jsonrepair";
+import { jsonrepair } from "jsonrepair";
 import { isEqual, noop } from "lodash";
 import React from "react";
 import useSWR, { useSWRConfig } from "swr";

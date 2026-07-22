@@ -18,7 +18,7 @@ import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { hasUnexpected$$Usage } from "@/wab/shared/utils/regex-dollardollar";
 import { Tooltip, notification } from "antd";
 import { default as classNames } from "classnames";
-import jsonrepair from "jsonrepair";
+import { jsonrepair } from "jsonrepair";
 import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
