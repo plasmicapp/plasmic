@@ -21,6 +21,10 @@ import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-compon
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import {
+  interpolatedStringToExpr,
+  interpolatedStringToRichText,
+} from "@/wab/shared/copilot/dynamic-value-input";
+import {
   code,
   codeLit,
   customCode,
@@ -46,12 +50,13 @@ import {
   isAnimationProperty,
   parseCssAnimationsFromStyles,
 } from "@/wab/shared/css/animations";
+import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
 import {
   Animation,
   AnimationSequence,
   Component,
-  CustomCode,
   EventHandler,
+  Expr,
   FunctionExpr,
   ImageAssetRef,
   Interaction,
@@ -60,7 +65,6 @@ import {
   isKnownTplTag,
   KeyFrame,
   Param,
-  RawText,
   Site,
   TplNode,
   TplTag,
@@ -469,7 +473,9 @@ async function wiTreeToTpl(
           mkEventHandlerExprFromHtmlAttrValue(value);
         continue;
       }
-      result[key] = value;
+      result[key] = isDynamicValue(value)
+        ? interpolatedStringToExpr(value)
+        : value;
     }
     return result;
   }
@@ -490,10 +496,7 @@ async function wiTreeToTpl(
         type: TplTagType.Text,
       });
       const vs = vtm.ensureBaseVariantSetting(tpl);
-      vs.text = new RawText({
-        markers: [],
-        text: node.text,
-      });
+      vs.text = interpolatedStringToRichText(node.text);
       collectWIVariantData(node, tpl);
       return [tpl];
     }
@@ -602,10 +605,13 @@ async function wiTreeToTpl(
         return node.attrs.src;
       };
 
+      const src = getSrc();
       const tpl = vtm.mkTplImage({
         attrs: {
           ...htmlAttrsToTplAttrs(node),
-          src: code(JSON.stringify(getSrc())),
+          src: isDynamicValue(src)
+            ? interpolatedStringToExpr(src)
+            : code(JSON.stringify(src)),
         },
         type: ImageAssetType.Picture,
         name: tplName,
@@ -775,7 +781,7 @@ export function getComponentArgFromHtmlProp(
   componentName: string,
   propName: string,
   value: unknown
-): [Param, VariantsRef | CustomCode] {
+): [Param, Expr] {
   const name = toVarName(propName);
   const param = component.params.find(
     (p) => paramToVarName(component, p) === name
@@ -836,6 +842,12 @@ export function getComponentArgFromHtmlProp(
       }
       return [param, new VariantsRef({ variants: [variant] })];
     }
+  }
+
+  // A string with `{{ jsExpr }}` is a dynamic data binding, valid for any
+  // (non-variant-group) param type regardless of its declared type.
+  if (typeof value === "string" && isDynamicValue(value)) {
+    return [param, interpolatedStringToExpr(value)];
   }
 
   // Primitive-valued types (bool, num, text/img/href/target).

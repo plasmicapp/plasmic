@@ -1,250 +1,52 @@
 import {
-  buildDynamicExprFromJsSnippet,
+  codeToDynExpr,
+  exprToInterpolatedString,
+  interpolatedStringToExpr,
+  interpolatedStringToRichText,
   interpolatedStringToTemplatedString,
-  parseDynamicStringInput,
+  objectLiteralToExpr,
+  parseInterpolatedString,
 } from "@/wab/shared/copilot/dynamic-value-input";
-import { asCode } from "@/wab/shared/core/exprs";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { codeLit, customCode, tryExtractJson } from "@/wab/shared/core/exprs";
 import { EvaluationError } from "@/wab/shared/eval/expression-parser";
 import {
   CustomCode,
+  EventHandler,
+  Expr,
   ObjectPath,
   TemplatedString,
+  ensureKnownCompositeExpr,
+  ensureKnownExprText,
+  ensureKnownRawText,
+  isKnownCompositeExpr,
+  isKnownExprText,
+  isKnownRawText,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 
-const exprCtx = {
-  component: null,
-  projectFlags: DEVFLAGS,
-  inStudio: true,
-};
-
-describe("parseDynamicStringInput", () => {
-  describe("quoted static-string mode", () => {
-    it("unwraps a double-quoted static string", () => {
-      expect(parseDynamicStringInput('"Hello, world!"')).toEqual(
-        "Hello, world!"
-      );
-    });
-
-    it("unwraps a single-quoted static string", () => {
-      expect(parseDynamicStringInput("'Hello, world!'")).toEqual(
-        "Hello, world!"
-      );
-    });
-
-    it("returns an empty string for empty quotes", () => {
-      expect(parseDynamicStringInput('""')).toEqual("");
-    });
-
-    it("interprets JS escape sequences in quoted strings", () => {
-      expect(parseDynamicStringInput('"Hello\\nWorld"')).toEqual(
-        "Hello\nWorld"
-      );
-      expect(parseDynamicStringInput('"a \\"quoted\\" word"')).toEqual(
-        'a "quoted" word'
-      );
-    });
-
-    it("does not parse plain unquoted text", () => {
-      expect(() => parseDynamicStringInput("Hello, world!")).toThrow(
-        EvaluationError
-      );
-    });
+describe("parseInterpolatedString", () => {
+  it("keeps plain text a string", () => {
+    expect(parseInterpolatedString("My nice title")).toEqual("My nice title");
   });
 
-  describe("backtick-wrapped templated string mode", () => {
-    it("returns the inner content for a pure static template", () => {
-      expect(parseDynamicStringInput("`Hello, world!`")).toEqual(
-        "Hello, world!"
-      );
-    });
-
-    it("returns an empty string for empty backticks", () => {
-      expect(parseDynamicStringInput("``")).toEqual("");
-    });
-
-    it("simplifies a single-interpolation template to a raw ObjectPath", () => {
-      // `${$ctx.foo}` has no surrounding static text, so it collapses to the
-      // bare ObjectPath rather than a TemplatedString of one part.
-      const result = parseDynamicStringInput("`${$ctx.foo}`");
-      expect(result).toBeInstanceOf(ObjectPath);
-      expect((result as ObjectPath).path).toEqual(["$ctx", "foo"]);
-    });
-
-    it("treats bracket access with string literal as ObjectPath", () => {
-      const result = parseDynamicStringInput('`${$ctx["foo"]}`');
-      expect(result).toBeInstanceOf(ObjectPath);
-      expect((result as ObjectPath).path).toEqual(["$ctx", "foo"]);
-    });
-
-    it("preserves numeric indices in ObjectPath.path", () => {
-      const result = parseDynamicStringInput("`${$ctx.items[0].name}`");
-      expect(result).toBeInstanceOf(ObjectPath);
-      expect((result as ObjectPath).path).toEqual(["$ctx", "items", 0, "name"]);
-    });
-
-    it("classifies free-variable chains as ObjectPath", () => {
-      const result = parseDynamicStringInput("`${currentItem.title}`");
-      expect(result).toBeInstanceOf(ObjectPath);
-      expect((result as ObjectPath).path).toEqual(["currentItem", "title"]);
-    });
-
-    it("emits string segments around interpolations", () => {
-      const result = parseDynamicStringInput("`Hello ${$ctx.name}!`");
-      expect(isKnownTemplatedString(result)).toBe(true);
-      const ts = result as TemplatedString;
-      expect(ts.text.length).toEqual(3);
-      expect(ts.text[0]).toEqual("Hello ");
-      expect(ts.text[1]).toBeInstanceOf(ObjectPath);
-      expect(ts.text[2]).toEqual("!");
-    });
-
-    it("classifies single-interpolation operator expression as CustomCode", () => {
-      const result = parseDynamicStringInput('`${$ctx.foo ?? "x"}`');
-      expect(result).toBeInstanceOf(CustomCode);
-      expect((result as CustomCode).code).toContain("$ctx.foo");
-    });
-
-    it("classifies concatenation as CustomCode", () => {
-      const result = parseDynamicStringInput(
-        '`${$ctx.foo + " " + $queries.bar.name}`'
-      );
-      expect(result).toBeInstanceOf(CustomCode);
-    });
-
-    it("classifies dynamic accessors as CustomCode", () => {
-      const result = parseDynamicStringInput("`${$ctx.items[idx]}`");
-      expect(result).toBeInstanceOf(CustomCode);
-    });
-
-    it("supports multiple interpolations", () => {
-      const result = parseDynamicStringInput(
-        "`${$ctx.first} and ${$ctx.second}`"
-      );
-      expect(isKnownTemplatedString(result)).toBe(true);
-      const ts = result as TemplatedString;
-      expect(ts.text.length).toEqual(5);
-      expect(ts.text[0]).toEqual("");
-      expect(ts.text[1]).toBeInstanceOf(ObjectPath);
-      expect(ts.text[2]).toEqual(" and ");
-      expect(ts.text[3]).toBeInstanceOf(ObjectPath);
-      expect(ts.text[4]).toEqual("");
-    });
-
-    it("treats \\${...} inside backticks as a literal string", () => {
-      const result = parseDynamicStringInput("`\\${$ctx.foo}`");
-      expect(result).toEqual("${$ctx.foo}");
-    });
-
-    it("throws an EvaluationError on malformed interpolation", () => {
-      expect(() => parseDynamicStringInput("`${$ctx.}`")).toThrow(
-        EvaluationError
-      );
-    });
-
-    it("throws on unterminated ${ inside backticks", () => {
-      expect(() => parseDynamicStringInput("`Hello ${$ctx.foo`")).toThrow(
-        EvaluationError
-      );
-    });
-
-    it("throws on empty interpolation", () => {
-      expect(() => parseDynamicStringInput("`Hello ${}`")).toThrow(
-        EvaluationError
-      );
-    });
-
-    it("round-trips via asCode for a templated string", () => {
-      const result = parseDynamicStringInput("`a ${$ctx.foo} b`");
-      expect(isKnownTemplatedString(result)).toBe(true);
-      const code = asCode(result as TemplatedString, exprCtx).code;
-      expect(code).toMatch(/^`/);
-      expect(code).toMatch(/`$/);
-      expect(code).toContain("$ctx.foo");
-      expect(code).toContain("a ");
-      expect(code).toContain(" b");
-    });
+  it("preserves leading/trailing whitespace in plain text", () => {
+    expect(parseInterpolatedString(" Hello ")).toEqual(" Hello ");
   });
 
-  describe("bare JS expression mode", () => {
-    it("returns a raw CustomCode for a complex expression", () => {
-      const result = parseDynamicStringInput(
-        "$props.description ?? 'Product details'"
-      );
-      expect(result).toBeInstanceOf(CustomCode);
-      expect((result as CustomCode).code).toEqual(
-        "($props.description ?? 'Product details')"
-      );
-    });
-
-    it("returns a raw ObjectPath for a pure member-access chain", () => {
-      const result = parseDynamicStringInput("$ctx.foo");
-      expect(result).toBeInstanceOf(ObjectPath);
-      expect((result as ObjectPath).path).toEqual(["$ctx", "foo"]);
-    });
-
-    it("produces the same shape for `${$ctx.foo}` and $ctx.foo", () => {
-      const wrapped = parseDynamicStringInput("`${$ctx.foo}`");
-      const bare = parseDynamicStringInput("$ctx.foo");
-      expect(wrapped).toBeInstanceOf(ObjectPath);
-      expect(bare).toBeInstanceOf(ObjectPath);
-      expect((wrapped as ObjectPath).path).toEqual((bare as ObjectPath).path);
-    });
-  });
-
-  describe("invalid input", () => {
-    it("throws on plain unquoted prose", () => {
-      expect(() => parseDynamicStringInput("Hello, world!")).toThrow(
-        EvaluationError
-      );
-    });
-
-    it("error message echoes input and mentions quoting", () => {
-      try {
-        parseDynamicStringInput("Hello, world!");
-        fail("expected throw");
-      } catch (e) {
-        expect(e).toBeInstanceOf(EvaluationError);
-        const msg = (e as Error).message;
-        expect(msg).toContain("Hello, world!");
-        expect(msg).toMatch(/quote/i);
-      }
-    });
-
-    it("throws on empty bare input", () => {
-      expect(() => parseDynamicStringInput("")).toThrow(EvaluationError);
-    });
-
-    it("throws on unwrapped templated syntax (no backticks)", () => {
-      // ${...} is only legal inside a backtick-wrapped string. Without
-      // backticks the input is parsed as a JS expression and `${` is a syntax
-      // error.
-      expect(() => parseDynamicStringInput("${$ctx.foo}")).toThrow(
-        EvaluationError
-      );
-    });
-
-    it("throws on a bare single-word identifier", () => {
-      // "Home" parses as a JS Identifier. We need to throw since otherwise it silently
-      // becomes ObjectPath(["Home"])
-      expect(() => parseDynamicStringInput("Home")).toThrow(EvaluationError);
-      expect(() => parseDynamicStringInput("name")).toThrow(EvaluationError);
-      // $-prefixed identifier also rejected; a real dynamic ref needs at least one accessor.
-      expect(() => parseDynamicStringInput("$ctx")).toThrow(EvaluationError);
-    });
+  it("throws an EvaluationError on a malformed {{ }} body", () => {
+    expect(() => parseInterpolatedString("{{ ?? }}")).toThrow(EvaluationError);
   });
 });
 
-describe("buildDynamicExprFromJsSnippet", () => {
+describe("codeToDynExpr", () => {
   it("returns an ObjectPath for a pure member-access chain", () => {
-    const expr = buildDynamicExprFromJsSnippet("$ctx.foo.bar");
+    const expr = codeToDynExpr("$ctx.foo.bar");
     expect(expr).toBeInstanceOf(ObjectPath);
     expect((expr as ObjectPath).path).toEqual(["$ctx", "foo", "bar"]);
   });
 
   it("returns a CustomCode for an operator expression", () => {
-    const expr = buildDynamicExprFromJsSnippet('$ctx.foo ?? "x"');
+    const expr = codeToDynExpr('$ctx.foo ?? "x"');
     expect(expr).toBeInstanceOf(CustomCode);
     expect((expr as CustomCode).code).toEqual('($ctx.foo ?? "x")');
   });
@@ -265,5 +67,228 @@ describe("interpolatedStringToTemplatedString", () => {
     );
     expect(ts.text[0]).toEqual("prefix ");
     expect(ts.text[1]).toBeInstanceOf(CustomCode);
+  });
+
+  it("preserves whitespace around dynamic parts", () => {
+    const ts = interpolatedStringToTemplatedString(" Hi {{ $ctx.name }} ");
+    expect(ts.text[0]).toEqual(" Hi ");
+    expect(ts.text[1]).toBeInstanceOf(ObjectPath);
+    expect(ts.text[2]).toEqual(" ");
+    expect(exprToInterpolatedString(ts)).toEqual(" Hi {{ $ctx.name }} ");
+  });
+});
+
+describe("interpolatedStringToExpr", () => {
+  it("keeps plain markup static (codeLit)", () => {
+    const expr = interpolatedStringToExpr("/checkout");
+    expect((expr as CustomCode).code).toEqual('"/checkout"');
+  });
+
+  it("collapses a single {{ }} path to an ObjectPath", () => {
+    const expr = interpolatedStringToExpr("{{ currentItem.sprite }}");
+    expect(expr).toBeInstanceOf(ObjectPath);
+    expect((expr as ObjectPath).path).toEqual(["currentItem", "sprite"]);
+  });
+
+  it("produces a TemplatedString when static and dynamic parts mix", () => {
+    const expr = interpolatedStringToExpr("/pokemon/{{ currentItem.id }}");
+    expect(isKnownTemplatedString(expr)).toBe(true);
+    const ts = expr as TemplatedString;
+    expect(ts.text[0]).toEqual("/pokemon/");
+    expect(ts.text[1]).toBeInstanceOf(ObjectPath);
+  });
+});
+
+describe("objectLiteralToExpr", () => {
+  it("stores a fully-static object as codeLit JSON", () => {
+    const expr = objectLiteralToExpr(
+      '{ "url": "https://x", "method": "GET" }'
+    )!;
+    expect(isKnownCompositeExpr(expr)).toBe(false);
+    expect(expr).toBeInstanceOf(CustomCode);
+    expect(tryExtractJson(expr)).toEqual({ url: "https://x", method: "GET" });
+  });
+
+  it("hoists a {{ }} leaf into a CompositeExpr substitution", () => {
+    const composite = ensureKnownCompositeExpr(
+      objectLiteralToExpr(
+        '{ "url": "{{ $ctx.params.api }}", "method": "GET" }'
+      )!
+    );
+    expect(JSON.parse(composite.hostLiteral)).toEqual({
+      url: null,
+      method: "GET",
+    });
+    expect(Object.keys(composite.substitutions)).toEqual(['["url"]']);
+    const sub = composite.substitutions['["url"]'];
+    expect(sub).toBeInstanceOf(ObjectPath);
+    expect((sub as ObjectPath).path).toEqual(["$ctx", "params", "api"]);
+  });
+
+  it("hoists a nested dynamic leaf at its bracket path", () => {
+    const composite = ensureKnownCompositeExpr(
+      objectLiteralToExpr(
+        '{ "headers": { "Authorization": "{{ $ctx.token }}" } }'
+      )!
+    );
+    expect(JSON.parse(composite.hostLiteral)).toEqual({
+      headers: { Authorization: null },
+    });
+    expect(Object.keys(composite.substitutions)).toEqual([
+      '["headers"]["Authorization"]',
+    ]);
+  });
+
+  it("wraps a {{ }} non-string literal leaf as a CustomCode substitution", () => {
+    const composite = ensureKnownCompositeExpr(
+      objectLiteralToExpr('{ "limit": "{{ 5 }}" }')!
+    );
+    expect(JSON.parse(composite.hostLiteral)).toEqual({ limit: null });
+    const sub = composite.substitutions['["limit"]'];
+    expect(sub).toBeInstanceOf(CustomCode);
+    expect((sub as CustomCode).code).toEqual("(5)");
+  });
+
+  it("handles a fully-static array as codeLit JSON", () => {
+    const expr = objectLiteralToExpr("[1, 2, 3]")!;
+    expect(isKnownCompositeExpr(expr)).toBe(false);
+    expect(tryExtractJson(expr)).toEqual([1, 2, 3]);
+  });
+
+  it("accepts a parens-wrapped literal", () => {
+    expect(tryExtractJson(objectLiteralToExpr('({ "a": 1 })')!)).toEqual({
+      a: 1,
+    });
+  });
+
+  it("throws for a bare-JS leaf (must wrap in {{ }})", () => {
+    expect(() => objectLiteralToExpr('{ "url": $ctx.params.api }')).toThrow(
+      EvaluationError
+    );
+  });
+
+  it("throws for a spread in the object", () => {
+    expect(() =>
+      objectLiteralToExpr('{ ...$ctx.base, "method": "GET" }')
+    ).toThrow(EvaluationError);
+  });
+
+  it("throws for non-JSON (unquoted keys)", () => {
+    expect(() => objectLiteralToExpr('{ url: "https://x" }')).toThrow(
+      EvaluationError
+    );
+  });
+
+  it("returns undefined for a scalar (falls back to interpolation)", () => {
+    expect(objectLiteralToExpr("active")).toBeUndefined();
+    expect(objectLiteralToExpr("{{ $ctx.params.api }}")).toBeUndefined();
+  });
+});
+
+describe("interpolatedStringToRichText", () => {
+  it("returns RawText for plain text", () => {
+    const rich = interpolatedStringToRichText("Hello world");
+    expect(isKnownRawText(rich)).toBe(true);
+    expect(ensureKnownRawText(rich).text).toEqual("Hello world");
+  });
+
+  it("preserves leading/trailing whitespace in plain text", () => {
+    const rich = interpolatedStringToRichText(" Hello ");
+    expect(ensureKnownRawText(rich).text).toEqual(" Hello ");
+  });
+
+  it("returns ExprText for an interpolated string", () => {
+    const rich = interpolatedStringToRichText("Posts in {{ $ctx.category }}");
+    expect(isKnownExprText(rich)).toBe(true);
+    expect(ensureKnownExprText(rich).html).toBe(false);
+    expect(ensureKnownExprText(rich).expr).toBeInstanceOf(TemplatedString);
+  });
+
+  it("collapses a pure {{ }} interpolation to an ExprText with ObjectPath", () => {
+    const rich = interpolatedStringToRichText("{{ $props.title }}");
+    expect(isKnownExprText(rich)).toBe(true);
+    expect(ensureKnownExprText(rich).expr).toBeInstanceOf(ObjectPath);
+  });
+});
+
+describe("exprToInterpolatedString", () => {
+  it("renders a static codeLit string as raw text", () => {
+    expect(exprToInterpolatedString(codeLit("Hello"))).toEqual("Hello");
+  });
+
+  it("renders an ObjectPath as a {{ }} interpolation", () => {
+    const expr = codeToDynExpr("currentItem.sprite");
+    expect(exprToInterpolatedString(expr)).toEqual("{{ currentItem.sprite }}");
+  });
+
+  it("renders an ObjectPath with numeric index", () => {
+    const expr = codeToDynExpr("$q.pokedex.data[0].name");
+    expect(exprToInterpolatedString(expr)).toEqual(
+      "{{ $q.pokedex.data[0].name }}"
+    );
+  });
+
+  it("renders a real CustomCode with parens stripped", () => {
+    const expr = customCode('$props.title ?? "Guest"');
+    expect(exprToInterpolatedString(expr)).toEqual(
+      '{{ $props.title ?? "Guest" }}'
+    );
+  });
+
+  it("renders a TemplatedString with mixed static and dynamic parts", () => {
+    const expr = interpolatedStringToTemplatedString("Hi {{ $ctx.name }}!");
+    expect(exprToInterpolatedString(expr)).toEqual("Hi {{ $ctx.name }}!");
+  });
+
+  it("omits an ObjectPath fallback", () => {
+    const expr = new ObjectPath({
+      path: ["$props", "title"],
+      fallback: codeLit("Untitled"),
+    });
+    expect(exprToInterpolatedString(expr)).toEqual("{{ $props.title }}");
+  });
+
+  it("returns undefined for expr kinds with no inline form", () => {
+    expect(
+      exprToInterpolatedString(new EventHandler({ interactions: [] }))
+    ).toBeUndefined();
+  });
+});
+
+describe("dynamic-value round trip (insertHtml <-> read)", () => {
+  function exprEqual(a: Expr, b: Expr) {
+    // Compare by serialized interpolated form, which is the round-trip contract.
+    expect(exprToInterpolatedString(a)).toEqual(exprToInterpolatedString(b));
+  }
+
+  const cases: { name: string; expr: Expr }[] = [
+    {
+      name: "ObjectPath",
+      expr: codeToDynExpr("currentItem.id"),
+    },
+    {
+      name: "CustomCode",
+      expr: customCode("$q.users.data.length > 0"),
+    },
+    {
+      name: "TemplatedString",
+      expr: interpolatedStringToTemplatedString("/p/{{ currentItem.slug }}/x"),
+    },
+  ];
+
+  for (const { name, expr } of cases) {
+    it(`round-trips a ${name} through exprToInterpolatedString -> interpolatedStringToExpr`, () => {
+      const serialized = exprToInterpolatedString(expr)!;
+      const reparsed = interpolatedStringToExpr(serialized);
+      exprEqual(reparsed, expr);
+    });
+  }
+
+  it("round-trips a static string", () => {
+    const serialized = exprToInterpolatedString(codeLit("/home"))!;
+    expect(serialized).toEqual("/home");
+    expect((interpolatedStringToExpr(serialized) as CustomCode).code).toEqual(
+      codeLit("/home").code
+    );
   });
 });

@@ -29,22 +29,23 @@ export type CopilotTool<
   TOutput extends z.ZodTypeAny = z.ZodTypeAny
 > = CopilotToolMeta<TInput, TOutput> & {
   /**
-   * Execute the tool, returning the serialized output in the agent's preferred
-   * format. Throws on error. `opts.prettify` indents the output (default false);
-   * handy for readable test snapshots.
+   * Execute the tool, returning the serialized output in the agent's preferred format.
+   * The wrapper validates raw input against `inputSchema`, running any transforms.
+   * Throws on error. `opts.prettify` indents the output for testing (default false).
    */
   execute: (
     studioCtx: StudioCtx,
-    input: z.infer<TInput>,
+    input: z.input<TInput>,
     opts?: { prettify?: boolean }
   ) => Promise<string>;
 };
 
 /**
- * Helper to define a CopilotTool so the execute function's input and output are
- * fully typed. The authored execute returns the typed output model; the wrapper
- * validates it against `outputSchema` and serializes it to the format the agent
- * prefers.
+ * Helper to define a CopilotTool so the execute function's input and output are fully
+ * typed. The wrapper parses the wire input against `inputSchema` (schema transforms
+ * run in the host frame, since Expr outputs can't cross the frame boundary). The authored
+ * execute receives the parsed input and returns the typed output model, which the wrapper
+ * validates against `outputSchema` and serializes to the agent's preferred format.
  */
 export function defineCopilotTool<
   TInput extends z.ZodObject<z.ZodRawShape>,
@@ -60,7 +61,10 @@ export function defineCopilotTool<
     ...meta,
     execute: async (studioCtx, input, opts) => {
       const prettify = opts?.prettify ?? false;
-      const output = meta.outputSchema.parse(await execute(studioCtx, input));
+      const parsedInput = meta.inputSchema.parse(input);
+      const output = meta.outputSchema.parse(
+        await execute(studioCtx, parsedInput)
+      );
       return studioCtx.preferredAiOutputFormat() === "xml"
         ? jsonToXml(output, prettify)
         : JSON.stringify(output, null, prettify ? 2 : undefined);

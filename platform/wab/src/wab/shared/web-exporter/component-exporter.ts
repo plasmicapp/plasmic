@@ -7,11 +7,13 @@ import {
 } from "@/wab/shared/Variants";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assert, switchType } from "@/wab/shared/common";
+import { exprToInterpolatedString } from "@/wab/shared/copilot/dynamic-value-input";
 import {
   isPageComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/shared/core/components";
 import { stripParens, tryExtractJson } from "@/wab/shared/core/exprs";
+import { JsonValue } from "@/wab/shared/core/lang";
 import {
   getStateOnChangePropName,
   getStateVarName,
@@ -29,11 +31,15 @@ import {
 import { normProp } from "@/wab/shared/css";
 import {
   Component,
+  CompositeExpr,
   CustomCode,
   Expr,
+  ImageAssetRef,
   ObjectPath,
   RuleSet,
   Site,
+  StyleTokenRef,
+  TemplatedString,
   TplComponent,
   TplNode,
   TplSlot,
@@ -41,12 +47,11 @@ import {
   Variant,
   VariantSetting,
   isKnownCustomCode,
-  isKnownImageAssetRef,
+  isKnownExprText,
   isKnownObjectPath,
   isKnownPropParam,
   isKnownRawText,
   isKnownRenderExpr,
-  isKnownStyleTokenRef,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import {
@@ -96,61 +101,30 @@ function buildTplNode(tpl: TplNode, site: Site): XmlElement {
 }
 
 /**
- * Extracts a value from supported expression types via tryExtractJson
- * (CustomCode, TemplatedString, CompositeExpr), plus asset and style-token
- * references. Returns undefined for dynamic expressions (ObjectPath, VarRef,
- * EventHandler, etc.) that can't be serialized statically.
- *
- * By default a non-string JSON value is stringified, for use as an HTML
- * attribute. Pass `{ json: true }` to keep the typed JSON value instead.
+ * Serialize an `Expr` to its exported value. Returns undefined for expr kinds
+ * with no exported form (see `exprToInterpolatedString`), which callers skip.
  */
-function extractStaticExprValue(expr: Expr): string | undefined;
-function extractStaticExprValue(expr: Expr, opts: { json: true }): unknown;
-function extractStaticExprValue(
-  expr: Expr,
-  opts?: { json?: boolean }
-): unknown {
-  const jsonValue = tryExtractJson(expr);
-  if (jsonValue !== undefined) {
-    if (opts?.json) {
-      return jsonValue;
-    }
-    return typeof jsonValue === "string"
-      ? jsonValue
-      : JSON.stringify(jsonValue);
-  }
-  if (isKnownImageAssetRef(expr)) {
-    return expr.asset.dataUri || "";
-  }
-  if (isKnownStyleTokenRef(expr)) {
-    return expr.token.uuid;
-  }
-  return undefined;
+function serializeExprValue(expr: Expr): JsonValue | undefined {
+  return switchType(expr)
+    .when(ImageAssetRef, (imageAssetRef) => imageAssetRef.asset.dataUri || "")
+    .when(StyleTokenRef, (styleTokenRef) => styleTokenRef.token.uuid)
+    .when(CompositeExpr, (compositeExpr) => tryExtractJson(compositeExpr))
+    .when([CustomCode, ObjectPath, TemplatedString], (valueExpr) => {
+      // Static values keep their typed JSON value, dynamic bindings render as `{{ jsExpr }}`.
+      const jsonValue = tryExtractJson(valueExpr);
+      return jsonValue !== undefined
+        ? jsonValue
+        : exprToInterpolatedString(valueExpr);
+    })
+    .elseUnsafe(() => undefined);
 }
 
-/**
- * Normalizes a string-or-expression value, falling back for null/undefined and
- * for dynamic expressions that can't be serialized. Defaults to a plain string
- * (""); pass `{ json: true }` to keep the typed JSON value (undefined fallback).
- */
-function extractExprValue(value: string | Expr | null | undefined): string;
-function extractExprValue(
-  value: string | Expr | null | undefined,
-  opts: { json: true }
-): unknown;
-function extractExprValue(
-  value: string | Expr | null | undefined,
-  opts?: { json?: boolean }
-): unknown {
-  if (value == null) {
-    return opts?.json ? undefined : "";
-  }
-  if (typeof value === "string") {
-    return value;
-  }
-  return opts?.json
-    ? extractStaticExprValue(value, { json: true })
-    : extractStaticExprValue(value) ?? "";
+/** Like `serializeExprValue`, but stringified for use as an HTML attribute. */
+function serializeExprToString(expr: Expr): string | undefined {
+  const value = serializeExprValue(expr);
+  return value === undefined || typeof value === "string"
+    ? value
+    : JSON.stringify(value);
 }
 
 export function getStylesFromRuleSet(rs: RuleSet): Record<string, string> {
@@ -204,7 +178,7 @@ function getAttrsFromVariantSetting(
   const attrs: Record<string, string> = {};
   for (const [key, expr] of Object.entries(vs.attrs)) {
     if (!RESERVED_ATTR_KEYS.has(key)) {
-      const value = extractStaticExprValue(expr);
+      const value = serializeExprToString(expr);
       if (value !== undefined) {
         attrs[key] = value;
       }
@@ -249,6 +223,13 @@ function buildTplTag(tpl: TplTag, site: Site): XmlElement {
     // Try to get text from vsettings.text (RawText)
     if (isKnownRawText(vs.text)) {
       return mkXmlElement(tpl.tag, attrs, [vs.text.text]);
+    }
+    // Dynamic text (ExprText) -> `{{ jsExpr }}` interpolation.
+    if (isKnownExprText(vs.text)) {
+      const dynamic = exprToInterpolatedString(vs.text.expr);
+      if (dynamic !== undefined) {
+        return mkXmlElement(tpl.tag, attrs, [dynamic]);
+      }
     }
     // Fallback to attrs.children
     if (vs.attrs.children) {
@@ -297,7 +278,10 @@ function buildTplComponent(tpl: TplComponent, site: Site): XmlElement {
         continue;
       }
 
-      propsObj[propName] = extractExprValue(arg.expr, { json: true });
+      const value = serializeExprValue(arg.expr);
+      if (value !== undefined) {
+        propsObj[propName] = value;
+      }
     }
   }
 
@@ -424,9 +408,7 @@ function buildComponentProps(component: Component): PropJson[] {
         prop.options = options;
       }
       if (param.defaultExpr) {
-        const defaultValue = extractExprValue(param.defaultExpr, {
-          json: true,
-        });
+        const defaultValue = serializeExprValue(param.defaultExpr);
         if (defaultValue !== undefined) {
           prop.default = defaultValue;
         }
@@ -480,9 +462,9 @@ function buildComponentStates(component: Component): StateJson[] {
       accessType: state.accessType as StateJson["accessType"],
     };
     if (state.param.defaultExpr) {
-      const staticValue = extractExprValue(state.param.defaultExpr, {
-        json: true,
-      });
+      // Statically-known initial values serialize to their JSON value; dynamic
+      // bindings serialize structurally (ObjectPath/CustomCode/TemplatedString).
+      const staticValue = tryExtractJson(state.param.defaultExpr);
       const initialValue =
         staticValue !== undefined
           ? staticValue
@@ -603,10 +585,17 @@ function buildPageMeta(component: Component): PageMetaJson | undefined {
     pm.params && Object.keys(pm.params).length > 0 ? pm.params : undefined;
   const query =
     pm.query && Object.keys(pm.query).length > 0 ? pm.query : undefined;
-  const title = extractExprValue(pm.title);
-  const description = extractExprValue(pm.description);
-  const canonical = extractExprValue(pm.canonical);
-  const openGraphImage = extractExprValue(pm.openGraphImage);
+  // Page meta fields are either plain strings or Exprs.
+  const serializeMetaField = (value: string | Expr | null | undefined) =>
+    value == null
+      ? undefined
+      : typeof value === "string"
+      ? value
+      : serializeExprToString(value);
+  const title = serializeMetaField(pm.title);
+  const description = serializeMetaField(pm.description);
+  const canonical = serializeMetaField(pm.canonical);
+  const openGraphImage = serializeMetaField(pm.openGraphImage);
   return {
     __type: "PageMeta",
     ...(pm.path ? { path: pm.path } : {}),
