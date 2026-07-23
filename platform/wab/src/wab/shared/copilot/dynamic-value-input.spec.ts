@@ -1,6 +1,7 @@
 import {
   codeToDynExpr,
   exprToInterpolatedString,
+  interpolatedStringToCodeExpr,
   interpolatedStringToExpr,
   interpolatedStringToRichText,
   interpolatedStringToTemplatedString,
@@ -182,6 +183,50 @@ describe("objectLiteralToExpr", () => {
   it("returns undefined for a scalar (falls back to interpolation)", () => {
     expect(objectLiteralToExpr("active")).toBeUndefined();
     expect(objectLiteralToExpr("{{ $ctx.params.api }}")).toBeUndefined();
+  });
+});
+
+describe("interpolatedStringToCodeExpr", () => {
+  it("returns an ObjectPath for a {{ }} path", () => {
+    const expr = interpolatedStringToCodeExpr("{{ $q.pokedex.data }}");
+    expect(expr).toBeInstanceOf(ObjectPath);
+    expect((expr as ObjectPath).path).toEqual(["$q", "pokedex", "data"]);
+  });
+
+  it("throws for a bare expression without the {{ }} wrapper", () => {
+    expect(() => interpolatedStringToCodeExpr("$q.pokedex.data")).toThrow(
+      EvaluationError
+    );
+  });
+
+  it("returns a CustomCode for a comparison expression", () => {
+    const expr = interpolatedStringToCodeExpr("{{ $q.users.data.length > 0 }}");
+    expect(expr).toBeInstanceOf(CustomCode);
+    expect((expr as CustomCode).code).toContain("$q.users.data.length > 0");
+  });
+
+  it("throws for a quoted static string", () => {
+    expect(() => interpolatedStringToCodeExpr('"notAnArray"')).toThrow(
+      EvaluationError
+    );
+  });
+
+  it("throws for a bare single-word identifier (footgun guard)", () => {
+    expect(() => interpolatedStringToCodeExpr("pokemonList")).toThrow(
+      EvaluationError
+    );
+  });
+
+  it("throws for a mixed templated string (static + dynamic)", () => {
+    expect(() =>
+      interpolatedStringToCodeExpr("items: {{ $q.x.data }}")
+    ).toThrow(EvaluationError);
+  });
+
+  it("throws for malformed input", () => {
+    expect(() => interpolatedStringToCodeExpr("{{ ?? }}")).toThrow(
+      EvaluationError
+    );
   });
 });
 

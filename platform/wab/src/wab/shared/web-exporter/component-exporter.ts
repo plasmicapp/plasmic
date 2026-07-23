@@ -28,7 +28,7 @@ import {
   isTplTextBlock,
   tplChildren,
 } from "@/wab/shared/core/tpls";
-import { normProp } from "@/wab/shared/css";
+import { PLASMIC_DISPLAY_NONE, normProp } from "@/wab/shared/css";
 import {
   Component,
   CompositeExpr,
@@ -60,6 +60,11 @@ import {
   isNumType,
   isOptionsType,
 } from "@/wab/shared/model/model-util";
+import {
+  TplVisibility,
+  getVariantSettingVisibility,
+  hasVisibilitySetting,
+} from "@/wab/shared/visibility-utils";
 import {
   getDataPlasmicProject,
   serializePlasmicTplComponent,
@@ -161,9 +166,15 @@ function getStylesFromVariantSetting(
     }
   }
 
-  // Filter styles to what's applicable for this TplNode
+  // Filter styles to what's applicable for this TplNode. PLASMIC_DISPLAY_NONE
+  // is an internal visibility flag (not real CSS) — it is surfaced via the
+  // data-visibility attribute instead (see getVisibilityAttrs), so drop it
+  // from the emitted style string to avoid a confusing double-representation.
   return Object.fromEntries(
-    Object.entries(styles).filter(([prop]) => isStylePropApplicable(tpl, prop))
+    Object.entries(styles).filter(
+      ([prop]) =>
+        prop !== PLASMIC_DISPLAY_NONE && isStylePropApplicable(tpl, prop)
+    )
   );
 }
 
@@ -185,6 +196,62 @@ function getAttrsFromVariantSetting(
     }
   }
   return attrs;
+}
+
+/**
+ * Serializes a variant setting's visibility as `data-visible-if` (dynamic) or
+ * `data-visibility` (static). Visible emits nothing by default, `explicitVisible: true`
+ * emits `data-visibility="visible"` explicitly, e.g. for variants revealing an
+ * element hidden in the base variant.
+ */
+function getVisibilityAttrs(
+  vs: VariantSetting,
+  opts?: { explicitVisible?: boolean }
+): Record<string, string> {
+  switch (getVariantSettingVisibility(vs)) {
+    case TplVisibility.CustomExpr: {
+      const cond = vs.dataCond
+        ? exprToInterpolatedString(vs.dataCond)
+        : undefined;
+      return cond !== undefined ? { "data-visible-if": cond } : {};
+    }
+    case TplVisibility.DisplayNone:
+      return { "data-visibility": "displayNone" };
+    case TplVisibility.NotRendered:
+      return { "data-visibility": "notRendered" };
+    default:
+      return opts?.explicitVisible && hasVisibilitySetting(vs)
+        ? { "data-visibility": "visible" }
+        : {};
+  }
+}
+
+/**
+ * Serializes repetition + visibility bindings as `data-*` attributes so they
+ * survive read -> insertHtml (mirrors html-to-tpl's parsing):
+ * - Repetition (base-vs only): `data-repeat` / `data-repeat-item` / `data-repeat-index`.
+ * - Visibility (the given vs): see getVisibilityAttrs.
+ */
+function getStructuralBindingAttrs(
+  tpl: TplNode,
+  vs: VariantSetting
+): Record<string, string> {
+  const attrs: Record<string, string> = {};
+
+  // Repetition lives on the base variant setting only (not variantable).
+  const baseVs = tryGetBaseVariantSetting(tpl);
+  if (baseVs?.dataRep) {
+    const collection = exprToInterpolatedString(baseVs.dataRep.collection);
+    if (collection !== undefined) {
+      attrs["data-repeat"] = collection;
+      attrs["data-repeat-item"] = baseVs.dataRep.element.name;
+      if (baseVs.dataRep.index) {
+        attrs["data-repeat-index"] = baseVs.dataRep.index.name;
+      }
+    }
+  }
+
+  return { ...attrs, ...getVisibilityAttrs(vs) };
 }
 
 function getStyleString(vs: VariantSetting, tpl: TplNode): string | undefined {
@@ -215,6 +282,13 @@ function buildTplTag(tpl: TplTag, site: Site): XmlElement {
 
   // Include static HTML attributes
   for (const [key, value] of Object.entries(getAttrsFromVariantSetting(vs))) {
+    attrs[key] = value;
+  }
+
+  // Include repetition + visibility (data-*) bindings.
+  for (const [key, value] of Object.entries(
+    getStructuralBindingAttrs(tpl, vs)
+  )) {
     attrs[key] = value;
   }
 
@@ -293,6 +367,13 @@ function buildTplComponent(tpl: TplComponent, site: Site): XmlElement {
   const style = getStyleString(vs, tpl);
   if (style) {
     attrs.style = style;
+  }
+
+  // Include repetition + visibility (data-*) bindings.
+  for (const [key, value] of Object.entries(
+    getStructuralBindingAttrs(tpl, vs)
+  )) {
+    attrs[key] = value;
   }
 
   // Build slot contents with <slot> wrappers
@@ -381,7 +462,10 @@ function getTplOverrides(
     }
 
     const styles = getStylesFromVariantSetting(vs, tpl);
-    const attrs = getAttrsFromVariantSetting(vs);
+    const attrs = {
+      ...getAttrsFromVariantSetting(vs),
+      ...getVisibilityAttrs(vs, { explicitVisible: true }),
+    };
 
     if (Object.keys(styles).length > 0 || Object.keys(attrs).length > 0) {
       overrides.push({ tplUuid: tpl.uuid, styles, attrs });

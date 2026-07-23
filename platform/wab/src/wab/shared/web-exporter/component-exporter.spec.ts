@@ -9,12 +9,19 @@ import {
   interpolatedStringToTemplatedString,
 } from "@/wab/shared/copilot/dynamic-value-input";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { codeLit } from "@/wab/shared/core/exprs";
-import { mkParam } from "@/wab/shared/core/lang";
+import { codeLit, customCode } from "@/wab/shared/core/exprs";
+import { mkParam, mkVar } from "@/wab/shared/core/lang";
 import { TplTagType, mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
-import { ExprText, TplComponent, TplTag } from "@/wab/shared/model/classes";
+import {
+  ExprText,
+  ObjectPath,
+  Rep,
+  TplComponent,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { generateSiteFromBundle } from "@/wab/shared/tests/site-tests-utils";
+import { TplVisibility, setTplVisibility } from "@/wab/shared/visibility-utils";
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 import {
   buildComponentResource,
@@ -69,6 +76,37 @@ describe("Component Serialization", () => {
     expect(JSON.stringify(result)).not.toContain("html-id");
   });
 
+  it("serializes variant visibility overrides as data-visibility attrs", () => {
+    const component = mkComponent({
+      name: "VariantVisibility",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+    });
+    const tpl = component.tplTree as TplTag;
+    const hover = mkVariant({
+      name: "hover",
+      selectors: [":hover"],
+      forTpl: tpl,
+    });
+    component.variants.push(hover);
+
+    // Hidden in the base variant, explicitly revealed by the variant.
+    setTplVisibility(
+      tpl,
+      [getBaseVariant(component)],
+      TplVisibility.DisplayNone
+    );
+    setTplVisibility(tpl, [hover], TplVisibility.Visible);
+
+    const result = buildComponentResource(component, { site });
+    expect(result.baseVariantTplTree).toContain(
+      `data-visibility="displayNone"`
+    );
+    expect(result.variantSettings).toMatchObject([
+      { elements: [{ attrs: { "data-visibility": "visible" } }] },
+    ]);
+  });
+
   describe("dynamic values", () => {
     it("serializes dynamic text (ExprText) as a {{ }} interpolation", () => {
       const component = mkComponent({
@@ -102,6 +140,57 @@ describe("Component Serialization", () => {
 
       const output = tplToHtml(tpl, site);
       expect(output).toContain(`href="{{ currentItem.url }}"`);
+    });
+
+    it("serializes repetition as data-repeat attributes", () => {
+      const component = mkComponent({
+        name: "Repeater",
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+      });
+      const tpl = component.tplTree as TplTag;
+      const vs = ensureVariantSetting(tpl, [getBaseVariant(component)]);
+      vs.dataRep = new Rep({
+        collection: codeToDynExpr("$q.pokedex.data") as ObjectPath,
+        element: mkVar("currentItem"),
+        index: mkVar("currentIndex"),
+      });
+
+      const output = tplToHtml(tpl, site);
+      expect(output).toContain(`data-repeat="{{ $q.pokedex.data }}"`);
+      expect(output).toContain(`data-repeat-item="currentItem"`);
+      expect(output).toContain(`data-repeat-index="currentIndex"`);
+    });
+
+    it("serializes a dynamic visibility condition as data-visible-if", () => {
+      const component = mkComponent({
+        name: "ConditionalVisible",
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+      });
+      const tpl = component.tplTree as TplTag;
+      const combo = [getBaseVariant(component)];
+      const vs = ensureVariantSetting(tpl, combo);
+      setTplVisibility(tpl, combo, TplVisibility.CustomExpr);
+      vs.dataCond = customCode("$q.users.data.length");
+
+      const output = tplToHtml(tpl, site);
+      expect(output).toContain(`data-visible-if="{{ $q.users.data.length }}"`);
+    });
+
+    it("serializes static displayNone as data-visibility", () => {
+      const component = mkComponent({
+        name: "HiddenBox",
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+      });
+      const tpl = component.tplTree as TplTag;
+      const combo = [getBaseVariant(component)];
+      ensureVariantSetting(tpl, combo);
+      setTplVisibility(tpl, combo, TplVisibility.DisplayNone);
+
+      const output = tplToHtml(tpl, site);
+      expect(output).toContain(`data-visibility="displayNone"`);
     });
 
     it("serializes a dynamic component prop into data-props as {{ }}", () => {

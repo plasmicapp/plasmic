@@ -5,17 +5,23 @@ import {
   getAllVariantsForTpl,
   getBaseVariant,
 } from "@/wab/shared/Variants";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { uniqueName } from "@/wab/shared/common";
 import { getComponentArenaBaseFrame } from "@/wab/shared/component-arenas";
 import {
   GlobalVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
+import { mkVar } from "@/wab/shared/core/lang";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
 import { flattenTpls } from "@/wab/shared/core/tpls";
 import {
   Component,
   ComponentArena,
+  CustomCode,
+  ObjectPath,
   PageArena,
+  Rep,
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
@@ -136,4 +142,20 @@ export function getComponentArenaAndVariantTplMgr(
     new GlobalVariantFrame(site, arenaFrame)
   );
   return { vtm, arena };
+}
+
+/**
+ * Builds a `Rep`, normalizing item/index var names to valid, distinct JS identifiers.
+ */
+export function mkNormalizedRep(
+  collection: CustomCode | ObjectPath,
+  itemName?: string,
+  indexName?: string
+): Rep {
+  const element = toVarName(itemName || "currentItem");
+  const index = uniqueName([element], toVarName(indexName || "currentIndex"), {
+    separator: "",
+    normalize: toVarName,
+  });
+  return new Rep({ collection, element: mkVar(element), index: mkVar(index) });
 }

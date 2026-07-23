@@ -2,6 +2,7 @@ import { switchType } from "@/wab/shared/common";
 import {
   codeLit,
   customCode,
+  isRealCodeExprEnsuringType,
   serCompositeExprMaybe,
   simplifyTemplatedString,
   stripParens,
@@ -47,6 +48,23 @@ export const interpolatedStringFormatDescription = `Values are static by default
 export function interpolatedStringToExpr(str: string): Expr {
   const simplified = parseInterpolatedString(str);
   return typeof simplified === "string" ? codeLit(simplified) : simplified;
+}
+
+/**
+ * Like `interpolatedStringToExpr`, but requires a code expression (ObjectPath/CustomCode),
+ * for repeat / visibility conditions. Throws EvaluationError otherwise.
+ */
+export function interpolatedStringToCodeExpr(
+  str: string
+): ObjectPath | CustomCode {
+  const expr = interpolatedStringToExpr(str.trim());
+  if (isRealCodeExprEnsuringType(expr)) {
+    return expr;
+  }
+  const badStr = JSON.stringify(str);
+  throw new EvaluationError(
+    `Expected a JS expression (e.g. {{ $q.myQuery.data }}), not static text. Got: ${badStr}`
+  );
 }
 
 /**

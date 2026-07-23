@@ -185,11 +185,11 @@ exports[`Component Serialization serializes all components 1`] = `
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="P4urRFgjF3wU" data-plasmic-component="plasmicReactAriaButton" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-props="{&quot;target&quot;:&quot;{{ $props.openLinkInNewTab ? \\&quot;_blank\\&quot; : \\&quot;_self\\&quot; }}&quot;}" style="position: relative; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); display: flex; cursor: pointer; box-sizing: border-box; min-width: var(--token-J8bgk1cLaZ5G); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; outline-style: none; padding-bottom: 0rem; padding-top: 0rem; padding-right: 0rem; padding-left: 0rem; text-decoration-line: none; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)">
   <slot name="children">
-    <div id="zhn6dj3FeLUL" label="soft background" style="display: block; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; background: linear-gradient(var(--token-o3a6NOLIofKT), var(--token-o3a6NOLIofKT)); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
-    <div id="MpYlNqLG4pwf" label="border" style="display: block; position: absolute; top: 0px; left: 0px; border-top-color: var(--token-JI5CHdDLi9zk); border-top-width: 0px; border-top-style: solid; border-right-color: var(--token-JI5CHdDLi9zk); border-right-width: 0px; border-right-style: solid; border-bottom-color: var(--token-JI5CHdDLi9zk); border-bottom-width: 0px; border-bottom-style: solid; border-left-color: var(--token-JI5CHdDLi9zk); border-left-width: 0px; border-left-style: solid; bottom: 0px; right: 0px; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
+    <div id="zhn6dj3FeLUL" label="soft background" style="display: block; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; background: linear-gradient(var(--token-o3a6NOLIofKT), var(--token-o3a6NOLIofKT)); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)" data-visibility="notRendered"></div>
+    <div id="MpYlNqLG4pwf" label="border" style="display: block; position: absolute; top: 0px; left: 0px; border-top-color: var(--token-JI5CHdDLi9zk); border-top-width: 0px; border-top-style: solid; border-right-color: var(--token-JI5CHdDLi9zk); border-right-width: 0px; border-right-style: solid; border-bottom-color: var(--token-JI5CHdDLi9zk); border-bottom-width: 0px; border-bottom-style: solid; border-left-color: var(--token-JI5CHdDLi9zk); border-left-width: 0px; border-left-style: solid; bottom: 0px; right: 0px; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)" data-visibility="notRendered"></div>
     <div id="7ftEZY6-lBPq" label="interaction effect" style="display: block; position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
     <div id="LcbjVN0--45d" style="display: flex; justify-content: center; align-items: center; padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); width: stretch; height: stretch; column-gap: var(--token--0yvAvGYfFhX)">
-      <div id="4-zlvdO1CNcE" style="display: flex; flex-direction: column; plasmic-display-none: true; flex-shrink: 0">
+      <div id="4-zlvdO1CNcE" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="Start" id="omi74nYXXVka">
           <svg id="tJTRxQOR7i1z" style="position: relative"></svg>
         </slot-target>
@@ -197,7 +197,7 @@ exports[`Component Serialization serializes all components 1`] = `
       <slot-target name="Label" id="PgB8XX97acqo">
         <div id="KGA5B3_gMia3" style="white-space: nowrap">Text</div>
       </slot-target>
-      <div id="sjXkLSA3nurb" style="display: flex; flex-direction: column; plasmic-display-none: true; flex-shrink: 0">
+      <div id="sjXkLSA3nurb" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="End" id="6sD-taUBGCX5">
           <svg id="QQVqRFbrgrbn" style="position: relative"></svg>
         </slot-target>
@@ -426,7 +426,7 @@ exports[`Component Serialization serializes all components 1`] = `
               </ITEM>
               <ITEM>
                 <ElementOverride uuid="zhn6dj3FeLUL">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
               <ITEM>
@@ -462,7 +462,8 @@ exports[`Component Serialization serializes all components 1`] = `
               </ITEM>
               <ITEM>
                 <ElementOverride uuid="MpYlNqLG4pwf">
-                  <styles border-top-width="1px" border-right-width="1px" border-bottom-width="1px" border-left-width="1px" plasmic-display-none="false" background="none"></styles>
+                  <styles border-top-width="1px" border-right-width="1px" border-bottom-width="1px" border-left-width="1px" background="none"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
               <ITEM>
@@ -617,7 +618,12 @@ exports[`Component Serialization serializes all components 1`] = `
             <ARRAY>
               <ITEM>
                 <ElementOverride uuid="4-zlvdO1CNcE">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
+                </ElementOverride>
+              </ITEM>
+              <ITEM>
+                <ElementOverride uuid="omi74nYXXVka">
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -633,7 +639,12 @@ exports[`Component Serialization serializes all components 1`] = `
             <ARRAY>
               <ITEM>
                 <ElementOverride uuid="sjXkLSA3nurb">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
+                </ElementOverride>
+              </ITEM>
+              <ITEM>
+                <ElementOverride uuid="6sD-taUBGCX5">
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -793,8 +804,8 @@ exports[`Component Serialization serializes all components 1`] = `
   <baseVariantTplTree><![CDATA[<plasmic-component id="wSXrGkHnJdlR" data-plasmic-component="plasmicReactAriaCheckbox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox" style="object-fit: cover; cursor: pointer; flex-direction: row; justify-content: flex-start; align-items: center; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="n1iOLNRviVTt" style="position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: var(--token-aR8bR72wtSYZ); border-top-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-left-radius: var(--token-aR8bR72wtSYZ)">
-      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF"></svg>
-      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF"></svg>
+      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
+      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
     </div>
     <slot-target name="Label" id="__lCWNt1e8Y1">
       <div id="tCoYwdk2uULK">Option</div>
@@ -834,7 +845,7 @@ exports[`Component Serialization serializes all components 1`] = `
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="EQwO08BkwohB" data-plasmic-component="plasmicReactAriaCheckboxGroup" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox Group" style="position: relative; display: flex; flex-direction: column; box-sizing: border-box; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="98XO1OPKAiCe" data-plasmic-component="label" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="98XO1OPKAiCe" data-plasmic-component="label" style="position: relative" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="DQM6hKflEuc3">
           <div id="UWGJoBRQKWLr">Label</div>
@@ -860,7 +871,7 @@ exports[`Component Serialization serializes all components 1`] = `
         </plasmic-component>
       </div>
     </slot-target>
-    <plasmic-component id="cN5htPNZiG1u" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="cN5htPNZiG1u" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="wQznGWAqVAid">
           <div id="b6gfpnkTyp69">Description...</div>
@@ -935,7 +946,7 @@ exports[`Component Serialization serializes all components 1`] = `
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="6toPxJJ_4YJU" data-plasmic-component="plasmicReactAriaCombobox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria ComboBox" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="4xLgaE-4M0Kx" data-plasmic-component="label" style="plasmic-display-none: false">
+    <plasmic-component id="4xLgaE-4M0Kx" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="zLAA-tWHJNf8">
           <div id="ZRbaLmiuCxUP">Label</div>
@@ -950,7 +961,7 @@ exports[`Component Serialization serializes all components 1`] = `
         </slot>
       </plasmic-component>
     </div>
-    <plasmic-component id="wIA4dX2RoQrM" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="wIA4dX2RoQrM" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="WDGbQnURRWUg">
           <div id="8efXjeoLuAJT">Description...</div>
@@ -1065,9 +1076,9 @@ exports[`Component Serialization serializes all components 1`] = `
               <slot-target name="Heading" id="gIBjMLlD949l">
                 <h2 id="IQ0Cgrc5YbBh" style="width: stretch; height: wrap; max-width: 100%; margin-top: 0rem; margin-right: 0rem; margin-bottom: 0rem; margin-left: 0rem; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); font-weight: bold; font-size: var(--token-QkMNDbZUI9zH)">Heading</h2>
               </slot-target>
-              <div id="Qhlx4x-qE0HO" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: center; justify-content: flex-start; plasmic-display-none: false; padding-top: 0px; padding-bottom: 0px; padding-right: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); overflow: auto">
+              <div id="Qhlx4x-qE0HO" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: center; justify-content: flex-start; padding-top: 0px; padding-bottom: 0px; padding-right: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); overflow: auto">
                 <slot-target name="Content" id="Nh6SOmMFCDz3">
-                  <div id="yA7avoOLEVGo" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; plasmic-display-none: false; height: 100%; row-gap: var(--token-50jqnrkhPFjk)">
+                  <div id="yA7avoOLEVGo" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; height: 100%; row-gap: var(--token-50jqnrkhPFjk)">
                     <div id="lzf-NEhixhKb">This is a Modal!</div>
                     <div id="vUQvda51uek-" style="position: relative">You can put anything here!
 
@@ -1077,9 +1088,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
                   </div>
                 </slot-target>
               </div>
-              <div id="v0QnO4DtOGZ_" style="display: flex; position: relative; plasmic-display-none: false; flex-shrink: 0; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
+              <div id="v0QnO4DtOGZ_" style="display: flex; position: relative; flex-shrink: 0; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
                 <slot-target name="Footer" id="Dl1gE7PeVnXk">
-                  <div id="gxsdS8Cm-o_F" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; plasmic-display-none: false; width: stretch">
+                  <div id="gxsdS8Cm-o_F" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch">
                     <plasmic-component id="qrbXOGBU0xVT" data-plasmic-component="button" data-props="{&quot;type&quot;:&quot;Soft&quot;,&quot;color&quot;:&quot;Muted&quot;}">
                       <slot name="start">
                         <svg id="nktOfFsQUlA7" style="position: relative"></svg>
@@ -1111,8 +1122,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           <elements>
             <ARRAY>
               <ITEM>
+                <ElementOverride uuid="UPso8XRDR1_Z">
+                  <attrs data-visibility="notRendered"></attrs>
+                </ElementOverride>
+              </ITEM>
+              <ITEM>
                 <ElementOverride uuid="EgoIzR721aP7">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -1199,14 +1215,14 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </li>
     </ul>
     <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
-    <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
+    <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
       <plasmic-component id="Mph6D763rJVw" data-plasmic-component="button" style="max-width: 100%; width: 100px"></plasmic-component>
       <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
         <plasmic-component id="nDAyQ6rOezVl" data-plasmic-component="_switch" data-plasmic-name="Switch" style="max-width: 100%; width: 100px; position: relative"></plasmic-component>
       </div>
       <plasmic-component id="ECPnnoz-UM9u" data-plasmic-component="checkboxGroup" data-plasmic-name="Checkbox Group" style="max-width: 100%; width: 150px"></plasmic-component>
       <plasmic-component id="hq7D0qhcWq23" data-plasmic-component="slider" data-plasmic-name="Slider" style="max-width: 100%; width: 200px"></plasmic-component>
-      <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false">
+      <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
         <plasmic-component id="yVNoh5O3v0cb" data-plasmic-component="select" data-plasmic-name="Select" style="max-width: 100%"></plasmic-component>
       </div>
       <plasmic-component id="uQEzkCsn4RFC" data-plasmic-component="textField" data-plasmic-name="Text Field" style="max-width: 100%; width: 200px"></plasmic-component>
@@ -1330,7 +1346,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       <slot-target name="children" id="ck67sECnXw-2">
         <div id="k6ffGUOC9rGr">Label</div>
       </slot-target>
-      <div id="O3UhwtNeECFd" style="position: relative; plasmic-display-none: true">(optional)</div>
+      <div id="O3UhwtNeECFd" style="position: relative" data-visibility="displayNone">(optional)</div>
     </div>
   </slot>
 </plasmic-component>]]></baseVariantTplTree>
@@ -1377,7 +1393,8 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             <ARRAY>
               <ITEM>
                 <ElementOverride uuid="O3UhwtNeECFd">
-                  <styles plasmic-display-none="false" color="var(--token-O7HlhsyUcTLk)"></styles>
+                  <styles color="var(--token-O7HlhsyUcTLk)"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -1393,7 +1410,8 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             <ARRAY>
               <ITEM>
                 <ElementOverride uuid="O3UhwtNeECFd">
-                  <styles plasmic-display-none="false" color="var(--token-HFP4U80F-qYK)"></styles>
+                  <styles color="var(--token-HFP4U80F-qYK)"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -1430,7 +1448,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
           </div>
         </slot>
       </plasmic-component>
-      <plasmic-component id="cBJvpxcqt7R3" data-plasmic-component="plasmicReactAriaDescription" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="plasmic-display-none: false">
+      <plasmic-component id="cBJvpxcqt7R3" data-plasmic-component="plasmicReactAriaDescription" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-visible-if="{{ $props.description }}">
         <slot name="children">
           <div id="mwPDX0jdMZfz" style="position: relative; width: stretch; height: wrap; max-width: 100%; color: var(--token-O7HlhsyUcTLk)">{{ $props.description }}</div>
         </slot>
@@ -1579,9 +1597,9 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             <slot-target name="Heading" id="vKk0E2o4A3VX">
               <h3 id="YXFw_f_JzqWd" style="width: stretch; height: wrap; max-width: 100%; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); font-weight: 700; font-size: var(--token-QkMNDbZUI9zH)">Heading</h3>
             </slot-target>
-            <div id="jXMm15EkAPwa" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: stretch; justify-content: flex-start; plasmic-display-none: false; overflow: auto; padding-left: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C)">
+            <div id="jXMm15EkAPwa" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: stretch; justify-content: flex-start; overflow: auto; padding-left: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C)">
               <slot-target name="Content" id="MfHIGUNLPmlw">
-                <div id="NhxVwHrWOezJ" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; plasmic-display-none: false; row-gap: var(--token-50jqnrkhPFjk)">
+                <div id="NhxVwHrWOezJ" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; row-gap: var(--token-50jqnrkhPFjk)">
                   <div id="hu7Em6XYWKn-">This is a Modal!</div>
                   <div id="qxpO2kcVDwdO" style="position: relative">You can put anything here!
 
@@ -1592,7 +1610,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
               </slot-target>
             </div>
             <slot-target name="Footer" id="8zGkGMDiYTHg">
-              <div id="bNRZ2OqSSTzq" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; plasmic-display-none: false; width: stretch; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
+              <div id="bNRZ2OqSSTzq" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
                 <plasmic-component id="ssjp-JjPp06g" data-plasmic-component="button" data-props="{&quot;color&quot;:&quot;Muted&quot;,&quot;type&quot;:&quot;Soft&quot;}">
                   <slot name="start">
                     <svg id="eCH5euCJgz6N" style="position: relative"></svg>
@@ -1612,6 +1630,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </plasmic-component>
   </slot>
 </plasmic-component>]]></baseVariantTplTree>
+  <variantSettings>
+    <ARRAY>
+      <ITEM>
+        <VariantOverride>
+          <variant>
+            <Variant name="noTrigger" uuid="phcL-adiLQWW"></Variant>
+          </variant>
+          <elements>
+            <ARRAY>
+              <ITEM>
+                <ElementOverride uuid="ZTA2-vbNl2Ib">
+                  <attrs data-visibility="notRendered"></attrs>
+                </ElementOverride>
+              </ITEM>
+            </ARRAY>
+          </elements>
+        </VariantOverride>
+      </ITEM>
+    </ARRAY>
+  </variantSettings>
 </Component>",
   "Overlay Arrow": "<Component name="Overlay Arrow" uuid="1tPqNrfR1BwC" type="plain">
   <props>
@@ -1718,7 +1756,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <slot name="dialog">
     <plasmic-component id="lAUrYeGr1_hI" data-plasmic-component="plasmicReactAriaPopover" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="border-top-left-radius: var(--token-50jqnrkhPFjk); border-top-right-radius: var(--token-50jqnrkhPFjk); border-bottom-right-radius: var(--token-50jqnrkhPFjk); border-bottom-left-radius: var(--token-50jqnrkhPFjk); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); color: var(--token-ZX33JwqKe1KQ); line-height: var(--token-bFkpmJG5PZPn); box-shadow: 0px 0px 20px 0px #00000040">
       <slot name="children">
-        <plasmic-component id="VhPGJjyF6BHq" data-plasmic-component="overlayArrow" style="plasmic-display-none: false"></plasmic-component>
+        <plasmic-component id="VhPGJjyF6BHq" data-plasmic-component="overlayArrow" data-visible-if="{{ $props.showArrow }}"></plasmic-component>
         <plasmic-component id="E287lTrGp0OI" data-plasmic-component="plasmicReactAriaDialog" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="object-fit: cover; outline-style: none">
           <slot name="children">
             <slot-target name="Content" id="mgR0qZH6zEqw">
@@ -1758,7 +1796,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <baseVariantTplTree><![CDATA[<plasmic-component id="MlKoRbZwK2UG" data-plasmic-component="plasmicReactAriaRadioGroupRadio" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Radio" style="position: relative; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; cursor: pointer; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="WV-i1VxJMtKx" style="display: flex; position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
-      <div id="GZ4Zt117B32n" style="position: relative; background: linear-gradient(#FFFFFF, #FFFFFF); plasmic-display-none: true; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px"></div>
+      <div id="GZ4Zt117B32n" style="position: relative; background: linear-gradient(#FFFFFF, #FFFFFF); border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px" data-visibility="displayNone"></div>
     </div>
     <slot-target name="Label" id="0FuLuCmrM1fI">
       <div id="ZPRX2XO9uJG7">Option</div>
@@ -1795,7 +1833,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="VjDG6dqVYVzS" data-plasmic-component="plasmicReactAriaRadioGroup" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria RadioGroup" style="display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="bCm9NLAz0F27" data-plasmic-component="label" style="plasmic-display-none: false">
+    <plasmic-component id="bCm9NLAz0F27" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="9XLNbeWgON7_">
           <div id="sShsc6N2gVw_">Label</div>
@@ -1821,7 +1859,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </plasmic-component>
       </div>
     </slot-target>
-    <plasmic-component id="jHjl3Wy2DkIh" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="jHjl3Wy2DkIh" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="psH_3R57__3f">
           <div id="GSMhKQ6K7IMV">Description...</div>
@@ -1879,21 +1917,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <baseVariantTplTree><![CDATA[<plasmic-component id="ZRpvtB4bErD6" data-plasmic-component="plasmicReactAriaSliderRangeSlider" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Range Slider" style="width: stretch; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); min-width: 200px; row-gap: var(--token-50jqnrkhPFjk)">
   <slot name="children">
     <div id="3TgD8bjSRxmw" style="display: flex; flex-direction: row; position: relative; justify-content: space-between; column-gap: var(--token-J8bgk1cLaZ5G)">
-      <plasmic-component id="ysQxTCoRzg78" data-plasmic-component="label" style="plasmic-display-none: false">
+      <plasmic-component id="ysQxTCoRzg78" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
         <slot name="children">
           <slot-target name="Label" id="gKtAU1JqroeJ">
             <div id="4vnxRkZykt44" style="position: relative">Label</div>
           </slot-target>
         </slot>
       </plasmic-component>
-      <plasmic-component id="dOtrl2YVnVA8" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="plasmic-display-none: false">
+      <plasmic-component id="dOtrl2YVnVA8" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-visible-if="{{ $props.showOutputText }}">
         <slot name="children">
           <div id="QtSCy9I96lnU" style="position: relative">{{ $props.outputText ?? $state.ariaRangeSlider.value?.join(",") }}</div>
         </slot>
       </plasmic-component>
     </div>
-    <div id="qeE4lCG9B33N" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; plasmic-display-none: false; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
-      <div id="nl8sty0qM-Fh" label="background" style="display: flex; plasmic-display-none: false; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
+    <div id="qeE4lCG9B33N" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
+      <div id="nl8sty0qM-Fh" label="background" style="display: flex; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
         <plasmic-component id="AQT73gNwbX1j" data-plasmic-component="plasmicReactAriaSliderSliderTrack" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="cursor: pointer; opacity: 1; box-sizing: border-box; background: none; height: var(--token-J8bgk1cLaZ5G); width: stretch">
           <slot name="children">
             <slot-target name="Thumbs" id="AWOYUbsnAknv">
@@ -1901,12 +1939,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             </slot-target>
           </slot>
           <slot name="progressBar">
-            <div id="fDC6-lvgYyle" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); plasmic-display-none: false; height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px"></div>
+            <div id="fDC6-lvgYyle" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px" data-visible-if="{{ $props.filled }}"></div>
           </slot>
         </plasmic-component>
       </div>
     </div>
-    <plasmic-component id="FlMbwh2F01nU" data-plasmic-component="description" style="max-width: 100%; position: relative; plasmic-display-none: false">
+    <plasmic-component id="FlMbwh2F01nU" data-plasmic-component="description" style="max-width: 100%; position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <div id="-obDOc7BUc9q">Description…</div>
       </slot>
@@ -1967,7 +2005,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="P6ldrdX5EJky" data-plasmic-component="plasmicReactAriaSelect" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Select" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="R5T8SPB0kYCp" data-plasmic-component="label" style="plasmic-display-none: false">
+    <plasmic-component id="R5T8SPB0kYCp" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="t358UDJEG3d0">
           <div id="Q5N5yl1b1_M5">Label</div>
@@ -1981,12 +2019,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             <div id="6tBNAPHTi-A6" style="position: relative; width: stretch; height: wrap; max-width: 100%; color: var(--token-O7HlhsyUcTLk)">{{ $props.placeholder }}</div>
           </slot>
         </plasmic-component>
-        <div id="leBfvkFpGaYf" style="display: flex; position: relative; plasmic-display-none: false; width: var(--token-_gnxKR8NG8ND); height: var(--token-_gnxKR8NG8ND); justify-content: center; align-items: center">
+        <div id="leBfvkFpGaYf" style="display: flex; position: relative; width: var(--token-_gnxKR8NG8ND); height: var(--token-_gnxKR8NG8ND); justify-content: center; align-items: center">
           <svg id="FQ3d6y55TWD0" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)"></svg>
         </div>
       </slot>
     </plasmic-component>
-    <plasmic-component id="9ggmcSMNAc0F" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="9ggmcSMNAc0F" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="XpBViFyo-cpS">
           <div id="K9ib35x4wYqO">Description...</div>
@@ -2062,22 +2100,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="QE2I6Xu6adAX" data-plasmic-component="plasmicReactAriaSlider" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Slider" style="position: relative; box-sizing: border-box; min-width: 200px; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; row-gap: var(--token-50jqnrkhPFjk)">
   <slot name="children">
-    <div id="kJh_0nOiQS0j" style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; plasmic-display-none: false; column-gap: var(--token-J8bgk1cLaZ5G)">
-      <plasmic-component id="lQMACF3m1hu1" data-plasmic-component="label" style="plasmic-display-none: false">
+    <div id="kJh_0nOiQS0j" style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; column-gap: var(--token-J8bgk1cLaZ5G)" data-visible-if="{{ $props.showLabel || $props.showOutputText }}">
+      <plasmic-component id="lQMACF3m1hu1" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
         <slot name="children">
           <slot-target name="Label" id="YVER6-vqb5bh">
             <div id="U0N9XG-BN0a3" style="position: relative">Label</div>
           </slot-target>
         </slot>
       </plasmic-component>
-      <plasmic-component id="klg1YHTLaSOv" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="plasmic-display-none: false">
+      <plasmic-component id="klg1YHTLaSOv" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-visible-if="{{ $props.showOutputText }}">
         <slot name="children">
           <div id="uPTsZliZQXFN">{{ $props.outputText ?? $state.ariaSlider.value }}</div>
         </slot>
       </plasmic-component>
     </div>
-    <div id="fH-_aqflYzFS" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; plasmic-display-none: false; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
-      <div id="1fqQFDvsCuny" label="background" style="display: flex; plasmic-display-none: false; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
+    <div id="fH-_aqflYzFS" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
+      <div id="1fqQFDvsCuny" label="background" style="display: flex; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
         <plasmic-component id="91lbkEjbqr0d" data-plasmic-component="plasmicReactAriaSliderSliderTrack" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="cursor: pointer; opacity: 1; box-sizing: border-box; background: none; height: var(--token-J8bgk1cLaZ5G); width: stretch">
           <slot name="children">
             <slot-target name="Thumbs" id="P90yRUBLtcEP">
@@ -2085,12 +2123,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             </slot-target>
           </slot>
           <slot name="progressBar">
-            <div id="1g5F5-MVXXYo" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); plasmic-display-none: false; height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px"></div>
+            <div id="1g5F5-MVXXYo" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px" data-visible-if="{{ $props.filled }}"></div>
           </slot>
         </plasmic-component>
       </div>
     </div>
-    <plasmic-component id="L7lEs15kjXdC" data-plasmic-component="description" style="max-width: 100%; position: relative; plasmic-display-none: false">
+    <plasmic-component id="L7lEs15kjXdC" data-plasmic-component="description" style="max-width: 100%; position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <div id="-p466Ri7xkc4">Description…</div>
       </slot>
@@ -2159,7 +2197,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <div id="AT6T7h_VF3qk">Label</div>
       </slot-target>
     </div>
-    <plasmic-component id="EKssPnV6b-Lo" data-plasmic-component="description" style="max-width: 100%; position: relative; plasmic-display-none: false">
+    <plasmic-component id="EKssPnV6b-Lo" data-plasmic-component="description" style="max-width: 100%; position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <div id="kx1CHuxJ_JC1">Description…</div>
       </slot>
@@ -2356,28 +2394,28 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="NESDFXPGRUxY" data-plasmic-component="plasmicReactAriaTextField" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria TextField" style="display: flex; flex-direction: column; box-sizing: border-box; width: stretch; position: relative; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="KhtStgTAP5Ec" data-plasmic-component="label" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="KhtStgTAP5Ec" data-plasmic-component="label" style="position: relative" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="QpLdxmPRJ_Lq">
           <div id="cvLk0de56Mxj">Label</div>
         </slot-target>
       </slot>
     </plasmic-component>
-    <div id="2HpGGmOLvP9R" style="display: flex; plasmic-display-none: false; flex-direction: column">
-      <div id="EiP28sViJ6pF" style="display: flex; flex-direction: row; plasmic-display-none: true; position: absolute; height: var(--token-_gnxKR8NG8ND); align-items: center; justify-content: center; z-index: 9; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); left: 0px; top: 0px">
+    <div id="2HpGGmOLvP9R" style="display: flex; flex-direction: column">
+      <div id="EiP28sViJ6pF" style="display: flex; flex-direction: row; position: absolute; height: var(--token-_gnxKR8NG8ND); align-items: center; justify-content: center; z-index: 9; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); left: 0px; top: 0px" data-visibility="displayNone">
         <slot-target name="Start" id="wm0PTpbqVRWh">
           <svg id="UdctYqItpndH" style="position: relative"></svg>
         </slot-target>
       </div>
       <plasmic-component id="GW_pTiEM-XJh" data-plasmic-component="textInput" data-plasmic-name="Text Input"></plasmic-component>
-      <plasmic-component id="owbUg8BLCrEo" data-plasmic-component="textAreaInput" data-plasmic-name="TextArea Input"></plasmic-component>
-      <div id="sy4BAFLD5x2S" style="display: flex; plasmic-display-none: true; height: var(--token-_gnxKR8NG8ND); flex-direction: row; align-items: center; justify-content: center; position: absolute; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); z-index: 1; top: 0px; right: 0px">
+      <plasmic-component id="owbUg8BLCrEo" data-plasmic-component="textAreaInput" data-plasmic-name="TextArea Input" data-visibility="notRendered"></plasmic-component>
+      <div id="sy4BAFLD5x2S" style="display: flex; height: var(--token-_gnxKR8NG8ND); flex-direction: row; align-items: center; justify-content: center; position: absolute; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); z-index: 1; top: 0px; right: 0px" data-visibility="displayNone">
         <slot-target name="End" id="o0es2qOp2wEI">
           <svg id="xHHBwIzEWol6" style="position: relative"></svg>
         </slot-target>
       </div>
     </div>
-    <plasmic-component id="jiIIYVycI1P2" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="jiIIYVycI1P2" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="FWCQC0dITAnn">
           <div id="YriS9xzgkgXh">Description...</div>
@@ -2396,8 +2434,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           <elements>
             <ARRAY>
               <ITEM>
+                <ElementOverride uuid="GW_pTiEM-XJh">
+                  <attrs data-visibility="notRendered"></attrs>
+                </ElementOverride>
+              </ITEM>
+              <ITEM>
                 <ElementOverride uuid="owbUg8BLCrEo">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -2413,7 +2456,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             <ARRAY>
               <ITEM>
                 <ElementOverride uuid="EiP28sViJ6pF">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -2429,7 +2472,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             <ARRAY>
               <ITEM>
                 <ElementOverride uuid="sy4BAFLD5x2S">
-                  <styles plasmic-display-none="false"></styles>
+                  <attrs data-visibility="visible"></attrs>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -3071,7 +3114,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </slot-target>
   </slot>
   <slot name="tooltipContent">
-    <plasmic-component id="dbO1jE_EOJW_" data-plasmic-component="overlayArrow" data-props="{&quot;dark&quot;:true}" style="max-width: 100%; plasmic-display-none: false"></plasmic-component>
+    <plasmic-component id="dbO1jE_EOJW_" data-plasmic-component="overlayArrow" data-props="{&quot;dark&quot;:true}" style="max-width: 100%" data-visible-if="{{ $props.showArrow }}"></plasmic-component>
     <div id="ERtj_TB3jFWz" style="display: flex; position: relative; background: linear-gradient(var(--token-X4GQ8bRemoGX), var(--token-X4GQ8bRemoGX)); border-top-left-radius: var(--token-J8bgk1cLaZ5G); border-top-right-radius: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: var(--token-J8bgk1cLaZ5G); border-bottom-left-radius: var(--token-J8bgk1cLaZ5G); flex-direction: column; justify-content: flex-start; align-items: flex-start; padding-bottom: var(--token-50jqnrkhPFjk); padding-top: var(--token-50jqnrkhPFjk); padding-right: var(--token-50jqnrkhPFjk); padding-left: var(--token-50jqnrkhPFjk); width: wrap; row-gap: var(--token-iV97hAoHAnKd)">
       <slot-target name="Content" id="DRjyVjY3ZEmA">
         <div id="f_gzDem4HSgM">Hello from Tooltip! </div>
@@ -3136,11 +3179,11 @@ exports[`Component Serialization serializes all components 2`] = `
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="P4urRFgjF3wU" data-plasmic-component="plasmicReactAriaButton" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-props="{&quot;target&quot;:&quot;{{ $props.openLinkInNewTab ? \\&quot;_blank\\&quot; : \\&quot;_self\\&quot; }}&quot;}" style="position: relative; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); display: flex; cursor: pointer; box-sizing: border-box; min-width: var(--token-J8bgk1cLaZ5G); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; outline-style: none; padding-bottom: 0rem; padding-top: 0rem; padding-right: 0rem; padding-left: 0rem; text-decoration-line: none; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)">
   <slot name="children">
-    <div id="zhn6dj3FeLUL" label="soft background" style="display: block; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; background: linear-gradient(var(--token-o3a6NOLIofKT), var(--token-o3a6NOLIofKT)); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
-    <div id="MpYlNqLG4pwf" label="border" style="display: block; position: absolute; top: 0px; left: 0px; border-top-color: var(--token-JI5CHdDLi9zk); border-top-width: 0px; border-top-style: solid; border-right-color: var(--token-JI5CHdDLi9zk); border-right-width: 0px; border-right-style: solid; border-bottom-color: var(--token-JI5CHdDLi9zk); border-bottom-width: 0px; border-bottom-style: solid; border-left-color: var(--token-JI5CHdDLi9zk); border-left-width: 0px; border-left-style: solid; bottom: 0px; right: 0px; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
+    <div id="zhn6dj3FeLUL" label="soft background" style="display: block; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; background: linear-gradient(var(--token-o3a6NOLIofKT), var(--token-o3a6NOLIofKT)); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)" data-visibility="notRendered"></div>
+    <div id="MpYlNqLG4pwf" label="border" style="display: block; position: absolute; top: 0px; left: 0px; border-top-color: var(--token-JI5CHdDLi9zk); border-top-width: 0px; border-top-style: solid; border-right-color: var(--token-JI5CHdDLi9zk); border-right-width: 0px; border-right-style: solid; border-bottom-color: var(--token-JI5CHdDLi9zk); border-bottom-width: 0px; border-bottom-style: solid; border-left-color: var(--token-JI5CHdDLi9zk); border-left-width: 0px; border-left-style: solid; bottom: 0px; right: 0px; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)" data-visibility="notRendered"></div>
     <div id="7ftEZY6-lBPq" label="interaction effect" style="display: block; position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)"></div>
     <div id="LcbjVN0--45d" style="display: flex; justify-content: center; align-items: center; padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); width: stretch; height: stretch; column-gap: var(--token--0yvAvGYfFhX)">
-      <div id="4-zlvdO1CNcE" style="display: flex; flex-direction: column; plasmic-display-none: true; flex-shrink: 0">
+      <div id="4-zlvdO1CNcE" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="Start" id="omi74nYXXVka">
           <svg id="tJTRxQOR7i1z" style="position: relative"></svg>
         </slot-target>
@@ -3148,7 +3191,7 @@ exports[`Component Serialization serializes all components 2`] = `
       <slot-target name="Label" id="PgB8XX97acqo">
         <div id="KGA5B3_gMia3" style="white-space: nowrap">Text</div>
       </slot-target>
-      <div id="sjXkLSA3nurb" style="display: flex; flex-direction: column; plasmic-display-none: true; flex-shrink: 0">
+      <div id="sjXkLSA3nurb" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="End" id="6sD-taUBGCX5">
           <svg id="QQVqRFbrgrbn" style="position: relative"></svg>
         </slot-target>
@@ -3544,8 +3587,8 @@ exports[`Component Serialization serializes all components 2`] = `
           },
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "zhn6dj3FeLUL",
           },
@@ -3589,13 +3632,15 @@ exports[`Component Serialization serializes all components 2`] = `
           },
           {
             "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
+            },
             "styles": {
               "background": "none",
               "border-bottom-width": "1px",
               "border-left-width": "1px",
               "border-right-width": "1px",
               "border-top-width": "1px",
-              "plasmic-display-none": "false",
             },
             "uuid": "MpYlNqLG4pwf",
           },
@@ -3806,10 +3851,17 @@ exports[`Component Serialization serializes all components 2`] = `
         "elements": [
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "4-zlvdO1CNcE",
+          },
+          {
+            "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
+            },
+            "uuid": "omi74nYXXVka",
           },
         ],
         "variant": {
@@ -3823,10 +3875,17 @@ exports[`Component Serialization serializes all components 2`] = `
         "elements": [
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "sjXkLSA3nurb",
+          },
+          {
+            "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
+            },
+            "uuid": "6sD-taUBGCX5",
           },
         ],
         "variant": {
@@ -4186,8 +4245,8 @@ exports[`Component Serialization serializes all components 2`] = `
     "baseVariantTplTree": "<plasmic-component id="wSXrGkHnJdlR" data-plasmic-component="plasmicReactAriaCheckbox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox" style="object-fit: cover; cursor: pointer; flex-direction: row; justify-content: flex-start; align-items: center; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="n1iOLNRviVTt" style="position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: var(--token-aR8bR72wtSYZ); border-top-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-left-radius: var(--token-aR8bR72wtSYZ)">
-      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF"></svg>
-      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF"></svg>
+      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
+      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
     </div>
     <slot-target name="Label" id="__lCWNt1e8Y1">
       <div id="tCoYwdk2uULK">Option</div>
@@ -4241,7 +4300,7 @@ exports[`Component Serialization serializes all components 2`] = `
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="EQwO08BkwohB" data-plasmic-component="plasmicReactAriaCheckboxGroup" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox Group" style="position: relative; display: flex; flex-direction: column; box-sizing: border-box; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="98XO1OPKAiCe" data-plasmic-component="label" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="98XO1OPKAiCe" data-plasmic-component="label" style="position: relative" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="DQM6hKflEuc3">
           <div id="UWGJoBRQKWLr">Label</div>
@@ -4267,7 +4326,7 @@ exports[`Component Serialization serializes all components 2`] = `
         </plasmic-component>
       </div>
     </slot-target>
-    <plasmic-component id="cN5htPNZiG1u" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="cN5htPNZiG1u" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="wQznGWAqVAid">
           <div id="b6gfpnkTyp69">Description...</div>
@@ -4330,7 +4389,7 @@ exports[`Component Serialization serializes all components 2`] = `
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="6toPxJJ_4YJU" data-plasmic-component="plasmicReactAriaCombobox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria ComboBox" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="4xLgaE-4M0Kx" data-plasmic-component="label" style="plasmic-display-none: false">
+    <plasmic-component id="4xLgaE-4M0Kx" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="zLAA-tWHJNf8">
           <div id="ZRbaLmiuCxUP">Label</div>
@@ -4345,7 +4404,7 @@ exports[`Component Serialization serializes all components 2`] = `
         </slot>
       </plasmic-component>
     </div>
-    <plasmic-component id="wIA4dX2RoQrM" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="wIA4dX2RoQrM" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="WDGbQnURRWUg">
           <div id="8efXjeoLuAJT">Description...</div>
@@ -4531,9 +4590,9 @@ exports[`Component Serialization serializes all components 2`] = `
               <slot-target name="Heading" id="gIBjMLlD949l">
                 <h2 id="IQ0Cgrc5YbBh" style="width: stretch; height: wrap; max-width: 100%; margin-top: 0rem; margin-right: 0rem; margin-bottom: 0rem; margin-left: 0rem; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); font-weight: bold; font-size: var(--token-QkMNDbZUI9zH)">Heading</h2>
               </slot-target>
-              <div id="Qhlx4x-qE0HO" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: center; justify-content: flex-start; plasmic-display-none: false; padding-top: 0px; padding-bottom: 0px; padding-right: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); overflow: auto">
+              <div id="Qhlx4x-qE0HO" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: center; justify-content: flex-start; padding-top: 0px; padding-bottom: 0px; padding-right: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); overflow: auto">
                 <slot-target name="Content" id="Nh6SOmMFCDz3">
-                  <div id="yA7avoOLEVGo" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; plasmic-display-none: false; height: 100%; row-gap: var(--token-50jqnrkhPFjk)">
+                  <div id="yA7avoOLEVGo" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; height: 100%; row-gap: var(--token-50jqnrkhPFjk)">
                     <div id="lzf-NEhixhKb">This is a Modal!</div>
                     <div id="vUQvda51uek-" style="position: relative">You can put anything here!
 
@@ -4543,9 +4602,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
                   </div>
                 </slot-target>
               </div>
-              <div id="v0QnO4DtOGZ_" style="display: flex; position: relative; plasmic-display-none: false; flex-shrink: 0; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
+              <div id="v0QnO4DtOGZ_" style="display: flex; position: relative; flex-shrink: 0; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
                 <slot-target name="Footer" id="Dl1gE7PeVnXk">
-                  <div id="gxsdS8Cm-o_F" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; plasmic-display-none: false; width: stretch">
+                  <div id="gxsdS8Cm-o_F" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch">
                     <plasmic-component id="qrbXOGBU0xVT" data-plasmic-component="button" data-props="{&quot;type&quot;:&quot;Soft&quot;,&quot;color&quot;:&quot;Muted&quot;}">
                       <slot name="start">
                         <svg id="nktOfFsQUlA7" style="position: relative"></svg>
@@ -4638,8 +4697,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "elements": [
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "notRendered",
+            },
+            "uuid": "UPso8XRDR1_Z",
+          },
+          {
+            "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "EgoIzR721aP7",
           },
@@ -4689,14 +4755,14 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </li>
     </ul>
     <div id="qsWzrsjeP26j" style="width: stretch; height: wrap; font-size: 16px; font-family: Inter; font-weight: 400; font-style: normal; color: #000000; text-align: left; text-transform: none; line-height: 1.5; letter-spacing: normal; white-space: pre-wrap; user-select: text; text-decoration-line: none; text-overflow: clip">Here are some example components:</div>
-    <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; plasmic-display-none: false; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
+    <div id="oniEwFecMMg1" style="display: flex; flex-direction: row; position: relative; width: stretch; height: wrap; max-width: 100%; padding-left: 25px; padding-right: 25px; padding-bottom: 25px; padding-top: 25px; justify-content: center; align-items: center; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: var(--token-O--cwH0Y8I-6); border-right-color: var(--token-O--cwH0Y8I-6); border-bottom-color: var(--token-O--cwH0Y8I-6); border-left-color: var(--token-O--cwH0Y8I-6); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2); column-gap: 20px; flex-wrap: wrap; row-gap: 20px; align-content: center">
       <plasmic-component id="Mph6D763rJVw" data-plasmic-component="button" style="max-width: 100%; width: 100px"></plasmic-component>
       <div id="5dYTb3AXYM4H" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: center; width: 33%; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
         <plasmic-component id="nDAyQ6rOezVl" data-plasmic-component="_switch" data-plasmic-name="Switch" style="max-width: 100%; width: 100px; position: relative"></plasmic-component>
       </div>
       <plasmic-component id="ECPnnoz-UM9u" data-plasmic-component="checkboxGroup" data-plasmic-name="Checkbox Group" style="max-width: 100%; width: 150px"></plasmic-component>
       <plasmic-component id="hq7D0qhcWq23" data-plasmic-component="slider" data-plasmic-name="Slider" style="max-width: 100%; width: 200px"></plasmic-component>
-      <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px; plasmic-display-none: false">
+      <div id="33CJ6KRHTbud" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; width: 200px; height: wrap; max-width: 100%; padding-left: 8px; padding-right: 8px; padding-bottom: 8px; padding-top: 8px">
         <plasmic-component id="yVNoh5O3v0cb" data-plasmic-component="select" data-plasmic-name="Select" style="max-width: 100%"></plasmic-component>
       </div>
       <plasmic-component id="uQEzkCsn4RFC" data-plasmic-component="textField" data-plasmic-name="Text Field" style="max-width: 100%; width: 200px"></plasmic-component>
@@ -4864,7 +4930,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       <slot-target name="children" id="ck67sECnXw-2">
         <div id="k6ffGUOC9rGr">Label</div>
       </slot-target>
-      <div id="O3UhwtNeECFd" style="position: relative; plasmic-display-none: true">(optional)</div>
+      <div id="O3UhwtNeECFd" style="position: relative" data-visibility="displayNone">(optional)</div>
     </div>
   </slot>
 </plasmic-component>",
@@ -4930,9 +4996,11 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         "elements": [
           {
             "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
+            },
             "styles": {
               "color": "var(--token-O7HlhsyUcTLk)",
-              "plasmic-display-none": "false",
             },
             "uuid": "O3UhwtNeECFd",
           },
@@ -4948,9 +5016,11 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         "elements": [
           {
             "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
+            },
             "styles": {
               "color": "var(--token-HFP4U80F-qYK)",
-              "plasmic-display-none": "false",
             },
             "uuid": "O3UhwtNeECFd",
           },
@@ -5017,7 +5087,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
           </div>
         </slot>
       </plasmic-component>
-      <plasmic-component id="cBJvpxcqt7R3" data-plasmic-component="plasmicReactAriaDescription" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="plasmic-display-none: false">
+      <plasmic-component id="cBJvpxcqt7R3" data-plasmic-component="plasmicReactAriaDescription" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-visible-if="{{ $props.description }}">
         <slot name="children">
           <div id="mwPDX0jdMZfz" style="position: relative; width: stretch; height: wrap; max-width: 100%; color: var(--token-O7HlhsyUcTLk)">{{ $props.description }}</div>
         </slot>
@@ -5160,9 +5230,9 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             <slot-target name="Heading" id="vKk0E2o4A3VX">
               <h3 id="YXFw_f_JzqWd" style="width: stretch; height: wrap; max-width: 100%; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C); font-weight: 700; font-size: var(--token-QkMNDbZUI9zH)">Heading</h3>
             </slot-target>
-            <div id="jXMm15EkAPwa" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: stretch; justify-content: flex-start; plasmic-display-none: false; overflow: auto; padding-left: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C)">
+            <div id="jXMm15EkAPwa" label="scrollable content" style="display: flex; flex-direction: column; position: relative; align-items: stretch; justify-content: flex-start; overflow: auto; padding-left: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C)">
               <slot-target name="Content" id="MfHIGUNLPmlw">
-                <div id="NhxVwHrWOezJ" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; plasmic-display-none: false; row-gap: var(--token-50jqnrkhPFjk)">
+                <div id="NhxVwHrWOezJ" style="display: flex; flex-direction: column; position: relative; align-items: flex-start; justify-content: flex-start; row-gap: var(--token-50jqnrkhPFjk)">
                   <div id="hu7Em6XYWKn-">This is a Modal!</div>
                   <div id="qxpO2kcVDwdO" style="position: relative">You can put anything here!
 
@@ -5173,7 +5243,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
               </slot-target>
             </div>
             <slot-target name="Footer" id="8zGkGMDiYTHg">
-              <div id="bNRZ2OqSSTzq" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; plasmic-display-none: false; width: stretch; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
+              <div id="bNRZ2OqSSTzq" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
                 <plasmic-component id="ssjp-JjPp06g" data-plasmic-component="button" data-props="{&quot;color&quot;:&quot;Muted&quot;,&quot;type&quot;:&quot;Soft&quot;}">
                   <slot name="start">
                     <svg id="eCH5euCJgz6N" style="position: relative"></svg>
@@ -5251,6 +5321,25 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "JMMmDTbwlNba",
+    "variantSettings": [
+      {
+        "__type": "VariantOverride",
+        "elements": [
+          {
+            "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "notRendered",
+            },
+            "uuid": "ZTA2-vbNl2Ib",
+          },
+        ],
+        "variant": {
+          "__type": "Variant",
+          "name": "noTrigger",
+          "uuid": "phcL-adiLQWW",
+        },
+      },
+    ],
     "variants": [
       {
         "__type": "ComponentVariant",
@@ -5337,7 +5426,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <slot name="dialog">
     <plasmic-component id="lAUrYeGr1_hI" data-plasmic-component="plasmicReactAriaPopover" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="border-top-left-radius: var(--token-50jqnrkhPFjk); border-top-right-radius: var(--token-50jqnrkhPFjk); border-bottom-right-radius: var(--token-50jqnrkhPFjk); border-bottom-left-radius: var(--token-50jqnrkhPFjk); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); color: var(--token-ZX33JwqKe1KQ); line-height: var(--token-bFkpmJG5PZPn); box-shadow: 0px 0px 20px 0px #00000040">
       <slot name="children">
-        <plasmic-component id="VhPGJjyF6BHq" data-plasmic-component="overlayArrow" style="plasmic-display-none: false"></plasmic-component>
+        <plasmic-component id="VhPGJjyF6BHq" data-plasmic-component="overlayArrow" data-visible-if="{{ $props.showArrow }}"></plasmic-component>
         <plasmic-component id="E287lTrGp0OI" data-plasmic-component="plasmicReactAriaDialog" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="object-fit: cover; outline-style: none">
           <slot name="children">
             <slot-target name="Content" id="mgR0qZH6zEqw">
@@ -5411,7 +5500,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "baseVariantTplTree": "<plasmic-component id="MlKoRbZwK2UG" data-plasmic-component="plasmicReactAriaRadioGroupRadio" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Radio" style="position: relative; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; cursor: pointer; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="WV-i1VxJMtKx" style="display: flex; position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
-      <div id="GZ4Zt117B32n" style="position: relative; background: linear-gradient(#FFFFFF, #FFFFFF); plasmic-display-none: true; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px"></div>
+      <div id="GZ4Zt117B32n" style="position: relative; background: linear-gradient(#FFFFFF, #FFFFFF); border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px" data-visibility="displayNone"></div>
     </div>
     <slot-target name="Label" id="0FuLuCmrM1fI">
       <div id="ZPRX2XO9uJG7">Option</div>
@@ -5453,7 +5542,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="VjDG6dqVYVzS" data-plasmic-component="plasmicReactAriaRadioGroup" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria RadioGroup" style="display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="bCm9NLAz0F27" data-plasmic-component="label" style="plasmic-display-none: false">
+    <plasmic-component id="bCm9NLAz0F27" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="9XLNbeWgON7_">
           <div id="sShsc6N2gVw_">Label</div>
@@ -5479,7 +5568,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </plasmic-component>
       </div>
     </slot-target>
-    <plasmic-component id="jHjl3Wy2DkIh" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="jHjl3Wy2DkIh" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="psH_3R57__3f">
           <div id="GSMhKQ6K7IMV">Description...</div>
@@ -5537,21 +5626,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "baseVariantTplTree": "<plasmic-component id="ZRpvtB4bErD6" data-plasmic-component="plasmicReactAriaSliderRangeSlider" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Range Slider" style="width: stretch; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); min-width: 200px; row-gap: var(--token-50jqnrkhPFjk)">
   <slot name="children">
     <div id="3TgD8bjSRxmw" style="display: flex; flex-direction: row; position: relative; justify-content: space-between; column-gap: var(--token-J8bgk1cLaZ5G)">
-      <plasmic-component id="ysQxTCoRzg78" data-plasmic-component="label" style="plasmic-display-none: false">
+      <plasmic-component id="ysQxTCoRzg78" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
         <slot name="children">
           <slot-target name="Label" id="gKtAU1JqroeJ">
             <div id="4vnxRkZykt44" style="position: relative">Label</div>
           </slot-target>
         </slot>
       </plasmic-component>
-      <plasmic-component id="dOtrl2YVnVA8" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="plasmic-display-none: false">
+      <plasmic-component id="dOtrl2YVnVA8" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-visible-if="{{ $props.showOutputText }}">
         <slot name="children">
           <div id="QtSCy9I96lnU" style="position: relative">{{ $props.outputText ?? $state.ariaRangeSlider.value?.join(",") }}</div>
         </slot>
       </plasmic-component>
     </div>
-    <div id="qeE4lCG9B33N" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; plasmic-display-none: false; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
-      <div id="nl8sty0qM-Fh" label="background" style="display: flex; plasmic-display-none: false; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
+    <div id="qeE4lCG9B33N" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
+      <div id="nl8sty0qM-Fh" label="background" style="display: flex; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
         <plasmic-component id="AQT73gNwbX1j" data-plasmic-component="plasmicReactAriaSliderSliderTrack" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="cursor: pointer; opacity: 1; box-sizing: border-box; background: none; height: var(--token-J8bgk1cLaZ5G); width: stretch">
           <slot name="children">
             <slot-target name="Thumbs" id="AWOYUbsnAknv">
@@ -5559,12 +5648,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             </slot-target>
           </slot>
           <slot name="progressBar">
-            <div id="fDC6-lvgYyle" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); plasmic-display-none: false; height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px"></div>
+            <div id="fDC6-lvgYyle" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px" data-visible-if="{{ $props.filled }}"></div>
           </slot>
         </plasmic-component>
       </div>
     </div>
-    <plasmic-component id="FlMbwh2F01nU" data-plasmic-component="description" style="max-width: 100%; position: relative; plasmic-display-none: false">
+    <plasmic-component id="FlMbwh2F01nU" data-plasmic-component="description" style="max-width: 100%; position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <div id="-obDOc7BUc9q">Description…</div>
       </slot>
@@ -5657,7 +5746,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="P6ldrdX5EJky" data-plasmic-component="plasmicReactAriaSelect" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Select" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="R5T8SPB0kYCp" data-plasmic-component="label" style="plasmic-display-none: false">
+    <plasmic-component id="R5T8SPB0kYCp" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="t358UDJEG3d0">
           <div id="Q5N5yl1b1_M5">Label</div>
@@ -5671,12 +5760,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             <div id="6tBNAPHTi-A6" style="position: relative; width: stretch; height: wrap; max-width: 100%; color: var(--token-O7HlhsyUcTLk)">{{ $props.placeholder }}</div>
           </slot>
         </plasmic-component>
-        <div id="leBfvkFpGaYf" style="display: flex; position: relative; plasmic-display-none: false; width: var(--token-_gnxKR8NG8ND); height: var(--token-_gnxKR8NG8ND); justify-content: center; align-items: center">
+        <div id="leBfvkFpGaYf" style="display: flex; position: relative; width: var(--token-_gnxKR8NG8ND); height: var(--token-_gnxKR8NG8ND); justify-content: center; align-items: center">
           <svg id="FQ3d6y55TWD0" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)"></svg>
         </div>
       </slot>
     </plasmic-component>
-    <plasmic-component id="9ggmcSMNAc0F" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="9ggmcSMNAc0F" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="XpBViFyo-cpS">
           <div id="K9ib35x4wYqO">Description...</div>
@@ -5796,22 +5885,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="QE2I6Xu6adAX" data-plasmic-component="plasmicReactAriaSlider" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Slider" style="position: relative; box-sizing: border-box; min-width: 200px; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; row-gap: var(--token-50jqnrkhPFjk)">
   <slot name="children">
-    <div id="kJh_0nOiQS0j" style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; plasmic-display-none: false; column-gap: var(--token-J8bgk1cLaZ5G)">
-      <plasmic-component id="lQMACF3m1hu1" data-plasmic-component="label" style="plasmic-display-none: false">
+    <div id="kJh_0nOiQS0j" style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; column-gap: var(--token-J8bgk1cLaZ5G)" data-visible-if="{{ $props.showLabel || $props.showOutputText }}">
+      <plasmic-component id="lQMACF3m1hu1" data-plasmic-component="label" data-visible-if="{{ $props.showLabel }}">
         <slot name="children">
           <slot-target name="Label" id="YVER6-vqb5bh">
             <div id="U0N9XG-BN0a3" style="position: relative">Label</div>
           </slot-target>
         </slot>
       </plasmic-component>
-      <plasmic-component id="klg1YHTLaSOv" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="plasmic-display-none: false">
+      <plasmic-component id="klg1YHTLaSOv" data-plasmic-component="plasmicReactAriaSliderSliderOutput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-visible-if="{{ $props.showOutputText }}">
         <slot name="children">
           <div id="uPTsZliZQXFN">{{ $props.outputText ?? $state.ariaSlider.value }}</div>
         </slot>
       </plasmic-component>
     </div>
-    <div id="fH-_aqflYzFS" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; plasmic-display-none: false; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
-      <div id="1fqQFDvsCuny" label="background" style="display: flex; plasmic-display-none: false; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
+    <div id="fH-_aqflYzFS" style="display: flex; flex-direction: row; position: relative; align-items: stretch; justify-content: flex-start; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); width: stretch">
+      <div id="1fqQFDvsCuny" label="background" style="display: flex; background: linear-gradient(var(--token-oYen04JAIf3J), var(--token-oYen04JAIf3J)); height: var(--token-J8bgk1cLaZ5G); width: stretch; border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
         <plasmic-component id="91lbkEjbqr0d" data-plasmic-component="plasmicReactAriaSliderSliderTrack" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="cursor: pointer; opacity: 1; box-sizing: border-box; background: none; height: var(--token-J8bgk1cLaZ5G); width: stretch">
           <slot name="children">
             <slot-target name="Thumbs" id="P90yRUBLtcEP">
@@ -5819,12 +5908,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             </slot-target>
           </slot>
           <slot name="progressBar">
-            <div id="1g5F5-MVXXYo" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); plasmic-display-none: false; height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px"></div>
+            <div id="1g5F5-MVXXYo" label="foreground" style="display: block; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); height: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: 0rem; border-top-right-radius: 0rem; border-top-left-radius: 99px; border-bottom-left-radius: 99px" data-visible-if="{{ $props.filled }}"></div>
           </slot>
         </plasmic-component>
       </div>
     </div>
-    <plasmic-component id="L7lEs15kjXdC" data-plasmic-component="description" style="max-width: 100%; position: relative; plasmic-display-none: false">
+    <plasmic-component id="L7lEs15kjXdC" data-plasmic-component="description" style="max-width: 100%; position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <div id="-p466Ri7xkc4">Description…</div>
       </slot>
@@ -5949,7 +6038,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <div id="AT6T7h_VF3qk">Label</div>
       </slot-target>
     </div>
-    <plasmic-component id="EKssPnV6b-Lo" data-plasmic-component="description" style="max-width: 100%; position: relative; plasmic-display-none: false">
+    <plasmic-component id="EKssPnV6b-Lo" data-plasmic-component="description" style="max-width: 100%; position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <div id="kx1CHuxJ_JC1">Description…</div>
       </slot>
@@ -6039,28 +6128,28 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="NESDFXPGRUxY" data-plasmic-component="plasmicReactAriaTextField" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria TextField" style="display: flex; flex-direction: column; box-sizing: border-box; width: stretch; position: relative; row-gap: var(--token-iV97hAoHAnKd)">
   <slot name="children">
-    <plasmic-component id="KhtStgTAP5Ec" data-plasmic-component="label" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="KhtStgTAP5Ec" data-plasmic-component="label" style="position: relative" data-visible-if="{{ $props.showLabel }}">
       <slot name="children">
         <slot-target name="Label" id="QpLdxmPRJ_Lq">
           <div id="cvLk0de56Mxj">Label</div>
         </slot-target>
       </slot>
     </plasmic-component>
-    <div id="2HpGGmOLvP9R" style="display: flex; plasmic-display-none: false; flex-direction: column">
-      <div id="EiP28sViJ6pF" style="display: flex; flex-direction: row; plasmic-display-none: true; position: absolute; height: var(--token-_gnxKR8NG8ND); align-items: center; justify-content: center; z-index: 9; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); left: 0px; top: 0px">
+    <div id="2HpGGmOLvP9R" style="display: flex; flex-direction: column">
+      <div id="EiP28sViJ6pF" style="display: flex; flex-direction: row; position: absolute; height: var(--token-_gnxKR8NG8ND); align-items: center; justify-content: center; z-index: 9; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); left: 0px; top: 0px" data-visibility="displayNone">
         <slot-target name="Start" id="wm0PTpbqVRWh">
           <svg id="UdctYqItpndH" style="position: relative"></svg>
         </slot-target>
       </div>
       <plasmic-component id="GW_pTiEM-XJh" data-plasmic-component="textInput" data-plasmic-name="Text Input"></plasmic-component>
-      <plasmic-component id="owbUg8BLCrEo" data-plasmic-component="textAreaInput" data-plasmic-name="TextArea Input"></plasmic-component>
-      <div id="sy4BAFLD5x2S" style="display: flex; plasmic-display-none: true; height: var(--token-_gnxKR8NG8ND); flex-direction: row; align-items: center; justify-content: center; position: absolute; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); z-index: 1; top: 0px; right: 0px">
+      <plasmic-component id="owbUg8BLCrEo" data-plasmic-component="textAreaInput" data-plasmic-name="TextArea Input" data-visibility="notRendered"></plasmic-component>
+      <div id="sy4BAFLD5x2S" style="display: flex; height: var(--token-_gnxKR8NG8ND); flex-direction: row; align-items: center; justify-content: center; position: absolute; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); z-index: 1; top: 0px; right: 0px" data-visibility="displayNone">
         <slot-target name="End" id="o0es2qOp2wEI">
           <svg id="xHHBwIzEWol6" style="position: relative"></svg>
         </slot-target>
       </div>
     </div>
-    <plasmic-component id="jiIIYVycI1P2" data-plasmic-component="description" style="position: relative; plasmic-display-none: false">
+    <plasmic-component id="jiIIYVycI1P2" data-plasmic-component="description" style="position: relative" data-visible-if="{{ $props.showDescription }}">
       <slot name="children">
         <slot-target name="Description" id="FWCQC0dITAnn">
           <div id="YriS9xzgkgXh">Description...</div>
@@ -6271,8 +6360,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "elements": [
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "notRendered",
+            },
+            "uuid": "GW_pTiEM-XJh",
+          },
+          {
+            "__type": "ElementOverride",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "owbUg8BLCrEo",
           },
@@ -6288,8 +6384,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "elements": [
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "EiP28sViJ6pF",
           },
@@ -6305,8 +6401,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "elements": [
           {
             "__type": "ElementOverride",
-            "styles": {
-              "plasmic-display-none": "false",
+            "attrs": {
+              "data-visibility": "visible",
             },
             "uuid": "sy4BAFLD5x2S",
           },
@@ -7065,7 +7161,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </slot-target>
   </slot>
   <slot name="tooltipContent">
-    <plasmic-component id="dbO1jE_EOJW_" data-plasmic-component="overlayArrow" data-props="{&quot;dark&quot;:true}" style="max-width: 100%; plasmic-display-none: false"></plasmic-component>
+    <plasmic-component id="dbO1jE_EOJW_" data-plasmic-component="overlayArrow" data-props="{&quot;dark&quot;:true}" style="max-width: 100%" data-visible-if="{{ $props.showArrow }}"></plasmic-component>
     <div id="ERtj_TB3jFWz" style="display: flex; position: relative; background: linear-gradient(var(--token-X4GQ8bRemoGX), var(--token-X4GQ8bRemoGX)); border-top-left-radius: var(--token-J8bgk1cLaZ5G); border-top-right-radius: var(--token-J8bgk1cLaZ5G); border-bottom-right-radius: var(--token-J8bgk1cLaZ5G); border-bottom-left-radius: var(--token-J8bgk1cLaZ5G); flex-direction: column; justify-content: flex-start; align-items: flex-start; padding-bottom: var(--token-50jqnrkhPFjk); padding-top: var(--token-50jqnrkhPFjk); padding-right: var(--token-50jqnrkhPFjk); padding-left: var(--token-50jqnrkhPFjk); width: wrap; row-gap: var(--token-iV97hAoHAnKd)">
       <slot-target name="Content" id="DRjyVjY3ZEmA">
         <div id="f_gzDem4HSgM">Hello from Tooltip! </div>
