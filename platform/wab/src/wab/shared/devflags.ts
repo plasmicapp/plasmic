@@ -453,6 +453,11 @@ const DEFAULT_DEVFLAGS = {
     modelName: "claude-sonnet-5",
     maxTokens: 32000,
   } as ModelProviderOpts,
+  phishingCheckModelProviderOpts: {
+    provider: "Google",
+    modelName: "gemini-2.5-flash-lite",
+    maxTokens: 10000,
+  } as ModelProviderOpts,
 
   hostLessWorkspaceId: undefined as WorkspaceId | undefined,
   manuallyUpdatedHostLessProjectIds: [] as string[],
