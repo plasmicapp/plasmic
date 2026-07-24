@@ -39,12 +39,12 @@
     "execa": "^5.0.0",
     "findup-sync": "^4.0.0",
     "glob": "^7.1.6",
-    "inquirer": "^8.0.0",
+    "inquirer": "^8.2.7",
     "lodash": "^4.17.21",
     "semver": "^7.3.5",
     "upath": "^2.0.1",
     "update-notifier": "^5.1.0",
     "validate-npm-package-name": "^3.0.0",
-    "yargs": "^16.2.0"
+    "yargs": "^16.2.2"
   }
 }

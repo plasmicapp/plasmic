@@ -383,7 +383,7 @@ importers:
         specifier: ^7.1.6
         version: 7.2.3
       inquirer:
-        specifier: ^8.0.0
+        specifier: ^8.2.7
         version: 8.2.7(@types/node@14.18.63)
       lodash:
         specifier: ^4.17.21
@@ -401,7 +401,7 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       yargs:
-        specifier: ^16.2.0
+        specifier: ^16.2.2
         version: 16.2.2
     devDependencies:
       '@types/findup-sync':
