@@ -46,10 +46,10 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.5.tgz#4fc56c15c580b9adb7dc3c333a134e540b44bfb1"
   integrity sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==
 
-"@plasmicapp/host@^2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-2.0.11.tgz#35e0156eeba8a1ddf8bdcd5ce11922a24850c04f"
-  integrity sha512-Odq4b4rO68ORWq9pBNDHIftC0KCYQBReafml1jE4mdmw9PHWWQzegrUjVRhfr3pmp8xlvmkR+QSVE6xbGxFAUw==
+"@plasmicapp/host@^2.0.12":
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-2.0.12.tgz#c2e2a4326769b3364c89250a9041d608b2f0a2b8"
+  integrity sha512-C7nRi5j1D/5XwaIcOTOTy2hYC6YnpikovvgQMkQJ7N0x6X5/Enh+AAoTTWDkYl79qgC0BrTy3ELEJ38g2OPE/g==
   dependencies:
     "@plasmicapp/query" "0.1.86"
     csstype "^3.1.2"
