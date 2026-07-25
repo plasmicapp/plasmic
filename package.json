@@ -47,7 +47,7 @@
     "@testing-library/react": "16.2.0",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
-    "esbuild": "0.27.7",
+    "esbuild": "0.28.1",
     "esbuild-register": "^3.4.2",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "9.1.0",
