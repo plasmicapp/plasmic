@@ -1,5 +1,5 @@
 import { ReplaceKey } from "@/wab/commons/types";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { RSH, ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import { getAncestorTplSlot, isSlotVar } from "@/wab/shared/SlotUtils";
 import { TplMgr, ensureBaseVariant } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -708,6 +708,19 @@ export class VariantTplMgr {
         this.getActivatedVariantSettingsForNode(tpl);
       return new EffectiveVariantSetting(tpl, vsettings, this.site, variants);
     }
+  }
+
+  /**
+   * Returns the ruleset helper tpl effectively has for the given VariantCombo.
+   */
+  effectiveRsh(
+    tpl: TplNode,
+    variantCombo?: VariantCombo
+  ): ReadonlyIRuleSetHelpersX {
+    return this.effectiveVariantSetting(
+      tpl,
+      variantCombo
+    ).rshWithThemeAndParentStyle();
   }
 
   /**

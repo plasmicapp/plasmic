@@ -173,7 +173,7 @@ import {
   defaultCopyableStyleNames,
   slotCssProps,
 } from "@/wab/shared/core/style-props";
-import { isValidStylePropForTpl } from "@/wab/shared/core/style-props-tpl";
+import { validateStylesForTpl } from "@/wab/shared/core/style-props-tpl";
 import { px } from "@/wab/shared/core/styles";
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
@@ -2291,18 +2291,13 @@ export class ViewOps {
       ? L.pick(clip.cssProps, cssProps)
       : clip.cssProps;
 
-    for (const [prop, val] of Object.entries(propsToCopy)) {
-      if (
-        isValidStylePropForTpl(
-          prop,
-          targetTpl,
-          vs,
-          this.viewCtx().studioCtx.codeComponentsRegistry
-        )
-      ) {
-        exp.set(prop, val);
-      }
-    }
+    const { valid } = validateStylesForTpl(
+      propsToCopy,
+      targetTpl,
+      this.viewCtx().variantTplMgr().effectiveRsh(targetTpl),
+      this.viewCtx().studioCtx.codeComponentsRegistry
+    );
+    exp.merge(valid);
 
     // Resolve UUIDs to Mixin instances
     if (clip.mixinUuids?.length) {

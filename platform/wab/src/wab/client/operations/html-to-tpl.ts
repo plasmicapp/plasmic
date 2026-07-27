@@ -374,7 +374,12 @@ function applyVariantStyles(
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
   // Only styles Studio allows on this tpl may enter the RuleSet; the rest
   // are silently dropped since the paste flow has no error channel at the moment.
-  const { valid } = validateStylesForTpl(safeStyles, tpl, vs, ccRegistry);
+  const { valid } = validateStylesForTpl(
+    safeStyles,
+    tpl,
+    vtm.effectiveRsh(tpl, variantCombo),
+    ccRegistry
+  );
   RSH(vs.rs, tpl).merge(valid);
 
   if (Object.keys(unsafeStyles).length > 0) {

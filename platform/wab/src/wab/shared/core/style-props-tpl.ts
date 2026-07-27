@@ -1,10 +1,6 @@
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import { isTypographyNode } from "@/wab/shared/SlotUtils";
-import {
-  mkVariantSetting,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
@@ -24,17 +20,17 @@ import {
 } from "@/wab/shared/core/style-props";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { normProp } from "@/wab/shared/css";
+import {
+  makeReadonlyExpProxy,
+  makeReadonlyExpandedExp,
+} from "@/wab/shared/exprs";
 import { isGridTag } from "@/wab/shared/grid-utils";
 import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
-import {
-  TplComponent,
-  TplNode,
-  TplTag,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
+import { TplComponent, TplNode, TplTag } from "@/wab/shared/model/classes";
+import { uniq } from "lodash";
 
 /**
  * Same as {@link isValidStyleProp} but checks validity for the given tpl.
@@ -44,7 +40,7 @@ import {
 export function isValidStylePropForTpl(
   prop: string,
   tpl: TplNode,
-  vs: VariantSetting,
+  rsh: ReadonlyIRuleSetHelpersX,
   ccRegistry: CodeComponentsRegistry
 ): boolean {
   if (!isValidStyleProp(prop)) {
@@ -79,7 +75,7 @@ export function isValidStylePropForTpl(
   }
 
   if (POSITIONING_PROPS.includes(prop)) {
-    return isPositioningValidForTpl(tpl, vs);
+    return isPositioningValidForTpl(tpl, rsh);
   }
 
   if (
@@ -99,15 +95,15 @@ export function isValidStylePropForTpl(
     }
 
     if (FLEX_CONTAINER_PROPS.includes(prop)) {
-      return isFlexContainerPropValidForTpl(tpl, vs);
+      return isFlexContainerPropValidForRsh(rsh);
     }
 
     if (gridCssProps.includes(prop)) {
-      return isGridContainerPropValidForTpl(tpl, vs);
+      return isGridContainerPropValidForRsh(rsh);
     }
 
     if (GAP_PROPS.includes(prop)) {
-      return isGapPropValidForTpl(prop, tpl, vs);
+      return isGapPropValidForRsh(prop, rsh);
     }
 
     return false;
@@ -184,7 +180,7 @@ export function isSizeValidForTpl(tpl: TplNode): boolean {
 
 export function isPositioningValidForTpl(
   tpl: TplNode,
-  vs: VariantSetting
+  rsh: ReadonlyIRuleSetHelpersX
 ): boolean {
   const isTag = Tpls.isTplTag(tpl);
   const isComponent = Tpls.isTplComponent(tpl);
@@ -193,7 +189,7 @@ export function isPositioningValidForTpl(
 
   return (
     (isTag || isComponent) &&
-    (!isRoot || !!vs.rs.values["position"]) &&
+    (!isRoot || rsh.has("position")) &&
     !isColumn &&
     !Tpls.isTplTextBlock(tpl.parent)
   );
@@ -238,11 +234,9 @@ export function isTransformValidForTpl(tpl: TplNode): boolean {
   return isTag || isComponent || isCodeComponentTpl;
 }
 
-export function isFlexContainerPropValidForTpl(
-  tpl: TplNode,
-  vs: VariantSetting
+export function isFlexContainerPropValidForRsh(
+  rsh: ReadonlyIRuleSetHelpersX
 ): boolean {
-  const rsh = RSH(vs.rs, tpl);
   const containerType = getRshContainerType(rsh);
 
   return (
@@ -251,22 +245,16 @@ export function isFlexContainerPropValidForTpl(
   );
 }
 
-export function isGridContainerPropValidForTpl(
-  tpl: TplNode,
-  vs: VariantSetting
+export function isGridContainerPropValidForRsh(
+  rsh: ReadonlyIRuleSetHelpersX
 ): boolean {
-  const rsh = RSH(vs.rs, tpl);
-  const containerType = getRshContainerType(rsh);
-
-  return containerType === ContainerLayoutType.grid;
+  return getRshContainerType(rsh) === ContainerLayoutType.grid;
 }
 
-export function isGapPropValidForTpl(
+export function isGapPropValidForRsh(
   prop: string,
-  tpl: TplNode,
-  vs: VariantSetting
+  rsh: ReadonlyIRuleSetHelpersX
 ): boolean {
-  const rsh = RSH(vs.rs, tpl);
   const containerType = getRshContainerType(rsh);
 
   const isFlexRow = containerType === ContainerLayoutType.flexRow;
@@ -305,11 +293,33 @@ export function isMarginValidForTpl(tpl: TplTag | TplComponent): boolean {
 }
 
 /**
+ * Ruleset as it would look once styles are applied on top of exp.
+ */
+function makeReadonlyOverlayExpProxy(
+  exp: ReadonlyIRuleSetHelpersX,
+  styles: Record<string, string>
+): ReadonlyIRuleSetHelpersX {
+  const overlay = Object.fromEntries(
+    Object.entries(styles)
+      .filter(([, value]) => !!value)
+      .map(([prop, value]) => [normProp(prop), value])
+  );
+  return makeReadonlyExpProxy(
+    exp,
+    makeReadonlyExpandedExp({
+      has: (prop: string) => normProp(prop) in overlay || exp.has(prop),
+      getRaw: (prop: string) => overlay[normProp(prop)] ?? exp.getRaw(prop),
+      props: () => uniq([...Object.keys(overlay), ...exp.props()]),
+    })
+  );
+}
+
+/**
  * Splits styles (keyed by camelCase prop) into those that can be applied to
  * the given tpl and those that Studio does not allow for it, per
  * {@link isValidStylePropForTpl}. Each prop is validated against the ruleset
- * as it would look after merging all the given styles on top of the base and
- * target variant styles, so styles that establish state (display: flex) can
+ * as it would look after merging all the given styles on top of the effective rsh
+ * styles, so styles that establish state (display: flex) can
  * be written in the same batch as styles that depend on it (flex-direction),
  * or live in the base variant while the dependent style targets another
  * variant. Callers decide what to do with the invalid styles (drop them,
@@ -318,24 +328,18 @@ export function isMarginValidForTpl(tpl: TplTag | TplComponent): boolean {
 export function validateStylesForTpl(
   styles: Record<string, string>,
   tpl: TplNode,
-  vs: VariantSetting,
+  rsh: ReadonlyIRuleSetHelpersX,
   ccRegistry: CodeComponentsRegistry
 ): { valid: Record<string, string>; invalid: Record<string, string> } {
-  const mergedVs = mkVariantSetting({
-    variants: vs.variants,
-    styles: {
-      ...tryGetBaseVariantSetting(tpl)?.rs.values,
-      ...vs.rs.values,
-      ...Object.fromEntries(
-        Object.entries(styles).map(([prop, value]) => [normProp(prop), value])
-      ),
-    },
-  });
+  const mergedRsh = makeReadonlyOverlayExpProxy(rsh, styles);
 
   const valid: Record<string, string> = {};
   const invalid: Record<string, string> = {};
   for (const [prop, value] of Object.entries(styles)) {
-    if (isValidStylePropForTpl(normProp(prop), tpl, mergedVs, ccRegistry)) {
+    if (
+      !!value &&
+      isValidStylePropForTpl(normProp(prop), tpl, mergedRsh, ccRegistry)
+    ) {
       valid[prop] = value;
     } else {
       invalid[prop] = value;

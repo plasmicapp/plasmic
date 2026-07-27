@@ -25,7 +25,7 @@ import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/styl
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { reverseIf } from "@/wab/shared/common";
-import { isGapPropValidForTpl } from "@/wab/shared/core/style-props-tpl";
+import { isGapPropValidForRsh } from "@/wab/shared/core/style-props-tpl";
 import { camelProp } from "@/wab/shared/css";
 import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
@@ -268,12 +268,9 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
   let showRowGapControls: boolean;
   if (expsProvider instanceof TplExpsProvider) {
     // If editing tpl, check if allowed.
-    const tpl = expsProvider.tpl;
-    const vs = expsProvider.viewCtx
-      .variantTplMgr()
-      .ensureCurrentVariantSetting(tpl);
-    showColumnGapControls = isGapPropValidForTpl("column-gap", tpl, vs);
-    showRowGapControls = isGapPropValidForTpl("row-gap", tpl, vs);
+    const rsh = expsProvider.mergedExp();
+    showColumnGapControls = isGapPropValidForRsh("column-gap", rsh);
+    showRowGapControls = isGapPropValidForRsh("row-gap", rsh);
   } else {
     // If editing theme/mixin, always show.
     showColumnGapControls = true;

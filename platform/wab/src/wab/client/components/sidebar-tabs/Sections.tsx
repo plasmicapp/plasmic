@@ -574,10 +574,7 @@ function getRenderBySection(
     [
       Section.PositioningPanel,
       () =>
-        isPositioningValidForTpl(
-          tpl,
-          viewCtx.variantTplMgr().ensureCurrentVariantSetting(tpl)
-        ) &&
+        isPositioningValidForTpl(tpl, expsProvider.mergedExp()) &&
         showSection(Section.PositioningPanel) && (
           <PositioningPanelSection
             key={`${tpl.uuid}-positioning`}
