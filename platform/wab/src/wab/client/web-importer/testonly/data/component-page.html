@@ -40,43 +40,43 @@
 
     <!-- JSON array of objects + simple string config -->
     <plasmic-component data-plasmic-component="List" data-props='{"items":[{"id":1,"name":"Product A","price":29.99},{"id":2,"name":"Product B","price":49.99}],"config":{"sortable":true,"filterable":true}}'>
-      <div slot="header">
+      <slot name="header">
         <h2>Task List</h2>
-      </div>
+      </slot>
     </plasmic-component>
 
     <!-- Single slot: Card with children -->
     <plasmic-component data-plasmic-component="Card" data-props='{"title":"User Stats"}'>
-      <div slot="children">
+      <slot name="children">
         <p>Total Users: 1,234</p>
         <p>Active: 567</p>
-      </div>
+      </slot>
       <!-- Nested components in slot -->
-      <div slot="actions">
+      <slot name="actions">
         <plasmic-component data-plasmic-component="Button" data-props='{"label":"Add to Cart","variant":"primary","disabled":false}'></plasmic-component>
         <plasmic-component data-plasmic-component="Button" data-props='{"label":"Buy Now","variant":"secondary","disabled":false}'></plasmic-component>
-      </div>
+      </slot>
     </plasmic-component>
 
     <!-- Multiple named slots: Modal with header, body, footer -->
     <plasmic-component data-plasmic-component="Modal" data-props='{"title":"Confirm Action","size":"large"}'>
-      <div slot="header">
+      <slot name="header">
         <h2>Confirm Action</h2>
-      </div>
-      <div slot="body">
+      </slot>
+      <slot name="body">
         <p>Are you sure you want to proceed?</p>
-      </div>
+      </slot>
       <!-- Mixed content in slot: text + components -->
-      <div slot="footer">
+      <slot name="footer">
         <span>Choose an action:</span>
         <plasmic-component data-plasmic-component="Button" data-props='{"label":"Cancel","variant":"secondary","disabled":false}'></plasmic-component>
         <plasmic-component data-plasmic-component="Button" data-props='{"label":"Confirm","variant":"primary","disabled":false}'></plasmic-component>
-      </div>
+      </slot>
     </plasmic-component>
 
     <!-- Empty slot: Container with empty children -->
     <plasmic-component data-plasmic-component="Container">
-      <div slot="children"></div>
+      <slot name="children"></slot>
     </plasmic-component>
 
     <!-- HTML entity decoding: double-quote wrapped attr with &quot;-encoded JSON -->

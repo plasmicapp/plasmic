@@ -130,7 +130,7 @@ To use a component in insertHtml:
   data-props='{"propName":"value","variantGroup":"optionName"}'
   style="margin: 16px;"
 >
-  <div slot="slotName">Slot content here</div>
+  <slot name="slotName">Slot content here</slot>
 </plasmic-component>
 ```
 
@@ -138,7 +138,7 @@ To use a component in insertHtml:
 - `data-plasmic-project` (optional) is the id of the imported project the component comes from. Omit it for components in the current project; set it to use a component from an imported project.
 - `data-plasmic-name` (optional) names this component instance in the tree. It's a semantic name picked up by Plasmic codegen to override the element in the generated code.
 - `data-props` is a JSON object for both props and variant activations. Boolean variants: `"group": true`. Enum variants: `"group": "optionName"`.
-- `slot="slotName"` on direct children fills a named slot.
+- `<slot name="slotName">` children fill named slots; its children become the slot content.
 - **Only layout/position styles work on instances**: width, height, min/max sizing, margin, position, top/left/bottom/right, z-index, order, align-self, flex-grow/shrink, opacity, display (only `none`), transform, and transition properties. Background, padding, color, font, border, etc. are ignored on instances — use `changeElement` on the component's root element instead. This is a Plasmic platform constraint, not a preference.
 
 ## HTML Code Guidelines
@@ -150,6 +150,7 @@ Before generating HTML, read `references/html-constraints.md` for the full set o
 - Include `@media` queries for responsive breakpoints — `read` the project's breakpoints (with `screenBreakpoints`) first.
 - Use Google Fonts (single name, no fallback lists).
 - Use inline SVG for icons, `https://placehold.co` for placeholder images.
+- `<slot-target name="slotName">default content</slot-target>` defines a named slot when building a reusable component; slots cannot be nested.
 - No JavaScript, no vendor prefixes, no `data:image/svg+xml`, no `currentColor`, no `:root`.
 
 ## Design Quality

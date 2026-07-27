@@ -160,7 +160,6 @@ import {
   allAnimationSequences,
   allGlobalVariants,
   isTplAttachedToSite,
-  writeable,
 } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -2854,15 +2853,11 @@ export class ViewOps {
 
     // If we pasted new TplSlots, then we create new corresponding params
     if (newTplSlots.length > 0) {
-      for (const newSlot of newTplSlots) {
-        const newParam = Components.addSlotParam(
-          this.site(),
-          component,
-          newSlot.param.variable.name
-        );
-        writeable(newParam).tplSlot = newSlot;
-        writeable(newSlot).param = newParam;
-      }
+      Components.attachNewSlotParamsToComponent(
+        this.site(),
+        component,
+        newTplSlots
+      );
       notification.info({
         message: `Auto-created ${pluralize("slot", newTplSlots.length)}`,
         description: `You pasted ${

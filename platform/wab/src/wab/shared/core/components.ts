@@ -147,6 +147,7 @@ import {
   TemplatedString,
   TplComponent,
   TplNode,
+  TplSlot,
   TplTag,
   Type,
   Var,
@@ -1913,6 +1914,35 @@ export function addSlotParam(
   });
   component.params.push(slotParam);
   return slotParam;
+}
+
+/**
+ * Creates and wires a slot param on `component` for each given TplSlot,
+ * replacing whatever param the slot carried (e.g. a detached placeholder
+ * from an HTML import, or the source component's param on a copied slot).
+ * Always creates a fresh param — a duplicated slot must not share its
+ * source's param — with the slot name uniquified per component.
+ *
+ * The slots must either be detached (about to be inserted into
+ * `component`'s tree) or live in that tree already; slots owned by another
+ * component are rejected.
+ */
+export function attachNewSlotParamsToComponent(
+  site: Site,
+  component: Component,
+  slots: TplSlot[]
+) {
+  for (const slot of slots) {
+    const owner = Tpls.tryGetTplOwnerComponent(slot);
+    assert(
+      !owner || owner === component,
+      () =>
+        `TplSlot "${slot.param.variable.name}" belongs to component "${owner?.name}", not "${component.name}"`
+    );
+    const slotParam = addSlotParam(site, component, slot.param.variable.name);
+    writeable(slotParam).tplSlot = slot;
+    writeable(slot).param = slotParam;
+  }
 }
 
 export function isVariantGroupParam(

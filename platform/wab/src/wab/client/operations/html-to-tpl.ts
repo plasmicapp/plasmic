@@ -34,7 +34,12 @@ import {
 } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
-import { JsonValue, mkNameArg } from "@/wab/shared/core/lang";
+import {
+  JsonValue,
+  mkNameArg,
+  mkParam,
+  ParamExportType,
+} from "@/wab/shared/core/lang";
 import {
   allAnimationSequences,
   getResponsiveStrategy,
@@ -44,7 +49,12 @@ import {
   mkRuleSet,
   tryGetAnimationSequenceUuidFromCssVar,
 } from "@/wab/shared/core/styles";
-import { AttrsSpec, TplTagType } from "@/wab/shared/core/tpls";
+import {
+  AttrsSpec,
+  flattenTpls,
+  mkSlot,
+  TplTagType,
+} from "@/wab/shared/core/tpls";
 import { camelCssPropsToKebab } from "@/wab/shared/css";
 import {
   AnimationProperty,
@@ -79,6 +89,7 @@ import {
   isAnyType,
   isChoiceType,
   isMultiChoiceType,
+  typeFactory,
   wabToTsType,
 } from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
@@ -276,7 +287,7 @@ export const htmlAttrsIgnoredByTpl = new Set([
   "data-plasmic-component", // Plasmic metadata
   "data-plasmic-project", // Plasmic metadata (imported-project disambiguation)
   "data-props", // Plasmic metadata
-  "slot", // Plasmic slot
+  "slot", // web-components attr with no Plasmic meaning
   "src", // image asset
   "srcset", // image asset
   "data-repeat", // repetition collection (dataRep)
@@ -466,8 +477,9 @@ async function wiTreeToTpl(
     node: Exclude<WIElement, WIFragment>,
     tpl: TplNode
   ) {
+    // Container layout defaults don't apply to text and slots nodes.
     const defaultStyles: Record<string, string> =
-      node.type === "text"
+      node.type === "text" || node.type === "slot-target"
         ? {}
         : {
             display: "flex",
@@ -695,6 +707,43 @@ async function wiTreeToTpl(
       collectWIVariantData(node, tplComponent);
       collectStructuralBindings(node, tplComponent);
       return [tplComponent];
+    }
+
+    if (node.type === "slot-target") {
+      const defaultChildren = (
+        await Promise.all(node.defaultChildren.map((child) => rec(child)))
+      ).flat();
+
+      // Slot default contents only carry base variant settings, so keep
+      // only the base entries collected for the slot's descendants.
+      for (const child of defaultChildren) {
+        for (const tpl of flattenTpls(child)) {
+          const vsData = tplVariantSettingsData.get(tpl);
+          if (vsData) {
+            tplVariantSettingsData.set(
+              tpl,
+              vsData.filter((vs) =>
+                vs.variantCombo.every((v) => v.type === "base")
+              )
+            );
+          }
+        }
+      }
+
+      // The param is created detached: the owning component isn't known at
+      // build time, so whoever attaches the TplSlot to a component must
+      // register a real slot param for it, keeping only the name from this
+      // placeholder.
+      const param = mkParam({
+        name: node.name,
+        type: typeFactory.renderable(),
+        exportType: ParamExportType.External,
+        paramType: "slot",
+      });
+      const slot = mkSlot(param, defaultChildren);
+      vtm.ensureBaseVariantSetting(slot);
+      collectWIVariantData(node, slot);
+      return [slot];
     }
 
     if (node.tag === "img") {

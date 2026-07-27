@@ -38,7 +38,7 @@ export interface WIVariantSettings {
 }
 
 export interface WIBase {
-  type: "container" | "text" | "svg" | "component";
+  type: "container" | "text" | "svg" | "component" | "slot-target";
   tag: string;
   attrs: Record<string, string>;
   variantSettings: WIVariantSettings[];
@@ -73,13 +73,26 @@ export interface WIComponent extends WIBase {
   slots: Record<string, WIElement[]>;
 }
 
+/** A slot definition (`<slot-target name>`); children are the default contents. */
+export interface WISlotTarget extends WIBase {
+  type: "slot-target";
+  name: string;
+  defaultChildren: WIElement[];
+}
+
 /** A fragment is a transparent wrapper — only its children are pasted. */
 export interface WIFragment {
   type: "fragment";
   children: WIElement[];
 }
 
-export type WIElement = WIContainer | WIText | WISVG | WIComponent | WIFragment;
+export type WIElement =
+  | WIContainer
+  | WIText
+  | WISVG
+  | WIComponent
+  | WISlotTarget
+  | WIFragment;
 
 export interface WIKeyFrame {
   percentage: number;

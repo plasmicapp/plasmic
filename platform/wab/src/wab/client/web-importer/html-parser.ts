@@ -688,6 +688,32 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
       return parseComponent(elt, allVariantSettings, attrs, rec);
     }
 
+    if (tag === "slot-target") {
+      const name = attrs["name"];
+      if (!name) {
+        throw new Error(`<slot-target> requires a "name" attribute`);
+      }
+      if (elt.querySelector("slot-target")) {
+        throw new Error(
+          `<slot-target name="${name}"> contains a nested <slot-target>; slots cannot be nested`
+        );
+      }
+      return {
+        type: "slot-target",
+        tag,
+        name,
+        defaultChildren: withoutNils([...elt.childNodes].map((e) => rec(e))),
+        attrs,
+        variantSettings: allVariantSettings,
+      };
+    }
+
+    if (tag === "slot") {
+      throw new Error(
+        `<slot> is only allowed as a direct child of <plasmic-component> to fill one of its slots; to define a new slot, use <slot-target name="...">`
+      );
+    }
+
     if (tag === "svg") {
       const [_minX, _minY, viewBoxWidth, viewBoxHeight] = (
         elt.getAttribute("viewBox") || "0 0 16 16"

@@ -11,9 +11,9 @@ import { fixJson } from "@/wab/shared/copilot/fix-json";
  *   data-plasmic-component="ComponentName"
  *   data-props='{"label":"Click me","disabled":false}'
  *
- *   <div slot="slotName">
+ *   <slot name="slotName">
  *     Slot content here
- *   </div>
+ *   </slot>
  * </plasmic-component>
  *
  * - data-plasmic-component: identifies which component to instantiate (case-sensitive, must exactly match component name)
@@ -21,7 +21,8 @@ import { fixJson } from "@/wab/shared/copilot/fix-json";
  * - data-plasmic-name: optional, names the TplComponent instance in the element tree
  * - data-props: JSON-stringified object of all component props. Using a single attribute
  *   preserves camelCase prop names (individual data-prop-* attributes get lowercased by DOMParser).
- * - slot attribute on children: identifies which slot the child fills
+ * - slot fills: <slot name="slotName"> children; the wrapper element itself
+ *   is discarded and its children become the slot content.
  * - style attribute: handled separately via addSelfStyleRule()
  *
  * @param elt - The plasmic-component HTMLElement to parse
@@ -69,17 +70,35 @@ export function parseComponent(
 
   for (const child of Array.from(elt.children)) {
     if (child instanceof HTMLElement) {
-      const slotName = child.getAttribute("slot");
-      if (slotName) {
-        const slotChildren: WIElement[] = [];
-        for (const slotChild of Array.from(child.childNodes)) {
-          const wiChild = rec(slotChild);
-          if (wiChild) {
-            slotChildren.push(wiChild);
-          }
-        }
-        slots[toVarName(slotName)] = slotChildren;
+      const childTag = child.tagName.toLowerCase();
+      if (childTag === "slot-target") {
+        throw new Error(
+          `Component "${componentName}" has a <slot-target> child; <slot-target> defines a slot in a component's own tree. To fill this instance's slot, use <slot name="...">`
+        );
       }
+      if (childTag !== "slot") {
+        const attrSlotName = child.getAttribute("slot");
+        if (attrSlotName) {
+          throw new Error(
+            `Component "${componentName}" fills slot "${attrSlotName}" via a slot attribute, which is not supported; use a <slot name="${attrSlotName}"> child instead`
+          );
+        }
+        continue;
+      }
+      const slotName = child.getAttribute("name");
+      if (!slotName) {
+        throw new Error(
+          `Component "${componentName}" has a <slot> child without a "name" attribute`
+        );
+      }
+      const slotChildren: WIElement[] = [];
+      for (const slotChild of Array.from(child.childNodes)) {
+        const wiChild = rec(slotChild);
+        if (wiChild) {
+          slotChildren.push(wiChild);
+        }
+      }
+      slots[toVarName(slotName)] = slotChildren;
     }
   }
 
