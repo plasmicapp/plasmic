@@ -44,6 +44,7 @@ import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
 import { parseFlexShorthand } from "@/wab/shared/css/flex";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import { CssTransforms } from "@/wab/shared/css/transforms";
+import { hasInvalidUrl } from "@/wab/shared/css/urls";
 import { Site } from "@/wab/shared/model/classes";
 import { VariantGroupType } from "@/wab/shared/Variants";
 import {
@@ -358,14 +359,15 @@ function splitStylesBySafety(styles: Record<string, string>): {
   safe: WISafeStyles;
   unsafe: WIUnsafeStyles;
 } {
-  const entries = Object.entries(styles);
-
-  const safe = Object.fromEntries(
-    entries.filter(([k, _v]) => recognizedStylesKeys.has(k))
-  );
-  const unsafe = Object.fromEntries(
-    entries.filter(([k, _v]) => !recognizedStylesKeys.has(k))
-  );
+  const safe: WISafeStyles = {};
+  const unsafe: WIUnsafeStyles = {};
+  for (const [key, value] of Object.entries(styles)) {
+    if (recognizedStylesKeys.has(key) && !hasInvalidUrl(value)) {
+      safe[key] = value;
+    } else {
+      unsafe[key] = value;
+    }
+  }
   return {
     safe,
     unsafe,

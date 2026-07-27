@@ -25,6 +25,7 @@ import {
 } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { allImageAssets, isEditable } from "@/wab/shared/core/sites";
+import { isValidUrl } from "@/wab/shared/css/urls";
 import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Select, Tooltip, notification } from "antd";
@@ -32,7 +33,6 @@ import L from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React, { CSSProperties } from "react";
-import validator from "validator";
 
 export const ImageAssetPreviewAndPicker = observer(
   function ImageAssetPreviewAndPicker(props: {
@@ -302,7 +302,7 @@ export const ImageAssetOrUrlPicker = observer(
         "Unexpected undefined urlInputRef"
       );
       const urlInputValue = urlInputHandle.value();
-      if (!validator.isURL(urlInputValue)) {
+      if (!isValidUrl(urlInputValue)) {
         setUrlInputError("Enter a valid URL");
         return;
       }

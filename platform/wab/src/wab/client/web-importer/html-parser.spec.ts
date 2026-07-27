@@ -2,6 +2,7 @@ import { translationTable } from "@/wab/client/web-importer/constants";
 import {
   _testOnlyUtils,
   parseHtmlToWebImporterTree,
+  processUnsanitizedStyles,
 } from "@/wab/client/web-importer/html-parser";
 import { createComponentTestSite } from "@/wab/client/web-importer/testonly/utils";
 import { WIElement } from "@/wab/client/web-importer/types";
@@ -1290,6 +1291,49 @@ describe("fixCSSValue", () => {
       fixCSSValue("font-family", "Georgia, 'Times New Roman', serif")
     ).toEqual({
       fontFamily: "Georgia",
+    });
+  });
+});
+
+describe("processUnsanitizedStyles", () => {
+  it("keeps background with an absolute url() in safe styles", () => {
+    const url = "https://example.com/hero.png";
+    expect(processUnsanitizedStyles({ background: `url(${url})` })).toEqual({
+      safe: { background: `url("${url}")` },
+      unsafe: {},
+    });
+  });
+
+  it("routes background with a relative or data: url() to unsafe styles", () => {
+    const invalidUrls = [
+      "/images/hero.png",
+      "./hero.png",
+      "../assets/hero.png",
+      "data:image/png;base64,iVBORw0KGgo=",
+    ];
+    for (const url of invalidUrls) {
+      expect(processUnsanitizedStyles({ background: `url(${url})` })).toEqual({
+        safe: {},
+        unsafe: { background: `url("${url}")` },
+      });
+    }
+  });
+
+  it("validates url() targets regardless of the function name casing", () => {
+    expect(
+      processUnsanitizedStyles({ cursor: "URL(/bad.cur), pointer" })
+    ).toEqual({
+      safe: {},
+      unsafe: { cursor: "URL(/bad.cur), pointer" },
+    });
+
+    expect(
+      processUnsanitizedStyles({
+        cursor: "Url(https://example.com/ok.cur), pointer",
+      })
+    ).toEqual({
+      safe: { cursor: "Url(https://example.com/ok.cur), pointer" },
+      unsafe: {},
     });
   });
 });
