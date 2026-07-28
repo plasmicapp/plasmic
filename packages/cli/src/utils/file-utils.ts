@@ -355,7 +355,9 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
     pushPath(bundle, "contextFilePath");
   }
 
-  pushPath(config.tokens, "tokensFilePath");
+  if (config.tokens) {
+    pushPath(config.tokens, "tokensFilePath");
+  }
   pushPath(config.style, "defaultStyleCssFilePath");
 
   pushPath(config, "defaultPlasmicDir");

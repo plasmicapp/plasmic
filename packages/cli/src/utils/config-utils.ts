@@ -74,8 +74,10 @@ export interface PlasmicConfig {
   /** Config for style generation */
   style: StyleConfig;
 
-  /** Config for style tokens */
-  tokens: TokensConfig;
+  /** Config for style tokens. If omitted, Plasmic will not manage any design
+   *  tokens locally (for example via Theo) and the CLI will skip any related
+   *  file-generation logic. */
+  tokens?: TokensConfig;
 
   /** Metadata for global variant groups */
   globalVariants: GlobalVariantsConfig;
@@ -482,10 +484,6 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   },
   images: {
     scheme: "inlined",
-  },
-  tokens: {
-    scheme: "theo",
-    tokensFilePath: "plasmic-tokens.theo.json",
   },
   srcDir: "./src/components",
   defaultPlasmicDir: "./plasmic",

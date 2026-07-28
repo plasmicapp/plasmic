@@ -1,5 +1,5 @@
 import { StyleTokensMap } from "../api";
-import { PlasmicContext } from "../utils/config-utils";
+import { PlasmicContext, TokensConfig } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
 import {
   fileExists,
@@ -12,7 +12,13 @@ export async function upsertStyleTokens(
   newStyleMap: StyleTokensMap,
   projectId: string
 ) {
-  const curStyleMap = await readCurStyleMap(context);
+  // Skip Theo token synchronization if the project has no `tokens` config.
+  const tokensConfig = context.config.tokens;
+  if (!tokensConfig) {
+    return;
+  }
+
+  const curStyleMap = await readCurStyleMap(context, tokensConfig);
   for (const prop of newStyleMap.props) {
     const index = curStyleMap.props.findIndex(
       (p) => p.meta.id === prop.meta.id
@@ -41,7 +47,7 @@ export async function upsertStyleTokens(
   );
   await writeFileContent(
     context,
-    context.config.tokens.tokensFilePath,
+    tokensConfig.tokensFilePath,
 
     JSON.stringify(curStyleMap, undefined, 2),
 
@@ -50,17 +56,18 @@ export async function upsertStyleTokens(
 }
 
 async function readCurStyleMap(
-  context: PlasmicContext
+  context: PlasmicContext,
+  tokensConfig: TokensConfig
 ): Promise<StyleTokensMap> {
-  const filePath = context.config.tokens.tokensFilePath;
+  const filePath = tokensConfig.tokensFilePath;
   if (fileExists(context, filePath)) {
     try {
       return JSON.parse(
-        readFileContent(context, context.config.tokens.tokensFilePath)
+        readFileContent(context, tokensConfig.tokensFilePath)
       );
     } catch (e) {
       throw new HandledError(
-        `Error encountered reading ${context.config.tokens.tokensFilePath}: ${e}`
+        `Error encountered reading ${tokensConfig.tokensFilePath}: ${e}`
       );
     }
   } else {
@@ -74,7 +81,7 @@ async function readCurStyleMap(
     } as StyleTokensMap;
     await writeFileContent(
       context,
-      context.config.tokens.tokensFilePath,
+      tokensConfig.tokensFilePath,
       JSON.stringify(defaultMap, undefined, 2),
       {
         force: false,
