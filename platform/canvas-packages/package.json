@@ -26,7 +26,7 @@
     "@plasmicpkgs/commerce-commercetools": "^0.0.203",
     "@plasmicpkgs/commerce-local": "^0.0.253",
     "@plasmicpkgs/commerce-saleor": "^0.0.217",
-    "@plasmicpkgs/commerce-shopify": "^0.0.260",
+    "@plasmicpkgs/commerce-shopify": "^0.0.261",
     "@plasmicpkgs/commerce-swell": "^0.0.263",
     "@plasmicpkgs/contentful": "^0.0.27",
     "@plasmicpkgs/fetch": "^0.0.47",

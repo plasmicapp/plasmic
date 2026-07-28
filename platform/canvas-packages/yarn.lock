@@ -1899,12 +1899,12 @@
     debounce "^1.2.1"
     js-cookie "^3.0.5"
 
-"@plasmicpkgs/commerce-shopify@^0.0.260":
-  version "0.0.260"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-shopify/-/commerce-shopify-0.0.260.tgz#c18e8f503e71661aa0563485a3b6f5de9e328b9a"
-  integrity sha512-I1wMvzK8bbkElvgiIeRZzMm+P5EJHHAPm78TATjopCJ0LFCLJnQ85wfdMF+M3UbTAflv098qtLfXJqYDzYgW7Q==
+"@plasmicpkgs/commerce-shopify@^0.0.261":
+  version "0.0.261"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-shopify/-/commerce-shopify-0.0.261.tgz#3d0452d0b285afa735b77a61492eaa1f206b271b"
+  integrity sha512-LXAsNs3CclXiwcDYxZLlcSTu+PFg7cqbLiyH4i9k6hPdtIq0He3CNMFqYzg4pEI6jQRxsZbnHxHgENtWn81reA==
   dependencies:
-    "@plasmicpkgs/commerce" "0.0.252"
+    "@plasmicpkgs/commerce" "0.0.253"
     debounce "^1.2.1"
     js-cookie "^3.0.5"
 
@@ -1917,18 +1917,6 @@
     debounce "^1.2.1"
     js-cookie "^3.0.5"
     swell-js "^3.13.0"
-
-"@plasmicpkgs/commerce@0.0.252":
-  version "0.0.252"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce/-/commerce-0.0.252.tgz#2494b42cbd4366c5f1a6e2d3f4d50612931e9344"
-  integrity sha512-8vwZnA4GAbsFP34X5C7PkDTzigrCzbcrt8qHuQ/zf5i6ziW30a8XTM2nKQSaCtpVm2lUrc7iMjimBTYCWfINXg==
-  dependencies:
-    "@vercel/fetch" "^6.2.0"
-    debounce "^1.2.1"
-    js-cookie "^3.0.1"
-    lodash.debounce "^4.0.8"
-    react-hook-form "^7.28.0"
-    swr "^1.2.2"
 
 "@plasmicpkgs/commerce@0.0.253", "@plasmicpkgs/commerce@^0.0.253":
   version "0.0.253"
