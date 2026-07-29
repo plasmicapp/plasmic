@@ -396,12 +396,25 @@ function ForwardShortcuts() {
         action,
         (e: ExtendedKeyboardEvent) => {
           if (!hostFrameApiReady) {
-            return;
+            // The host frame is not ready, just swallow the event.
+            return true;
           }
 
+          const selection = document.getSelection();
+          if (
+            shortcut.action === "COPY" &&
+            selection &&
+            !selection.isCollapsed
+          ) {
+            // The top frame handles copying itself.
+            return false;
+          }
+
+          // The host frame handles everything else below this line.
+
           if (shortcut.action === "COPY" || shortcut.action === "PASTE") {
-            // Unhandled action, just focus on the inner frame so the next
-            // events can use the clipboard.
+            // Copy/paste can't be forwarded/dispatched to the host frame.
+            // Focus on the host frame so the next user action is handled there.
             spawn(hostFrameApi.focusOnWindow());
           } else {
             spawn(
@@ -415,6 +428,7 @@ function ForwardShortcuts() {
               })
             );
           }
+          return true;
         },
       ])
     )
