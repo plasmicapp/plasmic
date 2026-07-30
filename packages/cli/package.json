@@ -2,6 +2,13 @@
   "name": "@plasmicapp/cli",
   "version": "0.1.368",
   "description": "plasmic cli for syncing local code with Plasmic designs",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/cli"
+  },
+  "license": "MIT",
   "engines": {
     "node": ">=12"
   },

@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-calendly",
   "version": "0.0.101",
   "description": "Plasmic Calendly components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-calendly"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-calendly.esm.js",

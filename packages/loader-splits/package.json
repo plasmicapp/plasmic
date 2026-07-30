@@ -1,5 +1,12 @@
 {
   "version": "1.0.74",
+  "description": "Utilities for running Plasmic A/B tests, feature flags, and audience segmentation.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/loader-splits"
+  },
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",

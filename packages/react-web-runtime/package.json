@@ -1,6 +1,14 @@
 {
   "name": "@plasmicapp/react-web-runtime",
   "version": "1.0.26",
+  "description": "Custom JSX runtime for @plasmicapp/react-web, used by Plasmic-generated code.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/react-web-runtime"
+  },
+  "license": "MIT",
   "files": [
     "jsx-runtime",
     "jsx-dev-runtime"

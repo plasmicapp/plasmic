@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/plasmic-cms",
   "version": "0.0.324",
-  "description": "Plasmic CMS components",
+  "description": "Plasmic code components for querying and rendering Plasmic CMS content.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-cms"
+  },
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.esm.js",

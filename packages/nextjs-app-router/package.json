@@ -1,6 +1,13 @@
 {
   "name": "@plasmicapp/nextjs-app-router",
   "version": "1.0.28",
+  "description": "(DEPRECATED) Helpers for extracting Plasmic query data under the Next.js App Router.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/nextjs-app-router"
+  },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",

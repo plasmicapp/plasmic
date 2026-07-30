@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/react-twitter-widgets",
   "version": "0.0.253",
   "description": "Plasmic registration calls for react-twitter-widgets",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-twitter-widgets"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-twitter-widgets.esm.js",

@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/commerce-saleor",
   "version": "0.0.217",
-  "description": "Plasmic registration calls for saleor commerce provider",
+  "description": "Saleor provider for Plasmic commerce components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/commerce-providers/saleor"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/commerce-saleor.esm.js",

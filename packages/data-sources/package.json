@@ -1,5 +1,12 @@
 {
   "version": "1.0.21",
+  "description": "Runtime for executing Plasmic data source queries and mutations in your React app.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/data-sources"
+  },
   "name": "@plasmicapp/data-sources",
   "license": "MIT",
   "types": "./dist/index.d.ts",

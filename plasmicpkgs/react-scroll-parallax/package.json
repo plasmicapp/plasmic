@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/react-scroll-parallax",
   "version": "0.0.264",
-  "description": "Plasmic registration call for the HTML5 video element",
+  "description": "Plasmic registration calls for react-scroll-parallax scroll effects.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-scroll-parallax"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-scroll-parallax.esm.js",

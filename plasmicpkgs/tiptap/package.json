@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/tiptap",
   "version": "0.0.46",
-  "description": "Tiptap for React",
+  "description": "Plasmic code components for the Tiptap rich text editor.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/tiptap"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/tiptap.esm.js",

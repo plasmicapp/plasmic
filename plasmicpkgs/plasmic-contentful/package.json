@@ -1,7 +1,9 @@
 {
   "name": "@plasmicpkgs/plasmic-contentful",
   "version": "0.0.203",
-  "description": "Plasmic Contentful components.",
+  "description": "Plasmic code components for fetching and rendering Contentful content.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

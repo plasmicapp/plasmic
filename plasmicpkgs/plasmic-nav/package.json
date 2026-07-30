@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-nav",
   "version": "0.0.225",
   "description": "Plasmic mobile navigation menu and registration calls",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-nav"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/plasmic-nav.esm.js",

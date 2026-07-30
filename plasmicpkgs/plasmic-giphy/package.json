@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-giphy",
   "version": "0.0.87",
   "description": "Plasmic Giphy components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-giphy"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-giphy.esm.js",

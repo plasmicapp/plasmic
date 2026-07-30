@@ -1,5 +1,12 @@
 {
   "version": "0.0.96",
+  "description": "Plasmic code components for building customizable tab interfaces.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-tabs"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

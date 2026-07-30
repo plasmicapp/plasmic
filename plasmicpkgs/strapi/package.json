@@ -1,7 +1,9 @@
 {
   "name": "@plasmicpkgs/strapi",
   "version": "0.0.31",
-  "description": "Plasmic registration for Strapi",
+  "description": "Custom functions for querying Strapi content from Plasmic data queries.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

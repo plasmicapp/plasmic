@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-pigeon-maps",
   "version": "0.0.87",
   "description": "Plasmic Pigeon maps components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-pigeon-maps"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-pigeon-maps.esm.js",

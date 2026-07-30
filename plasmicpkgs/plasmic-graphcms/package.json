@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-graphcms",
   "version": "0.0.226",
   "description": "Plasmic GraphCMS components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-graphcms"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-graphcms.esm.js",

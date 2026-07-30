@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/react-youtube",
   "version": "7.13.259",
   "description": "Plasmic registration call for react-youtube",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-youtube"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-youtube.esm.js",

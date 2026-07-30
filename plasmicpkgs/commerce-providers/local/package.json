@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/commerce-local",
   "version": "0.0.253",
-  "description": "Plasmic registration calls for local provider components",
+  "description": "Local mock data provider for Plasmic commerce components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/commerce-providers/local"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/commerce-local.esm.js",

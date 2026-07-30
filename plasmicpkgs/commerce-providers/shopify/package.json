@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/commerce-shopify",
   "version": "0.0.261",
-  "description": "Plasmic registration calls for shopify commerce provider",
+  "description": "Shopify provider for Plasmic commerce components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/commerce-providers/shopify"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/commerce-shopify.esm.js",

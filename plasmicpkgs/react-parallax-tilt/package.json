@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/react-parallax-tilt",
   "version": "0.0.255",
-  "description": "Plasmic registration call for the HTML5 video element",
+  "description": "Plasmic registration calls for react-parallax-tilt.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-parallax-tilt"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-parallax-tilt.esm.js",

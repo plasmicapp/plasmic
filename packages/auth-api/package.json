@@ -1,5 +1,12 @@
 {
   "version": "0.0.18",
+  "description": "Framework-agnostic client for Plasmic Auth login, logout, and user session flows.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/auth-api"
+  },
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",

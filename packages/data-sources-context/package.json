@@ -1,5 +1,12 @@
 {
   "version": "0.1.24",
+  "description": "React context that supplies the current user and auth token to Plasmic data source queries.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/data-sources-context"
+  },
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",

@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress",
   "version": "0.0.182",
-  "description": "Plasmic Wordpress components.",
+  "description": "Plasmic code components for fetching and rendering WordPress posts and pages.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-wordpress"
+  },
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.esm.js",

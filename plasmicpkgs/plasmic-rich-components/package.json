@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-rich-components",
   "version": "1.0.265",
   "description": "Rich batteries-included general purpose components for business apps, admin panels, etc.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-rich-components"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/plasmic-rich-components.esm.js",

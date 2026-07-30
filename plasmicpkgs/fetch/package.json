@@ -1,7 +1,9 @@
 {
   "name": "@plasmicpkgs/fetch",
   "version": "0.0.47",
-  "description": "Plasmic registration call for fetch function",
+  "description": "Custom function for making HTTP requests from Plasmic data queries.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

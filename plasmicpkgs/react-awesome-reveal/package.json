@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/react-awesome-reveal",
   "version": "3.8.257",
   "description": "Plasmic registration call for react-awesome-reveal",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-awesome-reveal"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-awesome-reveal.esm.js",

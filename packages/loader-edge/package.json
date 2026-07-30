@@ -1,5 +1,12 @@
 {
   "version": "1.0.80",
+  "description": "Edge-runtime helpers for applying Plasmic A/B tests and content splits in middleware.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/loader-edge"
+  },
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",

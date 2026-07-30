@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-spotify",
   "version": "0.0.32",
   "description": "Plasmic Spotify components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/spotify"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-spotify.esm.js",

@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/commerce-swell",
   "version": "0.0.263",
-  "description": "Plasmic registration calls for swell commerce provider",
+  "description": "Swell provider for Plasmic commerce components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/commerce-providers/swell"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/commerce-swell.esm.js",

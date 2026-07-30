@@ -1,7 +1,9 @@
 {
   "name": "@plasmicpkgs/graphql",
   "version": "0.0.41",
-  "description": "Plasmic registration for GraphQL",
+  "description": "Custom functions for running GraphQL queries from Plasmic data queries.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

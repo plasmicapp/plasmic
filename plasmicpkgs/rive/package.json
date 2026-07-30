@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/rive",
   "version": "0.0.41",
   "description": "Plasmic registration call for rive animation",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/rive"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/rive.esm.js",

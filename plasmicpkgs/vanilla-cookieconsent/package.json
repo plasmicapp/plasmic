@@ -2,6 +2,8 @@
   "name": "@plasmicpkgs/vanilla-cookieconsent",
   "version": "0.0.31",
   "description": "Plasmic cookie consent banner component.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

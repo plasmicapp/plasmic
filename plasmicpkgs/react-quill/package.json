@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/react-quill",
   "version": "1.0.118",
   "description": "Plasmic registration call for react-quill WYSIWYG Editor",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-quill"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-quill.esm.js",

@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-query",
   "version": "0.0.274",
   "description": "Plasmic components and registration calls for data fetching",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-query"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/plasmic-query.esm.js",

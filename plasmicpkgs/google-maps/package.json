@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-google-maps",
   "version": "0.0.34",
   "description": "Plasmic Google maps components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/google-maps"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-google-maps.esm.js",

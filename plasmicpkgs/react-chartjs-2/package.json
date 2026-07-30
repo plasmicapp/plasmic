@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/react-chartjs-2",
   "version": "1.0.165",
-  "description": "Chart.js 2.x components for React",
+  "description": "Plasmic code components for rendering Chart.js charts via react-chartjs-2.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-chartjs-2"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-chartjs-2.esm.js",

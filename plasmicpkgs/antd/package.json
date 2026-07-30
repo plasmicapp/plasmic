@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/antd",
   "version": "2.0.177",
-  "description": "Plasmic registration calls for antd components",
+  "description": "Plasmic registration calls for Ant Design v4 components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/antd"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/antd.esm.js",

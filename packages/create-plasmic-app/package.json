@@ -2,6 +2,12 @@
   "name": "create-plasmic-app",
   "version": "0.0.162",
   "description": "Create Plasmic-powered React apps",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/create-plasmic-app"
+  },
   "main": "./dist/lib.js",
   "types": "./dist/lib.d.ts",
   "license": "MIT",

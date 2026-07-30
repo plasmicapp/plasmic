@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/react-slick",
   "version": "0.0.276",
   "description": "Plasmic registration call for the React Slick Slider component",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-slick"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-slick.esm.js",

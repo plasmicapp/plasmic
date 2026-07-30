@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-keen-slider",
   "version": "0.0.98",
   "description": "Plasmic Keen slider components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/keen-slider"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-keen-slider.esm.js",

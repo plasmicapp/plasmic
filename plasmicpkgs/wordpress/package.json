@@ -1,7 +1,9 @@
 {
   "name": "@plasmicpkgs/wordpress",
   "version": "0.0.32",
-  "description": "Plasmic registration for WordPress",
+  "description": "Custom functions for querying the WordPress REST API from Plasmic data queries.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

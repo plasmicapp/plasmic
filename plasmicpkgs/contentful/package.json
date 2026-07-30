@@ -1,7 +1,9 @@
 {
   "name": "@plasmicpkgs/contentful",
   "version": "0.0.27",
-  "description": "Plasmic registration for Contentful",
+  "description": "Custom functions for querying Contentful content from Plasmic data queries.",
+  "homepage": "https://www.plasmic.app",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",

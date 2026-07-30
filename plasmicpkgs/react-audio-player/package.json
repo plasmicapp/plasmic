@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/react-audio-player",
   "version": "0.0.82",
   "description": "React Audio Player components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/react-audio-player"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/index.mjs",

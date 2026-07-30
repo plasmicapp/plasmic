@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/plasmic-basic-components",
   "version": "0.0.284",
-  "description": "Plasmic registration call for the HTML5 video element",
+  "description": "Assorted basic Plasmic code components: embeds, iframes, timers, conditionals, data providers, and more.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-basic-components"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/plasmic-basic-components.esm.js",

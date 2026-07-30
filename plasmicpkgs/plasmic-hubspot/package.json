@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-hubspot",
   "version": "0.0.99",
   "description": "Plasmic Hubspot components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-hubspot"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-hubspot.esm.js",

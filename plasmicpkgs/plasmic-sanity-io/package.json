@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/plasmic-sanity-io",
   "version": "1.0.234",
   "description": "Plasmic Sanity.io components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/plasmic-sanity-io"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",

@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/dnd-kit",
   "version": "0.0.33",
-  "description": "Plasmic Spotify components.",
+  "description": "Plasmic code components for building sortable drag-and-drop lists with dnd-kit.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/dnd-kit"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/dnd-kit.esm.js",

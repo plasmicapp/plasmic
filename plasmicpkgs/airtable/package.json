@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/airtable",
   "version": "0.0.269",
-  "description": "Plasmic registration call for the HTML5 video element",
+  "description": "Plasmic code components for displaying Airtable records and collections.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/airtable"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/airtable.esm.js",

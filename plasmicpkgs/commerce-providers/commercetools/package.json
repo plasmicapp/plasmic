@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/commerce-commercetools",
   "version": "0.0.203",
-  "description": "Plasmic registration calls for commercetools commerce provider",
+  "description": "commercetools provider for Plasmic commerce components.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/commerce-providers/commercetools"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/commerce-commercetools.esm.js",

@@ -2,6 +2,13 @@
   "name": "@plasmicpkgs/framer-motion",
   "version": "0.0.253",
   "description": "Plasmic registration call for Framer Motion",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/framer-motion"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/framer-motion.esm.js",

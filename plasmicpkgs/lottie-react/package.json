@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/lottie-react",
   "version": "0.0.247",
-  "description": "Plasmic registration call for the HTML5 video element",
+  "description": "Plasmic registration calls for lottie-react animations.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/lottie-react"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/lottie-react.esm.js",

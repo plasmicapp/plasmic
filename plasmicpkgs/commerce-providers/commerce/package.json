@@ -1,7 +1,14 @@
 {
   "name": "@plasmicpkgs/commerce",
   "version": "0.0.253",
-  "description": "Plasmic registration calls for commerce components",
+  "description": "Plasmic code components for building ecommerce storefronts — product lists, carts, and checkout.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "plasmicpkgs/commerce-providers/commerce"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/commerce.esm.js",

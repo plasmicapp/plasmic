@@ -1,5 +1,12 @@
 {
   "version": "0.0.29",
+  "description": "React hooks and components for adding Plasmic Auth login and user sessions to your app.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/auth-react"
+  },
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",

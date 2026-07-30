@@ -1,5 +1,12 @@
 {
   "version": "2.0.3",
+  "description": "Low-level fetcher for downloading Plasmic project bundles from the Plasmic API.",
+  "homepage": "https://www.plasmic.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/loader-fetcher"
+  },
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
