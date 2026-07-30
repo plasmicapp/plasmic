@@ -14,9 +14,6 @@ export function FloatingWindowLayer({ children }: React.PropsWithChildren<{}>) {
   return <div className="floating-window-screen">{children}</div>;
 }
 
-const VIEWPORT_MARGIN = 10;
-const DEFAULT_MIN_HEIGHT = 100;
-
 const RESIZE_DIRECTIONS = [
   "n",
   "s",
@@ -44,8 +41,8 @@ export function FloatingWindow({
   handleSelector,
   storageKey,
   focusedMode,
-  minWidth,
-  minHeight,
+  initialWidth,
+  initialHeight,
   disableWidthResize,
   disableHeightResize,
   className,
@@ -60,15 +57,14 @@ export function FloatingWindow({
   storageKey?: LocalStorageKey;
   /** Opens the window below the focused toolbar. */
   focusedMode?: boolean;
-  minWidth?: number;
-  minHeight?: number;
+  /** Initial width. Stored width from storageKey takes precedence. If unset, width will auto-size. */
+  initialWidth?: number;
+  /** Initial height. Stored height from storageKey takes precedence. If unset, height will auto-size. */
+  initialHeight?: number;
   disableWidthResize?: boolean;
   disableHeightResize?: boolean;
 }) {
   const windowRef = React.useRef<HTMLDivElement>(null);
-
-  const resolveMinWidth = () => minWidth ?? measureMinWidth(windowRef.current);
-  const resolveMinHeight = () => minHeight ?? DEFAULT_MIN_HEIGHT;
 
   const loadedState = React.useMemo(
     () => loadWindowState(storageKey),
@@ -78,10 +74,10 @@ export function FloatingWindow({
     loadedState?.offset ?? Pt.zero()
   );
   const [width, setWidth] = React.useState<number | undefined>(
-    loadedState?.width
+    loadedState?.width ?? initialWidth
   );
   const [height, setHeight] = React.useState<number | undefined>(
-    loadedState?.height
+    loadedState?.height ?? initialHeight
   );
 
   // Ensure the initial/loaded window state is within bounds.
@@ -94,24 +90,22 @@ export function FloatingWindow({
 
     // Check width/height.
     const windowBox = windowEl.getBoundingClientRect();
-    let newWidth = width;
-    let newHeight = height;
-    if (width !== undefined) {
-      const maxWidth = windowBox.right - VIEWPORT_MARGIN;
-      if (width > maxWidth) {
-        newWidth = Math.max(resolveMinWidth(), maxWidth);
-        windowEl.style.width = `${newWidth}px`;
-      }
+    const curWidth = windowBox.width;
+    const curHeight = windowBox.height;
+    const { minWidth, minHeight } = computeMinDimensions(windowEl);
+    const maxWidth = win.innerWidth - windowBox.left;
+    const maxHeight = win.innerHeight - windowBox.top;
+    // If the user can't resize, don't clamp and rely on CSS sizing instead.
+    if (!disableWidthResize) {
+      const newWidth = L.clamp(curWidth, minWidth, maxWidth);
+      windowEl.style.width = `${newWidth}px`;
+      setWidth(newWidth);
     }
-    if (height !== undefined) {
-      const maxHeight = win.innerHeight - VIEWPORT_MARGIN - windowBox.top;
-      if (height > maxHeight) {
-        newHeight = Math.max(resolveMinHeight(), maxHeight);
-        windowEl.style.height = `${newHeight}px`;
-      }
+    if (!disableHeightResize) {
+      const newHeight = L.clamp(curHeight, minHeight, maxHeight);
+      windowEl.style.height = `${newHeight}px`;
+      setHeight(newHeight);
     }
-    setWidth(newWidth);
-    setHeight(newHeight);
 
     // Check offset.
     const clampedDelta = clampDelta(
@@ -174,43 +168,40 @@ export function FloatingWindow({
     const startOffset = offset;
     const startWindowBox = Box.fromRectSides(windowEl.getBoundingClientRect());
     const win = windowEl.ownerDocument.defaultView ?? window;
+    const { minWidth, minHeight } = computeMinDimensions(windowEl);
     startPointerDrag(e, e.currentTarget, {
       onMove: (dx, dy) => {
-        const maxRight = win.innerWidth - VIEWPORT_MARGIN;
-        const maxBottom = win.innerHeight - VIEWPORT_MARGIN;
+        const minLeft = 0;
+        const minTop = 0;
+        const maxRight = win.innerWidth;
+        const maxBottom = win.innerHeight;
         const newBox = startWindowBox.withSides({
           ...(dir.includes("e") && {
             right: L.clamp(
               startWindowBox.right() + dx,
-              Math.min(startWindowBox.left() + resolveMinWidth(), maxRight),
+              Math.min(startWindowBox.left() + minWidth, maxRight),
               maxRight
             ),
           }),
           ...(dir.includes("w") && {
             left: L.clamp(
               startWindowBox.left() + dx,
-              VIEWPORT_MARGIN,
-              Math.max(
-                VIEWPORT_MARGIN,
-                startWindowBox.right() - resolveMinWidth()
-              )
+              minLeft,
+              Math.max(minLeft, startWindowBox.right() - minWidth)
             ),
           }),
           ...(dir.includes("s") && {
             bottom: L.clamp(
               startWindowBox.bottom() + dy,
-              Math.min(startWindowBox.top() + resolveMinHeight(), maxBottom),
+              Math.min(startWindowBox.top() + minHeight, maxBottom),
               maxBottom
             ),
           }),
           ...(dir.includes("n") && {
             top: L.clamp(
               startWindowBox.top() + dy,
-              VIEWPORT_MARGIN,
-              Math.max(
-                VIEWPORT_MARGIN,
-                startWindowBox.bottom() - resolveMinHeight()
-              )
+              minTop,
+              Math.max(minTop, startWindowBox.bottom() - minHeight)
             ),
           }),
         });
@@ -238,8 +229,6 @@ export function FloatingWindow({
       className={cn(className, {
         "floating-window": true,
         "floating-window--focused": focusedMode,
-        // Need extra CSS to auto-size height only.
-        "floating-window--auto-height": height === undefined,
       })}
       style={{
         ...style,
@@ -345,16 +334,18 @@ function focusClosest(target: HTMLElement): HTMLElement | undefined {
   return undefined;
 }
 
-function measureMinWidth(windowEl: HTMLElement | null): number {
-  if (!windowEl) {
-    return 0;
-  }
-
-  const prev = windowEl.style.width;
-  windowEl.style.width = "min-content";
-  const size = windowEl.getBoundingClientRect().width;
-  windowEl.style.width = prev;
-  return size;
+function computeMinDimensions(windowEl: HTMLElement) {
+  const win = windowEl.ownerDocument.defaultView ?? window;
+  const computedStyle = win.getComputedStyle(windowEl);
+  const minWidth = parseFloat(computedStyle.minWidth);
+  const minHeight = parseFloat(computedStyle.minHeight);
+  // The minWidth/minHeight must be positive to avoid jank when resizing.
+  // Use an arbitrary positive value in case it's negative or a non-pixel value
+  // like auto, min-content, etc.
+  return {
+    minWidth: L.isFinite(minWidth) && minWidth > 0 ? minWidth : 5,
+    minHeight: L.isFinite(minHeight) && minHeight > 0 ? minHeight : 5,
+  };
 }
 
 /** Get bounding box of handle (falls back to window). */
@@ -364,7 +355,7 @@ function getHandleBox(windowEl: HTMLElement, handleSelector: string): Box {
   );
 }
 
-/** Clamps dx, dy to ensure the entire handle box stays within the window. */
+/** Clamps dx, dy to ensure the entire handle box stays within the viewport. */
 function clampDelta(dx: number, dy: number, handleBox: Box, win: Window): Pt {
   const validTopLefts = Box.fromRectSides({
     top: 0,

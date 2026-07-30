@@ -1725,14 +1725,15 @@ a.btn-link
   --anchor-top: calc(#{$top-pane-height} + 10px)
   top: var(--anchor-top)
   right: calc($right-pane-width + 10px)
-  min-width: min-content
+  min-width: 300px
+  max-width: 100vw
+  min-height: 200px
+  max-height: 100vh
   display: flex
   flex-direction: column
   pointer-events: auto
 .floating-window--focused
   --anchor-top: calc(#{$top-pane-height} + #{$focused-toolbar-height} + 10px)
-.floating-window--auto-height
-  max-height: calc(100vh - var(--anchor-top) - 10px)
 .floating-window__content
   display: flex
   flex-direction: column
@@ -5826,23 +5827,6 @@ a, button.link-like
     z-index: 1
   .ant-table, .ant-spin-container, .ant-spin-nested-loading, .ant-table-wrapper
     height: 100%
-
-
-.code-wrap
-  user-select: text
-  white-space: pre-wrap
-  overflow-wrap: break-word
-.copilot-chat-msg
-  border-radius: 16px
-  padding: 16px
-  user-select: text
-.copilot-chat-msg--user
-  background: #0097FF
-  color: white
-.copilot-chat-msg--agent
-  background: #EBF7FF
-  color: #2D2F31
-  line-height: 0.2 // I don't know why this is needed
 
 @keyframes tutorial-highlight
   0%,100%

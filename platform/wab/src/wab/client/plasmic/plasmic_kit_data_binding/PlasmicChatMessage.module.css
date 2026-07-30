@@ -1,52 +1,35 @@
-.root {
+.row {
   display: flex;
   position: relative;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-start;
-  height: auto;
   justify-self: flex-start;
-  row-gap: 8px;
+  align-items: stretch;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
 }
-.roottype_user {
+.rowtype_user {
   padding-left: 16px;
+  align-items: flex-end;
+  justify-content: flex-start;
 }
-.roottype_assistant {
+.rowtype_assistant {
+  padding-right: 16px;
   align-items: flex-start;
   justify-content: flex-start;
-  padding-right: 16px;
 }
 .message {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: flex-start;
-  height: auto;
-  background: #eaf6ff;
-  width: auto;
-  border-radius: 12px;
+  background: var(--token-yqAf_E0HIjU);
+  row-gap: var(--token-vhXSTyxt_gU9);
+  max-width: calc(100% - 16px);
+  overflow-x: auto;
+  border-radius: var(--token-XnnXV8YSKg9w);
+  padding: var(--token-O2OprmOFWLju);
 }
 .messagetype_assistant {
-  align-items: flex-start;
-  justify-content: center;
   background: none;
-}
-.content {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  overflow-y: auto;
-  row-gap: 2px;
-  padding: 8px;
-}
-.contenttype_assistant {
   padding: 0px;
-}
-.slotTargetResponseSlot {
-  text-align: left;
 }

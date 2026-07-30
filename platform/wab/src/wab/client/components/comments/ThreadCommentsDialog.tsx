@@ -55,6 +55,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
       <FloatingWindow
         handleSelector=".CommentDialogDragHandle"
         focusedMode={studioCtx.focusedMode}
+        initialWidth={300}
         onClick={markThreadAsInteracted}
         onKeyDown={markThreadAsInteracted}
       >
@@ -94,6 +95,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
             render: () => (
               <CommentPostForm
                 id={selectedThread.id}
+                initialRows={1}
                 defaultValue={commentsCtx.getThreadDraft(selectedThread)}
                 onSubmit={(value: string) => {
                   commentsCtx.postThreadComment(selectedThread.id, {

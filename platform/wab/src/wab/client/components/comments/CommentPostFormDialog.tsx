@@ -46,6 +46,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
       <FloatingWindow
         handleSelector=".CommentDialogDragHandle"
         focusedMode={studioCtx.focusedMode}
+        initialWidth={300}
         disableHeightResize
         onClick={markThreadAsInteracted}
         onKeyDown={markThreadAsInteracted}
@@ -69,6 +70,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
             render: () => (
               <CommentPostForm
                 id={"new"}
+                initialRows={5}
                 defaultValue={commentsCtx.getArenaDraft(currentArena)}
                 onSubmit={async (value: string) => {
                   let subjectAddr = commentsCtx.bundler().addrOf(threadSubject);

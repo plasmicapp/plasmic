@@ -83,6 +83,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
           <CommentPostForm
             isEditing
             id={comment.id}
+            initialRows={1}
             defaultValue={comment.body}
             onSubmit={(value: string) => {
               if (value.trim() !== comment.body.trim()) {

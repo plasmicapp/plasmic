@@ -19,6 +19,7 @@ import ReactDOM from "react-dom";
 export type CommentPostFormProps = DefaultCommentPostFormProps & {
   /** ID for the input element. */
   id: string;
+  initialRows: number;
   defaultValue: string;
   onChange?: (value: string) => void;
   onCancel?: () => void;
@@ -28,8 +29,16 @@ export type CommentPostFormProps = DefaultCommentPostFormProps & {
 const CommentPostForm = observer(function CommentPostForm(
   props: CommentPostFormProps
 ) {
-  const { id, defaultValue, onSubmit, onCancel, isEditing, onChange, ...rest } =
-    props;
+  const {
+    id,
+    defaultValue,
+    initialRows,
+    onSubmit,
+    onCancel,
+    isEditing,
+    onChange,
+    ...rest
+  } = props;
   const [value, setValue] = useState(defaultValue);
   const [isPreviewing, setIsPreviewing] = React.useState(false);
 
@@ -89,7 +98,7 @@ const CommentPostForm = observer(function CommentPostForm(
           textAreaInput: {
             props: {
               id: inputElementId,
-              rows: 5,
+              rows: initialRows,
               autoResize: true,
               "data-test-id": "comment-post-text-area",
             },
