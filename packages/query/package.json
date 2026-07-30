@@ -1,5 +1,5 @@
 {
-  "version": "0.1.86",
+  "version": "0.1.87",
   "description": "Isomorphic, component-level data fetching for React, built on SWR, with server-side prefetching.",
   "homepage": "https://www.plasmic.app",
   "repository": {

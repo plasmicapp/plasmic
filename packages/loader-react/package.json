@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "Plasmic loader SDK for React",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -60,13 +60,13 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.24",
-    "@plasmicapp/host": "2.0.12",
-    "@plasmicapp/loader-core": "2.0.3",
-    "@plasmicapp/loader-fetcher": "2.0.3",
-    "@plasmicapp/loader-splits": "1.0.74",
-    "@plasmicapp/prepass": "1.0.26",
-    "@plasmicapp/query": "0.1.86",
+    "@plasmicapp/data-sources-context": "0.1.25",
+    "@plasmicapp/host": "2.0.13",
+    "@plasmicapp/loader-core": "2.0.4",
+    "@plasmicapp/loader-fetcher": "2.0.4",
+    "@plasmicapp/loader-splits": "1.0.75",
+    "@plasmicapp/prepass": "1.0.27",
+    "@plasmicapp/query": "0.1.87",
     "pascalcase": "^1.0.0",
     "server-only": "0.0.1"
   },

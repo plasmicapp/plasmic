@@ -51,13 +51,13 @@ importers:
         version: 8.5.5(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))
       '@storybook/addon-webpack5-compiler-swc':
         specifier: 2.1.0
-        version: 2.1.0(@swc/helpers@0.5.23)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+        version: 2.1.0(@swc/helpers@0.5.23)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       '@storybook/react':
         specifier: 8.5.5
         version: 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
       '@storybook/react-webpack5':
         specifier: 8.5.5
-        version: 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
+        version: 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
       '@storybook/test':
         specifier: 8.5.5
         version: 8.5.5(storybook@8.5.5(prettier@2.8.8))
@@ -176,13 +176,13 @@ importers:
   packages/auth-react:
     dependencies:
       '@plasmicapp/auth-api':
-        specifier: 0.0.18
+        specifier: 0.0.19
         version: link:../auth-api
       '@plasmicapp/isomorphic-unfetch':
         specifier: 1.0.3
         version: 1.0.3
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       react:
         specifier: 18.3.1
@@ -365,7 +365,7 @@ importers:
   packages/create-plasmic-app:
     dependencies:
       '@plasmicapp/cli':
-        specifier: 0.1.368
+        specifier: 0.1.369
         version: link:../cli
       '@sentry/node':
         specifier: ^6.2.2
@@ -441,13 +441,13 @@ importers:
   packages/data-sources:
     dependencies:
       '@plasmicapp/data-sources-context':
-        specifier: 0.1.24
+        specifier: 0.1.25
         version: link:../data-sources-context
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       fast-stringify:
         specifier: ^2.0.0
@@ -484,7 +484,7 @@ importers:
   packages/host:
     dependencies:
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       csstype:
         specifier: ^3.1.2
@@ -545,7 +545,7 @@ importers:
   packages/loader-core:
     dependencies:
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-fetcher
     devDependencies:
       '@types/node':
@@ -555,11 +555,11 @@ importers:
   packages/loader-edge:
     dependencies:
       '@plasmicapp/loader-splits':
-        specifier: 1.0.74
+        specifier: 1.0.75
         version: link:../loader-splits
     devDependencies:
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-fetcher
 
   packages/loader-fetcher:
@@ -574,13 +574,13 @@ importers:
   packages/loader-gatsby:
     dependencies:
       '@plasmicapp/loader-core':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-core
       '@plasmicapp/loader-react':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../loader-react
       '@plasmicapp/watcher':
-        specifier: 1.0.85
+        specifier: 1.0.86
         version: link:../watcher
       lodash:
         specifier: ^4.17.21
@@ -605,16 +605,16 @@ importers:
   packages/loader-nextjs:
     dependencies:
       '@plasmicapp/loader-core':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-core
       '@plasmicapp/loader-edge':
-        specifier: 1.0.80
+        specifier: 1.0.81
         version: link:../loader-edge
       '@plasmicapp/loader-react':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../loader-react
       '@plasmicapp/watcher':
-        specifier: 1.0.85
+        specifier: 1.0.86
         version: link:../watcher
       server-only:
         specifier: 0.0.1
@@ -639,25 +639,25 @@ importers:
   packages/loader-react:
     dependencies:
       '@plasmicapp/data-sources-context':
-        specifier: 0.1.24
+        specifier: 0.1.25
         version: link:../data-sources-context
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../host
       '@plasmicapp/loader-core':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-core
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-fetcher
       '@plasmicapp/loader-splits':
-        specifier: 1.0.74
+        specifier: 1.0.75
         version: link:../loader-splits
       '@plasmicapp/prepass':
-        specifier: 1.0.26
+        specifier: 1.0.27
         version: link:../prepass
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       pascalcase:
         specifier: ^1.0.0
@@ -692,7 +692,7 @@ importers:
         version: 2.0.5
     devDependencies:
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.3
+        specifier: 2.0.4
         version: link:../loader-fetcher
       '@types/json-logic-js':
         specifier: ^1.2.1
@@ -701,10 +701,10 @@ importers:
   packages/nextjs-app-router:
     dependencies:
       '@plasmicapp/prepass':
-        specifier: 1.0.26
+        specifier: 1.0.27
         version: link:../prepass
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       cross-port-killer:
         specifier: 1.4.0
@@ -750,7 +750,7 @@ importers:
   packages/prepass:
     dependencies:
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       '@plasmicapp/react-ssr-prepass':
         specifier: ^2.0.9
@@ -788,25 +788,25 @@ importers:
   packages/react-web:
     dependencies:
       '@plasmicapp/auth-react':
-        specifier: 0.0.29
+        specifier: 0.0.30
         version: link:../auth-react
       '@plasmicapp/data-sources':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../data-sources
       '@plasmicapp/data-sources-context':
-        specifier: 0.1.24
+        specifier: 0.1.25
         version: link:../data-sources-context
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../host
       '@plasmicapp/loader-splits':
-        specifier: 1.0.74
+        specifier: 1.0.75
         version: link:../loader-splits
       '@plasmicapp/prepass':
-        specifier: 1.0.26
+        specifier: 1.0.27
         version: link:../prepass
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../query
       '@react-aria/checkbox':
         specifier: ^3.15.5
@@ -939,7 +939,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.26
+        specifier: 1.0.27
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -979,40 +979,40 @@ importers:
   plasmicpkgs-dev:
     dependencies:
       '@plasmicapp/loader-nextjs':
-        specifier: 2.0.18
+        specifier: 2.0.19
         version: link:../packages/loader-nextjs
       '@plasmicpkgs/cms':
-        specifier: 0.0.33
+        specifier: 0.0.34
         version: link:../plasmicpkgs/cms
       '@plasmicpkgs/commerce':
-        specifier: 0.0.253
+        specifier: 0.0.254
         version: link:../plasmicpkgs/commerce-providers/commerce
       '@plasmicpkgs/commerce-shopify':
-        specifier: 0.0.261
+        specifier: 0.0.262
         version: link:../plasmicpkgs/commerce-providers/shopify
       '@plasmicpkgs/contentful':
-        specifier: 0.0.27
+        specifier: 0.0.28
         version: link:../plasmicpkgs/contentful
       '@plasmicpkgs/fetch':
-        specifier: 0.0.47
+        specifier: 0.0.48
         version: link:../plasmicpkgs/fetch
       '@plasmicpkgs/graphql':
-        specifier: 0.0.41
+        specifier: 0.0.42
         version: link:../plasmicpkgs/graphql
       '@plasmicpkgs/plasmic-basic-components':
-        specifier: 0.0.284
+        specifier: 0.0.285
         version: link:../plasmicpkgs/plasmic-basic-components
       '@plasmicpkgs/plasmic-cms':
-        specifier: 0.0.324
+        specifier: 0.0.325
         version: link:../plasmicpkgs/plasmic-cms
       '@plasmicpkgs/plasmic-strapi':
-        specifier: 0.1.212
+        specifier: 0.1.213
         version: link:../plasmicpkgs/plasmic-strapi
       '@plasmicpkgs/strapi':
-        specifier: 0.0.31
+        specifier: 0.0.32
         version: link:../plasmicpkgs/strapi
       '@plasmicpkgs/wordpress':
-        specifier: 0.0.32
+        specifier: 0.0.33
         version: link:../plasmicpkgs/wordpress
       next:
         specifier: ^15.5.9
@@ -1047,7 +1047,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -1069,7 +1069,7 @@ importers:
         version: 4.24.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -1145,16 +1145,16 @@ importers:
         specifier: ^7.22.15
         version: 7.29.7(@babel/core@7.29.7)
       '@plasmicapp/data-sources':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.26
+        specifier: 1.0.27
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -1212,7 +1212,7 @@ importers:
         version: 2.10.10(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(framer-motion@5.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^25.0.2
@@ -1257,7 +1257,7 @@ importers:
   plasmicpkgs/cms:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -1291,10 +1291,10 @@ importers:
         version: 1.3.0(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../../packages/query
       '@types/debounce':
         specifier: ^1.2.4
@@ -1330,7 +1330,7 @@ importers:
         specifier: ^2.2.2
         version: 2.5.0(encoding@0.1.13)
       '@plasmicpkgs/commerce':
-        specifier: 0.0.253
+        specifier: 0.0.254
         version: link:../commerce
       debounce:
         specifier: ^2.0.0
@@ -1343,10 +1343,10 @@ importers:
         version: 6.15.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../../packages/query
       '@types/debounce':
         specifier: ^1.2.4
@@ -1373,11 +1373,11 @@ importers:
   plasmicpkgs/commerce-providers/local:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.253
+        specifier: 0.0.254
         version: link:../commerce
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../../packages/host
       '@types/js-cookie':
         specifier: ^3.0.6
@@ -1404,7 +1404,7 @@ importers:
   plasmicpkgs/commerce-providers/saleor:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.253
+        specifier: 0.0.254
         version: link:../commerce
       debounce:
         specifier: ^1.2.1
@@ -1414,7 +1414,7 @@ importers:
         version: 3.0.8
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../../packages/host
       '@types/debounce':
         specifier: ^1.2.4
@@ -1447,7 +1447,7 @@ importers:
   plasmicpkgs/commerce-providers/shopify:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.253
+        specifier: 0.0.254
         version: link:../commerce
       debounce:
         specifier: ^1.2.1
@@ -1460,7 +1460,7 @@ importers:
         specifier: ^5.0.3
         version: 5.0.7(@parcel/watcher@2.5.6)(@types/node@14.18.63)(encoding@0.1.13)(enquirer@2.4.1)(graphql@16.14.2)(typescript@5.2.2)
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../../packages/host
       '@types/debounce':
         specifier: ^1.2.4
@@ -1490,7 +1490,7 @@ importers:
   plasmicpkgs/commerce-providers/swell:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.253
+        specifier: 0.0.254
         version: link:../commerce
       debounce:
         specifier: ^1.2.1
@@ -1503,7 +1503,7 @@ importers:
         version: 3.24.5
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../../packages/host
       '@types/debounce':
         specifier: ^1.2.4
@@ -1530,7 +1530,7 @@ importers:
   plasmicpkgs/contentful:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -1564,7 +1564,7 @@ importers:
         version: 3.2.2(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1591,7 +1591,7 @@ importers:
   plasmicpkgs/fetch:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       typescript:
         specifier: 5.2.2
@@ -1610,7 +1610,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -1632,7 +1632,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1659,10 +1659,10 @@ importers:
   plasmicpkgs/graphql:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicpkgs/fetch':
-        specifier: 0.0.47
+        specifier: 0.0.48
         version: link:../fetch
       typescript:
         specifier: 5.2.2
@@ -1681,7 +1681,7 @@ importers:
         version: 6.8.6
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1718,7 +1718,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -1736,7 +1736,7 @@ importers:
   plasmicpkgs/mailchimp:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1763,10 +1763,10 @@ importers:
   plasmicpkgs/plasmic-basic-components:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/node':
         specifier: ^14.18.63
@@ -1800,7 +1800,7 @@ importers:
         version: 4.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1827,7 +1827,7 @@ importers:
   plasmicpkgs/plasmic-cms:
     dependencies:
       '@plasmicpkgs/cms':
-        specifier: 0.0.33
+        specifier: 0.0.34
         version: link:../cms
       dayjs:
         specifier: ^1.10.7
@@ -1840,10 +1840,10 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/node':
         specifier: ^17.0.45
@@ -1865,10 +1865,10 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/dlv':
         specifier: ^1.1.5
@@ -1914,13 +1914,13 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicpkgs/contentful':
-        specifier: 0.0.27
+        specifier: 0.0.28
         version: link:../contentful
       '@types/dlv':
         specifier: ^1.1.5
@@ -1951,7 +1951,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^17.0.45
@@ -1979,7 +1979,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2019,7 +2019,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2050,10 +2050,10 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/dlv':
         specifier: ^1.1.5
@@ -2087,7 +2087,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2118,7 +2118,7 @@ importers:
         version: 2.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2155,10 +2155,10 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/data-sources':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2183,7 +2183,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2211,7 +2211,7 @@ importers:
         version: 0.21.6(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/dlv':
         specifier: ^1.1.5
@@ -2248,10 +2248,10 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/node':
         specifier: ^14.18.63
@@ -2303,10 +2303,10 @@ importers:
         specifier: 2.6.4
         version: 2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/data-sources':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^25.0.2
@@ -2367,10 +2367,10 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/dlv':
         specifier: ^1.1.5
@@ -2398,7 +2398,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/dlv':
         specifier: ^1.1.5
@@ -2428,17 +2428,17 @@ importers:
   plasmicpkgs/plasmic-strapi:
     dependencies:
       '@plasmicpkgs/strapi':
-        specifier: 0.0.31
+        specifier: 0.0.32
         version: link:../strapi
       change-case:
         specifier: ^4.1.2
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/dlv':
         specifier: ^1.1.5
@@ -2462,7 +2462,7 @@ importers:
   plasmicpkgs/plasmic-tabs:
     dependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       constate:
         specifier: ^3.3.2
@@ -2500,7 +2500,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2534,13 +2534,13 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicpkgs/wordpress':
-        specifier: 0.0.32
+        specifier: 0.0.33
         version: link:../wordpress
       '@types/react':
         specifier: ^18
@@ -2565,7 +2565,7 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.83
@@ -2611,10 +2611,10 @@ importers:
         version: 4.18.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
       '@types/dlv':
         specifier: ^1.1.5
@@ -2684,7 +2684,7 @@ importers:
         version: 1.61.0
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2721,7 +2721,7 @@ importers:
         version: 3.48.0(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -2767,7 +2767,7 @@ importers:
         version: 0.17.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2810,7 +2810,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2838,7 +2838,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2872,7 +2872,7 @@ importers:
         version: 1.7.332(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2900,7 +2900,7 @@ importers:
         version: 2.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2931,7 +2931,7 @@ importers:
         version: 1.5.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2965,7 +2965,7 @@ importers:
         version: 1.8.1(jquery@4.0.0)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2996,7 +2996,7 @@ importers:
         version: 1.11.0(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3024,7 +3024,7 @@ importers:
         version: 9.0.2(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3052,7 +3052,7 @@ importers:
         version: 18.3.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3070,11 +3070,11 @@ importers:
   plasmicpkgs/spotify:
     dependencies:
       '@plasmicapp/query':
-        specifier: 0.1.86
+        specifier: 0.1.87
         version: link:../../packages/query
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -3105,7 +3105,7 @@ importers:
         version: 6.15.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -3172,10 +3172,10 @@ importers:
         version: 6.3.7
     devDependencies:
       '@plasmicapp/data-sources':
-        specifier: 1.0.21
+        specifier: 1.0.22
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -3227,7 +3227,7 @@ importers:
         version: 3.1.0
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       typescript:
         specifier: 5.2.2
@@ -3236,7 +3236,7 @@ importers:
   plasmicpkgs/wordpress:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.12
+        specifier: 2.0.13
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -24242,10 +24242,10 @@ snapshots:
       memoizerific: 1.11.3
       storybook: 8.5.5(prettier@2.8.8)
 
-  '@storybook/addon-webpack5-compiler-swc@2.1.0(@swc/helpers@0.5.23)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))':
+  '@storybook/addon-webpack5-compiler-swc@2.1.0(@swc/helpers@0.5.23)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))':
     dependencies:
       '@swc/core': 1.15.43(@swc/helpers@0.5.23)
-      swc-loader: 0.2.7(@swc/core@1.15.43(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      swc-loader: 0.2.7(@swc/core@1.15.43(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
     transitivePeerDependencies:
       - '@swc/helpers'
       - webpack
@@ -24268,23 +24268,23 @@ snapshots:
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.4.3
       constants-browserify: 1.0.0
-      css-loader: 6.11.0(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      css-loader: 6.11.0(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       es-module-lexer: 1.7.0
-      fork-ts-checker-webpack-plugin: 8.0.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
-      html-webpack-plugin: 5.6.7(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      fork-ts-checker-webpack-plugin: 8.0.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
+      html-webpack-plugin: 5.6.7(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       magic-string: 0.30.21
       path-browserify: 1.0.1
       process: 0.11.10
       semver: 7.8.5
       storybook: 8.5.5(prettier@2.8.8)
-      style-loader: 3.3.4(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
-      terser-webpack-plugin: 5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      style-loader: 3.3.4(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
+      terser-webpack-plugin: 5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       ts-dedent: 2.3.0
       url: 0.11.4
       util: 0.12.5
       util-deprecate: 1.0.2
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
-      webpack-dev-middleware: 6.1.3(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
+      webpack-dev-middleware: 6.1.3(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       webpack-hot-middleware: 2.26.1
       webpack-virtual-modules: 0.6.2
     optionalDependencies:
@@ -24372,11 +24372,11 @@ snapshots:
     dependencies:
       storybook: 8.5.5(prettier@2.8.8)
 
-  '@storybook/preset-react-webpack@8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)':
+  '@storybook/preset-react-webpack@8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)':
     dependencies:
       '@storybook/core-webpack': 8.5.5(storybook@8.5.5(prettier@2.8.8))
       '@storybook/react': 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       '@types/semver': 7.7.1
       find-up: 5.0.0
       magic-string: 0.30.21
@@ -24387,7 +24387,7 @@ snapshots:
       semver: 7.8.5
       storybook: 8.5.5(prettier@2.8.8)
       tsconfig-paths: 4.2.0
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
     optionalDependencies:
       typescript: 5.2.2
     transitivePeerDependencies:
@@ -24411,7 +24411,7 @@ snapshots:
     dependencies:
       storybook: 8.5.5(prettier@2.8.8)
 
-  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))':
+  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))':
     dependencies:
       debug: 4.4.3
       endent: 2.1.0
@@ -24421,7 +24421,7 @@ snapshots:
       react-docgen-typescript: 2.4.0(typescript@5.2.2)
       tslib: 2.8.1
       typescript: 5.2.2
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
     transitivePeerDependencies:
       - supports-color
 
@@ -24431,10 +24431,10 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       storybook: 8.5.5(prettier@2.8.8)
 
-  '@storybook/react-webpack5@8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)':
+  '@storybook/react-webpack5@8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)':
     dependencies:
       '@storybook/builder-webpack5': 8.5.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
-      '@storybook/preset-react-webpack': 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
+      '@storybook/preset-react-webpack': 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
       '@storybook/react': 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -27359,7 +27359,7 @@ snapshots:
       semver: 7.8.5
       webpack: 5.98.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
 
-  css-loader@6.11.0(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  css-loader@6.11.0(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
@@ -27370,7 +27370,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.8.5
     optionalDependencies:
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
 
   css-minimizer-webpack-plugin@2.0.0(webpack@5.98.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
     dependencies:
@@ -29002,7 +29002,7 @@ snapshots:
     optionalDependencies:
       eslint: 8.57.1
 
-  fork-ts-checker-webpack-plugin@8.0.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  fork-ts-checker-webpack-plugin@8.0.0(typescript@5.2.2)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chalk: 4.1.2
@@ -29017,7 +29017,7 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.3
       typescript: 5.2.2
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
 
   form-data-encoder@2.1.4: {}
 
@@ -29983,7 +29983,7 @@ snapshots:
       relateurl: 0.2.7
       terser: 5.48.0
 
-  html-webpack-plugin@5.6.7(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  html-webpack-plugin@5.6.7(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
@@ -29991,7 +29991,7 @@ snapshots:
       pretty-error: 4.0.0
       tapable: 2.3.3
     optionalDependencies:
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
 
   htmlparser2@3.10.1:
     dependencies:
@@ -36074,9 +36074,9 @@ snapshots:
       schema-utils: 3.3.0
       webpack: 5.98.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
 
-  style-loader@3.3.4(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  style-loader@3.3.4(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
 
   style-to-object@0.4.4:
     dependencies:
@@ -36173,11 +36173,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  swc-loader@0.2.7(@swc/core@1.15.43(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  swc-loader@0.2.7(@swc/core@1.15.43(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
       '@swc/core': 1.15.43(@swc/helpers@0.5.23)
       '@swc/counter': 0.1.3
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
 
   swell-js@3.24.5:
     dependencies:
@@ -36286,13 +36286,13 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terser-webpack-plugin@5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  terser-webpack-plugin@5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
     optionalDependencies:
       '@swc/core': 1.15.43(@swc/helpers@0.5.23)
       esbuild: 0.28.1
@@ -36309,6 +36309,18 @@ snapshots:
       '@swc/core': 1.15.43(@swc/helpers@0.5.23)
       esbuild: 0.28.1
       postcss: 8.5.15
+
+  terser-webpack-plugin@5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.48.0
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
+    optionalDependencies:
+      '@swc/core': 1.15.43(@swc/helpers@0.5.23)
+      esbuild: 0.28.1
+      postcss: 8.5.22
 
   terser@4.8.1:
     dependencies:
@@ -37284,7 +37296,7 @@ snapshots:
       schema-utils: 4.3.3
       webpack: 5.98.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
 
-  webpack-dev-middleware@6.1.3(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)):
+  webpack-dev-middleware@6.1.3(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)):
     dependencies:
       colorette: 2.0.20
       memfs: 3.5.3
@@ -37292,7 +37304,7 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.3
     optionalDependencies:
-      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)
 
   webpack-hot-middleware@2.26.1:
     dependencies:
@@ -37317,7 +37329,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15):
+  webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -37339,7 +37351,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.15))
+      terser-webpack-plugin: 5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(postcss@8.5.22))
       watchpack: 2.5.2
       webpack-sources: 3.5.0
     transitivePeerDependencies:

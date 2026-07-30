@@ -1,5 +1,5 @@
 {
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Runtime for executing Plasmic data source queries and mutations in your React app.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -49,9 +49,9 @@
     "vitest": "4.1.10"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.24",
-    "@plasmicapp/host": "2.0.12",
-    "@plasmicapp/query": "0.1.86",
+    "@plasmicapp/data-sources-context": "0.1.25",
+    "@plasmicapp/host": "2.0.13",
+    "@plasmicapp/query": "0.1.87",
     "fast-stringify": "^2.0.0"
   },
   "peerDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/prepass",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "description": "Server-side prepass that fake-renders a React tree to prefetch all @plasmicapp/query data requirements.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -30,7 +30,7 @@
     "@types/react": "^18"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.86",
+    "@plasmicapp/query": "0.1.87",
     "@plasmicapp/react-ssr-prepass": "^2.0.9"
   },
   "peerDependencies": {

@@ -1,5 +1,5 @@
 {
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "React hooks and components for adding Plasmic Auth login and user sessions to your app.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -44,9 +44,9 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/auth-api": "0.0.18",
+    "@plasmicapp/auth-api": "0.0.19",
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
-    "@plasmicapp/query": "0.1.86"
+    "@plasmicapp/query": "0.1.87"
   },
   "publishConfig": {
     "access": "public"

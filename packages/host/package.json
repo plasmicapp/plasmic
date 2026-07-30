@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "plasmic library for app hosting",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -51,7 +51,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.86",
+    "@plasmicapp/query": "0.1.87",
     "csstype": "^3.1.2",
     "window-or-global": "^1.0.1"
   },

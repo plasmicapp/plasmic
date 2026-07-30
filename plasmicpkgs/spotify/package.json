@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-spotify",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "Plasmic Spotify components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -41,7 +41,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.12",
+    "@plasmicapp/host": "2.0.13",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",
@@ -51,6 +51,6 @@
     "tslib": "^2.3.1"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.86"
+    "@plasmicapp/query": "0.1.87"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/strapi",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Custom functions for querying Strapi content from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.12",
+    "@plasmicapp/host": "2.0.13",
     "@react-awesome-query-builder/core": "^6.6.15",
     "@types/json-logic-js": "^2.0.8",
     "@types/qs": "^6.9.7",

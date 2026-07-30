@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-content-stack",
-  "version": "0.0.209",
+  "version": "0.0.210",
   "description": "Plasmic ContentStack components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -39,8 +39,8 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.12",
-    "@plasmicapp/query": "0.1.86",
+    "@plasmicapp/host": "2.0.13",
+    "@plasmicapp/query": "0.1.87",
     "@types/dlv": "^1.1.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
