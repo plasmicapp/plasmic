@@ -68,8 +68,6 @@
 
 - Interview with Lee Robinson, Plasmic as a visual CMS: https://www.youtube.com/watch?v=pcVzNR6FBAQ
 
-- Emails with React.Email: coming soon
-
 ## What is Plasmic?
 
 Plasmic is a visual builder for the web.
@@ -210,7 +208,7 @@ Read [the full technical overview](https://docs.plasmic.app/learn/technical-over
 ### Bring your own React components
 
 You can register your own arbitrary custom React components for use as building blocks within Plasmic Studio.
-[Learn more about code components](https://code-components.plasmic.site).
+[Learn more about code components](https://docs.plasmic.app/learn/code-components/).
 
 ### Codegen
 

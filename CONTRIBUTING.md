@@ -22,7 +22,7 @@ This repo contains:
 
 For hacking on code components or `plasmicpkgs`, see specific additional instructions further down.
 
-We use `lerna` to help us manage dependencies among all the packages.
+`packages/` and `plasmicpkgs/` are a `pnpm` workspace (see `pnpm-workspace.yaml`), `lerna` is used for versioning and publishing.
 
 In general, we follow the "fork-and-pull" Git workflow.
 
@@ -168,32 +168,19 @@ Check that the versions in your package.json are also not holding back any plasm
 In general, you probably want all @plasmicapp/@plasmicpkgs packages to be installed from your local verdaccio, rather than having some installed from npmjs.org and others installed from local,
 since you want to prevent mismatched and duplicate package versions.
 
-### Odds and ends
-
-For a few packages like react-ssr-prepass, these are not currently integrated into the NX workspace system.
-This is because Lerna doesn't work with git submodules.
-You can publish these as individual packages with, for instance:
-
-```
-cd plasmicpkgs/SOMETHING
-yarn install # Not included in the workspace install
-yarn publish --registry=http://localhost:4873
-# Or with more options: yarn publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish
-```
-
 ## Contributing code components (`plasmicpkgs`)
 
 The above general contribution instructions also apply to plasmicpkgs, so read that if you haven't done so.
 
 Before starting, we recommend reading our docs for Code Components:
 
-- [Docs on code components][https://docs.plasmic.app/learn/code-components/]
+- [Docs on code components](https://docs.plasmic.app/learn/code-components/)
 
 ### Creating a new package
 
 Ignore this if you are just updating an existing package.
 
-To create a new plasmicpkg, the easiest approach is to clone one of the existing packages (like react-slick) and fix up the names in package.json and README. Then author your registration code in src. Please use `pnpm` for package management.
+To create a new plasmicpkg, the easiest approach is to clone one of the existing packages (like `plasmicpkgs/fetch`, which has an up-to-date build setup, see [plasmicpkgs/README.md](plasmicpkgs/README.md)), then fix names in package.json and README. Then author your registration code in src. Use `pnpm` for package management.
 
 The directory name should be the same name as the main package you'll be using to import the React components. Your package must be named `@plasmicpkgs/{package-name}` and start with version 1.0.0.
 
@@ -211,17 +198,13 @@ So a typical `package.json` might look like this:
 ```json
 {
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.53",
-    "@plasmicapp/host": "1.0.119",
-    "@size-limit/preset-small-lib": "^4.11.0",
-    "@types/node": "^14.0.26",
-    "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1",
+    "@plasmicapp/data-sources": "1.0.21",
+    "@plasmicapp/host": "2.0.12",
     "tslib": "^2.2.0",
-    "typescript": "^3.9.7"
+    "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "@plasmicapp/data-sources": ">=0.1.52",
+    "@plasmicapp/data-sources": ">=1.0.0",
     "@plasmicapp/host": ">=1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"

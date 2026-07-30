@@ -273,13 +273,13 @@ Let's design something.
 
 ## 5. Troubleshooting
 
-| Symptom                             | Likely cause                                                            | Fix                                                                                                                |
-| ----------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `PLASMIC_AI_TOOLS is undefined`     | Studio hasn't finished loading, or the page isn't a Plasmic project URL | Wait a few seconds and retry. Confirm the URL is `studio.plasmic.app/projects/<id>/`.                              |
-| Assistant lands on the login page   | Plasmic session expired or you haven't signed in yet in the MCP Chrome  | Sign into Plasmic in the Chrome window that `chrome-devtools-mcp` opened, then ask the assistant to retry.         |
-| `spawn npx ENOENT` (Claude Desktop) | `PATH` is missing from the MCP subprocess                               | Use absolute paths for `command`, add `env.PATH` (see [Section 2B, Step 3](#step-3--paste-the-mcp-configuration)). |
-| Node version error                  | Node < 20.19                                                            | Upgrade Node.                                                                                                      |
-| Skill not listed in CLI             | Wrong directory, or folder doesn't contain `SKILL.md`                   | Confirm `~/.claude/skills/plasmic-designer/SKILL.md` exists.                                                       |
+| Symptom                             | Likely cause                                                            | Fix                                                                                                              |
+| ----------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `PLASMIC_AI_TOOLS is undefined`     | Studio hasn't finished loading, or the page isn't a Plasmic project URL | Wait a few seconds and retry. Confirm the URL is `studio.plasmic.app/projects/<id>/`.                            |
+| Assistant lands on the login page   | Plasmic session expired or you haven't signed in yet in the MCP Chrome  | Sign into Plasmic in the Chrome window that `chrome-devtools-mcp` opened, then ask the assistant to retry.       |
+| `spawn npx ENOENT` (Claude Desktop) | `PATH` is missing from the MCP subprocess                               | Use absolute paths for `command`, add `env.PATH` (see [Section 2B, Step 3](#step-3--add-the-mcp-configuration)). |
+| Node version error                  | Node < 20.19                                                            | Upgrade Node.                                                                                                    |
+| Skill not listed in CLI             | Wrong directory, or folder doesn't contain `SKILL.md`                   | Confirm `~/.claude/skills/plasmic-designer/SKILL.md` exists.                                                     |
 
 ---
 

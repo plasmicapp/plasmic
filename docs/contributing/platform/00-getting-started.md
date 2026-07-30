@@ -134,7 +134,7 @@ pnpm setup-all && pnpm bootstrap
 
 ### 5. Starting dev servers
 
-Run all servers in GNU screens:
+Run all servers (frontend, backend, and watchers):
 
 ```
 pnpm dev

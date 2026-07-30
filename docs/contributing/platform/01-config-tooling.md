@@ -21,8 +21,6 @@ Write something like this in `~/.plasmic/secrets.json`:
 
 You'll also need `~/.aws/credentials`, since various parts such as codegen/publish and Figma import use S3.
 
-Please use your given IAM credentials and access token.
-
 ## Database
 
 ### Setup DB
@@ -39,7 +37,7 @@ pnpm db:reset # specify no_sudo=1 if `sudo -u postgres psql` doesn't work
 If you ever want to, you can reset the DB state by running (on project root):
 
 ```
-pnpm db:reset # add --sudo if necessary (hopefully not)
+pnpm db:reset # specify no_sudo=1 if `sudo -u postgres psql` doesn't work
 ```
 
 > Important: remember clearing your browser cookies and restart any running servers.
@@ -48,7 +46,7 @@ pnpm db:reset # add --sudo if necessary (hopefully not)
 
 ### Running Servers using screen
 
-Run all servers in screens:
+From `platform/wab`, run all servers in screens:
 
 ```
 bash tools/start.bash
@@ -215,14 +213,12 @@ export function migrate(bundle: UnsafeBundle) {
 
 And that is!
 
-If you want to revert, simply remove the file (you can also go to gerrit and create a revert), and then restarting the app server. WARNING: this will occur in data loss. If you can create a new migration instead, do so!
+If you want to revert, simply remove the file and then restart the app server. WARNING: this will occur in data loss. If you can create a new migration instead, do so!
 
 In reality, you only have to worry about adding files and reverting files. Our deployment scripts will take care of the rest. Here's a brief explanation on how to do the changes in your local environment:
 
-- Migrating live: add a new migration and restart the server.
-- Reverting live: remove the migration and restart the server.
-- Migrating offline: add a new migration and run `yarn db:migrate-bundles`.
-- Reverting offline: remove the migration and run `yarn db:migrate-bundles`.
+- Migrating: add a new migration and restart the server.
+- Reverting: remove the migration and restart the server.
 
 ## Migrating dev/test bundles
 
@@ -250,7 +246,7 @@ Install and run `react-devtools`:
 
 ```bash
     yarn global add react-devtools
-    react-devtool
+    react-devtools
 ```
 
 Alternatively you can run it with npx:
@@ -274,8 +270,6 @@ Or use `node --inspect` to debug your node app using Chrome DevTools - just open
 We're opting to import all Ant styles wholesale and override their globals
 in antd-overrides.less. This allows for live theming (no dev server restarts
 necessary).
-
-Read more about Ant theming: https://paper.dropbox.com/doc/Web-Dev-Tips--AQguKQi_C8k0RX8XYqxhF3reAg-ohIiFVGa3PcjyBrm8zHew#:uid=860080543912951306384687&h2=Theming
 
 ## Maintaining dependencies
 
@@ -305,22 +299,6 @@ dependencies that are also indirect dependencies of other dependencies.
 
 When pointing to a different DB, you currently have to make sure you locally
 edit ormconfig.json (used by typeorm CLI) and set the WAB_DBNAME env var.
-
-## Updating submodule repos
-
-To update submodule repos in place (rather than edit a separate checkout,
-commit, push, and pull here just to try out a change), follow these steps,
-taking wab/create-react-app-new/ as an example:
-
-- Ensure wab/create-react-app-new/ is on master, and not in detached HEAD. [More details].
-- Directly edit the submodule files in wab/create-react-app-new/.
-- Commit in the submodule repo.
-- Commit in the parent repo, so that the parent repo updates their tracking commit hash to the latest.
-- git-review the submodule.
-- Merge the submodule commit first.
-- Once the submodule commit is merged, git-review on the parent will work.
-
-[More details]: https://stackoverflow.com/questions/18770545/why-is-my-git-submodule-head-detached-from-master/55570998 for more on this.
 
 ## Audit licenses of dependencies
 
