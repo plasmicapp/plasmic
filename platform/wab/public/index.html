@@ -10,6 +10,7 @@
       const origin = maybeParams
         ? maybeParams.get("origin")
         : window.location.origin;
+      const staticOrigin = "<%= staticUrl %>";
     </script>
     <script>
       if (typeof window !== "undefined") {
@@ -175,7 +176,7 @@
       document.getElementById("shortcutIcon").href = `${origin}/favicon.ico`;
       document.getElementById(
         "normalizeCss"
-      ).href = `${origin}/static/css/normalize.css`;
+      ).href = `${staticOrigin}/static/css/normalize.css`;
     </script>
 
     <title>Plasmic</title>

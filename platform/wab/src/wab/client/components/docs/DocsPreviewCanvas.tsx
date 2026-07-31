@@ -24,7 +24,7 @@ import {
 } from "@/wab/shared/core/exprs";
 import { TplNamable } from "@/wab/shared/core/tpls";
 import { Component } from "@/wab/shared/model/classes";
-import { getPublicUrl } from "@/wab/shared/urls";
+import { getPublicUrl, getStaticBaseUrl } from "@/wab/shared/urls";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
@@ -95,7 +95,8 @@ export const DocsPreviewCanvas = observer(function DocsPreviewCanvas(props: {
             studioCtx.getHostUrl()
           ) +
           "#live=true" +
-          `&origin=${encodeURIComponent(getPublicUrl())}`
+          `&origin=${encodeURIComponent(getPublicUrl())}` +
+          `&staticBaseUrl=${encodeURIComponent(getStaticBaseUrl())}`
         }
         onLoad={async (event) => {
           try {

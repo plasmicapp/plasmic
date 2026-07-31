@@ -30,6 +30,7 @@ const backendPort: number = process.env.BACKEND_PORT
   : 3004;
 const publicUrl: string =
   process.env.PUBLIC_URL ?? (isProd ? homepage : `http://localhost:${port}`);
+const staticUrl: string = process.env.STATIC_URL ?? publicUrl;
 
 console.log(`Starting rsbuild...
 - commitHash: ${commitHash}
@@ -156,6 +157,7 @@ export default defineConfig({
           },
         },
   output: {
+    assetPrefix: staticUrl,
     distPath: {
       root: "build",
     },
@@ -243,7 +245,7 @@ export default defineConfig({
           mkDefinePluginOptsForEnv({
             NODE_ENV: REQUIRED_VAR,
             COMMITHASH: commitHash,
-            PUBLICPATH: publicUrl,
+            STATIC_URL: OPTIONAL_VAR,
             INTERCOM_APP_ID: OPTIONAL_VAR,
             POSTHOG_API_KEY: OPTIONAL_VAR,
             POSTHOG_HOST: OPTIONAL_VAR,
@@ -261,6 +263,9 @@ export default defineConfig({
             {
               inject: true,
               template: "./public/index.html",
+              templateParameters: {
+                staticUrl,
+              },
             },
             buildEnv === "production"
               ? {

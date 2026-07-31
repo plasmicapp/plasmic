@@ -40,7 +40,7 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Box } from "@/wab/shared/geom";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
-import { getPublicUrl } from "@/wab/shared/urls";
+import { getStaticBaseUrl } from "@/wab/shared/urls";
 import {
   ComponentRegistration,
   CustomFunctionRegistration,
@@ -263,7 +263,7 @@ export class CanvasCtx {
       this._$head
     )[0] as HTMLStyleElement;
     upsertJQSelector(
-      `link[href='${getPublicUrl()}/static/styles/canvas/canvas.${
+      `link[href='${getStaticBaseUrl()}/styles/canvas/canvas.${
         ENV.COMMITHASH
       }.css']`,
       () =>
@@ -271,7 +271,7 @@ export class CanvasCtx {
           $("<link />").attr({
             rel: "stylesheet",
             type: "text/css",
-            href: `${getPublicUrl()}/static/styles/canvas/canvas.${
+            href: `${getStaticBaseUrl()}/styles/canvas/canvas.${
               ENV.COMMITHASH
             }.css`,
             crossOrigin: "anonymous",
@@ -292,7 +292,7 @@ export class CanvasCtx {
     this._$head = this._$html.find("head");
     this._$body = this._$html.find("body").first();
     upsertJQSelector(
-      `link[href='${getPublicUrl()}/static/styles/canvas/canvas.${
+      `link[href='${getStaticBaseUrl()}/styles/canvas/canvas.${
         ENV.COMMITHASH
       }.css']`,
       () =>
@@ -300,7 +300,7 @@ export class CanvasCtx {
           $("<link />").attr({
             rel: "stylesheet",
             type: "text/css",
-            href: `${getPublicUrl()}/static/styles/canvas/canvas.${
+            href: `${getStaticBaseUrl()}/styles/canvas/canvas.${
               ENV.COMMITHASH
             }.css`,
             crossOrigin: "anonymous",

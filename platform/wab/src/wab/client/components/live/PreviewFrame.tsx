@@ -28,13 +28,15 @@ import {
   isInteractionLoc,
 } from "@/wab/shared/core/exprs";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
-import { getPublicUrl } from "@/wab/shared/urls";
+import { getPublicUrl, getStaticBaseUrl } from "@/wab/shared/urls";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import { useMountedState, usePreviousDistinct } from "react-use";
 
-const frameHash = `#live=true&origin=${encodeURIComponent(getPublicUrl())}`;
+const frameHash =
+  `#live=true&origin=${encodeURIComponent(getPublicUrl())}` +
+  `&staticBaseUrl=${encodeURIComponent(getStaticBaseUrl())}`;
 
 interface PreviewFrameProps {
   previewCtx: PreviewCtx;

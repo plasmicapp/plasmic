@@ -38,7 +38,7 @@ import {
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Pt } from "@/wab/shared/geom";
 import { ArenaFrame } from "@/wab/shared/model/classes";
-import { getPublicUrl } from "@/wab/shared/urls";
+import { getPublicUrl, getStaticBaseUrl } from "@/wab/shared/urls";
 import { Spin } from "antd";
 import $ from "jquery";
 import L from "lodash";
@@ -617,6 +617,7 @@ export const CanvasFrame = observer(function CanvasFrame({
     const hash = new URLSearchParams({
       canvas: "true",
       origin: getPublicUrl(),
+      staticBaseUrl: getStaticBaseUrl(),
       componentName: toClassName(arenaFrame.container.component.name),
       globalVariants: JSON.stringify(activeGlobalVariants),
       interactive: `${studioCtx.isInteractiveMode}`,

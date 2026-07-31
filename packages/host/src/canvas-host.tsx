@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ensure } from "./lang-utils";
 import useForceUpdate from "./useForceUpdate";
 
 declare global {
@@ -29,12 +28,8 @@ function getHashParams() {
   return new URLSearchParams(location.hash.replace(/^#/, "?"));
 }
 
-function getPlasmicOrigin() {
-  const params = getHashParams();
-  return ensure(
-    params.get("origin"),
-    "Missing information from Plasmic window."
-  );
+function getPlasmicStaticBaseUrl() {
+  return getHashParams().get("staticBaseUrl") ?? getHashParams().get("origin");
 }
 
 function getStudioHash() {
@@ -48,11 +43,9 @@ function getStudioHash() {
 
 function renderStudioIntoIframe() {
   const script = document.createElement("script");
-  const plasmicOrigin = getPlasmicOrigin();
+  const staticBaseUrl = getPlasmicStaticBaseUrl();
   const hash = getStudioHash();
-  script.src = `${plasmicOrigin}/static/js/studio${
-    hash ? `.${hash}.js` : `.js`
-  }`;
+  script.src = `${staticBaseUrl}/js/studio${hash ? `.${hash}.js` : `.js`}`;
   document.body.appendChild(script);
 }
 
@@ -134,7 +127,7 @@ function _PlasmicCanvasHost() {
     if (!shouldRenderStudio && !document.querySelector("#getlibs") && isLive) {
       const scriptElt = document.createElement("script");
       scriptElt.id = "getlibs";
-      scriptElt.src = getPlasmicOrigin() + "/static/js/getlibs.js";
+      scriptElt.src = `${getPlasmicStaticBaseUrl()}/js/getlibs.js`;
       scriptElt.async = false;
       scriptElt.onload = () => {
         (window as any).__GetlibsReadyResolver?.();
