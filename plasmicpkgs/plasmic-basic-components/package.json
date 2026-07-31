@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-basic-components",
-  "version": "0.0.285",
+  "version": "0.0.286",
   "description": "Assorted basic Plasmic code components: embeds, iframes, timers, conditionals, data providers, and more.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -38,7 +38,7 @@
     "test-storybook": "test-storybook"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.13",
+    "@plasmicapp/host": "2.0.14",
     "@plasmicapp/query": "0.1.87",
     "@types/node": "^14.18.63",
     "@types/react": "^18",

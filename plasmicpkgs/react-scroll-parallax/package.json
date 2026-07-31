@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-scroll-parallax",
-  "version": "0.0.265",
+  "version": "0.0.266",
   "description": "Plasmic registration calls for react-scroll-parallax scroll effects.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -35,7 +35,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.13",
+    "@plasmicapp/host": "2.0.14",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "tsdx": "^0.14.1",
