@@ -1,3 +1,4 @@
+import { WIError } from "@/wab/client/web-importer/errors";
 import { SpecificityWithPosition } from "@/wab/client/web-importer/specificity";
 import { VariantGroupType } from "@/wab/shared/Variants";
 
@@ -40,6 +41,10 @@ export interface WIVariantSettings {
 export interface WIBase {
   type: "container" | "text" | "svg" | "component" | "slot-target";
   tag: string;
+  /**
+   * Source HTML locator for each WI node to enrich WIErrors raised during parsing.
+   */
+  path: string;
   attrs: Record<string, string>;
   variantSettings: WIVariantSettings[];
 }
@@ -105,6 +110,15 @@ export interface WIKeyFrame {
 export interface WIAnimationSequence {
   name: string;
   keyframes: WIKeyFrame[];
+}
+
+/** Result payload of parsing an HTML string into a web-importer tree. */
+export interface WITree {
+  wiTree: WIElement;
+  fontDefinitions: string[];
+  animationSequences: WIAnimationSequence[];
+  /** Partial errors collected while parsing HTML. */
+  errors: WIError[];
 }
 
 export const getWIVariantKey = (variant: WIVariant) => {

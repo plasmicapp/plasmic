@@ -10,6 +10,7 @@ import {
   SELF_SELECTOR,
   translationTable,
 } from "@/wab/client/web-importer/constants";
+import { WIError, WIImportFailedError } from "@/wab/client/web-importer/errors";
 import {
   compareSpecificity,
   getSpecificity,
@@ -22,13 +23,14 @@ import {
   WIKeyFrame,
   WIRule,
   WISafeStyles,
+  WITree,
   WIUnsafeStyles,
   WIUnsanitizedStyles,
   WIVariant,
   WIVariantSettings,
 } from "@/wab/client/web-importer/types";
 import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
-import { assert, ensure, ensureType, withoutNils } from "@/wab/shared/common";
+import { ensure, ensureType, withoutNils } from "@/wab/shared/common";
 import {
   expandGapProperty,
   parseCss,
@@ -59,6 +61,7 @@ import {
   walk,
 } from "css-tree";
 import { camelCase, isElement } from "lodash";
+import { err, ok, Result } from "neverthrow";
 
 /**
  * Splits a CSS selector into base selector and pseudo-selector parts using AST.
@@ -126,10 +129,6 @@ function splitSelectorByPseudo(selectorNode: Selector): {
 // e.g., "base--hover", "GlobalScreen__768--hover"
 const CONTEXT_PSEUDO_DELIMITER = "--";
 
-export function generateId() {
-  return Math.random().toString(36).substr(2, 9);
-}
-
 function getStyleSheet(document: Document) {
   const styleElements = document.querySelectorAll("style");
   let css = "";
@@ -144,30 +143,58 @@ function getStyleSheet(document: Document) {
 function traverseNodes(node: Node, callback: (node: Node) => void) {
   if (isElement(node)) {
     callback(node);
-    // We don't want to traverse the children of a component
-    if ((node as any).__wi_component) {
-      return;
-    }
     for (let i = 0; i < node.childNodes.length; i++) {
       traverseNodes(node.childNodes[i], callback);
     }
   }
 }
 
-function setInternalId(node: Node) {
-  if (!isElement(node)) {
-    return;
-  }
-  const elt = node as HTMLElement;
+function describeNodeSegment(elt: Element): string {
   const tag = elt.tagName.toLowerCase();
-  if (ignoredTags.has(tag)) {
-    return;
+  const name = elt.getAttribute("data-plasmic-name");
+  const base =
+    tag === "plasmic-component"
+      ? `plasmic-component[${
+          elt.getAttribute("data-plasmic-component") || "?"
+        }]`
+      : name
+      ? `${tag}[data-plasmic-name="${name}"]`
+      : tag;
+
+  const parent = elt.parentElement;
+  if (parent) {
+    const sameTagSiblings = Array.from(parent.children).filter(
+      (child) => child.tagName === elt.tagName
+    );
+    if (sameTagSiblings.length > 1) {
+      return `${base}:nth-of-type(${sameTagSiblings.indexOf(elt) + 1})`;
+    }
   }
-  (node as any).__wi_ID = generateId();
+  return base;
 }
 
-function getInternalId(node: Node) {
-  return (node as any).__wi_ID;
+/**
+ * Builds a human/LLM-readable locator for an element in the parsed document,
+ * e.g. `body > section:nth-of-type(2) > plasmic-component[Button]`.
+ */
+function describeNodePath(elt: Element): string {
+  const segments: string[] = [];
+  let cur: Element | null = elt;
+  while (cur && cur.tagName.toLowerCase() !== "html") {
+    segments.unshift(describeNodeSegment(cur));
+    if (cur.tagName.toLowerCase() === "body") {
+      break;
+    }
+    cur = cur.parentElement;
+  }
+  return segments.join(" > ");
+}
+
+/** Stamp missing paths onto style errors that were produced without node context. */
+function withStyleErrorPath(errors: WIError[], path: string): WIError[] {
+  return errors.map((e) =>
+    e.code === "invalid-style-declaration" && !e.path ? { ...e, path } : e
+  );
 }
 
 function ensureNodeWiRules(_node: Node) {
@@ -209,7 +236,7 @@ function addNodeWIRule(
   node.__wi_rules[context].push(...wiRules);
 }
 
-function addSelfStyleRule(_node: Node) {
+function addSelfStyleRule(_node: Node, errors: WIError[]) {
   if (!isElement(_node)) {
     return;
   }
@@ -219,9 +246,18 @@ function addSelfStyleRule(_node: Node) {
   }
 
   const styles = cssText.split(";").reduce((acc, style) => {
+    if (!style.trim()) {
+      return acc;
+    }
     const [key, value] = style.split(":");
     if (!key || !value) {
-      console.log("Invalid style", style);
+      errors.push({
+        code: "invalid-style-declaration",
+        prop: (key ?? style).trim(),
+        value: (value ?? "").trim(),
+        path: describeNodePath(_node as Element),
+        reason: "malformed inline style declaration",
+      });
       return acc;
     }
     acc[key.trim()] = value.trim();
@@ -248,7 +284,28 @@ function computeStylesFromWIRules(rules: WIRule[]) {
   return styles;
 }
 
-function fixCSSValue(key: string, value: string) {
+/**
+ * The underlying value parsers (peg-based parseCss, CssTransforms, css-tree etc)
+ * could throw on values they can't handle; and a throw here is an expected domain failure,
+ * so it's converted into an `invalid-style-declaration` Err for the caller to
+ * drop-and-report rather than crashing the whole import.
+ */
+function fixCSSValue(
+  key: string,
+  value: string
+): Result<Record<string, string>, WIError> {
+  return Result.fromThrowable(
+    () => fixCSSValueUnsafe(key, value),
+    (e): WIError => ({
+      code: "invalid-style-declaration",
+      prop: key,
+      value,
+      reason: e instanceof Error ? e.message : String(e),
+    })
+  )();
+}
+
+function fixCSSValueUnsafe(key: string, value: string) {
   if (!value) {
     return {};
   }
@@ -374,17 +431,27 @@ function splitStylesBySafety(styles: Record<string, string>): {
   };
 }
 
-function renameTokenVarNameToUuid(value: string, site: Site) {
-  return value.replaceAll(
+function renameTokenVarNameToUuid(
+  value: string,
+  site: Site,
+  errors: WIError[]
+) {
+  const unresolvedTokens = new Set<string>();
+  const renamed = value.replaceAll(
     /var\(--token-([^)]+)\)/g,
     (match, tokenIdentifier) => {
       const token = findTokenByNameOrUuid(tokenIdentifier, { site });
       if (token) {
         return `var(--token-${token.uuid})`;
       }
+      unresolvedTokens.add(tokenIdentifier);
       return match;
     }
   );
+  for (const token of unresolvedTokens) {
+    errors.push({ code: "unresolved-token", token });
+  }
+  return renamed;
 }
 
 /**
@@ -457,11 +524,11 @@ function parseContextToVariantCombo(context: string): WIVariant[] {
 }
 
 function getVariantSettingsForNode(
-  node: Node,
-  defaultStyles: CSSStyleDeclaration
+  node: Element,
+  defaultStyles: CSSStyleDeclaration,
+  errors: WIError[]
 ): WIVariantSettings[] {
-  ensure(getInternalId(node), "Expected node to have wiID");
-
+  const path = describeNodePath(node);
   const rules = ensureType<Record<string, WIRule[]>>((node as any).__wi_rules);
   const baseRules = rules[BASE_VARIANT] ?? [];
   const baseStyles = computeStylesFromWIRules(baseRules);
@@ -493,6 +560,7 @@ function getVariantSettingsForNode(
   // Only create base variant settings if there are meaningful styles
   if (Object.keys(processedBaseStyles).length > 0) {
     const sanitizedStyles = processUnsanitizedStyles(processedBaseStyles);
+    errors.push(...withStyleErrorPath(sanitizedStyles.errors, path));
 
     const baseVariantSettings: WIVariantSettings = {
       unsanitizedStyles: processedBaseStyles,
@@ -536,6 +604,7 @@ function getVariantSettingsForNode(
     const variantCombo = parseContextToVariantCombo(context);
     if (variantCombo.length > 0) {
       const sanitizedStyles = processUnsanitizedStyles(contextStyles);
+      errors.push(...withStyleErrorPath(sanitizedStyles.errors, path));
       const contextVariantSettings: WIVariantSettings = {
         unsanitizedStyles: contextStyles,
         safeStyles: sanitizedStyles.safe,
@@ -555,16 +624,16 @@ export function processUnsanitizedStyles(
 ): {
   safe: WISafeStyles;
   unsafe: WIUnsafeStyles;
+  errors: WIError[];
 } {
-  const newStyles = Object.entries(unsanitizedStyles).reduce(
-    (acc, [key, value]) => {
-      return {
-        ...acc,
-        ...fixCSSValue(key, value),
-      };
-    },
-    {}
-  );
+  const newStyles: Record<string, string> = {};
+  const errors: WIError[] = [];
+  for (const [key, value] of Object.entries(unsanitizedStyles)) {
+    fixCSSValue(key, value).match(
+      (fixedStyles) => Object.assign(newStyles, fixedStyles),
+      (error) => errors.push(error)
+    );
+  }
 
   // Handle gap property expansion based on display type
   if (newStyles["gap"]) {
@@ -579,7 +648,7 @@ export function processUnsanitizedStyles(
     Object.assign(newStyles, expandedGapProperties);
   }
 
-  return splitStylesBySafety(newStyles);
+  return { ...splitStylesBySafety(newStyles), errors };
 }
 
 function hasLayoutStyleKeys(variantSettings: WIVariantSettings[]): boolean {
@@ -631,7 +700,11 @@ function isLikelyEmptyContainer(containerNode: WIContainer) {
   );
 }
 
-function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
+function getElementsWITree(
+  node: Node,
+  defaultStyles: CSSStyleDeclaration,
+  errors: WIError[]
+) {
   function rec(elt: Node): WIElement | null {
     if (elt.nodeType === Node.TEXT_NODE) {
       const text = (elt.textContent ?? "").trim();
@@ -643,6 +716,9 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
         type: "text",
         text: text,
         tag: "span",
+        // Text nodes can't be targeted by selectors; they inherit their
+        // parent element's path.
+        path: elt.parentElement ? describeNodePath(elt.parentElement) : "",
         // When Node type is TEXT_NODE, it's the leaf node so it will always get
         // it's text styles from the parent element such as div, button etc
         // <div>Hello</div>, <button>Click</button>
@@ -651,11 +727,6 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
         variantSettings: [],
         attrs: {},
       };
-    }
-
-    const wiID = getInternalId(elt);
-    if (!wiID) {
-      return null;
     }
 
     if (!(elt instanceof HTMLElement || elt instanceof SVGSVGElement)) {
@@ -667,41 +738,57 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
       return null;
     }
 
-    const allVariantSettings = getVariantSettingsForNode(elt, defaultStyles);
+    const path = describeNodePath(elt);
+
+    const allVariantSettings = getVariantSettingsForNode(
+      elt,
+      defaultStyles,
+      errors
+    );
 
     const attrs = [...elt.attributes].reduce((acc, attr) => {
       acc[attr.name] = attr.value;
       return acc;
     }, {} as Record<string, string>);
 
-    if ((elt as any).__wi_component) {
-      return {
-        type: "component",
-        tag,
-        component: (elt as any).__wi_component,
-        variantSettings: allVariantSettings,
-        attrs,
-        props: {},
-        slots: {},
-      };
-    }
-
     if (elt instanceof HTMLElement && tag === "plasmic-component") {
-      return parseComponent(elt, allVariantSettings, attrs, rec);
+      return parseComponent(
+        elt,
+        allVariantSettings,
+        attrs,
+        rec,
+        path,
+        errors
+      ).match(
+        (component) => component,
+        (error) => {
+          errors.push(error);
+          return null;
+        }
+      );
     }
 
     if (tag === "slot-target") {
       const name = attrs["name"];
       if (!name) {
-        throw new Error(`<slot-target> requires a "name" attribute`);
+        errors.push({
+          code: "invalid-slot-target",
+          path,
+          reason: `missing a "name" attribute`,
+        });
+        return null;
       }
       if (elt.querySelector("slot-target")) {
-        throw new Error(
-          `<slot-target name="${name}"> contains a nested <slot-target>; slots cannot be nested`
-        );
+        errors.push({
+          code: "invalid-slot-target",
+          path,
+          reason: "it contains a nested <slot-target>; slots cannot be nested",
+        });
+        return null;
       }
       return {
         type: "slot-target",
+        path,
         tag,
         name,
         defaultChildren: withoutNils([...elt.childNodes].map((e) => rec(e))),
@@ -711,9 +798,12 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
     }
 
     if (tag === "slot") {
-      throw new Error(
-        `<slot> is only allowed as a direct child of <plasmic-component> to fill one of its slots; to define a new slot, use <slot-target name="...">`
-      );
+      errors.push({
+        code: "invalid-slot",
+        path,
+        reason: `a <slot> is only allowed as a direct child of <plasmic-component> to fill one of its slots; to define a new slot, use <slot-target name="...">`,
+      });
+      return null;
     }
 
     if (tag === "svg") {
@@ -721,20 +811,33 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
         elt.getAttribute("viewBox") || "0 0 16 16"
       ).split(/\s+/);
 
-      const width = parseCssNumericNew(
+      const fallbackDimension = ensure(parseCssNumericNew("16"));
+      // Unparseable width/height attrs fallbacks to the viewBox size and then
+      // to 16px (instead of crashing the whole import).
+      const parsedWidth = parseCssNumericNew(
         elt.getAttribute("width") ?? viewBoxWidth
       );
-      const height = parseCssNumericNew(
+      const parsedHeight = parseCssNumericNew(
         elt.getAttribute("height") ?? viewBoxHeight
       );
-      assert(width, "'width' expected on SVG element but found undefined");
-      assert(height, "'height' expected on SVG element but found undefined");
+      const w =
+        parsedWidth ?? parseCssNumericNew(viewBoxWidth) ?? fallbackDimension;
+      const h =
+        parsedHeight ?? parseCssNumericNew(viewBoxHeight) ?? fallbackDimension;
+      if (!parsedWidth || !parsedHeight) {
+        errors.push({
+          code: "svg-size-fallback",
+          path,
+          fallback: `${w.num}${w.units || "px"} × ${h.num}${h.units || "px"}`,
+        });
+      }
       return {
         type: "svg",
         tag,
+        path,
         outerHtml: elt.outerHTML,
-        width: `${width.num}${width.units || "px"}`,
-        height: `${height.num}${height.units || "px"}`,
+        width: `${w.num}${w.units || "px"}`,
+        height: `${h.num}${h.units || "px"}`,
         attrs,
         variantSettings: allVariantSettings,
       };
@@ -752,6 +855,7 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
       return {
         type: "text",
         tag,
+        path,
         text,
         attrs,
         variantSettings: allVariantSettings,
@@ -761,6 +865,7 @@ function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
     const containerNode: WIContainer = {
       type: "container",
       tag: [...ALL_CONTAINER_TAGS, "img"].includes(tag) ? tag : "div",
+      path,
       variantSettings: allVariantSettings,
       children: withoutNils([...elt.childNodes].map((e) => rec(e))),
       attrs,
@@ -803,13 +908,14 @@ function extractDeclarationsFromBlock(block: CssNode) {
  */
 export function processKeyframesRule(
   atrule: Atrule
-): WIAnimationSequence | null {
+): Result<{ sequence: WIAnimationSequence; errors: WIError[] }, WIError> {
   if (!atrule.block || !atrule.prelude) {
-    return null;
+    return err({ code: "invalid-keyframes", sequence: "<unnamed>" });
   }
 
   const sequenceName = generate(atrule.prelude).trim();
   const keyframes: WIKeyFrame[] = [];
+  const errors: WIError[] = [];
 
   walk(atrule.block, function (keyframeNode) {
     if (keyframeNode.type === "Rule") {
@@ -827,7 +933,12 @@ export function processKeyframesRule(
         } else if (selectorText.endsWith("%")) {
           percentage = parseFloat(selectorText.replace("%", ""));
         } else {
-          continue; // Skip invalid selectors
+          errors.push({
+            code: "invalid-keyframes",
+            sequence: sequenceName,
+            selector: selectorText,
+          });
+          continue;
         }
 
         const styles: Record<string, string> = {};
@@ -835,7 +946,12 @@ export function processKeyframesRule(
           styles[decl.property] = generate(decl.value);
         });
 
-        const { safe, unsafe } = processUnsanitizedStyles(styles);
+        const {
+          safe,
+          unsafe,
+          errors: styleErrors,
+        } = processUnsanitizedStyles(styles);
+        errors.push(...styleErrors);
 
         keyframes.push({
           percentage,
@@ -849,18 +965,29 @@ export function processKeyframesRule(
   // Sort keyframes by percentage
   keyframes.sort((a, b) => a.percentage - b.percentage);
 
-  return {
-    name: sequenceName,
-    keyframes,
-  };
+  return ok({
+    sequence: {
+      name: sequenceName,
+      keyframes,
+    },
+    errors,
+  });
 }
 
+/**
+ * Parses an HTML string into a web-importer tree.
+ *
+ * Err is returned only when the HTML product nothing importable at all.
+ * Partial errors such as invalid-styles only degrade the affected
+ * node/declaration and are reported in the result's value.
+ */
 export async function parseHtmlToWebImporterTree(
   htmlString: string,
   site: Site
-) {
+): Promise<Result<WITree, WIImportFailedError>> {
+  const errors: WIError[] = [];
   const parser = new DOMParser();
-  const renamedHtmlString = renameTokenVarNameToUuid(htmlString, site);
+  const renamedHtmlString = renameTokenVarNameToUuid(htmlString, site, errors);
   const document = parser.parseFromString(renamedHtmlString, "text/html");
 
   const root = document.body;
@@ -872,13 +999,17 @@ export async function parseHtmlToWebImporterTree(
   root.setAttribute("style", `width: 100%;`);
 
   traverseNodes(root, (node) => {
-    setInternalId(node);
     ensureNodeWiRulesContext(node, BASE_VARIANT);
-    addSelfStyleRule(node);
+    addSelfStyleRule(node, errors);
   });
 
   const styleSheet = getStyleSheet(document);
-  const parsedStylesheet = cssParse(styleSheet, { positions: true });
+  const parsedStylesheet = cssParse(styleSheet, {
+    positions: true,
+    onParseError: (error) => {
+      errors.push({ code: "invalid-css", message: error.message });
+    },
+  });
 
   function storeRuleRelationToNodes(
     context: string,
@@ -894,6 +1025,7 @@ export async function parseHtmlToWebImporterTree(
 
       // Skip if selector contains pseudo-elements or has no base selector
       if (!parsedSelector || !parsedSelector.baseSelector) {
+        errors.push({ code: "unsupported-selector", selector });
         continue;
       }
 
@@ -912,6 +1044,7 @@ export async function parseHtmlToWebImporterTree(
           error.name === "SyntaxError" &&
           error.message.includes("is not a valid selector")
         ) {
+          errors.push({ code: "unsupported-selector", selector: baseSelector });
           continue;
         } else {
           throw error;
@@ -923,8 +1056,12 @@ export async function parseHtmlToWebImporterTree(
       }
 
       for (const node of nodes) {
-        const wiID = getInternalId(node);
-        if (!wiID) {
+        // querySelectorAll searches the whole parsed document; skip elements
+        // outside the imported tree (e.g. <head> content) and ignored tags.
+        if (
+          !root.contains(node) ||
+          ignoredTags.has(node.tagName.toLowerCase())
+        ) {
           continue;
         }
 
@@ -953,12 +1090,25 @@ export async function parseHtmlToWebImporterTree(
     }
 
     const mediaCondition = atrule.prelude ? generate(atrule.prelude) : ""; // gives (max-width: 600px) etc
-    const spec = parseScreenSpec(mediaCondition);
+    // parseScreenSpec throws on conditions it can't read (em/rem widths, orientation queries)
+    const specResult = Result.fromThrowable(
+      () => parseScreenSpec(mediaCondition),
+      (): WIError => ({
+        code: "unsupported-media-query",
+        query: mediaCondition,
+      })
+    )();
+
+    if (specResult.isErr()) {
+      errors.push(specResult.error);
+      return;
+    }
 
     //  Mobile-first uses min-width queries to progressively enhance styles as screen size increases,
     //  while desktop-first uses max-width queries to progressively reduce styles as screen size decreases.
-    const screenWidth = spec.maxWidth || spec.minWidth;
+    const screenWidth = specResult.value.maxWidth || specResult.value.minWidth;
     if (!screenWidth) {
+      errors.push({ code: "unsupported-media-query", query: mediaCondition });
       return;
     }
 
@@ -1004,9 +1154,12 @@ export async function parseHtmlToWebImporterTree(
         } else if (node.name === "font-face") {
           processFontFaceRule(node);
         } else if (node.name === "keyframes") {
-          const animationSequence = processKeyframesRule(node);
-          if (animationSequence) {
-            animationSequences.push(animationSequence);
+          const keyframesResult = processKeyframesRule(node);
+          if (keyframesResult.isOk()) {
+            animationSequences.push(keyframesResult.value.sequence);
+            errors.push(...keyframesResult.value.errors);
+          } else {
+            errors.push(keyframesResult.error);
           }
         }
         return walk.skip;
@@ -1017,24 +1170,52 @@ export async function parseHtmlToWebImporterTree(
     }
   });
 
+  // Probe element for the browser's default div styles. Attached outside
+  // <body> so it stays out of the imported tree, which is built from body's children.
   const element = document.createElement("div");
-  document.body.appendChild(element);
+  document.documentElement.appendChild(element);
   const defaultStyles = window.getComputedStyle(element);
-  const wiTree = getElementsWITree(root, defaultStyles);
+  const wiTree = getElementsWITree(root, defaultStyles, errors);
+
+  const importFailed = () =>
+    err(
+      new WIImportFailedError(
+        "invalid-html",
+        errors,
+        "The HTML snippet contains no importable elements"
+      )
+    );
+
+  if (!wiTree) {
+    return importFailed();
+  }
 
   // DOMParser always produces a <body> element, even when the input HTML has
   // no explicit <body> tag. Wrap children in a WIFragment so WebImporter
   // pastes them directly rather than including the synthetic body wrapper.
   const hasExplicitBody = htmlString.toLowerCase().includes("<body");
-  if (!hasExplicitBody && wiTree?.type === "container") {
+  if (!hasExplicitBody && wiTree.type === "container") {
+    if (wiTree.children.length === 0) {
+      return importFailed();
+    }
     const wiFragmentRoot: WIFragment = {
       type: "fragment",
       children: wiTree.children,
     };
-    return { wiTree: wiFragmentRoot, fontDefinitions, animationSequences };
+    return ok({
+      wiTree: wiFragmentRoot,
+      fontDefinitions,
+      animationSequences,
+      errors,
+    });
   }
 
-  return { wiTree, fontDefinitions, animationSequences };
+  return ok({
+    wiTree,
+    fontDefinitions,
+    animationSequences,
+    errors,
+  });
 }
 
 export const _testOnlyUtils = { fixCSSValue, renameTokenVarNameToUuid };

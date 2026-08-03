@@ -5,6 +5,11 @@ import {
   readAndSanitizeSvgXmlAsImage,
   ResizableImage,
 } from "@/wab/client/dom-utils";
+import {
+  WIError,
+  WIImportFailedError,
+  WITplRef,
+} from "@/wab/client/web-importer/errors";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import {
   isWIBaseVariantSettings,
@@ -13,13 +18,12 @@ import {
   WIElement,
   WIFragment,
   WIScreenVariant,
-  WIStyleVariant,
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
-import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
+import { assert, assertNever, ensure, mkShortId } from "@/wab/shared/common";
 import {
   interpolatedStringToCodeExpr,
   interpolatedStringToExpr,
@@ -76,6 +80,8 @@ import {
   Interaction,
   isKnownDateRangeStrings,
   isKnownDateString,
+  isKnownTplComponent,
+  isKnownTplSlot,
   isKnownTplTag,
   KeyFrame,
   ObjectPath,
@@ -83,6 +89,7 @@ import {
   Site,
   TplNode,
   TplTag,
+  Variant,
   VariantsRef,
 } from "@/wab/shared/model/classes";
 import {
@@ -102,6 +109,7 @@ import {
   getOrderedScreenVariantSpecs,
   getPrivateStyleVariantsForTag,
   isStandaloneVariantGroup,
+  toVariantComboKey,
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
@@ -109,19 +117,23 @@ import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { setTplVisibility, TplVisibility } from "@/wab/shared/visibility-utils";
 import { deserializePlasmicComponentAttrs } from "@/wab/shared/web-exporter/component-utils";
 import L, { isArray } from "lodash";
+import { err, ok, Result } from "neverthrow";
 
 export interface HtmlToTplResult {
   /** Tpl nodes ready to be inserted (multiple when root is a WIFragment) */
   tpls: TplNode[];
+  /** Partial web-importer errors collected while parsing HTML. */
+  errors: WIError[];
   /**
    * Finalize deferred changes that must happen inside studioCtx.change():
    * animation sequences, variant styles, and image asset attachment.
+   * Returns WIErrors if any; such as unknown animations, unmatched screen variants etc.
    */
   finalize: (opts: {
     component: Component;
     tplMgr: TplMgr;
     ccRegistry: CodeComponentsRegistry;
-  }) => void;
+  }) => WIError[];
 }
 
 /**
@@ -129,10 +141,11 @@ export interface HtmlToTplResult {
  *
  * @param html - The HTML string to convert.
  * @param opts - Site, VariantTplMgr, and AppCtx needed for conversion.
- * @returns `{ tpls, finalize }` where:
+ * @returns
  *   - `tpls` is an array of fully built TplNode trees (multiple when root is a fragment).
  *   - `finalize(opts)` must be called inside `studioCtx.change()` to apply
  *     animation sequences, variant styles, and image assets to the Site.
+ *   - WIImportFailedError when there is nothing to insert.
  */
 export async function htmlToTpl(
   html: string,
@@ -141,22 +154,16 @@ export async function htmlToTpl(
     vtm: VariantTplMgr;
     appCtx: AppCtx;
   }
-): Promise<HtmlToTplResult | null> {
+): Promise<Result<HtmlToTplResult, WIImportFailedError>> {
   const { site, vtm, appCtx } = opts;
 
-  const { wiTree, animationSequences } = await parseHtmlToWebImporterTree(
-    html,
-    site
-  );
-
-  if (!wiTree) {
-    return null;
+  const parseResult = await parseHtmlToWebImporterTree(html, site);
+  if (parseResult.isErr()) {
+    return err(parseResult.error);
   }
+  const { wiTree, animationSequences, errors: parseErrors } = parseResult.value;
 
-  const result = await wiTreeToTpl(wiTree, { site, vtm, appCtx });
-  if (!result) {
-    return null;
-  }
+  const errors: WIError[] = [...parseErrors];
 
   const {
     tpls,
@@ -164,11 +171,24 @@ export async function htmlToTpl(
     tplVariantSettingsData,
     tplRepeatData,
     tplVisibilityData,
-  } = result;
+  } = await wiTreeToTpl(wiTree, { site, vtm, appCtx, errors });
 
-  return {
+  if (tpls.length === 0) {
+    return err(
+      new WIImportFailedError(
+        "nothing-to-insert",
+        errors,
+        "No elements could be built from the HTML snippet"
+      )
+    );
+  }
+
+  return ok({
     tpls,
+    errors,
     finalize: (finalizeOpts) => {
+      const htmlToTplErrors: WIError[] = [];
+
       // Process Animation Sequences (keyframes)
       upsertAnimationSequences(animationSequences, { site });
 
@@ -179,27 +199,62 @@ export async function htmlToTpl(
         for (const vs of vsData) {
           const { variantCombo, safeStyles, unsafeStyles, wiAnimations } = vs;
 
-          const animations = wiAnimations
-            ? wiAnimationsToSiteAnimations(wiAnimations, { site })
-            : null;
+          let animations: Animation[] | null = null;
+          if (wiAnimations) {
+            const resolved = wiAnimationsToSiteAnimations(wiAnimations, {
+              site,
+            });
+            htmlToTplErrors.push(...resolved.errors);
+            animations = resolved.animations;
+          }
 
-          // Process style variants by creating private style variants
-          const processedVariantCombo = withoutNils(
-            variantCombo.map((wiVariant) => {
+          // Resolve every WIVariant in the combo up front. If any member
+          // cannot be resolved, applying the styles to the remaining (weaker)
+          // combo would mistarget them e.g. hover styles from a missing media query
+          // landing on every screen size — so the whole variant setting is
+          // skipped and reported instead.
+          const unresolved: WIError[] = [];
+          for (const wiVariant of variantCombo) {
+            if (
+              wiVariant.type === VariantGroupType.GlobalScreen &&
+              !findMatchingScreenVariant(site, wiVariant)
+            ) {
+              unresolved.push({
+                code: "unmatched-screen-variant",
+                width: wiVariant.width,
+              });
+            } else if (wiVariant.type === "style" && !isKnownTplTag(tplNode)) {
+              // Element states only work on TplTag; they don't apply on
+              // TplComponent and TplSlot.
+              unresolved.push({
+                code: "unsupported-style-variant",
+                tpl: tplRef(tplNode),
+                selectors: wiVariant.selectors,
+              });
+            }
+          }
+          if (unresolved.length > 0) {
+            htmlToTplErrors.push(...unresolved);
+            continue;
+          }
+
+          const processedVariantCombo: VariantCombo = variantCombo.map(
+            (wiVariant): Variant => {
               switch (wiVariant.type) {
                 case "base": {
                   return getBaseVariant(owningComponent);
                 }
                 case VariantGroupType.GlobalScreen: {
-                  return findMatchingScreenVariant(site, wiVariant);
+                  return ensure(
+                    findMatchingScreenVariant(site, wiVariant),
+                    "screen variant resolvability checked above"
+                  );
                 }
                 case "style": {
-                  // Currently, in HTML parser, we support for private style variants that only works on TplTag i.e
-                  // Element states doesn't apply on TplComponent and TplSlot.
-                  if (!isKnownTplTag(tplNode)) {
-                    return null;
-                  }
-
+                  assert(
+                    isKnownTplTag(tplNode),
+                    "style variant applicability checked above"
+                  );
                   const selectors = wiVariant.selectors.map((s) => `:${s}`);
                   const existingPrivateStyleVariant =
                     getPrivateStyleVariantsForTag(
@@ -218,7 +273,7 @@ export async function htmlToTpl(
                   );
                 }
               }
-            })
+            }
           );
 
           applyVariantStyles(
@@ -228,7 +283,8 @@ export async function htmlToTpl(
             safeStyles,
             unsafeStyles,
             animations,
-            finalizeOpts.ccRegistry
+            finalizeOpts.ccRegistry,
+            htmlToTplErrors
           );
         }
       }
@@ -273,8 +329,10 @@ export async function htmlToTpl(
         });
         L.merge(vs.attrs, assetAttrs);
       }
+
+      return htmlToTplErrors;
     },
-  };
+  });
 }
 
 // Attrs handled via dedicated paths instead of vs.attrs. Exported so copilot
@@ -362,6 +420,17 @@ type TplRepeatData = {
   indexName?: string;
 };
 
+function tplRef(tpl: TplNode): WITplRef {
+  return {
+    type: isKnownTplComponent(tpl)
+      ? "TplComponent"
+      : isKnownTplSlot(tpl)
+      ? "TplSlot"
+      : "TplTag",
+    uuid: tpl.uuid,
+  };
+}
+
 function applyVariantStyles(
   vtm: VariantTplMgr,
   tpl: TplNode,
@@ -369,18 +438,28 @@ function applyVariantStyles(
   safeStyles: Record<string, string>,
   unsafeStyles: Record<string, string>,
   animations: Animation[] | null,
-  ccRegistry: CodeComponentsRegistry
+  ccRegistry: CodeComponentsRegistry,
+  htmlToTplErrors: WIError[]
 ) {
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
-  // Only styles Studio allows on this tpl may enter the RuleSet; the rest
-  // are silently dropped since the paste flow has no error channel at the moment.
-  const { valid } = validateStylesForTpl(
+  // Only styles Studio allows on this tpl may enter the RuleSet; the rest are
+  // dropped and reported in errors.
+  const { valid, invalid } = validateStylesForTpl(
     safeStyles,
     tpl,
     vtm.effectiveRsh(tpl, variantCombo),
     ccRegistry
   );
   RSH(vs.rs, tpl).merge(valid);
+  const invalidProps = Object.keys(invalid);
+  if (invalidProps.length > 0) {
+    htmlToTplErrors.push({
+      code: "styles-not-applicable",
+      tpl: tplRef(tpl),
+      props: invalidProps,
+      variantDesc: toVariantComboKey(variantCombo),
+    });
+  }
 
   if (Object.keys(unsafeStyles).length > 0) {
     vs.attrs["style"] = code(JSON.stringify(unsafeStyles));
@@ -422,9 +501,14 @@ function findMatchingScreenVariant(
 
 async function wiTreeToTpl(
   wiTree: WIElement,
-  opts: { site: Site; vtm: VariantTplMgr; appCtx: AppCtx }
+  opts: {
+    site: Site;
+    vtm: VariantTplMgr;
+    appCtx: AppCtx;
+    errors: WIError[];
+  }
 ) {
-  const { site, vtm, appCtx } = opts;
+  const { site, vtm, appCtx, errors } = opts;
   const tplImageAssetMap = new Map<
     TplTag,
     {
@@ -484,7 +568,9 @@ async function wiTreeToTpl(
   ) {
     // Container layout defaults don't apply to text and slots nodes.
     const defaultStyles: Record<string, string> =
-      node.type === "text" || node.type === "slot-target"
+      node.type === "text" ||
+      node.type === "slot-target" ||
+      node.type === "component"
         ? {}
         : {
             display: "flex",
@@ -536,39 +622,14 @@ async function wiTreeToTpl(
         splitStylesByAnimations(variantSetting.safeStyles);
       const animations = parseCssAnimationsFromStyles(animationStyles);
 
-      const tplVSData: TplVariantSettingsData = {
-        variantCombo: [],
-        safeStyles: vsSafeStyles,
-        unsafeStyles: { ...unsafeBaseStyles, ...variantSetting.unsafeStyles },
-        wiAnimations: animations,
-      };
-
-      // Find screen and style variants in combo
-      const screenVariantInCombo = variantSetting.variantCombo.find(
-        (v) => v.type === VariantGroupType.GlobalScreen
-      ) as WIScreenVariant | undefined;
-
-      if (screenVariantInCombo) {
-        const matchingScreenVariant = findMatchingScreenVariant(
-          site,
-          screenVariantInCombo
-        );
-        if (matchingScreenVariant) {
-          tplVSData.variantCombo.push(screenVariantInCombo);
-        }
-      }
-
-      const styleVariantInCombo = variantSetting.variantCombo.find(
-        (v) => v.type === "style"
-      ) as WIStyleVariant | undefined;
-
-      if (styleVariantInCombo) {
-        tplVSData.variantCombo.push(styleVariantInCombo);
-      }
-
-      // Make sure we have at-least one valid variant.
-      if (tplVSData.variantCombo.length > 0) {
-        tplVariantSettings.push(tplVSData);
+      // Keep the full combo unresolved here, finalize resolves it all-or-nothing.
+      if (variantSetting.variantCombo.length > 0) {
+        tplVariantSettings.push({
+          variantCombo: variantSetting.variantCombo,
+          safeStyles: vsSafeStyles,
+          unsafeStyles: { ...unsafeBaseStyles, ...variantSetting.unsafeStyles },
+          wiAnimations: animations,
+        });
       }
     }
 
@@ -605,6 +666,7 @@ async function wiTreeToTpl(
     }
 
     const tplName = node.attrs["data-plasmic-name"];
+    const nodePath = node.path;
     if (node.type === "text") {
       const tpl = vtm.mkTplTagX(node.tag, {
         attrs: htmlAttrsToTplAttrs(node),
@@ -632,6 +694,7 @@ async function wiTreeToTpl(
           undefined
         );
         if (!imageResult || !imageOpts) {
+          errors.push({ code: "svg-upload-failed", path: nodePath });
           return [];
         }
 
@@ -644,7 +707,7 @@ async function wiTreeToTpl(
         collectStructuralBindings(node, tpl);
 
         // We will store each image to it's corresponding tpl so we can process it
-        // later to upload image and attach asset to this tpl in 'processWebImporterTree',
+        // later to upload image and attach asset to this tpl in 'finalize',
         // We cannot do that here because this function is expected to be called outside 'studioCtx.change' and
         // creating an asset here would cause a model change to occur.
         tplImageAssetMap.set(tpl, {
@@ -654,6 +717,7 @@ async function wiTreeToTpl(
 
         return [tpl];
       }
+      errors.push({ code: "svg-upload-failed", path: nodePath });
       return [];
     }
 
@@ -664,11 +728,13 @@ async function wiTreeToTpl(
         "data-plasmic-project": node.depProjectId as ProjectId | undefined,
       });
       if (!component) {
-        throw new Error(
-          node.depProjectId
-            ? `Component "${componentName}" not found in imported project "${node.depProjectId}"`
-            : `Component not found with name ${componentName}`
-        );
+        errors.push({
+          code: "unknown-component",
+          path: nodePath,
+          component: componentName,
+          ...(node.depProjectId && { projectId: node.depProjectId }),
+        });
+        return [];
       }
 
       // Build args from props and slots
@@ -676,13 +742,19 @@ async function wiTreeToTpl(
 
       if (node.props) {
         for (const [propName, propValue] of Object.entries(node.props)) {
-          const [param, argValue] = getComponentArgFromHtmlProp(
+          // An invalid prop drops just that prop; the instance still inserts.
+          getComponentArgFromHtmlProp(
             component,
             componentName,
             propName,
-            propValue
+            propValue,
+            nodePath
+          ).match(
+            ([param, argValue]) => {
+              args[param.variable.name] = argValue;
+            },
+            (error) => errors.push(error)
           );
-          args[param.variable.name] = argValue;
         }
       }
 
@@ -692,9 +764,13 @@ async function wiTreeToTpl(
             (p) => paramToVarName(component, p) === toVarName(slotName)
           );
           if (!param) {
-            throw new Error(
-              `Slot ${slotName} doesn't exist in component ${componentName}`
-            );
+            errors.push({
+              code: "unknown-slot",
+              path: nodePath,
+              component: componentName,
+              slot: slotName,
+            });
+            continue;
           }
 
           // Recursively convert slot children to TplNodes
@@ -803,10 +879,6 @@ async function wiTreeToTpl(
 
   const tpls = await rec(wiTree);
 
-  if (tpls.length === 0) {
-    return null;
-  }
-
   return {
     tpls,
     tplImageAssetMap,
@@ -868,17 +940,17 @@ export function upsertAnimationSequences(
 }
 
 /**
- * Resolve a list of CssAnimation entries (from parsed `animation`
- * shorthand).
+ * Resolve a list of CssAnimation entries (from parsed `animation` shorthand).
  * CssAnimations whose name doesn't match any existing
- * AnimationSequence are silently dropped.
+ * AnimationSequence are dropped.
  */
 export function wiAnimationsToSiteAnimations(
   wiAnimations: CssAnimation[],
   opts: { site: Site }
-) {
+): { animations: Animation[]; errors: WIError[] } {
   const { site } = opts;
   const animations: Animation[] = [];
+  const errors: WIError[] = [];
 
   for (const wiAnim of wiAnimations) {
     const animSeqUuid = tryGetAnimationSequenceUuidFromCssVar(wiAnim.name);
@@ -892,6 +964,7 @@ export function wiAnimationsToSiteAnimations(
     );
 
     if (!animationSequence) {
+      errors.push({ code: "unknown-animation", animation: wiAnim.name });
       continue;
     }
 
@@ -908,7 +981,7 @@ export function wiAnimationsToSiteAnimations(
       })
     );
   }
-  return animations;
+  return { animations, errors };
 }
 
 function splitStylesByAnimations(styles: Record<string, string>): {
@@ -934,33 +1007,40 @@ function splitStylesByAnimations(styles: Record<string, string>): {
  * Converts an HTML prop name and value (in the serialized data-props format)
  * to the matching component Param and arg Expr.
  *
- * Throws on invalid prop name, slot params, or type mismatches.
+ * Err (an `invalid-component-prop` WIError) on invalid prop name, slot params, or type mismatches.
  */
 export function getComponentArgFromHtmlProp(
   component: Component,
   componentName: string,
   propName: string,
-  value: unknown
-): [Param, Expr] {
+  value: unknown,
+  path?: string
+): Result<[Param, Expr], WIError> {
+  const fail = (reason: string) =>
+    err<[Param, Expr], WIError>({
+      code: "invalid-component-prop",
+      component: componentName,
+      prop: propName,
+      reason,
+      ...(path && { path }),
+    });
   const name = toVarName(propName);
   const param = component.params.find(
     (p) => paramToVarName(component, p) === name
   );
 
   if (!param) {
-    throw new Error(`Component "${componentName}" has no prop "${propName}"`);
+    return fail("no such prop exists on the component");
   }
 
   if (isSlot(param)) {
-    throw new Error(
-      `Component "${componentName}" prop "${propName}" is a slot — pass slot content as children, not as a data-prop attribute`
+    return fail(
+      "it is a slot — pass slot content as children, not as a data-prop attribute"
     );
   }
 
   if (value === undefined) {
-    throw new Error(
-      `Component "${componentName}" prop "${propName}" has undefined value`
-    );
+    return fail("value is undefined");
   }
 
   // Variant group handling
@@ -970,57 +1050,53 @@ export function getComponentArgFromHtmlProp(
   if (variantGroup) {
     if (isStandaloneVariantGroup(variantGroup)) {
       if (value !== true) {
-        throw new Error(
-          `Component "${componentName}" prop "${propName}" is a standalone variant toggle and expects true, got ${JSON.stringify(
+        return fail(
+          `it is a standalone variant toggle and expects true, got ${JSON.stringify(
             value
           )}`
         );
       }
-      return [param, new VariantsRef({ variants: [variantGroup.variants[0]] })];
+      return ok([
+        param,
+        new VariantsRef({ variants: [variantGroup.variants[0]] }),
+      ]);
     } else if (variantGroup.multi) {
       const values = isArray(value) ? value : [value];
-      const variants = values.map((v) => {
+      const variants: Variant[] = [];
+      for (const v of values) {
         const variant = variantGroup.variants.find(
           (vv) => toVarName(vv.name) === toVarName(`${v}`)
         );
         if (!variant) {
-          throw new Error(
-            `Component "${componentName}" prop "${propName}" has no variant matching "${v}"`
-          );
+          return fail(`no variant matching ${JSON.stringify(`${v}`)}`);
         }
-        return variant;
-      });
-      return [param, new VariantsRef({ variants })];
+        variants.push(variant);
+      }
+      return ok([param, new VariantsRef({ variants })]);
     } else {
       const variant = variantGroup.variants.find(
         (v) => toVarName(v.name) === toVarName(`${value}`)
       );
       if (!variant) {
-        throw new Error(
-          `Component "${componentName}" prop "${propName}" has no variant matching "${value}"`
-        );
+        return fail(`no variant matching ${JSON.stringify(`${value}`)}`);
       }
-      return [param, new VariantsRef({ variants: [variant] })];
+      return ok([param, new VariantsRef({ variants: [variant] })]);
     }
   }
 
   // A string with `{{ jsExpr }}` is a dynamic data binding, valid for any
   // (non-variant-group) param type regardless of its declared type.
   if (typeof value === "string" && isDynamicValue(value)) {
-    return [param, interpolatedStringToExpr(value)];
+    return ok([param, interpolatedStringToExpr(value)]);
   }
 
   // Primitive-valued types (bool, num, text/img/href/target).
   const tsType = wabToTsType(param.type);
   if (tsType === "boolean" || tsType === "number" || tsType === "string") {
     if (typeof value !== tsType) {
-      throw new Error(
-        `Component "${componentName}" prop "${propName}" expects a ${tsType} but got ${JSON.stringify(
-          value
-        )}`
-      );
+      return fail(`expects a ${tsType} but got ${JSON.stringify(value)}`);
     }
-    return [param, code(JSON.stringify(value))];
+    return ok([param, code(JSON.stringify(value))]);
   }
 
   if (isChoiceType(param.type)) {
@@ -1028,13 +1104,13 @@ export function getComponentArgFromHtmlProp(
       typeof opt === "object" ? opt.value : opt
     );
     if (!options.some((opt) => opt === value)) {
-      throw new Error(
-        `Component "${componentName}" prop "${propName}" must be one of ${JSON.stringify(
-          options
-        )} but got ${JSON.stringify(value)}`
+      return fail(
+        `must be one of ${JSON.stringify(options)} but got ${JSON.stringify(
+          value
+        )}`
       );
     }
-    return [param, code(JSON.stringify(value))];
+    return ok([param, code(JSON.stringify(value))]);
   }
 
   if (isMultiChoiceType(param.type)) {
@@ -1042,35 +1118,27 @@ export function getComponentArgFromHtmlProp(
       typeof opt === "object" ? opt.value : opt
     );
     if (!Array.isArray(value)) {
-      throw new Error(
-        `Component "${componentName}" prop "${propName}" expects an array but got ${JSON.stringify(
-          value
-        )}`
-      );
+      return fail(`expects an array but got ${JSON.stringify(value)}`);
     }
     const invalidValues = value.filter(
       (v) => !options.some((opt) => opt === v)
     );
     if (invalidValues.length > 0) {
-      throw new Error(
-        `Component "${componentName}" prop "${propName}" values must be from ${JSON.stringify(
+      return fail(
+        `values must be from ${JSON.stringify(
           options
         )} but got invalid values: ${JSON.stringify(invalidValues)}`
       );
     }
-    return [param, code(JSON.stringify(value))];
+    return ok([param, code(JSON.stringify(value))]);
   }
 
   // dateString carries a single ISO date string.
   if (isKnownDateString(param.type)) {
     if (typeof value !== "string") {
-      throw new Error(
-        `Component "${componentName}" prop "${propName}" expects a date string but got ${JSON.stringify(
-          value
-        )}`
-      );
+      return fail(`expects a date string but got ${JSON.stringify(value)}`);
     }
-    return [param, code(JSON.stringify(value))];
+    return ok([param, code(JSON.stringify(value))]);
   }
 
   // dateRangeStrings carries a [from, to] pair of ISO date strings; either
@@ -1081,13 +1149,13 @@ export function getComponentArgFromHtmlProp(
       value.length != 2 ||
       value.some((v) => typeof v !== "string" && v !== null)
     ) {
-      throw new Error(
-        `Component "${componentName}" prop "${propName}" expects an array of [from, to] date strings but got ${JSON.stringify(
+      return fail(
+        `expects an array of [from, to] date strings but got ${JSON.stringify(
           value
         )}`
       );
     }
-    return [param, codeLit(value as JsonValue)];
+    return ok([param, codeLit(value as JsonValue)]);
   }
 
   // Untyped ('any') props accept arbitrary JSON (objects, arrays, null, and
@@ -1095,10 +1163,8 @@ export function getComponentArgFromHtmlProp(
   // form the studio prop editor stores, so tryExtractJson can read it back
   // when serializing the instance.
   if (isAnyType(param.type)) {
-    return [param, codeLit(value as JsonValue)];
+    return ok([param, codeLit(value as JsonValue)]);
   }
 
-  throw new Error(
-    `Component "${componentName}" prop "${propName}" of type "${param.type.name}" is not supported yet.`
-  );
+  return fail(`prop type "${param.type.name}" is not supported yet`);
 }

@@ -68,6 +68,22 @@ describe("upsertAnimation", () => {
     expect(first.animation.keyframes[1].rs.values).toEqual({ opacity: "0.9" });
   });
 
+  it("imports valid keyframes and reports ignored invalid selectors as errors", () => {
+    const { site } = setup();
+
+    const result = upsertAnimation({
+      site,
+      keyframesRule:
+        "@keyframes fade { frmo { opacity: 0 } 100% { opacity: 1 } }",
+    });
+
+    assert(result.result === "success", "expected success result");
+    expect(result.animation.keyframes.length).toEqual(1);
+    expect(result.errors).toEqual([
+      expect.stringContaining('Ignored invalid keyframe selector "frmo"'),
+    ]);
+  });
+
   it("errors when the CSS contains no @keyframes rule", () => {
     const { site } = setup();
     const before = site.animationSequences.length;

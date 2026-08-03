@@ -1,11 +1,16 @@
 import { OperationResult } from "@/wab/client/operations/common";
 import { upsertAnimationSequences } from "@/wab/client/operations/html-to-tpl";
+import {
+  formatWIError,
+  formatWIErrors,
+} from "@/wab/client/web-importer/errors";
 import { processKeyframesRule } from "@/wab/client/web-importer/html-parser";
 import { AnimationSequence, Site } from "@/wab/shared/model/classes";
 import { Atrule, parse as cssParse, walk } from "css-tree";
 
 export type UpsertAnimationResult = OperationResult<{
   animation: AnimationSequence;
+  errors: string[];
 }>;
 
 /**
@@ -48,13 +53,14 @@ export function upsertAnimation(opts: {
     };
   }
 
-  const wiSequence = processKeyframesRule(keyframesAtrule);
-  if (!wiSequence) {
+  const wiSequenceResult = processKeyframesRule(keyframesAtrule);
+  if (wiSequenceResult.isErr()) {
     return {
       result: "error",
-      message: "Failed to parse the `@keyframes` rule.",
+      message: formatWIError(wiSequenceResult.error),
     };
   }
+  const wiSequence = wiSequenceResult.value.sequence;
 
   if (!wiSequence.name.trim()) {
     return {
@@ -76,5 +82,9 @@ export function upsertAnimation(opts: {
     site,
   });
 
-  return { result: "success", animation };
+  return {
+    result: "success",
+    animation,
+    errors: formatWIErrors(wiSequenceResult.value.errors),
+  };
 }

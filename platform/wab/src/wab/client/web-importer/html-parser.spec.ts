@@ -1,4 +1,5 @@
 import { translationTable } from "@/wab/client/web-importer/constants";
+import { WIError } from "@/wab/client/web-importer/errors";
 import {
   _testOnlyUtils,
   parseHtmlToWebImporterTree,
@@ -11,18 +12,25 @@ import { VariantGroupType } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
+import { Site } from "@/wab/shared/model/classes";
 import { readFileSync } from "fs";
 import path from "path";
 
-const { fixCSSValue, renameTokenVarNameToUuid } = _testOnlyUtils;
+// Test-friendly wrappers over the Result-based APIs: unwrap the Ok payload
+// (throwing on Err) so assertions keep operating on the tree directly.
+const parseHtml = async (html: string, site: Site) =>
+  (await parseHtmlToWebImporterTree(html, site))._unsafeUnwrap();
+const fixCSSValue = (key: string, value: string) =>
+  _testOnlyUtils.fixCSSValue(key, value)._unsafeUnwrap();
+const renameTokenVarNameToUuid = (value: string, site: Site) =>
+  _testOnlyUtils.renameTokenVarNameToUuid(value, site, []);
 
 describe("parseHtmlToWebImporterTree", () => {
   const site = createSite();
 
   it("parses a simple span with text", async () => {
     const html = "<span>plasmic</span>";
-    const { wiTree: rootEl, fontDefinitions } =
-      await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl, fontDefinitions } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
@@ -35,6 +43,7 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "text",
+          path: expect.any(String),
           tag: "span",
           text: "plasmic",
           attrs: {},
@@ -47,7 +56,7 @@ describe("parseHtmlToWebImporterTree", () => {
   it("extracts inline styles properly", async () => {
     const html =
       '<div style="display: flex; margin: 10px; color: #0000ff"><h1>Blue Heading 1</h1></div>';
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
@@ -56,11 +65,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           attrs: { style: "display: flex; margin: 10px; color: #0000ff" },
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "h1",
               text: "Blue Heading 1",
               attrs: {},
@@ -108,7 +119,7 @@ describe("parseHtmlToWebImporterTree", () => {
 }
 </style>
 <div class="container"><h1 class="heading">Blue Heading 1</h1></div>`;
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
@@ -117,11 +128,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           attrs: { class: "container" },
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "h1",
               text: "Blue Heading 1",
               attrs: {},
@@ -177,7 +190,7 @@ describe("parseHtmlToWebImporterTree", () => {
                         </svg>`;
     const html = `<div>${svgElement}</div>`;
 
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
@@ -186,10 +199,12 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           children: [
             {
               type: "svg",
+              path: expect.any(String),
               tag: "svg",
               outerHtml: svgElement,
               attrs: {},
@@ -207,7 +222,7 @@ describe("parseHtmlToWebImporterTree", () => {
 
   it("expands gap property for flex layouts", async () => {
     const html = '<div style="display: flex; gap: 10px">Content</div>';
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
@@ -216,11 +231,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           attrs: { style: "display: flex; gap: 10px" },
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "span",
               text: "Content",
               attrs: {},
@@ -250,7 +267,7 @@ describe("parseHtmlToWebImporterTree", () => {
 
   it("expands gap property for grid layouts", async () => {
     const html = '<div style="display: grid; gap: 20px">Content</div>';
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
@@ -259,11 +276,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           attrs: { style: "display: grid; gap: 20px" },
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "span",
               text: "Content",
               attrs: {},
@@ -325,12 +344,13 @@ describe("parseHtmlToWebImporterTree", () => {
     </div>
 </body>
 </html>`;
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
+      path: expect.any(String),
       tag: "div",
       variantSettings: [
         {
@@ -343,11 +363,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           variantSettings: [],
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "h1",
               text: "Responsive Heading",
               attrs: {},
@@ -427,12 +449,13 @@ describe("parseHtmlToWebImporterTree", () => {
     </div>
 </body>
 </html>`;
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
+      path: expect.any(String),
       tag: "div",
       variantSettings: [
         {
@@ -445,11 +468,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           variantSettings: [],
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "h1",
               text: "Responsive Heading",
               attrs: {},
@@ -537,12 +562,13 @@ describe("parseHtmlToWebImporterTree", () => {
     <button class="interactive-button">Click me</button>
 </body>
 </html>`;
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
+      path: expect.any(String),
       tag: "div",
       variantSettings: [
         {
@@ -555,11 +581,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "button",
           attrs: { class: "interactive-button" },
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "span",
               text: "Click me",
               attrs: {},
@@ -638,12 +666,13 @@ describe("parseHtmlToWebImporterTree", () => {
     <input type="text" class="form-input" placeholder="Enter text">
 </body>
 </html>`;
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
+      path: expect.any(String),
       tag: "div",
       variantSettings: [
         {
@@ -656,6 +685,7 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "input",
           attrs: {
             type: "text",
@@ -761,12 +791,13 @@ describe("parseHtmlToWebImporterTree", () => {
     <button class="responsive-button">Responsive Button</button>
 </body>
 </html>`;
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
+      path: expect.any(String),
       tag: "div",
       variantSettings: [
         {
@@ -779,11 +810,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "button",
           attrs: { class: "responsive-button" },
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "span",
               text: "Responsive Button",
               attrs: {},
@@ -876,7 +909,7 @@ describe("parseHtmlToWebImporterTree", () => {
     </html>
 `;
 
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl } = await parseHtml(html, site);
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<Partial<WIElement>>({
@@ -893,11 +926,13 @@ describe("parseHtmlToWebImporterTree", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           variantSettings: [],
           children: [
             {
               type: "container",
+              path: expect.any(String),
               tag: "div",
               variantSettings: [
                 {
@@ -927,6 +962,7 @@ describe("parseHtmlToWebImporterTree", () => {
               children: [
                 {
                   type: "text",
+                  path: expect.any(String),
                   text: "Mixed Properties",
                   tag: "span",
                   attrs: {},
@@ -1301,6 +1337,7 @@ describe("processUnsanitizedStyles", () => {
     expect(processUnsanitizedStyles({ background: `url(${url})` })).toEqual({
       safe: { background: `url("${url}")` },
       unsafe: {},
+      errors: [],
     });
   });
 
@@ -1315,6 +1352,7 @@ describe("processUnsanitizedStyles", () => {
       expect(processUnsanitizedStyles({ background: `url(${url})` })).toEqual({
         safe: {},
         unsafe: { background: `url("${url}")` },
+        errors: [],
       });
     }
   });
@@ -1325,6 +1363,7 @@ describe("processUnsanitizedStyles", () => {
     ).toEqual({
       safe: {},
       unsafe: { cursor: "URL(/bad.cur), pointer" },
+      errors: [],
     });
 
     expect(
@@ -1334,6 +1373,7 @@ describe("processUnsanitizedStyles", () => {
     ).toEqual({
       safe: { cursor: "Url(https://example.com/ok.cur), pointer" },
       unsafe: {},
+      errors: [],
     });
   });
 });
@@ -1348,7 +1388,7 @@ describe("snapshot tests", () => {
     );
     const landingPageHtml = readFileSync(landingPageFilePath, "utf8");
 
-    const output = await parseHtmlToWebImporterTree(landingPageHtml, site);
+    const output = await parseHtml(landingPageHtml, site);
 
     expect(output).toMatchSnapshot();
   });
@@ -1360,7 +1400,7 @@ describe("snapshot tests", () => {
     );
     const html = readFileSync(fixturePath, "utf8");
 
-    const output = await parseHtmlToWebImporterTree(html, site);
+    const output = await parseHtml(html, site);
 
     expect(output).toMatchSnapshot();
   });
@@ -1384,8 +1424,7 @@ describe("keyframes and animations parsing", () => {
       </style>
     `;
 
-    const { wiTree: rootEl, animationSequences } =
-      await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl, animationSequences } = await parseHtml(html, site);
 
     expect(animationSequences).toMatchObject([
       {
@@ -1417,10 +1456,12 @@ describe("keyframes and animations parsing", () => {
       children: [
         {
           type: "container",
+          path: expect.any(String),
           tag: "div",
           children: [
             {
               type: "text",
+              path: expect.any(String),
               tag: "span",
               text: "Test",
               attrs: {},
@@ -1462,7 +1503,7 @@ describe("keyframes and animations parsing", () => {
       </style>
     `;
 
-    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+    const { animationSequences } = await parseHtml(html, site);
     expect(animationSequences).toMatchObject([
       {
         name: "fadeIn",
@@ -1489,7 +1530,7 @@ describe("keyframes and animations parsing", () => {
       </style>
     `;
 
-    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+    const { animationSequences } = await parseHtml(html, site);
 
     expect(animationSequences).toMatchObject([
       {
@@ -1515,7 +1556,7 @@ describe("keyframes and animations parsing", () => {
       </style>
     `;
 
-    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+    const { animationSequences } = await parseHtml(html, site);
     expect(animationSequences[0]).toMatchObject({
       name: "emptyAnimation",
       keyframes: [],
@@ -1534,20 +1575,24 @@ describe("keyframes and animations parsing", () => {
       </style>
     `;
 
-    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+    const { animationSequences, errors } = await parseHtml(html, site);
 
     expect(animationSequences[0].keyframes).toEqual([
       { percentage: 0, safeStyles: { opacity: "0" }, unsafeStyles: {} },
       { percentage: 100, safeStyles: { opacity: "1" }, unsafeStyles: {} },
     ]);
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "invalid-keyframes",
+        sequence: "mixedAnimation",
+        selector: "invalid",
+      })
+    );
   });
 
   it("returns WIFragment when html has no explicit body tag, keeps root when it does", async () => {
     const fragment = "<p>Hello</p>";
-    const { wiTree: fragmentTree } = await parseHtmlToWebImporterTree(
-      fragment,
-      site
-    );
+    const { wiTree: fragmentTree } = await parseHtml(fragment, site);
     expect(fragmentTree).toMatchObject({
       type: "fragment",
       children: [
@@ -1560,10 +1605,168 @@ describe("keyframes and animations parsing", () => {
     });
 
     const fullPage = "<body><p>Hello</p></body>";
-    const { wiTree: fullPageTree } = await parseHtmlToWebImporterTree(
-      fullPage,
+    const { wiTree: fullPageTree } = await parseHtml(fullPage, site);
+    expect(fullPageTree.type).toEqual("container");
+  });
+});
+
+describe("error reporting", () => {
+  const site = createSite();
+
+  it("returns Err with reason invalid-html when nothing is importable", async () => {
+    const result = await parseHtmlToWebImporterTree(
+      "<script>alert(1)</script>",
       site
     );
-    expect(fullPageTree?.type).toEqual("container");
+    expect(result.isErr()).toBe(true);
+    expect(result._unsafeUnwrapErr().reason).toEqual("invalid-html");
+  });
+
+  it("skips a plasmic-component without a name and reports it, keeping siblings", async () => {
+    const html = `<plasmic-component></plasmic-component><div style="color: red">Hi</div>`;
+    const { wiTree, errors } = await parseHtml(html, site);
+
+    // The invalid component is dropped; the sibling div still imports.
+    expect(wiTree).toMatchObject({
+      type: "fragment",
+      children: [{ type: "container", tag: "div" }],
+    });
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "invalid-component-instance",
+        path: expect.stringContaining("plasmic-component"),
+      })
+    );
+  });
+
+  it("keeps a component with invalid data-props (as propless) and reports it", async () => {
+    const html = `<plasmic-component data-plasmic-component="Button" data-props='[1,2]'></plasmic-component>`;
+    const { wiTree, errors } = await parseHtml(html, site);
+
+    expect(wiTree).toMatchObject({
+      type: "fragment",
+      children: [{ type: "component", component: "Button", props: {} }],
+    });
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "invalid-data-props",
+        component: "Button",
+      })
+    );
+  });
+
+  it("skips non-px media queries with a warning instead of failing the import", async () => {
+    const html = `<style>
+      .a { color: blue; }
+      @media (min-width: 48em) { .a { color: red; } }
+    </style><div class="a">Hi</div>`;
+    const { wiTree, errors } = await parseHtml(html, site);
+
+    expect(wiTree).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          variantSettings: [
+            expect.objectContaining({
+              variantCombo: [{ type: "base" }],
+            }),
+          ],
+        },
+      ],
+    });
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "unsupported-media-query",
+        query: "(min-width:48em)",
+      })
+    );
+  });
+
+  it("falls back to viewBox size for unparseable svg dimensions with a warning", async () => {
+    const html = `<div><svg width="foo" height="bar" viewBox="0 0 24 24"><path d="M0 0h24v24H0z"></path></svg></div>`;
+    const { wiTree, errors } = await parseHtml(html, site);
+
+    expect(wiTree).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "container",
+          children: [{ type: "svg", width: "24px", height: "24px" }],
+        },
+      ],
+    });
+    expect(errors).toContainEqual(
+      expect.objectContaining({ code: "svg-size-fallback" })
+    );
+  });
+
+  it("reports unsupported pseudo-element selectors", async () => {
+    const html = `<style>
+      .a::before { content: "x"; }
+      .a { color: red; }
+    </style><div class="a">Hi</div>`;
+    const { errors } = await parseHtml(html, site);
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "unsupported-selector",
+        selector: ".a::before",
+      })
+    );
+  });
+
+  it("collects unresolved token references", () => {
+    const errors: WIError[] = [];
+    _testOnlyUtils.renameTokenVarNameToUuid(
+      "var(--token-unknown-token)",
+      site,
+      errors
+    );
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "unresolved-token",
+        token: "unknown-token",
+      })
+    );
+  });
+
+  it("returns Err from fixCSSValue for unparseable values", () => {
+    const result = _testOnlyUtils.fixCSSValue("background-color", "5px");
+    expect(result.isErr()).toBe(true);
+    expect(result._unsafeUnwrapErr()).toMatchObject({
+      code: "invalid-style-declaration",
+      prop: "background-color",
+      value: "5px",
+    });
+  });
+
+  it("drops only the invalid declaration, keeping valid siblings", async () => {
+    // Via a stylesheet (not a style attr) since the browser's own
+    // CSSStyleDeclaration already filters invalid inline declarations.
+    const html = `<style>
+      .a { color: red; background-color: 5px; }
+    </style><div class="a">Hi</div>`;
+    const { wiTree, errors } = await parseHtml(html, site);
+
+    expect(wiTree).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "container",
+          variantSettings: [
+            expect.objectContaining({
+              safeStyles: expect.objectContaining({ color: "red" }),
+            }),
+          ],
+        },
+      ],
+    });
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        code: "invalid-style-declaration",
+        prop: "background-color",
+      })
+    );
   });
 });

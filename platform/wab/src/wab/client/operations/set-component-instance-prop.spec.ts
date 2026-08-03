@@ -137,7 +137,7 @@ describe("setComponentInstanceProp", () => {
     const result = setComponentInstanceProp(instance, "nope", "value", opts);
 
     assert(result.result === "error", "expected error");
-    expect(result.message).toContain(`has no prop "nope"`);
+    expect(result.message).toContain(`Invalid prop "nope"`);
   });
 
   it("errors on a slot prop", () => {

@@ -23,6 +23,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
       "name": "fadeIn",
     },
   ],
+  "errors": [],
   "fontDefinitions": [
     "@font-face {
 	font-family: "Roboto";
@@ -86,6 +87,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "outerHtml": "<svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"></path>
       </svg>",
+                    "path": "body > header > nav > div:nth-of-type(1) > svg",
                     "tag": "svg",
                     "type": "svg",
                     "variantSettings": [
@@ -117,12 +119,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {},
+                    "path": "body > header > nav > div:nth-of-type(1)",
                     "tag": "span",
                     "text": "StyleHub",
                     "type": "text",
                     "variantSettings": [],
                   },
                 ],
+                "path": "body > header > nav > div:nth-of-type(1)",
                 "tag": "div",
                 "type": "container",
                 "variantSettings": [
@@ -174,12 +178,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "attrs": {},
+                            "path": "body > header > nav > ul > li:nth-of-type(1) > a",
                             "tag": "span",
                             "text": "Home",
                             "type": "text",
                             "variantSettings": [],
                           },
                         ],
+                        "path": "body > header > nav > ul > li:nth-of-type(1) > a",
                         "tag": "a",
                         "type": "container",
                         "variantSettings": [
@@ -229,6 +235,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > header > nav > ul > li:nth-of-type(1)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -267,12 +274,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "attrs": {},
+                            "path": "body > header > nav > ul > li:nth-of-type(2) > a",
                             "tag": "span",
                             "text": "Features",
                             "type": "text",
                             "variantSettings": [],
                           },
                         ],
+                        "path": "body > header > nav > ul > li:nth-of-type(2) > a",
                         "tag": "a",
                         "type": "container",
                         "variantSettings": [
@@ -322,6 +331,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > header > nav > ul > li:nth-of-type(2)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -360,12 +370,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "attrs": {},
+                            "path": "body > header > nav > ul > li:nth-of-type(3) > a",
                             "tag": "span",
                             "text": "About",
                             "type": "text",
                             "variantSettings": [],
                           },
                         ],
+                        "path": "body > header > nav > ul > li:nth-of-type(3) > a",
                         "tag": "a",
                         "type": "container",
                         "variantSettings": [
@@ -415,6 +427,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > header > nav > ul > li:nth-of-type(3)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -453,12 +466,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "attrs": {},
+                            "path": "body > header > nav > ul > li:nth-of-type(4) > a",
                             "tag": "span",
                             "text": "Contact",
                             "type": "text",
                             "variantSettings": [],
                           },
                         ],
+                        "path": "body > header > nav > ul > li:nth-of-type(4) > a",
                         "tag": "a",
                         "type": "container",
                         "variantSettings": [
@@ -508,6 +523,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > header > nav > ul > li:nth-of-type(4)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -537,6 +553,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                 ],
+                "path": "body > header > nav > ul",
                 "tag": "div",
                 "type": "container",
                 "variantSettings": [
@@ -601,12 +618,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "path": "body > header > nav > div:nth-of-type(2) > a",
                         "tag": "span",
                         "text": "Contact Us",
                         "type": "text",
                         "variantSettings": [],
                       },
                     ],
+                    "path": "body > header > nav > div:nth-of-type(2) > a",
                     "tag": "a",
                     "type": "container",
                     "variantSettings": [
@@ -693,6 +712,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                 ],
+                "path": "body > header > nav > div:nth-of-type(2)",
                 "tag": "div",
                 "type": "container",
                 "variantSettings": [
@@ -731,6 +751,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
             ],
+            "path": "body > header > nav",
             "tag": "nav",
             "type": "container",
             "variantSettings": [
@@ -772,6 +793,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             ],
           },
         ],
+        "path": "body > header",
         "tag": "header",
         "type": "container",
         "variantSettings": [
@@ -825,6 +847,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             "children": [
               {
                 "attrs": {},
+                "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > h1",
                 "tag": "h1",
                 "text": "Discover Your Style",
                 "type": "text",
@@ -912,6 +935,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {},
+                "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > p",
                 "tag": "p",
                 "text": "Premium fashion and lifestyle products curated just for you",
                 "type": "text",
@@ -954,12 +978,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 "children": [
                   {
                     "attrs": {},
+                    "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > a",
                     "tag": "span",
                     "text": "Shop Now",
                     "type": "text",
                     "variantSettings": [],
                   },
                 ],
+                "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > a",
                 "tag": "a",
                 "type": "container",
                 "variantSettings": [
@@ -1028,6 +1054,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
             ],
+            "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div",
             "tag": "div",
             "type": "container",
             "variantSettings": [
@@ -1061,6 +1088,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             ],
           },
         ],
+        "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1)",
         "tag": "section",
         "type": "container",
         "variantSettings": [
@@ -1110,6 +1138,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             "children": [
               {
                 "attrs": {},
+                "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > h2",
                 "tag": "h2",
                 "text": "Why Choose StyleHub?",
                 "type": "text",
@@ -1167,6 +1196,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "outerHtml": "<svg width="64" height="64" viewBox="0 0 24 24" fill="#667eea">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
         </svg>",
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(1) > svg",
                         "tag": "svg",
                         "type": "svg",
                         "variantSettings": [
@@ -1198,6 +1228,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(1) > h3",
                         "tag": "h3",
                         "text": "Free Shipping",
                         "type": "text",
@@ -1234,6 +1265,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(1) > p",
                         "tag": "p",
                         "text": "Free shipping on orders over $50. Fast and reliable delivery to your doorstep.",
                         "type": "text",
@@ -1264,6 +1296,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(1)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -1327,6 +1360,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "outerHtml": "<svg width="64" height="64" viewBox="0 0 24 24" fill="#667eea">
           <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"></path>
         </svg>",
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(2) > svg",
                         "tag": "svg",
                         "type": "svg",
                         "variantSettings": [
@@ -1358,6 +1392,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(2) > h3",
                         "tag": "h3",
                         "text": "Secure Payment",
                         "type": "text",
@@ -1394,6 +1429,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(2) > p",
                         "tag": "p",
                         "text": "Your payment information is protected with industry-leading security measures.",
                         "type": "text",
@@ -1424,6 +1460,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(2)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -1487,6 +1524,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "outerHtml": "<svg width="64" height="64" viewBox="0 0 24 24" fill="#667eea">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
         </svg>",
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(3) > svg",
                         "tag": "svg",
                         "type": "svg",
                         "variantSettings": [
@@ -1518,6 +1556,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(3) > h3",
                         "tag": "h3",
                         "text": "Premium Quality",
                         "type": "text",
@@ -1554,6 +1593,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(3) > p",
                         "tag": "p",
                         "text": "Carefully selected products that meet our high standards for quality and style.",
                         "type": "text",
@@ -1584,6 +1624,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(3)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -1632,6 +1673,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                 ],
+                "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div",
                 "tag": "div",
                 "type": "container",
                 "variantSettings": [
@@ -1672,6 +1714,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
             ],
+            "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div",
             "tag": "div",
             "type": "container",
             "variantSettings": [
@@ -1705,6 +1748,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             ],
           },
         ],
+        "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2)",
         "tag": "section",
         "type": "container",
         "variantSettings": [
@@ -1748,6 +1792,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             "children": [
               {
                 "attrs": {},
+                "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > h2",
                 "tag": "h2",
                 "text": "Stay Updated",
                 "type": "text",
@@ -1782,6 +1827,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               },
               {
                 "attrs": {},
+                "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > p",
                 "tag": "p",
                 "text": "Subscribe to our newsletter for exclusive offers and new arrivals",
                 "type": "text",
@@ -1826,6 +1872,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "type": "email",
                     },
                     "children": [],
+                    "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > form > input",
                     "tag": "input",
                     "type": "container",
                     "variantSettings": [
@@ -1875,12 +1922,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > form > button",
                         "tag": "span",
                         "text": "Subscribe",
                         "type": "text",
                         "variantSettings": [],
                       },
                     ],
+                    "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > form > button",
                     "tag": "button",
                     "type": "container",
                     "variantSettings": [
@@ -1945,6 +1994,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                 ],
+                "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > form",
                 "tag": "form",
                 "type": "container",
                 "variantSettings": [
@@ -2005,6 +2055,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
             ],
+            "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div",
             "tag": "div",
             "type": "container",
             "variantSettings": [
@@ -2038,6 +2089,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             ],
           },
         ],
+        "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3)",
         "tag": "section",
         "type": "container",
         "variantSettings": [
@@ -2092,6 +2144,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "path": "body > footer > div > div > div:nth-of-type(1) > h3",
                         "tag": "h3",
                         "text": "Quick Links",
                         "type": "text",
@@ -2137,12 +2190,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(1) > a",
                                     "tag": "span",
                                     "text": "Home",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(1) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2192,6 +2247,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(1)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2231,12 +2287,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(2) > a",
                                     "tag": "span",
                                     "text": "Features",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(2) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2286,6 +2344,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(2)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2325,12 +2384,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(3) > a",
                                     "tag": "span",
                                     "text": "About Us",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(3) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2380,6 +2441,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(3)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2419,12 +2481,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(4) > a",
                                     "tag": "span",
                                     "text": "Contact",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(4) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2474,6 +2538,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(4)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2504,6 +2569,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                         ],
+                        "path": "body > footer > div > div > div:nth-of-type(1) > ul",
                         "tag": "div",
                         "type": "container",
                         "variantSettings": [
@@ -2534,6 +2600,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > footer > div > div > div:nth-of-type(1)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -2575,6 +2642,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "path": "body > footer > div > div > div:nth-of-type(2) > h3",
                         "tag": "h3",
                         "text": "Customer Service",
                         "type": "text",
@@ -2620,12 +2688,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(1) > a",
                                     "tag": "span",
                                     "text": "Shipping Info",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(1) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2675,6 +2745,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(1)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2714,12 +2785,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(2) > a",
                                     "tag": "span",
                                     "text": "Returns",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(2) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2769,6 +2842,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(2)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2808,12 +2882,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(3) > a",
                                     "tag": "span",
                                     "text": "Size Guide",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(3) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2863,6 +2939,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(3)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2902,12 +2979,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(4) > a",
                                     "tag": "span",
                                     "text": "FAQ",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(4) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -2957,6 +3036,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(4)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -2987,6 +3067,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                         ],
+                        "path": "body > footer > div > div > div:nth-of-type(2) > ul",
                         "tag": "div",
                         "type": "container",
                         "variantSettings": [
@@ -3017,6 +3098,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > footer > div > div > div:nth-of-type(2)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -3058,6 +3140,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "path": "body > footer > div > div > div:nth-of-type(3) > h3",
                         "tag": "h3",
                         "text": "Connect",
                         "type": "text",
@@ -3103,12 +3186,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(1) > a",
                                     "tag": "span",
                                     "text": "Facebook",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(1) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -3158,6 +3243,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(1)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -3197,12 +3283,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(2) > a",
                                     "tag": "span",
                                     "text": "Instagram",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(2) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -3252,6 +3340,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(2)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -3291,12 +3380,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(3) > a",
                                     "tag": "span",
                                     "text": "Twitter",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(3) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -3346,6 +3437,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(3)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -3385,12 +3477,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "children": [
                                   {
                                     "attrs": {},
+                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(4) > a",
                                     "tag": "span",
                                     "text": "Pinterest",
                                     "type": "text",
                                     "variantSettings": [],
                                   },
                                 ],
+                                "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(4) > a",
                                 "tag": "a",
                                 "type": "container",
                                 "variantSettings": [
@@ -3440,6 +3534,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 ],
                               },
                             ],
+                            "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(4)",
                             "tag": "div",
                             "type": "container",
                             "variantSettings": [
@@ -3470,6 +3565,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                         ],
+                        "path": "body > footer > div > div > div:nth-of-type(3) > ul",
                         "tag": "div",
                         "type": "container",
                         "variantSettings": [
@@ -3500,6 +3596,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         ],
                       },
                     ],
+                    "path": "body > footer > div > div > div:nth-of-type(3)",
                     "tag": "div",
                     "type": "container",
                     "variantSettings": [
@@ -3535,6 +3632,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     ],
                   },
                 ],
+                "path": "body > footer > div > div",
                 "tag": "div",
                 "type": "container",
                 "variantSettings": [
@@ -3575,6 +3673,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 ],
               },
             ],
+            "path": "body > footer > div",
             "tag": "div",
             "type": "container",
             "variantSettings": [
@@ -3608,6 +3707,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             ],
           },
         ],
+        "path": "body > footer",
         "tag": "footer",
         "type": "container",
         "variantSettings": [
@@ -3641,6 +3741,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
         ],
       },
     ],
+    "path": "body",
     "tag": "div",
     "type": "container",
     "variantSettings": [
@@ -3683,6 +3784,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
 exports[`snapshot tests parses component page with props and slots correctly 1`] = `
 {
   "animationSequences": [],
+  "errors": [],
   "fontDefinitions": [],
   "wiTree": {
     "attrs": {
@@ -3705,6 +3807,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "data-props": "{"message":"Success!","type":"success"}",
                 },
                 "component": "Alert",
+                "path": "body > div > div:nth-of-type(1) > plasmic-component[Alert]",
                 "props": {
                   "message": "Success!",
                   "type": "success",
@@ -3715,6 +3818,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "variantSettings": [],
               },
             ],
+            "path": "body > div > div:nth-of-type(1)",
             "tag": "div",
             "type": "container",
             "variantSettings": [],
@@ -3727,6 +3831,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             },
             "component": "Alert",
             "depProjectId": "testDepProject123",
+            "path": "body > div > plasmic-component[Alert]:nth-of-type(1)",
             "props": {
               "message": "From dependency",
               "type": "info",
@@ -3743,6 +3848,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
             "children": [
               {
                 "attrs": {},
+                "path": "body > div > div:nth-of-type(2) > h1",
                 "tag": "h1",
                 "text": "Welcome",
                 "type": "text",
@@ -3754,6 +3860,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "data-props": "{"label":"Submit Form","variant":"primary","disabled":false}",
                 },
                 "component": "Button",
+                "path": "body > div > div:nth-of-type(2) > plasmic-component[Button]",
                 "props": {
                   "disabled": false,
                   "label": "Submit Form",
@@ -3765,6 +3872,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "variantSettings": [],
               },
             ],
+            "path": "body > div > div:nth-of-type(2)",
             "tag": "div",
             "type": "container",
             "variantSettings": [],
@@ -3779,12 +3887,14 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "children": [
                   {
                     "attrs": {},
+                    "path": "body > div > div:nth-of-type(3) > label",
                     "tag": "span",
                     "text": "Full Name:",
                     "type": "text",
                     "variantSettings": [],
                   },
                 ],
+                "path": "body > div > div:nth-of-type(3) > label",
                 "tag": "label",
                 "type": "container",
                 "variantSettings": [],
@@ -3795,6 +3905,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "data-props": "{"value":"John Doe","placeholder":"Enter name","required":true}",
                 },
                 "component": "TextField",
+                "path": "body > div > div:nth-of-type(3) > plasmic-component[TextField]",
                 "props": {
                   "placeholder": "Enter name",
                   "required": true,
@@ -3806,6 +3917,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "variantSettings": [],
               },
             ],
+            "path": "body > div > div:nth-of-type(3)",
             "tag": "div",
             "type": "container",
             "variantSettings": [],
@@ -3816,6 +3928,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"min":0,"max":100,"value":50}",
             },
             "component": "Slider",
+            "path": "body > div > plasmic-component[Slider]:nth-of-type(2)",
             "props": {
               "max": 100,
               "min": 0,
@@ -3832,6 +3945,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"count":5,"color":"red"}",
             },
             "component": "Badge",
+            "path": "body > div > plasmic-component[Badge]:nth-of-type(3)",
             "props": {
               "color": "red",
               "count": 5,
@@ -3852,6 +3966,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "data-props": "{"userData":{"name":"Alice Smith","age":30,"active":true,"metadata":null,"contact":{"email":"alice@example.com","phone":"+1234567890"},"preferences":{"theme":"dark","notifications":true}},"snake_case":"snake value","kebab-case":"kebab value"}",
                 },
                 "component": "UserCard",
+                "path": "body > div > div:nth-of-type(4) > plasmic-component[UserCard]",
                 "props": {
                   "kebabCase": "kebab value",
                   "snakeCase": "snake value",
@@ -3876,6 +3991,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "variantSettings": [],
               },
             ],
+            "path": "body > div > div:nth-of-type(4)",
             "tag": "div",
             "type": "container",
             "variantSettings": [],
@@ -3886,6 +4002,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"items":[{"id":1,"name":"Product A","price":29.99},{"id":2,"name":"Product B","price":49.99}],"config":{"sortable":true,"filterable":true}}",
             },
             "component": "List",
+            "path": "body > div > plasmic-component[List]:nth-of-type(4)",
             "props": {
               "config": {
                 "filterable": true,
@@ -3908,6 +4025,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "header": [
                 {
                   "attrs": {},
+                  "path": "body > div > plasmic-component[List]:nth-of-type(4) > slot > h2",
                   "tag": "h2",
                   "text": "Task List",
                   "type": "text",
@@ -3925,6 +4043,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"title":"User Stats"}",
             },
             "component": "Card",
+            "path": "body > div > plasmic-component[Card]:nth-of-type(5)",
             "props": {
               "title": "User Stats",
             },
@@ -3936,6 +4055,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                     "data-props": "{"label":"Add to Cart","variant":"primary","disabled":false}",
                   },
                   "component": "Button",
+                  "path": "body > div > plasmic-component[Card]:nth-of-type(5) > slot:nth-of-type(2) > plasmic-component[Button]:nth-of-type(1)",
                   "props": {
                     "disabled": false,
                     "label": "Add to Cart",
@@ -3952,6 +4072,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                     "data-props": "{"label":"Buy Now","variant":"secondary","disabled":false}",
                   },
                   "component": "Button",
+                  "path": "body > div > plasmic-component[Card]:nth-of-type(5) > slot:nth-of-type(2) > plasmic-component[Button]:nth-of-type(2)",
                   "props": {
                     "disabled": false,
                     "label": "Buy Now",
@@ -3966,6 +4087,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "children": [
                 {
                   "attrs": {},
+                  "path": "body > div > plasmic-component[Card]:nth-of-type(5) > slot:nth-of-type(1) > p:nth-of-type(1)",
                   "tag": "p",
                   "text": "Total Users: 1,234",
                   "type": "text",
@@ -3973,6 +4095,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 },
                 {
                   "attrs": {},
+                  "path": "body > div > plasmic-component[Card]:nth-of-type(5) > slot:nth-of-type(1) > p:nth-of-type(2)",
                   "tag": "p",
                   "text": "Active: 567",
                   "type": "text",
@@ -3990,6 +4113,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"title":"Confirm Action","size":"large"}",
             },
             "component": "Modal",
+            "path": "body > div > plasmic-component[Modal]:nth-of-type(6)",
             "props": {
               "size": "large",
               "title": "Confirm Action",
@@ -3998,6 +4122,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "body": [
                 {
                   "attrs": {},
+                  "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(2) > p",
                   "tag": "p",
                   "text": "Are you sure you want to proceed?",
                   "type": "text",
@@ -4007,6 +4132,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "footer": [
                 {
                   "attrs": {},
+                  "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(3) > span",
                   "tag": "span",
                   "text": "Choose an action:",
                   "type": "text",
@@ -4018,6 +4144,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                     "data-props": "{"label":"Cancel","variant":"secondary","disabled":false}",
                   },
                   "component": "Button",
+                  "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(3) > plasmic-component[Button]:nth-of-type(1)",
                   "props": {
                     "disabled": false,
                     "label": "Cancel",
@@ -4034,6 +4161,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                     "data-props": "{"label":"Confirm","variant":"primary","disabled":false}",
                   },
                   "component": "Button",
+                  "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(3) > plasmic-component[Button]:nth-of-type(2)",
                   "props": {
                     "disabled": false,
                     "label": "Confirm",
@@ -4048,6 +4176,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "header": [
                 {
                   "attrs": {},
+                  "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(1) > h2",
                   "tag": "h2",
                   "text": "Confirm Action",
                   "type": "text",
@@ -4064,6 +4193,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-plasmic-component": "Container",
             },
             "component": "Container",
+            "path": "body > div > plasmic-component[Container]:nth-of-type(7)",
             "props": {},
             "slots": {
               "children": [],
@@ -4078,6 +4208,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"userData":{"name":"Conan O'Brien","age":99}}",
             },
             "component": "UserCard",
+            "path": "body > div > plasmic-component[UserCard]:nth-of-type(8)",
             "props": {
               "userData": {
                 "age": 99,
@@ -4095,6 +4226,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
               "data-props": "{"message":"Conan O'Brien says hi"}",
             },
             "component": "Alert",
+            "path": "body > div > plasmic-component[Alert]:nth-of-type(9)",
             "props": {
               "message": "Conan O'Brien says hi",
             },
@@ -4114,6 +4246,7 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                   "data-props": "{"value":"spaced name"}",
                 },
                 "component": "Text Field",
+                "path": "body > div > div:nth-of-type(5) > plasmic-component[Text Field]",
                 "props": {
                   "value": "spaced name",
                 },
@@ -4123,16 +4256,19 @@ exports[`snapshot tests parses component page with props and slots correctly 1`]
                 "variantSettings": [],
               },
             ],
+            "path": "body > div > div:nth-of-type(5)",
             "tag": "div",
             "type": "container",
             "variantSettings": [],
           },
         ],
+        "path": "body > div",
         "tag": "div",
         "type": "container",
         "variantSettings": [],
       },
     ],
+    "path": "body",
     "tag": "div",
     "type": "container",
     "variantSettings": [
