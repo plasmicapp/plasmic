@@ -241,9 +241,14 @@ export function useStudioOps(
         if (!state) {
           return;
         }
+        // `state` belongs to the code component, and is shared by every
+        // instance, so we need to differentiate by matching on `tplNode`.`
         const implicitState = viewCtx
           .currentComponent()
-          .states.find((_state) => _state.implicitState === state);
+          .states.find(
+            (_state) =>
+              _state.implicitState === state && _state.tplNode === tplComp
+          );
         if (!implicitState) {
           return;
         }

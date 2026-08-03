@@ -56,6 +56,67 @@ test.describe("hostless-react-slick slider carousel", () => {
     await page.waitForTimeout(300);
   }
 
+  test("navigates each carousel independently when there are several on a page", async ({
+    page,
+    models,
+  }) => {
+    await models.studio.createNewPageInOwnArena("Homepage");
+    const framed = models.studio.frames.first();
+    await page.waitForTimeout(500);
+
+    // Select the first row of the outline tree so carousels are inserted as siblings,
+    // instead of nesting the second one inside the first one's slide.
+    const selectPageRoot = async () => {
+      await models.studio.leftPanel.switchToTreeTab();
+      await models.studio.leftPanel.treeLabels.first().click();
+      await page.waitForTimeout(500);
+    };
+    const selectCarousel = async (name: string) => {
+      await models.studio.leftPanel.switchToTreeTab();
+      await models.studio.leftPanel.treeLabels
+        .filter({ hasText: name })
+        .first()
+        .click();
+      await page.waitForTimeout(500);
+    };
+
+    await models.studio.focusFrameRoot(framed);
+    await models.studio.leftPanel.insertNode("hostless-slider");
+    await page.waitForTimeout(500);
+
+    await selectPageRoot();
+    await models.studio.leftPanel.insertNode("hostless-slider");
+    await page.waitForTimeout(500);
+
+    const canvasFrame = framed.contentFrame();
+    const sliders = canvasFrame.locator(".slick-slider");
+    await expect(sliders).toHaveCount(2, { timeout: 10000 });
+
+    const assertCurrentSlides = async (first: string, second: string) => {
+      await expect(
+        sliders.nth(0).locator(".slick-slide.slick-current")
+      ).toHaveAttribute("data-index", first, { timeout: 8000 });
+      await expect(
+        sliders.nth(1).locator(".slick-slide.slick-current")
+      ).toHaveAttribute("data-index", second, { timeout: 8000 });
+    };
+
+    await assertCurrentSlides("0", "0");
+
+    // The second carousel's own actions must move it, not the first one.
+    await selectCarousel("Slider Carousel 2");
+    await clickNext(models, page);
+    await assertCurrentSlides("0", "1");
+
+    await clickNext(models, page);
+    await assertCurrentSlides("0", "2");
+
+    // ...and the first carousel still navigates on its own.
+    await selectCarousel("Slider Carousel");
+    await clickNext(models, page);
+    await assertCurrentSlides("1", "2");
+  });
+
   test("works", async ({ page, models }) => {
     await models.studio.createNewPageInOwnArena("Homepage");
     const framed = models.studio.frames.first();
