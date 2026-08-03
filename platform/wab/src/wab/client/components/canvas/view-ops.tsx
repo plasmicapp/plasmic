@@ -41,7 +41,11 @@ import {
   getEventDataForTplComponent,
   trackInsertItem,
 } from "@/wab/client/observability/events/insert-item";
-import { DeleteTplResult, deleteTpl } from "@/wab/client/operations/delete-tpl";
+import {
+  DeleteTplResult,
+  computeTplsToDelete,
+  deleteTpl,
+} from "@/wab/client/operations/delete-tpl";
 import {
   ExtractComponentResult,
   extractComponent as extractComponentOp,
@@ -276,6 +280,7 @@ import {
   isVisibilityHidden,
   setTplVisibility,
 } from "@/wab/shared/visibility-utils";
+import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import $ from "jquery";
 import L, { clamp, isArray } from "lodash";
@@ -1823,7 +1828,7 @@ export class ViewOps {
       let deleteResult: DeleteTplResult | undefined;
       this.change(() => {
         const nextFocus = this.findNearestFocusable(tpls[0], {
-          excludeTpls: tpls,
+          excludeTpls: computeTplsToDelete(tpls),
           visibleInCombo: currentCombo,
         });
 
@@ -1837,7 +1842,14 @@ export class ViewOps {
           if (nextFocus instanceof SlotSelection) {
             this.viewCtx().setStudioFocusBySelectable(nextFocus);
           } else {
-            this.viewCtx().setStudioFocusByTpl(nextFocus);
+            if (Tpls.tryGetTplOwnerComponent(nextFocus)) {
+              this.viewCtx().setStudioFocusByTpl(nextFocus);
+            } else {
+              this.viewCtx().setStudioFocusByTpl(null);
+              const message = "nextFocus was deleted or wrong";
+              console.warn(message);
+              Sentry.captureMessage(message);
+            }
           }
         }
       });

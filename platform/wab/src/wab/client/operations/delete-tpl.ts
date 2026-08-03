@@ -26,7 +26,8 @@ export type DeleteTplResult =
  * Delete TplNodes from a component.
  *
  * Validates that the deletion is safe (no referenced states or tplRefs),
- * then permanently removes elements from the tree.
+ * then permanently removes elements from the tree, including parent list
+ * containers that become empty (see {@link computeTplsToDelete}).
  *
  * @param tpls - TplNodes to delete.
  * @param opts
@@ -50,7 +51,8 @@ export function deleteTpl(
     return { result: "error", message: "Cannot remove the root element." };
   }
 
-  const error = validateTplRemoval(tpls, component, site);
+  const tplsToDelete = computeTplsToDelete(tpls);
+  const error = validateTplRemoval(tplsToDelete, component, site);
   if (error) {
     return {
       result: "error",
@@ -59,20 +61,14 @@ export function deleteTpl(
     };
   }
 
-  // Permanent deletion
-  for (const tpl of tpls) {
+  for (const tpl of tplsToDelete) {
+    // Skip if deleted already
+    if (!Tpls.tryGetTplOwnerComponent(tpl)) {
+      continue;
+    }
+
     const parent = tpl.parent;
     $$$(tpl).remove({ deep: true });
-
-    // Remove list containers when they become empty (i.e., their latest
-    // item is removed).
-    if (
-      Tpls.isTplTag(parent) &&
-      isTagListContainer(parent.tag) &&
-      parent.children.length === 0
-    ) {
-      $$$(parent).remove({ deep: true });
-    }
 
     // Redistribute column sizes when deleting from a columns layout
     if (parent && Tpls.isTplColumns(parent)) {
@@ -81,4 +77,32 @@ export function deleteTpl(
   }
 
   return { result: "deleted" };
+}
+
+/**
+ * Deleting some tpls cascades to their parents.
+ *
+ * - list items cascade to list containers if they become empty
+ */
+export function computeTplsToDelete(tpls: TplNode[]): TplNode[] {
+  const toDelete = new Set<TplNode>(tpls);
+  for (const tpl of tpls) {
+    const parent = tpl.parent;
+
+    if (
+      parent &&
+      // is not already in toDelete
+      !toDelete.has(parent) &&
+      // has a parent (is not the root)
+      parent.parent &&
+      // is a list container
+      Tpls.isTplTag(parent) &&
+      isTagListContainer(parent.tag) &&
+      // will be empty
+      parent.children.every((child) => toDelete.has(child))
+    ) {
+      toDelete.add(parent);
+    }
+  }
+  return [...toDelete];
 }
