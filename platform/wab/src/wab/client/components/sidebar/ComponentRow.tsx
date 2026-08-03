@@ -19,6 +19,8 @@ import {
 } from "@/wab/client/observability/events/insert-item";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { isMixedArena } from "@/wab/shared/Arenas";
@@ -106,74 +108,77 @@ export const ComponentRow = observer(function ComponentRow(props: {
   })();
 
   return (
-    <DraggableInsertable
-      sc={studioCtx}
-      onDragEnd={(_spec, result) => {
-        const tplComponent = result?.[1];
-        if (isTplComponent(tplComponent)) {
-          trackInsertItem({
-            from: "components-tab",
-            dragged: true,
-            ...getEventDataForTplComponent(tplComponent),
-          });
-        }
-      }}
-      spec={{
-        key: component.uuid,
-        label: getComponentDisplayName(component),
-        factory: (vc: ViewCtx) => {
-          return vc.variantTplMgr().mkTplComponentWithDefaults(component);
-        },
-        icon: (
-          <Icon
-            icon={ComponentIcon}
-            className={!isCodeComp ? "component-fg" : undefined}
-          />
-        ),
-        type: AddItemType.tpl,
-      }}
-    >
-      <RowItem
-        style={{
-          height: 32,
-          paddingLeft: calcIndent * 16 + 6,
-          paddingRight: 6,
+    <>
+      <DraggableInsertable
+        sc={studioCtx}
+        onDragEnd={(_spec, result) => {
+          const tplComponent = result?.[1];
+          if (isTplComponent(tplComponent)) {
+            trackInsertItem({
+              from: "components-tab",
+              dragged: true,
+              ...getEventDataForTplComponent(tplComponent),
+            });
+          }
         }}
-        icon={icon}
-        menu={overlay}
-        menuSize={"small"}
-        onClick={
-          isPlainComponent
-            ? () => {
-                spawn(
-                  studioCtx.change(() => {
-                    studioCtx.switchToComponentArena(component);
-                    return ok();
-                  })
-                );
-              }
-            : undefined
-        }
-        data-test-id={`listitem-component-${component.name}`}
+        spec={{
+          key: component.uuid,
+          label: getComponentDisplayName(component),
+          factory: (vc: ViewCtx) => {
+            return vc.variantTplMgr().mkTplComponentWithDefaults(component);
+          },
+          icon: (
+            <Icon
+              icon={ComponentIcon}
+              className={!isCodeComp ? "component-fg" : undefined}
+            />
+          ),
+          type: AddItemType.tpl,
+        }}
       >
-        {defaultComponentKind ? (
-          <Popover
-            content={
-              <p>
-                <strong>Default component:</strong>{" "}
-                {getDefaultComponentLabel(defaultComponentKind)}
-              </p>
-            }
-          >
-            <strong>
-              {matcher.boldSnippets(getFolderComponentDisplayName(component))}
-            </strong>
-          </Popover>
-        ) : (
-          matcher.boldSnippets(getFolderComponentDisplayName(component))
-        )}
-      </RowItem>
-    </DraggableInsertable>
+        <RowItem
+          style={{
+            height: 32,
+            paddingLeft: calcIndent * 16 + 6,
+            paddingRight: 6,
+          }}
+          icon={icon}
+          menu={overlay}
+          menuSize={"small"}
+          onClick={
+            isPlainComponent
+              ? () => {
+                  spawn(
+                    studioCtx.change(() => {
+                      studioCtx.switchToComponentArena(component);
+                      return ok();
+                    })
+                  );
+                }
+              : undefined
+          }
+          data-test-id={`listitem-component-${component.name}`}
+        >
+          {defaultComponentKind ? (
+            <Popover
+              content={
+                <p>
+                  <strong>Default component:</strong>{" "}
+                  {getDefaultComponentLabel(defaultComponentKind)}
+                </p>
+              }
+            >
+              <strong>
+                {matcher.boldSnippets(getFolderComponentDisplayName(component))}
+              </strong>
+            </Popover>
+          ) : (
+            matcher.boldSnippets(getFolderComponentDisplayName(component))
+          )}
+        </RowItem>
+      </DraggableInsertable>
+      <UiActionsOverlay uiId={mkModelUiId(component)} />
+    </>
   );
 });
 

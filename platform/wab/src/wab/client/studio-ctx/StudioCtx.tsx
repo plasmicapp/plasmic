@@ -187,7 +187,11 @@ import {
 } from "@/wab/shared/SharedApi";
 import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
-import { VariantCombo, isVariantSettingEmpty } from "@/wab/shared/Variants";
+import {
+  VariantCombo,
+  isScreenVariant,
+  isVariantSettingEmpty,
+} from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
 import { BoundedCache } from "@/wab/shared/bounded-cache";
@@ -260,6 +264,7 @@ import {
   isFrameComponent,
   isPageComponent,
   isPlainComponent,
+  tryGetComponentByUuid,
 } from "@/wab/shared/core/components";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { JsonValue } from "@/wab/shared/core/lang";
@@ -306,6 +311,7 @@ import {
   tplChildren,
   trackComponentRoot,
   trackComponentSite,
+  tryGetTplByUuid,
 } from "@/wab/shared/core/tpls";
 import { undoChanges } from "@/wab/shared/core/undo-util";
 import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
@@ -781,6 +787,33 @@ export class StudioCtx extends WithDbCtx {
               case "DataToken":
                 this.switchLeftTab("dataTokens");
                 break;
+              case "StyleToken":
+                this.switchLeftTab("tokens");
+                break;
+              case "AnimationSequence":
+                this.switchLeftTab("animationSequences");
+                break;
+              case "Variant": {
+                const globalVariant = allGlobalVariants(this.site).find(
+                  (v) => v.uuid === parsed.uuid
+                );
+                if (!globalVariant) {
+                  // A component variant: focus its owning component so the
+                  // variants panel shows it.
+                  const owner = this.site.components.find((c) =>
+                    allComponentVariants(c).some((v) => v.uuid === parsed.uuid)
+                  );
+                  if (owner) {
+                    this.switchToComponentArena(owner);
+                    this.switchRightTab(RightTabKey.component);
+                  }
+                } else if (isScreenVariant(globalVariant)) {
+                  this.switchLeftTab("responsiveness");
+                } else {
+                  this.switchRightTab(RightTabKey.component);
+                }
+                break;
+              }
               case "ComponentDataQuery":
               case "ComponentServerQuery":
               case "PropParam":
@@ -790,10 +823,30 @@ export class StudioCtx extends WithDbCtx {
               case "StateChangeHandlerParam":
                 this.switchRightTab(RightTabKey.component);
                 break;
+              case "Component": {
+                const component = tryGetComponentByUuid(this.site, parsed.uuid);
+                if (component && isPageComponent(component)) {
+                  this.switchToComponentArena(component);
+                } else {
+                  this.switchLeftTab("components");
+                }
+                break;
+              }
               default:
                 assertNever(parsed.typeTag);
             }
             break;
+          case "Tpl": {
+            const component = tryGetComponentByUuid(
+              this.site,
+              parsed.componentUuid
+            );
+            const tpl = component && tryGetTplByUuid(component, parsed.tplUuid);
+            if (component && tpl) {
+              spawn(this.setStudioFocusOnTpl(component, tpl));
+            }
+            break;
+          }
           default:
             assertNever(parsed);
         }

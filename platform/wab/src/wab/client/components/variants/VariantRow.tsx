@@ -14,6 +14,8 @@ import {
   PlasmicVariantRow__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantRow";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import {
@@ -105,6 +107,8 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
 
   const contextMenuProps = useContextMenu({ menu });
 
+  const uiId = Array.isArray(variant) ? undefined : mkModelUiId(variant);
+
   const isBase = isBaseVariant(variant);
   const isRecording = pinState?.startsWith("selected");
 
@@ -169,6 +173,12 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
           style,
           "data-test-class": "variant-row",
         },
+        wrapChildren: (children) => (
+          <>
+            {children}
+            {uiId && <UiActionsOverlay uiId={uiId} />}
+          </>
+        ),
       }}
       listItem={{
         menu,

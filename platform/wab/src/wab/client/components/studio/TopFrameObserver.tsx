@@ -1,3 +1,8 @@
+import {
+  MentionableResource,
+  getMentionUiId,
+  resolveMentions,
+} from "@/wab/client/components/copilot/resource-mention-utils";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { COPILOT_TOOLS } from "@/wab/client/copilot";
 import {
@@ -9,18 +14,30 @@ import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioAppUser, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
+import { getBaseVariant, getVariantGroupName } from "@/wab/shared/Variants";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { filterFalsy, jsonClone, spawn } from "@/wab/shared/common";
 import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import {
+  allComponentVariants,
   isFrameComponent,
   isPageComponent,
+  isPlasmicComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
+import {
+  flattenTpls,
+  getTplType,
+  isTplComponent,
+  isTplNamable,
+} from "@/wab/shared/core/tpls";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { Component } from "@/wab/shared/model/classes";
+import { naturalSort, naturalSortByName } from "@/wab/shared/sort";
 import { notification } from "antd";
-import { sortBy } from "lodash";
+import { partition, sortBy } from "lodash";
 import { autorun, computed } from "mobx";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -32,6 +49,13 @@ import { LocalizationConfig } from "@/wab/shared/localization";
 
 export interface TopFrameObserverProps {
   preview?: boolean;
+}
+
+function notifyMentionedResourceGone() {
+  notification.info({
+    message: "That resource no longer exists",
+    description: "It may have been deleted since it was mentioned.",
+  });
 }
 
 export const TopFrameObserver = observer(function _TopFrameObserver({
@@ -199,6 +223,106 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       },
       async setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void> {
         studioCtx.setPreferredAiOutputFormat(format);
+      },
+      /**
+       * List the project resources that can be `@`-mentioned in Copilot Chat.
+       */
+      async listMentionableResources(): Promise<MentionableResource[]> {
+        const site = studioCtx.site;
+        const resources: MentionableResource[] = [];
+
+        const focusedComponent = studioCtx.focusedViewCtx()?.currentComponent();
+        if (focusedComponent) {
+          const baseVariant = getBaseVariant(focusedComponent);
+          const tpls: MentionableResource[] = [];
+          for (const tpl of flattenTpls(focusedComponent.tplTree)) {
+            if (isTplNamable(tpl) && tpl.name) {
+              tpls.push({
+                kind: "tpl",
+                uuid: `${focusedComponent.uuid}/${tpl.uuid}`,
+                label: tpl.name,
+                tplType: getTplType(
+                  tpl,
+                  getEffectiveVariantSetting(tpl, [baseVariant])
+                ),
+                owners: [focusedComponent.name],
+                // For an instance, show which component it is an instance of.
+                detail: isTplComponent(tpl) ? tpl.component.name : undefined,
+              });
+            }
+          }
+          resources.push(...naturalSort(tpls, (t) => t.label));
+
+          for (const variant of naturalSortByName(
+            allComponentVariants(focusedComponent)
+          )) {
+            const group = getVariantGroupName(variant);
+            resources.push({
+              kind: "componentVariant",
+              uuid: variant.uuid,
+              label: variant.name,
+              owners: [focusedComponent.name, group ?? ""],
+              detail: group,
+            });
+          }
+        }
+
+        // Code components and arena frames aren't things a user would refer
+        // to by name in a prompt.
+        const [pages, components] = partition(
+          site.components.filter(isPlasmicComponent),
+          isPageComponent
+        );
+        for (const comp of naturalSortByName(components)) {
+          resources.push({
+            kind: "component",
+            uuid: comp.uuid,
+            label: comp.name,
+          });
+        }
+        for (const page of naturalSortByName(pages)) {
+          resources.push({ kind: "page", uuid: page.uuid, label: page.name });
+        }
+
+        for (const token of naturalSortByName(site.styleTokens)) {
+          resources.push({
+            kind: "token",
+            uuid: token.uuid,
+            label: token.name,
+          });
+        }
+
+        for (const variant of naturalSortByName(allGlobalVariants(site))) {
+          const group = getVariantGroupName(variant);
+          resources.push({
+            kind: "globalVariant",
+            uuid: variant.uuid,
+            label: variant.name,
+            detail: group,
+            owners: [group ?? ""],
+          });
+        }
+
+        for (const animation of naturalSortByName(site.animationSequences)) {
+          resources.push({
+            kind: "animation",
+            uuid: animation.uuid,
+            label: animation.name,
+          });
+        }
+
+        return resources;
+      },
+      async resolveMentions(text: string): Promise<string> {
+        return resolveMentions(text, studioCtx.site);
+      },
+      async navigateToMentionedResource(kind, uuid): Promise<void> {
+        const uiId = getMentionUiId(kind, uuid, studioCtx.site);
+        if (!uiId) {
+          notifyMentionedResourceGone();
+          return;
+        }
+        studioCtx.uiActionBus.dispatch(uiId, "jump");
       },
     }),
     [studioCtx]

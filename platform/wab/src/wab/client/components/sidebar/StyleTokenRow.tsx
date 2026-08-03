@@ -12,6 +12,8 @@ import {
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import {
   StyleTokenValue,
   isStyleTokenEditable,
@@ -292,6 +294,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
           indicatorType={indicatorType}
         />
       )}
+      <UiActionsOverlay uiId={mkModelUiId(token.base)} />
     </>
   );
 });

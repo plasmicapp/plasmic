@@ -20,7 +20,7 @@ import {
 import { Matcher } from "@/wab/client/components/view-common";
 import { PlasmicLeftGeneralDataTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralDataTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { parseUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { useModelUiActionHandler } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import {
   DataTokenType,
   DataTokenValue,
@@ -482,22 +482,10 @@ const LeftGeneralDataTokensPanel = observer(
 
     // Tokens from imported projects may be virtualized or collapsed,
     // so listen for UI actions and expand/scroll to it.
-    React.useEffect(() => {
-      const { dispose } = studioCtx.uiActionBus.registerListener(
-        (uiId, type) => {
-          const parsed = parseUiId(uiId);
-          if (
-            type === "jump" &&
-            parsed.type === "Model" &&
-            parsed.typeTag === "DataToken"
-          ) {
-            expandTo(parsed.uuid);
-            treeRef.current?.scrollTo(parsed.uuid);
-          }
-        }
-      );
-      return dispose;
-    }, [studioCtx, expandTo]);
+    useModelUiActionHandler("DataToken", (uuid) => {
+      expandTo(uuid);
+      treeRef.current?.scrollTo(uuid);
+    });
 
     return (
       <>

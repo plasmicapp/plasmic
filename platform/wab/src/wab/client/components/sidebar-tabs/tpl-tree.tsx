@@ -17,25 +17,11 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import MenuButton from "@/wab/client/components/widgets/MenuButton";
 import {
-  BUTTON_ICON,
-  COMPONENT_ICON,
-  CONTENT_LAYOUT_ICON,
   EXPANDER_COLLAPSED_ICON,
   EXPANDER_EXPANDED_ICON,
-  FREE_CONTAINER_ICON,
   getVisibilityIcon,
-  GRID_CONTAINER_ICON,
-  HEADING_ICON,
   HIDDEN_ICON,
-  HORIZ_STACK_ICON,
-  IMAGE_ICON,
-  INPUT_ICON,
-  LINK_ICON,
-  PASSWORD_INPUT_ICON,
-  SLOT_ICON,
-  TEXT_ICON,
-  TEXTAREA_ICON,
-  VERT_STACK_ICON,
+  iconForTplType,
 } from "@/wab/client/icons";
 import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
 import LockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Lock";
@@ -63,13 +49,13 @@ import {
 import { AnyArena } from "@/wab/shared/Arenas";
 import { assert, ensure, maybe, spawn, unexpected } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { tryExtractLit } from "@/wab/shared/core/exprs";
 import { Selectable } from "@/wab/shared/core/selection";
 import { isSlotSelection, SlotSelection } from "@/wab/shared/core/slots";
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
   clone,
   getTplOwnerComponent,
+  getTplType,
   isCodeComponentRoot,
   isTplTagOrComponent,
   isTplVariantable,
@@ -83,10 +69,6 @@ import {
 import { asTpl } from "@/wab/shared/core/vals";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv } from "@/wab/shared/eval";
-import {
-  ContainerLayoutType,
-  getRshContainerType,
-} from "@/wab/shared/layoututils";
 import {
   Expr,
   isKnownTplNode,
@@ -1167,50 +1149,7 @@ export function createNodeIcon(
   node: TplNode | SlotSelection,
   vs?: EffectiveVariantSetting
 ) {
-  if (node instanceof SlotSelection || Tpls.isTplSlot(node)) {
-    return SLOT_ICON;
-  } else if (Tpls.isTplComponent(node)) {
-    return COMPONENT_ICON;
-  } else if (Tpls.isTplImage(node)) {
-    return IMAGE_ICON;
-  } else if (Tpls.isTplTag(node)) {
-    if (node.tag === "img") {
-      return IMAGE_ICON;
-    } else if (node.tag === "a") {
-      return LINK_ICON;
-    } else if (node.tag === "input") {
-      if (vs && vs.attrs.type) {
-        const type = tryExtractLit(vs.attrs.type);
-        if (type === "password") {
-          return PASSWORD_INPUT_ICON;
-        }
-      }
-      return INPUT_ICON;
-    } else if (node.tag === "button") {
-      return BUTTON_ICON;
-    } else if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(node.tag)) {
-      return HEADING_ICON;
-    } else if (Tpls.isTplTextBlock(node)) {
-      return TEXT_ICON;
-    } else if (node.tag === "textarea") {
-      return TEXTAREA_ICON;
-    } else if (vs) {
-      const exp = vs.rshWithTheme();
-      const containerType = getRshContainerType(exp);
-      if (containerType === ContainerLayoutType.free) {
-        return FREE_CONTAINER_ICON;
-      } else if (containerType === ContainerLayoutType.flexColumn) {
-        return VERT_STACK_ICON;
-      } else if (containerType === ContainerLayoutType.flexRow) {
-        return HORIZ_STACK_ICON;
-      } else if (containerType === ContainerLayoutType.grid) {
-        return GRID_CONTAINER_ICON;
-      } else if (containerType === ContainerLayoutType.contentLayout) {
-        return CONTENT_LAYOUT_ICON;
-      }
-    }
-  }
-  return FREE_CONTAINER_ICON;
+  return <Icon icon={iconForTplType(getTplType(node, vs))} />;
 }
 
 function tryGetValForTpl(

@@ -46,6 +46,7 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useModelUiActionHandler } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-helpers/test-ids";
 import { VariantPinState } from "@/wab/shared/PinManager";
@@ -70,6 +71,7 @@ import {
   getSuperComponents,
   isPageComponent,
 } from "@/wab/shared/core/components";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import {
   isGlobalVariantGroupUsedInSplits,
   isVariantUsedInSplits,
@@ -141,6 +143,12 @@ export const VariantsPanel = observer(
     }));
 
     const globalVariantsSectionRef = React.useRef<SidebarSectionHandle>(null);
+
+    useModelUiActionHandler("Variant", (uuid) => {
+      if (allGlobalVariants(studioCtx.site).some((v) => v.uuid === uuid)) {
+        globalVariantsSectionRef.current?.expand();
+      }
+    });
 
     const addVariantsMenu = React.useMemo(
       () =>

@@ -12,10 +12,12 @@ import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tr
 import PlasmicIcon__Alert from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import PlasmicButton from "@/wab/client/plasmic/PlasmicButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiActionsWrapper } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ensure, spawn, xGroupBy } from "@/wab/shared/common";
 import { getSiteScreenSizes } from "@/wab/shared/core/sites";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
-import { FRAMES_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
+import { FRAME_LOWER, FRAMES_LOWER } from "@/wab/shared/Labels";
 import { Variant } from "@/wab/shared/model/classes";
 import {
   ResponsiveStrategy,
@@ -312,7 +314,7 @@ export function ResponsivenessPanel_() {
               };
 
               return (
-                <React.Fragment key={variant.uid}>
+                <UiActionsWrapper key={variant.uid} uiId={mkModelUiId(variant)}>
                   <Row gutter={8}>
                     {isUnknownStrategy ? (
                       <Col span={isActiveOwnedBySite && !readOnly ? 21 : 24}>
@@ -407,7 +409,7 @@ export function ResponsivenessPanel_() {
                       </Col>
                     )}
                   </Row>
-                </React.Fragment>
+                </UiActionsWrapper>
               );
             })}
           </div>

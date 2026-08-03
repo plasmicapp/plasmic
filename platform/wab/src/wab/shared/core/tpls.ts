@@ -148,6 +148,7 @@ import {
 } from "@/wab/shared/core/style-props";
 import * as styles from "@/wab/shared/core/styles";
 import { getCssInitial } from "@/wab/shared/css";
+import type { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import {
   makeDataTokenIdentifier,
@@ -1946,6 +1947,73 @@ export function isTplPicture(tpl: TplNode): tpl is TplPictureTag {
   return isTplImage(tpl) && tpl.tag === "img";
 }
 
+export type TplType =
+  | "text"
+  | "heading"
+  | "image"
+  | "link"
+  | "input"
+  | "passwordInput"
+  | "button"
+  | "textarea"
+  | "slot"
+  | "component"
+  | "freeContainer"
+  | "vertStack"
+  | "horizStack"
+  | "grid"
+  | "contentLayout";
+
+export function getTplType(
+  node: TplNode | SlotSelection,
+  vs?: EffectiveVariantSetting
+): TplType {
+  if (node instanceof SlotSelection || isTplSlot(node)) {
+    return "slot";
+  } else if (isTplComponent(node)) {
+    return "component";
+  } else if (isTplImage(node)) {
+    return "image";
+  } else if (isTplTag(node)) {
+    if (node.tag === "img") {
+      return "image";
+    } else if (node.tag === "a") {
+      return "link";
+    } else if (node.tag === "input") {
+      if (
+        vs &&
+        vs.attrs.type &&
+        Exprs.tryExtractLit(vs.attrs.type) === "password"
+      ) {
+        return "passwordInput";
+      }
+      return "input";
+    } else if (node.tag === "button") {
+      return "button";
+    } else if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(node.tag)) {
+      return "heading";
+    } else if (isTplTextBlock(node)) {
+      return "text";
+    } else if (node.tag === "textarea") {
+      return "textarea";
+    } else if (vs) {
+      switch (getRshContainerType(vs.rshWithTheme())) {
+        case ContainerLayoutType.free:
+          return "freeContainer";
+        case ContainerLayoutType.flexColumn:
+          return "vertStack";
+        case ContainerLayoutType.flexRow:
+          return "horizStack";
+        case ContainerLayoutType.grid:
+          return "grid";
+        case ContainerLayoutType.contentLayout:
+          return "contentLayout";
+      }
+    }
+  }
+  return "freeContainer";
+}
+
 export function isTplOther(tplNode: TplNode): tplNode is TplContainerTag {
   if (!isTplTag(tplNode)) {
     return false;
@@ -2116,6 +2184,22 @@ export function getTplOwnerComponent(tpl: TplNode) {
 
 export function tryGetTplOwnerComponent(tpl: TplNode) {
   return TPLROOT_TO_COMPONENT.get(ensureKnownTplNode($$$(tpl).root().one()));
+}
+
+export function tryGetTplByUuid(
+  component: Component,
+  uuid: string
+): TplNode | undefined {
+  return flattenTpls(component.tplTree).find((t) => t.uuid === uuid);
+}
+
+export function tryGetTplByName(
+  component: Component,
+  name: string
+): TplNode | undefined {
+  return flattenTpls(component.tplTree)
+    .filter(isTplNamable)
+    .find((t) => t.name === name);
 }
 
 export function trackComponentRoot(component: Component) {

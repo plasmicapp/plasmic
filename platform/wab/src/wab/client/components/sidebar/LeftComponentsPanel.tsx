@@ -3,6 +3,7 @@
 import {
   RenderElementProps,
   VirtualTree,
+  VirtualTreeHandle,
   getFolderKeyChanges,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
@@ -16,6 +17,7 @@ import {
 import { ComponentRow } from "@/wab/client/components/sidebar/ComponentRow";
 import { PlasmicLeftComponentsPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftComponentsPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useModelUiActionHandler } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { isNonNil, unreachable } from "@/wab/shared/common";
 import {
@@ -338,6 +340,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     renameGroup,
     expandAll,
     collapseAll,
+    expandTo,
   } = useTreeData<ComponentPanelRow>({
     nodes: items,
     query: debouncedQuery,
@@ -347,6 +350,13 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     getNodeSearchText: getRowSearchText,
     getNodeHeight: getRowHeight,
     defaultOpenKeys: "all",
+  });
+
+  const treeRef = React.useRef<VirtualTreeHandle>(null);
+
+  useModelUiActionHandler("Component", (uuid) => {
+    expandTo(uuid);
+    treeRef.current?.scrollTo(uuid);
   });
 
   return (
@@ -374,6 +384,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
       content={
         <>
           <VirtualTree
+            ref={treeRef}
             rootNodes={items}
             renderElement={ComponentTreeRow}
             nodeData={nodeData}

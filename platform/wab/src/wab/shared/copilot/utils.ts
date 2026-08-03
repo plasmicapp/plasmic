@@ -6,15 +6,16 @@ import {
   getBaseVariant,
 } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { uniqueName } from "@/wab/shared/common";
+import { ensure, uniqueName } from "@/wab/shared/common";
 import { getComponentArenaBaseFrame } from "@/wab/shared/component-arenas";
 import {
   GlobalVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
+import { tryGetComponentByUuid } from "@/wab/shared/core/components";
 import { mkVar } from "@/wab/shared/core/lang";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
-import { flattenTpls } from "@/wab/shared/core/tpls";
+import { tryGetTplByUuid } from "@/wab/shared/core/tpls";
 import {
   Component,
   ComponentArena,
@@ -30,24 +31,21 @@ import {
  * Find a component by UUID. Throws if not found.
  */
 export function getComponentByUuid(site: Site, uuid: string): Component {
-  const component = site.components.find((c) => c.uuid === uuid);
-  if (!component) {
-    throw new Error(`Component with UUID "${uuid}" not found.`);
-  }
-  return component;
+  return ensure(
+    tryGetComponentByUuid(site, uuid),
+    () => `Component with UUID "${uuid}" not found.`
+  );
 }
 
 /**
  * Find a TplNode by UUID within a component's tpl tree. Throws if not found.
  */
 export function getTplByUuid(component: Component, uuid: string): TplNode {
-  const tpl = flattenTpls(component.tplTree).find((t) => t.uuid === uuid);
-  if (!tpl) {
-    throw new Error(
+  return ensure(
+    tryGetTplByUuid(component, uuid),
+    () =>
       `Element with UUID "${uuid}" not found in component "${component.name}".`
-    );
-  }
-  return tpl;
+  );
 }
 
 /**

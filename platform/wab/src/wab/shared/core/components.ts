@@ -2615,6 +2615,23 @@ export function getDefaultComponent(site: Site, kind: DefaultComponentKind) {
   return defaultComponent;
 }
 
+export function tryGetComponentByUuid(
+  site: Site,
+  uuid: string
+): Component | undefined {
+  return site.components.find((c) => c.uuid === uuid);
+}
+
+export function tryGetComponentByName(
+  site: Site,
+  name: string,
+  opts: { plasmicOnly?: boolean } = {}
+): Component | undefined {
+  return site.components.find(
+    (c) => c.name === name && (!opts.plasmicOnly || isPlasmicComponent(c))
+  );
+}
+
 export function getAllComponentsInTopologicalOrder(site: Site) {
   const sortedComponents: Component[] = [];
   const visited = new Set<Component>();

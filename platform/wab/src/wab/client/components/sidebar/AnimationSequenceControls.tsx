@@ -14,6 +14,7 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   ItemOrGroup,
   VirtualGroupedList,
+  VirtualGroupedListHandle,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import {
@@ -46,6 +47,11 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__AnimationEnterSvg";
 import PlasmicLeftAnimationSequencesPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftAnimationSequencesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  UiActionsOverlay,
+  useModelUiActionHandler,
+} from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -371,16 +377,19 @@ const AnimationSequenceRow = observer(function AnimationSequenceRow(
   };
 
   return (
-    <ListItem
-      icon={<Icon icon={AnimationEnterSvgIcon} />}
-      onClick={() => {
-        onEdit?.();
-        onClick?.();
-      }}
-      menu={renderMenu}
-    >
-      {sequence.name}
-    </ListItem>
+    <>
+      <ListItem
+        icon={<Icon icon={AnimationEnterSvgIcon} />}
+        onClick={() => {
+          onEdit?.();
+          onClick?.();
+        }}
+        menu={renderMenu}
+      >
+        {sequence.name}
+      </ListItem>
+      <UiActionsOverlay uiId={mkModelUiId(sequence)} />
+    </>
   );
 });
 
@@ -407,6 +416,11 @@ export const AnimationSequencesPanel = observer(
 
     const [findReferenceAnimationSequence, setFindReferenceAnimationSequence] =
       React.useState<AnimationSequence | undefined>(undefined);
+
+    const listRef = React.useRef<VirtualGroupedListHandle>(null);
+    useModelUiActionHandler("AnimationSequence", (uuid) => {
+      listRef.current?.scrollTo(uuid);
+    });
 
     const addSequence = async () => {
       await studioCtx.change(() => {
@@ -541,6 +555,7 @@ export const AnimationSequencesPanel = observer(
           }
           content={
             <VirtualGroupedList
+              handleRef={listRef}
               items={items}
               renderItem={(animSeq) => (
                 <AnimationSequenceRow

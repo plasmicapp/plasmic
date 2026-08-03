@@ -1,10 +1,14 @@
+import type {
+  MentionableResource,
+  MentionableResourceKind,
+} from "@/wab/client/components/copilot/resource-mention-utils";
 import {
   PublishResult,
   StudioAppUser,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiBranch, BranchId } from "@/wab/shared/ApiSchema";
-import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
+import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import { ExtendedKeyboardEvent } from "mousetrap";
@@ -59,6 +63,13 @@ export type HostFrameApi = {
   setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void>;
   /** Resolves once the studio and its active canvas are ready. */
   waitForStudioReady(): Promise<void>;
+  listMentionableResources(): Promise<MentionableResource[]>;
+  /** Rewrite `@<…>` mentions in the text to their resolved (uuid-carrying) form. */
+  resolveMentions(text: string): Promise<string>;
+  navigateToMentionedResource(
+    kind: MentionableResourceKind,
+    uuid: string
+  ): Promise<void>;
 };
 
 /** Structured error for copilot tool calls — Comlink-serializable. */

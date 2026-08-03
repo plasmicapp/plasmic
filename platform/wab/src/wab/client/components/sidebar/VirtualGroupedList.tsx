@@ -26,6 +26,10 @@ interface GroupedItem<G, I> {
 }
 type Row<G, I> = Item<I> | Group<G, I> | GroupedItem<G, I>;
 
+export interface VirtualGroupedListHandle {
+  scrollTo: (key: string) => void;
+}
+
 export function VirtualGroupedList<I, G>(props: {
   items: (Item<I> | Group<G, I>)[];
   renderItem: (item: I, group: Group<G, I> | undefined) => React.ReactNode;
@@ -34,6 +38,7 @@ export function VirtualGroupedList<I, G>(props: {
   headerHeight: number;
   hideEmptyGroups?: boolean;
   forceExpandAll?: boolean;
+  handleRef?: React.Ref<VirtualGroupedListHandle>;
 }) {
   const {
     items,
@@ -43,6 +48,7 @@ export function VirtualGroupedList<I, G>(props: {
     headerHeight,
     hideEmptyGroups,
     forceExpandAll,
+    handleRef,
   } = props;
 
   const [collapsed, setCollapsed] = React.useState<Record<string, boolean>>(
@@ -102,6 +108,17 @@ export function VirtualGroupedList<I, G>(props: {
   };
 
   const listRef = React.useRef<VariableSizeList>(null);
+
+  React.useImperativeHandle(handleRef, () => ({
+    scrollTo: (key: string) => {
+      const index = flattenedItems.findIndex((row) =>
+        row.type === "grouped_item" ? row.item.key === key : row.key === key
+      );
+      if (index >= 0) {
+        listRef.current?.scrollToItem(index, "smart");
+      }
+    },
+  }));
 
   React.useEffect(() => {
     if (listRef.current) {

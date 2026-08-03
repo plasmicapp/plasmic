@@ -4,6 +4,7 @@
 import {
   RenderElementProps,
   VirtualTree,
+  VirtualTreeHandle,
   getFolderKeyChanges,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
@@ -24,6 +25,7 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import Select from "@/wab/client/components/widgets/Select";
 import { PlasmicLeftGeneralTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useModelUiActionHandler } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import {
   StyleTokenType,
   StyleTokenValue,
@@ -126,6 +128,7 @@ function mapToTokenPanelRow({
 
 const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const studioCtx = useStudioCtx();
+  const treeRef = React.useRef<VirtualTreeHandle>(null);
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
   const debouncedSetQuery = React.useCallback(
     debounce((value: string) => {
@@ -520,6 +523,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           }}
         >
           <VirtualTree
+            ref={treeRef}
             rootNodes={items}
             renderElement={TokenTreeRow}
             nodeData={nodeData}
@@ -553,6 +557,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     nodeKey,
     nodeHeights,
     renameGroup,
+    expandTo,
     expandAll,
     collapseAll,
   } = useTreeData<StyleTokenPanelRow>({
@@ -564,6 +569,11 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     getNodeSearchText: getRowSearchText,
     getNodeHeight: getRowHeight,
     defaultOpenKeys: "all",
+  });
+
+  useModelUiActionHandler("StyleToken", (uuid) => {
+    expandTo(uuid);
+    treeRef.current?.scrollTo(uuid);
   });
 
   return (

@@ -45,6 +45,7 @@ import InputFieldSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plas
 import LinkSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__LinkSvg";
 import SettingsSlidersSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SettingsSlidersSvg";
 import TableRowsPageSectionIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TableRowsPageSection";
+import type { TplType } from "@/wab/shared/core/tpls";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import React from "react";
 import { MdError } from "react-icons/md";
@@ -95,6 +96,41 @@ export const COPY_ICON = <Icon icon={CopyIcon} />;
 export const CREATE_ICON = <Icon icon={CreateIcon} />;
 export const FETCH_ICON = <Icon icon={FetchIcon} />;
 export const DOWNLOAD_ICON = <Icon icon={DownloadsvgIcon} />;
+
+export function iconForTplType(type: TplType): SvgIcon {
+  switch (type) {
+    case "text":
+      return TextBlockIcon;
+    case "heading":
+      return HeadingIcon;
+    case "image":
+      return ImageBlockIcon;
+    case "link":
+      return LinkIcon;
+    case "input":
+      return TextInputIcon;
+    case "passwordInput":
+      return PassInputIcon;
+    case "button":
+      return ButtonInputIcon;
+    case "textarea":
+      return AreaInputIcon;
+    case "slot":
+      return SlotIcon;
+    case "component":
+      return ComponentIcon;
+    case "freeContainer":
+      return BlockIcon;
+    case "vertStack":
+      return VStackBlockIcon;
+    case "horizStack":
+      return HStackBlockIcon;
+    case "grid":
+      return GridIcon;
+    case "contentLayout":
+      return TableRowsPageSectionIcon;
+  }
+}
 
 export function getVisibilityIcon(visibility: TplVisibility) {
   if (visibility === TplVisibility.DisplayNone) {
