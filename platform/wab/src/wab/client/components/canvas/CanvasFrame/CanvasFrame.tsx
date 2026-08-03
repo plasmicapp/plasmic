@@ -455,7 +455,7 @@ export const CanvasFrame = observer(function CanvasFrame({
       const viewport = iframeRef.current;
       spawn(
         (async () => {
-          const html = await studioCtx.hostPageHtml;
+          const html = await studioCtx.fetchHostPageHtml();
           const doc = ensure(
             viewport.contentDocument,
             () => "Expected contentDocument to exist"
@@ -518,9 +518,13 @@ export const CanvasFrame = observer(function CanvasFrame({
           // Stub dev-server HMR connections to avoid replacing the document written by
           // Studio. Next 12+ and Turbopack use WebSocket; webpack-hot-middleware (Gatsby)
           // uses EventSource. Runs before the framework boots.
+          //
+          // Next 16 uses the React debug channel over its HMR socket, and won't
+          // hydrate without it. So we connect it and deliver only those messages.
           const disableHmrScript = `
             (() => {
               const isHmr = (url) => /[^a-zA-Z]hmr($|[^a-zA-Z])/.test(url);
+              const isNextHmr = (url) => /\\/_next\\/(webpack-)?hmr(\\?|$)/.test(url);
               window.EventSource = class extends EventSource {
                 constructor(url, config) {
                   if (isHmr(url)) {
@@ -531,10 +535,24 @@ export const CanvasFrame = observer(function CanvasFrame({
               };
               window.WebSocket = class extends WebSocket {
                 constructor(url, protocols) {
-                  if (isHmr(url)) {
+                  if (isHmr(url) && !isNextHmr(url)) {
                     return { addEventListener() {}, removeEventListener() {}, send() {}, close() {}, readyState: 3 };
                   }
                   super(url, protocols);
+                  if (!isNextHmr(url)) {
+                    return;
+                  }
+                  let onmessage = null;
+                  this.addEventListener("message", (event) => {
+                    const data = event.data;
+                    if (data instanceof ArrayBuffer && new Uint8Array(data)[0] === 0) {
+                      onmessage?.call(this, event);
+                    }
+                  });
+                  Object.defineProperty(this, "onmessage", {
+                    get: () => onmessage,
+                    set: (fn) => (onmessage = fn),
+                  });
                 }
               };
             })();

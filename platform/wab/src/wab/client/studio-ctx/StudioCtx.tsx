@@ -671,7 +671,13 @@ export class StudioCtx extends WithDbCtx {
   private hostLessPkgsFrame: HTMLIFrameElement;
   private hostLessPkgsLock = Promise.resolve();
 
-  readonly hostPageHtml: Promise<string>;
+  /**
+   * Fetches the host page html for an artboard iframe. Each artboard needs its own document
+   * since Next16 keys its React debug channel on the request that produced the html, and
+   * hands it to whoever claims it first, so artboards sharing one document would leave all
+   * but one waiting forever.
+   */
+  readonly fetchHostPageHtml: () => Promise<string>;
 
   constructor(args: StudioCtxArgs) {
     super();
@@ -1033,7 +1039,13 @@ export class StudioCtx extends WithDbCtx {
       }
     };
 
-    this.hostPageHtml = fetchHostPageHtml();
+    // Start fetching now so the first artboard doesn't wait on it.
+    let prefetched: Promise<string> | undefined = fetchHostPageHtml();
+    this.fetchHostPageHtml = () => {
+      const html = prefetched ?? fetchHostPageHtml();
+      prefetched = undefined;
+      return html;
+    };
   }
 
   private setHostLessPkgs() {

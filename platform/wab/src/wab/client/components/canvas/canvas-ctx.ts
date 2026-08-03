@@ -255,7 +255,6 @@ export class CanvasCtx {
     const $doc = (this._$doc = $(doc) as JQuery<HTMLDocument>);
 
     this._$html = $doc.find("html");
-    this.setInteractiveMode(sc.isInteractiveMode);
     this._$head = this._$html.find("head");
     this._controlStyleNode = upsertJQSelector(
       "style#controlStyles",
@@ -291,6 +290,9 @@ export class CanvasCtx {
     // We also do it earlier so that we can intercept clicks as much as possible, rather than waiting for __wab_user_body first.
     this._$head = this._$html.find("head");
     this._$body = this._$html.find("body").first();
+    // Call after the host renders its user body. Next renders <html> itself, so
+    // mutating its class beforehand is seen as a server/client mismatch.
+    this.setInteractiveMode(sc.isInteractiveMode);
     upsertJQSelector(
       `link[href='${getStaticBaseUrl()}/styles/canvas/canvas.${
         ENV.COMMITHASH
