@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-twitter-widgets",
-  "version": "0.0.255",
+  "version": "0.0.256",
   "description": "Plasmic registration calls for react-twitter-widgets",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -35,7 +35,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.14",
+    "@plasmicapp/host": "2.0.15",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "tsdx": "^0.14.1",

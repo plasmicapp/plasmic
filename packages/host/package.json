@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "description": "plasmic library for app hosting",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",

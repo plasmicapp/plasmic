@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-query",
-  "version": "0.0.276",
+  "version": "0.0.277",
   "description": "Plasmic components and registration calls for data fetching",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -35,7 +35,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.14",
+    "@plasmicapp/host": "2.0.15",
     "@plasmicapp/query": "0.1.87",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
