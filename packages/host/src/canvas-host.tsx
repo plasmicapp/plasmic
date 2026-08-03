@@ -41,8 +41,14 @@ function getStudioHash() {
   return urlParams.get("studio-hash");
 }
 
+const STUDIO_SCRIPT_ID = "plasmic-studio-script";
+
 function renderStudioIntoIframe() {
+  if (document.getElementById(STUDIO_SCRIPT_ID)) {
+    return;
+  }
   const script = document.createElement("script");
+  script.id = STUDIO_SCRIPT_ID;
   const staticBaseUrl = getPlasmicStaticBaseUrl();
   const hash = getStudioHash();
   script.src = `${staticBaseUrl}/js/studio${hash ? `.${hash}.js` : `.js`}`;
