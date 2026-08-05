@@ -95,6 +95,53 @@ function InnerCustomPropEditor({
   return <div ref={containerRef} style={{ display: "contents" }} />;
 }
 
+// updateValue round trips asynchronously through the studio model before `value`
+// reflects it, so rendering the control directly from `value` clobbers controlled
+// inputs mid-flight. ValueEcho instead drives the control from local state, echoes
+// of pending writes are ignored, while external `value` changes reset it.
+function makeValueEcho(sub: SubDeps) {
+  return function ValueEcho(props: {
+    impl: CustomControl<any>;
+    value: any;
+    onChange: (v: any) => void;
+    controlProps: any;
+  }) {
+    const R = sub.React;
+    const [local, setLocal] = R.useState(props.value);
+    // Writes sent via updateValue (in send order) not yet seen back in `value`.
+    const pending = R.useRef(new Set<string | undefined>());
+    const lastPropKey = R.useRef(JSON.stringify(props.value));
+    const key = JSON.stringify(props.value);
+    if (key !== lastPropKey.current) {
+      lastPropKey.current = key;
+      if (pending.current.has(key)) {
+        // An echo also supersedes earlier writes, whose own echoes may have
+        // been coalesced into this one.
+        for (const k of pending.current) {
+          pending.current.delete(k);
+          if (k === key) {
+            break;
+          }
+        }
+      } else {
+        pending.current.clear();
+        setLocal(props.value);
+      }
+    }
+    return R.createElement(props.impl, {
+      ...props.controlProps,
+      value: local,
+      updateValue: (v: any) => {
+        pending.current.add(JSON.stringify(v));
+        setLocal(v);
+        props.onChange(v);
+      },
+    });
+  };
+}
+
+export const _testonly = { makeValueEcho };
+
 function useCustomPropEditor(
   sub: SubDeps,
   containerRef: React.RefObject<HTMLDivElement>,
@@ -109,6 +156,7 @@ function useCustomPropEditor(
   const root = React.useRef<Root | null>(null);
   const studioCtx = useStudioCtx();
   const projectData = studioCtx.getProjectData();
+  const ValueEcho = React.useMemo(() => makeValueEcho(sub), [sub]);
   const FullscreenModal = React.useMemo(
     () =>
       sub.createModal({
@@ -137,6 +185,7 @@ function useCustomPropEditor(
     return () => {
       if (root.current) {
         root.current.unmount();
+        root.current = null;
       } else if (containerRef.current && sub.ReactDOM.unmountComponentAtNode) {
         sub.ReactDOM.unmountComponentAtNode(containerRef.current);
       }
@@ -155,16 +204,19 @@ function useCustomPropEditor(
       {
         className: "error-boundary",
       },
-      sub.React.createElement(impl, {
+      sub.React.createElement(ValueEcho, {
+        impl,
         value,
-        componentProps: componentPropValues,
-        contextData: ccContextData,
-        updateValue: onChange,
-        FullscreenModal,
-        SideModal,
-        studioOps,
-        projectData: projectData,
-        studioDocument: window.document,
+        onChange,
+        controlProps: {
+          componentProps: componentPropValues,
+          contextData: ccContextData,
+          FullscreenModal,
+          SideModal,
+          studioOps,
+          projectData,
+          studioDocument: window.document,
+        },
       })
     );
     if (root.current) {
