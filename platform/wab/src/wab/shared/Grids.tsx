@@ -4,6 +4,7 @@ import {
   VariantCombo,
   ensureVariantSetting,
   isPrivateStyleVariant,
+  tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import { betweenInclusive, ensureString } from "@/wab/shared/common";
 import { gridChildProps } from "@/wab/shared/core/style-props";
@@ -13,7 +14,12 @@ import {
   autoSize,
   showSizeCss,
 } from "@/wab/shared/css-size";
-import { convertToRelativePosition } from "@/wab/shared/layoututils";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import {
+  PositionLayoutType,
+  convertToRelativePosition,
+  getRshPositionType,
+} from "@/wab/shared/layoututils";
 import { TplNode, TplTag } from "@/wab/shared/model/classes";
 import * as L from "lodash";
 import { CSSProperties } from "react";
@@ -170,9 +176,18 @@ function convertToGridChildren(parent: TplNode, variantCombo: VariantCombo) {
   const tags = $$$(parent).children().toArrayOfTplNodes() as TplTag[];
 
   tags.forEach((tag) => {
-    const rs = ensureVariantSetting(tag, filteredCombo).rs;
-    const childRsh = RSH(rs, tag);
-    convertToRelativePosition(childRsh, childRsh);
+    // Don't reset a deliberately positioned child just because the parent was
+    // updated. Matches `keepFree` in adoptParentContainerStyleForVariant()
+    const effectiveRsh = getEffectiveVariantSetting(tag, filteredCombo).rsh();
+    if (getRshPositionType(effectiveRsh) !== PositionLayoutType.auto) {
+      return;
+    }
+    // The child is already in flow; just clean up its own leftover offsets
+    const vs = tryGetVariantSetting(tag, filteredCombo);
+    if (vs) {
+      const childRsh = RSH(vs.rs, tag);
+      convertToRelativePosition(childRsh, childRsh);
+    }
   });
 }
 
