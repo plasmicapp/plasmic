@@ -70,7 +70,7 @@ test.describe("create-data-source", () => {
     await userInput.click();
     await userInput.press("ControlOrMeta+a");
     await userInput.press("Backspace");
-    await userInput.fill("cypress");
+    await userInput.fill("wab");
 
     await page.locator(`[data-test-id="test-connection"]`).click();
 

@@ -37,6 +37,12 @@ overrides:
   "@storybook/manager-api": "8.5.5"
   "@storybook/preview-api": "8.5.5"
   "@storybook/theming": "8.5.5"
+  # Only pulled in transitively (@storybook/test-runner, jest-playwright-preset),
+  # both with open ranges, so this would otherwise float to whatever is latest at
+  # resolve time. Pin it to the version the yarn workspaces use, so the runner
+  # image only pre-installs one set of browsers (devops/manual/runner-image).
+  playwright: "1.60.0"
+  playwright-core: "1.60.0"
   react: "18.3.1"
   react-dom: "18.3.1"
 
