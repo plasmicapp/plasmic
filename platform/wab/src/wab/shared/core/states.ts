@@ -5,7 +5,7 @@ import {
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   assertNever,
@@ -17,6 +17,10 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import {
+  interpolatedStringFormatDescription,
+  interpolatedStringToExpr,
+} from "@/wab/shared/copilot/dynamic-value-input";
+import {
   getComponentDisplayName,
   removeComponentParam,
 } from "@/wab/shared/core/components";
@@ -26,6 +30,7 @@ import {
   asCode,
   code,
   codeLit,
+  createExprForDataPickerValue,
   customCode,
   isFallbackSet,
   isRealCodeExpr,
@@ -51,6 +56,7 @@ import {
   Interaction,
   NameArg,
   NamedState,
+  ObjectPath,
   Param,
   PropParam,
   Site,
@@ -60,8 +66,11 @@ import {
   TplComponent,
   TplNode,
   TplTag,
+  VarRef,
+  Variant,
   VariantGroup,
   VariantGroupState,
+  VariantsRef,
   ensureKnownFunctionType,
   ensureKnownNamedState,
   isKnownCollectionExpr,
@@ -79,10 +88,16 @@ import {
   isKnownVarRef,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
-import { convertToFunction } from "@/wab/shared/parser-utils";
+import {
+  convertToFunction,
+  isValidJavaScriptCode,
+} from "@/wab/shared/parser-utils";
 import { smartHumanize } from "@/wab/shared/strs";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { isArray } from "lodash";
+import { Result, err, ok } from "neverthrow";
+import type { UnionToIntersection } from "type-fest";
+import { z } from "zod";
 
 /**
  * Variable types assignable to explicit user-managed states; "variant" states
@@ -1335,6 +1350,383 @@ export const serializeActionFunction = (interaction: Interaction) => {
 };
 
 /**
+ * Defines interaction actions that copilot tools and interaction operations can write.
+ */
+export function interactionActionSchema() {
+  return z.discriminatedUnion("actionName", [
+    runCodeActionSchema(),
+    updateVariableActionSchema(),
+    updateVariantActionSchema(),
+  ]);
+}
+
+function runCodeActionSchema() {
+  return z.object({
+    actionName: z.literal("customFunction"),
+    code: z
+      .string()
+      .describe(
+        "JavaScript to run when the event fires. The last expression (or an explicit return inside a block) becomes the step's $steps result."
+      ),
+  });
+}
+
+function updateVariableActionSchema() {
+  return z.object({
+    actionName: z.literal("updateVariable"),
+    variable: z.array(z.string()).describe(
+      `Path of the state variable under $state, e.g. ["count"] or ["form", "email"]. Implicit element states are ["<element name>", "<state name>"].
+Repeated element states (read with "[]" in the name, e.g. "email[].value") are not supported; use a "customFunction" step for those.`
+    ),
+    operation: z
+      .enum([
+        "NewValue",
+        "ClearValue",
+        "Increment",
+        "Decrement",
+        "Toggle",
+        "Push",
+        "Splice",
+      ])
+      .describe(
+        "NewValue sets the variable; ClearValue sets undefined; Increment/Decrement for numbers; Toggle for booleans; Push appends to an array; Splice removes array elements."
+      ),
+    value: z
+      .string()
+      .optional()
+      .describe(
+        `New value (NewValue) or element to append (Push). Required by those operations only. ${interpolatedStringFormatDescription}`
+      ),
+    startIndex: z
+      .number()
+      .optional()
+      .describe("Splice only: index of the first element to remove."),
+    deleteCount: z
+      .number()
+      .optional()
+      .describe("Splice only: number of elements to remove."),
+  });
+}
+
+function updateVariantActionSchema() {
+  return z.object({
+    actionName: z.literal("updateVariant"),
+    vgroup: z.string().describe("Variant group name on the component."),
+    operation: z
+      .enum([
+        "NewValue",
+        "ClearValue",
+        "Toggle",
+        "MultiToggle",
+        "Activate",
+        "MultiActivate",
+        "Deactivate",
+        "MultiDeactivate",
+      ])
+      .describe(
+        "Toggle groups (standalone variants) use Toggle/Activate/Deactivate; single-select groups use NewValue/ClearValue; multi-select groups also allow MultiToggle/MultiActivate/MultiDeactivate."
+      ),
+    value: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Variant names in the group; required by NewValue and the Multi* operations (exactly one name for single-select NewValue)."
+      ),
+  });
+}
+
+export type InteractionAction = z.infer<
+  ReturnType<typeof interactionActionSchema>
+>;
+export type RunCodeInteractionAction = Extract<
+  InteractionAction,
+  { actionName: "customFunction" }
+>;
+export type UpdateVariableInteractionAction = Extract<
+  InteractionAction,
+  { actionName: "updateVariable" }
+>;
+export type UpdateVariantInteractionAction = Extract<
+  InteractionAction,
+  { actionName: "updateVariant" }
+>;
+
+export function isInteractionActionName(
+  actionName: string
+): actionName is InteractionAction["actionName"] {
+  return interactionActionSchema().options.some(
+    (option) => option.shape.actionName.value === actionName
+  );
+}
+
+/**
+ * The opts each kind of interaction action needs.
+ */
+interface BuildInteractionArgsOptsByAction {
+  customFunction: {
+    /** Event-arg names to keep in scope for the code body. */
+    codeArgNames?: string[];
+  };
+  updateVariable: {
+    /** Component whose states the action references. */
+    component: Component;
+  };
+  updateVariant: {
+    /** Component whose variant groups the action references. */
+    component: Component;
+  };
+}
+
+type BuildInteractionArgsOpts = UnionToIntersection<
+  BuildInteractionArgsOptsByAction[InteractionAction["actionName"]]
+>;
+
+/**
+ * Validates an action payload and builds the interaction's args as model Exprs.
+ */
+export function buildInteractionArgs(
+  action: InteractionAction,
+  opts: BuildInteractionArgsOpts
+): Result<Record<string, Expr>, string> {
+  switch (action.actionName) {
+    case "customFunction":
+      return buildRunCodeArgs(action, opts);
+    case "updateVariable":
+      return buildUpdateVariableArgs(action, opts);
+    case "updateVariant":
+      return buildUpdateVariantArgs(action, opts);
+  }
+}
+
+function buildRunCodeArgs(
+  action: RunCodeInteractionAction,
+  { codeArgNames }: BuildInteractionArgsOptsByAction["customFunction"]
+): Result<Record<string, Expr>, string> {
+  const invalidCodeMessage = validateInteractionCode(action.code);
+  if (invalidCodeMessage) {
+    return err(invalidCodeMessage);
+  }
+  return ok({
+    customFunction: createExprForDataPickerValue(
+      action.code,
+      null,
+      true /* isBodyFunction */,
+      codeArgNames ?? []
+    ),
+  });
+}
+
+/** Operations whose runtime functionBody reads `value`. */
+const VARIABLE_OPERATIONS_WITH_VALUE: UpdateVariableInteractionAction["operation"][] =
+  ["NewValue", "Push"];
+
+function buildUpdateVariableArgs(
+  action: UpdateVariableInteractionAction,
+  { component }: BuildInteractionArgsOptsByAction["updateVariable"]
+): Result<Record<string, Expr>, string> {
+  const path = action.variable
+    .flatMap((segment) => segment.split("."))
+    .filter((segment) => segment !== "");
+  if (path[0] === "$state") {
+    path.shift();
+  }
+  if (path.length === 0) {
+    return err(`"variable" must be a non-empty path under $state.`);
+  }
+  const states = component.states.filter((s) => s.variableType !== "variant");
+  const state = states.find((s) => {
+    const parts = getStateVarName(s).split(".");
+    return (
+      parts.length <= path.length && parts.every((part, i) => part === path[i])
+    );
+  });
+  if (!state) {
+    const names = states.map((s) => getStateVarName(s));
+    return err(
+      `State "${path.join(".")}" not found on component "${
+        component.name
+      }". Available states: ${names.join(", ") || "none"}.`
+    );
+  }
+  const stateVarName = getStateVarName(state);
+  // A repeated element's implicit state ("email[].value") holds one value
+  // per row. The "[]" marker exists only in state names and specs to indicate the repeated element state.
+  // The runtime $state indexes rows numerically. We don't support these here for now
+  // since it requires additional parsing of these "[]" markers.
+  // AI can use customFunctions for such cases for now. We added instructions in the schema descriptions
+  // for it to use customFunctions for repeated element states.
+  if (stateVarName.includes("[]")) {
+    return err(
+      `State "${stateVarName}" belongs to a repeated element and holds one value per row, so it is not supported by updateVariable. Use a "customFunction" step to target an exact row index in code (e.g. $state.${stateVarName.replaceAll(
+        "[]",
+        "[0]"
+      )}).`
+    );
+  }
+  // When a deeper path addresses a field inside an object-typed state,
+  // whose type cannot be known here, so any operation is allowed.
+  const targetsStateExactly = stateVarName.split(".").length === path.length;
+  const applicableOperations = updateVariableOperations.filter(
+    (op) => !targetsStateExactly || !op.hidden?.(state.variableType, undefined)
+  );
+  if (
+    !applicableOperations.some(
+      (op) => op.value === UpdateVariableOperations[action.operation]
+    )
+  ) {
+    const names = applicableOperations.map(
+      (op) => UpdateVariableOperations[op.value]
+    );
+    return err(
+      `Operation "${action.operation}" is not available for state "${path.join(
+        "."
+      )}" of type "${state.variableType}". Available operations: ${names.join(
+        ", "
+      )}.`
+    );
+  }
+
+  const needsValue = VARIABLE_OPERATIONS_WITH_VALUE.includes(action.operation);
+  if (needsValue && action.value === undefined) {
+    return err(`Operation "${action.operation}" requires a "value".`);
+  }
+  if (!needsValue && action.value !== undefined) {
+    return err(`Operation "${action.operation}" does not take a "value".`);
+  }
+  const isSplice = action.operation === "Splice";
+  if (isSplice && (action.startIndex == null || action.deleteCount == null)) {
+    return err(`Operation "Splice" requires "startIndex" and "deleteCount".`);
+  }
+  if (!isSplice && (action.startIndex != null || action.deleteCount != null)) {
+    return err(`Only the "Splice" operation takes "startIndex"/"deleteCount".`);
+  }
+
+  const args: Record<string, Expr> = {
+    variable: new ObjectPath({ path: ["$state", ...path], fallback: null }),
+    operation: codeLit(UpdateVariableOperations[action.operation]),
+  };
+  if (action.value !== undefined) {
+    try {
+      const valueExpr = interpolatedStringToExpr(action.value);
+      // `{{ 5 }}` parses to `CustomCode("(5)")`, and `tryExtractJson` (a
+      // strict jsonParse) can't see through the parens. Unwrap static JSON
+      // literals back to `codeLit` so they stay plain values in the model
+      // and read back as typed JSON, like Studio-entered static values.
+      const staticValue = isKnownCustomCode(valueExpr)
+        ? Lang.tryJsonParse(stripParens(valueExpr.code))
+        : undefined;
+      args.value = staticValue !== undefined ? codeLit(staticValue) : valueExpr;
+    } catch (e) {
+      return err(e instanceof Error ? e.message : String(e));
+    }
+  }
+  if (isSplice) {
+    args.startIndex = codeLit(action.startIndex!);
+    args.deleteCount = codeLit(action.deleteCount!);
+  }
+  return ok(args);
+}
+
+const VARIANT_OPERATIONS_WITH_VALUE: UpdateVariantInteractionAction["operation"][] =
+  ["NewValue", "MultiToggle", "MultiActivate", "MultiDeactivate"];
+
+function buildUpdateVariantArgs(
+  action: UpdateVariantInteractionAction,
+  { component }: BuildInteractionArgsOptsByAction["updateVariant"]
+): Result<Record<string, Expr>, string> {
+  const vgroup = component.variantGroups.find(
+    (vg) => paramToVarName(component, vg.param) === action.vgroup
+  );
+  if (!vgroup) {
+    const names = component.variantGroups.map((vg) =>
+      paramToVarName(component, vg.param)
+    );
+    return err(
+      `Variant group "${action.vgroup}" not found on component "${
+        component.name
+      }". Available groups: ${names.join(", ") || "none"}.`
+    );
+  }
+  // `hidden` is the same rule Studio's UI uses to filter the operation
+  // dropdown per group kind, so the tools also accept exactly what the UI offers.
+  const applicableOperations = updateVariantOperations.filter(
+    (op) => !op.hidden?.(vgroup)
+  );
+  if (
+    !applicableOperations.some(
+      (op) => op.value === UpdateVariantOperations[action.operation]
+    )
+  ) {
+    const names = applicableOperations.map(
+      (op) => UpdateVariantOperations[op.value]
+    );
+    return err(
+      `Operation "${action.operation}" is not available for variant group "${
+        action.vgroup
+      }". Available operations: ${names.join(", ")}.`
+    );
+  }
+
+  const needsValue = VARIANT_OPERATIONS_WITH_VALUE.includes(action.operation);
+  if (needsValue && (!action.value || action.value.length === 0)) {
+    return err(
+      `Operation "${action.operation}" requires "value" with at least one variant name.`
+    );
+  }
+  if (!needsValue && action.value !== undefined) {
+    return err(`Operation "${action.operation}" does not take a "value".`);
+  }
+  if (
+    action.operation === "NewValue" &&
+    !vgroup.multi &&
+    action.value!.length > 1
+  ) {
+    return err(
+      `Variant group "${action.vgroup}" is single-select; "value" must contain exactly one variant name.`
+    );
+  }
+
+  const args: Record<string, Expr> = {
+    vgroup: new VarRef({ variable: vgroup.param.variable }),
+    operation: codeLit(UpdateVariantOperations[action.operation]),
+  };
+  if (needsValue) {
+    const variants: Variant[] = [];
+    for (const variantName of action.value!) {
+      const variant = vgroup.variants.find((v) => v.name === variantName);
+      if (!variant) {
+        const names = vgroup.variants.map((v) => v.name);
+        return err(
+          `Variant "${variantName}" not found in group "${
+            action.vgroup
+          }". Available variants: ${names.join(", ") || "none"}.`
+        );
+      }
+      variants.push(variant);
+    }
+    args.value = new VariantsRef({ variants });
+  }
+  return ok(args);
+}
+
+/**
+ * Validates the JS code body of a "Run code" interaction.
+ */
+export function validateInteractionCode(
+  interactionCode: string
+): string | undefined {
+  if (!interactionCode.trim()) {
+    return "Interaction code cannot be empty.";
+  }
+
+  if (!isValidJavaScriptCode(interactionCode)) {
+    return `Interaction code is not valid JavaScript`;
+  }
+
+  return undefined;
+}
+
+/**
  * The initial value for writable states works similarly to virtual slots.
  * If some value is set for the tpl component arg, we use it. Otherwise,
  * we reference the value set in the original component.
@@ -1438,9 +1830,12 @@ export function mkInteraction(
   args: Record<string, Expr>
 ) {
   return new Interaction({
+    // $steps results are keyed by toVarName(interactionName), so uniqueness
+    // should be checked with similar normalization.
     interactionName: uniqueName(
       eventHandler.interactions.map((it) => it.interactionName),
-      interactionName
+      interactionName,
+      { normalize: toVarName }
     ),
     actionName,
     condExpr: null,

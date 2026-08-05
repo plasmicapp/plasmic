@@ -1051,6 +1051,30 @@ exports[`Component Serialization serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </states>
+  <interactions>
+    <ARRAY>
+      <ITEM>
+        <Interaction uuid="hzKoAGg9MbhA" name="Update ariaDialogTrigger ▸ isOpen" elementUuid="qrbXOGBU0xVT" eventName="On click" actionName="updateVariable">
+          <args operation="NewValue">
+            <variable>
+              <ObjectPath>
+                <path>
+                  <ARRAY>
+                    <ITEM>$state</ITEM>
+                    <ITEM>ariaDialogTrigger</ITEM>
+                    <ITEM>isOpen</ITEM>
+                  </ARRAY>
+                </path>
+              </ObjectPath>
+            </variable>
+            <value>
+              <CustomCode code="false"></CustomCode>
+            </value>
+          </args>
+        </Interaction>
+      </ITEM>
+    </ARRAY>
+  </interactions>
   <baseVariantTplTree><![CDATA[<plasmic-component id="WAQLbjkAZ5OA" data-plasmic-component="plasmicReactAriaDialogTrigger" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Dialog Trigger" style="position: relative">
   <slot name="trigger">
     <slot-target name="Trigger" id="UPso8XRDR1_Z">
@@ -1573,6 +1597,30 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </ITEM>
     </ARRAY>
   </states>
+  <interactions>
+    <ARRAY>
+      <ITEM>
+        <Interaction uuid="D2BzqgoBTjb6" name="Update ariaDialogTrigger ▸ isOpen" elementUuid="ssjp-JjPp06g" eventName="On click" actionName="updateVariable">
+          <args operation="NewValue">
+            <variable>
+              <ObjectPath>
+                <path>
+                  <ARRAY>
+                    <ITEM>$state</ITEM>
+                    <ITEM>ariaDialogTrigger</ITEM>
+                    <ITEM>isOpen</ITEM>
+                  </ARRAY>
+                </path>
+              </ObjectPath>
+            </variable>
+            <value>
+              <CustomCode code="false"></CustomCode>
+            </value>
+          </args>
+        </Interaction>
+      </ITEM>
+    </ARRAY>
+  </interactions>
   <baseVariantTplTree><![CDATA[<plasmic-component id="6A5IRex_ZR1p" data-plasmic-component="plasmicReactAriaDialogTrigger" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Dialog Trigger" style="position: relative">
   <slot name="trigger">
     <slot-target name="Trigger" id="ZTA2-vbNl2Ib">
@@ -4626,6 +4674,31 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </plasmic-component>
   </slot>
 </plasmic-component>",
+    "interactions": [
+      {
+        "__type": "Interaction",
+        "actionName": "updateVariable",
+        "args": {
+          "operation": "NewValue",
+          "value": {
+            "__type": "CustomCode",
+            "code": "false",
+          },
+          "variable": {
+            "__type": "ObjectPath",
+            "path": [
+              "$state",
+              "ariaDialogTrigger",
+              "isOpen",
+            ],
+          },
+        },
+        "elementUuid": "qrbXOGBU0xVT",
+        "eventName": "On click",
+        "name": "Update ariaDialogTrigger ▸ isOpen",
+        "uuid": "hzKoAGg9MbhA",
+      },
+    ],
     "name": "Drawer",
     "props": [
       {
@@ -5263,6 +5336,31 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     </plasmic-component>
   </slot>
 </plasmic-component>",
+    "interactions": [
+      {
+        "__type": "Interaction",
+        "actionName": "updateVariable",
+        "args": {
+          "operation": "NewValue",
+          "value": {
+            "__type": "CustomCode",
+            "code": "false",
+          },
+          "variable": {
+            "__type": "ObjectPath",
+            "path": [
+              "$state",
+              "ariaDialogTrigger",
+              "isOpen",
+            ],
+          },
+        },
+        "elementUuid": "ssjp-JjPp06g",
+        "eventName": "On click",
+        "name": "Update ariaDialogTrigger ▸ isOpen",
+        "uuid": "D2BzqgoBTjb6",
+      },
+    ],
     "name": "Modal",
     "props": [
       {

@@ -120,6 +120,22 @@ export function isDataTokenUsedInExpr(
 }
 
 /**
+ * Returns boolean indicating whether `expr` reads the result of
+ * `interaction` via `$steps.<name>`.
+ */
+export function isInteractionResultUsedInExpr(
+  interaction: Interaction,
+  expr: Expr | null | undefined
+): boolean {
+  if (!expr) {
+    return false;
+  }
+  const info = parseExpr(expr);
+  const varName = toVarName(interaction.interactionName);
+  return info.usedDollarVarKeys.$steps.has(varName);
+}
+
+/**
  * Updates `expr` replacing `oldObject`.`oldVarName` with
  * `newObject`.`newVarName`.
  */
@@ -326,7 +342,9 @@ export function renameInteractionAndFixExprs(
     interaction.parent.interactions
       .filter((it) => it !== interaction)
       .map((it) => it.interactionName),
-    newName
+    newName,
+    // $steps results are keyed by toVarName(interactionName)
+    { normalize: toVarName }
   );
 
   const eventHandler = interaction.parent;

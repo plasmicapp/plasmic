@@ -15,16 +15,26 @@ import {
 import { tryGetComponentByUuid } from "@/wab/shared/core/components";
 import { mkVar } from "@/wab/shared/core/lang";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
-import { tryGetTplByUuid } from "@/wab/shared/core/tpls";
+import {
+  EventHandlerKeyType,
+  flattenTpls,
+  getAllEventHandlersOfAttrType,
+  getAllEventHandlersOfParamType,
+  isTplComponent,
+  isTplTag,
+  tryGetTplByUuid,
+} from "@/wab/shared/core/tpls";
 import {
   Component,
   ComponentArena,
   CustomCode,
+  Interaction,
   ObjectPath,
   PageArena,
   Rep,
   Site,
   TplNode,
+  isKnownEventHandler,
 } from "@/wab/shared/model/classes";
 
 /**
@@ -46,6 +56,51 @@ export function getTplByUuid(component: Component, uuid: string): TplNode {
     () =>
       `Element with UUID "${uuid}" not found in component "${component.name}".`
   );
+}
+
+/**
+ * Find an interaction step by its uuid within a component's tpl tree,
+ * along with the element and event-handler slot it lives in. Only
+ * base-variant tag attrs and function-typed instance args are searched
+ * (the slots the interaction operations manage).
+ */
+export function findInteractionInComponent(
+  component: Component,
+  interactionUuid: string
+):
+  | {
+      tpl: TplNode;
+      eventName: string;
+      eventHandlerKey: EventHandlerKeyType;
+      interaction: Interaction;
+    }
+  | undefined {
+  for (const tpl of flattenTpls(component.tplTree)) {
+    if (!isTplTag(tpl) && !isTplComponent(tpl)) {
+      continue;
+    }
+    const eventHandlersData = [
+      ...getAllEventHandlersOfAttrType(component, tpl),
+      ...getAllEventHandlersOfParamType(component, tpl),
+    ];
+    for (const eventHandler of eventHandlersData) {
+      if (!isKnownEventHandler(eventHandler.expr)) {
+        continue;
+      }
+      const interaction = eventHandler.expr.interactions.find(
+        (it) => it.uuid === interactionUuid
+      );
+      if (interaction) {
+        return {
+          tpl,
+          eventName: eventHandler.eventName,
+          eventHandlerKey: eventHandler.eventHandlerKey,
+          interaction,
+        };
+      }
+    }
+  }
+  return undefined;
 }
 
 /**

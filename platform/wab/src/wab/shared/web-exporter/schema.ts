@@ -1,5 +1,6 @@
 import { tokenTypes } from "@/wab/commons/StyleToken";
 import { dataQueryArgSchema } from "@/wab/shared/copilot/dynamic-value-input";
+import { JsonValue } from "@/wab/shared/core/lang";
 import {
   STATE_ACCESS_TYPES,
   STATE_VARIABLE_TYPES,
@@ -185,9 +186,59 @@ export function componentSchema() {
       .array(variantOverrideSchema())
       .optional()
       .describe("Per-variant style/attr overrides."),
+    interactions: z
+      .array(interactionSchema())
+      .optional()
+      .describe("Element interactions (event handler steps), when any exist."),
   });
 }
 export type ComponentJson = z.infer<ReturnType<typeof componentSchema>>;
+
+export function interactionSchema() {
+  return z.object({
+    __type: z.literal("Interaction"),
+    uuid: z.string().describe("Interaction UUID."),
+    name: z
+      .string()
+      .describe(
+        "Step name; later steps in the same handler read this step's result as $steps.<name>."
+      ),
+    elementUuid: z
+      .string()
+      .describe("UUID of the element the handler is attached to."),
+    eventName: z
+      .string()
+      .describe('Event that triggers the handler (e.g. "onClick").'),
+    actionName: z
+      .string()
+      .describe(
+        'Action kind; "customFunction" is a Run-code step and carries `code`. Other kinds are Studio-built actions and carry structured args.'
+      ),
+    code: z
+      .string()
+      .optional()
+      .describe("JS body, present for Run-code steps."),
+    args: z
+      .record(z.string(), z.any())
+      .optional()
+      .describe(
+        "Structured arguments of Studio-built actions, keyed by argument name."
+      ),
+    conditionalMode: z
+      .enum(["never", "expression"])
+      .optional()
+      .describe(
+        'Present when the step does not always run: "never" (disabled) or "expression" (gated by `condition`).'
+      ),
+    condition: z
+      .union([z.any(), exprSchema()])
+      .optional()
+      .describe(
+        'The run-when expression, present when conditionalMode is "expression": the typed value when statically known, otherwise a serialized dynamic expression.'
+      ),
+  });
+}
+export type InteractionJson = z.infer<ReturnType<typeof interactionSchema>>;
 
 /** A `$q.<varName>` data query (the modern server-side query). */
 export function dataQuerySchema() {
@@ -367,15 +418,51 @@ export function stateSchema() {
 export type StateJson = z.infer<ReturnType<typeof stateSchema>>;
 
 /**
- * A dynamic expression, serialized structurally. Only the expression classes
- * related state initial values are covered at the moment (CustomCode, ObjectPath,
- * TemplatedString).
+ * A dynamic expression, serialized structurally.
  */
-
 export type ExprJson =
   | CustomCodeExprJson
   | ObjectPathExprJson
-  | TemplatedStringExprJson;
+  | TemplatedStringExprJson
+  | VarRefExprJson
+  | VariantsRefExprJson
+  | TplRefExprJson
+  | PageHrefExprJson
+  | FunctionArgExprJson
+  | FunctionExprJson
+  | CollectionExprJson;
+
+/** A serialized arg value: plain JSON when statically known, else structural. */
+export type ExprValueJson = JsonValue | ExprJson;
+
+export type VarRefExprJson = {
+  __type: "VarRef";
+  name: string;
+};
+export type VariantsRefExprJson = {
+  __type: "VariantsRef";
+  variants: string[];
+};
+export type TplRefExprJson = {
+  __type: "TplRef";
+  elementUuid: string;
+};
+export type PageHrefExprJson = {
+  __type: "PageHref";
+  pageUuid: string;
+  pageName: string;
+};
+export type FunctionArgExprJson = {
+  __type: "FunctionArg";
+  argName: string;
+  value?: ExprValueJson;
+};
+export type FunctionExprJson = {
+  __type: "FunctionExpr";
+  argNames: string[];
+  code?: string;
+};
+export type CollectionExprJson = (ExprValueJson | null)[];
 
 export type CustomCodeExprJson = {
   __type: "CustomCode";
@@ -395,7 +482,9 @@ export type TemplatedStringExprJson = {
 // Single instances so the recursive `z.lazy` reference below resolves to the
 // same object every time. Otherwise, zod-to-json-schema can't detect
 // recursion.
-const fallbackSchema: z.ZodType<ExprJson | undefined> = z
+const fallbackSchema: z.ZodType<
+  CustomCodeExprJson | ObjectPathExprJson | TemplatedStringExprJson | undefined
+> = z
   .lazy(() => exprSchema())
   .optional()
   .describe("Fallback expression used when evaluation fails.");
@@ -615,6 +704,7 @@ export function invalidResourceSchema() {
         "Animation",
         "Prop",
         "State",
+        "Interaction",
         "DataContext",
       ])
       .describe(

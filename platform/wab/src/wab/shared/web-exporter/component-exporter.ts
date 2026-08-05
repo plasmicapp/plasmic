@@ -15,6 +15,8 @@ import {
 import { stripParens, tryExtractJson } from "@/wab/shared/core/exprs";
 import { JsonValue } from "@/wab/shared/core/lang";
 import {
+  UpdateVariableOperations,
+  UpdateVariantOperations,
   getStateOnChangePropName,
   getStateVarName,
   isPublicState,
@@ -25,6 +27,10 @@ import {
 } from "@/wab/shared/core/styles";
 import {
   flattenTpls,
+  getAllEventHandlersOfAttrType,
+  getAllEventHandlersOfParamType,
+  isTplComponent,
+  isTplTag,
   isTplTextBlock,
   tplChildren,
 } from "@/wab/shared/core/tpls";
@@ -35,6 +41,7 @@ import {
   CustomCode,
   Expr,
   ImageAssetRef,
+  Interaction,
   ObjectPath,
   RuleSet,
   Site,
@@ -46,13 +53,21 @@ import {
   TplTag,
   Variant,
   VariantSetting,
+  isKnownCollectionExpr,
   isKnownCustomCode,
+  isKnownEventHandler,
   isKnownExprText,
+  isKnownFunctionArg,
+  isKnownFunctionExpr,
   isKnownObjectPath,
+  isKnownPageHref,
   isKnownPropParam,
   isKnownRawText,
   isKnownRenderExpr,
   isKnownTemplatedString,
+  isKnownTplRef,
+  isKnownVarRef,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import {
   isAnyType,
@@ -76,6 +91,8 @@ import {
   type ElementJson,
   type ElementOverrideJson,
   type ExprJson,
+  type ExprValueJson,
+  type InteractionJson,
   type LegacyDataQueryJson,
   type ObjectPathExprJson,
   type PageMetaJson,
@@ -504,26 +521,85 @@ function buildComponentProps(component: Component): PropJson[] {
 }
 
 /**
- * Serializes a dynamic expression structurally. Only the classes used in state
- * initial values are covered at the moment (CustomCode, ObjectPath, TemplatedString)
- * any other Expr yields undefined.
+ * Serializes a dynamic expression structurally in JSON format.
  */
-export function buildExprJson(expr: Expr): ExprJson | undefined {
+export function buildExprJson(
+  component: Component,
+  expr: Expr
+): ExprJson | undefined {
   if (isKnownCustomCode(expr) || isKnownObjectPath(expr)) {
-    return buildFallbackableExprJson(expr);
+    return buildFallbackableExprJson(component, expr);
   }
   if (isKnownTemplatedString(expr)) {
     return {
       __type: "TemplatedString",
       text: expr.text.map((part) =>
-        typeof part === "string" ? part : buildFallbackableExprJson(part)
+        typeof part === "string"
+          ? part
+          : buildFallbackableExprJson(component, part)
       ),
+    };
+  }
+  if (isKnownVarRef(expr)) {
+    const param = component.params.find((p) => p.variable === expr.variable);
+    return {
+      __type: "VarRef",
+      name: param ? paramToVarName(component, param) : expr.variable.name,
+    };
+  }
+  if (isKnownVariantsRef(expr)) {
+    return {
+      __type: "VariantsRef",
+      variants: expr.variants.map((v) => v.name),
+    };
+  }
+  if (isKnownTplRef(expr)) {
+    return { __type: "TplRef", elementUuid: expr.tpl.uuid };
+  }
+  if (isKnownPageHref(expr)) {
+    return {
+      __type: "PageHref",
+      pageUuid: expr.page.uuid,
+      pageName: expr.page.name,
+    };
+  }
+  if (isKnownFunctionArg(expr)) {
+    return {
+      __type: "FunctionArg",
+      argName: expr.argType.argName,
+      value: buildExprValueJson(component, expr.expr),
+    };
+  }
+  if (isKnownCollectionExpr(expr)) {
+    return expr.exprs.map((item) =>
+      item ? buildExprValueJson(component, item) ?? null : null
+    );
+  }
+  if (isKnownFunctionExpr(expr)) {
+    return {
+      __type: "FunctionExpr",
+      argNames: [...expr.argNames],
+      code: isKnownCustomCode(expr.bodyExpr)
+        ? stripParens(expr.bodyExpr.code)
+        : undefined,
     };
   }
   return undefined;
 }
 
+/** Plain typed JSON when statically known, else the structural form. */
+function buildExprValueJson(
+  component: Component,
+  expr: Expr
+): ExprValueJson | undefined {
+  const staticValue = tryExtractJson(expr);
+  return staticValue !== undefined
+    ? staticValue
+    : buildExprJson(component, expr);
+}
+
 function buildFallbackableExprJson(
+  component: Component,
   expr: CustomCode | ObjectPath
 ): CustomCodeExprJson | ObjectPathExprJson {
   const exprJson: CustomCodeExprJson | ObjectPathExprJson = isKnownObjectPath(
@@ -531,11 +607,119 @@ function buildFallbackableExprJson(
   )
     ? { __type: "ObjectPath", path: [...expr.path] }
     : { __type: "CustomCode", code: stripParens(expr.code) };
-  const fallback = expr.fallback ? buildExprJson(expr.fallback) : undefined;
+  const fallback = expr.fallback
+    ? buildExprJson(component, expr.fallback)
+    : undefined;
   if (fallback) {
     exprJson.fallback = fallback;
   }
   return exprJson;
+}
+
+/**
+ * Serializes every interaction step attached to the component's elements
+ * (base-variant tag attrs and function-typed instance args). `code` is
+ * included only for "Run code" (customFunction) steps; other actions are
+ * listed for visibility but their structured args are not decomposed.
+ */
+function buildComponentInteractions(component: Component): InteractionJson[] {
+  const result: InteractionJson[] = [];
+  if (!component.tplTree) {
+    return result;
+  }
+  for (const tpl of flattenTpls(component.tplTree)) {
+    if (!isTplTag(tpl) && !isTplComponent(tpl)) {
+      continue;
+    }
+    const sites = [
+      ...getAllEventHandlersOfAttrType(component, tpl),
+      ...getAllEventHandlersOfParamType(component, tpl),
+    ];
+    for (const site of sites) {
+      if (!isKnownEventHandler(site.expr)) {
+        continue;
+      }
+      for (const interaction of site.expr.interactions) {
+        const entry: InteractionJson = {
+          __type: "Interaction",
+          uuid: interaction.uuid,
+          name: interaction.interactionName,
+          elementUuid: tpl.uuid,
+          eventName: site.eventName,
+          actionName: interaction.actionName,
+        };
+        if (interaction.actionName === "customFunction") {
+          const code = extractInteractionCode(interaction);
+          if (code !== undefined) {
+            entry.code = code;
+          }
+        } else if (interaction.args.length > 0) {
+          entry.args = buildInteractionArgs(component, interaction);
+        }
+        if (interaction.conditionalMode !== "always") {
+          entry.conditionalMode = interaction.conditionalMode;
+          if (
+            interaction.conditionalMode === "expression" &&
+            interaction.condExpr
+          ) {
+            const condition = buildExprValueJson(
+              component,
+              interaction.condExpr
+            );
+            if (condition !== undefined) {
+              entry.condition = condition;
+            }
+          }
+        }
+        result.push(entry);
+      }
+    }
+  }
+  return result;
+}
+
+function extractInteractionCode(interaction: Interaction): string | undefined {
+  const arg = interaction.args.find((a) => a.name === "customFunction");
+  const body =
+    arg && isKnownFunctionExpr(arg.expr) ? arg.expr.bodyExpr : undefined;
+  return isKnownCustomCode(body)
+    ? stripParens(body.code)
+    : isKnownObjectPath(body)
+    ? body.path.join(".")
+    : undefined;
+}
+
+/**
+ * Serializes a Studio-built action's arguments for the read surface. The
+ * `operation` arg of the update-variable/update-variant actions is emitted
+ * as its enum name; other values follow the usual duality — plain JSON when
+ * statically known, a structural form otherwise.
+ */
+function buildInteractionArgs(
+  component: Component,
+  interaction: Interaction
+): Record<string, unknown> {
+  const args: Record<string, unknown> = {};
+  for (const arg of interaction.args) {
+    if (arg.name === "operation") {
+      const num = tryExtractJson(arg.expr);
+      const operations =
+        interaction.actionName === "updateVariable"
+          ? UpdateVariableOperations
+          : interaction.actionName === "updateVariant"
+          ? UpdateVariantOperations
+          : undefined;
+      if (operations && typeof num === "number" && operations[num]) {
+        args[arg.name] = operations[num];
+        continue;
+      }
+    }
+    const value = buildExprValueJson(component, arg.expr);
+    if (value !== undefined) {
+      args[arg.name] = value;
+    }
+  }
+  return args;
 }
 
 function buildComponentStates(component: Component): StateJson[] {
@@ -548,13 +732,12 @@ function buildComponentStates(component: Component): StateJson[] {
       accessType: state.accessType as StateJson["accessType"],
     };
     if (state.param.defaultExpr) {
-      // Statically-known initial values serialize to their JSON value; dynamic
-      // bindings serialize structurally (ObjectPath/CustomCode/TemplatedString).
-      const staticValue = tryExtractJson(state.param.defaultExpr);
-      const initialValue =
-        staticValue !== undefined
-          ? staticValue
-          : buildExprJson(state.param.defaultExpr);
+      // Statically-known initial values serialize to their typed JSON value,
+      // dynamic bindings structurally (ObjectPath/CustomCode/TemplatedString).
+      const initialValue = buildExprValueJson(
+        component,
+        state.param.defaultExpr
+      );
       if (initialValue !== undefined) {
         stateJson.initialValue = initialValue;
       }
@@ -713,6 +896,7 @@ export function buildComponentResource(
   const fromProject = getDataPlasmicProject(opts.site, component);
   const states = buildComponentStates(component);
   const variantSettings = buildVariantOverrides(component);
+  const interactions = buildComponentInteractions(component);
   return {
     __type: "Component",
     name: component.name,
@@ -723,6 +907,7 @@ export function buildComponentResource(
     props: buildComponentProps(component),
     variants: buildComponentVariantDefs(component),
     ...(states.length > 0 ? { states } : {}),
+    ...(interactions.length > 0 ? { interactions } : {}),
     ...(opts.dataQueries?.length ? { dataQueries: opts.dataQueries } : {}),
     ...(opts.legacyDataQueries?.length
       ? { legacyDataQueries: opts.legacyDataQueries }
