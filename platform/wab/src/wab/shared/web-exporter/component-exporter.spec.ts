@@ -28,6 +28,10 @@ import {
   tplToHtml,
 } from "@/wab/shared/web-exporter/component-exporter";
 import { jsonToXml } from "@/wab/shared/web-exporter/json-to-xml";
+import {
+  DataQueryJson,
+  LegacyDataQueryJson,
+} from "@/wab/shared/web-exporter/schema";
 
 describe("Component Serialization", () => {
   const site = generateSiteFromBundle(_bundle as [string, Bundle][]);
@@ -222,6 +226,118 @@ describe("Component Serialization", () => {
       const output = tplToHtml(instance, site);
       expect(output).toContain(`data-props=`);
       expect(output).toContain(`{{ currentItem.name }}`);
+    });
+  });
+
+  describe("data queries", () => {
+    const dataQueries: DataQueryJson[] = [
+      {
+        __type: "DataQuery",
+        name: "Users",
+        uuid: "sq1",
+        reference: "$q.users",
+        kind: "customCode",
+        code: "(await $$.fetch('/api/users'))",
+      },
+      {
+        __type: "DataQuery",
+        name: "People",
+        uuid: "sq2",
+        reference: "$q.people",
+        kind: "function",
+        functionId: "plasmic.fetch",
+        args: [
+          {
+            __type: "InterpolatedString",
+            name: "url",
+            value: "{{ $ctx.params.api }}",
+          },
+        ],
+      },
+    ];
+    const legacyDataQueries: LegacyDataQueryJson[] = [
+      {
+        __type: "LegacyDataQuery",
+        name: "Get Users",
+        uuid: "dq1",
+        reference: "$queries.getUsers",
+        op: {
+          __type: "DataSourceOp",
+          sourceId: "src1",
+          sourceName: "My Postgres",
+          sourceType: "postgres",
+          opName: "getList",
+          opLabel: "Get List",
+          opId: "op1",
+          roleId: "role1",
+          cacheKey: "{{ $ctx.params.q }}",
+          args: [
+            {
+              __type: "DataSourceOpArg",
+              name: "resource",
+              fieldType: "table",
+              value: "users",
+            },
+          ],
+        },
+      },
+    ];
+
+    const mkQueriesComponent = (name: string) => {
+      const component = mkComponent({
+        name,
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+      });
+      // mkTplTagX only attaches a base variant setting when given attrs/styles.
+      ensureVariantSetting(component.tplTree as TplTag, [
+        getBaseVariant(component),
+      ]);
+      return component;
+    };
+
+    it("includes query definitions in the component model and its XML", () => {
+      const component = mkQueriesComponent("WithQueries");
+
+      const result = buildComponentResource(component, {
+        site,
+        dataQueries,
+        legacyDataQueries,
+      });
+
+      expect(result.dataQueries).toEqual(dataQueries);
+      expect(result.legacyDataQueries).toEqual(legacyDataQueries);
+
+      // Query definitions come after `variants` and before the tpl tree, so
+      // the model sees how `$q.*` / `$queries.*` are configured before usages.
+      const keys = Object.keys(result);
+      expect(keys.indexOf("dataQueries")).toBeGreaterThan(
+        keys.indexOf("variants")
+      );
+      expect(keys.indexOf("legacyDataQueries")).toBeLessThan(
+        keys.indexOf("baseVariantTplTree")
+      );
+
+      const xml = jsonToXml(result, true);
+      expect(xml).toContain(`reference="$q.users"`);
+      expect(xml).toContain(`reference="$queries.getUsers"`);
+      expect(xml).toContain(`sourceName="My Postgres"`);
+      // The modern queries surface as `dataQueries`, never "server queries".
+      expect(xml).not.toContain("server-quer");
+      expect(xml).not.toContain("ServerQuery");
+    });
+
+    it("omits both fields when there are no queries", () => {
+      const component = mkQueriesComponent("NoQueries");
+
+      const result = buildComponentResource(component, {
+        site,
+        dataQueries: [],
+        legacyDataQueries: [],
+      });
+
+      expect(result.dataQueries).toBeUndefined();
+      expect(result.legacyDataQueries).toBeUndefined();
     });
   });
 });

@@ -1,5 +1,6 @@
 import {
   codeToDynExpr,
+  exprToDataQueryArg,
   exprToInterpolatedString,
   interpolatedStringToCodeExpr,
   interpolatedStringToExpr,
@@ -8,7 +9,12 @@ import {
   objectLiteralToExpr,
   parseInterpolatedString,
 } from "@/wab/shared/copilot/dynamic-value-input";
-import { codeLit, customCode, tryExtractJson } from "@/wab/shared/core/exprs";
+import {
+  codeLit,
+  customCode,
+  serCompositeExprMaybe,
+  tryExtractJson,
+} from "@/wab/shared/core/exprs";
 import { EvaluationError } from "@/wab/shared/eval/expression-parser";
 import {
   CustomCode,
@@ -297,6 +303,79 @@ describe("exprToInterpolatedString", () => {
     expect(
       exprToInterpolatedString(new EventHandler({ interactions: [] }))
     ).toBeUndefined();
+  });
+});
+
+describe("exprToDataQueryArg", () => {
+  it("serializes a static string as an InterpolatedString arg", () => {
+    expect(exprToDataQueryArg("filter", codeLit("active"))).toEqual({
+      __type: "InterpolatedString",
+      name: "filter",
+      value: "active",
+    });
+  });
+
+  it("serializes an ObjectPath as an InterpolatedString {{ }} arg", () => {
+    expect(exprToDataQueryArg("url", codeToDynExpr("$ctx.params.api"))).toEqual(
+      {
+        __type: "InterpolatedString",
+        name: "url",
+        value: "{{ $ctx.params.api }}",
+      }
+    );
+  });
+
+  it("serializes a static object codeLit as a CompositeExpr JSON literal", () => {
+    const expr = objectLiteralToExpr(
+      '{ "url": "https://x", "method": "GET" }'
+    )!;
+    expect(exprToDataQueryArg("opts", expr)).toEqual({
+      __type: "CompositeExpr",
+      name: "opts",
+      value: '{"url":"https://x","method":"GET"}',
+    });
+  });
+
+  it("serializes a CompositeExpr with dynamic leaves back to inline {{ }}", () => {
+    const expr = objectLiteralToExpr(
+      '{ "url": "{{ $ctx.params.api }}", "method": "GET" }'
+    )!;
+    expect(exprToDataQueryArg("opts", expr)).toEqual({
+      __type: "CompositeExpr",
+      name: "opts",
+      value: '{"url":"{{ $ctx.params.api }}","method":"GET"}',
+    });
+  });
+
+  it("round-trips a CompositeExpr value through objectLiteralToExpr", () => {
+    const raw = '{ "headers": { "Authorization": "{{ $ctx.token }}" } }';
+    const arg = exprToDataQueryArg("opts", objectLiteralToExpr(raw)!);
+    expect(exprToDataQueryArg("opts", objectLiteralToExpr(arg.value)!)).toEqual(
+      arg
+    );
+  });
+
+  it("emits the unsupported-expr sentinel for exprs with no inline form", () => {
+    expect(
+      exprToDataQueryArg("onDone", new EventHandler({ interactions: [] }))
+    ).toEqual({
+      __type: "InterpolatedString",
+      name: "onDone",
+      value: "{{ /* unsupported expression */ }}",
+    });
+  });
+
+  it("emits the sentinel for unsupported leaves inside a composite", () => {
+    const expr = serCompositeExprMaybe({
+      url: "https://x",
+      onDone: new EventHandler({ interactions: [] }),
+    });
+    expect(exprToDataQueryArg("opts", expr)).toEqual({
+      __type: "CompositeExpr",
+      name: "opts",
+      value:
+        '{"url":"https://x","onDone":"{{ /* unsupported expression */ }}"}',
+    });
   });
 });
 

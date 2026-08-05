@@ -291,10 +291,9 @@ export async function htmlToTpl(
 
       const baseCombo = [getBaseVariant(owningComponent)];
 
-      // Apply inline repetition (data-repeat) onto the base variant setting.
-      // Must run in finalize/studioCtx.change(), since assigning dataRep outside
-      // change() serializes the value but the canvas env does not register the
-      // repeat locals (currentItem/currentIndex).
+      // Apply data-repeat onto the base variant setting. Run in finalize/studioCtx.change,
+      // since assigning dataRep outside change() serializes the value but the canvas env
+      // does not register the repeat locals (currentItem/currentIndex).
       for (const [tplNode, rep] of tplRepeatData.entries()) {
         vtm.ensureBaseVariantSetting(tplNode).dataRep = mkNormalizedRep(
           rep.collection,

@@ -1,4 +1,5 @@
 import { tokenTypes } from "@/wab/commons/StyleToken";
+import { dataQueryArgSchema } from "@/wab/shared/copilot/dynamic-value-input";
 import {
   STATE_ACCESS_TYPES,
   STATE_VARIABLE_TYPES,
@@ -167,6 +168,16 @@ export function componentSchema() {
       .array(stateSchema())
       .optional()
       .describe("Component state variables ($state), when any exist."),
+    dataQueries: z
+      .array(dataQuerySchema())
+      .optional()
+      .describe("Data queries (`$q.*`) defined on this component/page."),
+    legacyDataQueries: z
+      .array(legacyDataQuerySchema())
+      .optional()
+      .describe(
+        "Legacy integration data queries (`$queries.*`) defined on this component/page."
+      ),
     baseVariantTplTree: z
       .string()
       .describe("Base-variant tpl tree as HTML markup."),
@@ -177,6 +188,100 @@ export function componentSchema() {
   });
 }
 export type ComponentJson = z.infer<ReturnType<typeof componentSchema>>;
+
+/** A `$q.<varName>` data query (the modern server-side query). */
+export function dataQuerySchema() {
+  return z.object({
+    __type: z.literal("DataQuery"),
+    name: z.string().describe("Query name."),
+    uuid: z.string().describe("Query UUID."),
+    reference: z
+      .string()
+      .describe("How to reference the result in bindings, e.g. `$q.myQuery`."),
+    kind: z
+      .enum(["customCode", "function", "empty"])
+      .describe(
+        "How the query is defined: `customCode` (inline expression), `function` (a bound custom function), or `empty` (not yet configured)."
+      ),
+    code: z
+      .string()
+      .optional()
+      .describe("Inline expression, present when kind is `customCode`."),
+    functionId: z
+      .string()
+      .optional()
+      .describe(
+        "Bound custom-function id, present when kind is `function` (absent if the function ref is dangling)."
+      ),
+    args: z
+      .array(dataQueryArgSchema())
+      .optional()
+      .describe("Function call arguments, present when kind is `function`."),
+  });
+}
+export type DataQueryJson = z.infer<ReturnType<typeof dataQuerySchema>>;
+
+/** A legacy `$queries.<varName>` integration data query. */
+export function legacyDataQuerySchema() {
+  return z.object({
+    __type: z.literal("LegacyDataQuery"),
+    name: z.string().describe("Query name."),
+    uuid: z.string().describe("Query UUID."),
+    reference: z
+      .string()
+      .describe(
+        "How to reference the result in bindings, e.g. `$queries.myQuery`."
+      ),
+    op: dataSourceOpSchema()
+      .optional()
+      .describe("The integration operation this query runs, if configured."),
+  });
+}
+export type LegacyDataQueryJson = z.infer<
+  ReturnType<typeof legacyDataQuerySchema>
+>;
+
+export function dataSourceOpSchema() {
+  return z.object({
+    __type: z.literal("DataSourceOp"),
+    sourceId: z.string().describe("Integration (data source) id."),
+    sourceName: z
+      .string()
+      .optional()
+      .describe("Integration display name, if resolvable."),
+    sourceType: z
+      .string()
+      .optional()
+      .describe("Integration type, e.g. `postgres`, `http`."),
+    opName: z.string().describe("Operation name."),
+    opLabel: z
+      .string()
+      .optional()
+      .describe("Human-readable operation label, if known."),
+    opId: z.string().describe("Operation id."),
+    roleId: z
+      .string()
+      .optional()
+      .describe("Required role id, if access-controlled."),
+    cacheKey: z.string().optional().describe("Cache key expression, if set."),
+    args: z
+      .array(dataSourceOpArgSchema())
+      .describe("Operation arguments (templated fields)."),
+  });
+}
+export type DataSourceOpJson = z.infer<ReturnType<typeof dataSourceOpSchema>>;
+
+export function dataSourceOpArgSchema() {
+  return z.object({
+    __type: z.literal("DataSourceOpArg"),
+    name: z.string().describe("Argument (template field) name."),
+    fieldType: z.string().describe("Argument field type."),
+    value: z.string().describe("Bound value."),
+  });
+}
+export type DataSourceOpArgJson = z.infer<
+  ReturnType<typeof dataSourceOpArgSchema>
+>;
 
 export function pageMetaSchema() {
   return z.object({
@@ -713,6 +818,25 @@ export type InstalledFunctionJson = z.infer<
   ReturnType<typeof installedFunctionSchema>
 >;
 
+/** One field of an object-typed param (e.g. the `url`/`method` inside `opts`). */
+export function functionParamFieldSchema() {
+  return z.object({
+    __type: z.literal("FunctionParamField"),
+    name: z.string(),
+    type: z.string().describe("Field type tag."),
+    displayName: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional(),
+    options: z
+      .string()
+      .optional()
+      .describe("Comma-separated choices, for choice fields."),
+  });
+}
+export type FunctionParamFieldJson = z.infer<
+  ReturnType<typeof functionParamFieldSchema>
+>;
+
 export function functionParamSchema() {
   return z.object({
     __type: z.literal("FunctionParam"),
@@ -720,11 +844,19 @@ export function functionParamSchema() {
     type: z.string().describe("Param type tag."),
     displayName: z.string().optional(),
     description: z.string().optional(),
+    required: z.boolean().optional(),
     defaultValue: z.string().optional(),
     options: z
       .string()
       .optional()
       .describe("Comma-separated choices, for choice params."),
+    fields: z
+      .array(functionParamFieldSchema())
+      .optional()
+      .describe(
+        "For an object param: its nested fields. Pass the whole param as one " +
+          'JSON literal, e.g. opts: \'{ "url": "https://...", "method": "GET" }\'.'
+      ),
   });
 }
 export type FunctionParamJson = z.infer<ReturnType<typeof functionParamSchema>>;

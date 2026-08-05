@@ -72,9 +72,11 @@ import {
 import {
   type ComponentJson,
   type CustomCodeExprJson,
+  type DataQueryJson,
   type ElementJson,
   type ElementOverrideJson,
   type ExprJson,
+  type LegacyDataQueryJson,
   type ObjectPathExprJson,
   type PageMetaJson,
   type PropJson,
@@ -169,7 +171,7 @@ function getStylesFromVariantSetting(
   // Filter styles to what's applicable for this TplNode. PLASMIC_DISPLAY_NONE
   // is an internal visibility flag (not real CSS) — it is surfaced via the
   // data-visibility attribute instead (see getVisibilityAttrs), so drop it
-  // from the emitted style string to avoid a confusing double-representation.
+  // from the emitted style string to avoid double-representation.
   return Object.fromEntries(
     Object.entries(styles).filter(
       ([prop]) =>
@@ -227,8 +229,8 @@ function getVisibilityAttrs(
 }
 
 /**
- * Serializes repetition + visibility bindings as `data-*` attributes so they
- * survive read -> insertHtml (mirrors html-to-tpl's parsing):
+ * Serializes repetition + visibility bindings as `data-*` attributes so they survive
+ * read -> insertHtml (mirrors html-to-tpl's parsing):
  * - Repetition (base-vs only): `data-repeat` / `data-repeat-item` / `data-repeat-index`.
  * - Visibility (the given vs): see getVisibilityAttrs.
  */
@@ -694,12 +696,18 @@ function buildPageMeta(component: Component): PageMetaJson | undefined {
 
 /**
  * Build the canonical JSON model for a component: metadata, props, variant
- * definitions, the base-variant tpl tree (as HTML markup), and per-variant
- * style/attr overrides.
+ * definitions, data-query definitions, the base-variant tpl tree (as HTML
+ * markup), and per-variant style/attr overrides.
  */
 export function buildComponentResource(
   component: Component,
-  opts: { site: Site }
+  opts: {
+    site: Site;
+    // Query definitions are resolved by the client tools (source names require
+    // an async lookup) and injected here, so this stays free of studioCtx.
+    dataQueries?: DataQueryJson[];
+    legacyDataQueries?: LegacyDataQueryJson[];
+  }
 ): ComponentJson {
   const pageMeta = buildPageMeta(component);
   const fromProject = getDataPlasmicProject(opts.site, component);
@@ -715,6 +723,10 @@ export function buildComponentResource(
     props: buildComponentProps(component),
     variants: buildComponentVariantDefs(component),
     ...(states.length > 0 ? { states } : {}),
+    ...(opts.dataQueries?.length ? { dataQueries: opts.dataQueries } : {}),
+    ...(opts.legacyDataQueries?.length
+      ? { legacyDataQueries: opts.legacyDataQueries }
+      : {}),
     baseVariantTplTree: component.tplTree
       ? tplToHtml(component.tplTree, opts.site)
       : "",

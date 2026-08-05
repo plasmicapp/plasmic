@@ -2,6 +2,7 @@ import { switchType } from "@/wab/shared/common";
 import {
   codeLit,
   customCode,
+  deserCompositeExpr,
   isRealCodeExprEnsuringType,
   serCompositeExprMaybe,
   simplifyTemplatedString,
@@ -24,6 +25,8 @@ import {
   CustomCode,
   Expr,
   ExprText,
+  isKnownCompositeExpr,
+  isKnownExpr,
   isKnownObjectPath,
   ObjectPath,
   RawText,
@@ -32,6 +35,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { parseJsCode } from "@/wab/shared/parser-utils";
 import { mapValues } from "lodash";
+import { z } from "zod";
 
 /**
  * Description of copilot's dynamic-value input format, `{{ jsExpr }}` interpolation.
@@ -110,23 +114,18 @@ export function codeToDynExpr(code: string): ObjectPath | CustomCode {
 }
 
 /**
- * Converts an object/array arg value (e.g. fetch's `opts`) to an Expr - a static
- * literal becomes `codeLit`, and one with dynamic leaves a `CompositeExpr`.
+ * Converts an object/array arg (e.g. fetch's `opts`) to Expr. A static literal
+ * becomes `codeLit`, and one with dynamic leaves a `CompositeExpr`.
  *
- * `input` must be JSON with each dynamic leaf as a quoted `{{ jsExpr }}`
- * string, e.g. `{ "url": "{{ $ctx.params.api }}", "method": "GET" }`; anything
- * else (like a bare-JS leaf `{ "url": $ctx.x }`) throws `EvaluationError`.
- * Returns `undefined` when `input` isn't an object/array (a scalar or `{{ }}`
- * interpolation), so the caller can fall back to plain `{{ }}` interpolation.
+ * `input` must be JSON with each dynamic leaf as a quoted `{{ jsExpr }}` string,
+ * e.g. `{ "url": "{{ $ctx.params.api }}", "method": "GET" }`, anything else throws
+ * `EvaluationError`. Returns `undefined` when `input` isn't an object/array.
  */
 export function objectLiteralToExpr(input: string): Expr | undefined {
-  const trimmed = stripParens(input.trim()).trim();
-  const isObjectOrArray =
-    trimmed.startsWith("[") ||
-    (trimmed.startsWith("{") && !trimmed.startsWith("{{"));
-  if (!isObjectOrArray) {
+  if (!isObjectOrArrayLiteralInput(input)) {
     return undefined;
   }
+  const trimmed = stripParens(input.trim()).trim();
   let json: JsonValue;
   try {
     json = jsonParse(trimmed);
@@ -138,6 +137,18 @@ export function objectLiteralToExpr(input: string): Expr | undefined {
     );
   }
   return serCompositeExprMaybe(jsonToValueOrExpr(json));
+}
+
+/**
+ * True when `input` looks like a JSON object/array literal (as opposed to
+ * plain text or `{{ }}` interpolation).
+ */
+export function isObjectOrArrayLiteralInput(input: string): boolean {
+  const trimmed = stripParens(input.trim()).trim();
+  return (
+    trimmed.startsWith("[") ||
+    (trimmed.startsWith("{") && !trimmed.startsWith("{{"))
+  );
 }
 
 /** A JSON tree whose leaves may also be dynamic `Expr`s. */
@@ -222,4 +233,69 @@ export function exprToInterpolatedString(expr: Expr): string | undefined {
       return typeof json === "string" ? json : exprToInterpolation(dynExpr);
     })
     .elseUnsafe(() => undefined);
+}
+
+export function dataQueryArgSchema() {
+  return z.discriminatedUnion("__type", [
+    z.object({
+      __type: z.literal("InterpolatedString"),
+      name: z.string().describe("Parameter name."),
+      value: z.string().describe("Static text or `{{ }}` dynamic expression."),
+    }),
+    z.object({
+      __type: z.literal("CompositeExpr"),
+      name: z.string().describe("Parameter name."),
+      value: z
+        .string()
+        .describe(
+          "Object/array value: a JSON literal whose dynamic leaves are inline `{{ }}` strings."
+        ),
+    }),
+  ]);
+}
+export type DataQueryArgJson = z.infer<ReturnType<typeof dataQueryArgSchema>>;
+
+/**
+ * Placeholder for exprs that can't currently be rendered (e.g. VarRef, PageHref).
+ * Emitted instead of "" so the arg doesn't read as empty static text.
+ */
+const UNSUPPORTED_EXPR_SENTINEL = "{{ /* unsupported expression */ }}";
+
+/**
+ * Serializes a function arg `Expr` back to the tagged form with `value` accepted by
+ * `createDataQuery`. `CompositeExpr` for object/array, otherwise `InterpolatedString`.
+ */
+export function exprToDataQueryArg(name: string, expr: Expr): DataQueryArgJson {
+  if (isKnownCompositeExpr(expr)) {
+    return {
+      __type: "CompositeExpr",
+      name,
+      value: JSON.stringify(
+        exprLeavesToInterpolations(deserCompositeExpr(expr))
+      ),
+    };
+  }
+  const json = tryExtractJson(expr);
+  if (json !== undefined && typeof json === "object" && json !== null) {
+    return { __type: "CompositeExpr", name, value: JSON.stringify(json) };
+  }
+  return {
+    __type: "InterpolatedString",
+    name,
+    value: exprToInterpolatedString(expr) ?? UNSUPPORTED_EXPR_SENTINEL,
+  };
+}
+
+/** Recursively replaces `Expr` leaves of a deserialized object with `{{ }}`. */
+function exprLeavesToInterpolations(value: ValueOrExpr): JsonValue {
+  if (isKnownExpr(value)) {
+    return exprToInterpolatedString(value) ?? UNSUPPORTED_EXPR_SENTINEL;
+  }
+  if (Array.isArray(value)) {
+    return value.map(exprLeavesToInterpolations);
+  }
+  if (value !== null && typeof value === "object") {
+    return mapValues(value, exprLeavesToInterpolations);
+  }
+  return value;
 }
