@@ -2,7 +2,14 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import "jest-extended";
 import { TransformStream } from "stream/web";
 import { TextDecoder, TextEncoder } from "util";
+import { deserialize, serialize } from "v8";
 import "whatwg-fetch";
+import { BroadcastChannel as NodeBroadcastChannel } from "worker_threads";
+
+// jest.config.ts defines `structuredClone` as an unusable placeholder object.
+// TODO - remove that clone override and delete this.
+global.structuredClone = (value) => deserialize(serialize(value));
+require("fake-indexeddb/auto");
 
 import "@/wab/client/test/initTests";
 
@@ -21,6 +28,15 @@ DEVFLAGS.hostUrl = "http://localhost";
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 global.TransformStream = TransformStream;
+
+// Node's BroadcastChannel is Web-compatible. `unref` so open channels don't keep
+// the process alive after tests.
+global.BroadcastChannel = class BroadcastChannel extends NodeBroadcastChannel {
+  constructor(name) {
+    super(name);
+    this.unref();
+  }
+};
 
 let objectURLCounter = 0;
 global.URL.createObjectURL = (object) => {

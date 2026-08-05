@@ -145,6 +145,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "babel-jest": "^29.7.0",
     "concurrently": "^5.3.0",
+    "fake-indexeddb": "^6.2.5",
     "graphql-ws": "5.16.0",
     "http-server": "^14.1.1",
     "identity-obj-proxy": "^3.0.0",
