@@ -1594,7 +1594,10 @@ function renderTplComponent(
               // it is not the currently focused selectable or the user
               // has chosen to hide slot placeholders
               (isPlainObjectPropType(propMeta) &&
-                propMeta.hidePlaceholder &&
+                // hidePlaceholder is optional on only some members of the
+                // ObjectStudioPropType union; TS 7.0 no longer allows reading it
+                // off the whole union, so narrow with a targeted cast.
+                (propMeta as { hidePlaceholder?: boolean }).hidePlaceholder &&
                 // We wrap this in computed() so we don't re-render the
                 // TplComponent every time the focusedSelectable changes;
                 // we re-render only if the key has changed to match or not

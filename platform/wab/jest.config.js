@@ -1,6 +1,9 @@
-import type { Config } from "jest";
+// This config is plain JS, not TS, because jest loads a jest.config.ts via
+// ts-node, and ts-node needs the TypeScript compiler API, which TypeScript 7
+// does not expose from its JS entrypoint.
 
-const config: Config = {
+/** @type {import("jest").Config} */
+const config = {
   roots: ["<rootDir>/src", "<rootDir>/tools/webpack"],
   collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
   setupFilesAfterEnv: [
@@ -70,4 +73,4 @@ const config: Config = {
   },
 };
 
-export default config;
+module.exports = config;
