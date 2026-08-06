@@ -1597,10 +1597,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^1.0.29":
-  version "1.0.29"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.29.tgz#838178cfc196584fd12a28c24b747612442e387b"
-  integrity sha512-1Q02T26pfb9cKdxhBWnNCggK1ee0pwMmmUhPqciP6gPslZHPFZ09RqKIMU2vBjiYixzROHVjEt0/vGcMmRCkQQ==
+"@plasmicapp/react-web@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.30.tgz#f0b9c9a9d64ee381bf3ef4e39d9fe962bcf9a62e"
+  integrity sha512-vjRJfzndA4lcMat6oi6AbV4VgchhFPzTBlVwhyo8/YkkEy/y1ldqeEejpNNdZElyEYnM63OLCaP/bxhApPrtjw==
   dependencies:
     "@plasmicapp/auth-react" "0.0.30"
     "@plasmicapp/data-sources" "1.0.24"
@@ -1637,10 +1637,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.272.tgz#60cef992829f9fe25d2c55fd8d443f0a20a2d35d"
   integrity sha512-Gbq9hLRO17MIcuoqmca/kcZz1GFdkrdqULPzSvs22y96mony4ZEZwVy+eh4J1h4xcsgZZKEfanhFRk692Ezw8A==
 
-"@plasmicpkgs/antd5@^0.0.366":
-  version "0.0.366"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.366.tgz#0b2f7eeaed1bfbd3eb269f294690334be8cc7244"
-  integrity sha512-dRFRrxHVHFGqPvUeYTX9VM4/xNfGQLVxfpa1sGPkhMiXUFGI2+dC35AamjRc1f1dIaAholvB1ZmtZtTC9Cfsvw==
+"@plasmicpkgs/antd5@^0.0.367":
+  version "0.0.367"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.367.tgz#25f14a5ffbd5acf3892b3d70444f5acedda0edaa"
+  integrity sha512-pVwb1LYuYziOSsnivNmLC4yckhg6Aj21qB0sPUlkH83A/kfY1i3S+kkhAZO+NOs4fcBLeS7ZDIgRzKIiGUDOew==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -1688,10 +1688,10 @@
     debounce "^1.2.1"
     js-cookie "^3.0.5"
 
-"@plasmicpkgs/commerce-shopify@^0.0.264":
-  version "0.0.264"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-shopify/-/commerce-shopify-0.0.264.tgz#42840491c62908b25ac02834112d61e5cb88d871"
-  integrity sha512-p6ZqkyE67KrAm05DClu/52duOSIxh6+k5jkm53QbECMiMe8trGvEL0BZzWS3TDR0cRPZ0zdPNQ1xasjlcfNU7A==
+"@plasmicpkgs/commerce-shopify@^0.0.265":
+  version "0.0.265"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-shopify/-/commerce-shopify-0.0.265.tgz#6502ccd6dfcd885b24304a7429032b330f2d4db5"
+  integrity sha512-4IbpHhp1897u7JFMmq0ev+CpH/wV3Js0BeE6syk9j/pxLa5N+KYQoqek0OIU0XFw5pDcL4E0t+sw7gp/8zb/4g==
   dependencies:
     "@plasmicpkgs/commerce" "0.0.256"
     debounce "^1.2.1"
@@ -1821,10 +1821,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-query/-/plasmic-query-0.0.277.tgz#a52d3ca07d8f38bc03998a8b7f7638fbabcbc909"
   integrity sha512-P9xB/pFjDAtRCTBhm1nF9y+7pk7d1LepCwJ4EDLY0Ib0ocqImSNf0k1Aigd/3YRK8E3YJ4C02CObYYE2KPKZ/w==
 
-"@plasmicpkgs/plasmic-rich-components@^1.0.268":
-  version "1.0.268"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-rich-components/-/plasmic-rich-components-1.0.268.tgz#5d707e766a36af9347f6bd07e8d8f96af6337e5c"
-  integrity sha512-oSdNn7Sh08a3aUd0hc+ahxXY7jjpZsjMk5SrT0Hyt9Pv/M0kwxGSaSHDSM7TqWrA/t8gWHBiHqSPWu7NbZqy2Q==
+"@plasmicpkgs/plasmic-rich-components@^1.0.269":
+  version "1.0.269"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-rich-components/-/plasmic-rich-components-1.0.269.tgz#a8112c4defbf1f086a436ece126c931d7c99833a"
+  integrity sha512-tOXkwLq265PZQ6P0M/Z9av/3bKGmAanVJFHzOW4yrc3iueTlyFqGzcumVYuwrXkiSUMiJARLQF6fp/vFLCR5GA==
   dependencies:
     "@ctrl/tinycolor" "^3.6.1"
     "@plasmicpkgs/luxon-parser" "^3.4.4"
@@ -1860,10 +1860,10 @@
     "@plasmicapp/host" "2.0.15"
     constate "^3.3.2"
 
-"@plasmicpkgs/plasmic-wordpress-graphql@^0.0.174":
-  version "0.0.174"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-wordpress-graphql/-/plasmic-wordpress-graphql-0.0.174.tgz#8f035b5522eb5a9f6562bb8700ceec62bdd60514"
-  integrity sha512-vYsbQp5lpqEOLKGxQzkB+yrF8LvoPsirQfu3aKiBK9vhQdsgXXAOWtkldbgfcvuASwcdB1rlj6QO5X8gHWvSuA==
+"@plasmicpkgs/plasmic-wordpress-graphql@^0.0.175":
+  version "0.0.175"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-wordpress-graphql/-/plasmic-wordpress-graphql-0.0.175.tgz#1472871837bd7bfdec3ff68e499c3a9532613b33"
+  integrity sha512-f7rQ271jyowKCMeJErLWzdhk+vtClqygvkWDG2KKm3KoBMLDUMH6ppmdMniv7swZrAj0bePfDr0fku/0yYWvYw==
   dependencies:
     dlv "^1.1.3"
 
