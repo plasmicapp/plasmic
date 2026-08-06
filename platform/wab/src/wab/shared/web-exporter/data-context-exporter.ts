@@ -8,6 +8,7 @@ import {
   dataPickerShouldHideKey,
   getVariableType,
 } from "@/wab/shared/data-picker/data-picker-types";
+import { tryParseAsObjectPath } from "@/wab/shared/eval/expression-parser";
 import {
   DataContextJson,
   DataPathJson,
@@ -33,6 +34,19 @@ export interface BuildDataContextOpts {
   valueMaxLength?: number;
   /** Ceiling on the total number of emitted DataPath nodes across the whole tree. */
   maxTotalPaths?: number;
+  /** Object paths to select specific subtrees, e.g. "$state", "$q.orders.data[0].id". */
+  paths?: string[];
+}
+
+/** A requested path that could not be parsed or resolved. */
+export interface InvalidDataContextPath {
+  path: string;
+  message: string;
+}
+
+export interface BuildDataContextResult {
+  resource: DataContextJson;
+  invalidPaths: InvalidDataContextPath[];
 }
 
 // Deep enough to reach the fields of a query: $q.name.data[0].field
@@ -48,16 +62,10 @@ const PICKER_OPTS: DataPickerOpts = { showAdvancedFields: false };
  * Build the canonical JSON model for a CanvasEnv record: a `DataContext` whose
  * `paths` mirror the env as a tree of typed `DataPath` nodes.
  */
-export function buildDataContextResource(
+export function buildDataContextResourceResult(
   env: Record<string, unknown>,
   opts: BuildDataContextOpts
-): DataContextJson {
-  const maxDepth = opts.maxDepth ?? DEFAULT_MAX_DEPTH;
-  const maxKeys = opts.maxKeysPerObject ?? DEFAULT_MAX_KEYS;
-  const maxArray = opts.maxArrayItems ?? DEFAULT_MAX_ARRAY_ITEMS;
-  const valueMax = opts.valueMaxLength ?? DEFAULT_VALUE_MAX_LENGTH;
-  const maxTotalPaths = opts.maxTotalPaths ?? DEFAULT_MAX_TOTAL_PATHS;
-
+): BuildDataContextResult {
   const preparedEnv =
     opts.scope === "root"
       ? prepareRootEnv(
@@ -68,23 +76,134 @@ export function buildDataContextResource(
       : { ...env };
   unwrapServerQueries(preparedEnv);
 
-  const paths = buildPathNodes(preparedEnv, [], {
-    maxDepth,
-    maxKeys,
-    maxArray,
-    valueMax,
+  const ctx: BuildCtx = {
+    maxDepth: opts.maxDepth ?? DEFAULT_MAX_DEPTH,
+    maxKeysPerObject: opts.maxKeysPerObject ?? DEFAULT_MAX_KEYS,
+    maxArrayItems: opts.maxArrayItems ?? DEFAULT_MAX_ARRAY_ITEMS,
+    valueMaxLength: opts.valueMaxLength ?? DEFAULT_VALUE_MAX_LENGTH,
+    remaining: opts.maxTotalPaths ?? DEFAULT_MAX_TOTAL_PATHS,
     seen: new Set(),
     currentDepth: 0,
-    budget: { remaining: maxTotalPaths }, // Shared across the whole walk
-  });
+  };
+  const result = opts.paths
+    ? selectPaths(preparedEnv, opts.paths, ctx)
+    : { paths: buildAllPaths(preparedEnv, [], ctx), invalidPaths: [] };
 
   return {
-    __type: "DataContext",
-    componentUuid: opts.componentUuid,
-    scope: opts.scope,
-    ...(opts.elementUuid ? { elementUuid: opts.elementUuid } : {}),
-    paths,
+    resource: {
+      __type: "DataContext",
+      componentUuid: opts.componentUuid,
+      scope: opts.scope,
+      ...(opts.elementUuid && { elementUuid: opts.elementUuid }),
+      paths: result.paths,
+    },
+    invalidPaths: result.invalidPaths,
   };
+}
+
+/**
+ * Resolve each requested object path against the prepared env, returning one top-level
+ * `DataPath` per resolved selection and collecting failures. Each returned node is
+ * identified by `name`, which has the full path string, so callers match by name.
+ * Dedupes, resets depth at each selection, and shares a node budget across all selections.
+ */
+interface SelectPathsResult {
+  paths: DataPathJson[];
+  invalidPaths: InvalidDataContextPath[];
+}
+
+function selectPaths(
+  env: Record<string, unknown>,
+  requestedPaths: string[],
+  ctx: BuildCtx
+): SelectPathsResult {
+  const nodes: DataPathJson[] = [];
+  const invalidPaths: InvalidDataContextPath[] = [];
+  let omittedCount = 0;
+  for (const rawPath of [...new Set(requestedPaths)]) {
+    const segments = tryParseAsObjectPath(rawPath);
+    if (!segments || segments.length === 0) {
+      invalidPaths.push(invalidPath(rawPath, "invalid path syntax."));
+      continue;
+    }
+    const resolved = resolvePath(env, segments);
+    if (!resolved.found) {
+      invalidPaths.push(invalidPath(rawPath, "path not found."));
+      continue;
+    }
+    if (ctx.remaining <= 0) {
+      omittedCount++;
+      continue;
+    }
+    ctx.remaining--;
+    const node = buildPathNode(
+      segments[segments.length - 1],
+      resolved.value,
+      segments.slice(0, -1),
+      resolved.parent,
+      ctx
+    );
+    node.name = rawPath;
+    nodes.push(node);
+  }
+  if (omittedCount > 0) {
+    nodes.push({
+      __type: "DataPath",
+      name: "…",
+      truncated: true,
+      omittedCount,
+    });
+  }
+  return { paths: nodes, invalidPaths };
+}
+
+/**
+ * Walk `segments` from the env root. Every object segment must be a visible property,
+ * and every array must be a valid integer index.
+ */
+function resolvePath(
+  env: Record<string, unknown>,
+  segments: (string | number)[]
+):
+  | { found: true; value: unknown; parent: Record<string, unknown> | undefined }
+  | { found: false } {
+  let current: unknown = env;
+  let parent: Record<string, unknown> | undefined;
+  const pathPrefix: (string | number)[] = [];
+  for (const seg of segments) {
+    if (!isNonNil(current) || typeof current !== "object") {
+      return { found: false };
+    }
+    if (Array.isArray(current)) {
+      if (
+        typeof seg !== "number" ||
+        !Number.isInteger(seg) ||
+        seg < 0 ||
+        seg >= current.length
+      ) {
+        return { found: false };
+      }
+      parent = undefined;
+      current = current[seg];
+    } else {
+      const obj = current as Record<string, unknown>;
+      const key = String(seg);
+      if (
+        !Object.prototype.hasOwnProperty.call(obj, key) ||
+        dataPickerShouldHideKey(key, obj, pathPrefix, PICKER_OPTS)
+      ) {
+        return { found: false };
+      }
+      parent = obj;
+      current = obj[key];
+    }
+    pathPrefix.push(seg);
+  }
+  return { found: true, value: current, parent };
+}
+
+function invalidPath(path: string, reason: string): InvalidDataContextPath {
+  return { path, message: `Invalid data-context path "${path}": ${reason}` };
 }
 
 /**
@@ -146,22 +265,28 @@ function filterByName(
   );
 }
 
-interface BuildCtx {
-  maxDepth: number;
-  maxKeys: number;
-  maxArray: number;
-  valueMax: number;
+/**
+ * Sizing options from `BuildDataContextOpts` with defaults, plus mutable walk state.
+ */
+interface BuildCtx
+  extends Required<
+    Pick<
+      BuildDataContextOpts,
+      "maxDepth" | "maxKeysPerObject" | "maxArrayItems" | "valueMaxLength"
+    >
+  > {
+  /** Remaining node budget (from `maxTotalPaths`). */
+  remaining: number;
   seen: Set<unknown>;
   currentDepth: number;
-  budget: { remaining: number };
 }
 
 /**
- * Walk an object into the list of `DataPath` nodes for its (visible) keys,
- * appending a `...` marker node when keys are dropped past `maxKeys` or the
- * global node budget.
+ * Walk an object into the list of `DataPath` nodes for all its (visible) keys,
+ * appending a `...` marker node when keys are dropped past `maxKeysPerObject`
+ * or the global node budget.
  */
-function buildPathNodes(
+function buildAllPaths(
   obj: Record<string, unknown>,
   pathPrefix: (string | number)[],
   ctx: BuildCtx
@@ -172,10 +297,10 @@ function buildPathNodes(
   const nodes: DataPathJson[] = [];
   let emitted = 0;
   for (const key of allKeys) {
-    if (emitted >= ctx.maxKeys || ctx.budget.remaining <= 0) {
+    if (emitted >= ctx.maxKeysPerObject || ctx.remaining <= 0) {
       break;
     }
-    ctx.budget.remaining--;
+    ctx.remaining--;
     nodes.push(buildPathNode(key, obj[key], pathPrefix, obj, ctx));
     emitted++;
   }
@@ -224,29 +349,20 @@ function buildPathNode(
       node.truncated = true;
       return node;
     }
-    const nextCtx: BuildCtx = {
-      ...ctx,
-      currentDepth: ctx.currentDepth + 1,
-      seen: new Set(ctx.seen).add(value),
-    };
+    ctx.seen.add(value);
+    ctx.currentDepth++;
     let children: DataPathJson[] = [];
     if (type === "array") {
       const arr = (value as unknown[]) ?? [];
       node.length = arr.length;
       let emitted = 0;
       for (const item of arr) {
-        if (emitted >= ctx.maxArray || nextCtx.budget.remaining <= 0) {
+        if (emitted >= ctx.maxArrayItems || ctx.remaining <= 0) {
           break;
         }
-        nextCtx.budget.remaining--;
+        ctx.remaining--;
         children.push(
-          buildPathNode(
-            emitted,
-            item,
-            [...pathPrefix, name],
-            undefined,
-            nextCtx
-          )
+          buildPathNode(emitted, item, [...pathPrefix, name], undefined, ctx)
         );
         emitted++;
       }
@@ -260,8 +376,10 @@ function buildPathNode(
       }
     } else {
       const child = (value as Record<string, unknown>) ?? {};
-      children = buildPathNodes(child, [...pathPrefix, name], nextCtx);
+      children = buildAllPaths(child, [...pathPrefix, name], ctx);
     }
+    ctx.currentDepth--;
+    ctx.seen.delete(value);
     if (children.length > 0) {
       node.children = children;
     }
@@ -269,7 +387,7 @@ function buildPathNode(
   }
 
   // Primitive: try to stringify a short value.
-  const rendered = renderPrimitive(value, ctx.valueMax);
+  const rendered = renderPrimitive(value, ctx.valueMaxLength);
   if (rendered !== undefined) {
     node.value = rendered;
   }
