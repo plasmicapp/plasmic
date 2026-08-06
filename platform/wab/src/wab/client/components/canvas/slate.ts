@@ -11,6 +11,7 @@ import {
   Text,
   Transforms,
 } from "slate";
+import type { HistoryEditor } from "slate-history";
 import type { ReactEditor } from "slate-react";
 import type { MakeADT } from "ts-adt/MakeADT";
 
@@ -47,17 +48,17 @@ export type TplTagExprTextElement = Record<"type", "TplTagExprText"> &
 
 declare module "slate" {
   interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
+    Editor: BaseEditor & ReactEditor & HistoryEditor;
     Element: CustomElement;
     Text: CustomText;
   }
 }
 
 export function mkTplTagElement(
+  uuid: string,
   tag: (typeof tags)[number],
   attributes: Record<string, string>,
-  children: Descendant[],
-  uuid?: string
+  children: Descendant[]
 ): Element {
   return {
     type: "TplTag",

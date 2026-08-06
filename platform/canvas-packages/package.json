@@ -104,6 +104,7 @@
     "semver": "^7.7.4",
     "slate": "^0.124.1",
     "slate-dom": "^0.124.1",
+    "slate-history": "^0.113.1",
     "slate-react": "^0.124.0",
     "slick-carousel": "^1.8.1",
     "tinycolor2": "^1.6.0",

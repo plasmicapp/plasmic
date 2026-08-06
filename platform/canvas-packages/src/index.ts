@@ -11,6 +11,7 @@ import type React from "react";
 import ResizeObserver from "resize-observer-polyfill";
 import * as slate from "slate";
 import * as slateDom from "slate-dom";
+import * as slateHistory from "slate-history";
 import * as slateReact from "slate-react";
 import { GenericErrorBoundary } from "./error-boundary";
 import { createModal } from "./modals";
@@ -22,6 +23,7 @@ interface CanvasPkgs {
   GenericErrorBoundary: React.ComponentType<{ className?: string }>;
   slate: typeof slate;
   slateDom: typeof slateDom;
+  slateHistory: typeof slateHistory;
   slateReact: typeof slateReact;
   localElement?: typeof Element;
   createModal: (
@@ -64,6 +66,7 @@ const __CanvasPkgs: CanvasPkgs = {
   GenericErrorBoundary,
   slate,
   slateDom,
+  slateHistory,
   slateReact,
   localElement: typeof window !== "undefined" ? Element : undefined,
   createModal,

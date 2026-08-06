@@ -158,11 +158,7 @@ function wrapInInlineTag(
     }
     const { children, attrs } = props;
 
-    // Pre-generate a uuid so the slate node and tpl match. Otherwise saveText clones the tpl
-    // with a new uuid and the next render's initialValue differs from slate, resetting
-    // cursor placement.
-    const uuid = mkShortId();
-    const element = mkTplTagElement(tag, attrs, children, uuid);
+    const element = mkTplTagElement(mkShortId(), tag, attrs, children);
     wrapOrInsertTplTag(editor, element, sub);
   };
 }
@@ -227,7 +223,7 @@ function wrapInBlockTag(
           // Switch list type (between ordered/unordered).
           Transforms.setNodes(
             editor,
-            { uuid: undefined, tag },
+            { uuid: mkShortId(), tag },
             { match: (n) => n === listContainer }
           );
         }
@@ -237,12 +233,14 @@ function wrapInBlockTag(
         Transforms.setNodes(
           editor,
           {
-            uuid: undefined,
+            uuid: mkShortId(),
             tag: "li",
           },
           { match: (n) => n === existingBlock }
         );
-        const newListContainer = mkTplTagElement(tag, {}, [{ text: "" }]);
+        const newListContainer = mkTplTagElement(mkShortId(), tag, {}, [
+          { text: "" },
+        ]);
         Transforms.wrapNodes(editor, newListContainer, {
           match: (n) => matchNodeMarker(n, sub, ["li"]),
         });
@@ -251,16 +249,15 @@ function wrapInBlockTag(
         // splitting the list in two, then wrap the current item into a new
         // element with the given tag.
         splitListRemovingCurrentItem(editor, sub);
-        const element = mkTplTagElement(tag, {}, [{ text: "" }]);
+        const element = mkTplTagElement(mkShortId(), tag, {}, [{ text: "" }]);
         Transforms.wrapNodes(editor, element);
         Transforms.collapse(editor, { edge: "end" });
       } else {
-        // Case 2e: Switching tag between non-list blocks. Simply change tag
-        // and reset node UUID.
+        // Case 2e: Switching tag between non-list blocks. Simply change tag.
         Transforms.setNodes(
           editor,
           {
-            uuid: undefined,
+            uuid: mkShortId(),
             tag,
           },
           { match: (n) => n === existingBlock }
@@ -273,15 +270,15 @@ function wrapInBlockTag(
       if (isTagListContainer(tag)) {
         // Case 3a: We want to wrap the item into a list, so first create an
         // item and then wrap it into a list container.
-        const item = mkTplTagElement("li", {}, [{ text: "" }]);
+        const item = mkTplTagElement(mkShortId(), "li", {}, [{ text: "" }]);
         Transforms.wrapNodes(editor, item);
-        const element = mkTplTagElement(tag, {}, [{ text: "" }]);
+        const element = mkTplTagElement(mkShortId(), tag, {}, [{ text: "" }]);
         Transforms.wrapNodes(editor, element, {
           match: (n) => matchNodeMarker(n, sub, ["li"]),
         });
       } else {
         // Case 3b: Wrap item into non-list element.
-        const element = mkTplTagElement(tag, {}, [{ text: "" }]);
+        const element = mkTplTagElement(mkShortId(), tag, {}, [{ text: "" }]);
         Transforms.wrapNodes(editor, element);
       }
     }
@@ -472,7 +469,7 @@ function splitList(editor: SlateEditor, list: TplTagElement, sub: SubDeps) {
   Transforms.splitNodes(editor, { match: (n) => n === list });
   Transforms.setNodes(
     editor,
-    { uuid: undefined },
+    { uuid: mkShortId() },
     { match: (n) => matchNodeMarker(n, sub, listContainerTags) && n !== list }
   );
 }
@@ -500,10 +497,10 @@ function splitListRemovingCurrentItem(editor: SlateEditor, sub: SubDeps) {
   // Lift text from list container.
   Transforms.liftNodes(editor);
 
-  // Reset UUID of list right after the current element.
+  // Assign a fresh UUID to the list right after the current element.
   Transforms.setNodes(
     editor,
-    { uuid: undefined },
+    { uuid: mkShortId() },
     {
       at: Editor.after(editor, Editor.above(editor)![1]),
       match: (n) => matchNodeMarker(n, sub, listContainerTags),
@@ -601,10 +598,10 @@ function maybeAddNewItem(editor: SlateEditor, sub: SubDeps): boolean {
       n.tag === "li",
   });
 
-  // Reset UUID of the new list item.
+  // Assign a fresh UUID to the new list item.
   Transforms.setNodes(
     editor,
-    { uuid: undefined },
+    { uuid: mkShortId() },
     { match: (n) => !!newItem && n === newItem[0] }
   );
 
@@ -697,13 +694,14 @@ function maybeLeaveBlock(editor: SlateEditor, sub: SubDeps): boolean {
 }
 
 /**
- * Recursively reset uuid for all TplTags under `node`.
+ * Recursively assign fresh uuids to all TplTags under `node`, so pasted
+ * fragments never share a uuid with existing tpls.
  */
 function resetUuids<T extends SlateNode>(node: T, sub: SubDeps): T {
   const { Element } = sub.slate;
   if (Element.isElement(node)) {
-    if (node.type === "TplTag" && node.uuid) {
-      node.uuid = undefined;
+    if (node.type === "TplTag") {
+      node.uuid = mkShortId();
     }
     node.children = node.children.map((c) => resetUuids(c, sub));
   }
@@ -734,6 +732,9 @@ const isModEnter = isHotkey("mod+enter");
 const isEscape = isHotkey("escape");
 const isSpace = isHotkey("space");
 
+// A pause in typing longer than this starts a new undo batch.
+const UNDO_BATCH_PAUSE_MS = 1000;
+
 type PlasmicRichTextOpts = {
   inline: boolean;
 };
@@ -744,7 +745,46 @@ const withPlasmic = (
   opts: PlasmicRichTextOpts,
   sub: SubDeps
 ) => {
-  const { insertFragment, insertText, isInline, isVoid } = editor;
+  const { apply, insertFragment, insertText, isInline, isVoid } = editor;
+
+  const { HistoryEditor } = sub.slateHistory;
+  const { DOMEditor } = sub.slateDom;
+
+  // By default, slate-history records the user's typing in the same block as
+  // one undo/redo batch, no matter how long they pause in the middle.
+  // We override apply to manually split if the user pauses typing for 1 second.
+  // The override only mutates history and always calls the original apply.
+  let lastTypingTime = 0;
+  editor.apply = (op) => {
+    if (HistoryEditor.isSaving(editor) === false) {
+      // `isSaving(editor) === false` means this op is an undo/redo.
+      // Reset last typing time so the next op starts a new batch.
+      lastTypingTime = 0;
+    } else if (
+      // `operations.length === 0` means this is the first op of a user action.
+      editor.operations.length === 0 &&
+      // "insert_text" and "remove_text" are typing ops.
+      (op.type === "insert_text" || op.type === "remove_text")
+    ) {
+      // If both of the above are true, we need to update the last typing time,
+      // and MAYBE start a new batch.
+      const now = Date.now();
+
+      if (
+        // Never split if user is composing in their IME.
+        !DOMEditor.isComposing(editor) &&
+        // Split if more than pause time.
+        now - lastTypingTime > UNDO_BATCH_PAUSE_MS
+      ) {
+        // `setSplittingOnce` tells history to split before this op.
+        HistoryEditor.setSplittingOnce(editor, true);
+      }
+
+      lastTypingTime = now;
+    }
+
+    apply(op);
+  };
 
   editor.isInline = (element) => {
     if (element.type === "TplTag" || element.type === "TplTagExprText") {
@@ -807,13 +847,14 @@ const withPlasmic = (
         Transforms.select(editor, range);
         Transforms.delete(editor);
 
-        const element = mkTplTagElement(tag, {}, [{ text: "" }]);
+        const element = mkTplTagElement(mkShortId(), tag, {}, [{ text: "" }]);
         Transforms.wrapNodes(editor, element);
         Transforms.collapse(editor, { edge: "end" });
 
         if (tag === "li") {
           // For list items, we need to create the container wrapping them.
           const list = mkTplTagElement(
+            mkShortId(),
             type[0] as (typeof htmlTags)[number],
             {},
             []
@@ -891,14 +932,19 @@ export const mkCanvasText = computedFn(
       return mkUseCanvasObserver(ctx.sub, ctx.viewCtx)(() => {
         const { sub, viewCtx: vc } = ctx;
         const initialValue = tplToSlateNodes(node, ctx, effectiveVs);
-        const win = ctx.viewCtx.canvasCtx.win();
         const doc = ctx.viewCtx.canvasCtx.doc();
 
         const { createEditor, Range, Transforms } = sub.slate;
         const { Editable, ReactEditor, Slate, withReact } = sub.slateReact;
+        const { withHistory } = sub.slateHistory;
 
         const editor = react.useMemo(
-          () => withPlasmic(withReact(createEditor()), { inline }, sub),
+          () =>
+            withPlasmic(
+              withReact(withHistory(createEditor())),
+              { inline },
+              sub
+            ),
           [inline]
         );
 
@@ -921,20 +967,8 @@ export const mkCanvasText = computedFn(
           (newValue: Descendant[]) => {
             const newVals = resolveNodesToMarkers(newValue, true);
             onChange(newVals.text, newVals.markers);
-
-            if (newVals.newTpls) {
-              // We have new tpls, so we must run onRefresh(). We wrap it in a
-              // setTimeout so it uses the updated value we've just set.
-              win.setTimeout(() => {
-                if (vc.studioCtx.isDevMode) {
-                  vc.change(() => {
-                    vc.getViewOps().saveText();
-                  });
-                }
-              }, 0);
-            }
           },
-          [win, onChange]
+          [onChange]
         );
 
         react.useEffect(() => {
@@ -968,19 +1002,33 @@ export const mkCanvasText = computedFn(
         // This might happen when syncing the bundle from server, switching
         // variants, etc.
         //
-        // Compare against the editor's current children so when model save is triggered by
-        // the editor, the new initialValue matches slate and we skip the reset.
+        // initialValue is rebuilt every render, so key the reset on its value
+        // actually changing — during an editing session the editor's children
+        // diverge from the (unsaved) model, and resetting on mere divergence
+        // would clobber the draft on any unrelated re-render. Also compare
+        // against the editor's current children so when model save is
+        // triggered by the editor, the new initialValue matches slate and we
+        // skip the reset.
         const forceUpdate = useForceUpdate(react);
+        const prevInitialValue = react.useRef(initialValue);
         react.useEffect(() => {
-          if (!isEqual(editor.children, initialValue)) {
-            // A different initialValue has been specified; reset editor value
-            // Directly mutate the children.
+          if (
+            !isEqual(initialValue, prevInitialValue.current) &&
+            !isEqual(initialValue, editor.children)
+          ) {
+            // Reset children to new initialValue.
             // Slate will adjust the selection automatically if necessary.
             editor.children = initialValue;
+            // Reset history.
+            editor.history = { undos: [], redos: [] };
+            // Clear draftText to prevent old value from being saved on blur.
+            onUpdateContext({ draftText: undefined });
             // editor.children mutation won't trigger a re-render, so force it.
             forceUpdate();
           }
-        }, [initialValue, editor]);
+
+          prevInitialValue.current = initialValue;
+        }, [initialValue, editor, onUpdateContext]);
 
         if (isExprText(effectiveVs.text)) {
           // If node.text is a custom code expression, there's no need to use Slate.
@@ -1147,6 +1195,42 @@ export const mkCanvasText = computedFn(
             readOnly,
             onKeyDown: (event) => {
               event.stopPropagation();
+
+              const endEditing = (opts: { save: boolean } = { save: true }) => {
+                if (!opts.save) {
+                  // Clear draftText before blur to prevent save.
+                  onUpdateContext({ draftText: undefined });
+                }
+                (event.target as HTMLElement).blur();
+                if (vc.studioCtx.isDevMode) {
+                  vc.tryBlurEditingText();
+                }
+              };
+
+              if (sub.slateDom.Hotkeys.isUndo(event.nativeEvent)) {
+                event.preventDefault();
+                if (editor.history.undos.length > 0) {
+                  editor.undo();
+                } else {
+                  // Forward undo to Studio.
+                  endEditing({ save: false });
+                  spawn(vc.studioCtx.undo());
+                }
+                return;
+              } else if (sub.slateDom.Hotkeys.isRedo(event.nativeEvent)) {
+                event.preventDefault();
+                if (editor.history.redos.length > 0) {
+                  editor.redo();
+                } else if (editor.history.undos.length === 0) {
+                  // Forward redo to Studio only if the undo stack is empty to
+                  // prevent the possibility of accidentally discarding undos.
+                  // Matches useUndo behavior.
+                  endEditing({ save: false });
+                  spawn(vc.studioCtx.redo());
+                }
+                return;
+              }
+
               if (isSpace(event.nativeEvent)) {
                 editor.insertText(" ");
                 // some accessible code components like button may trigger press events when pressing space
@@ -1157,12 +1241,8 @@ export const mkCanvasText = computedFn(
                 isModEnter(event.nativeEvent) ||
                 isEscape(event.nativeEvent)
               ) {
-                // End the editing session
                 event.preventDefault();
-                (event.target as HTMLElement).blur();
-                if (vc.studioCtx.isDevMode) {
-                  vc.tryBlurEditingText();
-                }
+                endEditing();
               }
 
               if (
