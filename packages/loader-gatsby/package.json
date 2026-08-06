@@ -66,7 +66,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.24",
+    "@types/lodash": "^4.17.25",
     "@types/react-dom": "^18",
     "gatsby": "^5.11.0"
   },
