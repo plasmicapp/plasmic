@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/antd5",
-  "version": "0.0.366",
+  "version": "0.0.367",
   "description": "Plasmic registration calls for Ant Design v5 components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -76,7 +76,7 @@
     "@plasmicapp/data-sources": "1.0.24",
     "@plasmicapp/host": "2.0.15",
     "@plasmicapp/query": "0.1.87",
-    "@plasmicapp/react-web": "1.0.29",
+    "@plasmicapp/react-web": "1.0.30",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",

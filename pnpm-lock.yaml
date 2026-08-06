@@ -367,7 +367,7 @@ importers:
   packages/create-plasmic-app:
     dependencies:
       '@plasmicapp/cli':
-        specifier: 0.1.369
+        specifier: 0.1.370
         version: link:../cli
       '@sentry/node':
         specifier: ^6.2.2
@@ -941,7 +941,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.29
+        specifier: 1.0.30
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -990,7 +990,7 @@ importers:
         specifier: 0.0.256
         version: link:../plasmicpkgs/commerce-providers/commerce
       '@plasmicpkgs/commerce-shopify':
-        specifier: 0.0.264
+        specifier: 0.0.265
         version: link:../plasmicpkgs/commerce-providers/shopify
       '@plasmicpkgs/contentful':
         specifier: 0.0.30
@@ -1156,7 +1156,7 @@ importers:
         specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.29
+        specifier: 1.0.30
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
