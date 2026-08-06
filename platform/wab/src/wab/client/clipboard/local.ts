@@ -59,6 +59,14 @@ export function isStyleClip(x: any): x is StyleClip {
   return x && !Array.isArray(x) && x.type === "style";
 }
 
+export function isEmptyStyleClip(clip: StyleClip): boolean {
+  return (
+    Object.keys(clip.cssProps).length === 0 &&
+    !clip.mixinUuids?.length &&
+    !clip.animations?.length
+  );
+}
+
 export function isTplClip(x: Clippable): x is TplClip {
   return !Array.isArray(x) && x.type === "tpl";
 }

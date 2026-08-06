@@ -12,6 +12,7 @@ import {
   PasteStyleProps,
   StyleClip,
   TplClip,
+  isEmptyStyleClip,
   isStyleClip,
   isTplClip,
   isTplsClip,
@@ -163,6 +164,7 @@ import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens
 import {
   allAnimationSequences,
   allGlobalVariants,
+  allMixins,
   isTplAttachedToSite,
 } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
@@ -2191,12 +2193,24 @@ export class ViewOps {
     }
 
     const vs = this.viewCtx().variantTplMgr().effectiveVariantSetting(tpl);
-    const exp = vs.rshWithoutMixins();
-    // const vs2 = this.viewCtx().variantTplMgr().ensureCurrentVariantSetting(tpl);
+    const directExp = vs.rshWithoutMixins();
+    const ownExp = vs.rsh();
+    const inheritedExp = vs.rshWithParentStyleWithoutMixins();
 
     const styleProps = cssProps || defaultCopyableStyleNames;
+    // Copy the element's own styles, plus values inherited from ancestors, but only
+    // for props the element doesn't style directly or via its mixins.
     const props = Object.fromEntries(
-      common.withoutNilTuples(styleProps.map((p) => tuple(p, exp.getRaw(p))))
+      common.withoutNilTuples(
+        styleProps.map((p) =>
+          tuple(
+            p,
+            ownExp.getRaw(p) != null
+              ? directExp.getRaw(p)
+              : inheritedExp.getRaw(p)
+          )
+        )
+      )
     );
     const mixinUuids = vs.rs.mixins.map((m) => m.uuid);
 
@@ -2227,8 +2241,20 @@ export class ViewOps {
     const clip = this.copyStyleHelper(tpl, cssProps);
 
     console.log("Copied styles", clip?.cssProps);
-    if (clip) {
-      this.clipboard().copy(clip);
+    if (!clip) {
+      notification.warn({
+        message: "Cannot copy styles from this element",
+      });
+      return;
+    }
+
+    this.clipboard().copy(clip);
+    // Warn the user if there was nothing to copy.
+    if (isEmptyStyleClip(clip)) {
+      notification.info({
+        message: "This element has no styles of its own to copy",
+        description: "Its appearance comes from the project theme.",
+      });
     }
   }
 
@@ -2303,6 +2329,12 @@ export class ViewOps {
       ? L.pick(clip.cssProps, cssProps)
       : clip.cssProps;
 
+    const site = this.viewCtx().site;
+
+    // Tracks whether the paste did anything, so we can warn the user instead
+    // of appearing to be broken.
+    let appliedCount = 0;
+
     const { valid } = validateStylesForTpl(
       propsToCopy,
       targetTpl,
@@ -2310,24 +2342,26 @@ export class ViewOps {
       this.viewCtx().studioCtx.codeComponentsRegistry
     );
     exp.merge(valid);
+    appliedCount += Object.keys(valid).length;
 
-    // Resolve UUIDs to Mixin instances
+    // Resolve UUIDs to Mixin instances from the site or direct dependencies.
     if (clip.mixinUuids?.length) {
-      const site = this.viewCtx().site;
+      const availableMixins = allMixins(site, { includeDeps: "direct" });
       const mixinsToAdd = clip.mixinUuids
-        .map((uuid) => site.mixins.find((m) => m.uuid === uuid))
+        .map((uuid) => availableMixins.find((m) => m.uuid === uuid))
         .filter((m): m is Mixin => m !== undefined);
 
       if (mixinsToAdd.length > 0) {
-        vs.rs.mixins = L.uniqBy(
+        const newMixins = L.uniqBy(
           [...vs.rs.mixins, ...mixinsToAdd],
           (m) => m.name
         );
+        appliedCount += newMixins.length - vs.rs.mixins.length;
+        vs.rs.mixins = newMixins;
       }
     }
 
     // Resolve animation sequence UUIDs and create Animation instances
-    const site = this.viewCtx().site;
     const allAnimSequences = allAnimationSequences(site, {
       includeDeps: "direct",
     });
@@ -2355,10 +2389,21 @@ export class ViewOps {
 
     if (animationsToAdd.length > 0) {
       // Merge new animations with existing ones, deduplicating by sequence
-      vs.rs.animations = L.uniqBy(
+      const newAnimations = L.uniqBy(
         [...(vs.rs.animations ?? []), ...animationsToAdd],
         (a) => a.sequence.uuid
       );
+      appliedCount += newAnimations.length - (vs.rs.animations?.length ?? 0);
+      vs.rs.animations = newAnimations;
+    }
+
+    if (appliedCount === 0) {
+      notification.warn({
+        message: "No styles were pasted",
+        description:
+          "The copied styles are empty, or none of them can be applied to this element.",
+      });
+      return false;
     }
 
     return true;

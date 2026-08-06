@@ -283,6 +283,14 @@ export class EffectiveVariantSetting {
     });
   };
 
+  rshWithParentStyleWithoutMixins = () => {
+    return this._rsh({
+      includeTheme: false,
+      includeParentTpl: true,
+      includeMixins: false,
+    });
+  };
+
   get rs(): RuleSet {
     const reversed = arrayReversed(this.variantSettings.map((vs) => vs.rs));
     return new RuleSet({
