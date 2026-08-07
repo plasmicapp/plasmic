@@ -93,7 +93,11 @@ export function mapCopilotToolsToJsonSchema(
         // async/raw JSON-schema sources, but zodSchema() always builds it
         // synchronously, so it is a JSONSchema7 here.
         inputSchema: zodSchema(tool.inputSchema).jsonSchema as JSONSchema7,
-        outputSchema: zodSchema(tool.outputSchema).jsonSchema as JSONSchema7,
+        // useReferences lets recursive schemas such as Expr.fallback come out
+        // as `$ref` instead of degrading to `any` with a console warning.
+        // Output schemas never reach the model provider, so `$ref` is not a concern here.
+        outputSchema: zodSchema(tool.outputSchema, { useReferences: true })
+          .jsonSchema as JSONSchema7,
       },
     ])
   );
