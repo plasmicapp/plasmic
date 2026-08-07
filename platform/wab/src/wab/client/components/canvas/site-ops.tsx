@@ -70,6 +70,7 @@ import {
   flattenComponent,
   getComponentsUsingImageAsset,
 } from "@/wab/shared/cached-selectors";
+import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { arrayRemove } from "@/wab/shared/collections";
 import {
@@ -175,6 +176,7 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import {
   flattenDataTokenUsage,
   isQueryUsedInExpr,
+  renameServerQueryAndFixExprs,
 } from "@/wab/shared/refactoring";
 import {
   FrameSize,
@@ -1184,6 +1186,25 @@ export class SiteOps {
         return ok();
       }
     );
+  }
+
+  /**
+   * Replace a server query op and/or renames it, fixing `$q` references.
+   */
+  async updateComponentServerQuery(
+    component: Component,
+    query: ComponentServerQuery,
+    update: { op?: ServerQueryOp; name?: string }
+  ) {
+    return this.studioCtx.change(() => {
+      if (update.op) {
+        query.op = update.op;
+      }
+      if (update.name && update.name !== query.name) {
+        renameServerQueryAndFixExprs(component, query, update.name);
+      }
+      return ok();
+    });
   }
 
   async removeComponentServerQuery(

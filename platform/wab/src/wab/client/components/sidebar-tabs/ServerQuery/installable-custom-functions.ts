@@ -1,8 +1,13 @@
-import { shouldShowHostLessPackage } from "@/wab/client/components/studio/add-drawer/AddDrawer";
+import {
+  createFakeHostLessComponent,
+  shouldShowHostLessPackage,
+} from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import { ensureArray } from "@/wab/shared/common";
 import { isHostlessPackageInstalled } from "@/wab/shared/core/project-deps";
 import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
+import { CustomFunction } from "@/wab/shared/model/classes";
 
 export interface InstallableCustomFunction {
   item: HostLessComponentInfo;
@@ -37,4 +42,25 @@ export function getInstallableCustomFunctions(
     }
   }
   return items;
+}
+
+/**
+ * Installs the hostless package for `installable` (via `runFakeItem`) and
+ * returns the custom functions it newly registered.
+ */
+export async function installCustomFunctionsPackage(
+  studioCtx: StudioCtx,
+  installable: InstallableCustomFunction
+): Promise<CustomFunction[]> {
+  const beforeUids = new Set(
+    allCustomFunctions(studioCtx.site).map(
+      ({ customFunction }) => customFunction.uid
+    )
+  );
+  await studioCtx.runFakeItem(
+    createFakeHostLessComponent(installable.item, installable.projectIds)
+  );
+  return allCustomFunctions(studioCtx.site)
+    .map(({ customFunction }) => customFunction)
+    .filter((fn) => !beforeUids.has(fn.uid));
 }

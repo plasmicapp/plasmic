@@ -41,7 +41,6 @@ import {
   isKnownCustomCode,
   isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
-import { renameServerQueryAndFixExprs } from "@/wab/shared/refactoring";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -87,12 +86,9 @@ const ServerQueryRow = observer(
       newOp: ServerQueryOp,
       opExprName?: string
     ) => {
-      await studioCtx.change(() => {
-        query.op = newOp;
-        if (opExprName && opExprName !== query.name) {
-          renameServerQueryAndFixExprs(component, query, opExprName);
-        }
-        return ok();
+      await studioCtx.siteOps().updateComponentServerQuery(component, query, {
+        op: newOp,
+        name: opExprName,
       });
       serverQueryModal.close();
     };

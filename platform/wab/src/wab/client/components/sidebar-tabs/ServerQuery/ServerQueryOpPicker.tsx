@@ -5,6 +5,7 @@ import { PropValueEditorContextData } from "@/wab/client/components/sidebar-tabs
 import {
   getInstallableCustomFunctions,
   InstallableCustomFunction,
+  installCustomFunctionsPackage,
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/installable-custom-functions";
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker.module.scss";
 import {
@@ -17,7 +18,6 @@ import {
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/useServerQueryOp";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
-import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -441,18 +441,9 @@ export const ServerQueryOpDraftForm = observer(
     ) => {
       setIsInstalling(true);
       try {
-        const { item, projectIds } = customFunctionInfo;
-
-        // Track existing custom function IDs before installation
-        const existingFunctionIds = new Set(
-          getAllCustomFunctions(studioCtx.site).map((fn) => fn.uid)
-        );
-
-        const fakeItem = createFakeHostLessComponent(item, projectIds);
-        await studioCtx.runFakeItem(fakeItem);
-
-        const newFunc = getAllCustomFunctions(studioCtx.site).find(
-          (fn) => !existingFunctionIds.has(fn.uid)
+        const [newFunc] = await installCustomFunctionsPackage(
+          studioCtx,
+          customFunctionInfo
         );
 
         if (newFunc) {

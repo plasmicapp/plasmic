@@ -110,7 +110,7 @@ export function projectSchema() {
     dataQueryFunctions: dataQueryFunctionsSchema()
       .optional()
       .describe(
-        "Installed and installable custom functions usable by createDataQuery, when requested."
+        "Installed and installable custom functions usable by createDataQuery/updateDataQuery, when requested."
       ),
     importedProjects: z
       .array(importedProjectSchema())
@@ -956,7 +956,9 @@ export function installableFunctionSchema() {
     __type: z.literal("InstallableFunction"),
     id: z
       .string()
-      .describe("Stable id used to install and bind via createDataQuery."),
+      .describe(
+        "Stable id used to install and bind via createDataQuery/updateDataQuery."
+      ),
     displayName: z.string(),
     packageProjectId: z.string().optional(),
     description: z.string().optional(),
