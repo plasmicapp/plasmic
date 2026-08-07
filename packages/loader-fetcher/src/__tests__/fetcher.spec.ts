@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from "vitest";
 import { FetcherOptions, PlasmicModulesFetcher } from "../fetcher";
 
 const FETCHER_OPTIONS: FetcherOptions = {
@@ -18,7 +19,7 @@ describe("PlasmicModulesFetcher", () => {
   describe("getCachedOrFetch", () => {
     it("should properly clean up curFetch in successful request", async () => {
       const fetcher = new PlasmicModulesFetcher(FETCHER_OPTIONS);
-      const fetchLoaderData = jest.fn().mockResolvedValue({
+      const fetchLoaderData = vi.fn().mockResolvedValue({
         projects: [],
       });
       fetcher.api = {
@@ -34,7 +35,7 @@ describe("PlasmicModulesFetcher", () => {
 
     it("should properly clean up curFetch in unsuccessful request", async () => {
       const fetcher = new PlasmicModulesFetcher(FETCHER_OPTIONS);
-      const fetchLoaderData = jest.fn().mockRejectedValue(new Error("error"));
+      const fetchLoaderData = vi.fn().mockRejectedValue(new Error("error"));
       fetcher.api = {
         fetchLoaderData,
       };
@@ -53,7 +54,7 @@ describe("PlasmicModulesFetcher", () => {
 
     it("should properly handle multiple fetch requests", async () => {
       const fetcher = new PlasmicModulesFetcher(FETCHER_OPTIONS);
-      const fetchLoaderData = jest.fn().mockResolvedValue({
+      const fetchLoaderData = vi.fn().mockResolvedValue({
         projects: [],
       });
       fetcher.api = {

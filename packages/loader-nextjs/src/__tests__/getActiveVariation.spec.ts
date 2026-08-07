@@ -1,5 +1,6 @@
 import { LoaderBundleOutput } from "@plasmicapp/loader-core";
 import { InternalPlasmicComponentLoader } from "@plasmicapp/loader-react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextJsPlasmicComponentLoader } from "../index";
 import { SPLIT_0, SPLIT_1 } from "./data";
 
@@ -27,7 +28,7 @@ function createMockedLoader() {
     projects: [],
   });
 
-  const mockFetchAllData = jest.fn().mockReturnValue({
+  const mockFetchAllData = vi.fn().mockReturnValue({
     ...EMPTY_BUNDLE,
     activeSplits: [SPLIT_0, SPLIT_1],
   });
@@ -43,7 +44,7 @@ function createMockedLoader() {
 
 describe("SSR getActiveVariation", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should use random values for A/B testing", async () => {
@@ -54,14 +55,14 @@ describe("SSR getActiveVariation", () => {
       cookies: {},
     } as GetActiveVariationParams["req"];
 
-    const getHeader = jest.fn();
-    const setHeader = jest.fn();
+    const getHeader = vi.fn();
+    const setHeader = vi.fn();
     const res = {
       getHeader,
       setHeader,
     } as any;
 
-    const spyMathRandom = jest
+    const spyMathRandom = vi
       .spyOn(Math, "random")
       .mockReturnValueOnce(0.3) // slice-0
       .mockReturnValueOnce(0.7) // slice-1
@@ -126,7 +127,7 @@ describe("SSR getActiveVariation", () => {
   it("should use known values and cookis for A/B testing", async () => {
     const loader = createMockedLoader();
 
-    const spyMathRandom = jest.spyOn(Math, "random").mockReturnValue(1); // slice-2
+    const spyMathRandom = vi.spyOn(Math, "random").mockReturnValue(1); // slice-2
 
     expect(
       await loader.getActiveVariation({
@@ -149,13 +150,6 @@ describe("SSR getActiveVariation", () => {
     ).toMatchObject({
       "exp.split-0": "slice-1",
     });
-
-    const req = {
-      headers: {},
-      cookies: {
-        "plasmic:exp.split-0": "slice-0",
-      },
-    } as any;
 
     expect(
       await loader.getActiveVariation({

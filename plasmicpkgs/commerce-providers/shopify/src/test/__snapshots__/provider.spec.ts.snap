@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`shopify provider useBrands 1`] = `
+exports[`shopify provider > useBrands 1`] = `
 [
   {
     "entityId": "acme",
@@ -15,7 +15,7 @@ exports[`shopify provider useBrands 1`] = `
 ]
 `;
 
-exports[`shopify provider useCart 1`] = `
+exports[`shopify provider > useCart 1`] = `
 {
   "cart1": {
     "createdAt": "2025-02-03T13:51:01Z",
@@ -236,7 +236,7 @@ exports[`shopify provider useCart 1`] = `
 }
 `;
 
-exports[`shopify provider useCategories 1`] = `
+exports[`shopify provider > useCategories 1`] = `
 [
   {
     "id": "gid://shopify/Collection/270412710052",
@@ -257,7 +257,7 @@ exports[`shopify provider useCategories 1`] = `
 ]
 `;
 
-exports[`shopify provider useCategories with categoryId 1`] = `
+exports[`shopify provider > useCategories with categoryId 1`] = `
 [
   {
     "id": "gid://shopify/Collection/271211167908",
@@ -270,7 +270,7 @@ exports[`shopify provider useCategories with categoryId 1`] = `
 ]
 `;
 
-exports[`shopify provider useProduct 1`] = `
+exports[`shopify provider > useProduct 1`] = `
 {
   "availableForSale": true,
   "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
@@ -560,7 +560,7 @@ exports[`shopify provider useProduct 1`] = `
 }
 `;
 
-exports[`shopify provider useSearch 1`] = `
+exports[`shopify provider > useSearch 1`] = `
 {
   "found": true,
   "products": [
@@ -2864,7 +2864,7 @@ exports[`shopify provider useSearch 1`] = `
 }
 `;
 
-exports[`shopify provider useSearch with categoryId 1`] = `
+exports[`shopify provider > useSearch with categoryId 1`] = `
 {
   "found": true,
   "products": [

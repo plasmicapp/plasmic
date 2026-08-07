@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsdx build",
     "start": "tsdx watch",
-    "test": "TEST_CWD=`pwd` pnpm -w test",
+    "test": "vitest run",
     "lint": "tsdx lint",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
@@ -35,7 +35,9 @@
     "nock": "14.0.17",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsdx": "^0.14.1"
+    "tsdx": "^0.14.1",
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

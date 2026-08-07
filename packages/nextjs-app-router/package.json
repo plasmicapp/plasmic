@@ -26,7 +26,7 @@
     "build:index": "node ../../build.mjs ./src/index.ts --use-client",
     "build:with-dev-server": "esbuild --format=cjs --target=node18 --bundle --outfile=./dist/with-plasmic-prepass.cjs.js --platform=node ./src/with-dev-server.mts",
     "build:react-server": "node ../../build.mjs ./src/react-server.ts",
-    "test": "pnpm -w test",
+    "test": "pnpm -w test --passWithNoTests",
     "coverage": "pnpm -w test --coverage --passWithNoTests",
     "lint": "eslint"
   },

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { get, pick, set } from "../src/utils";
 
 describe("pick", () => {

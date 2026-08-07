@@ -3,6 +3,7 @@ import {
   ComponentMeta,
   LoaderBundleOutput,
 } from "@plasmicapp/loader-fetcher";
+import { describe, expect, it } from "vitest";
 import { getBundleSubset } from "../bundles";
 
 const EMPTY_BUNDLE: LoaderBundleOutput = {

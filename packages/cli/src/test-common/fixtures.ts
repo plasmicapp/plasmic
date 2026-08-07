@@ -1,13 +1,15 @@
-/// <reference types="@types/jest" />
 import L from "lodash";
-import { MockProject } from "../__mocks__/api";
+import { expect } from "vitest";
+import {
+  addMockProject,
+  clear,
+  MockProject,
+  stringToMockComponent,
+} from "../__mocks__/api";
 import { SyncArgs } from "../actions/sync";
 import { PlasmicConfig, ProjectConfig } from "../utils/config-utils";
 import { TempRepo } from "../utils/test-utils";
 
-jest.mock("../api");
-
-export const mockApi = require("../api");
 export let opts: SyncArgs; // Options to pass to sync
 export let tmpRepo: TempRepo;
 
@@ -79,7 +81,7 @@ export function standardTestSetup(includeDep = true) {
     ],
     dependencies: {},
   };
-  [project1, dependency].forEach((p) => mockApi.addMockProject(p));
+  [project1, dependency].forEach((p) => addMockProject(p));
 
   // Setup client-side directory
   tmpRepo = new TempRepo();
@@ -106,16 +108,16 @@ export function standardTestSetup(includeDep = true) {
 
 export function standardTestTeardown() {
   tmpRepo.destroy();
-  mockApi.clear();
+  clear();
   delete process.env["PLASMIC_DISABLE_AUTH_SEARCH"];
 }
 
 export function expectProject1Components() {
   // Check correct files exist
-  const button = mockApi.stringToMockComponent(
+  const button = stringToMockComponent(
     tmpRepo.getComponentFileContents("projectId1", "buttonId")
   );
-  const container = mockApi.stringToMockComponent(
+  const container = stringToMockComponent(
     tmpRepo.getComponentFileContents("projectId1", "containerId")
   );
   expect(button).toBeTruthy();

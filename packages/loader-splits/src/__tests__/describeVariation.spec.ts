@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { describeVariation } from "../index";
 import { EXPERIMENT_SPLIT, EXTERNAL_SPLIT, SEGMENT_SPLIT } from "./data";
 

@@ -1,18 +1,20 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { getMockProject } from "../__mocks__/api";
 import { sync } from "../actions/sync";
 import {
   defaultPlasmicJson,
   expectProject1Components,
   expectProject1PlasmicJson,
   expectProjectAndDepPlasmicJson,
-  mockApi,
   opts,
   project1Config,
   standardTestSetup,
   standardTestTeardown,
   tmpRepo,
 } from "../test-common/fixtures";
+import { ensure } from "../utils/lang-utils";
 
-jest.mock("../api");
+vi.mock("../api");
 
 // Reset the test project directory
 beforeEach(() => {
@@ -145,7 +147,7 @@ describe("Project API tokens", () => {
     // We sync project1 which got updated, but the dependency is still same version.
     opts.force = false;
     removeAuth();
-    mockApi.getMockProject("projectId1", "main", "1.2.3").version = "1.2.4";
+    ensure(getMockProject("projectId1", "main", "1.2.3")).version = "1.2.4";
     await expect(sync(opts)).resolves.toBeUndefined();
   });
 

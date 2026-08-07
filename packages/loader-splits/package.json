@@ -29,8 +29,8 @@
     "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
     "yalcp": "yalc publish --push",
-    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
-    "coverage": "TEST_CWD=`pwd` pnpm -w test --coverage --passWithNoTests",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh",
@@ -47,7 +47,10 @@
   ],
   "devDependencies": {
     "@plasmicapp/loader-fetcher": "2.0.4",
-    "@types/json-logic-js": "^1.2.1"
+    "@types/json-logic-js": "^1.2.1",
+    "@vitest/coverage-v8": "4.1.10",
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
   },
   "dependencies": {
     "json-logic-js": "^2.0.2"

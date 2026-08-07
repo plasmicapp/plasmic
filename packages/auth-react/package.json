@@ -28,7 +28,7 @@
     "build": "pnpm build:types && pnpm build:index",
     "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
-    "test": "TEST_CWD=`pwd` pnpm -w test",
+    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh",

@@ -21,7 +21,7 @@
     "build": "pnpm build:types && pnpm build:index",
     "build:types": "tsc --emitDeclarationOnly",
     "build:index": "esbuild --format=cjs --outfile=./dist/index.cjs.js ./src/index.tsx && esbuild --format=esm --outfile=./dist/index.esm.js ./src/index.tsx",
-    "test": "TEST_CWD=`pwd` pnpm -w test",
+    "test": "TEST_CWD=`pwd` pnpm -w test --passWithNoTests",
     "coverage": "TEST_CWD=`pwd` pnpm -w test --coverage --passWithNoTests",
     "lint": "eslint",
     "prepublishOnly": "npm run build"

@@ -1,3 +1,5 @@
+import path from "path";
+import { describe, expect, it } from "vitest";
 import {
   ensureNextjsGlobalCssFileImports,
   formatScript,
@@ -6,6 +8,12 @@ import {
   tsxToJsx,
 } from "../utils/code-utils";
 import { readFileText } from "../utils/file-utils";
+
+// Resolved from the spec, not cwd, so the root runner can run this suite too.
+const fixImportsConfigPath = path.join(
+  __dirname,
+  "../../testData/fixImports_plasmic.json"
+);
 
 describe("code-utils", function () {
   it("typescript to javascript should work", async function () {
@@ -528,9 +536,7 @@ function _CodeSandboxDialogContent(props) {
   return null;
 }
 `;
-    const configJson = readFileText(
-      "./testData/fixImports_plasmic.json"
-    ).toString();
+    const configJson = readFileText(fixImportsConfigPath).toString();
     const config = JSON.parse(configJson);
     const context = {
       config,
@@ -606,9 +612,7 @@ function _CodeSandboxDialogContent(props) {
   return null;
 }
 `;
-    const configJson = readFileText(
-      "./testData/fixImports_plasmic.json"
-    ).toString();
+    const configJson = readFileText(fixImportsConfigPath).toString();
     const config = JSON.parse(configJson);
     const fixImportContext = mkFixImportContext(config);
     const context = {
@@ -685,9 +689,7 @@ function _CodeSandboxDialogContent(props) {
 }
 `;
 
-    const configJson = readFileText(
-      "./testData/fixImports_plasmic.json"
-    ).toString();
+    const configJson = readFileText(fixImportsConfigPath).toString();
     const config = JSON.parse(configJson);
     const fixImportContext = mkFixImportContext(config);
     const context = {

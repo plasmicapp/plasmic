@@ -1,5 +1,5 @@
 import L from "lodash";
-import {
+import type {
   ChecksumBundle,
   ComponentBundle,
   ProjectBundle,
@@ -15,8 +15,6 @@ import {
 import { AuthConfig } from "../utils/config-utils";
 import { ensure } from "../utils/lang-utils";
 import * as semver from "../utils/semver";
-
-const api: any = jest.genMockFromModule("../api");
 
 /**
  * Store a simplified data model for use with testing
@@ -42,7 +40,7 @@ export interface MockComponent {
   version?: string;
 }
 
-function clear() {
+export function clear() {
   while (PROJECTS.length > 0) {
     PROJECTS.shift();
   }
@@ -71,7 +69,7 @@ function mockProjectToProjectVersionMeta(
  * @param id componentId
  * @param comp MockComponent
  */
-function addMockProject(proj: MockProject) {
+export function addMockProject(proj: MockProject) {
   const projectId = proj.projectId;
   const branchName = proj.branchName;
   const version = proj.version;
@@ -99,7 +97,9 @@ function addMockProject(proj: MockProject) {
  * Used to interpret data that's stored in the "codegen" files from the Mock server
  * @param data
  */
-function stringToMockComponent(data?: string): MockComponent | undefined {
+export function stringToMockComponent(
+  data?: string
+): MockComponent | undefined {
   if (!data) {
     return;
   }
@@ -118,7 +118,7 @@ function mockComponentToString(component: MockComponent): string {
   return "// " + JSON.stringify(component);
 }
 
-function getMockProject(
+export function getMockProject(
   projectId: string,
   branchName: string,
   version: string
@@ -209,7 +209,7 @@ function* getDeps(projects: ProjectVersionMeta[]) {
   }
 }
 
-class PlasmicApi {
+export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
   async genStyleConfig(): Promise<StyleConfigResponse> {
@@ -410,10 +410,3 @@ class PlasmicApi {
     this.lastProjectIdsAndTokens = idsAndTokens;
   }
 }
-
-api.PlasmicApi = PlasmicApi;
-api.clear = clear;
-api.getMockProject = getMockProject;
-api.addMockProject = addMockProject;
-api.stringToMockComponent = stringToMockComponent;
-module.exports = api;

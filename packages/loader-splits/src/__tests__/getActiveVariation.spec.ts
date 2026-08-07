@@ -1,22 +1,22 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getActiveVariation } from "../index";
 import { EXPERIMENT_SPLIT, EXTERNAL_SPLIT, SEGMENT_SPLIT } from "./data";
 
 describe("getActiveVariation", () => {
   beforeEach(() => {
-    jest
-      .spyOn(global.Math, "random")
+    vi.spyOn(global.Math, "random")
       .mockReturnValue(0.5)
       .mockReturnValueOnce(0.4)
       .mockReturnValueOnce(0.7);
   });
 
   afterEach(() => {
-    jest.spyOn(global.Math, "random").mockRestore();
+    vi.spyOn(global.Math, "random").mockRestore();
   });
 
   it("should pick slice based on traits", () => {
-    const getKnownValue = jest.fn();
-    const updateKnownValue = jest.fn();
+    const getKnownValue = vi.fn();
+    const updateKnownValue = vi.fn();
 
     expect(
       getActiveVariation({
@@ -67,8 +67,8 @@ describe("getActiveVariation", () => {
   });
 
   it("should pick slice based on random value", () => {
-    const getKnownValue = jest.fn();
-    const updateKnownValue = jest.fn();
+    const getKnownValue = vi.fn();
+    const updateKnownValue = vi.fn();
 
     expect(
       // rand = 0.4
@@ -125,8 +125,8 @@ describe("getActiveVariation", () => {
   });
 
   it("should return variation with external slices info", () => {
-    const getKnownValue = jest.fn();
-    const updateKnownValue = jest.fn();
+    const getKnownValue = vi.fn();
+    const updateKnownValue = vi.fn();
 
     expect(
       // rand = 0.4
@@ -147,8 +147,8 @@ describe("getActiveVariation", () => {
   });
 
   it("should handle multiple slices", () => {
-    const getKnownValue = jest.fn();
-    const updateKnownValue = jest.fn();
+    const getKnownValue = vi.fn();
+    const updateKnownValue = vi.fn();
 
     expect(
       // rand = 0.4, 0.7
@@ -183,9 +183,9 @@ describe("getActiveVariation", () => {
   });
 
   it("should handle custom random value functions", () => {
-    const getKnownValue = jest.fn();
-    const updateKnownValue = jest.fn();
-    const getRandomValue = jest
+    const getKnownValue = vi.fn();
+    const updateKnownValue = vi.fn();
+    const getRandomValue = vi
       .fn()
       .mockReturnValueOnce(0.7)
       .mockReturnValueOnce(0.1);
@@ -208,8 +208,8 @@ describe("getActiveVariation", () => {
   });
 
   it("should return variation from known info", () => {
-    const getKnownValue = jest.fn().mockReturnValueOnce("KNOWNVALUE");
-    const updateKnownValue = jest.fn();
+    const getKnownValue = vi.fn().mockReturnValueOnce("KNOWNVALUE");
+    const updateKnownValue = vi.fn();
 
     expect(
       getActiveVariation({

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { getExternalIds } from "../index";
 import { EXTERNAL_SPLIT } from "./data";
 

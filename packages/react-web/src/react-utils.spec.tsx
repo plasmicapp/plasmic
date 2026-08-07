@@ -1,9 +1,10 @@
 import * as React from "react";
-import { mergeProps, NONE } from "./react-utils";
+import { describe, expect, it, vi } from "vitest";
+import { NONE, mergeProps } from "./react-utils";
 
 describe("mergeProps", () => {
   it("works for refs", () => {
-    const fn1 = jest.fn();
+    const fn1 = vi.fn();
     const ref2: React.MutableRefObject<any> = { current: undefined };
     const merged = mergeProps(
       {
@@ -51,9 +52,9 @@ describe("mergeProps", () => {
   });
 
   it("works for event listeners", () => {
-    const fn1 = jest.fn();
-    const fn2 = jest.fn();
-    const fn3 = jest.fn();
+    const fn1 = vi.fn();
+    const fn2 = vi.fn();
+    const fn3 = vi.fn();
     const merged = mergeProps(
       {
         onClick: fn1,
@@ -79,7 +80,7 @@ describe("mergeProps", () => {
       mergeProps(
         {
           className: "blah",
-          onClick: jest.fn(),
+          onClick: vi.fn(),
           style: NONE,
         },
         {

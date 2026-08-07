@@ -1,9 +1,10 @@
+import { describe, expect, it } from "vitest";
 import {
   generateAllPaths,
   generateAllPathsWithTraits,
   getMiddlewareResponse,
-  rewriteWithoutTraits,
   rewriteWithTraits,
+  rewriteWithoutTraits,
 } from "../index";
 import { DELIMITER, PLASMIC_SEED } from "../variation";
 

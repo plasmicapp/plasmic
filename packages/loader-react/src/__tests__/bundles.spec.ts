@@ -5,6 +5,7 @@ import {
   ProjectMeta,
   Split,
 } from "@plasmicapp/loader-fetcher";
+import { describe, expect, it } from "vitest";
 import { mergeBundles } from "../bundles";
 
 const EMPTY_BUNDLE: LoaderBundleOutput = {

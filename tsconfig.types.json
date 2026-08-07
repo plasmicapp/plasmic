@@ -12,7 +12,7 @@
   ],
   "compilerOptions": {
     "module": "NodeNext",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     // output .d.ts declaration files for consumers
     "declaration": true,
     // output .d.ts declaration files only (esbuild will transpile to .js for us)

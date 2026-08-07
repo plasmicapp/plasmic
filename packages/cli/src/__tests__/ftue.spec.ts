@@ -1,4 +1,4 @@
-jest.mock("../api");
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { sync } from "../actions/sync";
 import {
   expectProject1Components,
@@ -8,6 +8,8 @@ import {
   standardTestTeardown,
   tmpRepo,
 } from "../test-common/fixtures";
+
+vi.mock("../api");
 
 // Reset the test project directory
 beforeEach(() => {

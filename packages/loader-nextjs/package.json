@@ -57,8 +57,8 @@
     "build:edge": "node ../../build.mjs ./src/edge.ts --no-esm",
     "build:react-server": "node ../../build.mjs ./src/react-server.tsx",
     "yalcp": "yalc publish --push",
-    "test": "jest packages/loader-nextjs --config=../../jest.config.js --passWithNoTests",
-    "coverage": "pnpm test --coverage",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh",
@@ -85,9 +85,12 @@
   "devDependencies": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitest/coverage-v8": "4.1.10",
     "next": "^14",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
   },
   "peerDependencies": {
     "next": ">=14.0.0",

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { matchesPagePath } from "../utils";
 
 describe("matchesPagePath", () => {

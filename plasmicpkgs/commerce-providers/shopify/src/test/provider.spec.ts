@@ -8,6 +8,16 @@ import {
 import Cookies from "js-cookie";
 import nock from "nock";
 import path from "path";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from "vitest";
 import { defaultAccessToken, defaultStoreDomain } from "../graphql-config";
 import { getShopifyProvider } from "../provider";
 
@@ -21,11 +31,11 @@ describe("shopify provider", () => {
 
   beforeEach(() => {
     const cookieMap = new Map<string, string>();
-    jest.spyOn(Cookies, "set").mockImplementation((name, value) => {
+    vi.spyOn(Cookies, "set").mockImplementation((name, value) => {
       cookieMap.set(name, value);
       return value;
     });
-    jest.spyOn(Cookies, "get").mockImplementation(((name?: string) => {
+    vi.spyOn(Cookies, "get").mockImplementation(((name?: string) => {
       if (name) {
         return cookieMap.get(name);
       } else {
@@ -35,7 +45,7 @@ describe("shopify provider", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterAll(() => {

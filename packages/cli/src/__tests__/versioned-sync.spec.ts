@@ -1,18 +1,24 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import {
+  MockComponent,
+  addMockProject,
+  getMockProject,
+  stringToMockComponent,
+} from "../__mocks__/api";
 import { sync } from "../actions/sync";
 import {
   expectProject1Components,
   expectProject1PlasmicJson,
   expectProjectAndDepPlasmicJson,
-  mockApi,
   opts,
   project1Config,
   standardTestSetup,
   standardTestTeardown,
   tmpRepo,
 } from "../test-common/fixtures";
-import { MockComponent } from "../__mocks__/api";
+import { ensure } from "../utils/lang-utils";
 
-jest.mock("../api");
+vi.mock("../api");
 
 // Reset the test project directory
 beforeEach(() => {
@@ -54,13 +60,13 @@ describe("versioned-sync", () => {
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component name server-side
-    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
-    const buttonData = mockProject.components.find(
-      (c: MockComponent) => c.id === "buttonId"
+    const mockProject = ensure(getMockProject("projectId1", "main", "1.2.3"));
+    const buttonData = ensure(
+      mockProject.components.find((c: MockComponent) => c.id === "buttonId")
     );
     buttonData.name = "NewButton";
     mockProject.version = "2.0.0";
-    mockApi.addMockProject(mockProject);
+    addMockProject(mockProject);
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
 
@@ -68,7 +74,7 @@ describe("versioned-sync", () => {
     const projectInConfig = plasmicJson.projects.find(
       (p) => p.projectId === "projectId1"
     );
-    const componentInConfig = !!projectInConfig
+    const componentInConfig = projectInConfig
       ? projectInConfig.components.find((c) => c.id === buttonData.id)
       : undefined;
     expect(componentInConfig).toBeTruthy();
@@ -79,12 +85,12 @@ describe("versioned-sync", () => {
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
+    const mockProject = ensure(getMockProject("projectId1", "main", "1.2.3"));
     mockProject.version = "1.3.4";
-    mockApi.addMockProject(mockProject);
+    addMockProject(mockProject);
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = mockApi.stringToMockComponent(
+    const button = stringToMockComponent(
       tmpRepo.getComponentFileContents("projectId1", "buttonId")
     );
     expect(button).toBeTruthy();
@@ -97,9 +103,9 @@ describe("versioned-sync", () => {
     opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
+    const mockProject = ensure(getMockProject("projectId1", "main", "1.2.3"));
     mockProject.version = "2.0.0";
-    mockApi.addMockProject(mockProject);
+    addMockProject(mockProject);
     // Read in updated plasmic.json post-sync
     const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1); // projectId1
@@ -112,7 +118,7 @@ describe("versioned-sync", () => {
     plasmicJson.projects[0].version = "2.0.0"; // Doesn't exist
     tmpRepo.writePlasmicJson(plasmicJson);
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = mockApi.stringToMockComponent(
+    const button = stringToMockComponent(
       tmpRepo.getComponentFileContents("projectId1", "buttonId")
     );
     expect(button).toBeTruthy();
@@ -125,9 +131,9 @@ describe("versioned-sync", () => {
     opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
+    const mockProject = ensure(getMockProject("projectId1", "main", "1.2.3"));
     mockProject.version = "1.10.1";
-    mockApi.addMockProject(mockProject);
+    addMockProject(mockProject);
     // Update plasmic.json to use semver
     const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1);
@@ -135,7 +141,7 @@ describe("versioned-sync", () => {
     plasmicJson.projects[0].version = "^1.2.3";
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = mockApi.stringToMockComponent(
+    const button = stringToMockComponent(
       tmpRepo.getComponentFileContents("projectId1", "buttonId")
     );
     expect(button).toBeTruthy();
@@ -163,7 +169,7 @@ describe("recursive-sync", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
     expect(tmpRepo.checkFile("./src/Button.tsx")).toBeTruthy();
     expect(tmpRepo.checkFile("./src/Container.tsx")).toBeTruthy();
-    const depComponent = mockApi.stringToMockComponent(
+    const depComponent = stringToMockComponent(
       tmpRepo.getComponentFileContents("dependencyId1", "depComponentId")
     );
     expect(depComponent).toBeTruthy();
