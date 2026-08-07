@@ -542,7 +542,7 @@ export function expandGapProperty(gapValue: string, isGrid: boolean = false) {
 export function parseShorthandProperties(
   property: ShorthandProperty,
   valueNode: Value
-) {
+): Record<string, string> {
   const value = generate(valueNode);
   const parts = parseCssShorthand(value);
 

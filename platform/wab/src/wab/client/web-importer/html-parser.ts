@@ -305,7 +305,7 @@ function fixCSSValue(
   )();
 }
 
-function fixCSSValueUnsafe(key: string, value: string) {
+function fixCSSValueUnsafe(key: string, value: string): Record<string, string> {
   if (!value) {
     return {};
   }
