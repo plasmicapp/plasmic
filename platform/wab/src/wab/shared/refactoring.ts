@@ -91,6 +91,25 @@ export function isQueryUsedInExpr(
 }
 
 /**
+ * Returns boolean for whether `expr` references the server query (`$q.<name>`).
+ */
+export function isServerQueryUsedInExpr(
+  queryName: string,
+  expr: Expr | null | undefined
+) {
+  if (Exprs.isRealCodeExpr(expr)) {
+    assert(
+      isKnownCustomCode(expr) || isKnownObjectPath(expr),
+      "Real code expression must be CustomCode or ObjectPath"
+    );
+    const info = parseExpr(expr);
+    const varName = toVarName(queryName);
+    return info.usedDollarVarKeys.$q.has(varName);
+  }
+  return false;
+}
+
+/**
  * Returns boolean indicating whether `expr` is referencing a data token.
  */
 export function isDataTokenUsedInExpr(

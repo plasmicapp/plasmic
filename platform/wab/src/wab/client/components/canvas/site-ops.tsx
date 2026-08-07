@@ -176,6 +176,7 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import {
   flattenDataTokenUsage,
   isQueryUsedInExpr,
+  isServerQueryUsedInExpr,
   renameServerQueryAndFixExprs,
 } from "@/wab/shared/refactoring";
 import {
@@ -192,7 +193,7 @@ import {
 } from "@/wab/shared/visibility-utils";
 import { notification } from "antd";
 import L from "lodash";
-import { ok } from "neverthrow";
+import { err, ok } from "neverthrow";
 import React from "react";
 
 /**
@@ -1207,12 +1208,15 @@ export class SiteOps {
     });
   }
 
+  /**
+   * Removes a server query, or refuses with readable error if referenced as `$q.<name>`.
+   */
   async removeComponentServerQuery(
     component: Component,
     query: ComponentServerQuery
   ) {
     const refs = findExprsInComponent(component).filter(({ expr }) =>
-      isQueryUsedInExpr(query.name, expr)
+      isServerQueryUsedInExpr(query.name, expr)
     );
     if (refs.length > 0) {
       const viewCtx = this.studioCtx.focusedViewCtx();
@@ -1237,10 +1241,19 @@ export class SiteOps {
           </>
         ),
       });
-      return;
+      return err(
+        new Error(
+          `Cannot delete ${SERVER_QUERY_LOWER} "${query.name}" (uuid ${
+            query.uuid
+          }) while it is still referenced as $q.${toVarName(
+            query.name
+          )} in this component. Re-point or remove those references first, ` +
+            `then delete.`
+        )
+      );
     }
 
-    await this.studioCtx.changeObserved(
+    return this.studioCtx.changeObserved(
       () => [],
       () => {
         this.tplMgr.removeComponentServerQuery(component, query);
