@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/nextjs-app-router",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "(DEPRECATED) Helpers for extracting Plasmic query data under the Next.js App Router.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -31,7 +31,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@plasmicapp/prepass": "1.0.27",
+    "@plasmicapp/prepass": "1.0.28",
     "@plasmicapp/query": "0.1.87",
     "cross-port-killer": "1.4.0",
     "cross-spawn": "^7.0.3",

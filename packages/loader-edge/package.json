@@ -1,5 +1,5 @@
 {
-  "version": "1.0.81",
+  "version": "1.0.82",
   "description": "Edge-runtime helpers for applying Plasmic A/B tests and content splits in middleware.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -46,10 +46,10 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/loader-splits": "1.0.75"
+    "@plasmicapp/loader-splits": "1.0.76"
   },
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "2.0.4",
+    "@plasmicapp/loader-fetcher": "2.0.5",
     "@vitest/coverage-v8": "4.1.10",
     "vite": "8.1.5",
     "vitest": "4.1.10"

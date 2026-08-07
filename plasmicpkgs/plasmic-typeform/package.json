@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-typeform",
-  "version": "0.0.102",
+  "version": "0.0.103",
   "description": "Plasmic Typeform components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -41,7 +41,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.15",
+    "@plasmicapp/host": "2.0.16",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",

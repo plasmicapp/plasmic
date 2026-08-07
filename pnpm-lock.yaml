@@ -361,7 +361,7 @@ importers:
   packages/create-plasmic-app:
     dependencies:
       '@plasmicapp/cli':
-        specifier: 0.1.370
+        specifier: 0.1.371
         version: link:../cli
       '@sentry/node':
         specifier: ^6.2.2
@@ -440,7 +440,7 @@ importers:
         specifier: 0.1.25
         version: link:../data-sources-context
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -547,7 +547,7 @@ importers:
   packages/loader-core:
     dependencies:
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-fetcher
     devDependencies:
       '@types/node':
@@ -563,11 +563,11 @@ importers:
   packages/loader-edge:
     dependencies:
       '@plasmicapp/loader-splits':
-        specifier: 1.0.75
+        specifier: 1.0.76
         version: link:../loader-splits
     devDependencies:
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-fetcher
       '@vitest/coverage-v8':
         specifier: 4.1.10
@@ -597,13 +597,13 @@ importers:
   packages/loader-gatsby:
     dependencies:
       '@plasmicapp/loader-core':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-core
       '@plasmicapp/loader-react':
-        specifier: 2.0.18
+        specifier: 2.0.19
         version: link:../loader-react
       '@plasmicapp/watcher':
-        specifier: 1.0.86
+        specifier: 1.0.87
         version: link:../watcher
       lodash:
         specifier: ^4.17.21
@@ -628,16 +628,16 @@ importers:
   packages/loader-nextjs:
     dependencies:
       '@plasmicapp/loader-core':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-core
       '@plasmicapp/loader-edge':
-        specifier: 1.0.81
+        specifier: 1.0.82
         version: link:../loader-edge
       '@plasmicapp/loader-react':
-        specifier: 2.0.18
+        specifier: 2.0.19
         version: link:../loader-react
       '@plasmicapp/watcher':
-        specifier: 1.0.86
+        specifier: 1.0.87
         version: link:../watcher
       server-only:
         specifier: 0.0.1
@@ -674,19 +674,19 @@ importers:
         specifier: 0.1.25
         version: link:../data-sources-context
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../host
       '@plasmicapp/loader-core':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-core
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-fetcher
       '@plasmicapp/loader-splits':
-        specifier: 1.0.75
+        specifier: 1.0.76
         version: link:../loader-splits
       '@plasmicapp/prepass':
-        specifier: 1.0.27
+        specifier: 1.0.28
         version: link:../prepass
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -733,7 +733,7 @@ importers:
         version: 2.0.5
     devDependencies:
       '@plasmicapp/loader-fetcher':
-        specifier: 2.0.4
+        specifier: 2.0.5
         version: link:../loader-fetcher
       '@types/json-logic-js':
         specifier: ^1.2.1
@@ -751,7 +751,7 @@ importers:
   packages/nextjs-app-router:
     dependencies:
       '@plasmicapp/prepass':
-        specifier: 1.0.27
+        specifier: 1.0.28
         version: link:../prepass
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -838,22 +838,22 @@ importers:
   packages/react-web:
     dependencies:
       '@plasmicapp/auth-react':
-        specifier: 0.0.30
+        specifier: 0.0.31
         version: link:../auth-react
       '@plasmicapp/data-sources':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../data-sources
       '@plasmicapp/data-sources-context':
         specifier: 0.1.25
         version: link:../data-sources-context
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../host
       '@plasmicapp/loader-splits':
-        specifier: 1.0.75
+        specifier: 1.0.76
         version: link:../loader-splits
       '@plasmicapp/prepass':
-        specifier: 1.0.27
+        specifier: 1.0.28
         version: link:../prepass
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -995,7 +995,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.30
+        specifier: 1.0.31
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -1035,40 +1035,40 @@ importers:
   plasmicpkgs-dev:
     dependencies:
       '@plasmicapp/loader-nextjs':
-        specifier: 2.0.21
+        specifier: 2.0.22
         version: link:../packages/loader-nextjs
       '@plasmicpkgs/cms':
-        specifier: 0.0.36
+        specifier: 0.0.37
         version: link:../plasmicpkgs/cms
       '@plasmicpkgs/commerce':
-        specifier: 0.0.256
+        specifier: 0.0.257
         version: link:../plasmicpkgs/commerce-providers/commerce
       '@plasmicpkgs/commerce-shopify':
-        specifier: 0.0.265
+        specifier: 0.0.266
         version: link:../plasmicpkgs/commerce-providers/shopify
       '@plasmicpkgs/contentful':
-        specifier: 0.0.30
+        specifier: 0.0.31
         version: link:../plasmicpkgs/contentful
       '@plasmicpkgs/fetch':
-        specifier: 0.0.50
+        specifier: 0.0.51
         version: link:../plasmicpkgs/fetch
       '@plasmicpkgs/graphql':
-        specifier: 0.0.44
+        specifier: 0.0.45
         version: link:../plasmicpkgs/graphql
       '@plasmicpkgs/plasmic-basic-components':
-        specifier: 0.0.287
+        specifier: 0.0.288
         version: link:../plasmicpkgs/plasmic-basic-components
       '@plasmicpkgs/plasmic-cms':
-        specifier: 0.0.327
+        specifier: 0.0.328
         version: link:../plasmicpkgs/plasmic-cms
       '@plasmicpkgs/plasmic-strapi':
-        specifier: 0.1.215
+        specifier: 0.1.216
         version: link:../plasmicpkgs/plasmic-strapi
       '@plasmicpkgs/strapi':
-        specifier: 0.0.34
+        specifier: 0.0.35
         version: link:../plasmicpkgs/strapi
       '@plasmicpkgs/wordpress':
-        specifier: 0.0.35
+        specifier: 0.0.36
         version: link:../plasmicpkgs/wordpress
       next:
         specifier: ^15.5.9
@@ -1103,7 +1103,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -1125,7 +1125,7 @@ importers:
         version: 4.24.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -1201,16 +1201,16 @@ importers:
         specifier: ^7.22.15
         version: 7.29.7(@babel/core@7.29.7)
       '@plasmicapp/data-sources':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.30
+        specifier: 1.0.31
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -1274,7 +1274,7 @@ importers:
         version: 2.10.10(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(framer-motion@5.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^25.0.2
@@ -1319,7 +1319,7 @@ importers:
   plasmicpkgs/cms:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -1359,7 +1359,7 @@ importers:
         version: 1.3.0(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -1398,7 +1398,7 @@ importers:
         specifier: ^2.2.2
         version: 2.5.0(encoding@0.1.13)
       '@plasmicpkgs/commerce':
-        specifier: 0.0.256
+        specifier: 0.0.257
         version: link:../commerce
       debounce:
         specifier: ^2.0.0
@@ -1411,7 +1411,7 @@ importers:
         version: 6.15.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -1441,11 +1441,11 @@ importers:
   plasmicpkgs/commerce-providers/local:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.256
+        specifier: 0.0.257
         version: link:../commerce
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../../packages/host
       '@types/js-cookie':
         specifier: ^3.0.6
@@ -1472,7 +1472,7 @@ importers:
   plasmicpkgs/commerce-providers/saleor:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.256
+        specifier: 0.0.257
         version: link:../commerce
       debounce:
         specifier: ^1.2.1
@@ -1482,7 +1482,7 @@ importers:
         version: 3.0.8
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../../packages/host
       '@types/debounce':
         specifier: ^1.2.4
@@ -1515,7 +1515,7 @@ importers:
   plasmicpkgs/commerce-providers/shopify:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.256
+        specifier: 0.0.257
         version: link:../commerce
       debounce:
         specifier: ^1.2.1
@@ -1528,7 +1528,7 @@ importers:
         specifier: ^5.0.3
         version: 5.0.7(@parcel/watcher@2.5.6)(@types/node@14.18.63)(encoding@0.1.13)(enquirer@2.4.1)(graphql@16.14.2)(typescript@5.2.2)
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../../packages/host
       '@types/debounce':
         specifier: ^1.2.4
@@ -1564,7 +1564,7 @@ importers:
   plasmicpkgs/commerce-providers/swell:
     dependencies:
       '@plasmicpkgs/commerce':
-        specifier: 0.0.256
+        specifier: 0.0.257
         version: link:../commerce
       debounce:
         specifier: ^1.2.1
@@ -1577,7 +1577,7 @@ importers:
         version: 3.24.5
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../../packages/host
       '@types/debounce':
         specifier: ^1.2.4
@@ -1604,7 +1604,7 @@ importers:
   plasmicpkgs/contentful:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -1638,7 +1638,7 @@ importers:
         version: 3.2.2(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1665,7 +1665,7 @@ importers:
   plasmicpkgs/fetch:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       typescript:
         specifier: 5.2.2
@@ -1684,7 +1684,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -1706,7 +1706,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1733,10 +1733,10 @@ importers:
   plasmicpkgs/graphql:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicpkgs/fetch':
-        specifier: 0.0.50
+        specifier: 0.0.51
         version: link:../fetch
       typescript:
         specifier: 5.2.2
@@ -1755,7 +1755,7 @@ importers:
         version: 6.8.6
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1792,7 +1792,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -1810,7 +1810,7 @@ importers:
   plasmicpkgs/mailchimp:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1837,7 +1837,7 @@ importers:
   plasmicpkgs/plasmic-basic-components:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -1874,7 +1874,7 @@ importers:
         version: 4.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -1901,7 +1901,7 @@ importers:
   plasmicpkgs/plasmic-cms:
     dependencies:
       '@plasmicpkgs/cms':
-        specifier: 0.0.36
+        specifier: 0.0.37
         version: link:../cms
       dayjs:
         specifier: ^1.10.7
@@ -1914,7 +1914,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -1939,7 +1939,7 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -1988,13 +1988,13 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicpkgs/contentful':
-        specifier: 0.0.30
+        specifier: 0.0.31
         version: link:../contentful
       '@types/dlv':
         specifier: ^1.1.5
@@ -2025,7 +2025,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^17.0.45
@@ -2053,7 +2053,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2093,7 +2093,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2124,7 +2124,7 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -2161,7 +2161,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2192,7 +2192,7 @@ importers:
         version: 2.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2229,10 +2229,10 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/data-sources':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2257,7 +2257,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2285,7 +2285,7 @@ importers:
         version: 0.21.6(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/dlv':
         specifier: ^1.1.5
@@ -2322,7 +2322,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -2377,10 +2377,10 @@ importers:
         specifier: 2.6.4
         version: 2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/data-sources':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^25.0.2
@@ -2441,7 +2441,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -2472,7 +2472,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/dlv':
         specifier: ^1.1.5
@@ -2502,14 +2502,14 @@ importers:
   plasmicpkgs/plasmic-strapi:
     dependencies:
       '@plasmicpkgs/strapi':
-        specifier: 0.0.34
+        specifier: 0.0.35
         version: link:../strapi
       change-case:
         specifier: ^4.1.2
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -2536,7 +2536,7 @@ importers:
   plasmicpkgs/plasmic-tabs:
     dependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       constate:
         specifier: ^3.3.2
@@ -2574,7 +2574,7 @@ importers:
         version: 4.1.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2608,13 +2608,13 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicpkgs/wordpress':
-        specifier: 0.0.35
+        specifier: 0.0.36
         version: link:../wordpress
       '@types/react':
         specifier: ^18
@@ -2639,7 +2639,7 @@ importers:
         version: 1.1.3
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -2685,7 +2685,7 @@ importers:
         version: 4.18.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@plasmicapp/query':
         specifier: 0.1.87
@@ -2758,7 +2758,7 @@ importers:
         version: 1.61.0
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2795,7 +2795,7 @@ importers:
         version: 3.48.0(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -2847,7 +2847,7 @@ importers:
         version: 0.17.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -2890,7 +2890,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2918,7 +2918,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2952,7 +2952,7 @@ importers:
         version: 1.7.332(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -2980,7 +2980,7 @@ importers:
         version: 2.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3011,7 +3011,7 @@ importers:
         version: 1.5.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3045,7 +3045,7 @@ importers:
         version: 1.8.1(jquery@4.0.0)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3076,7 +3076,7 @@ importers:
         version: 1.11.0(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3104,7 +3104,7 @@ importers:
         version: 9.0.2(react@18.3.1)
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3132,7 +3132,7 @@ importers:
         version: 18.3.1
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/node':
         specifier: ^14.18.63
@@ -3154,7 +3154,7 @@ importers:
         version: link:../../packages/query
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@types/react':
         specifier: ^18
@@ -3185,7 +3185,7 @@ importers:
         version: 6.15.2
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15
@@ -3258,10 +3258,10 @@ importers:
         version: 6.3.7
     devDependencies:
       '@plasmicapp/data-sources':
-        specifier: 1.0.24
+        specifier: 1.0.25
         version: link:../../packages/data-sources
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0
@@ -3313,7 +3313,7 @@ importers:
         version: 3.1.0
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       typescript:
         specifier: 5.2.2
@@ -3322,7 +3322,7 @@ importers:
   plasmicpkgs/wordpress:
     devDependencies:
       '@plasmicapp/host':
-        specifier: 2.0.15
+        specifier: 2.0.16
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
         specifier: ^6.6.15

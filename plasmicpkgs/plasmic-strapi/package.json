@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-strapi",
-  "version": "0.1.215",
+  "version": "0.1.216",
   "description": "Plasmic code components for fetching and rendering Strapi content.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -48,11 +48,11 @@
     }
   ],
   "dependencies": {
-    "@plasmicpkgs/strapi": "0.0.34",
+    "@plasmicpkgs/strapi": "0.0.35",
     "change-case": "^4.1.2"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.15",
+    "@plasmicapp/host": "2.0.16",
     "@plasmicapp/query": "0.1.87",
     "@types/dlv": "^1.1.5",
     "@types/react": "^18",

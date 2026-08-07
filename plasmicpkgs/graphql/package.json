@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/graphql",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "Custom functions for running GraphQL queries from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -33,8 +33,8 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.15",
-    "@plasmicpkgs/fetch": "0.0.50",
+    "@plasmicapp/host": "2.0.16",
+    "@plasmicpkgs/fetch": "0.0.51",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {

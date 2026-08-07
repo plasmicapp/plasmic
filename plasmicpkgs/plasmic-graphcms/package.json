@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-graphcms",
-  "version": "0.0.229",
+  "version": "0.0.230",
   "description": "Plasmic GraphCMS components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -43,7 +43,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.15",
+    "@plasmicapp/host": "2.0.16",
     "@plasmicapp/query": "0.1.87",
     "@types/dlv": "^1.1.5",
     "@types/react": "^18",

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.75",
+  "version": "1.0.76",
   "description": "Utilities for running Plasmic A/B tests, feature flags, and audience segmentation.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -46,7 +46,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "2.0.4",
+    "@plasmicapp/loader-fetcher": "2.0.5",
     "@types/json-logic-js": "^1.2.1",
     "@vitest/coverage-v8": "4.1.10",
     "vite": "8.1.5",
