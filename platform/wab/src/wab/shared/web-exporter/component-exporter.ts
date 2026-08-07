@@ -43,6 +43,7 @@ import {
   ImageAssetRef,
   Interaction,
   ObjectPath,
+  PageHref,
   RuleSet,
   Site,
   StyleTokenRef,
@@ -51,6 +52,7 @@ import {
   TplNode,
   TplSlot,
   TplTag,
+  VarRef,
   Variant,
   VariantSetting,
   isKnownCollectionExpr,
@@ -140,6 +142,7 @@ function serializeExprValue(expr: Expr): JsonValue | undefined {
         ? jsonValue
         : exprToInterpolatedString(valueExpr);
     })
+    .when([VarRef, PageHref], (refExpr) => exprToInterpolatedString(refExpr))
     .elseUnsafe(() => undefined);
 }
 

@@ -3,12 +3,12 @@ name: plasmic-designer
 description: Build and modify Plasmic Studio designs using copilot tools via Chrome DevTools MCP. First argument should be a project ID, followed by the design request. Use this skill whenever the user mentions Plasmic, Plasmic Studio, visual web builder, or asks to design, build, edit, or modify UI components, pages, sections, or layouts inside a Plasmic project. Also trigger when the user references a Plasmic project ID, wants to add/remove/restyle elements in a visual editor, or asks about Plasmic component props, variants, slots, or tokens — even if they don't say "Plasmic" explicitly but describe visual design work that implies it.
 allowed-tools: mcp__chrome-devtools__evaluate_script mcp__chrome-devtools__navigate_page mcp__chrome-devtools__take_screenshot mcp__chrome-devtools__list_pages
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Plasmic Designer
 
-Skill Version: 1.1.0
+Skill Version: 1.2.0
 
 Control Plasmic Studio through Chrome DevTools MCP to build and modify production-ready interfaces.
 
@@ -52,7 +52,7 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
 
    - `model` — Model name as known to the agent (e.g. `claude-opus-4-7`, `anthropic/claude-sonnet-4-6`, `gpt-5.3-codex`).
    - `client` — AI client/CLI invoking the tool (e.g. `claude-code`, `claude-code@1.x`, `opencode`, `cursor`, `cline`).
-   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.1.0`, `unknown`).
+   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.2.0`, `unknown`).
    - `outputFormat` — Preferred format for tool output, `"json"` or `"xml"`.
 
    Pass `"unknown"` for any required string field you cannot reliably identify.
@@ -118,7 +118,7 @@ Mutation tools require a `componentUuid` (from `read` results). They accept an o
 
 ### Reusing Existing Components
 
-When you read a component, the output includes **props** (text, boolean, enum, number, href with defaults), **variants** (boolean toggles or enum option groups), **slots** (named content areas), **base-variant-tpl-tree** (element tree with styles), and **VariantSettings** (style overrides per variant). Review these to understand the component before using it.
+When you read a component, review its props, variants, slots, element tree and per-variant style overrides before using it.
 
 To use a component in insertHtml:
 
@@ -140,6 +140,24 @@ To use a component in insertHtml:
 - `data-props` is a JSON object for both props and variant activations. Boolean variants: `"group": true`. Enum variants: `"group": "optionName"`.
 - `<slot name="slotName">` children fill named slots; its children become the slot content.
 - **Only layout/position styles work on instances**: width, height, min/max sizing, margin, position, top/left/bottom/right, z-index, order, align-self, flex-grow/shrink, opacity, display (only `none`), transform, and transition properties. Background, padding, color, font, border, etc. are ignored on instances — use `changeElement` on the component's root element instead. This is a Plasmic platform constraint, not a preference.
+
+## Dynamic Data
+
+Text, attributes, and component props can be bound to runtime data — `$props`, `$state`, `$ctx` (page params/query), `$queries` / `$q` (data query results), and repetition locals (`currentItem`, `currentIndex`).
+
+- Write bindings as inline `{{ jsExpr }}` interpolation. Content is static by default; wrapping JS in `{{ }}` makes it dynamic (also used for non-string literals, e.g. `"{{ 10 }}"`).
+- Before binding, `read({ dataContext: [{ componentUuid, elementUuid }] })` to see which paths exist, then drill in with `paths` / `maxArrayItems`. Reference only paths it returns.
+- Repetition: `data-repeat="{{ $q.myQuery.data }}"` in `insertHtml`, or `repeat: { collection: "..." }` in `changeElement`; bind the subtree with `{{ currentItem.* }}`.
+- Visibility: `data-visible-if="{{ ... }}"` / `data-visibility="displayNone"`, or `visibility: { showIf: "..." }` in `changeElement`.
+- A prop wired to the enclosing component's prop reads back as `{{ $props.<name> }}`, and a link-to-page destination as its URL with dynamic parts inlined (e.g. `/products/{{ $state.slug }}`).
+
+## Interactions
+
+An element's event handler is an ordered list of interaction steps, surfaced by `read` under component `interactions` rather than in the element's props/attrs (a handler forwarded from a prop as `{{ $props.<name> }}`). Manage them with `createElementInteractions`, `changeElementInteractions`, and `deleteElementInteractions`.
+
+- `eventName` is a DOM event prop for tags (e.g. `onClick`) or the name of a function-typed prop for component instances (e.g. `On click`). Use the exact name `read` reports.
+- Prefer structured actions (`updateVariable`, `updateVariant`) over `customFunction` when one fits. Steps whose action kind is outside the writable action schema (e.g. navigation) are still listed by `read`, but can only be renamed or deleted.
+- Run-code bodies see `$state`, `$props`, `$ctx`, `$refs`, `$queries` / `$q` and the event args; later steps read earlier results as `$steps.<stepName>`.
 
 ## HTML Code Guidelines
 

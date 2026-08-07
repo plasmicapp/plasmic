@@ -69,15 +69,21 @@ describe("jsonToXml", () => {
     `);
   });
 
-  it("escapes only quotes in attribute values (xml-js default)", () => {
+  it("single-quotes attribute values containing double quotes", () => {
     expect(
       jsonToXml(
         { __type: "Demo", amp: "A & B", gt: "x > y", quote: 'say "hi"' },
         true
       )
     ).toMatchInlineSnapshot(
-      `"<Demo amp="A & B" gt="x > y" quote="say &quot;hi&quot;"></Demo>"`
+      `"<Demo amp="A & B" gt="x > y" quote='say "hi"'></Demo>"`
     );
+  });
+
+  it("falls back to &quot; escaping when a value mixes both quote kinds", () => {
+    expect(
+      jsonToXml({ __type: "Demo", mixed: `it's "quoted"` }, true)
+    ).toMatchInlineSnapshot(`"<Demo mixed="it's &quot;quoted&quot;"></Demo>"`);
   });
 
   it("renders an empty array as an empty ARRAY", () => {

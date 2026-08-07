@@ -1,5 +1,5 @@
 import { JsonObject, JsonValue } from "@/wab/shared/core/lang";
-import { Element, js2xml } from "xml-js";
+import { XmlElement, toXml } from "@/wab/shared/web-exporter/xml-utils";
 
 /**
  * Render a canonical OutputResult JSON model as XML.
@@ -11,23 +11,18 @@ import { Element, js2xml } from "xml-js";
  * - Large text-block fields (the tpl tree, animation CSS) are emitted as CDATA.
  */
 export function jsonToXml(model: JsonObject, prettify = false): string {
-  return js2xml(
-    { elements: [objectToElement(String(model.__type), model)] },
-    // compact:false is the input shape (our element tree), not an output setting,
-    // for that we use spaces.
-    // fullTagEmptyElement renders an empty field (e.g. `results: []`) as
-    // `<results></results>`, mirroring the empty array the JSON shows.
-    { compact: false, fullTagEmptyElement: true, spaces: prettify ? 2 : 0 }
-  );
+  return toXml(objectToElement(String(model.__type), model), {
+    spaces: prettify ? 2 : 0,
+  });
 }
 
 // Fields whose value is an HTML markup or CSS block, rendered as a CDATA child element.
 const CDATA_FIELDS = new Set(["baseVariantTplTree", "keyframesRule"]);
 
 /** Builds an `<name>` element for an object. */
-function objectToElement(name: string, obj: JsonObject): Element {
+function objectToElement(name: string, obj: JsonObject): XmlElement {
   const attributes: Record<string, string> = {};
-  const elements: Element[] = [];
+  const elements: XmlElement[] = [];
   for (const [key, value] of Object.entries(obj)) {
     if (key === "__type") {
       continue;
@@ -60,7 +55,7 @@ function objectToElement(name: string, obj: JsonObject): Element {
   return { type: "element", name, attributes, elements };
 }
 
-function arrayElement(key: string, items: JsonValue[]): Element {
+function arrayElement(key: string, items: JsonValue[]): XmlElement {
   const itemElements = items.map((item) => itemElement(item));
   return {
     type: "element",
@@ -69,7 +64,7 @@ function arrayElement(key: string, items: JsonValue[]): Element {
   };
 }
 
-function itemElement(item: JsonValue): Element {
+function itemElement(item: JsonValue): XmlElement {
   if (Array.isArray(item)) {
     return arrayElement("ITEM", item);
   }

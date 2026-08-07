@@ -1,5 +1,7 @@
-import { switchType } from "@/wab/shared/common";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { maybe, switchType } from "@/wab/shared/common";
 import {
+  TemplatedStringPropEditorValue,
   codeLit,
   customCode,
   deserCompositeExpr,
@@ -8,10 +10,9 @@ import {
   simplifyTemplatedString,
   stripParens,
   stripParensAndMaybeConvertToIife,
-  TemplatedStringPropEditorValue,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
-import { jsonParse, JsonValue } from "@/wab/shared/core/lang";
+import { JsonValue, jsonParse } from "@/wab/shared/core/lang";
 import {
   getDynamicStringSegments,
   isDynamicValue,
@@ -25,15 +26,18 @@ import {
   CustomCode,
   Expr,
   ExprText,
-  isKnownCompositeExpr,
-  isKnownExpr,
-  isKnownObjectPath,
   ObjectPath,
+  PageHref,
   RawText,
   RichText,
   TemplatedString,
+  VarRef,
+  isKnownCompositeExpr,
+  isKnownExpr,
+  isKnownObjectPath,
 } from "@/wab/shared/model/classes";
 import { parseJsCode } from "@/wab/shared/parser-utils";
+import { renderPageHrefUrl } from "@/wab/shared/utils/url-utils";
 import { mapValues } from "lodash";
 import { z } from "zod";
 
@@ -211,11 +215,12 @@ function exprToInterpolation(expr: ObjectPath | CustomCode): string {
  * - Static string value -> raw string.
  * - `ObjectPath` / `CustomCode` -> `{{ jsExpr }}`.
  * - `TemplatedString` -> static parts as-is, dynamic parts as `{{ jsExpr }}`.
+ * - `VarRef` -> `{{ $props.varName }}` (its canvas evaluation form).
+ * - `PageHref` -> the page URL with dynamic params/query/fragment as `{{ }}`.
  *
  * Returns `undefined` for other exprs, which callers must skip:
  * - `RenderExpr` (slot content) shows in read as `<slot>` children.
- * - `EventHandler` are structured Interactions, and need their own read/write tool (TODO).
- * - `VarRef`, `PageHref`, have JS forms and can be included in the future (TODO).
+ * - `EventHandler` shows in read as the component's `interactions`.
  *
  * Data tokens are emitted as raw `$dataTokens_*` (no display-name transform).
  */
@@ -232,7 +237,27 @@ export function exprToInterpolatedString(expr: Expr): string | undefined {
       const json = tryExtractJson(dynExpr);
       return typeof json === "string" ? json : exprToInterpolation(dynExpr);
     })
+    .when(VarRef, (varRef) =>
+      varRef.variable
+        ? `{{ $props.${toVarName(varRef.variable.name)} }}`
+        : undefined
+    )
+    .when(PageHref, (pageHref) => pageHrefToInterpolatedString(pageHref))
     .elseUnsafe(() => undefined);
+}
+
+/**
+ * Renders a `PageHref` as its URL with dynamic params/query/fragment inlined as
+ * `{{ }}`, e.g. `/products/{{ $state.slug }}?ref={{ $props.ref }}`. The
+ * interpolated counterpart of `pageHrefPathToCode`, so it round-trips through
+ * the write path (as an equivalent static string or TemplatedString).
+ */
+function pageHrefToInterpolatedString(pageHref: PageHref): string | undefined {
+  // Parts are all renderable, only a dangling VarRef reads as an empty segment.
+  return renderPageHrefUrl(
+    pageHref,
+    (value) => exprToInterpolatedString(value) ?? ""
+  );
 }
 
 export function dataQueryArgSchema() {
@@ -256,16 +281,14 @@ export function dataQueryArgSchema() {
 export type DataQueryArgJson = z.infer<ReturnType<typeof dataQueryArgSchema>>;
 
 /**
- * Placeholder for exprs that can't currently be rendered (e.g. VarRef, PageHref).
- * Emitted instead of "" so the arg doesn't read as empty static text.
- */
-const UNSUPPORTED_EXPR_SENTINEL = "{{ /* unsupported expression */ }}";
-
-/**
  * Serializes a function arg `Expr` back to the tagged form with `value` accepted by
  * `createDataQuery`. `CompositeExpr` for object/array, otherwise `InterpolatedString`.
+ * Returns `undefined` for exprs with no inline form, which callers must skip.
  */
-export function exprToDataQueryArg(name: string, expr: Expr): DataQueryArgJson {
+export function exprToDataQueryArg(
+  name: string,
+  expr: Expr
+): DataQueryArgJson | undefined {
   if (isKnownCompositeExpr(expr)) {
     return {
       __type: "CompositeExpr",
@@ -279,17 +302,17 @@ export function exprToDataQueryArg(name: string, expr: Expr): DataQueryArgJson {
   if (json !== undefined && typeof json === "object" && json !== null) {
     return { __type: "CompositeExpr", name, value: JSON.stringify(json) };
   }
-  return {
+  return maybe(exprToInterpolatedString(expr), (value) => ({
     __type: "InterpolatedString",
     name,
-    value: exprToInterpolatedString(expr) ?? UNSUPPORTED_EXPR_SENTINEL,
-  };
+    value,
+  }));
 }
 
 /** Recursively replaces `Expr` leaves of a deserialized object with `{{ }}`. */
 function exprLeavesToInterpolations(value: ValueOrExpr): JsonValue {
   if (isKnownExpr(value)) {
-    return exprToInterpolatedString(value) ?? UNSUPPORTED_EXPR_SENTINEL;
+    return exprToInterpolatedString(value) ?? null;
   }
   if (Array.isArray(value)) {
     return value.map(exprLeavesToInterpolations);

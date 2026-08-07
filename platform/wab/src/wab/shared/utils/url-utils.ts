@@ -6,7 +6,7 @@ import {
   getCodeExpressionWithFallback,
 } from "@/wab/shared/core/exprs";
 import { tryEvalExpr, TryEvalExprResult } from "@/wab/shared/eval";
-import { PageHref } from "@/wab/shared/model/classes";
+import { Expr, PageHref } from "@/wab/shared/model/classes";
 import { matchesPagePath } from "@plasmicapp/loader-react";
 
 /**
@@ -90,6 +90,37 @@ interface GetPageHrefPathProps {
 }
 
 /**
+ * Renders a PageHref as a URL: the page path with each param substituted, then
+ * `?key=value` query entries, then `#fragment`, with every dynamic value
+ * rendered by `renderValue`. Returns undefined for a dangling page ref.
+ */
+export function renderPageHrefUrl(
+  expr: PageHref,
+  renderValue: (value: Expr) => string
+): string | undefined {
+  const path = expr.page?.pageMeta?.path;
+  if (path == null) {
+    return undefined;
+  }
+  let url = path;
+  for (const [key, value] of Object.entries(expr.params)) {
+    const str = renderValue(value);
+    url = url.replace(`[[${key}]]`, () => str).replace(`[${key}]`, () => str);
+  }
+  const queryEntries = Object.entries(expr.query || {});
+  if (queryEntries.length > 0) {
+    const qs = queryEntries
+      .map(([key, value]) => `${encodeURIComponent(key)}=${renderValue(value)}`)
+      .join("&");
+    url += `?${qs}`;
+  }
+  if (expr.fragment != null) {
+    url += `#${renderValue(expr.fragment)}`;
+  }
+  return url;
+}
+
+/**
  * Converts a PageHref expr to path/URL with.
  * Includes path params, query params, and fragment rendered as code.
  */
@@ -97,37 +128,15 @@ export function pageHrefPathToCode({
   expr,
   exprCtx,
 }: GetPageHrefPathProps): string {
-  assert(expr.page.pageMeta, "PageHref is expected to contain a page");
-
-  const valueToCode = (value) => {
-    const exprCode = getCodeExpressionWithFallback(
-      asCode(value, exprCtx),
-      exprCtx
-    );
-    return "${" + exprCode + "}";
-  };
-
-  let path = expr.page.pageMeta.path;
-  for (const [key, value] of Object.entries(expr.params)) {
-    const valueExpr = valueToCode(value);
-    path = path.replace(`[[${key}]]`, valueExpr).replace(`[${key}]`, valueExpr);
-  }
-  const queryEntries = Object.entries(expr.query || {});
-  if (queryEntries.length > 0) {
-    const qs = queryEntries
-      .map(([key, value]) => {
-        const valueExpr = valueToCode(value);
-        return `${encodeURIComponent(key)}=${valueExpr}`;
-      })
-      .join("&");
-
-    path += `?${qs}`;
-  }
-  if (expr.fragment != null) {
-    const fragExpr = valueToCode(expr.fragment);
-    path += `#${fragExpr}`;
-  }
-  return "(`" + path + "`)";
+  const url = renderPageHrefUrl(
+    expr,
+    (value) =>
+      "${" +
+      getCodeExpressionWithFallback(asCode(value, exprCtx), exprCtx) +
+      "}"
+  );
+  assert(url != null, "PageHref is expected to contain a page");
+  return "(`" + url + "`)";
 }
 
 export interface EvalPageHrefProps {

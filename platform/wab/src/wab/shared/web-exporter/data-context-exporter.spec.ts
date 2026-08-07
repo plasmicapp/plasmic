@@ -52,7 +52,7 @@ describe("buildDataContextResourceResult", () => {
       }
     );
     expect(jsonToXml(resource)).toContain(
-      'name="error" type="string" value="&quot;boom&quot;"'
+      'name="error" type="string" value=\'"boom"\''
     );
   });
 

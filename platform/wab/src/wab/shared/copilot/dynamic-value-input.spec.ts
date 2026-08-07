@@ -15,13 +15,17 @@ import {
   serCompositeExprMaybe,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
+import { mkVar } from "@/wab/shared/core/lang";
 import { EvaluationError } from "@/wab/shared/eval/expression-parser";
 import {
+  Component,
   CustomCode,
   EventHandler,
   Expr,
   ObjectPath,
+  PageHref,
   TemplatedString,
+  VarRef,
   ensureKnownCompositeExpr,
   ensureKnownExprText,
   ensureKnownRawText,
@@ -304,6 +308,62 @@ describe("exprToInterpolatedString", () => {
       exprToInterpolatedString(new EventHandler({ interactions: [] }))
     ).toBeUndefined();
   });
+
+  it("renders a VarRef as its $props canvas form", () => {
+    const expr = new VarRef({ variable: mkVar("my prop") });
+    expect(exprToInterpolatedString(expr)).toEqual("{{ $props.myProp }}");
+  });
+
+  function mkPageHref(props: {
+    path: string;
+    params?: Record<string, TemplatedString | CustomCode | ObjectPath | VarRef>;
+    query?: Record<string, TemplatedString | CustomCode | ObjectPath | VarRef>;
+    fragment?: TemplatedString | CustomCode | ObjectPath | VarRef;
+  }) {
+    return new PageHref({
+      page: { pageMeta: { path: props.path } } as Component,
+      params: props.params ?? {},
+      query: props.query ?? {},
+      fragment: props.fragment,
+    });
+  }
+
+  it("renders a static PageHref as its raw path", () => {
+    expect(exprToInterpolatedString(mkPageHref({ path: "/about" }))).toEqual(
+      "/about"
+    );
+  });
+
+  it("renders a PageHref with dynamic params/query/fragment inlined", () => {
+    const expr = mkPageHref({
+      path: "/products/[slug]",
+      params: { slug: codeToDynExpr("$state.slug") },
+      query: {
+        ref: codeToDynExpr("$props.ref"),
+        sort: interpolatedStringToTemplatedString("price"),
+      },
+      fragment: new VarRef({ variable: mkVar("section") }),
+    });
+    expect(exprToInterpolatedString(expr)).toEqual(
+      "/products/{{ $state.slug }}?ref={{ $props.ref }}&sort=price#{{ $props.section }}"
+    );
+  });
+
+  it("keeps the placeholder for a PageHref param with no value", () => {
+    expect(
+      exprToInterpolatedString(mkPageHref({ path: "/blog/[slug]" }))
+    ).toEqual("/blog/[slug]");
+  });
+
+  it("returns undefined for a PageHref with a dangling page ref", () => {
+    const expr = new PageHref({
+      page: undefined as unknown as Component,
+      params: {},
+      query: {},
+      fragment: undefined,
+    });
+    expect(exprToInterpolatedString(expr)).toBeUndefined();
+  });
 });
 
 describe("exprToDataQueryArg", () => {
@@ -349,23 +409,19 @@ describe("exprToDataQueryArg", () => {
 
   it("round-trips a CompositeExpr value through objectLiteralToExpr", () => {
     const raw = '{ "headers": { "Authorization": "{{ $ctx.token }}" } }';
-    const arg = exprToDataQueryArg("opts", objectLiteralToExpr(raw)!);
+    const arg = exprToDataQueryArg("opts", objectLiteralToExpr(raw)!)!;
     expect(exprToDataQueryArg("opts", objectLiteralToExpr(arg.value)!)).toEqual(
       arg
     );
   });
 
-  it("emits the unsupported-expr sentinel for exprs with no inline form", () => {
+  it("drops an arg whose expr has no inline form", () => {
     expect(
       exprToDataQueryArg("onDone", new EventHandler({ interactions: [] }))
-    ).toEqual({
-      __type: "InterpolatedString",
-      name: "onDone",
-      value: "{{ /* unsupported expression */ }}",
-    });
+    ).toBeUndefined();
   });
 
-  it("emits the sentinel for unsupported leaves inside a composite", () => {
+  it("nulls out leaves with no inline form inside a composite", () => {
     const expr = serCompositeExprMaybe({
       url: "https://x",
       onDone: new EventHandler({ interactions: [] }),
@@ -373,8 +429,7 @@ describe("exprToDataQueryArg", () => {
     expect(exprToDataQueryArg("opts", expr)).toEqual({
       __type: "CompositeExpr",
       name: "opts",
-      value:
-        '{"url":"https://x","onDone":"{{ /* unsupported expression */ }}"}',
+      value: '{"url":"https://x","onDone":null}',
     });
   });
 });
@@ -397,6 +452,19 @@ describe("dynamic-value round trip (insertHtml <-> read)", () => {
     {
       name: "TemplatedString",
       expr: interpolatedStringToTemplatedString("/p/{{ currentItem.slug }}/x"),
+    },
+    {
+      name: "VarRef",
+      expr: new VarRef({ variable: mkVar("current user") }),
+    },
+    {
+      name: "PageHref",
+      expr: new PageHref({
+        page: { pageMeta: { path: "/p/[slug]" } } as Component,
+        params: { slug: codeToDynExpr("currentItem.slug") },
+        query: {},
+        fragment: undefined,
+      }),
     },
   ];
 
