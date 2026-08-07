@@ -246,7 +246,6 @@ export default defineConfig({
             NODE_ENV: REQUIRED_VAR,
             COMMITHASH: commitHash,
             STATIC_URL: OPTIONAL_VAR,
-            INTERCOM_APP_ID: OPTIONAL_VAR,
             POSTHOG_API_KEY: OPTIONAL_VAR,
             POSTHOG_HOST: OPTIONAL_VAR,
             POSTHOG_REVERSE_PROXY_HOST: OPTIONAL_VAR,

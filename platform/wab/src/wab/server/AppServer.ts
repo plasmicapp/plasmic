@@ -187,7 +187,6 @@ import {
   prefillPublishedLoader,
 } from "@/wab/server/routes/loader";
 import { genTranslatableStrings } from "@/wab/server/routes/localization";
-import * as mailingListRoutes from "@/wab/server/routes/mailinglist";
 import { getAppConfig, getClip, putClip } from "@/wab/server/routes/misc";
 import {
   createProjectWebhook,
@@ -315,7 +314,6 @@ const csrfFreeStaticRoutes = [
   "/api/v1/admin/clone",
   "/api/v1/admin/deactivate-user",
   "/api/v1/admin/revert-project-revision",
-  "/api/v1/mail/subscribe",
   "/api/v1/plume-pkg/versions",
   "/api/v1/localization/gen-texts",
   "/api/v1/hosting-hit",
@@ -701,9 +699,6 @@ function addOptionsRoutes(app: express.Application) {
   app.options("/api/v1/app-auth/token", corsPreflight());
   app.options("/api/v1/app-auth/userinfo", corsPreflight());
   app.options("/api/v1/loader/*", corsPreflight());
-  // For mailing list subscriptions
-  // allow subscription requests from anywhere (e.g. localhost or www.plasmic.app)
-  app.options("/api/v1/mail/subscribe", cors());
 }
 
 export function addCmsPublicRoutes(app: express.Application) {
@@ -1720,12 +1715,6 @@ export function addMainAppServerRoutes(
   app.put(
     "/api/v1/settings/apitokens/emit/:initToken",
     withNext(apiTokenRoutes.emitToken)
-  );
-
-  app.post(
-    "/api/v1/mail/subscribe",
-    cors(),
-    withNext(mailingListRoutes.subscribe)
   );
 
   /**

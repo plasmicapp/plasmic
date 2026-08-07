@@ -12,7 +12,6 @@ dev-build
 /src/wab/styles/_tokens.ts
 /src/wab/styles/css-variables.scss
 /src/wab/styles/css-variables.ts
-.intercom-token
 yarn-error.log
 .cache
 package-lock.json

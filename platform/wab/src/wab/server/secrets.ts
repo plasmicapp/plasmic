@@ -34,7 +34,6 @@ interface Secrets {
     user: string;
     pass: string;
   };
-  intercomToken?: string;
   openaiApiKey?: string;
   anthropicApiKey?: string;
   github?: {
@@ -89,10 +88,6 @@ export function getGoogleClientSecret() {
 
 export function getSmtpAuth() {
   return loadSecrets().smtpAuth;
-}
-
-export function getIntercomToken() {
-  return loadSecrets().intercomToken;
 }
 
 export function getGithubSecrets() {

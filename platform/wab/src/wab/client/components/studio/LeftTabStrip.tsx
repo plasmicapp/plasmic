@@ -4,14 +4,12 @@ import { AnonymousAvatar, Avatar } from "@/wab/client/components/studio/Avatar";
 import { FigmaModalContent } from "@/wab/client/components/studio/FigmaModalContent";
 import LeftTabButton from "@/wab/client/components/studio/LeftTabButton";
 import { DataTokenIcon } from "@/wab/client/icons";
-import { isIntercomEnabled } from "@/wab/client/intercom";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import SlackIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slack";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
 import KeyboardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Keyboard";
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
-import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg";
@@ -55,7 +53,6 @@ import { omit } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactNode } from "react";
-import { useIntercom } from "react-use-intercom";
 
 interface LeftTabStripProps extends DefaultLeftTabStripProps {
   useVersionsCTA: boolean;
@@ -82,7 +79,6 @@ export interface NavMenuGroup {
 
 const LeftTabStrip = observer(function LeftTabStrip(props: LeftTabStripProps) {
   const studioCtx = useStudioCtx();
-  const { show: showIntercom } = useIntercom();
   const isLoggedIn = studioCtx.appCtx.selfInfo != null;
   const contentEditorMode = studioCtx.contentEditorMode;
   const hasGlobalContexts = studioCtx.site.globalContexts.length > 0;
@@ -298,13 +294,6 @@ Help
       : mainGroups),
   };
   const bottomMenu: Record<string, NavMenuItem | NavMenuGroup> = {
-    intercom: {
-      type: "item",
-      icon: <ChatDocssvgIcon />,
-      label: "Chat Docs",
-      cond: isIntercomEnabled(studioCtx),
-      onClick: showIntercom,
-    },
     helpGroup: {
       type: "group",
       icon: <HelpCirclesvgIcon />,
