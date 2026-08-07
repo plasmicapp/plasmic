@@ -11,7 +11,7 @@ This is root directory of the monorepo. Most development will be done in individ
 - package.json - common devDependencies where we want to use the same version everywhere
 - build.mjs - common build script for `packages/`
 - .eslintrc.js - shared eslint lint configuration
-- jest.config.js - shared jest unit test configuration
+- vitest.root.ts - shared Vitest unit test configuration for `packages/` and `plasmicpkgs/`
 - knip.ts - checks for unused dependencies, run with `knip:deps`
 
 ## Key directories
