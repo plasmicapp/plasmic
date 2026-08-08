@@ -82,7 +82,7 @@ export async function genPublishedLoaderCodeBundle(
 ) {
   const { projectVersions } = opts;
 
-  const cachedBundle = await tryGetCachedPublishedBundle(projectVersions, opts);
+  const cachedBundle = await tryGetCachedPublishedBundle(opts);
   if (cachedBundle) {
     return cachedBundle;
   }
@@ -445,12 +445,15 @@ function makeExportOpts(opts: ExportOptsInputs): ExportOpts {
  * the db and worker-pool work that produces the very same key.
  */
 async function tryGetCachedPublishedBundle(
-  projectVersions: Record<string, VersionToSync>,
-  opts: ExportOptsInputs & { source: "prefill" | "live"; browserOnly: boolean }
+  opts: ExportOptsInputs & {
+    source: "prefill" | "live";
+    projectVersions: Record<string, VersionToSync>;
+    browserOnly: boolean;
+  }
 ): Promise<LoaderBundleOutput | null> {
   const exportOpts = makeExportOpts(opts);
   const bundleKey = makeBundleBucketPath({
-    projectVersions,
+    projectVersions: opts.projectVersions,
     platform: exportOpts.platform,
     loaderVersion: opts.loaderVersion,
     browserOnly: opts.browserOnly,

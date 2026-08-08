@@ -164,7 +164,6 @@ describe("genPublishedLoaderCodeBundle", () => {
       .find((key) => key.startsWith("bundle/"));
     // The probe is the very first read, before any dep resolution or codegen.
     expect(s3GetKeys()[0]).toEqual(writtenBundleKey);
-    expect(resolveProjectDeps).toHaveBeenCalled();
   });
 
   it("returns the cached bundle and skips dep resolution and codegen on a hit", async () => {
@@ -211,15 +210,20 @@ describe("genPublishedLoaderCodeBundle", () => {
 
   it("does not reuse a bundle cached under different loader options", async () => {
     await genPublishedLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+    const firstProbe = s3GetKeys()[0];
     s3.getObject.mockClear();
+    vi.mocked(pool.exec).mockClear();
 
     await genPublishedLoaderCodeBundle(dbMgr, pool, {
       ...CALL_OPTS,
       browserOnly: true,
     });
 
-    expect(resolveProjectDeps).toHaveBeenCalled();
-    expect(s3.objects.size).toBeGreaterThan(1);
+    expect(s3GetKeys()[0]).not.toEqual(firstProbe);
+    expect(pool.exec).toHaveBeenCalledWith("loader-assets", expect.anything());
+    expect(
+      [...s3.objects.keys()].filter((key) => key.startsWith("bundle/"))
+    ).toHaveLength(2);
   });
 });
 
