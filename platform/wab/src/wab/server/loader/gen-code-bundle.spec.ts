@@ -1,9 +1,52 @@
+import type { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   _testonly,
   extractBundleKeyProjectIds,
+  genPublishedLoaderCodeBundle,
   LATEST_LOADER_VERSION,
   LOADER_CODEGEN_OPTS_DEFAULTS,
 } from "@/wab/server/loader/gen-code-bundle";
+import { resolveProjectDeps } from "@/wab/server/loader/resolve-projects";
+import { loaderBundleCacheCounter } from "@/wab/server/promstats";
+import type { PlasmicWorkerPool } from "@/wab/server/workers/pool";
+import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+
+const s3 = vi.hoisted(() => {
+  const objects = new Map<string, string>();
+  const getObject = vi.fn(({ Key }: { Key: string }) => ({
+    promise: async () => {
+      const body = objects.get(Key);
+      if (body === undefined) {
+        throw Object.assign(new Error("NoSuchKey"), { code: "NoSuchKey" });
+      }
+      return { Body: Buffer.from(body) };
+    },
+  }));
+  const putObject = vi.fn(({ Key, Body }: { Key: string; Body: string }) => ({
+    promise: async () => void objects.set(Key, Body),
+  }));
+  return {
+    objects,
+    getObject,
+    putObject,
+    S3: vi.fn(function () {
+      return { getObject, putObject };
+    }),
+  };
+});
+
+vi.mock("aws-sdk/clients/s3", () => ({ default: s3.S3 }));
+vi.mock("@/wab/server/db/DbCon", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  getSerializableConnectionOptions: () => ({}),
+}));
+vi.mock("@/wab/server/loader/resolve-projects", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  resolveProjectDeps: vi.fn(),
+}));
+vi.mock("@/wab/server/workers/worker-utils", () => ({
+  ensureDevFlags: vi.fn(),
+}));
 
 const BASE_OPTS = {
   platformOptions: {},
@@ -60,6 +103,123 @@ describe("makeExportOpts", () => {
       useCodeComponentHelpersRegistry: true,
       skipHead: undefined,
     });
+  });
+});
+
+describe("genPublishedLoaderCodeBundle", () => {
+  const CALL_OPTS = {
+    source: "live",
+    platformOptions: {},
+    projectVersions: { proj1: { version: "1.0.0", indirect: false } },
+    loaderVersion: LATEST_LOADER_VERSION,
+    browserOnly: false,
+    i18nKeyScheme: undefined,
+    i18nTagPrefix: undefined,
+  } as const;
+
+  let dbMgr: DbMgr;
+  let pool: PlasmicWorkerPool;
+
+  beforeEach(() => {
+    s3.objects.clear();
+    // `restoreMocks` wipes the implementations set at creation time.
+    s3.getObject.mockImplementation(({ Key }) => ({
+      promise: async () => {
+        const body = s3.objects.get(Key);
+        if (body === undefined) {
+          throw Object.assign(new Error("NoSuchKey"), { code: "NoSuchKey" });
+        }
+        return { Body: Buffer.from(body) };
+      },
+    }));
+    s3.putObject.mockImplementation(({ Key, Body }) => ({
+      promise: async () => void s3.objects.set(Key, Body),
+    }));
+    s3.S3.mockImplementation(function () {
+      return { getObject: s3.getObject, putObject: s3.putObject };
+    });
+
+    vi.mocked(resolveProjectDeps).mockResolvedValue({});
+    dbMgr = {
+      listBranchesForProject: vi.fn().mockResolvedValue([]),
+    } as unknown as DbMgr;
+    pool = {
+      exec: vi.fn(async (method: string) =>
+        method === "codegen"
+          ? { output: {}, componentDeps: {}, componentRefs: [] }
+          : { modules: [], bundleKey: null }
+      ),
+    } as unknown as PlasmicWorkerPool;
+  });
+
+  function s3GetKeys() {
+    return s3.getObject.mock.calls.map(([{ Key }]) => Key);
+  }
+
+  it("probes the same bundle key that the full path ends up writing", async () => {
+    await genPublishedLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+
+    const writtenBundleKey = s3.putObject.mock.calls
+      .map(([{ Key }]) => Key)
+      .find((key) => key.startsWith("bundle/"));
+    // The probe is the very first read, before any dep resolution or codegen.
+    expect(s3GetKeys()[0]).toEqual(writtenBundleKey);
+    expect(resolveProjectDeps).toHaveBeenCalled();
+  });
+
+  it("returns the cached bundle and skips dep resolution and codegen on a hit", async () => {
+    // Populate the cache via a full run, then replay the same request.
+    const firstResult = await genPublishedLoaderCodeBundle(
+      dbMgr,
+      pool,
+      CALL_OPTS
+    );
+    for (const mock of [
+      resolveProjectDeps,
+      ensureDevFlags,
+      pool.exec,
+      dbMgr.listBranchesForProject,
+      s3.getObject,
+    ]) {
+      vi.mocked(mock).mockClear();
+    }
+
+    const inc = vi.spyOn(loaderBundleCacheCounter, "inc");
+    const result = await genPublishedLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+
+    expect(result).toEqual(firstResult);
+    expect(result.bundleKey).toEqual(s3GetKeys()[0]);
+    expect(s3GetKeys()).toHaveLength(1);
+    expect(resolveProjectDeps).not.toHaveBeenCalled();
+    expect(ensureDevFlags).not.toHaveBeenCalled();
+    expect(pool.exec).not.toHaveBeenCalled();
+    expect(dbMgr.listBranchesForProject).not.toHaveBeenCalled();
+    // The fast path still has to account for the hit it just served.
+    expect(inc).toHaveBeenCalledExactlyOnceWith({
+      result: "hit",
+      source: "live",
+    });
+  });
+
+  it("falls through to the full path when the probe misses", async () => {
+    await genPublishedLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+
+    expect(resolveProjectDeps).toHaveBeenCalled();
+    expect(ensureDevFlags).toHaveBeenCalled();
+    expect(pool.exec).toHaveBeenCalledWith("loader-assets", expect.anything());
+  });
+
+  it("does not reuse a bundle cached under different loader options", async () => {
+    await genPublishedLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+    s3.getObject.mockClear();
+
+    await genPublishedLoaderCodeBundle(dbMgr, pool, {
+      ...CALL_OPTS,
+      browserOnly: true,
+    });
+
+    expect(resolveProjectDeps).toHaveBeenCalled();
+    expect(s3.objects.size).toBeGreaterThan(1);
   });
 });
 
