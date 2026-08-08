@@ -23,6 +23,8 @@ export class ApiTester {
   ) {
     this.apiRequestContextPromise = request.newContext({
       baseURL,
+      // Playwright defaults to 30s, which a cold loader HTML render exceeds.
+      timeout: 120_000,
     });
   }
 

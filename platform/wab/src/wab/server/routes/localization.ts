@@ -1,4 +1,4 @@
-import { ensureArray } from "@/wab/shared/common";
+import { getSerializableConnectionOptions } from "@/wab/server/db/DbCon";
 import {
   getResolvedProjectVersions,
   mkVersionToSync,
@@ -9,8 +9,8 @@ import { userDbMgr } from "@/wab/server/routes/util";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
+import { ensureArray } from "@/wab/shared/common";
 import { Request, Response } from "express-serve-static-core";
-import { getConnection } from "typeorm";
 
 export async function genTranslatableStrings(req: Request, res: Response) {
   const mgr = userDbMgr(req);
@@ -81,7 +81,7 @@ export async function genTranslatableStrings(req: Request, res: Response) {
               v.version === "latest" ? projectId : `${projectId}@${v.version}`,
               await req.workerpool.exec("localization-strings", [
                 {
-                  connectionOptions: getConnection().options,
+                  connectionOptions: getSerializableConnectionOptions(),
                   projectId: projectId as ProjectId,
                   maybeVersion: v.version === "latest" ? undefined : v.version,
                   keyScheme,

@@ -47,32 +47,28 @@ describe("Prefill cloudfront", () => {
   describe("prefillCloudfront", () => {
     it("should trigger request for each publishment", async () => {
       await withDb(async (sudo) => {
-        const getPkgById = jest.fn().mockImplementation((pkgId: string) => ({
+        const getPkgById = vi.fn().mockImplementation((pkgId: string) => ({
           projectId: PROJECT_ID,
         }));
 
         sudo.getPkgById = getPkgById;
 
-        jest.mock("@/wab/server/loader/resolve-projects");
-        const getResolvedProjectVersions = jest
-          .fn()
-          .mockImplementation((mgr, projectIds) => {
+        const getResolvedProjectVersions = vi
+          .spyOn(resolveProjectsMod, "getResolvedProjectVersions")
+          .mockImplementation(async (mgr, projectIds) => {
             if (projectIds.length === 3) {
               return ["p1@0.0.1", "p2@0.0.2", "p3@0.0.3"];
             } else {
               return ["p1@0.0.1"];
             }
           });
-        (resolveProjectsMod as any).getResolvedProjectVersions =
-          getResolvedProjectVersions;
 
-        jest.mock("@/wab/server/loader/gen-code-bundle");
-        const genPublishedLoaderCodeBundle = ((
-          genCodeBundleMod as any
-        ).genPublishedLoaderCodeBundle = jest.fn());
+        const genPublishedLoaderCodeBundle = vi
+          .spyOn(genCodeBundleMod, "genPublishedLoaderCodeBundle")
+          .mockResolvedValue(undefined as any);
 
         // replace it so that the project versions are already resolved
-        const getRecentLoaderPublishmentsMock = jest
+        const getRecentLoaderPublishmentsMock = vi
           .fn()
           .mockImplementation((projectId) => {
             return [
@@ -111,14 +107,14 @@ describe("Prefill cloudfront", () => {
           });
         sudo.getRecentLoaderPublishments = getRecentLoaderPublishmentsMock;
 
-        sudo.getPkgByProjectId = jest
+        sudo.getPkgByProjectId = vi
           .fn()
           .mockImplementation((projectId: string) => ({
             id: PKG_ID,
             projectId: PROJECT_ID,
           }));
 
-        const getPkgVersionById = jest
+        const getPkgVersionById = vi
           .fn()
           .mockImplementation((pkgVersionId: string) => {
             return {
@@ -129,7 +125,7 @@ describe("Prefill cloudfront", () => {
           });
         sudo.getPkgVersionById = getPkgVersionById;
 
-        const updatePkgVersionMock = jest.fn();
+        const updatePkgVersionMock = vi.fn();
         sudo.updatePkgVersion = updatePkgVersionMock;
 
         const CODEGEN_HOST = "cghost";

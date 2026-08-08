@@ -18,7 +18,7 @@ import {
   getFigmaFilesIds,
   getTestFigmaData,
 } from "@/wab/test/figma";
-jest.mock("@/wab/client/components/coding/FullCodeEditor.tsx", () => ({
+vi.mock("@/wab/client/components/coding/FullCodeEditor.tsx", () => ({
   FullCodeEditor: () => null,
   CodePreview: () => null,
 }));
@@ -39,18 +39,20 @@ describe("Figma module", function () {
       it(`convert ${id}`, async () => {
         // Create mock elements
         let uid = 1;
-        (common as any).mkShortId = () => String(++uid);
-        (common as any).mkUuid = () => String(++uid);
-        (domUtils as any).maybeUploadImage = async (_, img, type, file) => {
-          await img.tryDownscale();
-          return {
-            imageResult: img,
-            opts: {
-              type: type,
-              name: file instanceof File ? file?.name : file,
-            },
-          };
-        };
+        vi.spyOn(common, "mkShortId").mockImplementation(() => String(++uid));
+        vi.spyOn(common, "mkUuid").mockImplementation(() => String(++uid));
+        vi.spyOn(domUtils, "maybeUploadImage").mockImplementation(
+          async (_, img, type: any, file) => {
+            await img.tryDownscale();
+            return {
+              imageResult: img,
+              opts: {
+                type: type,
+                name: file instanceof File ? file?.name : file,
+              },
+            };
+          }
+        );
         const site = createSite();
         const tplMgr = createTplMgr(site);
         const vtm = createVariantTplMgr(site, tplMgr);

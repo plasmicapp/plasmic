@@ -1,6 +1,7 @@
 import { Config } from "@/wab/server/config";
 import type { Mailer } from "@/wab/server/emails/Mailer";
 import { Request } from "express-serve-static-core";
+import { Mocked } from "vitest";
 
 export function setupEmailTest() {
   const config = {
@@ -10,8 +11,8 @@ export function setupEmailTest() {
     mailUserOps: "ops@example.com",
   } as Config;
   const mailer = {
-    sendMail: jest.fn(),
-  } as jest.Mocked<Mailer>;
+    sendMail: vi.fn(),
+  } as Mocked<Mailer>;
   const req = {
     config,
     mailer,

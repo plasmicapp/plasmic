@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`imported project default theme styles: codegen should codegen correct contents - css 1`] = `
+exports[`imported project default theme styles: codegen > should codegen correct contents - css 1`] = `
 "
 --- Homepage.tsx ---
 
@@ -1638,7 +1638,7 @@ line-height: var(--mixin-PZGG7T7JBi57_line-height);
 }"
 `;
 
-exports[`imported project default theme styles: codegen should codegen correct contents - css modules 1`] = `
+exports[`imported project default theme styles: codegen > should codegen correct contents - css modules 1`] = `
 "
 --- Homepage.tsx ---
 

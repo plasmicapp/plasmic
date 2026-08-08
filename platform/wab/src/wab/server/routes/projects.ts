@@ -13,6 +13,7 @@ import {
   loadDepPackages,
   unbundlePkgVersion,
 } from "@/wab/server/db/DbBundleLoader";
+import { getSerializableConnectionOptions } from "@/wab/server/db/DbCon";
 import {
   DbMgr,
   ProjectRevisionError,
@@ -179,7 +180,7 @@ import {
 import fetch from "node-fetch";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
-import { EntityManager, MigrationExecutor, getConnection } from "typeorm";
+import { EntityManager, MigrationExecutor } from "typeorm";
 
 export function mkApiProject(project: Project): ApiProject {
   const team = project.workspace?.team
@@ -2617,7 +2618,7 @@ export async function genCode(req: Request, res: Response) {
     req.workerpool.exec("codegen", [
       {
         scheme,
-        connectionOptions: getConnection().options,
+        connectionOptions: getSerializableConnectionOptions(),
         projectId: project.id,
         exportOpts: exportOpts,
         componentIdOrNames: req.body.componentIdOrNames,

@@ -3,31 +3,32 @@ import {
   UiActionHandler,
   UiActionListener,
 } from "@/wab/client/studio-ctx/ui/UiActionBus";
+import { MockInstance, MockedFunction } from "vitest";
 
 describe("UiActionBus", () => {
   let bus: UiActionBus<string>;
-  let handlerA: jest.MockedFunction<UiActionHandler>;
-  let handlerB: jest.MockedFunction<UiActionHandler>;
-  let handlerC: jest.MockedFunction<UiActionHandler>;
-  let listener: jest.MockedFunction<UiActionListener<string>>;
-  let listener2: jest.MockedFunction<UiActionListener<string>>;
+  let handlerA: MockedFunction<UiActionHandler>;
+  let handlerB: MockedFunction<UiActionHandler>;
+  let handlerC: MockedFunction<UiActionHandler>;
+  let listener: MockedFunction<UiActionListener<string>>;
+  let listener2: MockedFunction<UiActionListener<string>>;
   let disposeHandlerA: () => void;
   let disposeListener: () => void;
-  let warnSpy: jest.SpyInstance;
+  let warnSpy: MockInstance;
   let expectedWarnCalls: number;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     bus = new UiActionBus<string>();
 
     // "a" is immediately handled by handlerA
-    handlerA = jest.fn();
+    handlerA = vi.fn();
     disposeHandlerA = bus.registerHandler("a", handlerA).dispose;
 
     // "b" is handled by handlerB after listener is invoked
-    handlerB = jest.fn();
-    listener = jest.fn((id, _type) => {
+    handlerB = vi.fn();
+    listener = vi.fn((id, _type) => {
       if (id === "b") {
         bus.registerHandler("b", handlerB);
       }
@@ -35,17 +36,17 @@ describe("UiActionBus", () => {
     disposeListener = bus.registerListener(listener).dispose;
 
     // handlerC and listener2 are extras used in tests
-    handlerC = jest.fn();
-    listener2 = jest.fn();
+    handlerC = vi.fn();
+    listener2 = vi.fn();
 
     expectedWarnCalls = 0;
-    warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
   afterEach(() => {
     expect(warnSpy).toHaveBeenCalledTimes(expectedWarnCalls);
     warnSpy.mockReset();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("invokes handler if registered", () => {
@@ -81,7 +82,7 @@ describe("UiActionBus", () => {
     bus.dispatch("c", "jump");
     expect(handlerC).toHaveBeenCalledTimes(0);
 
-    jest.advanceTimersByTime(1_999);
+    vi.advanceTimersByTime(1_999);
     bus.registerHandler("c", handlerC);
     expect(handlerC).toHaveBeenCalledTimes(1);
   });
@@ -90,7 +91,7 @@ describe("UiActionBus", () => {
     bus.dispatch("c", "jump");
     expect(handlerC).toHaveBeenCalledTimes(0);
 
-    jest.advanceTimersByTime(2_000);
+    vi.advanceTimersByTime(2_000);
     bus.registerHandler("c", handlerC);
     expect(handlerC).toHaveBeenCalledTimes(0);
 
@@ -101,7 +102,7 @@ describe("UiActionBus", () => {
     bus.dispatch("c", "jump");
     expect(listener2).toHaveBeenCalledTimes(0);
 
-    jest.advanceTimersByTime(1_999);
+    vi.advanceTimersByTime(1_999);
     bus.registerListener(listener2);
     expect(listener2).toHaveBeenCalledTimes(1);
   });
@@ -110,7 +111,7 @@ describe("UiActionBus", () => {
     bus.dispatch("c", "jump");
     expect(listener2).toHaveBeenCalledTimes(0);
 
-    jest.advanceTimersByTime(2_000);
+    vi.advanceTimersByTime(2_000);
     bus.registerListener(listener2);
     expect(listener2).toHaveBeenCalledTimes(0);
 

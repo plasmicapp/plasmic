@@ -1,4 +1,4 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { makeGraphqlFetcher } from "@/wab/server/data-sources/graphql-fetcher";
 import {
   setupSsrfTestServers,

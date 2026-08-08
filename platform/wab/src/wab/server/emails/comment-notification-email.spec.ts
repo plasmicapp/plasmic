@@ -2,7 +2,7 @@ import { ReadableStream, WritableStream } from "node:stream/web";
 import React from "react";
 
 // NOTE: The below is needed to for this test setup to work - START
-jest.spyOn(React, "useLayoutEffect").mockImplementation(React.useEffect);
+vi.spyOn(React, "useLayoutEffect").mockImplementation(React.useEffect);
 (globalThis as any).ReadableStream = ReadableStream;
 (globalThis as any).WritableStream = WritableStream;
 // END
@@ -31,6 +31,7 @@ import {
   ThreadHistoryId,
 } from "@/wab/shared/ApiSchema";
 import { createProjectUrl } from "@/wab/shared/urls";
+import { JSDOM } from "jsdom";
 import * as uuid from "uuid";
 
 const FOOTER_TEXT = `You're receiving this email because you have notifications enabled for this project. Manage your project notification settings here.
@@ -38,8 +39,7 @@ Plasmic, Inc.`;
 const PLASMIC_WEBSITE = "https://plasmic.app";
 
 function extractTextAndLinks(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
+  const doc = new JSDOM(html).window.document;
 
   // Extract anchor tags with href
   const links: { text: string; href: string | null }[] = [];

@@ -8,7 +8,7 @@ import { ProjectIdAndToken } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Analytics } from "@/wab/shared/observability/Analytics";
-import socketio from "socket.io";
+import type { Server as SocketIoServer } from "socket.io";
 import { Connection, EntityManager } from "typeorm";
 
 declare global {
@@ -36,7 +36,7 @@ declare global {
       bundler: Bundler;
       mailer: Mailer;
       apiTeam?: Team; // For when acting with team api token
-      socketio: socketio.Server;
+      socketio: SocketIoServer;
       config: Config;
       devflags: typeof DEVFLAGS;
       workerpool: PlasmicWorkerPool;

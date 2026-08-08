@@ -187,7 +187,7 @@ project.
 
 ## Testing
 
-Run Jest tests with:
+Run unit tests with:
 
 ```
 bash tools/test.bash
@@ -232,7 +232,7 @@ yarn migrate-dev-bundles
 
 This runs any necessary migrations according to the version stamp.
 
-Then make sure you run jest and update the test snapshots.
+Then make sure you run the tests and update the snapshots.
 
 NOTE: This will first do a `git checkout` on the file, resetting to a fresh checkout state! This lets you repeatedly test and run your migration script on the file.
 

@@ -1,4 +1,4 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 
 describe("checkEtagSkippable", () => {
@@ -13,9 +13,9 @@ describe("checkEtagSkippable", () => {
       },
     } as any;
     const res = {
-      setHeader: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
+      setHeader: vi.fn(),
+      status: vi.fn().mockReturnThis(),
+      send: vi.fn(),
     } as any;
 
     expect(checkEtagSkippable(req, res, 'W/"preview-etag"')).toBe(false);

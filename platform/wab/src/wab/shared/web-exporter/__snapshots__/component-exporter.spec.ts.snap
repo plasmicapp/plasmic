@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Component Serialization serializes all components 1`] = `
+exports[`Component Serialization > serializes all components 1`] = `
 {
   "Button": "<Component name="Button" uuid="OD5_PLaXT_1t" type="plain">
   <props>
@@ -3221,7 +3221,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 }
 `;
 
-exports[`Component Serialization serializes all components 2`] = `
+exports[`Component Serialization > serializes all components 2`] = `
 {
   "Button": {
     "__type": "Component",

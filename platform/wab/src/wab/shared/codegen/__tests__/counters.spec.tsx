@@ -14,7 +14,7 @@ describe("counters blackbox codegen", () => {
   const countersBundle = _bundle[0][1] as Bundle;
   const site = new Bundler().unbundle(countersBundle, "") as Site;
 
-  // NOTE: automatic cleanup via setGracefulCleanup doesn't work with jest.
+  // NOTE: automatic cleanup via setGracefulCleanup doesn't work here.
   // here we're manually removing the folder after the test.
   const dir = tmp.dirSync({ unsafeCleanup: true });
   afterEach(() => {

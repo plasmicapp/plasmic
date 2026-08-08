@@ -1,14 +1,14 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { SharedApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
-import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import {
   BadRequestError,
   PreconditionFailedError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 import { MAX_GRANTS_PER_REQUEST, TeamId } from "@/wab/shared/ApiSchema";
+import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 
 describe("auth", () => {
   let api: SharedApiTester;

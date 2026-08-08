@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`animations: codegen should codegen correct contents - css 1`] = `
+exports[`animations: codegen > should codegen correct contents - css 1`] = `
 "
 --- Homepage.tsx ---
 
@@ -988,7 +988,7 @@ line-height: var(--mixin-x7ipGuQGGI-a_line-height);
 }"
 `;
 
-exports[`animations: codegen should codegen correct contents - css modules 1`] = `
+exports[`animations: codegen > should codegen correct contents - css modules 1`] = `
 "
 --- Homepage.tsx ---
 

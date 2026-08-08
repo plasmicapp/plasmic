@@ -18,7 +18,7 @@ function TextControl(props: {
 }
 
 function renderEcho(initialValue: string) {
-  const onChange = jest.fn();
+  const onChange = vi.fn();
   const mkProps = (value: string) => ({
     impl: TextControl as any,
     value,

@@ -1,4 +1,4 @@
-import { mockDeep } from "jest-mock-extended";
+import { mockDeep } from "vitest-mock-extended";
 
 /**
  * Makes a deep mock that recursively returns deep mocks.

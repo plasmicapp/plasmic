@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`data tokens: codegen should codegen correct app dir contents with data tokens in metadata 1`] = `
+exports[`data tokens: codegen > should codegen correct app dir contents with data tokens in metadata 1`] = `
 "
 --- ClientSeo.tsx ---
 
@@ -1167,7 +1167,7 @@ export async function generateMetadata(
 }"
 `;
 
-exports[`data tokens: codegen should codegen correct contents with data tokens 1`] = `
+exports[`data tokens: codegen > should codegen correct contents with data tokens 1`] = `
 "
 --- P1.tsx ---
 

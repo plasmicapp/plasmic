@@ -12,9 +12,7 @@
     "build-dev": "webpack --config webpack.dev.config.js",
     "build": "webpack --config webpack.prod.config.js",
     "watch": "webpack --progress --watch --config webpack.dev.config.js",
-    "dev": "webpack-dev-server --config webpack.dev.config.js --open",
-    "test": "jest",
-    "watch-test": "jest --watch"
+    "dev": "webpack-dev-server --config webpack.dev.config.js --open"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

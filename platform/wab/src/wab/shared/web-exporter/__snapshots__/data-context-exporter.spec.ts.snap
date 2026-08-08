@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`buildDataContextResourceResult depth=5 reaches query row fields ($q.name.data[0].field) 1`] = `
+exports[`buildDataContextResourceResult > depth=5 reaches query row fields ($q.name.data[0].field) 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -57,7 +57,7 @@ exports[`buildDataContextResourceResult depth=5 reaches query row fields ($q.nam
 }
 `;
 
-exports[`buildDataContextResourceResult element scope: primitives, nested objects, $$ stripping, depth truncation 1`] = `
+exports[`buildDataContextResourceResult > element scope: primitives, nested objects, $$ stripping, depth truncation 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -198,7 +198,7 @@ exports[`buildDataContextResourceResult element scope: primitives, nested object
 }
 `;
 
-exports[`buildDataContextResourceResult element scope: unwraps $q StatefulQueryResult instances 1`] = `
+exports[`buildDataContextResourceResult > element scope: unwraps $q StatefulQueryResult instances 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -248,7 +248,7 @@ exports[`buildDataContextResourceResult element scope: unwraps $q StatefulQueryR
 }
 `;
 
-exports[`buildDataContextResourceResult hides react-element values (slot content shown in tpl tree, not bindable data) 1`] = `
+exports[`buildDataContextResourceResult > hides react-element values (slot content shown in tpl tree, not bindable data) 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -264,7 +264,7 @@ exports[`buildDataContextResourceResult hides react-element values (slot content
 }
 `;
 
-exports[`buildDataContextResourceResult promotes __plasmic_meta_<key>.label and drops hidden/advanced fields 1`] = `
+exports[`buildDataContextResourceResult > promotes __plasmic_meta_<key>.label and drops hidden/advanced fields 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -330,7 +330,7 @@ exports[`buildDataContextResourceResult promotes __plasmic_meta_<key>.label and 
 }
 `;
 
-exports[`buildDataContextResourceResult root scope: keeps $state and filters $queries/$q to component-owned names 1`] = `
+exports[`buildDataContextResourceResult > root scope: keeps $state and filters $queries/$q to component-owned names 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -453,7 +453,7 @@ exports[`buildDataContextResourceResult root scope: keeps $state and filters $qu
 }
 `;
 
-exports[`buildDataContextResourceResult truncates arrays past maxArrayItems and objects past maxKeysPerObject 1`] = `
+exports[`buildDataContextResourceResult > truncates arrays past maxArrayItems and objects past maxKeysPerObject 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",
@@ -526,7 +526,7 @@ exports[`buildDataContextResourceResult truncates arrays past maxArrayItems and 
 }
 `;
 
-exports[`buildDataContextResourceResult unwraps $q StatefulQueryResult instances to data/isLoading/error 1`] = `
+exports[`buildDataContextResourceResult > unwraps $q StatefulQueryResult instances to data/isLoading/error 1`] = `
 {
   "__type": "DataContext",
   "componentUuid": "C1",

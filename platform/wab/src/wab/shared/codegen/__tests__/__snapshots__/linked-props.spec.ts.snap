@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`linked props example: codegen should codegen correct contents 1`] = `
+exports[`linked props example: codegen > should codegen correct contents 1`] = `
 "
 --- Inner.tsx ---
 

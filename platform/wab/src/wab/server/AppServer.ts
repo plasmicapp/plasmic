@@ -1835,7 +1835,7 @@ export function addMainAppServerRoutes(
    */
   addEndUserManagementRoutes(app, authedSensitiveRateLimiter);
 
-  if (typeof jest === "undefined") {
+  if (typeof vi === "undefined") {
     // Do not create the interval in unit tests, because it keeps running and
     // breaks later tests.
     const checkAndNotifyUpdates = () => {

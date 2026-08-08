@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`snapshot tests parse landing page html properly 1`] = `
+exports[`snapshot tests > parse landing page html properly 1`] = `
 {
   "animationSequences": [
     {
@@ -3781,7 +3781,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
 }
 `;
 
-exports[`snapshot tests parses component page with props and slots correctly 1`] = `
+exports[`snapshot tests > parses component page with props and slots correctly 1`] = `
 {
   "animationSequences": [],
   "errors": [],

@@ -82,12 +82,15 @@ export async function getTeamAndWorkspace(db1: DbMgr) {
 
 /**
  * In CI, creates DB with random name and drops DB in cleanup.
- * In non-CI, creates DB with wab_dev_<name> and doesn't drop in cleanup,
- * allowing you to inspect the database after the test.
+ * In non-CI, creates DB with wab_dev_<name><worker> and doesn't drop in
+ * cleanup, allowing you to inspect the database after the test. The worker
+ * suffix keeps test files running in parallel off each other's database.
  */
 export async function createDatabase(name = "test") {
   const isCI = !!process.env.CI;
-  const dbname = isCI ? dbNameGen(name) : `wab_dev_${name}`;
+  const dbname = isCI
+    ? dbNameGen(name)
+    : `wab_dev_${name}${process.env.VITEST_POOL_ID ?? ""}`;
   const sucon = await ensureDbConnection(
     "postgresql://superwab@localhost/postgres",
     "super"

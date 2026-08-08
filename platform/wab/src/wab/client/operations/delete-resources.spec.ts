@@ -6,20 +6,20 @@ import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
 import { Variant } from "@/wab/shared/model/classes";
+import { MockedFunction } from "vitest";
 
-jest.mock("@/wab/client/components/quick-modals", () => ({
-  deleteStudioElementConfirm: jest.fn(),
+vi.mock("@/wab/client/components/quick-modals", () => ({
+  deleteStudioElementConfirm: vi.fn(),
 }));
 
-const mockedConfirm =
-  quickModals.deleteStudioElementConfirm as jest.MockedFunction<
-    typeof quickModals.deleteStudioElementConfirm
-  >;
+const mockedConfirm = quickModals.deleteStudioElementConfirm as MockedFunction<
+  typeof quickModals.deleteStudioElementConfirm
+>;
 
 describe("deleteResourcesWithUsages", () => {
   function setup() {
     const { studioCtx } = fakeStudioCtx();
-    jest.spyOn(studioCtx, "switchToArena").mockImplementation(() => {});
+    vi.spyOn(studioCtx, "switchToArena").mockImplementation(() => {});
     const tplMgr = studioCtx.tplMgr();
     const component = studioCtx.addComponent("Comp", {
       type: ComponentType.Plain,
@@ -53,7 +53,7 @@ describe("deleteResourcesWithUsages", () => {
   it("deletes a resource with no usages without showing a dialog", async () => {
     const { studioCtx, makeVariant } = setup();
     const variant = makeVariant("small");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
 
     const result = await deleteResourcesWithUsages(
       studioCtx,
@@ -72,7 +72,7 @@ describe("deleteResourcesWithUsages", () => {
   it("errors instead of deleting when behaviour is error-if-referenced and there are usages", async () => {
     const { studioCtx, makeVariant, userComp } = setup();
     const variant = makeVariant("small");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
 
     const result = await deleteResourcesWithUsages(
       studioCtx,
@@ -96,7 +96,7 @@ describe("deleteResourcesWithUsages", () => {
   it("shows a confirmation dialog when referenced and deletes if confirmed", async () => {
     const { studioCtx, makeVariant, userComp } = setup();
     const variant = makeVariant("small");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
     mockedConfirm.mockResolvedValue(true);
 
     const result = await deleteResourcesWithUsages(
@@ -120,7 +120,7 @@ describe("deleteResourcesWithUsages", () => {
   it("does not delete when the confirmation dialog is declined", async () => {
     const { studioCtx, makeVariant, userComp } = setup();
     const variant = makeVariant("small");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
     mockedConfirm.mockResolvedValue(false);
 
     const result = await deleteResourcesWithUsages(
@@ -147,7 +147,7 @@ describe("deleteResourcesWithUsages", () => {
   it("deletes referenced resources without a dialog when behaviour is delete-if-referenced", async () => {
     const { studioCtx, makeVariant, userComp } = setup();
     const variant = makeVariant("small");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
 
     const result = await deleteResourcesWithUsages(
       studioCtx,
@@ -170,7 +170,7 @@ describe("deleteResourcesWithUsages", () => {
   it("defaults to confirm-if-referenced when no behaviour is given", async () => {
     const { studioCtx, makeVariant, userComp } = setup();
     const variant = makeVariant("small");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
     mockedConfirm.mockResolvedValue(false);
 
     await deleteResourcesWithUsages(
@@ -194,7 +194,7 @@ describe("deleteResourcesWithUsages", () => {
     const { studioCtx, makeVariant } = setup();
     const small = makeVariant("small");
     const large = makeVariant("large");
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
 
     const result = await deleteResourcesWithUsages(
       studioCtx,
@@ -215,8 +215,8 @@ describe("deleteResourcesWithUsages", () => {
 
   it("is a no-op when given an empty resource list", async () => {
     const { studioCtx } = setup();
-    const onDelete = jest.fn();
-    const changeObservedSpy = jest.spyOn(studioCtx, "changeObserved");
+    const onDelete = vi.fn();
+    const changeObservedSpy = vi.spyOn(studioCtx, "changeObserved");
 
     const result = await deleteResourcesWithUsages(studioCtx, [], onDelete, {
       behaviour: "delete-if-referenced",

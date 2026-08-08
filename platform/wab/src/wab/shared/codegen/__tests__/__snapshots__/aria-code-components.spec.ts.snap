@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`aria code components example: codegen should codegen correct contents - css 1`] = `
+exports[`aria code components example: codegen > should codegen correct contents - css 1`] = `
 "
 --- Button.tsx ---
 
@@ -6829,7 +6829,7 @@ column-gap: var(--mixin-SFG6O5da3UHa_column-gap);
 }"
 `;
 
-exports[`aria code components example: codegen should codegen correct contents - css modules 1`] = `
+exports[`aria code components example: codegen > should codegen correct contents - css modules 1`] = `
 "
 --- Button.tsx ---
 

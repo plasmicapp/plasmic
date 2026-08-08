@@ -1,3 +1,4 @@
+import modelPegParser from "@/wab/gen/modelPegParser";
 import { coalesce, simpleHash, simpleWords, tuple } from "@/wab/shared/common";
 import {
   Class,
@@ -12,8 +13,6 @@ import fs from "fs";
 import assignIn from "lodash/assignIn";
 import difference from "lodash/difference";
 import flattenDeep from "lodash/flattenDeep";
-
-const modelPegParser = require("@/wab/gen/modelPegParser");
 
 export const parse = (x: /*TWZ*/ string) => modelPegParser.parse(clean(x));
 

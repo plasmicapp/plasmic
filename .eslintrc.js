@@ -255,14 +255,11 @@ module.exports = {
         types: "always",
       },
     ],
-    "jest/no-conditional-expect": "off",
   },
   env: {
     es6: true,
     node: true,
     browser: true,
-    jasmine: true,
-    jest: true,
   },
   parser: "@typescript-eslint/parser",
   overrides: [
@@ -466,7 +463,6 @@ module.exports = {
   plugins: [
     "@typescript-eslint",
     "react",
-    "jest",
     "import",
     "eslint-plugin-no-relative-import-paths",
   ],
@@ -491,5 +487,15 @@ module.exports = {
     JSX: false,
     JQuery: false,
     cy: false,
+    // Provided by vitest's `globals: true`.
+    afterAll: "readonly",
+    afterEach: "readonly",
+    beforeAll: "readonly",
+    beforeEach: "readonly",
+    describe: "readonly",
+    expect: "readonly",
+    it: "readonly",
+    test: "readonly",
+    vi: "readonly",
   },
 };

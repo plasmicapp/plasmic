@@ -1039,8 +1039,11 @@ export class StudioCtx extends WithDbCtx {
       }
     };
 
-    // Start fetching now so the first artboard doesn't wait on it.
+    // Start fetching now so the first artboard doesn't wait on it. Nothing may
+    // ever consume it, so keep a failure from surfacing as an unhandled
+    // rejection; the consumer still sees it.
     let prefetched: Promise<string> | undefined = fetchHostPageHtml();
+    prefetched.catch(() => {});
     this.fetchHostPageHtml = () => {
       const html = prefetched ?? fetchHostPageHtml();
       prefetched = undefined;

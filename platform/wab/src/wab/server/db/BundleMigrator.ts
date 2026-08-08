@@ -11,6 +11,7 @@ import {
 } from "@/wab/server/entities/Entities";
 import { logger } from "@/wab/server/observability";
 import { withSpan } from "@/wab/server/util/apm-util";
+import { importByPath } from "@/wab/server/util/import-by-path";
 import { DataSourceId, ProjectId } from "@/wab/shared/ApiSchema";
 import {
   checkBundleFields,
@@ -95,14 +96,16 @@ export async function getAllMigrations() {
   }
   const files = await fs.readdir(BUNDLE_MIGRATION_PATH);
   files.sort(migrationSorter.compare);
-  bundleMigrations = files.map<Migration>((file) => {
-    const mod = require(path.join(BUNDLE_MIGRATION_PATH, file));
-    return {
-      name: file.replace(/\..*$/, ""),
-      migrate: mod.migrate,
-      type: mod.MIGRATION_TYPE,
-    };
-  });
+  bundleMigrations = await Promise.all(
+    files.map<Promise<Migration>>(async (file) => {
+      const mod = await importByPath(path.join(BUNDLE_MIGRATION_PATH, file));
+      return {
+        name: file.replace(/\..*$/, ""),
+        migrate: mod.migrate,
+        type: mod.MIGRATION_TYPE,
+      };
+    })
+  );
   return bundleMigrations;
 }
 

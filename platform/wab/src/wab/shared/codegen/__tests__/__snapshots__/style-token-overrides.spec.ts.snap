@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`token overrides: codegen should codegen correct contents - css 1`] = `
+exports[`token overrides: codegen > should codegen correct contents - css 1`] = `
 "
 --- Homepage.tsx ---
 
@@ -1064,7 +1064,7 @@ fontSize: useFontSize
 }"
 `;
 
-exports[`token overrides: codegen should codegen correct contents - css modules 1`] = `
+exports[`token overrides: codegen > should codegen correct contents - css modules 1`] = `
 "
 --- Homepage.tsx ---
 

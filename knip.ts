@@ -42,11 +42,6 @@ const config: KnipConfig = {
 
         "buffer", // used by StudioHtmlPlugin.ts?
         "url", // used by route.ts?
-
-        // used by jest?
-        "@babel/plugin-proposal-decorators",
-        "@babel/preset-env",
-        "@babel/preset-typescript",
       ],
     },
   },

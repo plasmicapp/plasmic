@@ -58,9 +58,11 @@ describe("Box", () => {
     });
   });
   describe("intersection", () => {
-    expect(new Box(0, 0, 1, 1).intersection(new Box(1, 0, 1, 1))).toBe(
-      undefined
-    );
+    it("works", () => {
+      expect(new Box(0, 0, 1, 1).intersection(new Box(1, 0, 1, 1))).toBe(
+        undefined
+      );
+    });
   });
 });
 

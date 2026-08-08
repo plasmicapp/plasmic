@@ -1,22 +1,11 @@
-import { ensure, tuple } from "@/wab/shared/common";
-import * as Components from "@/wab/shared/core/components";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { mkParam, ParamExportType } from "@/wab/shared/core/lang";
-import {
-  Arg,
-  ensureKnownRenderExpr,
-  ensureKnownTplTag,
-  isKnownRenderExpr,
-  RenderExpr,
-  TplTag,
-} from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
-import { typeFactory } from "@/wab/shared/model/model-util";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";
+import { ensure, tuple } from "@/wab/shared/common";
+import * as Components from "@/wab/shared/core/components";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
 import { createSite } from "@/wab/shared/core/sites";
-import { mkTplTestText, TEST_GLOBAL_VARIANT } from "@/wab/test/tpls";
 import * as tpls from "@/wab/shared/core/tpls";
 import {
   checkTplIntegrity,
@@ -24,6 +13,17 @@ import {
   mkTplTagSimple,
   mkTplTagX,
 } from "@/wab/shared/core/tpls";
+import {
+  Arg,
+  RenderExpr,
+  TplTag,
+  ensureKnownRenderExpr,
+  ensureKnownTplTag,
+  isKnownRenderExpr,
+} from "@/wab/shared/model/classes";
+import { withoutUids } from "@/wab/shared/model/model-meta";
+import { typeFactory } from "@/wab/shared/model/model-util";
+import { TEST_GLOBAL_VARIANT, mkTplTestText } from "@/wab/test/tpls";
 
 describe("TplQuery", function () {
   let allWrapped,
@@ -456,28 +456,29 @@ describe("TplQuery", function () {
     });
   });
   describe("updateSlotArg", () => {
-    testExpectingComponentChildrenAbc(function (...args) {
-      const [a, b, c] = Array.from(args[0]);
-      return {
-        initChildren: [b, c],
-        slotName: "altSlot",
-        operation: (_container) =>
-          $$$(_container).updateSlotArg(
-            "altSlot",
-            (arg) => {
-              return {
-                newChildren: [a],
-                updateArg: () => {
-                  arg.expr = new RenderExpr({
-                    tpl: [a, b, c],
-                  });
-                },
-              };
-            },
-            { deepRemove: true }
-          ),
-      };
-    });
+    it("should work", () =>
+      testExpectingComponentChildrenAbc(function (...args) {
+        const [a, b, c] = Array.from(args[0]);
+        return {
+          initChildren: [b, c],
+          slotName: "altSlot",
+          operation: (_container) =>
+            $$$(_container).updateSlotArg(
+              "altSlot",
+              (arg) => {
+                return {
+                  newChildren: [a],
+                  updateArg: () => {
+                    arg.expr = new RenderExpr({
+                      tpl: [a, b, c],
+                    });
+                  },
+                };
+              },
+              { deepRemove: true }
+            ),
+        };
+      }));
   });
   it("prevents component cycles", () => {
     const site = createSite();

@@ -1,4 +1,4 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { makeHttpFetcher } from "@/wab/server/data-sources/http-fetcher";
 import {
   setupSsrfTestServers,

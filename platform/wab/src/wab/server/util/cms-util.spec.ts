@@ -138,7 +138,7 @@ describe("traverseSchemaFields", () => {
   it("should handle empty fields array", () => {
     const fields: CmsFieldMeta[] = [];
 
-    const processFieldCallback = jest.fn();
+    const processFieldCallback = vi.fn();
 
     const result = traverseSchemaFields(fields, processFieldCallback);
 

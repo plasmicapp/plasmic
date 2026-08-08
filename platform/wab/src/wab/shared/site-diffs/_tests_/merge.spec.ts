@@ -4633,7 +4633,7 @@ describe("merging", () => {
   });
 
   // TODO: PLA-12361
-  xit("Resolves styleTokenOverride conflict when main sets varianted value and branch sets base value", () => {
+  it.skip("Resolves styleTokenOverride conflict when main sets varianted value and branch sets base value", () => {
     const result = testMerge({
       ancestorSite: (() => {
         // Create ancestor site with no styleTokenOverrides

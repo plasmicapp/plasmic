@@ -9,8 +9,9 @@ import { ParamExportType, mkParam, mkVar } from "@/wab/shared/core/lang";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { StateParam } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
+import { Mock } from "vitest";
 
-function createFigmaTestData(getCodeComponentMeta: jest.FunctionLike) {
+function createFigmaTestData(getCodeComponentMeta: Mock) {
   const child = {
     type: "INSTANCE",
     name: "ButtonSwap",
@@ -168,7 +169,6 @@ function createFigmaTestData(getCodeComponentMeta: jest.FunctionLike) {
   });
 
   const { studioCtx } = fakeStudioCtx();
-  // @ts-expect-error - assign fake function to get code component meta
   studioCtx.getCodeComponentMeta = getCodeComponentMeta;
 
   return {
@@ -181,7 +181,7 @@ function createFigmaTestData(getCodeComponentMeta: jest.FunctionLike) {
 describe("Figma importer slot handling", () => {
   describe("fromFigmaComponentToTplProps", () => {
     it("should directly map props if no transform function is provided", () => {
-      const getCodeComponentMeta = jest.fn().mockReturnValue({});
+      const getCodeComponentMeta = vi.fn().mockReturnValue({});
       const { studioCtx, node, component } =
         createFigmaTestData(getCodeComponentMeta);
       expect(
@@ -196,7 +196,7 @@ describe("Figma importer slot handling", () => {
     });
 
     it("should call transform function if provided", () => {
-      const figmaPropsTransform = jest.fn().mockImplementation((props) => {
+      const figmaPropsTransform = vi.fn().mockImplementation((props) => {
         return {
           ...props,
           secondaryColor: `derived-${props.color}`,
@@ -204,7 +204,7 @@ describe("Figma importer slot handling", () => {
         };
       });
 
-      const getCodeComponentMeta = jest.fn().mockReturnValue({
+      const getCodeComponentMeta = vi.fn().mockReturnValue({
         figmaPropsTransform,
       });
       const { studioCtx, node, component } =
@@ -246,8 +246,8 @@ describe("Figma importer slot handling", () => {
           key2: "value2",
         },
       };
-      const figmaPropsTransform = jest.fn().mockReturnValue(anyTypeProps);
-      const getCodeComponentMeta = jest.fn().mockReturnValue({
+      const figmaPropsTransform = vi.fn().mockReturnValue(anyTypeProps);
+      const getCodeComponentMeta = vi.fn().mockReturnValue({
         figmaPropsTransform,
       });
       const { studioCtx, component } =
@@ -276,7 +276,7 @@ describe("Figma importer slot handling", () => {
 
     describe("match boolean prop against default value", () => {
       it("should properly set false value", () => {
-        const getCodeComponentMeta = jest.fn().mockReturnValue({
+        const getCodeComponentMeta = vi.fn().mockReturnValue({
           figmaPropsTransform: () => ({
             swapChilds: false,
           }),
@@ -294,7 +294,7 @@ describe("Figma importer slot handling", () => {
       });
 
       it("shouldn't set default value", () => {
-        const getCodeComponentMeta = jest.fn().mockReturnValue({
+        const getCodeComponentMeta = vi.fn().mockReturnValue({
           figmaPropsTransform: () => ({
             swapChilds: true,
           }),
@@ -312,7 +312,7 @@ describe("Figma importer slot handling", () => {
       });
 
       it("should properly set true value", () => {
-        const getCodeComponentMeta = jest.fn().mockReturnValue({
+        const getCodeComponentMeta = vi.fn().mockReturnValue({
           figmaPropsTransform: () => ({
             isDisabled: true,
           }),

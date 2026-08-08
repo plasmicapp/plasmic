@@ -1,11 +1,11 @@
 import { DomActions, ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
-import { ComponentType } from "@/wab/shared/core/components";
-import { Box, Pt } from "@/wab/shared/geom";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { ComponentType } from "@/wab/shared/core/components";
 import { createSite, getDedicatedArena } from "@/wab/shared/core/sites";
-import { mock, MockProxy } from "jest-mock-extended";
+import { Box, Pt } from "@/wab/shared/geom";
+import { MockProxy, mock } from "vitest-mock-extended";
 
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 const site = createSite();
 const tplMgr = new TplMgr({ site });
@@ -33,7 +33,7 @@ describe("ViewportCtx", () => {
     });
   });
   afterEach(() => {
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(ctx.isTransforming()).toBe(false);
   });
 
@@ -119,7 +119,7 @@ describe("ViewportCtx", () => {
     expect(dom.scrollBy).toHaveBeenCalledWith(new Pt(10, 20), false);
     expect(ctx.isTransforming()).toBe(true);
     expect(ctx.scroll()).toEqual(new Pt(0, 0));
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(ctx.scroll()).toEqual(new Pt(10, 20));
 
     ctx.scrollBy(new Pt(-5, -1), {
@@ -128,7 +128,7 @@ describe("ViewportCtx", () => {
     expect(dom.scrollBy).toHaveBeenCalledWith(new Pt(-5, -1), true);
     expect(ctx.isTransforming()).toBe(true);
     expect(ctx.scroll()).toEqual(new Pt(10, 20));
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(ctx.scroll()).toEqual(new Pt(5, 19));
   });
   test("scrollTo updates DOM and receives setScroll callback", () => {
@@ -149,7 +149,7 @@ describe("ViewportCtx", () => {
     expect(dom.scrollTo).toHaveBeenCalledWith(new Pt(10, 20), false);
     expect(ctx.isTransforming()).toBe(true);
     expect(ctx.scroll()).toEqual(new Pt(0, 0));
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(ctx.scroll()).toEqual(new Pt(10, 20));
 
     ctx.scrollTo(new Pt(30, 10), {
@@ -158,7 +158,7 @@ describe("ViewportCtx", () => {
     expect(dom.scrollTo).toHaveBeenCalledWith(new Pt(30, 10), true);
     expect(ctx.isTransforming()).toBe(true);
     expect(ctx.scroll()).toEqual(new Pt(10, 20));
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(ctx.scroll()).toEqual(new Pt(30, 10));
   });
   test("scaleAtFixedPt does math and updates DOM", () => {
@@ -214,7 +214,7 @@ describe("ViewportCtx", () => {
     expect(dom.scaleTo).toHaveBeenCalledWith(2, false);
     // scroll = (100,10) + (500,400) - (350,210) + (250,200)*2
     expect(dom.scrollTo).toHaveBeenCalledWith(new Pt(750, 600), false);
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     // sanity check scaleAtMidPt(2) == scaleAtFixedPt(2, (250,200), (350,210))
     // DOM should not be called again

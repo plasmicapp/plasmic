@@ -1,4 +1,4 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { Bundler } from "@/wab/shared/bundler";
 import { jsonClone, mkUuid } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";

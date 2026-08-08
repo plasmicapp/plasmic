@@ -55,7 +55,7 @@ describe("Insertable templates fixers", () => {
         "Expect tpl to have base variant setting"
       );
 
-      const getNewImageAsset = jest.fn().mockReturnValue(imageAsset);
+      const getNewImageAsset = vi.fn().mockReturnValue(imageAsset);
 
       fixTplTreeExprs(
         {

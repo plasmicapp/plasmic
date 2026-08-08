@@ -1,3 +1,4 @@
+import { getSerializableConnectionOptions } from "@/wab/server/db/DbCon";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   extractProjectId,
@@ -24,7 +25,6 @@ import { unzip3 } from "@/wab/shared/collections";
 import { tuple } from "@/wab/shared/common";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { createHash } from "crypto";
-import { getConnection } from "typeorm";
 
 /**
  * This is used for busting codegen caches.  You should increment this number if
@@ -200,7 +200,7 @@ async function genLoaderCodeBundleForProjectVersions(
     const res = await pool.exec("codegen", [
       {
         scheme: "blackbox",
-        connectionOptions: getConnection().options,
+        connectionOptions: getSerializableConnectionOptions(),
         projectId,
         exportOpts: exportOpts,
         maybeVersionOrTag: version,

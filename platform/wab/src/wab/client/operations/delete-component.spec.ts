@@ -12,7 +12,7 @@ describe("deleteComponent", () => {
     const { studioCtx } = fakeStudioCtx();
     // Deleting a component the studio is focused on triggers an arena switch;
     // stub it out so the operation under test doesn't drive navigation.
-    jest.spyOn(studioCtx, "switchToArena").mockImplementation(() => {});
+    vi.spyOn(studioCtx, "switchToArena").mockImplementation(() => {});
     const tplMgr = studioCtx.tplMgr();
     // deleteComponent mutates the model directly, so it must run in a change.
     const runDeleteOperation = (component: Component) =>

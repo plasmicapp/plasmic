@@ -1,4 +1,4 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { externalizeCssUrlsPlugin } from "@/wab/server/loader/module-bundler";
 import esbuild from "esbuild";
 import { promises as fs } from "fs";
@@ -30,7 +30,10 @@ describe("externalizeCssUrlsPlugin", () => {
   ].join("\n");
 
   it("preserves unresolvable url() in a css__*.css minify pass", async () => {
-    await fs.writeFile(path.join(dir, "css__test.css"), cssWithUnresolvableUrls);
+    await fs.writeFile(
+      path.join(dir, "css__test.css"),
+      cssWithUnresolvableUrls
+    );
     const outdir = path.join(dir, "out");
 
     // Mirrors the component-css esbuild build in module-bundler.ts.
@@ -53,7 +56,10 @@ describe("externalizeCssUrlsPlugin", () => {
   });
 
   it("preserves unresolvable url() when bundling (css-entrypoint pass)", async () => {
-    await fs.writeFile(path.join(dir, "css__test.css"), cssWithUnresolvableUrls);
+    await fs.writeFile(
+      path.join(dir, "css__test.css"),
+      cssWithUnresolvableUrls
+    );
     const outdir = path.join(dir, "out");
 
     await expect(
@@ -78,7 +84,10 @@ describe("externalizeCssUrlsPlugin", () => {
   // `import "./css__*.css"`, so the JS bundle transitively processes that CSS
   // and resolves its url() tokens. The plugin must be on this build too.
   it("preserves unresolvable url() when a JS module imports the CSS", async () => {
-    await fs.writeFile(path.join(dir, "css__test.css"), cssWithUnresolvableUrls);
+    await fs.writeFile(
+      path.join(dir, "css__test.css"),
+      cssWithUnresolvableUrls
+    );
     await fs.writeFile(
       path.join(dir, "render__test.tsx"),
       `import "./css__test.css";\nexport const X = 1;\n`
@@ -99,9 +108,7 @@ describe("externalizeCssUrlsPlugin", () => {
     ).resolves.toBeDefined();
 
     const cssFile = (await fs.readdir(outdir)).find((f) => f.endsWith(".css"));
-    const out = (
-      await fs.readFile(path.join(outdir, cssFile!))
-    ).toString();
+    const out = (await fs.readFile(path.join(outdir, cssFile!))).toString();
     expect(out).toContain("url(/static/missing-image.png)");
     expect(out).toContain("url(./does-not-exist.svg)");
   });
@@ -110,7 +117,10 @@ describe("externalizeCssUrlsPlugin", () => {
     // Sanity check that the plugin is doing the work: the same JS-imports-CSS
     // build without it fails with esbuild's "Could not resolve" error -- the
     // exact production failure.
-    await fs.writeFile(path.join(dir, "css__test.css"), cssWithUnresolvableUrls);
+    await fs.writeFile(
+      path.join(dir, "css__test.css"),
+      cssWithUnresolvableUrls
+    );
     await fs.writeFile(
       path.join(dir, "render__test.tsx"),
       `import "./css__test.css";\nexport const X = 1;\n`

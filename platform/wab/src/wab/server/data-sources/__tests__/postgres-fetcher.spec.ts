@@ -45,9 +45,9 @@ function makeFetcher() {
       user: "user",
     },
   } as any);
-  const queryMock = jest.fn().mockResolvedValue({ rows: [], fields: [] });
+  const queryMock = vi.fn().mockResolvedValue({ rows: [], fields: [] });
   // Inject a fake pool with schema so getList builds SQL without touching a real database.
-  (fetcher as any).pool = { query: queryMock, connect: jest.fn() };
+  (fetcher as any).pool = { query: queryMock, connect: vi.fn() };
   (fetcher as any).schema = SCHEMA;
   return { fetcher, queryMock };
 }

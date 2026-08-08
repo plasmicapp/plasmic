@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Figma module tplNodeFromFigmaData convert demo 1`] = `
+exports[`Figma module > tplNodeFromFigmaData > convert demo 1`] = `
 {
   "deps": [],
   "map": {
@@ -45346,7 +45346,7 @@ exports[`Figma module tplNodeFromFigmaData convert demo 1`] = `
 }
 `;
 
-exports[`Figma module tplNodeFromFigmaData convert img 1`] = `
+exports[`Figma module > tplNodeFromFigmaData > convert img 1`] = `
 {
   "deps": [],
   "map": {
@@ -45679,7 +45679,7 @@ exports[`Figma module tplNodeFromFigmaData convert img 1`] = `
 }
 `;
 
-exports[`Figma module tplNodeFromFigmaData convert landify 1`] = `
+exports[`Figma module > tplNodeFromFigmaData > convert landify 1`] = `
 {
   "deps": [],
   "map": {
@@ -61139,7 +61139,7 @@ Get more done.",
 }
 `;
 
-exports[`Figma module tplNodeFromFigmaData convert rect 1`] = `
+exports[`Figma module > tplNodeFromFigmaData > convert rect 1`] = `
 {
   "deps": [],
   "map": {
@@ -61206,7 +61206,7 @@ exports[`Figma module tplNodeFromFigmaData convert rect 1`] = `
 }
 `;
 
-exports[`Figma module tplNodeFromFigmaData convert rect2 1`] = `
+exports[`Figma module > tplNodeFromFigmaData > convert rect2 1`] = `
 {
   "deps": [],
   "map": {
@@ -61380,7 +61380,7 @@ exports[`Figma module tplNodeFromFigmaData convert rect2 1`] = `
 }
 `;
 
-exports[`Figma module tplNodeFromFigmaData convert svg 1`] = `
+exports[`Figma module > tplNodeFromFigmaData > convert svg 1`] = `
 {
   "deps": [],
   "map": {

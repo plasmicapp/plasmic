@@ -6,13 +6,13 @@ interface ExampleLogger {
 }
 
 const logger1: ExampleLogger = {
-  log: jest.fn(),
-  error: jest.fn(),
+  log: vi.fn(),
+  error: vi.fn(),
 };
 
 const logger2: ExampleLogger = {
-  log: jest.fn(),
-  error: jest.fn(),
+  log: vi.fn(),
+  error: vi.fn(),
 };
 
 const logger3 = {

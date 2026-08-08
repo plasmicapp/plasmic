@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`commit-graph ancestors should be efficient even for big commit graphs 1`] = `
+exports[`commit-graph > ancestors > should be efficient even for big commit graphs 1`] = `
 [
   "ca7fe483-a0b0-4c44-9fb3-a0002d45c004",
   "c6bff228-1799-432b-9452-1a558f1437d0",
@@ -2078,7 +2078,7 @@ exports[`commit-graph ancestors should be efficient even for big commit graphs 1
 ]
 `;
 
-exports[`commit-graph ancestors should be efficient even for big commit graphs 2`] = `
+exports[`commit-graph > ancestors > should be efficient even for big commit graphs 2`] = `
 [
   "c6bff228-1799-432b-9452-1a558f1437d0",
   "4503fdb8-5800-4de5-9d3b-8f7dabd6c9ec",
@@ -4155,7 +4155,7 @@ exports[`commit-graph ancestors should be efficient even for big commit graphs 2
 ]
 `;
 
-exports[`commit-graph ancestors should be efficient even for big commit graphs 3`] = `
+exports[`commit-graph > ancestors > should be efficient even for big commit graphs 3`] = `
 [
   "783b0f92-ce58-4d79-96b5-2fda1db20b4b",
   "161369a7-e2d1-409a-9f24-90aa70f2ebca",

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Project Serialization serialize project with all filters enabled 1`] = `
+exports[`Project Serialization > serialize project with all filters enabled 1`] = `
 "<Project id="testProjectId">
   <components>
     <ARRAY>
@@ -2808,7 +2808,7 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
 </Project>"
 `;
 
-exports[`Project Serialization serialize project with all filters enabled 2`] = `
+exports[`Project Serialization > serialize project with all filters enabled 2`] = `
 {
   "__type": "Project",
   "animations": [

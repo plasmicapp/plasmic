@@ -31,7 +31,6 @@ import {
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
-import "jest-extended";
 
 describe("extractComponent", () => {
   const site = createSite();
@@ -461,7 +460,7 @@ describe("extractComponent", () => {
       attrs: { title: customCode("$ctx.bad.val") },
     });
     $$$(localComponent.tplTree).append(localTree);
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
 

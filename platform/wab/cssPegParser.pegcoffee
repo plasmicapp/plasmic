@@ -1,7 +1,7 @@
 {
   _ = require 'lodash'
   @_ = _
-  bgStylesMod = require '@/wab/shared/core/bg-styles'
+  # bgStylesMod comes from PEGJS_PREAMBLE in the Makefile.
   _.extend(@, bgStylesMod)
 }
 

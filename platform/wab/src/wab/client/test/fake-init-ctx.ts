@@ -1,4 +1,5 @@
 import { mockDeepAuto } from "@/test/mock";
+import { Api } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { App } from "@/wab/client/components/top-view";
@@ -6,7 +7,8 @@ import { DbCtx } from "@/wab/client/db";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { fakePromisifiedApi } from "@/wab/client/test/FakeApi";
+import { PromisifyMethods } from "@/wab/commons/promisify-methods";
+import { svgoProcess } from "@/wab/server/svgo";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
@@ -19,8 +21,32 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import { createMemoryHistory } from "history";
+import { mock } from "vitest-mock-extended";
 
-export function fakeApp() {
+function fakePromisifiedApi() {
+  const fakeApi = mock<PromisifyMethods<Api>>();
+  fakeApi.getPkgByProjectId.mockImplementation(async (_projectId) => {
+    return {};
+  });
+  fakeApi.processSvg.mockImplementation(async (data) => {
+    return svgoProcess(data.svgXml);
+  });
+
+  const storage: { [key: string]: string } = {};
+  fakeApi.addStorageItem.mockImplementation(async (key, value) => {
+    storage[key] = value;
+  });
+  fakeApi.getStorageItem.mockImplementation(async (key) => {
+    return storage[key] ?? null;
+  });
+  fakeApi.removeStorageItem.mockImplementation(async (key) => {
+    delete storage[key];
+  });
+
+  return fakeApi;
+}
+
+function fakeApp() {
   const app = mockDeepAuto<App>();
   app.withSpinner.mockImplementation(async (task) => {
     return await task;
@@ -55,7 +81,7 @@ export function fakeAppCtx(opts?: {
   };
 }
 
-export function fakeDbCtx(opts?: {
+function fakeDbCtx(opts?: {
   site?: Site;
   devFlagOverrides?: Partial<DevFlagsType>;
   teams?: ApiTeam[];

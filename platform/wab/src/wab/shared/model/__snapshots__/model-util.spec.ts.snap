@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`model-util works 1`] = `
+exports[`model-util > works 1`] = `
 {
   "__iid": "1",
   "__type": "Site",

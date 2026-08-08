@@ -14,7 +14,7 @@ describe("todolist blackbox codegen", () => {
   todomvcBundle.version = "some-version";
   const site = new Bundler().unbundle(todomvcBundle, "") as Site;
 
-  // NOTE: automatic cleanup via setGracefulCleanup doesn't work with jest.
+  // NOTE: automatic cleanup via setGracefulCleanup doesn't work here.
   // here we're manually removing the folder after the test.
   const dir = tmp.dirSync({ unsafeCleanup: true });
   afterEach(() => {

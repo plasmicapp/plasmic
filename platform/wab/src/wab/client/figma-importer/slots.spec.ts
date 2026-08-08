@@ -126,7 +126,7 @@ describe("Figma importer slot handling", () => {
         ],
       } as any;
 
-      const fn = jest.fn().mockImplementation(() => ({}));
+      const fn = vi.fn().mockImplementation(() => ({}));
 
       expect(
         getAllSlotsInNode(node, fn, {

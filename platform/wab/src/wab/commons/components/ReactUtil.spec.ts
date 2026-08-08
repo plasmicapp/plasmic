@@ -1,16 +1,16 @@
-import { cx } from "@/wab/shared/common";
 import { combineProps } from "@/wab/commons/components/ReactUtil";
+import { cx } from "@/wab/shared/common";
 
 describe("combineProps", () =>
   it("should work", function () {
     let aProps, bProps;
     const combined = combineProps(
       (aProps = {
-        onChange: jest.fn(),
+        onChange: vi.fn(),
         className: "a",
       }),
       (bProps = {
-        onChange: jest.fn(),
+        onChange: vi.fn(),
         className: cx({
           b: true,
         }),

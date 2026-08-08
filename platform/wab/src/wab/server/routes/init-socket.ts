@@ -1,11 +1,11 @@
 import { Server } from "http";
-import socketio from "socket.io";
+import { Server as SocketIoServer } from "socket.io";
 
 export class InitSocket {
-  private io: socketio.Server;
+  private io: SocketIoServer;
 
   constructor() {
-    this.io = new socketio.Server({
+    this.io = new SocketIoServer({
       path: "/api/v1/init-token",
     });
 
