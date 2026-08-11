@@ -5,7 +5,6 @@ import {
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensure, ensureInstance } from "@/wab/shared/common";
 import { findVarRefs, isCodeComponent } from "@/wab/shared/core/components";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { Selectable } from "@/wab/shared/core/selection";
 import { SlotSelection, isSlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -24,6 +23,7 @@ import {
   isTplTextBlock,
 } from "@/wab/shared/core/tpls";
 import { ValNode } from "@/wab/shared/core/val-nodes";
+import { isTagListContainer } from "@/wab/shared/html";
 import {
   TplComponent,
   TplNode,

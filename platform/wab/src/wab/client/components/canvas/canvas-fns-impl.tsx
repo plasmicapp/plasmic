@@ -1,14 +1,11 @@
 import "@/wab/client/components/canvas/slate";
 import { mkBaseVariant } from "@/wab/shared/Variants";
 import { assert } from "@/wab/shared/common";
-import {
-  isTagInline,
-  isTagListContainer,
-} from "@/wab/shared/core/rich-text-util";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { TplTagType, mkTplTag } from "@/wab/shared/core/tpls";
 import { normProp, parseCssNumericNew } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { isTagInline, isTagListContainer } from "@/wab/shared/html";
 import {
   Marker,
   NodeMarker,

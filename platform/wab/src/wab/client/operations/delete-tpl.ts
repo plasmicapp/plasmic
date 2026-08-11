@@ -2,8 +2,8 @@ import { validateTplRemoval } from "@/wab/client/operations/utils/validate-tpl-r
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { redistributeColumnsSizes } from "@/wab/shared/columns-utils";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import * as Tpls from "@/wab/shared/core/tpls";
+import { isTagListContainer } from "@/wab/shared/html";
 import { Component, Site, TplNode } from "@/wab/shared/model/classes";
 
 export type DeleteTplResult =

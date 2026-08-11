@@ -10,7 +10,6 @@ import {
 import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import "@/wab/client/components/canvas/slate";
 import {
-  tags as htmlTags,
   mkTplTagElement,
   ParagraphElement,
   TplTagElement,
@@ -32,12 +31,8 @@ import {
   getCodeExpressionWithFallback,
 } from "@/wab/shared/core/exprs";
 import {
-  isTagInline,
-  isTagListContainer,
-  listContainerTags,
   normalizeMarkers,
   renderRichTextChildren,
-  textInlineTags,
 } from "@/wab/shared/core/rich-text-util";
 import {
   canvasProjectId,
@@ -48,6 +43,14 @@ import { isExprText, walkTpls } from "@/wab/shared/core/tpls";
 import { getCssRulesFromRs } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import {
+  isTagInline,
+  isTagListContainer,
+  listContainerTags,
+  TagName,
+  TextInlineTag,
+  textInlineTags,
+} from "@/wab/shared/html";
 import {
   CustomCode,
   ensureKnownRawText,
@@ -137,7 +140,7 @@ type InlineTagProps = {
 };
 
 function wrapInInlineTag(
-  tag: (typeof htmlTags)[number],
+  tag: TagName,
   sub: SubDeps,
   getProps?: (
     editor: SlateEditor,
@@ -172,10 +175,7 @@ function wrapInInlineTag(
  * from other blocks. See comments in the implementation to understand the
  * 10 different cases we're handling.
  */
-function wrapInBlockTag(
-  tag: (typeof htmlTags)[number] | null,
-  sub: SubDeps
-): ShortcutFn {
+function wrapInBlockTag(tag: TagName | null, sub: SubDeps): ShortcutFn {
   const { Editor, Transforms } = sub.slate;
   return async function (editor: SlateEditor) {
     const existingBlock = Editor.above(editor, {
@@ -377,8 +377,14 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
     },
     {
       action: "WRAP_BLOCK",
-      fn: async (editor, opts, sub2, tag: (typeof htmlTags)[number] | null) => {
+      fn: async (editor, opts, sub2, tag: TagName | null) => {
         await wrapInBlockTag(tag, sub2)(editor, opts, sub2);
+      },
+    },
+    {
+      action: "WRAP_INLINE",
+      fn: async (editor, opts, sub2, tag: TextInlineTag) => {
+        await wrapInInlineTag(tag, sub2)(editor, opts, sub2);
       },
     },
   ],
@@ -387,10 +393,7 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
   }
 );
 
-const MARKDOWN_BLOCKS: Record<
-  string,
-  (typeof htmlTags)[number] | Array<(typeof htmlTags)[number]>
-> = {
+const MARKDOWN_BLOCKS: Record<string, TagName | Array<TagName>> = {
   "#": "h1",
   "##": "h2",
   "###": "h3",
@@ -421,7 +424,11 @@ function wrapOrInsertTplTag(
   }
 }
 
-function matchNodeMarker(n: SlateNode, sub: SubDeps, tags?: string[]): boolean {
+function matchNodeMarker(
+  n: SlateNode,
+  sub: SubDeps,
+  tags?: readonly string[]
+): boolean {
   return (
     !sub.slate.Editor.isEditor(n) &&
     sub.slate.Element.isElement(n) &&
@@ -439,7 +446,11 @@ function matchBlockNodeMarker(n: SlateNode, sub: SubDeps): boolean {
   );
 }
 
-function isInNodeMarker(editor: SlateEditor, sub: SubDeps, tags?: string[]) {
+function isInNodeMarker(
+  editor: SlateEditor,
+  sub: SubDeps,
+  tags?: readonly string[]
+) {
   const [node] = sub.slate.Editor.nodes(editor, {
     match: (n) => matchNodeMarker(n, sub, tags),
   });
@@ -842,7 +853,9 @@ const withPlasmic = (
       const type = MARKDOWN_BLOCKS[beforeText];
 
       if (type) {
-        const tag = Array.isArray(type) ? type[type.length - 1] : type;
+        const [containerTag, tag] = Array.isArray(type)
+          ? [type[0], type[type.length - 1]]
+          : [undefined, type];
 
         Transforms.select(editor, range);
         Transforms.delete(editor);
@@ -851,14 +864,9 @@ const withPlasmic = (
         Transforms.wrapNodes(editor, element);
         Transforms.collapse(editor, { edge: "end" });
 
-        if (tag === "li") {
+        if (containerTag) {
           // For list items, we need to create the container wrapping them.
-          const list = mkTplTagElement(
-            mkShortId(),
-            type[0] as (typeof htmlTags)[number],
-            {},
-            []
-          );
+          const list = mkTplTagElement(mkShortId(), containerTag, {}, []);
           Transforms.wrapNodes(editor, list, {
             match: (n) => matchNodeMarker(n, sub, ["li"]),
           });
@@ -1126,7 +1134,7 @@ export const mkCanvasText = computedFn(
               // New elements may not be in the bundle yet, but we try our best
               // to at least make sure the styles will match the default theme.
               return react.createElement(
-                tag as (typeof htmlTags)[number],
+                tag as TagName,
                 {
                   ...attributes,
                   className: cx(
@@ -1582,7 +1590,7 @@ function tplToSlateNodes(
       );
       return {
         type: "TplTag",
-        tag: child.tag as (typeof htmlTags)[number],
+        tag: child.tag as TagName,
         uuid: child.uuid,
         children: tplToSlateNodes(child, ctx, childEffectiveVs),
       };

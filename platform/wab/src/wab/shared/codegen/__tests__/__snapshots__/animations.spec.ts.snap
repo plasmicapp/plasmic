@@ -851,6 +851,19 @@ line-height: var(--mixin-x7ipGuQGGI-a_line-height);
   text-transform: inherit; }
     
 
+      :where(.plasmic_default__b) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text b) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
       :where(.plasmic_default__i) {   font-family: inherit;
   line-height: inherit;
   font-size: inherit;
@@ -1684,6 +1697,19 @@ declare module '*.module.css' {
   text-transform: inherit; }
     
 
+      :where(.b) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text b) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
       :where(.i) {   font-family: inherit;
   line-height: inherit;
   font-size: inherit;
@@ -2111,6 +2137,19 @@ line-height: var(--mixin-x7ipGuQGGI-a_line-height);
   font-size: inherit;
   font-style: inherit;
   font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.b) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text b) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
   color: inherit;
   text-transform: inherit; }
     

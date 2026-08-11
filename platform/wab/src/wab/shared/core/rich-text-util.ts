@@ -1,5 +1,6 @@
 import { cleanPlainText, plainTextToReact } from "@/wab/shared/codegen/util";
 import { getCssRulesFromRs } from "@/wab/shared/css";
+import { isTagInline } from "@/wab/shared/html";
 import {
   isKnownTplTag,
   type Marker,
@@ -77,41 +78,6 @@ export function normalizeMarkers(
     });
   }
   return newMarkers;
-}
-
-export const textInlineTags = [
-  "a",
-  "code",
-  "span",
-  "strong",
-  "i",
-  "em",
-  "sub",
-  "sup",
-];
-export const textBlockTags = [
-  "blockquote",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "pre",
-];
-export const listContainerTags = ["ol", "ul"];
-
-/**
- * This function is used in several places to decide whether a TplTag
- * inside a rich-text block should be inline or not. It decides that
- * based in the tag (e.g. "span" is inline, while "div" isn't).
- */
-export function isTagInline(tag: string) {
-  return textInlineTags.includes(tag);
-}
-
-export function isTagListContainer(tag: string) {
-  return listContainerTags.includes(tag);
 }
 
 export interface RichTextRenderTarget<T> {

@@ -1,4 +1,3 @@
-import { ALL_CONTAINER_TAGS } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import { parseComponent } from "@/wab/client/web-importer/component";
 import {
   BASE_VARIANT,
@@ -30,7 +29,7 @@ import {
   WIVariantSettings,
 } from "@/wab/client/web-importer/types";
 import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
-import { ensure, ensureType, withoutNils } from "@/wab/shared/common";
+import { ensure, ensureType, isOneOf, withoutNils } from "@/wab/shared/common";
 import {
   expandGapProperty,
   parseCss,
@@ -47,6 +46,7 @@ import { parseFlexShorthand } from "@/wab/shared/css/flex";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import { CssTransforms } from "@/wab/shared/css/transforms";
 import { hasInvalidUrl } from "@/wab/shared/css/urls";
+import { GENERAL_TAGS } from "@/wab/shared/html";
 import { Site } from "@/wab/shared/model/classes";
 import { VariantGroupType } from "@/wab/shared/Variants";
 import {
@@ -864,7 +864,7 @@ function getElementsWITree(
 
     const containerNode: WIContainer = {
       type: "container",
-      tag: [...ALL_CONTAINER_TAGS, "img"].includes(tag) ? tag : "div",
+      tag: isOneOf(tag, [...GENERAL_TAGS, "img"]) ? tag : "div",
       path,
       variantSettings: allVariantSettings,
       children: withoutNils([...elt.childNodes].map((e) => rec(e))),

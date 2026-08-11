@@ -63,7 +63,6 @@ import {
   siteFinalStyleTokensAllDeps,
 } from "@/wab/shared/core/site-style-tokens";
 import {
-  BASE_THEMEABLE_TAG,
   getDefaultStyleTag,
   sourceMatchThemeStyle,
 } from "@/wab/shared/core/styles";
@@ -85,6 +84,7 @@ import {
   isTargetOverwritten,
 } from "@/wab/shared/defined-indicator";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { BASE_THEMABLE_TAG } from "@/wab/shared/html";
 import {
   Expr,
   RawText,
@@ -247,7 +247,7 @@ export const SourceValue = observer(function SourceValue(props: {
           <div>
             <EditMixinButton
               mixin={source.theme.defaultStyle}
-              themeTag={BASE_THEMEABLE_TAG}
+              themeTag={BASE_THEMABLE_TAG}
               className="defined-indicator__edit-button code flex flex-vcenter"
               onShowPopup={onShowPopup}
             >

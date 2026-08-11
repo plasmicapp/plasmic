@@ -46,14 +46,14 @@ import {
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn, tuple } from "@/wab/shared/common";
 import { extractTransitiveDepsFromMixins } from "@/wab/shared/core/project-deps";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { extractMixinUsages } from "@/wab/shared/core/styles";
 import {
-  BASE_THEMEABLE_TAG,
+  BASE_THEMABLE_TAG,
   ThemableTag,
-  extractMixinUsages,
-} from "@/wab/shared/core/styles";
+  isTagListContainer,
+} from "@/wab/shared/html";
 import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { Menu, notification } from "antd";
@@ -133,7 +133,7 @@ export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
   const { studioCtx, mixin, themeTag } = props;
   // Only the default typography style (no specific tag) is restricted to
   // typography-only props; tag styles (e.g. ul/ol) keep all their panels.
-  const isDefaultThemeStyle = mixin.forTheme && themeTag === BASE_THEMEABLE_TAG;
+  const isDefaultThemeStyle = mixin.forTheme && themeTag === BASE_THEMABLE_TAG;
   return (
     <SidebarModal
       title={

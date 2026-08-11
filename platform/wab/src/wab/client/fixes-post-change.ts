@@ -22,7 +22,6 @@ import {
   RecordedChanges,
   mergeRecordedChanges,
 } from "@/wab/shared/core/observable-model";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { getAllSiteFrames, isTplAttachedToSite } from "@/wab/shared/core/sites";
 import {
   ensureCorrectImplicitStates,
@@ -41,6 +40,7 @@ import {
   isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
+import { isTagListContainer } from "@/wab/shared/html";
 import {
   Arg,
   RenderExpr,

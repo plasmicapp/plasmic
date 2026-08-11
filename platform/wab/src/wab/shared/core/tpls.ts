@@ -109,6 +109,7 @@ import {
   InvalidCodePathError,
   isArrayOfLiterals,
   isNonNil,
+  isOneOf,
   maybe,
   mkShortId,
   notNil,
@@ -138,7 +139,6 @@ import {
 } from "@/wab/shared/core/exprs";
 import { mkVar } from "@/wab/shared/core/lang";
 import { metaSvc } from "@/wab/shared/core/metas";
-import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
 import { isSlotSelection, SlotSelection } from "@/wab/shared/core/slots";
 import { isOnChangeParam } from "@/wab/shared/core/states";
@@ -224,7 +224,7 @@ export const extraAtomicTags = new Set(["select", "svg", "textarea"]);
 
 export const isTableSubElement = (
   tpl: /*TWZ*/ TplTag | TplTag | TplTag | TplTag
-) => [...Html.tableTags].includes(tpl.tag);
+) => isOneOf(tpl.tag, Html.tableTags);
 
 export const isTableTopElement = (tpl) => tpl.tag === "table";
 
@@ -2510,7 +2510,7 @@ export function duplicateMarkerTpl(text: RawText, tpl: TplNode) {
     if (markerPointsToTpl(marker, tpl)) {
       // If we're duplicating a block TplTag, we need to add a "\n"
       // between the existing and the new tpl.
-      const blockLineBreak = isTagInline(tpl.tag) ? "" : "\n";
+      const blockLineBreak = Html.isTagInline(tpl.tag) ? "" : "\n";
 
       // Add marker.
       const newMarker = new NodeMarker({

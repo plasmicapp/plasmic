@@ -151,10 +151,6 @@ import * as exprs from "@/wab/shared/core/exprs";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import {
-  isTagInline,
-  isTagListContainer,
-} from "@/wab/shared/core/rich-text-util";
-import {
   SQ,
   SelQuery,
   Selectable,
@@ -223,6 +219,7 @@ import {
   isStandardSide,
   sideToOrient,
 } from "@/wab/shared/geom";
+import { isTagInline, isTagListContainer } from "@/wab/shared/html";
 import {
   ContainerLayoutType,
   ContainerType,

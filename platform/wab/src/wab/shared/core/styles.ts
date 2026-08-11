@@ -143,6 +143,11 @@ import { getProjectFlags } from "@/wab/shared/devflags";
 import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { getGoogFontMeta } from "@/wab/shared/googfonts";
 import {
+  BASE_THEMABLE_TAG,
+  ThemableTag,
+  isTagThemable,
+} from "@/wab/shared/html";
+import {
   isContentLayoutTpl,
   makeLayoutAwareRuleSet,
 } from "@/wab/shared/layoututils";
@@ -388,38 +393,6 @@ export function makeDefaultStylesRuleBodyFor(
     .join("\n");
 }
 
-/**
- * Base "tag" that is the root of all themable tags (the default typography).
- * Obviously not a real tag, but it represents all elements.
- * In some places, we split a selector into tag and pseudo-class parts,
- * so this just works for selectors like ":hover".
- */
-export const BASE_THEMEABLE_TAG = "";
-/** Tags that support setting default styles. */
-export const THEMABLE_TAGS = [
-  "a",
-  "blockquote",
-  "code",
-  "em",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "i",
-  "li",
-  "ol",
-  "p",
-  "pre",
-  "strong",
-  "ul",
-] as const;
-
-export type ThemableTag =
-  | typeof BASE_THEMEABLE_TAG
-  | (typeof THEMABLE_TAGS)[number];
-
 /** Represents a ThemeStyle in Theme.styles or a Theme.defaultStyle. */
 export interface DefaultStyle {
   style: Mixin;
@@ -435,7 +408,7 @@ export function getDefaultStyleTagAndPseudoClass(
       string | undefined
     ];
   } else {
-    return [BASE_THEMEABLE_TAG, undefined];
+    return [BASE_THEMABLE_TAG, undefined];
   }
 }
 
@@ -445,7 +418,7 @@ export function getDefaultStyleTag(defaultStyle: DefaultStyle): ThemableTag {
 
 export function isStylePropApplicable(tpl: TplNode, prop: string) {
   if (isTplTag(tpl)) {
-    if ((THEMABLE_TAGS as readonly string[]).includes(tpl.tag)) {
+    if (isTagThemable(tpl.tag)) {
       // All themable tags can have any style, as all styles are
       // available anyway in the theme controls
       return true;
@@ -3030,7 +3003,7 @@ export function extractTokenUsages(
     if (findUsagesInRs(theme.defaultStyle.rs)) {
       usingThemes.add({
         style: theme.defaultStyle,
-        selector: BASE_THEMEABLE_TAG,
+        selector: BASE_THEMABLE_TAG,
       });
     }
     for (const style of theme.styles) {

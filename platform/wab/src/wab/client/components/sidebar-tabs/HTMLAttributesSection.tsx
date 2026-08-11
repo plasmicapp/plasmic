@@ -30,11 +30,6 @@ import {
 import { ComponentPropOrigin } from "@/wab/shared/core/lang";
 import { alwaysVisibleHTMLAttributes, metaSvc } from "@/wab/shared/core/metas";
 import {
-  isTagInline,
-  textBlockTags,
-  textInlineTags,
-} from "@/wab/shared/core/rich-text-util";
-import {
   EventHandlerKeyType,
   getDisplayNameOfEventHandlerKey,
   getEventHandlerByEventKey,
@@ -47,6 +42,14 @@ import {
   computeDefinedIndicator,
   DefinedIndicatorType,
 } from "@/wab/shared/defined-indicator";
+import {
+  COMMON_TAGS,
+  GENERAL_TAGS,
+  isTagInline,
+  tagDisplayLabel,
+  textBlockTags,
+  textInlineTags,
+} from "@/wab/shared/html";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import {
   Component,
@@ -61,7 +64,7 @@ import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
-import L, { keyBy, orderBy, uniq, without } from "lodash";
+import { keyBy, orderBy, uniq, without } from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
@@ -140,7 +143,7 @@ function getHiddenTagAttrs(tpl: TplTag) {
   return [];
 }
 
-function switchableTags(tpl: TplTag) {
+function switchableTags(tpl: TplTag): readonly string[] {
   if (tpl.tag === "input") {
     const typeExpr = ensure(
       tryGetBaseVariantSetting(tpl),
@@ -166,58 +169,10 @@ function switchableTags(tpl: TplTag) {
       return textBlockTags;
     }
   } else {
-    return ALL_CONTAINER_TAGS;
+    return [...GENERAL_TAGS].sort();
   }
 }
 
-export const TAG_TO_DISPLAY_NAME = {
-  div: "Box",
-  button: "Button",
-  a: "Link",
-  h1: "H1",
-  h2: "H2",
-  h3: "H3",
-  h4: "H4",
-  h5: "H5",
-  h6: "H6",
-  hgroup: "Heading group",
-  address: "Address",
-  article: "Article",
-  aside: "Aside",
-  blockquote: "Blockquote",
-  cite: "Citation",
-  code: "Code",
-  dl: "Description list",
-  dt: "Term",
-  dd: "Description",
-  figure: "Figure",
-  figcaption: "Figure caption",
-  footer: "Footer",
-  form: "Form",
-  label: "Label",
-  ul: "Unordered list",
-  ol: "Ordered list",
-  li: "List item",
-  header: "Header",
-  main: "Main",
-  nav: "Nav",
-  p: "Paragraph",
-  pre: "Pre",
-  section: "Section",
-  span: "Span",
-  input: "Input",
-  textarea: "Text area",
-  strong: "Strong",
-  i: "Italic",
-  em: "Emphasis",
-  sub: "Subscript",
-  sup: "Superscript",
-};
-const nonContainerTags = ["ul", "ol", "li"];
-export const ALL_CONTAINER_TAGS = L.without(
-  Object.keys(TAG_TO_DISPLAY_NAME),
-  ...nonContainerTags
-).sort();
 export const TplTagSection = observer(TplTagSection_);
 
 function TplTagSection_(props: { tpl: TplTag; viewCtx: ViewCtx }) {
@@ -232,7 +187,7 @@ function TplTagSection_(props: { tpl: TplTag; viewCtx: ViewCtx }) {
     return null;
   }
   const commonTagOptions = allTagOptions.filter((tag) =>
-    ["div", "button", "a", "h1", "h2", "h3", "h4", "h5", "h6"].includes(tag)
+    (COMMON_TAGS as readonly string[]).includes(tag)
   );
   const otherTagOptions = allTagOptions.filter(
     (tag) => !commonTagOptions.includes(tag)
@@ -283,14 +238,14 @@ function TplTagSection_(props: { tpl: TplTag; viewCtx: ViewCtx }) {
               <Select.OptGroup label="Common">
                 {commonTagOptions.map((option) => (
                   <Select.Option key={option} value={option}>
-                    {TAG_TO_DISPLAY_NAME[option] + " <" + option + ">"}
+                    {tagDisplayLabel(option)}
                   </Select.Option>
                 ))}
               </Select.OptGroup>
               <Select.OptGroup label="Everything else">
                 {otherTagOptions.map((option) => (
                   <Select.Option key={option} value={option}>
-                    {TAG_TO_DISPLAY_NAME[option] + " <" + option + ">"}
+                    {tagDisplayLabel(option)}
                   </Select.Option>
                 ))}
               </Select.OptGroup>

@@ -74,7 +74,6 @@ import {
   isCodeComponentTpl,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
   isBackgroundValidForTpl,
   isListStyleValidForTpl,
@@ -110,6 +109,7 @@ import {
 import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { DevFlagsType } from "@/wab/shared/devflags";
 import { isGridTag } from "@/wab/shared/grid-utils";
+import { isTagListContainer } from "@/wab/shared/html";
 import {
   TplComponent,
   TplNode,

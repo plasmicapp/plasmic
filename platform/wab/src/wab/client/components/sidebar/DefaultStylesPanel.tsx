@@ -10,13 +10,13 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isScreenVariant } from "@/wab/shared/Variants";
 import { ensure, mkShortId } from "@/wab/shared/common";
+import { getApplicableSelectors, mkRuleSet } from "@/wab/shared/core/styles";
 import {
-  BASE_THEMEABLE_TAG,
+  BASE_THEMABLE_TAG,
   THEMABLE_TAGS,
   ThemableTag,
-  getApplicableSelectors,
-  mkRuleSet,
-} from "@/wab/shared/core/styles";
+  tagDisplayLabel,
+} from "@/wab/shared/html";
 import { Mixin, ThemeStyle, Variant } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
@@ -34,7 +34,7 @@ const DefaultStylesPanel = observer(
     const site = studioCtx.site;
     const activeTheme = site.activeTheme;
     const readOnly = studioCtx.getLeftTabPermission("themes") === "readable";
-    const [tag, setTag] = React.useState<ThemableTag>(BASE_THEMEABLE_TAG);
+    const [tag, setTag] = React.useState<ThemableTag>(BASE_THEMABLE_TAG);
     const [pseudoClass, setPseudoClass] = React.useState<string>("");
     const [mixin, setMixin] = React.useState<Mixin | undefined>(undefined);
     const [selectedGlobalVariants, setSelectedGlobalVariants] = React.useState<
@@ -136,20 +136,14 @@ const DefaultStylesPanel = observer(
         tagSelect={{
           props: {
             options: [
-              { value: BASE_THEMEABLE_TAG, label: "Normal text" },
-              ...THEMABLE_TAGS.map((themeTag) => ({
+              { value: BASE_THEMABLE_TAG, label: "Normal text" },
+              ...[...THEMABLE_TAGS].sort().map((themeTag) => ({
                 value: themeTag,
-                label: (
-                  <>
-                    Tag: <strong>{themeTag}</strong>
-                    {themeTag === "a" && ` (links)`}
-                    {themeTag === "i" && ` (italic)`}
-                  </>
-                ),
+                label: tagDisplayLabel(themeTag),
               })),
             ],
             onChange: (_tag) =>
-              setTag((_tag as ThemableTag | null) || BASE_THEMEABLE_TAG),
+              setTag((_tag as ThemableTag | null) || BASE_THEMABLE_TAG),
             value: tag,
           },
         }}

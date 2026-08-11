@@ -14,10 +14,7 @@ import {
 } from "@/wab/shared/core/components";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
-import {
-  THEMABLE_TAGS,
-  createExpandedRuleSetMerger,
-} from "@/wab/shared/core/styles";
+import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import {
   TplCodeComponent,
   TplTagCodeGenType,
@@ -38,6 +35,7 @@ import {
   isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
+import { isTagThemable } from "@/wab/shared/html";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Arg,
@@ -357,7 +355,7 @@ export function isTypographyNode(tpl: TplNode): tpl is TplNode {
   ) {
     return true;
   } else if (isTplTag(tpl)) {
-    return (THEMABLE_TAGS as readonly string[]).includes(tpl.tag);
+    return isTagThemable(tpl.tag);
   } else {
     return false;
   }

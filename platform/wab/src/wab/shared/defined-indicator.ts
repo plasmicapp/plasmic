@@ -1,6 +1,6 @@
 import { VariantCombo } from "@/wab/shared/Variants";
 import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
-import { ThemableTag } from "@/wab/shared/core/styles";
+import { ThemableTag } from "@/wab/shared/html";
 import {
   Animation,
   Arg,

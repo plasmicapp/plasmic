@@ -1,7 +1,6 @@
 import { CustomCssProps } from "@/wab/client/components/canvas/CanvasText";
 import {
   marksForToolbar,
-  tags,
   TplTagElement,
 } from "@/wab/client/components/canvas/slate";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
@@ -18,7 +17,6 @@ import BoldsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIco
 import CodesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CodeSvg";
 import HeadingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__HeadingSvg";
 import ItalicsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ItalicSvg";
-import LinksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__LinkSvg";
 import OrderedListsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__OrderedListSvg";
 import SubscriptIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Subscript";
 import SuperscriptIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Superscript";
@@ -34,6 +32,12 @@ import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
 import { fontWeightOptions } from "@/wab/client/typography-utils";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
+import {
+  tagDisplayLabel,
+  TagName,
+  TextInlineTag,
+  textInlineTags,
+} from "@/wab/shared/html";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
@@ -42,9 +46,23 @@ import * as React from "react";
 import { Editor, Element, Range, Text } from "slate";
 
 type BlockElement = {
-  tag: (typeof tags)[number];
+  tag: TagName;
   icon: (props: any) => JSX.Element;
   label: string;
+};
+
+const INLINE_TAG_ICONS: Record<
+  Exclude<TextInlineTag, "a">,
+  (props: any) => JSX.Element
+> = {
+  code: CodesvgIcon,
+  span: TextsvgIcon,
+  strong: BoldsvgIcon,
+  b: BoldsvgIcon,
+  i: ItalicsvgIcon,
+  em: ItalicsvgIcon,
+  sub: SubscriptIcon,
+  sup: SuperscriptIcon,
 };
 
 const blocks: BlockElement[] = [
@@ -127,9 +145,7 @@ function RichTextToolbar_(
   const textDecorationLine = marks["text-decoration-line"];
 
   // Current block tag (e.g. "h1", "ul" or undefined for no block).
-  const [block, setBlock] = React.useState<(typeof tags)[number] | undefined>(
-    undefined
-  );
+  const [block, setBlock] = React.useState<TagName | undefined>(undefined);
 
   const studioCtx = useStudioCtx();
   const resolver = useClientTokenResolver();
@@ -185,48 +201,14 @@ function RichTextToolbar_(
     }
   );
 
-  const inlineMenuItems = [
-    {
-      label: "Link",
-      action: "LINK",
-      icon: LinksvgIcon,
-    },
-    {
-      label: "Inline code",
-      action: "CODE",
-      icon: CodesvgIcon,
-    },
-    {
-      label: "Span element",
-      action: "SPAN",
-      icon: TextsvgIcon,
-    },
-    {
-      label: "Strong element",
-      action: "STRONG",
-      icon: BoldsvgIcon,
-    },
-    {
-      label: "Italic element",
-      action: "ITALIC_TAG",
-      icon: ItalicsvgIcon,
-    },
-    {
-      label: "Emphasis element",
-      action: "EMPHASIS",
-      icon: ItalicsvgIcon,
-    },
-    {
-      label: "Subscript element",
-      action: "SUBSCRIPT",
-      icon: SubscriptIcon,
-    },
-    {
-      label: "Superscript element",
-      action: "SUPERSCRIPT",
-      icon: SuperscriptIcon,
-    },
-  ].sort((a, b) => a.label.localeCompare(b.label));
+  const inlineMenuItems = textInlineTags
+    // "a" is handled by the dedicated Link button, which prompts for an href.
+    .filter((tag): tag is Exclude<TextInlineTag, "a"> => tag !== "a")
+    .map((tag) => ({
+      tag,
+      label: tagDisplayLabel(tag),
+      icon: INLINE_TAG_ICONS[tag],
+    }));
 
   return (
     <SidebarModalProvider>
@@ -389,9 +371,9 @@ function RichTextToolbar_(
               <Menu>
                 {inlineMenuItems.map((item) => (
                   <Menu.Item
-                    key={item.action}
+                    key={item.tag}
                     aria-label={item.label}
-                    onClick={() => runInEditor(item.action)}
+                    onClick={() => runInEditor("WRAP_INLINE", item.tag)}
                   >
                     <Icon icon={item.icon} style={{ marginRight: 4 }} />
                     {item.label}

@@ -81,7 +81,6 @@ import { codeLit } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
 import * as Tpls from "@/wab/shared/core/tpls";
@@ -95,6 +94,7 @@ import {
   PreInstallFunctionInfo,
 } from "@/wab/shared/devflags";
 import { Rect } from "@/wab/shared/geom";
+import { isTagListContainer } from "@/wab/shared/html";
 import {
   cloneInsertableTemplate,
   cloneInsertableTemplateArena,

@@ -51,7 +51,6 @@ import {
   opacityProps,
   spacingProps,
 } from "@/wab/shared/core/style-props";
-import { ThemableTag } from "@/wab/shared/core/styles";
 import {
   isComponentRoot,
   isTplComponent,
@@ -64,6 +63,7 @@ import {
   isIndicatorExplicitlySet,
 } from "@/wab/shared/defined-indicator";
 import { makeExpProxy, makeMergedExpProxy } from "@/wab/shared/exprs";
+import { ThemableTag } from "@/wab/shared/html";
 import {
   MIXIN_CAP,
   MIXIN_LOWER,

@@ -2,7 +2,6 @@ import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import { isTypographyNode } from "@/wab/shared/SlotUtils";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
   FLEX_CONTAINER_PROPS,
   GAP_PROPS,
@@ -25,6 +24,7 @@ import {
   makeReadonlyExpandedExp,
 } from "@/wab/shared/exprs";
 import { isGridTag } from "@/wab/shared/grid-utils";
+import { isTagListContainer } from "@/wab/shared/html";
 import {
   ContainerLayoutType,
   getRshContainerType,

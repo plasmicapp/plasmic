@@ -31,7 +31,6 @@ import {
   toJsIdentifier,
 } from "@/wab/shared/codegen/util";
 import { tuple, withoutNils } from "@/wab/shared/common";
-import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import { defaultStyleClassNames } from "@/wab/shared/core/styles";
 import {
   isTplCodeComponent,
@@ -40,6 +39,7 @@ import {
   isTplTextBlock,
   summarizeTpl,
 } from "@/wab/shared/core/tpls";
+import { isTagInline } from "@/wab/shared/html";
 import {
   Component,
   ComponentVariantGroup,

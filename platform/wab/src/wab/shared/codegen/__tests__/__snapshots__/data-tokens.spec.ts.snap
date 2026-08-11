@@ -970,6 +970,19 @@ column-gap: var(--mixin-QRKsNlwSCB5i_column-gap);
   text-transform: inherit; }
     
 
+      :where(.plasmic_default__b) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text b) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
       :where(.plasmic_default__i) {   font-family: inherit;
   line-height: inherit;
   font-size: inherit;
@@ -2081,6 +2094,19 @@ column-gap: var(--mixin-QtrLNVmrq2kw_column-gap);
   font-size: inherit;
   font-style: inherit;
   font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.plasmic_default__b) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text b) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
   color: inherit;
   text-transform: inherit; }
     
