@@ -1,3 +1,4 @@
+import { notifyReferencingNode } from "@/wab/client/ErrorNotifications";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { FrameClip } from "@/wab/client/clipboard/local";
 import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
@@ -844,8 +845,8 @@ export class SiteOps {
       this.studioCtx,
       this.tplMgr
     );
-    if (result.result === "error") {
-      notification.error({ message: result.message });
+    if (result.isErr()) {
+      notification.error({ message: result.error.message });
     }
   }
 
@@ -1102,14 +1103,14 @@ export class SiteOps {
       component,
       tplMgr: this.tplMgr,
     });
-    if (result.result === "error") {
+    if (result.isErr()) {
       notification.error({
         message: update.accessType
           ? `Cannot set access type to "${update.accessType}"`
           : update.initialValue !== undefined
           ? "Cannot set initial value"
           : "Cannot update variable",
-        description: result.message,
+        description: result.error.message,
       });
     }
   }
@@ -1119,29 +1120,13 @@ export class SiteOps {
       site: this.site,
       component,
     });
-    if (result.result === "error") {
-      const viewCtx = this.studioCtx.focusedViewCtx();
-      const refNode = result.referencingNode;
-      const key = mkUuid();
-      notification.error({
-        key,
-        message: "Cannot delete variable",
-        description: (
-          <>
-            {result.message}{" "}
-            {viewCtx?.component === component && refNode ? (
-              <a
-                onClick={() => {
-                  viewCtx.setStudioFocusByTpl(refNode);
-                  notification.close(key);
-                }}
-              >
-                [Go to reference]
-              </a>
-            ) : null}
-          </>
-        ),
-      });
+    if (result.isErr()) {
+      notifyReferencingNode(
+        "Cannot delete variable",
+        result.error.message,
+        result.error.referencingNode,
+        this.studioCtx
+      );
       return false;
     }
     return true;
@@ -1271,19 +1256,19 @@ export class SiteOps {
       this.tplMgr
     );
 
-    if (result.result === "error" && !result.cancelled) {
+    if (result.isErr() && !result.error.cancelled) {
       const key = mkUuid();
-      if (result.variantGroupRefs) {
+      if (result.error.variantGroupRefs) {
         this.notifyVariantGroupReferenced(
           component,
-          result.variantGroupRefs,
+          result.error.variantGroupRefs,
           "Cannot delete variant group"
         );
       } else {
         notification.error({
           key,
           message: "Cannot delete variant group",
-          description: result.message,
+          description: result.error.message,
         });
       }
     }
@@ -1298,12 +1283,12 @@ export class SiteOps {
       this.tplMgr
     );
 
-    if (result.result === "error" && !result.cancelled) {
+    if (result.isErr() && !result.error.cancelled) {
       const key = mkUuid();
       notification.error({
         key,
         message: "Cannot delete variant group",
-        description: result.message,
+        description: result.error.message,
       });
     }
   }
@@ -1319,19 +1304,19 @@ export class SiteOps {
       { behaviour: "confirm-if-referenced" }
     );
 
-    if (result.result === "error" && !result.cancelled) {
+    if (result.isErr() && !result.error.cancelled) {
       const key = mkUuid();
-      if (result.variantGroupRefs) {
+      if (result.error.variantGroupRefs) {
         this.notifyVariantGroupReferenced(
           component,
-          result.variantGroupRefs,
+          result.error.variantGroupRefs,
           "Cannot delete variant"
         );
       } else {
         notification.error({
           key,
           message: "Cannot delete variant",
-          description: result.message,
+          description: result.error.message,
         });
       }
       return;
@@ -1410,13 +1395,13 @@ export class SiteOps {
       this.tplMgr
     );
 
-    if (result.result === "error") {
-      if (!result.cancelled) {
+    if (result.isErr()) {
+      if (!result.error.cancelled) {
         const key = mkUuid();
         notification.error({
           key,
           message: "Cannot delete variant group",
-          description: result.message,
+          description: result.error.message,
         });
       }
       return;

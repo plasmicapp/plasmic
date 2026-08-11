@@ -27,8 +27,8 @@ describe("deleteVariant", () => {
       variantGroup: group,
       name: "small",
     });
-    assert(created.result === "success", "variant setup failed");
-    return { studioCtx, tplMgr, component, group, variant: created.variant };
+    assert(created.isOk(), "variant setup failed");
+    return { studioCtx, tplMgr, component, group, variant: created.value };
   }
 
   it("deletes a variant from its group", async () => {
@@ -43,9 +43,9 @@ describe("deleteVariant", () => {
       tplMgr
     );
 
-    assert(result.result === "success", "expected success");
+    assert(result.isOk(), "expected success");
     expect(group.variants).not.toContain(variant);
-    expect(result.messages.length).toBeGreaterThan(0);
+    expect(result.value.length).toBeGreaterThan(0);
   });
 
   it("refuses to delete the base variant", async () => {
@@ -59,7 +59,7 @@ describe("deleteVariant", () => {
       tplMgr
     );
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 
   it("errors with references when the variant group is used in the component", async () => {
@@ -80,11 +80,12 @@ describe("deleteVariant", () => {
       tplMgr
     );
 
-    expect(result.result).toEqual("error");
-    if (result.result === "error") {
-      assert(result.variantGroupRefs != null, "expected variant group refs");
-      expect(result.variantGroupRefs.length).toBeGreaterThan(0);
-    }
+    assert(result.isErr(), "expected error");
+    assert(
+      result.error.variantGroupRefs != null,
+      "expected variant group refs"
+    );
+    expect(result.error.variantGroupRefs.length).toBeGreaterThan(0);
     // Variant is left untouched.
     expect(group.variants).toContain(variant);
   });

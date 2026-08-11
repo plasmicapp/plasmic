@@ -5,22 +5,22 @@ import { redistributeColumnsSizes } from "@/wab/shared/columns-utils";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { isTagListContainer } from "@/wab/shared/html";
 import { Component, Site, TplNode } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type DeleteTplResult =
-  | { result: "deleted" }
-  | {
-      result: "error";
-      message: string;
-      /**
-       * The TplNode that holds the reference preventing deletion.
-       * Present when a state variable or TplRef in the component tree
-       * references the element being deleted. Used to render
-       * a clickable "Go to reference" link in the error notification.
-       * Not all deletion errors have a referencing node (e.g. root
-       * element protection, cross-component references).
-       */
-      referencingNode?: TplNode | null;
-    };
+export interface DeleteTplError {
+  message: string;
+  /**
+   * The TplNode that holds the reference preventing deletion.
+   * Present when a state variable or TplRef in the component tree
+   * references the element being deleted. Used to render
+   * a clickable "Go to reference" link in the error notification.
+   * Not all deletion errors have a referencing node (e.g. root
+   * element protection, cross-component references).
+   */
+  referencingNode?: TplNode | null;
+}
+
+export type DeleteTplResult = Result<void, DeleteTplError>;
 
 /**
  * Delete TplNodes from a component.
@@ -48,17 +48,13 @@ export function deleteTpl(
 
   // Check for the root element
   if (tpls.some((t) => t === component.tplTree)) {
-    return { result: "error", message: "Cannot remove the root element." };
+    return err({ message: "Cannot remove the root element." });
   }
 
   const tplsToDelete = computeTplsToDelete(tpls);
   const error = validateTplRemoval(tplsToDelete, component, site);
   if (error) {
-    return {
-      result: "error",
-      message: error.message,
-      referencingNode: error.referencingNode,
-    };
+    return err(error);
   }
 
   for (const tpl of tplsToDelete) {
@@ -76,7 +72,7 @@ export function deleteTpl(
     }
   }
 
-  return { result: "deleted" };
+  return ok(undefined);
 }
 
 /**

@@ -10,7 +10,7 @@ describe("unsetComponentInstanceProp", () => {
     setComponentInstanceProp(instance, "label", "Buy", opts);
     const result = unsetComponentInstanceProp(instance, "label", opts);
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     expect(getArg(instance, "label")).toBeUndefined();
   });
 
@@ -20,7 +20,7 @@ describe("unsetComponentInstanceProp", () => {
     setComponentInstanceProp(instance, "size", "small", opts);
     const result = unsetComponentInstanceProp(instance, "size", opts);
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     expect(getArg(instance, "size")).toBeUndefined();
   });
 
@@ -29,7 +29,7 @@ describe("unsetComponentInstanceProp", () => {
 
     const result = unsetComponentInstanceProp(instance, "label", opts);
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
   });
 
   it("errors on an unknown prop", () => {
@@ -37,8 +37,8 @@ describe("unsetComponentInstanceProp", () => {
 
     const result = unsetComponentInstanceProp(instance, "nope", opts);
 
-    assert(result.result === "error", "expected error");
-    expect(result.message).toContain(`has no prop "nope"`);
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain(`has no prop "nope"`);
   });
 
   it("errors on a slot prop", () => {
@@ -46,7 +46,7 @@ describe("unsetComponentInstanceProp", () => {
 
     const result = unsetComponentInstanceProp(instance, "children", opts);
 
-    assert(result.result === "error", "expected error");
-    expect(result.message).toContain("slot");
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain("slot");
   });
 });

@@ -7,6 +7,7 @@ import {
   mkValueStateForTextInput,
 } from "@/wab/shared/core/states";
 import * as Tpls from "@/wab/shared/core/tpls";
+import { err, ok } from "neverthrow";
 
 describe("renameTpl", () => {
   it("renames an element", () => {
@@ -16,7 +17,7 @@ describe("renameTpl", () => {
 
     const result = renameTpl(child, "myDiv", { component, tplMgr });
 
-    expect(result).toEqual({ result: "success", newName: "myDiv" });
+    expect(result).toEqual(ok("myDiv"));
     expect(child.name).toEqual("myDiv");
   });
 
@@ -27,7 +28,7 @@ describe("renameTpl", () => {
 
     const result = renameTpl(child, "", { component, tplMgr });
 
-    expect(result).toEqual({ result: "success", newName: null });
+    expect(result).toEqual(ok(null));
     expect(child.name).toBeNull();
   });
 
@@ -38,7 +39,7 @@ describe("renameTpl", () => {
 
     const result = renameTpl(child, null, { component, tplMgr });
 
-    expect(result).toEqual({ result: "success", newName: null });
+    expect(result).toEqual(ok(null));
     expect(child.name).toBeNull();
   });
 
@@ -50,7 +51,7 @@ describe("renameTpl", () => {
 
     const result = renameTpl(child2, "myDiv", { component, tplMgr });
 
-    expect(result).toEqual({ result: "success", newName: "myDiv 2" });
+    expect(result).toEqual(ok("myDiv 2"));
     expect(child2.name).toEqual("myDiv 2");
   });
 
@@ -76,10 +77,11 @@ describe("renameTpl", () => {
 
     const result = renameTpl(tplComponent, "", { component, tplMgr });
 
-    expect(result).toEqual({
-      result: "error",
-      message: "Instances of components with public states must be named.",
-    });
+    expect(result).toEqual(
+      err({
+        message: "Instances of components with public states must be named.",
+      })
+    );
     expect(tplComponent.name).toEqual("myInput");
   });
 });

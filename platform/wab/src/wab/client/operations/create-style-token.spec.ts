@@ -21,12 +21,12 @@ describe("createStyleToken", () => {
       value: "#ff0000",
     });
 
-    assert(result.result === "success", "expected success result");
+    assert(result.isOk(), "expected success result");
     expect(site.styleTokens.length).toEqual(before + 1);
-    expect(result.token.name).toEqual("primary");
-    expect(result.token.type).toEqual("Color");
-    expect(result.token.value).toEqual("#ff0000");
-    expect(result.token.variantedValues).toEqual([]);
+    expect(result.value.name).toEqual("primary");
+    expect(result.value.type).toEqual("Color");
+    expect(result.value.value).toEqual("#ff0000");
+    expect(result.value.variantedValues).toEqual([]);
   });
 
   it("errors on empty name", () => {
@@ -37,6 +37,6 @@ describe("createStyleToken", () => {
       type: "Color",
       value: "#000",
     });
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 });

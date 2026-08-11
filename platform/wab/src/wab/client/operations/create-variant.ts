@@ -1,13 +1,14 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
+import { GenericError } from "@/wab/shared/error-handling";
 import {
   Component,
   ComponentVariantGroup,
   Variant,
 } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type CreateVariantResult = OperationResult<{ variant: Variant }>;
+export type CreateVariantResult = Result<Variant, GenericError>;
 
 /**
  * Add a single variant to an existing component variant group. If a variant
@@ -27,24 +28,19 @@ export function createVariant(opts: {
   const { component, tplMgr, variantGroup, name } = opts;
 
   if (!component.variantGroups.includes(variantGroup)) {
-    return {
-      result: "error",
+    return err({
       message: `Variant group "${variantGroup.param.variable.name}" does not belong to component "${component.name}".`,
-    };
+    });
   }
 
   // Standalone groups are identified structurally by their single implicit
   // variant whose name matches the group name. Adding another variant breaks
   // that invariant
   if (isStandaloneVariantGroup(variantGroup)) {
-    return {
-      result: "error",
+    return err({
       message: `Variant group "${variantGroup.param.variable.name}" is standalone and only supports its single implicit variant.`,
-    };
+    });
   }
 
-  return {
-    result: "success",
-    variant: tplMgr.createVariant(component, variantGroup, name),
-  };
+  return ok(tplMgr.createVariant(component, variantGroup, name));
 }

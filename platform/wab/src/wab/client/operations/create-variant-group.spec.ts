@@ -1,6 +1,7 @@
 import { createComponent } from "@/wab/client/operations/create-component";
 import { createVariantGroup } from "@/wab/client/operations/create-variant-group";
 import { setupComponentWithTplTree } from "@/wab/client/operations/tests/utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
@@ -16,8 +17,7 @@ describe("createVariantGroup", () => {
       name: "CopilotVGTest",
       type: ComponentType.Plain,
     });
-    assert(created.result === "success", "setup failed");
-    return { site, tplMgr, component: created.component };
+    return { site, tplMgr, component: unwrap(created) };
   }
 
   it("adds a single-choice group", () => {
@@ -30,11 +30,11 @@ describe("createVariantGroup", () => {
       optionsType: VariantOptionsType.singleChoice,
     });
 
-    assert(result.result === "success", "expected success result");
-    expect(result.group.multi).toEqual(false);
-    expect(result.group.param.variable.name).toEqual("size");
-    expect(result.group.variants).toEqual([]);
-    expect(component.variantGroups).toContain(result.group);
+    assert(result.isOk(), "expected success result");
+    expect(result.value.multi).toEqual(false);
+    expect(result.value.param.variable.name).toEqual("size");
+    expect(result.value.variants).toEqual([]);
+    expect(component.variantGroups).toContain(result.value);
   });
 
   it("adds a multi-choice group", () => {
@@ -47,9 +47,9 @@ describe("createVariantGroup", () => {
       optionsType: VariantOptionsType.multiChoice,
     });
 
-    assert(result.result === "success", "expected success result");
-    expect(result.group.multi).toEqual(true);
-    expect(result.group.variants).toEqual([]);
+    assert(result.isOk(), "expected success result");
+    expect(result.value.multi).toEqual(true);
+    expect(result.value.variants).toEqual([]);
   });
 
   it("adds a toggle (standalone) group with an implicit single variant", () => {
@@ -62,8 +62,8 @@ describe("createVariantGroup", () => {
       optionsType: VariantOptionsType.standalone,
     });
 
-    assert(result.result === "success", "expected success result");
+    assert(result.isOk(), "expected success result");
     // standalone group has a single implicit variant
-    expect(result.group.variants.length).toEqual(1);
+    expect(result.value.variants.length).toEqual(1);
   });
 });

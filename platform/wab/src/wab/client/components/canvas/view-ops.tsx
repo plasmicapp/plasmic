@@ -4,7 +4,10 @@ import {
   calcOffset,
   insertBySpec,
 } from "@/wab/client/Dnd";
-import { showError } from "@/wab/client/ErrorNotifications";
+import {
+  notifyReferencingNode,
+  showError,
+} from "@/wab/client/ErrorNotifications";
 import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
 import {
   AnimationClip,
@@ -1103,8 +1106,8 @@ export class ViewOps {
       component,
       tplMgr: this.tplMgr(),
     });
-    if (result.result === "error") {
-      notification.error({ message: result.message });
+    if (result.isErr()) {
+      notification.error({ message: result.error.message });
     }
   }
 
@@ -1837,7 +1840,7 @@ export class ViewOps {
           vtm,
         });
 
-        if (deleteResult.result === "deleted" && nextFocus) {
+        if (deleteResult.isOk() && nextFocus) {
           if (nextFocus instanceof SlotSelection) {
             this.viewCtx().setStudioFocusBySelectable(nextFocus);
           } else {
@@ -1853,28 +1856,13 @@ export class ViewOps {
         }
       });
 
-      if (deleteResult?.result === "error") {
-        const key = common.mkUuid();
-        const refNode = deleteResult.referencingNode;
-        notification.error({
-          key,
-          message: "Cannot remove element",
-          description: (
-            <>
-              {deleteResult.message}{" "}
-              {refNode ? (
-                <a
-                  onClick={() => {
-                    this.viewCtx().setStudioFocusByTpl(refNode);
-                    notification.close(key);
-                  }}
-                >
-                  [Go to reference]
-                </a>
-              ) : null}
-            </>
-          ),
-        });
+      if (deleteResult?.isErr()) {
+        notifyReferencingNode(
+          "Cannot remove element",
+          deleteResult.error.message,
+          deleteResult.error.referencingNode,
+          this.studioCtx()
+        );
       }
     }
   }
@@ -3315,11 +3303,11 @@ export class ViewOps {
           this.viewCtx()
         ),
       });
-      if (extractResult.result === "error") {
-        this.notifyCannotExtractComponent(extractResult);
+      if (extractResult.isErr()) {
+        this.notifyCannotExtractComponent(extractResult.error);
         return;
       }
-      const { tplComponent, warnings } = extractResult;
+      const { tplComponent, warnings } = extractResult.value;
       this.viewCtx().selectNewTpl(tplComponent, true);
       if (tplComponent.component.name !== resp.name) {
         this.studioCtx().maybeWarnComponentRenaming(
@@ -3372,11 +3360,11 @@ export class ViewOps {
       });
     });
 
-    if (extractResult?.result === "success") {
+    if (extractResult?.isOk()) {
       // Segment track
       trackEvent("Create component", {
         projectName: this.studioCtx().siteInfo.name,
-        componentName: extractResult.tplComponent.component.name,
+        componentName: extractResult.value.tplComponent.component.name,
         type: "component",
         action: "extract-tpl-to-component",
       });
@@ -3613,7 +3601,7 @@ export class ViewOps {
       opts
     );
     assert(
-      result.result === "success",
+      result.isOk(),
       "Should be able to insert newParent as parent of newNode"
     );
   }
@@ -4634,26 +4622,12 @@ export class ViewOps {
     message: string;
     referencingNode?: TplNode | null;
   }) {
-    const key = common.mkUuid();
-    notification.error({
-      key,
-      message: "Cannot extract component",
-      description: (
-        <>
-          {error.message}{" "}
-          {error.referencingNode ? (
-            <a
-              onClick={() => {
-                this.viewCtx().setStudioFocusByTpl(error.referencingNode!);
-                notification.close(key);
-              }}
-            >
-              [Go to reference]
-            </a>
-          ) : null}
-        </>
-      ),
-    });
+    notifyReferencingNode(
+      "Cannot extract component",
+      error.message,
+      error.referencingNode,
+      this.studioCtx()
+    );
   }
 }
 

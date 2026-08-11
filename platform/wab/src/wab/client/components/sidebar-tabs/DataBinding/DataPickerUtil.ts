@@ -209,23 +209,6 @@ export function getItemChildColumns(
   return mkListColumn(item.value, getItemPath(item), opts);
 }
 
-/**
- * Formats an error into a readable message for display in the picker.
- */
-export function formatErrorMessage(error: unknown): string {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (typeof error === "string") {
-    return error;
-  }
-  try {
-    return JSON.stringify(error, null, 2) ?? String(error);
-  } catch {
-    return String(error);
-  }
-}
-
 /** Column shown after selecting `value` at `path`: its fields, or none for a leaf. */
 function mkListColumn(
   value: any,

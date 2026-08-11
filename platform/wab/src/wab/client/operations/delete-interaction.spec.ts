@@ -113,9 +113,10 @@ describe("deleteInteraction", () => {
     });
 
     expect(result).toEqual(
-      err(
-        'Interaction "Save" cannot be deleted: step "Log" reads its result via $steps.'
-      )
+      err({
+        message:
+          'Interaction "Save" cannot be deleted: step "Log" reads its result via $steps.',
+      })
     );
     expect(first.parent.interactions).toHaveLength(2);
   });

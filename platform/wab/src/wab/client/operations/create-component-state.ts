@@ -1,4 +1,3 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import {
   validateStateAccessType,
   validateStateInitialValue,
@@ -15,9 +14,11 @@ import {
   getDefaultValueForStateVariableType,
   mkState,
 } from "@/wab/shared/core/states";
+import { GenericError } from "@/wab/shared/error-handling";
 import { Component, Expr, Site, State } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type CreateComponentStateResult = OperationResult<{ state: State }>;
+export type CreateComponentStateResult = Result<State, GenericError>;
 
 /**
  * Create an explicit state variable on the component. The name is deduped
@@ -45,13 +46,12 @@ export function createComponentState(opts: {
   } = opts;
 
   if (isCodeComponent(component)) {
-    return {
-      result: "error",
+    return err({
       message: `Component "${component.name}" is a code component; its states are managed by its code registration.`,
-    };
+    });
   }
   if (!opts.name.trim()) {
-    return { result: "error", message: "State name cannot be empty." };
+    return err({ message: "State name cannot be empty." });
   }
   if (initialValue !== undefined && initialValue !== null) {
     const staticValue = tryExtractJson(initialValue);
@@ -60,7 +60,7 @@ export function createComponentState(opts: {
         ? validateStateInitialValue(variableType, staticValue)
         : validateStateAccessType(accessType, initialValue);
     if (invalidMessage) {
-      return { result: "error", message: invalidMessage };
+      return err({ message: invalidMessage });
     }
   }
 
@@ -85,5 +85,5 @@ export function createComponentState(opts: {
     accessType,
   });
   addComponentState(site, component, state);
-  return { result: "success", state };
+  return ok(state);
 }

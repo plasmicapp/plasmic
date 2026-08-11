@@ -16,7 +16,7 @@ describe("setComponentInstanceProp", () => {
       ["data", [1, "two", false, { id: 3 }, ["nested"]]],
     ] as const) {
       const result = setComponentInstanceProp(instance, propName, value, opts);
-      expect(result.result).toEqual("success");
+      expect(result.isOk()).toBe(true);
       expect(tryExtractJson(getArg(instance, propName)!.expr)).toEqual(value);
     }
   });
@@ -26,7 +26,7 @@ describe("setComponentInstanceProp", () => {
 
     const result = setComponentInstanceProp(instance, "data", null, opts);
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     const arg = getArg(instance, "data");
     expect(arg).toBeDefined();
     expect(tryExtractJson(arg!.expr)).toBeNull();
@@ -46,7 +46,7 @@ describe("setComponentInstanceProp", () => {
 
     const result = setComponentInstanceProp(instance, "size", "large", opts);
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     const variantsRef = ensureKnownVariantsRef(getArg(instance, "size")!.expr);
     expect(variantsRef.variants).toEqual([
       sizeGroup.variants.find((v) => v.name === "large"),
@@ -64,7 +64,7 @@ describe("setComponentInstanceProp", () => {
       opts
     );
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     const variantsRef = ensureKnownVariantsRef(
       getArg(instance, "features")!.expr
     );
@@ -76,7 +76,7 @@ describe("setComponentInstanceProp", () => {
 
     const result = setComponentInstanceProp(instance, "dark", true, opts);
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     const variantsRef = ensureKnownVariantsRef(getArg(instance, "dark")!.expr);
     expect(variantsRef.variants).toEqual([darkGroup.variants[0]]);
   });
@@ -91,7 +91,7 @@ describe("setComponentInstanceProp", () => {
       opts
     );
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     expect(tryExtractJson(getArg(instance, "tone")!.expr)).toEqual("secondary");
   });
 
@@ -105,7 +105,7 @@ describe("setComponentInstanceProp", () => {
       opts
     );
 
-    expect(result.result).toEqual("success");
+    expect(result.isOk()).toBe(true);
     expect(tryExtractJson(getArg(instance, "publishedAt")!.expr)).toEqual(
       "2024-01-01T00:00:00.000Z"
     );
@@ -124,7 +124,7 @@ describe("setComponentInstanceProp", () => {
         range,
         opts
       );
-      expect(result.result).toEqual("success");
+      expect(result.isOk()).toBe(true);
       expect(tryExtractJson(getArg(instance, "activeRange")!.expr)).toEqual(
         range
       );
@@ -136,8 +136,8 @@ describe("setComponentInstanceProp", () => {
 
     const result = setComponentInstanceProp(instance, "nope", "value", opts);
 
-    assert(result.result === "error", "expected error");
-    expect(result.message).toContain(`Invalid prop "nope"`);
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain(`Invalid prop "nope"`);
   });
 
   it("errors on a slot prop", () => {
@@ -150,8 +150,8 @@ describe("setComponentInstanceProp", () => {
       opts
     );
 
-    assert(result.result === "error", "expected error");
-    expect(result.message).toContain("slot");
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain("slot");
   });
 
   it("errors on invalid values without mutating", () => {
@@ -187,8 +187,8 @@ describe("setComponentInstanceProp", () => {
       ["size", "invalid", `no variant matching "invalid"`],
     ] as const) {
       const result = setComponentInstanceProp(instance, propName, value, opts);
-      assert(result.result === "error", "expected error");
-      expect(result.message).toContain(expected);
+      assert(result.isErr(), "expected error");
+      expect(result.error.message).toContain(expected);
       expect(getArg(instance, propName)).toBeUndefined();
     }
   });
@@ -198,8 +198,8 @@ describe("setComponentInstanceProp", () => {
 
     const result = setComponentInstanceProp(instance, "query", {}, opts);
 
-    assert(result.result === "error", "expected error");
-    expect(result.message).toContain("is not supported yet");
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain("is not supported yet");
     expect(getArg(instance, "query")).toBeUndefined();
   });
 });

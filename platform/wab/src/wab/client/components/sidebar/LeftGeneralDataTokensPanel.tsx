@@ -418,7 +418,7 @@ const LeftGeneralDataTokensPanel = observer(
             const result = await studioCtx
               .siteOps()
               .tryDeleteDataTokens(selectedTokens);
-            return result.deletedResources.length > 0;
+            return result.isOk() && result.value.deletedResources.length > 0;
           }}
         >
           <DataTokenControlsContext.Provider

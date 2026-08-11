@@ -36,8 +36,8 @@ describe("deleteResourcesWithUsages", () => {
         variantGroup: group,
         name,
       });
-      assert(created.result === "success", "variant setup failed");
-      return created.variant;
+      assert(created.isOk(), "variant setup failed");
+      return created.value;
     };
     // A second component used to populate usage summaries.
     const userComp = studioCtx.addComponent("User", {
@@ -64,9 +64,9 @@ describe("deleteResourcesWithUsages", () => {
 
     expect(mockedConfirm).not.toHaveBeenCalled();
     expect(onDelete).toHaveBeenCalledWith(variant);
-    expect(result.deletedResources).toEqual([variant]);
-    expect(result.messages).toHaveLength(1);
-    expect(result.errors).toEqual([]);
+    assert(result.isOk(), "expected success");
+    expect(result.value.deletedResources).toEqual([variant]);
+    expect(result.value.messages).toHaveLength(1);
   });
 
   it("errors instead of deleting when behaviour is error-if-referenced and there are usages", async () => {
@@ -89,8 +89,8 @@ describe("deleteResourcesWithUsages", () => {
 
     expect(onDelete).not.toHaveBeenCalled();
     expect(mockedConfirm).not.toHaveBeenCalled();
-    expect(result.deletedResources).toEqual([]);
-    expect(result.errors).toHaveLength(1);
+    assert(result.isErr(), "expected error");
+    expect(result.error.errors).toHaveLength(1);
   });
 
   it("shows a confirmation dialog when referenced and deletes if confirmed", async () => {
@@ -114,7 +114,8 @@ describe("deleteResourcesWithUsages", () => {
 
     expect(mockedConfirm).toHaveBeenCalledTimes(1);
     expect(onDelete).toHaveBeenCalledWith(variant);
-    expect(result.deletedResources).toEqual([variant]);
+    assert(result.isOk(), "expected success");
+    expect(result.value.deletedResources).toEqual([variant]);
   });
 
   it("does not delete when the confirmation dialog is declined", async () => {
@@ -138,10 +139,9 @@ describe("deleteResourcesWithUsages", () => {
 
     expect(mockedConfirm).toHaveBeenCalledTimes(1);
     expect(onDelete).not.toHaveBeenCalled();
-    expect(result.deletedResources).toEqual([]);
-    expect(result.messages).toEqual([]);
-    expect(result.cancelled).toEqual(true);
-    expect(result.errors).toHaveLength(1);
+    assert(result.isErr(), "expected error");
+    expect(result.error.cancelled).toEqual(true);
+    expect(result.error.errors).toHaveLength(1);
   });
 
   it("deletes referenced resources without a dialog when behaviour is delete-if-referenced", async () => {
@@ -164,7 +164,8 @@ describe("deleteResourcesWithUsages", () => {
 
     expect(mockedConfirm).not.toHaveBeenCalled();
     expect(onDelete).toHaveBeenCalledWith(variant);
-    expect(result.deletedResources).toEqual([variant]);
+    assert(result.isOk(), "expected success");
+    expect(result.value.deletedResources).toEqual([variant]);
   });
 
   it("defaults to confirm-if-referenced when no behaviour is given", async () => {
@@ -209,8 +210,9 @@ describe("deleteResourcesWithUsages", () => {
     expect(onDelete).toHaveBeenCalledTimes(2);
     expect(onDelete).toHaveBeenNthCalledWith(1, small);
     expect(onDelete).toHaveBeenNthCalledWith(2, large);
-    expect(result.deletedResources).toEqual([small, large]);
-    expect(result.messages).toHaveLength(2);
+    assert(result.isOk(), "expected success");
+    expect(result.value.deletedResources).toEqual([small, large]);
+    expect(result.value.messages).toHaveLength(2);
   });
 
   it("is a no-op when given an empty resource list", async () => {
@@ -225,8 +227,9 @@ describe("deleteResourcesWithUsages", () => {
 
     expect(onDelete).not.toHaveBeenCalled();
     expect(changeObservedSpy).not.toHaveBeenCalled();
-    expect(result.deletedResources).toEqual([]);
-    expect(result.messages).toEqual([]);
+    assert(result.isOk(), "expected success");
+    expect(result.value.deletedResources).toEqual([]);
+    expect(result.value.messages).toEqual([]);
     changeObservedSpy.mockRestore();
   });
 });

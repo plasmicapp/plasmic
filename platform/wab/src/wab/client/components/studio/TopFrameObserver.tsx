@@ -8,7 +8,6 @@ import { COPILOT_TOOLS } from "@/wab/client/copilot";
 import {
   CopilotToolCallResult,
   HostFrameApi,
-  serializeCopilotError,
 } from "@/wab/client/frame-ctx/host-frame-api";
 import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioAppUser, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -34,6 +33,7 @@ import {
   isTplNamable,
 } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { formatErrorMessage } from "@/wab/shared/error-handling";
 import { Component } from "@/wab/shared/model/classes";
 import { naturalSort, naturalSortByName } from "@/wab/shared/sort";
 import { notification } from "antd";
@@ -215,7 +215,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           return {
             success: false,
             error: {
-              message: serializeCopilotError(err),
+              message: formatErrorMessage(err),
               type: "EXECUTION_FAILED",
             },
           };

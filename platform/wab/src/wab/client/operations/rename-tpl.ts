@@ -1,11 +1,12 @@
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { isPrivateState } from "@/wab/shared/core/states";
 import { TplNamable } from "@/wab/shared/core/tpls";
+import { GenericError } from "@/wab/shared/error-handling";
 import { Component, isKnownTplComponent } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type RenameTplResult =
-  | { result: "success"; newName: string | null }
-  | { result: "error"; message: string };
+/** Ok value is the name actually applied (may be null when cleared). */
+export type RenameTplResult = Result<string | null, GenericError>;
 
 /**
  * Rename a TplNode in a component.
@@ -29,13 +30,10 @@ export function renameTpl(
     tpl.component.states.some((s) => !isPrivateState(s)) &&
     !name
   ) {
-    return {
-      result: "error",
+    return err({
       message: "Instances of components with public states must be named.",
-    };
+    });
   }
 
-  const newName = tplMgr.renameTpl(component, tpl, name);
-
-  return { result: "success", newName };
+  return ok(tplMgr.renameTpl(component, tpl, name));
 }

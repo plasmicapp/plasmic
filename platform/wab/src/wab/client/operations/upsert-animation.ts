@@ -1,17 +1,23 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import { upsertAnimationSequences } from "@/wab/client/operations/html-to-tpl";
 import {
   formatWIError,
   formatWIErrors,
 } from "@/wab/client/web-importer/errors";
 import { processKeyframesRule } from "@/wab/client/web-importer/html-parser";
+import { GenericError } from "@/wab/shared/error-handling";
 import { AnimationSequence, Site } from "@/wab/shared/model/classes";
 import { Atrule, parse as cssParse, walk } from "css-tree";
+import { Result, err, ok, safeTry } from "neverthrow";
 
-export type UpsertAnimationResult = OperationResult<{
-  animation: AnimationSequence;
-  errors: string[];
-}>;
+export type UpsertAnimationResult = Result<
+  { animation: AnimationSequence; errors: string[] },
+  GenericError
+>;
+
+const parseCss = Result.fromThrowable(
+  cssParse,
+  (): GenericError => ({ message: `Failed to parse provided CSS` })
+);
 
 /**
  * Upsert an animation from a CSS `@keyframes` block.
@@ -25,66 +31,55 @@ export function upsertAnimation(opts: {
 }): UpsertAnimationResult {
   const { site, keyframesRule } = opts;
 
-  let parsedCssVal;
-  try {
-    parsedCssVal = cssParse(keyframesRule);
-  } catch (e: unknown) {
-    return {
-      result: "error",
-      message: `Failed to parse provided CSS`,
-    };
-  }
+  return safeTry<
+    { animation: AnimationSequence; errors: string[] },
+    GenericError
+  >(function* () {
+    const parsedCssVal = yield* parseCss(keyframesRule);
 
-  let keyframesAtrule: Atrule | null = null;
-  walk(parsedCssVal, (node) => {
-    if (
-      !keyframesAtrule &&
-      node.type === "Atrule" &&
-      node.name === "keyframes"
-    ) {
-      keyframesAtrule = node;
+    let keyframesAtrule: Atrule | null = null;
+    walk(parsedCssVal, (node) => {
+      if (
+        !keyframesAtrule &&
+        node.type === "Atrule" &&
+        node.name === "keyframes"
+      ) {
+        keyframesAtrule = node;
+      }
+    });
+
+    if (!keyframesAtrule) {
+      return err({
+        message: "No `@keyframes` rule found in the provided CSS.",
+      });
     }
+
+    const { sequence: wiSequence, errors: wiErrors } =
+      yield* processKeyframesRule(keyframesAtrule).mapErr(
+        (e): GenericError => ({ message: formatWIError(e) })
+      );
+
+    if (!wiSequence.name.trim()) {
+      return err({
+        message:
+          "The @keyframes rule is missing an identifier. Expected @keyframes <name> { ... }.",
+      });
+    }
+
+    if (wiSequence.keyframes.length === 0) {
+      return err({
+        message:
+          "The `@keyframes` rule has no valid keyframe selectors. Use `from`, `to`, or `N%` selectors.",
+      });
+    }
+
+    const [animation] = upsertAnimationSequences([wiSequence], {
+      site,
+    });
+
+    return ok({
+      animation,
+      errors: formatWIErrors(wiErrors),
+    });
   });
-
-  if (!keyframesAtrule) {
-    return {
-      result: "error",
-      message: "No `@keyframes` rule found in the provided CSS.",
-    };
-  }
-
-  const wiSequenceResult = processKeyframesRule(keyframesAtrule);
-  if (wiSequenceResult.isErr()) {
-    return {
-      result: "error",
-      message: formatWIError(wiSequenceResult.error),
-    };
-  }
-  const wiSequence = wiSequenceResult.value.sequence;
-
-  if (!wiSequence.name.trim()) {
-    return {
-      result: "error",
-      message:
-        "The @keyframes rule is missing an identifier. Expected @keyframes <name> { ... }.",
-    };
-  }
-
-  if (wiSequence.keyframes.length === 0) {
-    return {
-      result: "error",
-      message:
-        "The `@keyframes` rule has no valid keyframe selectors. Use `from`, `to`, or `N%` selectors.",
-    };
-  }
-
-  const [animation] = upsertAnimationSequences([wiSequence], {
-    site,
-  });
-
-  return {
-    result: "success",
-    animation,
-    errors: formatWIErrors(wiSequenceResult.value.errors),
-  };
 }

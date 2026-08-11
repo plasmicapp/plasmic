@@ -96,9 +96,10 @@ describe("updateInteraction", () => {
         action: { actionName: "customFunction", code: "1" },
       })
     ).toEqual(
-      err(
-        'Interaction "Fetch data" uses the "dataSourceOp" action, which cannot be replaced with this operation; edit it in Studio instead.'
-      )
+      err({
+        message:
+          'Interaction "Fetch data" uses the "dataSourceOp" action, which cannot be replaced with this operation; edit it in Studio instead.',
+      })
     );
 
     const renamed = updateInteraction(page, other, { name: "Load data" });
@@ -112,7 +113,7 @@ describe("updateInteraction", () => {
     const { page, first } = setupWithSteps();
 
     expect(updateInteraction(page, first, {})).toEqual(
-      err('No changes provided for interaction "Save".')
+      err({ message: 'No changes provided for interaction "Save".' })
     );
   });
 
@@ -120,13 +121,13 @@ describe("updateInteraction", () => {
     const { page, first } = setupWithSteps();
 
     expect(updateInteraction(page, first, { name: " " })).toEqual(
-      err("Interaction name cannot be empty.")
+      err({ message: "Interaction name cannot be empty." })
     );
     expect(
       updateInteraction(page, first, {
         action: { actionName: "customFunction", code: "const = ;" },
       })
-    ).toEqual(err("Interaction code is not valid JavaScript"));
+    ).toEqual(err({ message: "Interaction code is not valid JavaScript" }));
     expect(bodyCode(first)).toMatchObject({ code: "($state.count + 1)" });
   });
 });

@@ -21,23 +21,25 @@ describe("deleteStyleToken", () => {
       type: "Color",
       value: "#111827",
     });
-    assert(baseResult.result === "success", "expected base token created");
+    assert(baseResult.isOk(), "expected base token created");
+    const baseToken = baseResult.value;
 
     const aliasResult = createStyleToken({
       tplMgr,
       name: "text-primary",
       type: "Color",
-      value: mkTokenRef(baseResult.token),
+      value: mkTokenRef(baseToken),
     });
-    assert(aliasResult.result === "success", "expected alias token created");
+    assert(aliasResult.isOk(), "expected alias token created");
+    const aliasToken = aliasResult.value;
 
-    expect(site.styleTokens).toContain(baseResult.token);
-    expect(aliasResult.token.value).toEqual(mkTokenRef(baseResult.token));
+    expect(site.styleTokens).toContain(baseToken);
+    expect(aliasToken.value).toEqual(mkTokenRef(baseToken));
 
-    deleteStyleToken({ site, token: baseResult.token });
+    deleteStyleToken({ site, token: baseToken });
 
-    expect(site.styleTokens).not.toContain(baseResult.token);
+    expect(site.styleTokens).not.toContain(baseToken);
     // Reference is inlined
-    expect(aliasResult.token.value).toEqual("#111827");
+    expect(aliasToken.value).toEqual("#111827");
   });
 });

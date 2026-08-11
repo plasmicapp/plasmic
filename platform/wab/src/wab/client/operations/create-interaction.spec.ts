@@ -166,7 +166,7 @@ describe("createInteraction", () => {
     });
 
     assert(result.isErr(), "expected error result");
-    expect(result.error).toMatch(
+    expect(result.error.message).toMatch(
       /^Event "onTeleport" is not available on this element\. Available events: /
     );
   });
@@ -182,7 +182,9 @@ describe("createInteraction", () => {
       action: { actionName: "customFunction", code: "  " },
     });
 
-    expect(result).toEqual(err("Interaction code cannot be empty."));
+    expect(result).toEqual(
+      err({ message: "Interaction code cannot be empty." })
+    );
   });
 
   it("rejects invalid JavaScript", () => {
@@ -196,7 +198,9 @@ describe("createInteraction", () => {
       action: { actionName: "customFunction", code: "const = ;" },
     });
 
-    expect(result).toEqual(err("Interaction code is not valid JavaScript"));
+    expect(result).toEqual(
+      err({ message: "Interaction code is not valid JavaScript" })
+    );
   });
 
   it("rejects a slot occupied by a custom expression", () => {
@@ -213,9 +217,10 @@ describe("createInteraction", () => {
     });
 
     expect(result).toEqual(
-      err(
-        'The "onClick" handler of this element is a custom expression, not an interaction list; edit it in Studio instead.'
-      )
+      err({
+        message:
+          'The "onClick" handler of this element is a custom expression, not an interaction list; edit it in Studio instead.',
+      })
     );
   });
 });

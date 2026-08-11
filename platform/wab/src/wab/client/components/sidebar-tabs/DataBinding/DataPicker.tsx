@@ -14,7 +14,6 @@ import {
   DataPickerOpts,
   DataPickerSupportedVariableType,
   evalExpr,
-  formatErrorMessage,
   getItemChildColumns,
   getItemPath,
   getSupportedObjectKeys,
@@ -40,6 +39,7 @@ import { UnwrappedQueryResult } from "@/wab/shared/core/custom-functions";
 import { flattenedKeys } from "@/wab/shared/core/exprs";
 import { getFlattenedStateNames } from "@/wab/shared/core/states";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { formatErrorMessage } from "@/wab/shared/error-handling";
 import {
   pathToString,
   transformDataTokenPathToBundle,

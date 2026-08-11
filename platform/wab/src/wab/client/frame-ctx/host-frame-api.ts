@@ -88,18 +88,3 @@ export type CopilotToolCallResult =
       success: false;
       error: CopilotToolCallError;
     };
-
-/** Convert an unknown caught copilot error value into a human-readable error message. */
-export function serializeCopilotError(err: unknown): string {
-  if (err instanceof Error) {
-    return err.message || err.name || "Unknown error";
-  }
-  if (typeof err === "string") {
-    return err;
-  }
-  try {
-    return JSON.stringify(err);
-  } catch {
-    return String(err);
-  }
-}

@@ -1,7 +1,6 @@
 import {
   ColumnItem,
   DataPickerOpts,
-  formatErrorMessage,
   getDollarVarIcon,
   getItemChildColumns,
   getItemPath,
@@ -15,6 +14,7 @@ import {
   StateIcon,
   UrlIcon,
 } from "@/wab/client/icons";
+import { formatErrorMessage } from "@/wab/shared/error-handling";
 import {
   UNINITIALIZED_BOOLEAN,
   UNINITIALIZED_NUMBER,

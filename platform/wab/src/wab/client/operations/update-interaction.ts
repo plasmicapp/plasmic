@@ -4,6 +4,7 @@ import {
   InteractionAction,
   isInteractionActionName,
 } from "@/wab/shared/core/states";
+import { GenericError } from "@/wab/shared/error-handling";
 import {
   Component,
   Expr,
@@ -13,7 +14,7 @@ import {
 import { renameInteractionAndFixExprs } from "@/wab/shared/refactoring";
 import { err, ok, Result } from "neverthrow";
 
-export type UpdateInteractionResult = Result<void, string>;
+export type UpdateInteractionResult = Result<void, GenericError>;
 
 export interface InteractionChanges {
   name?: string;
@@ -43,19 +44,19 @@ export function updateInteraction(
   const { name, action } = changes;
 
   if (name === undefined && action === undefined) {
-    return err(
-      `No changes provided for interaction "${interaction.interactionName}".`
-    );
+    return err({
+      message: `No changes provided for interaction "${interaction.interactionName}".`,
+    });
   }
   if (name !== undefined && !name.trim()) {
-    return err("Interaction name cannot be empty.");
+    return err({ message: "Interaction name cannot be empty." });
   }
   let interactionArgs: Record<string, Expr> | undefined;
   if (action !== undefined) {
     if (!isInteractionActionName(interaction.actionName)) {
-      return err(
-        `Interaction "${interaction.interactionName}" uses the "${interaction.actionName}" action, which cannot be replaced with this operation; edit it in Studio instead.`
-      );
+      return err({
+        message: `Interaction "${interaction.interactionName}" uses the "${interaction.actionName}" action, which cannot be replaced with this operation; edit it in Studio instead.`,
+      });
     }
     // Replacing a run-code body keeps the event args in scope.
     const prevArg = interaction.args.find((a) => a.name === "customFunction");
@@ -70,7 +71,7 @@ export function updateInteraction(
       codeArgNames,
     });
     if (interactionArgsResult.isErr()) {
-      return err(interactionArgsResult.error);
+      return err({ message: interactionArgsResult.error });
     }
     interactionArgs = interactionArgsResult.value;
   }

@@ -507,7 +507,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           const result = await studioCtx
             .siteOps()
             .tryDeleteTokens(selectedTokens);
-          return result.deletedResources.length > 0;
+          return result.isOk() && result.value.deletedResources.length > 0;
         }}
       >
         <StyleTokenControlsContext.Provider

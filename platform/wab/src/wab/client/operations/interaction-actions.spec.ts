@@ -56,7 +56,7 @@ describe("built-in interaction actions", () => {
           name,
           variableType,
         });
-        assert(stateResult.result === "success", "state setup failed");
+        assert(stateResult.isOk(), "state setup failed");
       }
       return fixture;
     }
@@ -134,9 +134,9 @@ describe("built-in interaction actions", () => {
           value: "5",
         })
       ).toEqual(
-        err(
-          `State "total" not found on component "UnnamedComponent". Available states: count, items.`
-        )
+        err({
+          message: `State "total" not found on component "UnnamedComponent". Available states: count, items.`,
+        })
       );
       expect(
         create({
@@ -145,9 +145,9 @@ describe("built-in interaction actions", () => {
           operation: "Toggle",
         })
       ).toEqual(
-        err(
-          `Operation "Toggle" is not available for state "count" of type "number". Available operations: Increment, Decrement, NewValue, ClearValue.`
-        )
+        err({
+          message: `Operation "Toggle" is not available for state "count" of type "number". Available operations: Increment, Decrement, NewValue, ClearValue.`,
+        })
       );
       expect(
         create({
@@ -155,7 +155,7 @@ describe("built-in interaction actions", () => {
           variable: ["count"],
           operation: "NewValue",
         })
-      ).toEqual(err(`Operation "NewValue" requires a "value".`));
+      ).toEqual(err({ message: `Operation "NewValue" requires a "value".` }));
       expect(
         create({
           actionName: "updateVariable",
@@ -163,7 +163,9 @@ describe("built-in interaction actions", () => {
           operation: "Increment",
           value: "5",
         })
-      ).toEqual(err(`Operation "Increment" does not take a "value".`));
+      ).toEqual(
+        err({ message: `Operation "Increment" does not take a "value".` })
+      );
       expect(
         create({
           actionName: "updateVariable",
@@ -171,7 +173,9 @@ describe("built-in interaction actions", () => {
           operation: "Splice",
         })
       ).toEqual(
-        err(`Operation "Splice" requires "startIndex" and "deleteCount".`)
+        err({
+          message: `Operation "Splice" requires "startIndex" and "deleteCount".`,
+        })
       );
       expect(
         create({
@@ -182,7 +186,9 @@ describe("built-in interaction actions", () => {
           startIndex: 0,
         })
       ).toEqual(
-        err(`Only the "Splice" operation takes "startIndex"/"deleteCount".`)
+        err({
+          message: `Only the "Splice" operation takes "startIndex"/"deleteCount".`,
+        })
       );
     });
   });
@@ -260,9 +266,9 @@ describe("built-in interaction actions", () => {
           value: "hello",
         })
       ).toEqual(
-        err(
-          `State "email[].value" belongs to a repeated element and holds one value per row, so it is not supported by updateVariable. Use a "customFunction" step to target an exact row index in code (e.g. $state.email[0].value).`
-        )
+        err({
+          message: `State "email[].value" belongs to a repeated element and holds one value per row, so it is not supported by updateVariable. Use a "customFunction" step to target an exact row index in code (e.g. $state.email[0].value).`,
+        })
       );
     });
   });
@@ -308,14 +314,14 @@ describe("built-in interaction actions", () => {
         name: "Display mode",
         optionsType: VariantOptionsType.singleChoice,
       });
-      assert(groupResult.result === "success", "group setup failed");
+      assert(groupResult.isOk(), "group setup failed");
       const variantResult = createVariant({
         component: fixture.button,
         tplMgr: fixture.tplMgr,
-        variantGroup: groupResult.group,
+        variantGroup: groupResult.value,
         name: "compact",
       });
-      assert(variantResult.result === "success", "variant setup failed");
+      assert(variantResult.isOk(), "variant setup failed");
 
       const result = createInteraction({
         component: fixture.button,
@@ -332,7 +338,7 @@ describe("built-in interaction actions", () => {
 
       assert(result.isOk(), "expected success result");
       expect(ensureKnownVarRef(argExpr(result.value, "vgroup")).variable).toBe(
-        groupResult.group.param.variable
+        groupResult.value.param.variable
       );
     });
 
@@ -379,9 +385,9 @@ describe("built-in interaction actions", () => {
           value: ["large"],
         })
       ).toEqual(
-        err(
-          `Variant group "theme" not found on component "Button". Available groups: size, features, dark.`
-        )
+        err({
+          message: `Variant group "theme" not found on component "Button". Available groups: size, features, dark.`,
+        })
       );
       expect(
         create({
@@ -391,9 +397,9 @@ describe("built-in interaction actions", () => {
           value: ["dark"],
         })
       ).toEqual(
-        err(
-          `Operation "NewValue" is not available for variant group "dark". Available operations: Toggle, Activate, Deactivate.`
-        )
+        err({
+          message: `Operation "NewValue" is not available for variant group "dark". Available operations: Toggle, Activate, Deactivate.`,
+        })
       );
       expect(
         create({
@@ -403,9 +409,9 @@ describe("built-in interaction actions", () => {
           value: ["large"],
         })
       ).toEqual(
-        err(
-          `Operation "MultiToggle" is not available for variant group "size". Available operations: NewValue, ClearValue.`
-        )
+        err({
+          message: `Operation "MultiToggle" is not available for variant group "size". Available operations: NewValue, ClearValue.`,
+        })
       );
       expect(
         create({
@@ -415,9 +421,9 @@ describe("built-in interaction actions", () => {
           value: ["small", "large"],
         })
       ).toEqual(
-        err(
-          `Variant group "size" is single-select; "value" must contain exactly one variant name.`
-        )
+        err({
+          message: `Variant group "size" is single-select; "value" must contain exactly one variant name.`,
+        })
       );
       expect(
         create({
@@ -427,9 +433,9 @@ describe("built-in interaction actions", () => {
           value: ["huge"],
         })
       ).toEqual(
-        err(
-          `Variant "huge" not found in group "size". Available variants: small, large.`
-        )
+        err({
+          message: `Variant "huge" not found in group "size". Available variants: small, large.`,
+        })
       );
       expect(
         create({
@@ -438,7 +444,9 @@ describe("built-in interaction actions", () => {
           operation: "ClearValue",
           value: ["large"],
         })
-      ).toEqual(err(`Operation "ClearValue" does not take a "value".`));
+      ).toEqual(
+        err({ message: `Operation "ClearValue" does not take a "value".` })
+      );
     });
   });
 
@@ -452,7 +460,7 @@ describe("built-in interaction actions", () => {
         name: "count",
         variableType: "number",
       });
-      assert(stateResult.result === "success", "state setup failed");
+      assert(stateResult.isOk(), "state setup failed");
 
       const created = createInteraction({
         component: fixture.page,
@@ -512,9 +520,9 @@ describe("built-in interaction actions", () => {
       });
 
       expect(result).toEqual(
-        err(
-          `State "missing" not found on component "UnnamedComponent". Available states: none.`
-        )
+        err({
+          message: `State "missing" not found on component "UnnamedComponent". Available states: none.`,
+        })
       );
       expect(interaction.interactionName).toEqual("Save");
       expect(interaction.actionName).toEqual("customFunction");

@@ -1,8 +1,9 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import { ImmutableToken, toFinalToken } from "@/wab/shared/core/tokens";
+import { GenericError } from "@/wab/shared/error-handling";
 import { Site, StyleToken, Variant } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type SetStyleTokenVariantedValueResult = OperationResult<{}>;
+export type SetStyleTokenVariantedValueResult = Result<void, GenericError>;
 
 /**
  * Upsert or remove a single varianted-value entry on a style token.
@@ -28,18 +29,16 @@ export function setStyleTokenVariantedValue(opts: {
   const { site, token, variants, value } = opts;
 
   if (variants.length === 0) {
-    return {
-      result: "error",
+    return err({
       message: "At least one variant is required for a varianted value.",
-    };
+    });
   }
 
   const finalToken = toFinalToken(token, site);
   if (finalToken instanceof ImmutableToken) {
-    return {
-      result: "error",
+    return err({
       message: `Token "${token.name}" is from a transitive dependency and cannot be edited or overridden.`,
-    };
+    });
   }
 
   if (value === null) {
@@ -48,5 +47,5 @@ export function setStyleTokenVariantedValue(opts: {
     finalToken.setVariantedValue(variants, value);
   }
 
-  return { result: "success" };
+  return ok(undefined);
 }

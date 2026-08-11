@@ -59,6 +59,7 @@ import {
   getVariantSettingVisibility,
 } from "@/wab/shared/visibility-utils";
 import { merge } from "lodash";
+import { Result, err, ok } from "neverthrow";
 
 /**
  * Context for the pure tpl-insertion operation.
@@ -94,9 +95,7 @@ export type CantInsertTplReason =
   | { type: "ComponentCycle" }
   | { type: "NestedSlots" };
 
-export type InsertTplResult =
-  | { result: "success" }
-  | { result: "error"; reason: CantInsertTplReason };
+export type InsertTplResult = Result<void, CantInsertTplReason>;
 
 /** Insertion positions supported by the pure operation (wrap/replace are
  * ViewOps compositions on top of these). */
@@ -225,7 +224,7 @@ export function insertTplAsSibling(
 ): InsertTplResult {
   const reason = canInsertTplAsSibling(newNode, targetNode, ctx);
   if (reason !== true) {
-    return { result: "error", reason };
+    return err(reason);
   }
   const targetParent = ensure(
     getParentOrSlotSelection(targetNode),
@@ -263,7 +262,7 @@ export function insertTplAsChild(
   opts = merge({ keepFree: true }, opts);
   const reason = canInsertTplAsChild(newNode, newParent, ctx);
   if (reason !== true) {
-    return { result: "error", reason };
+    return err(reason);
   }
   const existingParent = newNode.parent;
   const isNewNode = !existingParent;
@@ -311,7 +310,7 @@ export function insertTplAsChild(
   }
 
   postInsertAsChildUpdates(newNode, newParent, isNewNode, ctx);
-  return { result: "success" };
+  return ok(undefined);
 }
 
 export function insertTplAt(

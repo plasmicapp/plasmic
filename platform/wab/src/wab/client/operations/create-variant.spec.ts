@@ -2,6 +2,7 @@ import { createComponent } from "@/wab/client/operations/create-component";
 import { createVariant } from "@/wab/client/operations/create-variant";
 import { createVariantGroup } from "@/wab/client/operations/create-variant-group";
 import { setupComponentWithTplTree } from "@/wab/client/operations/tests/utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
@@ -18,21 +19,20 @@ describe("createVariant", () => {
       name: "CopilotVariantTest",
       type: ComponentType.Plain,
     });
-    assert(created.result === "success", "setup failed");
+    const component = unwrap(created);
 
     const groupResult = createVariantGroup({
-      component: created.component,
+      component,
       tplMgr,
       name: "state",
       optionsType: VariantOptionsType.singleChoice,
     });
-    assert(groupResult.result === "success", "group setup failed");
 
     return {
       site,
       tplMgr,
-      component: created.component,
-      group: groupResult.group,
+      component,
+      group: unwrap(groupResult),
     };
   }
 
@@ -47,10 +47,10 @@ describe("createVariant", () => {
       name: "hovered",
     });
 
-    assert(result.result === "success", "expected success result");
+    assert(result.isOk(), "expected success result");
     expect(group.variants.length).toEqual(before + 1);
-    expect(result.variant.name).toEqual("hovered");
-    expect(group.variants).toContain(result.variant);
+    expect(result.value.name).toEqual("hovered");
+    expect(group.variants).toContain(result.value);
   });
 
   it("returns error if group does not belong to component", () => {
@@ -64,7 +64,7 @@ describe("createVariant", () => {
       name: "foo",
     });
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 
   it("rejects adding variants to a standalone group", () => {
@@ -74,26 +74,25 @@ describe("createVariant", () => {
       name: "CopilotStandaloneTest",
       type: ComponentType.Plain,
     });
-    assert(created.result === "success", "setup failed");
+    const component = unwrap(created);
 
     const groupResult = createVariantGroup({
-      component: created.component,
+      component,
       tplMgr,
       name: "isRounded",
       optionsType: VariantOptionsType.standalone,
     });
-    assert(groupResult.result === "success", "group setup failed");
-    const standaloneGroup = groupResult.group;
+    const standaloneGroup = unwrap(groupResult);
     const before = standaloneGroup.variants.length;
 
     const result = createVariant({
-      component: created.component,
+      component,
       tplMgr,
       variantGroup: standaloneGroup,
       name: "extra",
     });
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
     // The implicit variant stays the only one — invariant preserved.
     expect(standaloneGroup.variants.length).toEqual(before);
   });

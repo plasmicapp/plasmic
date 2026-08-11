@@ -1,10 +1,12 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import { TplMgr, VariantOptionsType } from "@/wab/shared/TplMgr";
+import { GenericError } from "@/wab/shared/error-handling";
 import { Component, ComponentVariantGroup } from "@/wab/shared/model/classes";
+import { Result, ok } from "neverthrow";
 
-export type CreateVariantGroupResult = OperationResult<{
-  group: ComponentVariantGroup;
-}>;
+export type CreateVariantGroupResult = Result<
+  ComponentVariantGroup,
+  GenericError
+>;
 
 /**
  * Create a new variant group on a component.
@@ -21,8 +23,5 @@ export function createVariantGroup(opts: {
   optionsType: VariantOptionsType;
 }): CreateVariantGroupResult {
   const { component, tplMgr, name, optionsType } = opts;
-  return {
-    result: "success",
-    group: tplMgr.createVariantGroup({ component, name, optionsType }),
-  };
+  return ok(tplMgr.createVariantGroup({ component, name, optionsType }));
 }

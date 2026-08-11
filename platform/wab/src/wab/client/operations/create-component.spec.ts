@@ -1,6 +1,7 @@
 import { createComponent } from "@/wab/client/operations/create-component";
 import { createVariantGroup } from "@/wab/client/operations/create-variant-group";
 import { setupComponentWithTplTree } from "@/wab/client/operations/tests/utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
@@ -21,12 +22,12 @@ describe("createComponent", () => {
       type: ComponentType.Plain,
     });
 
-    assert(result.result === "success", "expected created result");
+    assert(result.isOk(), "expected created result");
     expect(site.components.length).toEqual(before + 1);
-    expect(result.component.name).toEqual("CopilotNewButton");
-    expect(result.component.type).toEqual(ComponentType.Plain);
-    expect(result.component.tplTree).toBeDefined();
-    expect(result.component.variantGroups).toEqual([]);
+    expect(result.value.name).toEqual("CopilotNewButton");
+    expect(result.value.type).toEqual(ComponentType.Plain);
+    expect(result.value.tplTree).toBeDefined();
+    expect(result.value.variantGroups).toEqual([]);
   });
 
   it("creates a page with default pageMeta synthesized from name", () => {
@@ -38,14 +39,14 @@ describe("createComponent", () => {
       type: ComponentType.Page,
     });
 
-    assert(result.result === "success", "expected created result");
-    expect(result.component.type).toEqual(ComponentType.Page);
-    assert(result.component.pageMeta, "Expected pageMeta to exists");
-    expect(result.component.pageMeta.path).toEqual("/pricing-page");
-    expect(result.component.pageMeta.roleId).toEqual(site.defaultPageRoleId);
-    expect(
-      site.pageArenas.some((a) => a.component === result.component)
-    ).toEqual(true);
+    assert(result.isOk(), "expected created result");
+    expect(result.value.type).toEqual(ComponentType.Page);
+    assert(result.value.pageMeta, "Expected pageMeta to exists");
+    expect(result.value.pageMeta.path).toEqual("/pricing-page");
+    expect(result.value.pageMeta.roleId).toEqual(site.defaultPageRoleId);
+    expect(site.pageArenas.some((a) => a.component === result.value)).toEqual(
+      true
+    );
   });
 
   it("creates a page with caller-provided pageMeta", () => {
@@ -66,8 +67,8 @@ describe("createComponent", () => {
       },
     });
 
-    assert(result.result === "success", "expected created result");
-    const { pageMeta } = result.component;
+    assert(result.isOk(), "expected created result");
+    const { pageMeta } = result.value;
     assert(pageMeta, "Expected pageMeta to exists");
     expect(pageMeta.path).toEqual("/about");
     expect(pageMeta.title).toEqual("About Us");
@@ -88,8 +89,8 @@ describe("createComponent", () => {
       pageMeta: { title: "Get in touch" },
     });
 
-    assert(result.result === "success", "expected created result");
-    const { pageMeta } = result.component;
+    assert(result.isOk(), "expected created result");
+    const { pageMeta } = result.value;
     assert(pageMeta, "Expected pageMeta to exists");
     expect(pageMeta.title).toEqual("Get in touch");
     // Missing path falls back to the slugified component name.
@@ -108,10 +109,10 @@ describe("createComponent", () => {
       pageMeta: { path: "About Us" },
     });
 
-    assert(result.result === "success", "expected created result");
+    assert(result.isOk(), "expected created result");
     // nameToPath kebab-cases segments and adds the leading slash.
-    assert(result.component.pageMeta, "Expected pageMeta to exists");
-    expect(result.component.pageMeta.path).toEqual("/about-us");
+    assert(result.value.pageMeta, "Expected pageMeta to exists");
+    expect(result.value.pageMeta.path).toEqual("/about-us");
   });
 
   it("uniquifies colliding page paths", () => {
@@ -130,13 +131,13 @@ describe("createComponent", () => {
       pageMeta: { path: "/pricing" },
     });
 
-    assert(first.result === "success", "expected first to be created");
-    assert(second.result === "success", "expected second to be created");
-    assert(first.component.pageMeta, "Expected pageMeta to exists");
-    assert(second.component.pageMeta, "Expected pageMeta to exists");
+    assert(first.isOk(), "expected first to be created");
+    assert(second.isOk(), "expected second to be created");
+    assert(first.value.pageMeta, "Expected pageMeta to exists");
+    assert(second.value.pageMeta, "Expected pageMeta to exists");
 
-    expect(first.component.pageMeta.path).toEqual("/pricing");
-    expect(second.component.pageMeta.path).not.toEqual("/pricing");
+    expect(first.value.pageMeta.path).toEqual("/pricing");
+    expect(second.value.pageMeta.path).not.toEqual("/pricing");
   });
 
   it("composes with createVariantGroup to add variant groups", () => {
@@ -147,9 +148,8 @@ describe("createComponent", () => {
       name: "CopilotBadge",
       type: ComponentType.Plain,
     });
-    assert(result.result === "success", "expected success result");
+    const component = unwrap(result);
 
-    const { component } = result;
     createVariantGroup({
       component,
       tplMgr,
@@ -185,7 +185,7 @@ describe("createComponent", () => {
       name: "   ",
       type: ComponentType.Plain,
     });
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 
   it("uniquifies colliding component names", () => {
@@ -202,8 +202,8 @@ describe("createComponent", () => {
       type: ComponentType.Plain,
     });
 
-    assert(first.result === "success", "expected first to be created");
-    assert(second.result === "success", "expected second to be created");
-    expect(first.component.name).not.toEqual(second.component.name);
+    assert(first.isOk(), "expected first to be created");
+    assert(second.isOk(), "expected second to be created");
+    expect(first.value.name).not.toEqual(second.value.name);
   });
 });

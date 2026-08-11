@@ -30,16 +30,20 @@ import {
   isKnownComponentVariantGroup,
 } from "@/wab/shared/model/classes";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import { Result, err } from "neverthrow";
 
-export type DeleteVariantGroupResult =
-  | { result: "success"; messages: string[] }
-  | {
-      result: "error";
-      message: string;
-      variantGroupRefs?: ExprReference[];
-      /** True when the user dismissed the confirmation dialog without deleting. */
-      cancelled?: boolean;
-    };
+export interface DeleteVariantGroupError {
+  message: string;
+  variantGroupRefs?: ExprReference[];
+  /** True when the user dismissed the confirmation dialog without deleting. */
+  cancelled?: boolean;
+}
+
+/** Ok value is the list of user-facing messages describing what was deleted. */
+export type DeleteVariantGroupResult = Result<
+  string[],
+  DeleteVariantGroupError
+>;
 
 /**
  * Delete a variant group from a component or site.
@@ -72,11 +76,10 @@ export async function deleteVariantGroup(
     if (isKnownComponentVariantGroup(group)) {
       const refs = findVariantGroupReferences(component, group);
       if (refs.length > 0) {
-        return {
-          result: "error",
+        return err({
           message: `Variant group is referenced in the current component.`,
           variantGroupRefs: refs,
-        };
+        });
       }
     }
 
@@ -88,10 +91,9 @@ export async function deleteVariantGroup(
         (def) => def.group === groupName && def.required
       );
       if (isRequired) {
-        return {
-          result: "error",
+        return err({
           message: `The "${group.param.variable.name}" variant group is required for the "${component.name}" component to function properly.`,
-        };
+        });
       }
     }
 
@@ -104,12 +106,11 @@ export async function deleteVariantGroup(
         const components = Array.from(
           new Set(implicitUsages.map((usage) => usage.component))
         );
-        return {
-          result: "error",
+        return err({
           message: `Variant group is referenced in ${components
             .map((c) => getComponentDisplayName(c))
             .join(", ")}.`,
-        };
+        });
       }
     }
   }
@@ -139,15 +140,9 @@ export async function deleteVariantGroup(
     }
   );
 
-  if (result.errors && result.errors.length > 0) {
-    return {
-      result: "error",
-      message: result.errors[0],
-      cancelled: result.cancelled,
-    };
-  }
-
-  return { result: "success", messages: result.messages };
+  return result
+    .map(({ messages }) => messages)
+    .mapErr(({ errors, cancelled }) => ({ message: errors[0], cancelled }));
 }
 
 /**

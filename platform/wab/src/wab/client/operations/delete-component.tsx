@@ -7,12 +7,13 @@ import {
   isCodeComponent,
 } from "@/wab/shared/core/components";
 import { getReferencingComponents } from "@/wab/shared/core/sites";
+import { GenericError } from "@/wab/shared/error-handling";
 import { Component, Site } from "@/wab/shared/model/classes";
 import { uniq } from "lodash";
+import { Result, err, ok } from "neverthrow";
 
-export type DeleteComponentResult =
-  | { result: "success"; message: string }
-  | { result: "error"; message: string };
+/** Ok value is a human-readable summary of what was deleted. */
+export type DeleteComponentResult = Result<string, GenericError>;
 
 /**
  * Delete a component (or page) from the site, along with its sub-components.
@@ -31,33 +32,30 @@ export function deleteComponent(
   // A sub-component only exists in service of its super-component and is deleted
   // alongside it; it cannot be deleted on its own.
   if (component.superComp && !isCodeComponent(component)) {
-    return {
-      result: "error",
+    return err({
       message: `Cannot delete "${getComponentDisplayName(
         component
       )}" because it is a sub-component.`,
-    };
+    });
   }
 
   if (site.pageWrapper === component) {
-    return {
-      result: "error",
+    return err({
       message: `Cannot delete "${getComponentDisplayName(
         component
       )}" because it is set as the default page wrapper.`,
-    };
+    });
   }
 
   const referencers = getReferencingComponents(site, component);
   if (referencers.length > 0) {
-    return {
-      result: "error",
+    return err({
       message: `Cannot delete "${getComponentDisplayName(
         component
       )}" because it is still used by ${uniq(
         referencers.map(getComponentDisplayName)
       ).join(", ")}.`,
-    };
+    });
   }
 
   const curArena = studioCtx.currentArena;
@@ -73,10 +71,9 @@ export function deleteComponent(
     studioCtx.switchToFirstArena();
   }
 
-  return {
-    result: "success",
-    message: `Deleted component "${getComponentDisplayName(
-      component
-    )}" (uuid: ${component.uuid}).`,
-  };
+  return ok(
+    `Deleted component "${getComponentDisplayName(component)}" (uuid: ${
+      component.uuid
+    }).`
+  );
 }

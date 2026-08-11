@@ -1,9 +1,10 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ComponentType } from "@/wab/shared/core/components";
+import { GenericError } from "@/wab/shared/error-handling";
 import { Component, PageMetaParams, TplNode } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type CreateComponentResult = OperationResult<{ component: Component }>;
+export type CreateComponentResult = Result<Component, GenericError>;
 
 /**
  * Create a new component or page
@@ -18,11 +19,8 @@ export function createComponent(opts: {
   const { tplMgr, name, type, rootTpl, pageMeta } = opts;
 
   if (!name.trim()) {
-    return { result: "error", message: "Component name cannot be empty." };
+    return err({ message: "Component name cannot be empty." });
   }
 
-  return {
-    result: "success",
-    component: tplMgr.addComponent({ name, type, rootTpl, pageMeta }),
-  };
+  return ok(tplMgr.addComponent({ name, type, rootTpl, pageMeta }));
 }

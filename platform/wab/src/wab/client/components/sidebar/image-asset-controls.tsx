@@ -186,7 +186,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
           const result = await studioCtx
             .siteOps()
             .tryDeleteImageAssets(selectedAssets);
-          return result.deletedResources.length > 0;
+          return result.isOk() && result.value.deletedResources.length > 0;
         }}
       >
         <VirtualGroupedList

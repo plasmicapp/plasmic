@@ -31,7 +31,7 @@ describe("deleteComponent", () => {
 
     const result = await runDeleteOperation(component);
 
-    assert(result.result === "success", "expected success");
+    assert(result.isOk(), "expected success");
     expect(studioCtx.site.components).not.toContain(component);
   });
 
@@ -41,7 +41,7 @@ describe("deleteComponent", () => {
 
     const result = await runDeleteOperation(page);
 
-    assert(result.result === "success", "expected success");
+    assert(result.isOk(), "expected success");
     expect(studioCtx.site.components).not.toContain(page);
   });
 
@@ -60,7 +60,7 @@ describe("deleteComponent", () => {
 
     const result = await runDeleteOperation(target);
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
     expect(studioCtx.site.components).toContain(target);
   });
 
@@ -73,7 +73,7 @@ describe("deleteComponent", () => {
 
     const result = await runDeleteOperation(wrapper);
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
     expect(studioCtx.site.components).toContain(wrapper);
   });
 
@@ -90,7 +90,7 @@ describe("deleteComponent", () => {
 
     const result = await runDeleteOperation(sub);
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
     expect(studioCtx.site.components).toContain(sub);
   });
 });

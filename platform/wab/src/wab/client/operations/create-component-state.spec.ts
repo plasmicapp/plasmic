@@ -4,6 +4,7 @@ import {
   setupComponentWithInstance,
   setupComponentWithTplTree,
 } from "@/wab/client/operations/tests/utils";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
 import { codeLit, customCode, tryExtractJson } from "@/wab/shared/core/exprs";
@@ -20,8 +21,7 @@ describe("createComponentState", () => {
       name: "StateTest",
       type: ComponentType.Plain,
     });
-    assert(created.result === "success", "setup failed");
-    return { site, tplMgr, component: created.component };
+    return { site, tplMgr, component: unwrap(created) };
   }
 
   it("creates a private text state with defaults", () => {
@@ -34,8 +34,8 @@ describe("createComponentState", () => {
       name: "count",
     });
 
-    assert(result.result === "success", "expected success result");
-    const state = result.state;
+    assert(result.isOk(), "expected success result");
+    const state = result.value;
     expect(state).toMatchObject({
       variableType: "text",
       accessType: "private",
@@ -67,8 +67,8 @@ describe("createComponentState", () => {
       initialValue: codeLit(5),
     });
 
-    assert(result.result === "success", "expected success result");
-    const state = result.state;
+    assert(result.isOk(), "expected success result");
+    const state = result.value;
     expect(state).toMatchObject({
       variableType: "number",
       accessType: "writable",
@@ -94,9 +94,9 @@ describe("createComponentState", () => {
       name: "count",
     });
 
-    assert(first.result === "success", "expected success result");
-    assert(second.result === "success", "expected success result");
-    expect(second.state.param.variable.name).toEqual("count 2");
+    assert(first.isOk(), "expected success result");
+    assert(second.isOk(), "expected success result");
+    expect(second.value.param.variable.name).toEqual("count 2");
   });
 
   it("rejects an initial value that does not match the variable type", () => {
@@ -111,8 +111,8 @@ describe("createComponentState", () => {
       initialValue: codeLit("not a number"),
     });
 
-    assert(result.result === "error", "expected error result");
-    expect(result.message).toContain('not valid for a "number" state');
+    assert(result.isErr(), "expected error result");
+    expect(result.error.message).toContain('not valid for a "number" state');
     expect(component.states).toHaveLength(0);
   });
 
@@ -127,8 +127,8 @@ describe("createComponentState", () => {
       initialValue: null,
     });
 
-    assert(result.result === "success", "expected success result");
-    expect(tryExtractJson(result.state.param.defaultExpr!)).toEqual("");
+    assert(result.isOk(), "expected success result");
+    expect(tryExtractJson(result.value.param.defaultExpr!)).toEqual("");
   });
 
   it("creates a state with an expression initial value", () => {
@@ -143,8 +143,8 @@ describe("createComponentState", () => {
       initialValue: expr,
     });
 
-    assert(result.result === "success", "expected success result");
-    expect(result.state.param.defaultExpr).toBe(expr);
+    assert(result.isOk(), "expected success result");
+    expect(result.value.param.defaultExpr).toBe(expr);
   });
 
   it("rejects a writable state with an expression initial value", () => {
@@ -159,11 +159,10 @@ describe("createComponentState", () => {
       initialValue: customCode("$ctx.locale"),
     });
 
-    expect(result).toMatchObject({
-      result: "error",
-      message:
-        "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context.",
-    });
+    assert(result.isErr(), "expected error result");
+    expect(result.error.message).toEqual(
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
+    );
     expect(component.states).toHaveLength(0);
   });
 
@@ -177,7 +176,7 @@ describe("createComponentState", () => {
       name: "  ",
     });
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 
   it("propagates an implicit state to instances when the state is public", () => {
@@ -192,9 +191,9 @@ describe("createComponentState", () => {
       accessType: "readonly",
     });
 
-    assert(result.result === "success", "expected success result");
+    assert(result.isOk(), "expected success result");
     expect(page.states).toMatchObject([
-      { implicitState: result.state, tplNode: instance },
+      { implicitState: result.value, tplNode: instance },
     ]);
     // Instances holding public states must be named for `$state` paths.
     expect(instance.name).toBeTruthy();

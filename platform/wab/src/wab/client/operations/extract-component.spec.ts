@@ -2,6 +2,7 @@ import { extractComponent } from "@/wab/client/operations/extract-component";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant, mkVariantSetting } from "@/wab/shared/Variants";
+import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
 import { customCode } from "@/wab/shared/core/exprs";
 import { createSite } from "@/wab/shared/core/sites";
@@ -47,14 +48,13 @@ describe("extractComponent operation", () => {
       getCanvasEnvForTpl: () => undefined,
     });
 
-    expect(result.result).toEqual("success");
-    if (result.result === "success") {
-      expect(result.tplComponent.component.name).toEqual("Extracted");
-      expect(site.components).toContain(result.tplComponent.component);
-      // The original child is replaced by an instance of the new component.
-      expect(root.children).toContain(result.tplComponent);
-      expect(root.children).not.toContain(child);
-    }
+    assert(result.isOk(), "expected success result");
+    const { tplComponent } = result.value;
+    expect(tplComponent.component.name).toEqual("Extracted");
+    expect(site.components).toContain(tplComponent.component);
+    // The original child is replaced by an instance of the new component.
+    expect(root.children).toContain(tplComponent);
+    expect(root.children).not.toContain(child);
   });
 
   it("uniquifies the new component name on collision", () => {
@@ -72,10 +72,8 @@ describe("extractComponent operation", () => {
       getCanvasEnvForTpl: () => undefined,
     });
 
-    expect(result.result).toEqual("success");
-    if (result.result === "success") {
-      expect(result.tplComponent.component.name).not.toEqual("Taken");
-    }
+    assert(result.isOk(), "expected success result");
+    expect(result.value.tplComponent.component.name).not.toEqual("Taken");
   });
 
   it("returns a structured error when an implicit state is referenced outside the subtree", () => {
@@ -100,11 +98,11 @@ describe("extractComponent operation", () => {
       getCanvasEnvForTpl: () => undefined,
     });
 
-    expect(result.result).toEqual("error");
-    if (result.result === "error") {
-      expect(result.message).toContain("referenced in the current component");
-      // No component is created on failure.
-      expect(site.components.map((c) => c.name)).not.toContain("Extracted");
-    }
+    assert(result.isErr(), "expected error result");
+    expect(result.error.message).toContain(
+      "referenced in the current component"
+    );
+    // No component is created on failure.
+    expect(site.components.map((c) => c.name)).not.toContain("Extracted");
   });
 });

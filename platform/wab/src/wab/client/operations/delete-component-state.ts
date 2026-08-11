@@ -18,20 +18,23 @@ import {
   isKnownVariantGroupState,
 } from "@/wab/shared/model/classes";
 import { uniq } from "lodash";
+import { Result, err, ok } from "neverthrow";
 
-export type DeleteComponentStateResult =
-  | { result: "success" }
-  | {
-      result: "error";
-      message: string;
-      /**
-       * The TplNode holding an expression that references the state,
-       * preventing deletion. Present only for references within the
-       * state's own component. Used to render a clickable
-       * "Go to reference" link in the error notification.
-       */
-      referencingNode?: TplNode | null;
-    };
+export interface DeleteComponentStateError {
+  message: string;
+  /**
+   * The TplNode holding an expression that references the state,
+   * preventing deletion. Present only for references within the
+   * state's own component. Used to render a clickable
+   * "Go to reference" link in the error notification.
+   */
+  referencingNode?: TplNode | null;
+}
+
+export type DeleteComponentStateResult = Result<
+  void,
+  DeleteComponentStateError
+>;
 
 /**
  * Delete a state variable, removing both of its params. Errors if the state
@@ -51,52 +54,46 @@ export function deleteComponentState(
   const stateName = getStateVarName(state);
 
   if (isCodeComponent(component)) {
-    return {
-      result: "error",
+    return err({
       message: `Component "${component.name}" is a code component; its states are managed by its code registration.`,
-    };
+    });
   }
   if (state.implicitState) {
-    return {
-      result: "error",
+    return err({
       message: `State "${stateName}" is an implicit state; it can only be removed by deleting its element.`,
-    };
+    });
   }
   if (isKnownVariantGroupState(state)) {
-    return {
-      result: "error",
+    return err({
       message: `State "${stateName}" backs a variant group; delete the variant group instead.`,
-    };
+    });
   }
   if (!canDeleteState(component, state)) {
-    return {
-      result: "error",
+    return err({
       message: `State "${stateName}" is a built-in state of component "${component.name}" and cannot be deleted.`,
-    };
+    });
   }
 
   const refs = findExprsInComponent(component).filter(({ expr }) =>
     isStateUsedInExpr(state, expr)
   );
   if (refs.length > 0) {
-    return {
-      result: "error",
+    return err({
       message: `Cannot delete state "${stateName}": it is referenced in component "${component.name}".`,
       referencingNode: refs.find((r) => r.node)?.node,
-    };
+    });
   }
   const referencingComponents = uniq(
     findImplicitUsages(site, state).map((usage) => usage.component)
   );
   if (referencingComponents.length > 0) {
-    return {
-      result: "error",
+    return err({
       message: `Cannot delete state "${stateName}": it is referenced in ${referencingComponents
         .map((c) => getComponentDisplayName(c))
         .join(", ")}.`,
-    };
+    });
   }
 
   removeComponentState(site, component, state);
-  return { result: "success" };
+  return ok(undefined);
 }

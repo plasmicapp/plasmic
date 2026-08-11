@@ -14,7 +14,7 @@ import type {
   Variant,
   VariantGroup,
 } from "@/wab/shared/model/classes";
-import { ok } from "neverthrow";
+import { Result, err, ok } from "neverthrow";
 
 export interface UsageSummary {
   components?: Component[];
@@ -41,13 +41,17 @@ export interface ResourceWithUsage<R extends DeletableResource> {
   usageCount: number;
 }
 
-export interface DeleteResourcesResult<R extends DeletableResource> {
-  deletedResources: R[];
-  messages: string[];
-  errors?: string[];
+export interface DeleteResourcesError {
+  /** One entry per resource that could not be deleted. */
+  errors: string[];
   /** True when the user dismissed the confirmation dialog without deleting. */
   cancelled?: boolean;
 }
+
+export type DeleteResourcesResult<R extends DeletableResource> = Result<
+  { deletedResources: R[]; messages: string[] },
+  DeleteResourcesError
+>;
 
 /**
  * Generic resource deletion utility that handles changeObserved coordination,
@@ -103,7 +107,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
         }): still referenced in ${locations}.`
       );
     }
-    return { deletedResources: [], messages, errors };
+    return err({ errors });
   }
 
   // Handle confirmation dialog when there are usages
@@ -117,7 +121,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
     );
     if (!confirmed) {
       errors.push(`Deletion of ${deleteLabel} was cancelled.`);
-      return { deletedResources: [], messages, errors, cancelled: true };
+      return err({ errors, cancelled: true });
     }
   }
 
@@ -147,11 +151,10 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
     );
   }
 
-  return {
+  return ok({
     deletedResources: resourcesWithUsage.map(({ resource }) => resource),
     messages,
-    errors,
-  };
+  });
 }
 
 function getDeletableResourceLabel(resource: DeletableResource) {

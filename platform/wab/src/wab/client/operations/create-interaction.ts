@@ -13,6 +13,7 @@ import {
   isTplTag,
   setEventHandlerByEventKey,
 } from "@/wab/shared/core/tpls";
+import { GenericError } from "@/wab/shared/error-handling";
 import {
   Component,
   EventHandler,
@@ -22,7 +23,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { err, ok, Result } from "neverthrow";
 
-export type CreateInteractionResult = Result<Interaction, string>;
+export type CreateInteractionResult = Result<Interaction, GenericError>;
 
 const MAX_LISTED_EVENTS = 15;
 
@@ -50,9 +51,10 @@ export function createInteraction(opts: {
   const { component, tpl, eventName, action } = opts;
 
   if (!isTplTag(tpl) && !isTplComponent(tpl)) {
-    return err(
-      "Interactions can only be added to tags and component instances."
-    );
+    return err({
+      message:
+        "Interactions can only be added to tags and component instances.",
+    });
   }
   const options = getAllEventHandlerOptions(tpl);
   const key = options.find((option) => eventKeyName(option) === eventName);
@@ -62,19 +64,19 @@ export function createInteraction(opts: {
       names.length > MAX_LISTED_EVENTS
         ? `${names.slice(0, MAX_LISTED_EVENTS).join(", ")}, …`
         : names.join(", ");
-    return err(
-      `Event "${eventName}" is not available on this element. Available events: ${listed}.`
-    );
+    return err({
+      message: `Event "${eventName}" is not available on this element. Available events: ${listed}.`,
+    });
   }
   const interactionArgsResult = buildInteractionArgs(action, { component });
   if (interactionArgsResult.isErr()) {
-    return err(interactionArgsResult.error);
+    return err({ message: interactionArgsResult.error });
   }
   const existing = getEventHandlerByEventKey(component, tpl, key);
   if (existing && !isKnownEventHandler(existing)) {
-    return err(
-      `The "${eventName}" handler of this element is a custom expression, not an interaction list; edit it in Studio instead.`
-    );
+    return err({
+      message: `The "${eventName}" handler of this element is a custom expression, not an interaction list; edit it in Studio instead.`,
+    });
   }
 
   const eventHandler = existing ?? new EventHandler({ interactions: [] });

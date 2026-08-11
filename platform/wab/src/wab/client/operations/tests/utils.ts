@@ -1,6 +1,7 @@
 import { createComponent } from "@/wab/client/operations/create-component";
 import { createVariant } from "@/wab/client/operations/create-variant";
 import { createVariantGroup } from "@/wab/client/operations/create-variant-group";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
 import {
   TplMgr,
   VariantOptionsType,
@@ -46,13 +47,13 @@ export function setupComponentWithInstance() {
     component: page,
   } = setupComponentWithTplTree(Tpls.mkTplTagX("div", {}));
 
-  const created = createComponent({
-    tplMgr,
-    name: "Button",
-    type: ComponentType.Plain,
-  });
-  assert(created.result === "success", "component setup failed");
-  const button = created.component;
+  const button = unwrap(
+    createComponent({
+      tplMgr,
+      name: "Button",
+      type: ComponentType.Plain,
+    })
+  );
 
   button.params.push(
     mkParam({ name: "label", type: typeFactory.text(), paramType: "prop" }),
@@ -86,50 +87,52 @@ export function setupComponentWithInstance() {
     })
   );
 
-  const sizeResult = createVariantGroup({
-    component: button,
-    tplMgr,
-    name: "size",
-    optionsType: VariantOptionsType.singleChoice,
-  });
-  assert(sizeResult.result === "success", "size group setup failed");
-  const sizeGroup = sizeResult.group;
+  const sizeGroup = unwrap(
+    createVariantGroup({
+      component: button,
+      tplMgr,
+      name: "size",
+      optionsType: VariantOptionsType.singleChoice,
+    })
+  );
   for (const name of ["small", "large"]) {
-    const variantResult = createVariant({
-      component: button,
-      tplMgr,
-      variantGroup: sizeGroup,
-      name,
-    });
-    assert(variantResult.result === "success", "size variant setup failed");
+    unwrap(
+      createVariant({
+        component: button,
+        tplMgr,
+        variantGroup: sizeGroup,
+        name,
+      })
+    );
   }
 
-  const featuresResult = createVariantGroup({
-    component: button,
-    tplMgr,
-    name: "features",
-    optionsType: VariantOptionsType.multiChoice,
-  });
-  assert(featuresResult.result === "success", "features group setup failed");
-  const featuresGroup = featuresResult.group;
+  const featuresGroup = unwrap(
+    createVariantGroup({
+      component: button,
+      tplMgr,
+      name: "features",
+      optionsType: VariantOptionsType.multiChoice,
+    })
+  );
   for (const name of ["rounded", "shadow"]) {
-    const variantResult = createVariant({
-      component: button,
-      tplMgr,
-      variantGroup: featuresGroup,
-      name,
-    });
-    assert(variantResult.result === "success", "features variant setup failed");
+    unwrap(
+      createVariant({
+        component: button,
+        tplMgr,
+        variantGroup: featuresGroup,
+        name,
+      })
+    );
   }
 
-  const darkResult = createVariantGroup({
-    component: button,
-    tplMgr,
-    name: "dark",
-    optionsType: VariantOptionsType.standalone,
-  });
-  assert(darkResult.result === "success", "dark group setup failed");
-  const darkGroup = darkResult.group;
+  const darkGroup = unwrap(
+    createVariantGroup({
+      component: button,
+      tplMgr,
+      name: "dark",
+      optionsType: VariantOptionsType.standalone,
+    })
+  );
 
   const baseVariant = getBaseVariant(page);
   const instance = Tpls.mkTplComponentX({

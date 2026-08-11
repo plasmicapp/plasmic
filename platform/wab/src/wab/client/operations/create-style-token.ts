@@ -1,9 +1,10 @@
-import { OperationResult } from "@/wab/client/operations/common";
 import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { GenericError } from "@/wab/shared/error-handling";
 import { StyleToken } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type CreateStyleTokenResult = OperationResult<{ token: StyleToken }>;
+export type CreateStyleTokenResult = Result<StyleToken, GenericError>;
 
 /**
  * Create a new style token. Token name is uniquified against the site's
@@ -24,11 +25,8 @@ export function createStyleToken(opts: {
   const { tplMgr, name, type, value } = opts;
 
   if (!name.trim()) {
-    return { result: "error", message: "Token name cannot be empty." };
+    return err({ message: "Token name cannot be empty." });
   }
 
-  return {
-    result: "success",
-    token: tplMgr.addStyleToken({ name, tokenType: type, value }),
-  };
+  return ok(tplMgr.addStyleToken({ name, tokenType: type, value }));
 }

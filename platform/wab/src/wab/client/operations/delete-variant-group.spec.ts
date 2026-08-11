@@ -35,9 +35,9 @@ describe("deleteVariantGroup", () => {
       tplMgr
     );
 
-    assert(result.result === "success", "expected success");
+    assert(result.isOk(), "expected success");
     expect(component.variantGroups).not.toContain(group);
-    expect(result.messages.length).toBeGreaterThan(0);
+    expect(result.value.length).toBeGreaterThan(0);
   });
 
   it("deletes a global variant group", async () => {
@@ -53,7 +53,7 @@ describe("deleteVariantGroup", () => {
       tplMgr
     );
 
-    assert(result.result === "success", "expected success");
+    assert(result.isOk(), "expected success");
     expect(studioCtx.site.globalVariantGroups).not.toContain(globalGroup);
   });
 
@@ -74,11 +74,12 @@ describe("deleteVariantGroup", () => {
       tplMgr
     );
 
-    expect(result.result).toEqual("error");
-    if (result.result === "error") {
-      assert(result.variantGroupRefs != null, "expected variant group refs");
-      expect(result.variantGroupRefs.length).toBeGreaterThan(0);
-    }
+    assert(result.isErr(), "expected error");
+    assert(
+      result.error.variantGroupRefs != null,
+      "expected variant group refs"
+    );
+    expect(result.error.variantGroupRefs.length).toBeGreaterThan(0);
     // Group is left untouched.
     expect(component.variantGroups).toContain(group);
   });

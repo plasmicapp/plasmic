@@ -19,9 +19,9 @@ describe("setStyleTokenVariantedValue", () => {
       type: "Color",
       value: "#ffffff",
     });
-    assert(created.result === "success", "setup failed");
+    assert(created.isOk(), "setup failed");
 
-    return { site, tplMgr, token: created.token, dark };
+    return { site, tplMgr, token: created.value, dark };
   }
 
   it("upserts a varianted value and then removes it via null", () => {
@@ -33,7 +33,7 @@ describe("setStyleTokenVariantedValue", () => {
       variants: [dark],
       value: "#111111",
     });
-    assert(setResult.result === "success", "expected set success");
+    assert(setResult.isOk(), "expected set success");
     expect(token.variantedValues.length).toEqual(1);
     expect(token.variantedValues[0].value).toEqual("#111111");
     expect(token.variantedValues[0].variants).toEqual([dark]);
@@ -44,7 +44,7 @@ describe("setStyleTokenVariantedValue", () => {
       variants: [dark],
       value: null,
     });
-    assert(removeResult.result === "success", "expected remove success");
+    assert(removeResult.isOk(), "expected remove success");
     expect(token.variantedValues.length).toEqual(0);
   });
 
@@ -56,6 +56,6 @@ describe("setStyleTokenVariantedValue", () => {
       variants: [] as Variant[],
       value: "#000",
     });
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 });

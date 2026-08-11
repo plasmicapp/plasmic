@@ -5,6 +5,7 @@ import {
 } from "@/wab/client/operations/insert-tpl";
 import { setupComponentWithTplTree } from "@/wab/client/operations/tests/utils";
 import { ensureVariantSetting, getBaseVariant } from "@/wab/shared/Variants";
+import { assert } from "@/wab/shared/common";
 import { mkParam } from "@/wab/shared/core/lang";
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
@@ -29,14 +30,10 @@ describe("insertTplAt", () => {
     const root = Tpls.mkTplTagX("div", {}, movedA, movedB, container);
     const { ctx } = setup(root);
 
-    expect(insertTplAt(movedA, container, "append", ctx)).toEqual({
-      result: "success",
-    });
+    expect(insertTplAt(movedA, container, "append", ctx).isOk()).toBe(true);
     expect(container.children).toEqual([existing, movedA]);
 
-    expect(insertTplAt(movedB, container, "prepend", ctx)).toEqual({
-      result: "success",
-    });
+    expect(insertTplAt(movedB, container, "prepend", ctx).isOk()).toBe(true);
     expect(container.children).toEqual([movedB, existing, movedA]);
     expect(movedA.parent).toBe(container);
     expect(movedB.parent).toBe(container);
@@ -50,10 +47,10 @@ describe("insertTplAt", () => {
     const root = Tpls.mkTplTagX("div", {}, a, b, c);
     const { ctx } = setup(root);
 
-    expect(insertTplAt(a, c, "after", ctx)).toEqual({ result: "success" });
+    expect(insertTplAt(a, c, "after", ctx).isOk()).toBe(true);
     expect(root.children).toEqual([b, c, a]);
 
-    expect(insertTplAt(a, b, "before", ctx)).toEqual({ result: "success" });
+    expect(insertTplAt(a, b, "before", ctx).isOk()).toBe(true);
     expect(root.children).toEqual([a, b, c]);
   });
 
@@ -65,7 +62,7 @@ describe("insertTplAt", () => {
 
     // Re-appending an existing child to its own parent must NOT reorder;
     // canvas free-move relies on this to only update position styles.
-    expect(insertTplAt(a, root, "append", ctx)).toEqual({ result: "success" });
+    expect(insertTplAt(a, root, "append", ctx).isOk()).toBe(true);
     expect(root.children).toEqual([a, b]);
   });
 
@@ -75,10 +72,9 @@ describe("insertTplAt", () => {
     const root = Tpls.mkTplTagX("div", {}, moved, img);
     const { ctx } = setup(root);
 
-    expect(insertTplAt(moved, img, "append", ctx)).toMatchObject({
-      result: "error",
-      reason: { type: "CantAddToAtomic" },
-    });
+    const result = insertTplAt(moved, img, "append", ctx);
+    assert(result.isErr(), "expected error result");
+    expect(result.error).toMatchObject({ type: "CantAddToAtomic" });
     expect(root.children).toEqual([moved, img]);
   });
 
@@ -88,10 +84,9 @@ describe("insertTplAt", () => {
     const root = Tpls.mkTplTagX("div", {}, child);
     const { ctx } = setup(root);
 
-    expect(insertTplAt(child, grandchild, "append", ctx)).toMatchObject({
-      result: "error",
-      reason: { type: "CantAddToSelfDescendant" },
-    });
+    const result = insertTplAt(child, grandchild, "append", ctx);
+    assert(result.isErr(), "expected error result");
+    expect(result.error).toMatchObject({ type: "CantAddToSelfDescendant" });
     expect(child.parent).toBe(root);
   });
 
@@ -100,10 +95,9 @@ describe("insertTplAt", () => {
     const root = Tpls.mkTplTagX("div", {}, moved);
     const { ctx } = setup(root);
 
-    expect(insertTplAt(moved, root, "after", ctx)).toMatchObject({
-      result: "error",
-      reason: { type: "CantAddSiblingToRoot" },
-    });
+    const result = insertTplAt(moved, root, "after", ctx);
+    assert(result.isErr(), "expected error result");
+    expect(result.error).toMatchObject({ type: "CantAddSiblingToRoot" });
   });
 });
 
@@ -118,7 +112,7 @@ describe("insertTplAsChild", () => {
 
     const result = insertTplAsChild(moved, textBlock, ctx);
 
-    expect(result).toEqual({ result: "success" });
+    expect(result.isOk()).toBe(true);
     // The text block became a plain container holding [text child, moved]
     expect(textBlock.type).toEqual(Tpls.TplTagType.Other);
     expect(textBlock.children).toHaveLength(2);
@@ -139,9 +133,7 @@ describe("insertTplAsChild", () => {
     const parentVs = ensureVariantSetting(flexParent, [baseVariant]);
     parentVs.rs.values = { display: "flex", "flex-direction": "row" };
 
-    expect(insertTplAsChild(moved, flexParent, ctx)).toEqual({
-      result: "success",
-    });
+    expect(insertTplAsChild(moved, flexParent, ctx).isOk()).toBe(true);
     // Relative positioning adopted: offsets neutralized to auto. (position
     // itself stays unset — it already reads as "relative" by default.)
     expect(movedVs.rs.values["left"]).toEqual("auto");
@@ -164,9 +156,7 @@ describe("insertTplAsChild", () => {
     });
 
     const col3 = Tpls.mkTplTagX("div", { type: Tpls.TplTagType.Column });
-    expect(insertTplAsChild(col3, columns, ctx)).toEqual({
-      result: "success",
-    });
+    expect(insertTplAsChild(col3, columns, ctx).isOk()).toBe(true);
     expect(columns.children).toEqual([col1, col2, col3]);
     expect(vs.columnsConfig.colsSizes).toHaveLength(3);
   });
@@ -180,17 +170,20 @@ describe("insertTplAsChild", () => {
     const root = Tpls.mkTplTagX("div", {}, columns, plain, other);
     const { ctx } = setup(root);
 
-    expect(insertTplAsChild(plain, columns, ctx)).toMatchObject({
-      result: "error",
-      reason: { type: "CantAddNonColumnToColumns" },
+    const plainIntoColumns = insertTplAsChild(plain, columns, ctx);
+    assert(plainIntoColumns.isErr(), "expected error result");
+    expect(plainIntoColumns.error).toMatchObject({
+      type: "CantAddNonColumnToColumns",
     });
-    expect(insertTplAsChild(col, other, ctx)).toMatchObject({
-      result: "error",
-      reason: { type: "CantAddColumnToNonColumns" },
+    const colIntoOther = insertTplAsChild(col, other, ctx);
+    assert(colIntoOther.isErr(), "expected error result");
+    expect(colIntoOther.error).toMatchObject({
+      type: "CantAddColumnToNonColumns",
     });
-    expect(insertTplAt(plain, col, "after", ctx)).toMatchObject({
-      result: "error",
-      reason: { type: "CantAddNonColumnSiblingToColumn" },
+    const plainAfterCol = insertTplAt(plain, col, "after", ctx);
+    assert(plainAfterCol.isErr(), "expected error result");
+    expect(plainAfterCol.error).toMatchObject({
+      type: "CantAddNonColumnSiblingToColumn",
     });
   });
 });

@@ -4,6 +4,7 @@ import {
 } from "@/wab/client/operations/delete-tpl";
 import { setupComponentWithTplTree } from "@/wab/client/operations/tests/utils";
 import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
+import { assert } from "@/wab/shared/common";
 import { customCode } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import {
@@ -22,7 +23,7 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([child], { component, site, vtm });
 
-    expect(result).toEqual({ result: "deleted" });
+    expect(result.isOk()).toBe(true);
     expect(root.children).toHaveLength(0);
   });
 
@@ -35,7 +36,7 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([child1, child3], { component, site, vtm });
 
-    expect(result).toEqual({ result: "deleted" });
+    expect(result.isOk()).toBe(true);
     expect(root.children).toHaveLength(1);
     expect(root.children).toContain(child2);
   });
@@ -46,8 +47,8 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([root], { component, site, vtm });
 
-    expect(result).toEqual({
-      result: "error",
+    assert(result.isErr(), "expected error");
+    expect(result.error).toEqual({
       message: "Cannot remove the root element.",
     });
   });
@@ -68,7 +69,7 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([target], { component, site, vtm });
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
   });
 
   it("returns error when element has implicit state referenced in component", () => {
@@ -88,11 +89,11 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([child], { component, site, vtm });
 
-    expect(result.result).toBe("error");
-    if (result.result === "error") {
-      expect(result.message).toContain("variable");
-      expect(result.message).toContain("referenced in the current component");
-    }
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain("variable");
+    expect(result.error.message).toContain(
+      "referenced in the current component"
+    );
   });
 
   it("deletes list item and container when both specified", () => {
@@ -107,7 +108,7 @@ describe("deleteTpl", () => {
       vtm,
     });
 
-    expect(result).toEqual({ result: "deleted" });
+    expect(result.isOk()).toBe(true);
     expect(Tpls.tryGetTplOwnerComponent(listItem)).toBeUndefined();
     expect(Tpls.tryGetTplOwnerComponent(listContainer)).toBeUndefined();
     expect(Tpls.tryGetTplOwnerComponent(root)).toBe(component);
@@ -122,7 +123,7 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([listItem], { component, site, vtm });
 
-    expect(result).toEqual({ result: "deleted" });
+    expect(result.isOk()).toBe(true);
     expect(Tpls.tryGetTplOwnerComponent(listItem)).toBeUndefined();
     expect(Tpls.tryGetTplOwnerComponent(listContainer)).toBeUndefined();
     expect(Tpls.tryGetTplOwnerComponent(root)).toBe(component);
@@ -136,7 +137,7 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([listItem], { component, site, vtm });
 
-    expect(result).toEqual({ result: "deleted" });
+    expect(result.isOk()).toBe(true);
     expect(Tpls.tryGetTplOwnerComponent(listItem)).toBeUndefined();
     expect(Tpls.tryGetTplOwnerComponent(listContainer)).toBe(component);
     expect(listContainer.children).toHaveLength(0);
@@ -160,7 +161,7 @@ describe("deleteTpl", () => {
 
     const result = deleteTpl([listItem], { component, site, vtm });
 
-    expect(result.result).toEqual("error");
+    expect(result.isErr()).toBe(true);
     expect(root.children).toHaveLength(1);
   });
 });

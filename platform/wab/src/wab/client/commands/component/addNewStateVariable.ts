@@ -1,7 +1,7 @@
 import { getComponentContext } from "@/wab/client/commands/context-utils";
 import { Command } from "@/wab/client/commands/types";
 import { createComponentState } from "@/wab/client/operations/create-component-state";
-import { assert } from "@/wab/shared/common";
+import { ensureOk } from "@/wab/commons/neverthrow-utils";
 import { DEFAULT_STATE_VARIABLE_NAME } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
 import { ok } from "neverthrow";
@@ -24,16 +24,16 @@ export const addNewStateVariableCommand: Command<
   },
   context: getComponentContext,
   execute: async (studioCtx, _, { component }) => {
-    return await studioCtx.change(() => {
-      const result = createComponentState({
-        site: studioCtx.site,
-        component,
-        tplMgr: studioCtx.tplMgr(),
-        name: DEFAULT_STATE_VARIABLE_NAME,
-      });
-      assert(result.result === "success", "Failed to create state variable");
-
-      return ok(result.state);
+    return studioCtx.change(() => {
+      const state = ensureOk(
+        createComponentState({
+          site: studioCtx.site,
+          component,
+          tplMgr: studioCtx.tplMgr(),
+          name: DEFAULT_STATE_VARIABLE_NAME,
+        })
+      );
+      return ok(state);
     });
   },
 };

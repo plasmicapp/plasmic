@@ -9,14 +9,17 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
+import { Result, err, ok } from "neverthrow";
 
-export type ExtractComponentResult =
-  | { result: "success"; tplComponent: TplComponent; warnings: string[] }
-  | {
-      result: "error";
-      message: string;
-      referencingNode?: TplNode | null;
-    };
+export interface ExtractComponentError {
+  message: string;
+  referencingNode?: TplNode | null;
+}
+
+export type ExtractComponentResult = Result<
+  { tplComponent: TplComponent; warnings: string[] },
+  ExtractComponentError
+>;
 
 /**
  * Extract `tpl` from `containingComponent` into a new reusable component.
@@ -63,7 +66,7 @@ export function extractComponent(opts: {
 
   const error = validateComponentExtraction(tpl, containingComponent, site);
   if (error) {
-    return { result: "error", ...error };
+    return err(error);
   }
 
   const { tplComponent, warnings } = Components.extractComponent({
@@ -77,5 +80,5 @@ export function extractComponent(opts: {
   });
   tplMgr.attachComponent(tplComponent.component);
 
-  return { result: "success", tplComponent, warnings };
+  return ok({ tplComponent, warnings });
 }

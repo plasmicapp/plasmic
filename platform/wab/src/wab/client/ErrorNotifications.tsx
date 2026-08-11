@@ -1,18 +1,24 @@
 import { analytics } from "@/wab/client/observability";
+import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UserError } from "@/wab/shared/UserError";
 import {
   AssertionError,
   FalsyValueError,
   HarmlessError,
   NullOrUndefinedValueError,
+  mkUuid,
   shallowJson,
+  spawn,
   stampObjectUuid,
 } from "@/wab/shared/common";
+import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
-import { UserError } from "@/wab/shared/UserError";
+import { TplNode } from "@/wab/shared/model/classes";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { IconType } from "antd/lib/notification";
+import React from "react";
 
 const errorMessageCounters = new Map<string, number>();
 
@@ -191,6 +197,39 @@ export function reportSilentErrorMessage(
   Sentry.captureMessage(msg);
   analytics().track(eventName, {
     message: msg,
+  });
+}
+
+export function notifyReferencingNode(
+  title: string,
+  message: string,
+  referencingNode: TplNode | null | undefined,
+  studioCtx: StudioCtx
+) {
+  const owningComponent = referencingNode
+    ? tryGetTplOwnerComponent(referencingNode)
+    : undefined;
+  const key = mkUuid();
+  notification.error({
+    key,
+    message: title,
+    description: (
+      <>
+        {message}{" "}
+        {referencingNode && owningComponent ? (
+          <a
+            onClick={() => {
+              spawn(
+                studioCtx.setStudioFocusOnTpl(owningComponent, referencingNode)
+              );
+              notification.close(key);
+            }}
+          >
+            [Go to reference]
+          </a>
+        ) : null}
+      </>
+    ),
   });
 }
 
