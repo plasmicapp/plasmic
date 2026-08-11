@@ -3728,6 +3728,235 @@ function useReactiveDollarQ(
   }, [new$Q, setDollarQ]);
 }
 
+function triggerQueryLoad(queries: DataOrServerQueries) {
+  Object.values(queries).forEach((query) => {
+    try {
+      if (query?.isLoading) {
+        const data = query.data;
+        if (data && typeof data === "object" && "value" in data) {
+          data.value;
+        }
+      }
+    } catch {
+      /* Empty */
+    }
+  });
+}
+
+function getServerQueryFuncReg(ctx: RenderingCtx, op: CustomFunctionExpr) {
+  return ctx.viewCtx.canvasCtx
+    .getRegisteredFunctionsMap()
+    .get(customFunctionId(op.func));
+}
+
+/**
+ * Number of server queries that can currently execute, i.e. that get an entry
+ * in the query tree. Queries with unregistered custom functions are dropped.
+ */
+function countExecutableServerQueries(ctx: RenderingCtx, component: Component) {
+  return component.serverQueries
+    .filter(isServerQueryWithOperation)
+    .filter(
+      (query) =>
+        isKnownCustomCode(query.op) || !!getServerQueryFuncReg(ctx, query.op)
+    ).length;
+}
+
+/**
+ * How many React hooks `useComponentLevelQueries` runs, as a pair of counts:
+ * - `usePlasmicDataOp` per legacy data query, and, inside `usePlasmicQueries`.
+ * - `usePlasmicQuery` per executable server query.
+ * React requires a constant hook count per component, so this is the fetcher
+ * component's identity.
+ */
+function getQueryFetcherHookCounts(ctx: RenderingCtx, component: Component) {
+  return [
+    component.dataQueries.filter((query) => !!query.op).length,
+    countExecutableServerQueries(ctx, component),
+  ] as const;
+}
+
+/**
+ * Computes this component's `$q` and `$queries` and seeds them into `ctx.env`.
+ *
+ * `$q` must be seeded before `eagerInitializeStates()` and the legacy `dataQueries` ops,
+ * on first render `$q` is still the empty `useState({})` object, so an unseeded read is a
+ * TypeError, not the deferrable "not ready yet" throw that the retry paths recover from.
+ */
+function useComponentLevelQueries(
+  sub: SubDeps,
+  ctx: RenderingCtx,
+  component: Component
+) {
+  // Rebuild the tree when any query's id, name, or op changes (e.g. on rename)
+  // otherwise `usePlasmicQueries` returns results keyed by stale names.
+  const serverQueriesByKey = component.serverQueries
+    .filter(isServerQueryWithOperation)
+    .map((query) => {
+      const varName = toVarName(query.name);
+      const uuidName = `${query.uuid}:${varName}`;
+      if (isKnownCustomCode(query.op)) {
+        return {
+          query,
+          varName,
+          funcReg: undefined,
+          key: `custom:${uuidName}:${query.op.code}`,
+        };
+      }
+      // The tree below drops queries with unregistered functions, so key on
+      // registration as well, to rebuild the tree once one lands. No other
+      // dep changes when the registry refreshes.
+      const funcReg = getServerQueryFuncReg(ctx, query.op);
+      const funcId = customFunctionId(query.op.func);
+      return {
+        query,
+        varName,
+        funcReg,
+        key: `func:${uuidName}:${funcId}${funcReg ? "" : ":?"}`,
+      };
+    });
+  const serverQueryTree = sub.React.useMemo(
+    (): QueryComponentNode => ({
+      type: "component",
+      queries: Object.fromEntries(
+        serverQueriesByKey
+          .map(({ query, varName, funcReg }) => {
+            // Route through shared studio cache so a non-deterministic/stateful functions
+            // execute once per cache key (canvas + preview + modal agree).
+            const wrapFetch = ctx.viewCtx.studioCtx.executeServerQuery;
+            if (isKnownCustomCode(query.op)) {
+              return [
+                varName,
+                wrapPlasmicQueryFetch(
+                  buildCustomCodePlasmicQuery(
+                    // Match QueryResultPreview/modal custom-code id.
+                    makeCustomCodeQueryKey(query.uuid),
+                    query.op.code,
+                    () => ctx.env
+                  ),
+                  wrapFetch
+                ),
+              ] as const;
+            }
+            if (!funcReg) {
+              return null;
+            }
+            const op = query.op;
+            const funcId = customFunctionId(op.func);
+            return [
+              varName,
+              {
+                id: funcId,
+                fn: ((...fnArgs: any[]) =>
+                  wrapFetch(
+                    funcId,
+                    funcReg.function as any,
+                    ...fnArgs
+                  )) as typeof funcReg.function,
+                args: ({
+                  $q,
+                  $props,
+                  $ctx,
+                  $state,
+                }: {
+                  $q: Record<string, PlasmicQueryResult>;
+                  $props: Record<string, unknown>;
+                  $ctx: Record<string, unknown>;
+                  $state: Record<string, unknown>;
+                }) => {
+                  return getCustomFunctionParams(
+                    op,
+                    { ...ctx.env, $q, $props, $ctx, $state },
+                    {
+                      component,
+                      projectFlags: ctx.projectFlags,
+                      inStudio: true,
+                    },
+                    ctx.viewCtx.canvasCtx.win()
+                  );
+                },
+              },
+            ] as const;
+          })
+          .filter(notNil)
+      ),
+      stateSpecs: ctx.stateSpecs,
+      propsContext: {},
+      children: [],
+    }),
+    [
+      component,
+      ctx.viewCtx.canvasCtx,
+      serverQueriesByKey.map((q) => q.key).join("|"),
+    ]
+  );
+  const new$Q =
+    sub.dataSources?.usePlasmicQueries?.(serverQueryTree, {
+      $ctx: ctx.env.$ctx ?? {},
+      $props: ctx.env.$props ?? {},
+      $state: (ctx.env.$state as Record<string, unknown> | undefined) ?? {},
+    }) ?? {};
+
+  // In codegen $queries/$q are updated in the render function. We can't do it
+  // here as this is not the `Component` render function, so we update the
+  // object manually.
+  const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
+
+  // Must run after `$q` is seeded above, since state initializers can reference
+  // `$q`, and before the legacy ops below, which can reference `$state`.
+  ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
+
+  const getDataOp = (query: ComponentDataQuery) =>
+    query.op
+      ? () => {
+          return evalCodeWithEnv(
+            asCode(removeFallbackFromDataSourceOp(query.op!), {
+              component,
+              projectFlags: ctx.projectFlags,
+              inStudio: true,
+            }).code,
+            ctx.env,
+            ctx.viewCtx.canvasCtx.win()
+          );
+        }
+      : undefined;
+  const new$Queries = Object.fromEntries([
+    ...component.dataQueries
+      .filter((query) => !!query.op)
+      .map(
+        (query) =>
+          [
+            toVarName(query.name),
+            sub.dataSources?.usePlasmicDataOp(getDataOp(query)),
+          ] as const
+      ),
+  ]);
+  const shouldUpdate$Queries = updateCtxQueries(ctx.env.$queries, new$Queries);
+
+  useReactiveDollarQ(sub, new$Q, ctx.setDollarQ);
+
+  defer(() => {
+    triggerQueryLoad(new$Q);
+    triggerQueryLoad(new$Queries);
+  });
+
+  sub.React.useLayoutEffect(() => {
+    if (shouldUpdate$Queries) {
+      ctx.setDollarQueries(new$Queries);
+    }
+    if (shouldUpdate$Q) {
+      ctx.setDollarQ(new$Q);
+    }
+  }, [
+    shouldUpdate$Queries,
+    new$Queries,
+    ctx.env.$queries,
+    shouldUpdate$Q,
+    new$Q,
+    ctx.env.$q,
+  ]);
+}
+
 /**
  * We need to create a wrapper for component-level queries because the number
  * of React hooks to be used depend on the number of queries to be made, but
@@ -3735,7 +3964,12 @@ function useReactiveDollarQ(
  * to generate a new React Component whenever the number of queries changes.
  */
 const mkComponentLevelQueryFetcher = computedFn(
-  (sub: SubDeps, viewCtx: ViewCtx, _dataQueriesCount: number) =>
+  (
+      sub: SubDeps,
+      viewCtx: ViewCtx,
+      _dataQueriesCount: number,
+      _executableServerQueriesCount: number
+    ) =>
     ({
       ctx,
       component,
@@ -3747,187 +3981,7 @@ const mkComponentLevelQueryFetcher = computedFn(
         sub,
         viewCtx
       )(() => {
-        const getDataOp = (query: ComponentDataQuery) =>
-          query.op
-            ? () => {
-                return evalCodeWithEnv(
-                  asCode(removeFallbackFromDataSourceOp(query.op!), {
-                    component,
-                    projectFlags: ctx.projectFlags,
-                    inStudio: true,
-                  }).code,
-                  ctx.env,
-                  ctx.viewCtx.canvasCtx.win()
-                );
-              }
-            : undefined;
-        const new$Queries = Object.fromEntries([
-          ...component.dataQueries
-            .filter((query) => !!query.op)
-            .map(
-              (query) =>
-                [
-                  toVarName(query.name),
-                  sub.dataSources?.usePlasmicDataOp(getDataOp(query)),
-                ] as const
-            ),
-        ]);
-
-        // Memoize queries similar to codegen output. Keep the tree identity stable and
-        // read the latest ctx via ref so query state isn't recreated every render.
-        // const queryCtxRef = sub.React.useRef(ctx);
-        // queryCtxRef.current = ctx;
-
-        // Rebuild the tree when any query's id, name, or op changes (e.g. on rename)
-        // otherwise `usePlasmicQueries` returns results keyed by stale names.
-        const serverQueriesByKey = component.serverQueries
-          .filter(isServerQueryWithOperation)
-          .map((query) => {
-            const varName = toVarName(query.name);
-            const uuidName = `${query.uuid}:${varName}`;
-            return {
-              query,
-              varName,
-              key: isKnownCustomCode(query.op)
-                ? `custom:${uuidName}:${query.op.code}`
-                : `func::${uuidName}${customFunctionId(query.op.func)}`,
-            };
-          });
-        const serverQueryTree = sub.React.useMemo(
-          (): QueryComponentNode => ({
-            type: "component",
-            queries: Object.fromEntries(
-              serverQueriesByKey
-                .map(({ query, varName }) => {
-                  // Route through shared studio cache so a non-deterministic/stateful functions
-                  // execute once per cache key (canvas + preview + modal agree).
-                  const wrapFetch = ctx.viewCtx.studioCtx.executeServerQuery;
-                  if (isKnownCustomCode(query.op)) {
-                    return [
-                      varName,
-                      wrapPlasmicQueryFetch(
-                        buildCustomCodePlasmicQuery(
-                          // Match QueryResultPreview/modal custom-code id.
-                          makeCustomCodeQueryKey(query.uuid),
-                          query.op.code,
-                          () => ctx.env
-                        ),
-                        wrapFetch
-                      ),
-                    ] as const;
-                  }
-                  const op = query.op;
-                  const funcId = customFunctionId(op.func);
-                  const funcReg = ctx.viewCtx.canvasCtx
-                    .getRegisteredFunctionsMap()
-                    .get(funcId);
-                  if (!funcReg) {
-                    return null;
-                  }
-                  return [
-                    varName,
-                    {
-                      id: funcId,
-                      fn: ((...fnArgs: any[]) =>
-                        wrapFetch(
-                          funcId,
-                          funcReg.function as any,
-                          ...fnArgs
-                        )) as typeof funcReg.function,
-                      args: ({
-                        $q,
-                        $props,
-                        $ctx,
-                        $state,
-                      }: {
-                        $q: Record<string, PlasmicQueryResult>;
-                        $props: Record<string, unknown>;
-                        $ctx: Record<string, unknown>;
-                        $state: Record<string, unknown>;
-                      }) => {
-                        return getCustomFunctionParams(
-                          op,
-                          { ...ctx.env, $q, $props, $ctx, $state },
-                          {
-                            component,
-                            projectFlags: ctx.projectFlags,
-                            inStudio: true,
-                          },
-                          ctx.viewCtx.canvasCtx.win()
-                        );
-                      },
-                    },
-                  ] as const;
-                })
-                .filter(notNil)
-            ),
-            stateSpecs: ctx.stateSpecs,
-            propsContext: {},
-            children: [],
-          }),
-          [
-            component,
-            ctx.viewCtx.canvasCtx,
-            serverQueriesByKey.map((q) => q.key).join("|"),
-          ]
-        );
-        const new$Q =
-          sub.dataSources?.usePlasmicQueries?.(serverQueryTree, {
-            $ctx: ctx.env.$ctx ?? {},
-            $props: ctx.env.$props ?? {},
-            $state:
-              (ctx.env.$state as Record<string, unknown> | undefined) ?? {},
-          }) ?? {};
-
-        const triggerQueryLoad = (queries: DataOrServerQueries) => {
-          Object.values(queries).forEach((query) => {
-            try {
-              if (query?.isLoading) {
-                // Force kickoff all fetches
-                const data = query.data;
-                if (data && typeof data === "object" && "value" in data) {
-                  data.value;
-                } else {
-                  void data;
-                }
-              }
-            } catch {
-              /* Empty */
-            }
-          });
-        };
-        defer(() => {
-          triggerQueryLoad(new$Queries);
-          triggerQueryLoad(new$Q);
-        });
-        // In codegen $queries is updated in the render function. We can't do it here
-        // as this is not the `Component` render function, so we update the object manually
-        const shouldUpdate$Queries = updateCtxQueries(
-          ctx.env.$queries,
-          new$Queries
-        );
-        const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
-
-        useReactiveDollarQ(sub, new$Q, ctx.setDollarQ);
-
-        ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
-
-        sub.React.useLayoutEffect(() => {
-          if (shouldUpdate$Queries) {
-            ctx.setDollarQueries(new$Queries);
-          }
-          if (shouldUpdate$Q) {
-            ctx.setDollarQ(new$Q);
-          }
-        }, [
-          shouldUpdate$Queries,
-          new$Queries,
-          ctx.env.$queries,
-          shouldUpdate$Q,
-          new$Q,
-          ctx.env.$q,
-        ]);
-
+        useComponentLevelQueries(sub, ctx, component);
         return renderTplNode(component.tplTree, ctx);
       });
     }
@@ -3941,8 +3995,7 @@ function wrapInComponentDataQueries(ctx: RenderingCtx, component: Component) {
     mkComponentLevelQueryFetcher(
       ctx.sub,
       ctx.viewCtx,
-      component.dataQueries.filter((query) => !!query.op).length +
-        component.serverQueries.filter(isServerQueryWithOperation).length
+      ...getQueryFetcherHookCounts(ctx, component)
     ),
     {
       key: component.uuid,
@@ -3968,3 +4021,8 @@ function pinMapEquals(map1: PinMap, map2: PinMap) {
   }
   return true;
 }
+
+export const _testOnlyUtils = {
+  getQueryFetcherHookCounts,
+  useComponentLevelQueries,
+};
