@@ -18,6 +18,7 @@ import {
   tagDisplayLabel,
 } from "@/wab/shared/html";
 import { Mixin, ThemeStyle, Variant } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -137,10 +138,12 @@ const DefaultStylesPanel = observer(
           props: {
             options: [
               { value: BASE_THEMABLE_TAG, label: "Normal text" },
-              ...[...THEMABLE_TAGS].sort().map((themeTag) => ({
-                value: themeTag,
-                label: tagDisplayLabel(themeTag),
-              })),
+              ...naturalSort(THEMABLE_TAGS, tagDisplayLabel).map(
+                (themeTag) => ({
+                  value: themeTag,
+                  label: tagDisplayLabel(themeTag),
+                })
+              ),
             ],
             onChange: (_tag) =>
               setTag((_tag as ThemableTag | null) || BASE_THEMABLE_TAG),

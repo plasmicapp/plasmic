@@ -80,9 +80,9 @@ const TAGS = {
   input: { displayName: "Input" },
   textarea: { displayName: "Text area" },
   strong: { displayName: "Strong", richTextInline: true, themable: true },
+  em: { displayName: "Emphasis", richTextInline: true, themable: true },
   b: { displayName: "Bold", richTextInline: true, themable: true },
   i: { displayName: "Italic", richTextInline: true, themable: true },
-  em: { displayName: "Emphasis", richTextInline: true, themable: true },
   sub: { displayName: "Subscript", richTextInline: true },
   sup: { displayName: "Superscript", richTextInline: true },
 } as const satisfies Record<string, TagMeta>;

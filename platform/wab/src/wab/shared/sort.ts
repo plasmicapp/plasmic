@@ -1,6 +1,9 @@
 import { isTruthy } from "@/wab/shared/common";
 
-export function naturalSort<T>(items: T[], sortBy: (item: T) => string): T[] {
+export function naturalSort<T>(
+  items: readonly T[],
+  sortBy: (item: T) => string
+): T[] {
   return items
     .map((item) => ({
       item,
@@ -33,6 +36,8 @@ export function naturalSort<T>(items: T[], sortBy: (item: T) => string): T[] {
     .map((item) => item.item);
 }
 
-export function naturalSortByName<T extends { name: string }>(items: T[]) {
+export function naturalSortByName<T extends { name: string }>(
+  items: readonly T[]
+) {
   return naturalSort(items, (item) => item.name);
 }
