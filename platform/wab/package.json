@@ -204,7 +204,7 @@
     "@plasmicpkgs/commerce-local": "^0.0.257",
     "@plasmicpkgs/plasmic-basic-components": "^0.0.288",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.243",
-    "@plasmicpkgs/react-aria": "^0.0.194",
+    "@plasmicpkgs/react-aria": "^0.0.195",
     "@popperjs/core": "2.11.8",
     "@qualifyze/airtable-formulator": "^1.3.1",
     "@react-awesome-query-builder/antd": "^6.6.15",
