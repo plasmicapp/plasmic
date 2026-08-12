@@ -33,11 +33,5 @@ global.BroadcastChannel = class BroadcastChannel extends NodeBroadcastChannel {
 };
 
 let objectURLCounter = 0;
-global.URL.createObjectURL = (object) => {
-  const url = `blob:${++objectURLCounter}`;
-  console.log(`createObjectURL(${object}) called, returning ${url}`);
-  return url;
-};
-global.URL.revokeObjectURL = (url) => {
-  console.log(`revokeObjectURL(${url}) called`);
-};
+global.URL.createObjectURL = () => `blob:${++objectURLCounter}`;
+global.URL.revokeObjectURL = () => {};

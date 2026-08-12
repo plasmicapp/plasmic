@@ -98,7 +98,15 @@ export async function createDatabase(name = "test") {
   await sucon.query("select 1");
   await sucon.query(`drop database if exists ${dbname} with (force);`);
   await sucon.query(`create database ${dbname} owner wab;`);
-  await sucon.query(`grant pg_signal_backend to wab;`);
+  // pg_auth_members is a cluster-wide catalog, so parallel workers issuing this
+  // same grant race on its unique index. Losing the race means it's granted.
+  try {
+    await sucon.query(`grant pg_signal_backend to wab;`);
+  } catch (e) {
+    if (e.code !== "23505") {
+      throw e;
+    }
+  }
   const dburi = `postgresql://wab@localhost/${dbname}`;
   const con = await ensureDbConnection(dburi, dbname);
   await con.synchronize();
