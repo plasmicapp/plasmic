@@ -1,7 +1,4 @@
-export type Provider = "Anthropic" | "Google" | "OpenAI" | "VertexAnthropic";
-
-export type ModelProviderOpts = {
-  provider: Provider;
+type BaseModelProviderOpts = {
   modelName: string;
   maxTokens: number;
   temperature: number;
@@ -11,3 +8,18 @@ export type ModelProviderOpts = {
     };
   };
 };
+
+export type ModelProviderOpts =
+  | (BaseModelProviderOpts & { provider: "Anthropic" | "OpenAI" })
+  // `location` overrides `GOOGLE_VERTEX_LOCATION` or the `global` endpoint (VertexAnthropic).
+  | (BaseModelProviderOpts & {
+      provider: "Google" | "VertexAnthropic";
+      location?: string;
+    })
+  // Model Garden models are served from their own regions, so there's no default/fallback
+  | (BaseModelProviderOpts & {
+      provider: "VertexModelGarden";
+      location: string;
+    });
+
+export type Provider = ModelProviderOpts["provider"];
