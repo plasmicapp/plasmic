@@ -115,6 +115,38 @@ test.describe("rich-text", () => {
     expect(baseVariantErrors()).toEqual([]);
   });
 
+  test("renders a fresh inline tag inline while still editing", async ({
+    page,
+    models,
+  }) => {
+    await models.studio.leftPanel.addNewFrame();
+    const artboardFrame = models.studio.frame
+      .locator("iframe")
+      .first()
+      .contentFrame();
+    const artboardBody = artboardFrame.locator("body");
+
+    await artboardBody.click();
+    await models.studio.focusCreatedFrameRoot();
+    await models.studio.leftPanel.insertNode("Text");
+
+    const textEditor = artboardFrame.locator(".__wab_editor");
+    await textEditor.dblclick({ force: true });
+
+    const contentEditable = textEditor.locator('[contenteditable="true"]');
+    await contentEditable.press(`${modifierKey}+a`);
+    await page.keyboard.press(`${modifierKey}+Shift+b`);
+
+    // The fresh <strong> is not in the model yet, so it renders through the
+    // fallback branch of renderElement in CanvasText. That branch used to
+    // omit __wab_inline, so the __wab_defaults__all reset made the element
+    // display: block (pushing it onto its own line, as if it had margins)
+    // until the editing session ended.
+    const strongEl = contentEditable.locator("strong");
+    await expect(strongEl).toHaveText("Enter some text");
+    await expect(strongEl).toHaveCSS("display", "inline");
+  });
+
   test("exits text editing when clicking outside the canvas", async ({
     page,
     models,

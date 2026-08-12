@@ -1133,6 +1133,9 @@ export const mkCanvasText = computedFn(
 
               // New elements may not be in the bundle yet, but we try our best
               // to at least make sure the styles will match the default theme.
+              // Inline tags need __wab_inline because the __wab_defaults__all
+              // reset sets display: block; once the element lands in the
+              // bundle, mkSlateChildren/canvas-rendering apply it instead.
               return react.createElement(
                 tag as TagName,
                 {
@@ -1141,7 +1144,8 @@ export const mkCanvasText = computedFn(
                     defaultStyleClassNames(studioDefaultStylesClassNameBase, {
                       tag,
                       projectId: canvasProjectId,
-                    })
+                    }),
+                    isTagInline(tag) && "__wab_inline"
                   ),
                 },
                 children
