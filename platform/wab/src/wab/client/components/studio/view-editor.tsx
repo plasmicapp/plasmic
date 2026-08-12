@@ -1814,10 +1814,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       ? studioCtx.multiplayerCtx.getPlayerDataById(studioCtx.watchPlayerId)
       : undefined;
 
-    const disableRightPane =
-      !!(DEVFLAGS.richtext2 && this.viewCtx()?.editingTextContext()) ||
-      (this.viewCtx()?.focusedTpls().length ?? 0) > 1;
-
     return (
       <div className="canvas-editor">
         {viewCtx?.autoOpenedUuid && (
@@ -1988,7 +1984,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                 </div>
                 {!studioCtx.focusedMode && <VariantsBar />}
               </div>
-              {DEVFLAGS.richtext2 && this.viewCtx()?.editingTextContext() && (
+              {this.viewCtx()?.editingTextContext() && (
                 <RichTextToolbar
                   ctx={ensure(
                     this.viewCtx()?.editingTextContext(),
@@ -2002,7 +1998,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
               <PlayerCursors />
               <FocusedModeToolbar studioCtx={studioCtx} />
             </div>
-            <RightPane studioCtx={studioCtx} disabled={disableRightPane} />
+            <RightPane
+              studioCtx={studioCtx}
+              disabled={(this.viewCtx()?.focusedTpls().length ?? 0) > 1}
+            />
             <FloatingWindowLayer>
               <CommentsDialogs studioCtx={studioCtx} />
             </FloatingWindowLayer>

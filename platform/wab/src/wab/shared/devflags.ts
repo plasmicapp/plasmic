@@ -429,7 +429,6 @@ const DEFAULT_DEVFLAGS = {
   introYoutubeId: "K_YzFBd7b2I",
   noFlipTags: true,
   revisionNum: undefined,
-  richtext2: true,
   secretApiTokenTeams: ["teamId"],
   selectInserted: true,
   showFullPreviewWarning: true,

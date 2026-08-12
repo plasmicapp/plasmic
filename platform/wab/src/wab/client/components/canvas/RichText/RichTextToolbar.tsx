@@ -30,6 +30,8 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
 import { fontWeightOptions } from "@/wab/client/typography-utils";
+import { INTERACT_OUTSIDE_EXCEPTION_SELECTORS } from "@/wab/commons/components/OnClickAway";
+import { mergeRefs } from "@/wab/commons/components/ReactUtil";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import {
@@ -43,7 +45,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Editor, Element, Range, Text } from "slate";
+import { Editor, Range, Element as SlateElement, Text } from "slate";
 
 type BlockElement = {
   tag: TagName;
@@ -118,6 +120,15 @@ const blocks: BlockElement[] = [
   },
 ];
 
+// Clicks that don't end the editing session. Clicks on the edited text
+// itself never reach this document (the canvas is an iframe), so only
+// portaled popups and a few chrome widgets need exempting.
+const KEEP_EDITING_SELECTORS = [
+  ...INTERACT_OUTSIDE_EXCEPTION_SELECTORS,
+  // The link prompt's mask. Clicking away should not end the editing session.
+  ".ant-modal-root",
+].join(",");
+
 interface RichTextToolbarProps extends DefaultRichTextToolbarProps {
   ctx: EditingTextContext;
 }
@@ -160,6 +171,26 @@ function RichTextToolbar_(
 
   const [colorPickerVisible, setColorPickerVisible] = React.useState(false);
 
+  // End (and commit) the editing session on clicks in the studio chrome
+  // outside the toolbar.
+  const rootElt = React.useRef<HTMLDivElement | null>(null);
+  const rootRef = React.useMemo(() => mergeRefs(ref, rootElt), [ref]);
+  React.useEffect(() => {
+    const listener = (e: PointerEvent) => {
+      const target = e.target;
+      if (
+        e.button === 0 &&
+        target instanceof Element &&
+        !target.closest(KEEP_EDITING_SELECTORS) &&
+        !rootElt.current?.contains(target)
+      ) {
+        studioCtx.focusedViewCtx()?.tryBlurEditingText();
+      }
+    };
+    document.addEventListener("pointerdown", listener, true);
+    return () => document.removeEventListener("pointerdown", listener, true);
+  }, [studioCtx]);
+
   React.useEffect(() => {
     const { editor } = ctx;
     if (!editor) {
@@ -181,7 +212,7 @@ function RichTextToolbar_(
     // Update current block.
     const blockElement = Editor.above(editor, {
       match: (n) =>
-        Element.isElement(n) &&
+        SlateElement.isElement(n) &&
         Editor.isBlock(editor, n) &&
         n.type === "TplTag" &&
         n.tag !== "li",
@@ -214,7 +245,7 @@ function RichTextToolbar_(
     <SidebarModalProvider>
       <PlasmicRichTextToolbar
         {...props}
-        root={{ ref }}
+        root={{ ref: rootRef }}
         style={{
           position: "absolute",
           top: studioCtx.focusedMode ? 60 : 12,

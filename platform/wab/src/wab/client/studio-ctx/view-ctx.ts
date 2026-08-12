@@ -815,9 +815,11 @@ export class ViewCtx extends WithDbCtx {
       this.setEditingTextContext(null);
 
       // While rich-text editing, the focus will be on the frame. We reset
-      // it to document.body when done.
-      if (document.activeElement && document.activeElement !== document.body) {
-        (document.activeElement as HTMLElement).blur();
+      // it to document.body when done. This runs async (queued change), so
+      // only blur frames — the user may have already focused e.g. a side
+      // pane input, and we must not steal its focus.
+      if (document.activeElement instanceof HTMLIFrameElement) {
+        document.activeElement.blur();
       }
     });
   }
