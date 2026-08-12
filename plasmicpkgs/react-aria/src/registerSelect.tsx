@@ -14,6 +14,7 @@ import {
   createDisabledProp,
   createIdProp,
   createNameProp,
+  focusEventHandlerProps,
 } from "./common";
 import {
   PlasmicListBoxContext,
@@ -88,6 +89,9 @@ export function BaseSelect(props: BaseSelectProps) {
     selectedKey,
     onSelectionChange,
     onOpenChange,
+    onFocus,
+    onBlur,
+    onFocusChange,
     isDisabled,
     children,
     disabledKeys,
@@ -118,6 +122,9 @@ export function BaseSelect(props: BaseSelectProps) {
       selectedKey={selectedKey}
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onFocusChange={onFocusChange}
       isDisabled={isDisabled}
       style={COMMON_STYLES}
       className={className}
@@ -237,6 +244,7 @@ export function registerSelect(loader?: Registerable) {
         type: "eventHandler",
         argTypes: [{ name: "isOpen", type: "boolean" }],
       },
+      ...focusEventHandlerProps(),
       children: {
         type: "slot",
         mergeWithParent: true,

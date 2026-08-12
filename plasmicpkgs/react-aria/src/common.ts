@@ -284,7 +284,9 @@ export function createValidationBehaviorProp<T>(): PropType<T> {
   };
 }
 
-export function createOnChangeProp<T>(argType: "string" | "number" | "object" = "string"): PropType<T> {
+export function createOnChangeProp<T>(
+  argType: "string" | "number" | "object" = "string"
+): PropType<T> {
   return {
     type: "eventHandler",
     argTypes: [{ name: "value", type: argType }],
@@ -541,16 +543,16 @@ export const arrowDown: PlasmicElement = {
 export const COMMON_STYLES: CSSProperties = { boxSizing: "border-box" };
 
 /**
-* Minimal shared input event-handler registrations for text-entry controls.
-*
-* This returns only the event handler props that have the exact same names and
-* semantics across all three components: Input, Text Field, and Text Area.
-* Non-event props (e.g., id, name, value, maxLength/minLength, inputMode,
-* placeholder, pattern, type, autoComplete, validationBehavior, disabled/
-* isDisabled, readOnly/isReadOnly, required/isRequired, "aria-label") must be
-* registered explicitly at the component level to preserve the desired
-* editor-facing ordering.
-*/
+ * Minimal shared input event-handler registrations for text-entry controls.
+ *
+ * This returns only the event handler props that have the exact same names and
+ * semantics across all three components: Input, Text Field, and Text Area.
+ * Non-event props (e.g., id, name, value, maxLength/minLength, inputMode,
+ * placeholder, pattern, type, autoComplete, validationBehavior, disabled/
+ * isDisabled, readOnly/isReadOnly, required/isRequired, "aria-label") must be
+ * registered explicitly at the component level to preserve the desired
+ * editor-facing ordering.
+ */
 export function commonInputEventHandlerProps<T>(): Record<string, PropType<T>> {
   return {
     // Events supported uniformly by all three
@@ -568,5 +570,13 @@ export function commonInputEventHandlerProps<T>(): Record<string, PropType<T>> {
     onSelect: createOnSelectProp<T>(),
     onBeforeInput: createOnBeforeInputProp<T>(),
     onInput: createOnInputProp<T>(),
+  };
+}
+
+export function focusEventHandlerProps<T>(): Record<string, PropType<T>> {
+  return {
+    onFocus: createOnFocusProp<T>(),
+    onBlur: createOnBlurProp<T>(),
+    onFocusChange: createOnFocusChangeProp<T>(),
   };
 }

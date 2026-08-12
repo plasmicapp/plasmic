@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import { mergeProps } from "react-aria";
 import { Key, ListBox } from "react-aria-components";
 import { useIdManager } from "./OptionsItemIdManager";
-import { COMMON_STYLES, createAriaLabelProp, createIdProp } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createIdProp,
+  focusEventHandlerProps,
+} from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import {
   makeDefaultListBoxItemChildren,
@@ -270,6 +275,7 @@ export function registerListBox(
           type: "eventHandler",
           argTypes: [{ name: "selectedValues", type: "object" }],
         },
+        ...focusEventHandlerProps(),
       },
       states: {
         selectedValue: {

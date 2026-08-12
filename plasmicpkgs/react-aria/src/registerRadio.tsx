@@ -9,6 +9,7 @@ import {
   createAutoFocusProp,
   createDisabledProp,
   createIdProp,
+  focusEventHandlerProps,
 } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
@@ -179,6 +180,7 @@ export function registerRadio(
             return true;
           },
         },
+        ...focusEventHandlerProps(),
       },
       trapsFocus: true,
     },

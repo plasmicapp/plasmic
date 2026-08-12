@@ -12,6 +12,7 @@ import {
   createNameProp,
   createReadOnlyProp,
   createRequiredProp,
+  focusEventHandlerProps,
   hasParent,
 } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
@@ -242,6 +243,7 @@ export function registerCheckbox(
           type: "eventHandler",
           argTypes: [{ name: "isSelected", type: "boolean" }],
         },
+        ...focusEventHandlerProps(),
       },
       states: {
         isSelected: {

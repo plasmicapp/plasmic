@@ -9,6 +9,7 @@ import {
   createIdProp,
   createNameProp,
   createReadOnlyProp,
+  focusEventHandlerProps,
 } from "./common";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
@@ -191,6 +192,7 @@ export function registerSwitch(
           type: "eventHandler",
           argTypes: [{ name: "isSelected", type: "boolean" }],
         },
+        ...focusEventHandlerProps(),
       },
       states: {
         isSelected: {

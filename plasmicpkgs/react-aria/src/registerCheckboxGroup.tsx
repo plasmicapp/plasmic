@@ -10,6 +10,7 @@ import {
   createNameProp,
   createReadOnlyProp,
   createRequiredProp,
+  focusEventHandlerProps,
 } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
@@ -196,6 +197,7 @@ export function registerCheckboxGroup(
           type: "eventHandler",
           argTypes: [{ name: "value", type: "object" }],
         },
+        ...focusEventHandlerProps(),
       },
       states: {
         value: {

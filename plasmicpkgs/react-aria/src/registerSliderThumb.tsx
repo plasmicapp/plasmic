@@ -10,6 +10,7 @@ import {
   createAutoFocusProp,
   createDisabledProp,
   createNameProp,
+  focusEventHandlerProps,
 } from "./common";
 import {
   CodeComponentMetaOverrides,
@@ -104,6 +105,7 @@ export function registerSliderThumb(
         name: createNameProp(),
         isDisabled: createDisabledProp("Slider Thumb"),
         autoFocus: createAutoFocusProp("Slider Thumb"),
+        ...focusEventHandlerProps(),
         advanced: {
           type: "boolean",
           displayName: "Advanced",

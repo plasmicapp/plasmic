@@ -9,6 +9,7 @@ import {
   createAutoFocusProp,
   createDisabledProp,
   createIdProp,
+  focusEventHandlerProps,
 } from "./common";
 import {
   CodeComponentMetaOverrides,
@@ -221,10 +222,7 @@ export function registerButton(
           type: "eventHandler",
           argTypes: [{ name: "event", type: "object" }],
         },
-        onFocus: {
-          type: "eventHandler",
-          argTypes: [{ name: "event", type: "object" }],
-        },
+        ...focusEventHandlerProps(),
       },
       trapsFocus: true,
     },

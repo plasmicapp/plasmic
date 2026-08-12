@@ -12,6 +12,7 @@ import {
   createDisabledProp,
   createIdProp,
   createNameProp,
+  focusEventHandlerProps,
 } from "./common";
 import {
   PlasmicInputContext,
@@ -178,6 +179,7 @@ export function registerComboBox(loader?: Registerable) {
         type: "eventHandler",
         argTypes: [{ name: "isOpen", type: "boolean" }],
       },
+      ...focusEventHandlerProps(),
 
       children: {
         type: "slot",

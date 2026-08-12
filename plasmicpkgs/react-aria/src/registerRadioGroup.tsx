@@ -10,6 +10,7 @@ import {
   createNameProp,
   createReadOnlyProp,
   createRequiredProp,
+  focusEventHandlerProps,
 } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
@@ -194,6 +195,7 @@ export function registerRadioGroup(
           type: "eventHandler",
           argTypes: [{ name: "value", type: "string" }],
         },
+        ...focusEventHandlerProps(),
       },
       states: {
         value: {
