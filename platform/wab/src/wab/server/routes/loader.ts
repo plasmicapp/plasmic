@@ -1008,7 +1008,7 @@ const getHydrationScriptInfo = () => {
 };
 
 export function getHydrationScript(_: Request, res: Response) {
-  res.setHeader("Cache-Control", "maxage=60, s-maxage=60");
+  res.setHeader("Cache-Control", "max-age=60, s-maxage=60");
   res.redirect(
     `${getCodegenUrl()}/static/js/${getHydrationScriptInfo().filename}`
   );
@@ -1021,7 +1021,7 @@ export function getHydrationScriptVersioned(req: Request, res: Response) {
       `Hydration script with hash=${req.params.hash} is unavailable`
     );
   }
-  res.setHeader("Cache-Control", "maxage=31536000, s-maxage=31536000");
+  res.setHeader("Cache-Control", "max-age=31536000, s-maxage=31536000");
   res.sendFile(path.join(dir, filename));
 }
 
