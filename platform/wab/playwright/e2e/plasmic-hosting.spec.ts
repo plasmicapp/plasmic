@@ -33,12 +33,29 @@ test.describe("plasmic-hosting-domains", () => {
     await expect(page.getByText("76.76.21.21")).toBeAttached();
     await expect(page.getByText("cname.plasmicdev.com")).toBeAttached();
 
-    await models.studio.removeDomainCard();
+    // The test environment has no hosting provider credentials, so the
+    // registration fails. The card must say what failed rather than claim the
+    // domain is live or misconfigured.
+    await expect(
+      page.getByText(`${randomDomain} couldn't be registered`)
+    ).toBeVisible();
+    await expect(models.studio.correctlyConfiguredText).not.toBeVisible();
+
+    // A failed registration is never saved on the project, so the card offers
+    // to dismiss the attempt (removal is reserved for registered domains).
+    await models.studio.dismissDomainCard();
+    await expect(models.studio.domainCard).not.toBeAttached();
+
+    // Trying again with another domain reports that domain's failure.
     const randomDomain2 = `hostingtest${Math.round(
       Math.random() * 99
     )}.plasmiq.app`;
     await models.studio.inputCustomDomain(randomDomain2);
 
-    await expect(models.studio.correctlyConfiguredText).toBeAttached();
+    await expect(
+      page.getByText(`${randomDomain2} couldn't be registered`)
+    ).toBeVisible();
+    await models.studio.dismissDomainCard();
+    await expect(models.studio.domainCard).not.toBeAttached();
   });
 });

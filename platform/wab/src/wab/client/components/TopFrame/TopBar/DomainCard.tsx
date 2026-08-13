@@ -4,29 +4,103 @@ import {
   DefaultDomainCardProps,
   PlasmicDomainCard,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicDomainCard";
-import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
+import {
+  ApiProject,
+  CheckDomainResponse,
+  SetDomainOperation,
+  SetDomainStatus,
+} from "@/wab/shared/ApiSchema";
 import { spawn, spawnWrapper } from "@/wab/shared/common";
+import {
+  getSetCustomDomainFailure,
+  pickFailedOperation,
+} from "@/wab/shared/hosting";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useState } from "react";
 import useSWR, { mutate } from "swr";
 import * as tldts from "tldts";
 
+export interface DomainCardError {
+  /** Undefined when the request threw rather than returning a status. */
+  status?: SetDomainStatus;
+  /** Vercel's error code, for support to diagnose from a screenshot. */
+  vercelErrorCode?: string;
+  /** Raw error message, shown for failures we have no copy for. */
+  message?: string;
+  /** Attempted operation, only changes the copy. */
+  operation: SetDomainOperation;
+}
+
 export interface DomainCardProps extends DefaultDomainCardProps {
   domain: string;
   project: ApiProject;
   /** This is a redirect domain */
   isSecondary?: boolean;
+  /** Set when the last attempt to register this domain failed. */
+  setError?: DomainCardError;
+  /**
+   * Set when this card is for a domain that isn't saved on the project, i.e. one
+   * we failed to register. Removing it would delete whatever domain the project
+   * is serving on, so we only dismiss the card.
+   */
+  onDismiss?: () => void;
   onRemoved?: () => void;
 }
 
+/**
+ * DNS instructions are only actionable when the domain was registered, for every
+ * other failure they're misleading, so we show what really went wrong.
+ */
+export function renderDomainErrorMessage(
+  domain: string,
+  { status, vercelErrorCode, message, operation }: DomainCardError
+) {
+  const suffix = vercelErrorCode ? ` (${vercelErrorCode})` : "";
+  const done = operation === "remove" ? "removed" : "registered";
+  switch (status) {
+    case "DomainUsedElsewhereInPlasmic":
+      return `${domain} is already used by another Plasmic project. Remove it there first, or contact support@plasmic.app.`;
+    case "DomainUsedElsewhereInVercel":
+      return `${domain} is already owned by another team on our hosting provider. Contact support@plasmic.app to request access${suffix}.`;
+    case "DomainInvalid":
+      return `${domain} is not a valid domain for Plasmic hosting.`;
+    case "VercelAuthError":
+      return `Plasmic couldn't reach our hosting provider to ${operation} ${domain}. This is a problem on our end — please contact support@plasmic.app.`;
+    default:
+      return message
+        ? `${domain} couldn't be ${done}: ${message}`
+        : `${domain} couldn't be ${done}${suffix}. Please contact support@plasmic.app.`;
+  }
+}
+
 function DomainCard_(
-  { domain, project, isSecondary = false, onRemoved, ...rest }: DomainCardProps,
+  {
+    domain,
+    project,
+    isSecondary = false,
+    setError,
+    onDismiss,
+    onRemoved,
+    ...rest
+  }: DomainCardProps,
   ref: HTMLElementRefOf<"div">
 ) {
   const appCtx = useAppCtx();
   const api = appCtx.api;
   const projectId = project.id;
+
+  const [removing, setRemoving] = useState(false);
+  const [removeError, setRemoveError] = useState<DomainCardError | undefined>(
+    undefined
+  );
+  const subdomain = domain && tldts.parse(domain).subdomain; // if domain is a subdomain
+
+  const [explicitRecordType, setExplicitRecordType] = useState<
+    "cname" | "apex" | undefined
+  >(undefined);
+
+  const recordType = explicitRecordType ?? (subdomain ? "cname" : "apex");
 
   const { data: domainStatus, isValidating } = useSWR<CheckDomainResponse>(
     apiKey(`checkDomain`, domain),
@@ -37,8 +111,11 @@ function DomainCard_(
     },
     {
       revalidateOnMount: true,
+      // Check once if errored since a rejected domain won't magically become configured.
       refreshInterval: (latest) =>
-        latest?.status?.isValid && latest?.status?.isCorrectlyConfigured
+        setError ||
+        removeError ||
+        (latest?.status?.isValid && latest?.status?.isCorrectlyConfigured)
           ? 0
           : 5000,
       dedupingInterval: 1500,
@@ -46,14 +123,20 @@ function DomainCard_(
   );
   const isCorrect =
     domainStatus?.status.isValid && domainStatus?.status.isCorrectlyConfigured;
-  const [removing, setRemoving] = useState(false);
-  const subdomain = domain && tldts.parse(domain).subdomain; // if domain is a subdomain
+  // We couldn't check, so we don't know that anything is wrong with their DNS.
+  const configCheckFailed =
+    domainStatus?.status.isValid && domainStatus.status.configCheckFailed;
 
-  const [explicitRecordType, setExplicitRecordType] = useState<
-    "cname" | "apex" | undefined
-  >(undefined);
+  // A registration failure for a saved domain is stale once the check shows it serving.
+  // A candidate's domain stays unregistered no matter what its DNS says.
+  const staleSetError =
+    setError?.operation === "register" && !onDismiss && isCorrect;
 
-  const recordType = explicitRecordType ?? (subdomain ? "cname" : "apex");
+  const errorMessage = removeError
+    ? renderDomainErrorMessage(domain, removeError)
+    : setError && !staleSetError
+    ? renderDomainErrorMessage(domain, setError)
+    : undefined;
 
   return (
     <PlasmicDomainCard
@@ -62,7 +145,18 @@ function DomainCard_(
       }}
       {...rest}
       refreshing={isValidating}
-      error={isCorrect ? "success" : recordType}
+      error={errorMessage ? "error" : isCorrect ? "success" : recordType}
+      domainErrorMessage4={
+        errorMessage
+          ? { children: errorMessage }
+          : configCheckFailed
+          ? {
+              // Stays in the cname/apex variant so the DNS instructions keep
+              // matching the record type, only the feedback note changes.
+              children: `Plasmic couldn't check the configuration of ${domain} right now. If your site is already live, it will keep working.`,
+            }
+          : undefined
+      }
       name={
         recordType === "apex"
           ? "@"
@@ -96,21 +190,45 @@ function DomainCard_(
       customDomainLabel={{
         children: domain,
       }}
-      removeButton={{
-        disabled: removing,
-        onClick: spawnWrapper(async () => {
-          setRemoving(true);
-          try {
-            await api.setCustomDomainForProject(undefined, projectId);
-            await mutate(apiKey("getDomainsForProject", projectId));
-            onRemoved?.();
-          } catch (_err) {
-            alert("Error removing domain");
-          } finally {
-            setRemoving(false);
-          }
-        }),
-      }}
+      removeButton={
+        onDismiss
+          ? {
+              children: "Dismiss",
+              onClick: () => onDismiss(),
+            }
+          : {
+              disabled: removing,
+              onClick: spawnWrapper(async () => {
+                setRemoving(true);
+                try {
+                  const response = await api.setCustomDomainForProject(
+                    undefined,
+                    projectId
+                  );
+                  await mutate(apiKey("getDomainsForProject", projectId));
+                  const failure = getSetCustomDomainFailure(response);
+                  if (failure) {
+                    // Domain is still registered and serving the project, so the card stays.
+                    setRemoveError({
+                      status: failure.status,
+                      vercelErrorCode: failure.vercelErrorCode,
+                      operation: pickFailedOperation(failure),
+                    });
+                    return;
+                  }
+                  setRemoveError(undefined);
+                  onRemoved?.();
+                } catch (err) {
+                  setRemoveError({
+                    message: err instanceof Error ? err.message : undefined,
+                    operation: "remove",
+                  });
+                } finally {
+                  setRemoving(false);
+                }
+              }),
+            }
+      }
     />
   );
 }

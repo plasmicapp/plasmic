@@ -1,3 +1,8 @@
+import type {
+  SetCustomDomainForProjectResponse,
+  SetDomainOperation,
+  SetDomainOutcome,
+} from "@/wab/shared/ApiSchema";
 import { maybeOne } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import L from "lodash";
@@ -43,6 +48,39 @@ export class DomainValidator {
     const wwwDomain = domains.find((dom) => dom.startsWith("www."));
     return wwwDomain ?? maybeOne(customDomains);
   }
+}
+
+export interface SetCustomDomainFailure extends SetDomainOutcome {
+  /** The domain the failure is about; "" when the server didn't say. */
+  domain: string;
+}
+
+/**
+ * Setting and removing a custom domain both return 200 with a per-domain outcome,
+ * and only `domains[""].status === "DomainUpdated"` means the change went through.
+ */
+export function getSetCustomDomainFailure(
+  response: SetCustomDomainForProjectResponse
+): SetCustomDomainFailure | undefined {
+  if (response.domains[""]?.status === "DomainUpdated") {
+    return undefined;
+  }
+  const [domain, outcome] = Object.entries(response.domains)[0] ?? [
+    "",
+    { status: "OtherDomainError" as const },
+  ];
+  return { domain, ...outcome };
+}
+
+/**
+ * Submitting a new domain can fail while freeing the one the project is currently
+ * saved on, so that's what we report to the user.
+ */
+export function pickFailedOperation(
+  failure: SetCustomDomainFailure,
+  submittedDomain?: string
+): SetDomainOperation {
+  return failure.operation ?? (submittedDomain ? "register" : "remove");
 }
 
 // Shared instance for validating Plasmic Hosting domains/subdomains.

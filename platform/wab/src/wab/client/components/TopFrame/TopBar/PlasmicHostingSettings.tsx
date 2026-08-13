@@ -3,7 +3,9 @@ import {
   useGetDomainsForProject,
   usePlasmicHostingSettings,
 } from "@/wab/client/api-hooks";
-import DomainCard from "@/wab/client/components/TopFrame/TopBar/DomainCard";
+import DomainCard, {
+  DomainCardError,
+} from "@/wab/client/components/TopFrame/TopBar/DomainCard";
 import {
   canUpgradeTeam,
   promptBilling,
@@ -19,7 +21,11 @@ import useDebounce from "@/wab/commons/components/use-debounce";
 import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
 import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
-import { DomainValidator } from "@/wab/shared/hosting";
+import {
+  DomainValidator,
+  getSetCustomDomainFailure,
+  pickFailedOperation,
+} from "@/wab/shared/hosting";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -37,6 +43,62 @@ export interface PlasmicHostingSettingsProps
 interface HostingSettings {
   subdomain: string;
   customDomain: string;
+}
+
+/** www.example.com and example.com are the same site to us. */
+function withoutWww(domain: string) {
+  return tldts.parse(domain).subdomain === "www" ? domain.slice(4) : domain;
+}
+
+/**
+ * Which domain cards to render, given the domain saved on the project and the
+ * domain the last failed attempt was about.
+ *
+ * A failed attempt never replaces the domain the project is serving on, so a
+ * rejected candidate gets a card of its own: removing a domain from the project
+ * is only offered on the card of the domain that is actually saved.
+ */
+export function pickDomainCards(
+  savedDomain: string | undefined,
+  failedDomain: string | undefined
+) {
+  // www.example.com and example.com register as a pair. Either form may be the
+  // saved canonical, and each needs DNS instructions, they get their own cards.
+  // A subdomain like foo.example.com stands alone.
+  const apexDomain = savedDomain && withoutWww(savedDomain);
+  const secondaryDomain =
+    apexDomain && !tldts.parse(apexDomain).subdomain
+      ? savedDomain === apexDomain
+        ? "www." + apexDomain
+        : apexDomain
+      : undefined;
+  const isAboutSavedDomain =
+    !!failedDomain &&
+    !!savedDomain &&
+    withoutWww(failedDomain) === withoutWww(savedDomain);
+  return {
+    savedDomain,
+    secondaryDomain,
+    candidateDomain: isAboutSavedDomain ? undefined : failedDomain,
+    // Show a failure about the saved domain on the card that names it, falling
+    // back to the primary card.
+    erroredDomain: !isAboutSavedDomain
+      ? undefined
+      : failedDomain === secondaryDomain
+      ? secondaryDomain
+      : savedDomain,
+  };
+}
+
+function mkDomainCardError(error: any): DomainCardError {
+  return {
+    status: error.code,
+    vercelErrorCode: error.vercelErrorCode,
+    // Only meaningful when the request threw instead of returning a status;
+    // otherwise `message` is just the status string.
+    message: error.code ? undefined : error.message,
+    operation: error.operation,
+  };
 }
 
 function PlasmicHostingSettings_(
@@ -127,38 +189,48 @@ function PlasmicHostingSettings_(
 
   async function handleCustomDomain() {
     const fullCustomDomain = data.customDomain;
-    const customDomain =
-      tldts.parse(fullCustomDomain).subdomain === "www"
-        ? fullCustomDomain.slice(4)
-        : fullCustomDomain;
+    // The server expands to the www/non-www pair either way.
+    const customDomain = withoutWww(fullCustomDomain);
 
     setAdding(true);
 
     try {
-      // It's OK for us to just set one domain for example.com instead of adding www.example.com as well because this the alias and redirect is handled by the backend - we only track the main domain.
       const response = await api.setCustomDomainForProject(
         customDomain || undefined,
         projectId
       );
 
-      if (response.status[""] !== "DomainUpdated") {
-        const [[errDomain, errMsg]] = Object.entries(response.status);
+      const failure = getSetCustomDomainFailure(response);
+      if (failure) {
+        const failedDomain = failure.domain || fullCustomDomain;
         setError({
-          code: errMsg,
-          domain: errDomain,
-          message: errMsg,
+          code: failure.status,
+          domain: failedDomain,
+          message: failure.status,
+          vercelErrorCode: failure.vercelErrorCode,
+          operation: pickFailedOperation(failure, customDomain),
         });
-        setShowDomainCardFor(errDomain);
-        spawn(mutate(apiKey("checkDomain", errDomain)));
+        setShowDomainCardFor(failedDomain);
+        spawn(mutate(apiKey("checkDomain", failedDomain)));
         return;
       }
       setError(null);
 
       await mutate(apiKey("getDomainsForProject", projectId));
     } catch (err) {
-      setError(err);
-      setShowDomainCardFor(fullCustomDomain);
-      spawn(mutate(apiKey("checkDomain", fullCustomDomain)));
+      // The request threw, so the server never said which domain the failure
+      // is about; pin it to the attempted one, or the error would track
+      // whatever is typed into the input next.
+      const failedDomain = fullCustomDomain || settings.customDomain;
+      setError({
+        domain: failedDomain,
+        message: err instanceof Error ? err.message : String(err),
+        operation: customDomain ? "register" : "remove",
+      });
+      setShowDomainCardFor(failedDomain || null);
+      if (failedDomain) {
+        spawn(mutate(apiKey("checkDomain", failedDomain)));
+      }
     } finally {
       setAdding(false);
     }
@@ -265,32 +337,66 @@ function PlasmicHostingSettings_(
       }}
       domainCard={{
         wrap: (_node) => {
-          const displayDomain =
-            showDomainCardFor ||
-            settings.customDomain ||
-            (error && data.customDomain);
+          const {
+            savedDomain,
+            secondaryDomain,
+            candidateDomain,
+            erroredDomain,
+          } = pickDomainCards(
+            settings.customDomain || undefined,
+            error ? error.domain || undefined : undefined
+          );
+          if (!savedDomain && !candidateDomain) {
+            return null;
+          }
+          const setErrorFor = (
+            cardDomain: string
+          ): DomainCardError | undefined =>
+            error && cardDomain === erroredDomain
+              ? mkDomainCardError(error)
+              : undefined;
+          const onDismiss = () => {
+            setShowDomainCardFor(savedDomain ?? null);
+            setError(null);
+            setData((d) => ({ ...d, customDomain: savedDomain ?? "" }));
+          };
           const onRemoved = () => {
             setShowDomainCardFor(null);
             setError(null);
             setData((d) => ({ ...d, customDomain: "" }));
           };
-          return displayDomain ? (
+          return (
             <>
-              <DomainCard
-                project={project}
-                domain={displayDomain}
-                onRemoved={onRemoved}
-              />
-              {!tldts.parse(displayDomain).subdomain && (
+              {candidateDomain && (
                 <DomainCard
+                  key={candidateDomain}
                   project={project}
-                  domain={"www." + displayDomain}
+                  domain={candidateDomain}
+                  setError={mkDomainCardError(error)}
+                  onDismiss={onDismiss}
+                />
+              )}
+              {savedDomain && (
+                <DomainCard
+                  key={savedDomain}
+                  project={project}
+                  domain={savedDomain}
+                  setError={setErrorFor(savedDomain)}
+                  onRemoved={onRemoved}
+                />
+              )}
+              {secondaryDomain && (
+                <DomainCard
+                  key={secondaryDomain}
+                  project={project}
+                  domain={secondaryDomain}
                   isSecondary
+                  setError={setErrorFor(secondaryDomain)}
                   onRemoved={onRemoved}
                 />
               )}
             </>
-          ) : null;
+          );
         },
       }}
       showBadge={{

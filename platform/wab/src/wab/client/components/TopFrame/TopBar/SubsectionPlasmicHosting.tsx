@@ -2,6 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { AppCtx } from "@/wab/client/app-ctx";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { renderDomainErrorMessage } from "@/wab/client/components/TopFrame/TopBar/DomainCard";
 import PlasmicHostingSettings from "@/wab/client/components/TopFrame/TopBar/PlasmicHostingSettings";
 import { VisibleEnableBlock } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
 import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
@@ -13,10 +14,17 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionPlasmicHosting";
 import {
   ApiProject,
+  ProjectId,
   RevalidatePlasmicHostingResponse,
 } from "@/wab/shared/ApiSchema";
-import { DomainValidator } from "@/wab/shared/hosting";
+import {
+  DomainValidator,
+  getSetCustomDomainFailure,
+  pickFailedOperation,
+  SetCustomDomainFailure,
+} from "@/wab/shared/hosting";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { notification } from "antd";
 import * as React from "react";
 
 export type SetupPlasmicHosting = {
@@ -37,6 +45,25 @@ export interface SubsectionPlasmicHostingProps
   refreshProjectAndPerms: () => void;
   setup: SetupPlasmicHosting;
   status?: StatusPlasmicHosting;
+}
+
+/**
+ * Removes the project's custom domain and returns any error.
+ */
+async function removeCustomDomain(
+  appCtx: AppCtx,
+  projectId: ProjectId
+): Promise<SetCustomDomainFailure | undefined> {
+  try {
+    const response = await appCtx.api.setCustomDomainForProject(
+      undefined,
+      projectId
+    );
+    return getSetCustomDomainFailure(response);
+  } catch (err) {
+    console.error("Failed to remove custom domain", err);
+    return { domain: "", status: "OtherDomainError" };
+  }
 }
 
 function SubsectionPlasmicHosting_(
@@ -124,20 +151,37 @@ function SubsectionPlasmicHosting_(
           props: {
             onClick: async () => {
               if (
-                await reactConfirm({
+                !(await reactConfirm({
                   title: "Remove Plasmic-hosted publishing?",
                   message:
                     "This will stop deploying updates to the Plasmic-hosted website.",
                   confirmLabel: "Remove",
-                })
+                }))
               ) {
-                await appCtx.api.setCustomDomainForProject(
-                  undefined,
-                  project.id
-                );
-                await appCtx.api.setSubdomainForProject(undefined, project.id);
-                setVisibleEnableBlock(false, false, block);
+                return;
               }
+              // Removing the custom domain can fail while leaving it registered
+              // and serving the project, so don't remove the subdomain or hide
+              // the hosting controls until we know it's gone.
+              const failure = await removeCustomDomain(appCtx, project.id);
+              if (failure) {
+                notification.error({
+                  message: "Plasmic hosting was not removed",
+                  description: renderDomainErrorMessage(
+                    failure.domain ||
+                      domainValidator.extractCustomDomain(setup?.domains) ||
+                      "The custom domain",
+                    {
+                      status: failure.status,
+                      vercelErrorCode: failure.vercelErrorCode,
+                      operation: pickFailedOperation(failure),
+                    }
+                  ),
+                });
+                return;
+              }
+              await appCtx.api.setSubdomainForProject(undefined, project.id);
+              setVisibleEnableBlock(false, false, block);
             },
           },
         }}

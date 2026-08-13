@@ -795,8 +795,8 @@ export class StudioModel extends BaseModel {
     await this.page.keyboard.press("Enter");
   }
 
-  async removeDomainCard() {
-    await this.domainCard.locator("..").getByText("Remove").click();
+  async dismissDomainCard() {
+    await this.domainCard.getByText("Dismiss").click();
   }
 
   async focusCreatedFrameRoot() {
