@@ -330,6 +330,7 @@ const csrfFreeStaticRoutes = [
 const isCsrfFreeRoute = (pathname: string, config: Config) => {
   return (
     csrfFreeStaticRoutes.includes(pathname) ||
+    pathname.startsWith("/static/js/loader-hydrate") ||
     pathname.includes("/api/v1/clip/") ||
     pathname.includes("/api/v1/code/") ||
     pathname.includes("/api/v1/loader/") ||
