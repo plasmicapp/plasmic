@@ -22,6 +22,9 @@ overrides:
   "@babel/helpers": "^7.29.0"
   "@types/minimatch": "3.0.5"
   typescript: "5.2.2"
+  # typescript-json-schema bundles its compiler and pins to typescript ~5.9.3.
+  # The repo 5.2.2 override above otherwise forces a resolution outside that range.
+  "typescript-json-schema>typescript": "5.9.3"
   "picomatch@2": "2.3.1"
   "antd@5": "5.12.8"
   "@radix-ui/react-popper": "1.1.3"
