@@ -63,7 +63,7 @@ export function runExpressApp(
   /**
    * Start Express server.
    */
-  return server.listen(app.get("port"), () => {
+  return server.listen(app.get("port"), process.env.BIND_HOST, () => {
     logger().info(`
 App ${app.get("name")} is running at http://localhost:${app.get(
       "port"

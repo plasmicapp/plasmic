@@ -3,6 +3,9 @@ const WITH_HOSTING = process.env["PM2_WITH_HOSTING"];
 const WITH_DEDICATED_CODEGEN = process.env["PM2_WITH_DEDICATED_CODEGEN"];
 
 function getCodegenHost() {
+  if (process.env["CODEGEN_HOST"]) {
+    return process.env["CODEGEN_HOST"];
+  }
   return WITH_DEDICATED_CODEGEN
     ? "http://localhost:3008"
     : "http://localhost:3004";
@@ -70,7 +73,7 @@ module.exports = {
           process.env.HOSTSERVER_PORT || "3005"
         }/static/host.html`,
         CODEGEN_HOST: getCodegenHost(),
-        SOCKET_HOST: "http://localhost:3020",
+        SOCKET_HOST: process.env["SOCKET_HOST"] || "http://localhost:3020",
         REACT_APP_PUBLIC_URL: "http://localhost:3003",
         INTEGRATIONS_HOST: "http://localhost:3003",
         DISABLE_BWRAP: "1",
