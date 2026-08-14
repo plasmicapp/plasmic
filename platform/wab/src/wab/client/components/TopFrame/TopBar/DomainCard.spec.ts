@@ -19,7 +19,7 @@ describe("renderDomainErrorMessage", () => {
       })
     ).toBe(
       "Plasmic couldn't reach our hosting provider to register example.com. " +
-        "This is a problem on our end — please contact support@plasmic.app."
+        "Please contact support."
     );
   });
 
@@ -31,9 +31,7 @@ describe("renderDomainErrorMessage", () => {
         status: "OtherDomainError",
         operation: "remove",
       })
-    ).toBe(
-      "example.com couldn't be removed. Please contact support@plasmic.app."
-    );
+    ).toBe("example.com couldn't be removed. Please contact support.");
     expect(
       renderDomainErrorMessage("example.com", {
         status: "VercelAuthError",

@@ -60,17 +60,17 @@ export function renderDomainErrorMessage(
   const done = operation === "remove" ? "removed" : "registered";
   switch (status) {
     case "DomainUsedElsewhereInPlasmic":
-      return `${domain} is already used by another Plasmic project. Remove it there first, or contact support@plasmic.app.`;
+      return `${domain} is already used by another Plasmic project, please remove it there first.`;
     case "DomainUsedElsewhereInVercel":
-      return `${domain} is already owned by another team on our hosting provider. Contact support@plasmic.app to request access${suffix}.`;
+      return `${domain} is owned by another account on our hosting provider. Contact support to request access${suffix}.`;
     case "DomainInvalid":
       return `${domain} is not a valid domain for Plasmic hosting.`;
     case "VercelAuthError":
-      return `Plasmic couldn't reach our hosting provider to ${operation} ${domain}. This is a problem on our end — please contact support@plasmic.app.`;
+      return `Plasmic couldn't reach our hosting provider to ${operation} ${domain}. Please contact support.`;
     default:
       return message
         ? `${domain} couldn't be ${done}: ${message}`
-        : `${domain} couldn't be ${done}${suffix}. Please contact support@plasmic.app.`;
+        : `${domain} couldn't be ${done}${suffix}. Please contact support.`;
   }
 }
 
@@ -102,13 +102,14 @@ function DomainCard_(
 
   const recordType = explicitRecordType ?? (subdomain ? "cname" : "apex");
 
+  const effDom =
+    recordType === "cname" && !subdomain ? `www.${domain}` : domain;
+  const checkKey = apiKey(`checkDomain`, effDom);
+
+  const [freshKey, setFreshKey] = useState<string | undefined>(undefined);
   const { data: domainStatus, isValidating } = useSWR<CheckDomainResponse>(
-    apiKey(`checkDomain`, domain),
-    () => {
-      const effDom =
-        recordType === "cname" && !subdomain ? "www." + domain : domain;
-      return api.checkDomain(effDom);
-    },
+    checkKey,
+    () => api.checkDomain(effDom),
     {
       revalidateOnMount: true,
       // Check once if errored since a rejected domain won't magically become configured.
@@ -119,13 +120,21 @@ function DomainCard_(
           ? 0
           : 5000,
       dedupingInterval: 1500,
+      onSuccess: (_data, key) => setFreshKey(key),
     }
   );
+  // Avoid serving a stale SWR cache result. isCorrectlyConfigured can be shown
+  // right away, but we shouldn't flash a stale error.
+  const trustedStatus =
+    freshKey === checkKey ||
+    (domainStatus?.status.isValid && domainStatus.status.isCorrectlyConfigured)
+      ? domainStatus?.status
+      : undefined;
   const isCorrect =
-    domainStatus?.status.isValid && domainStatus?.status.isCorrectlyConfigured;
+    trustedStatus?.isValid && trustedStatus.isCorrectlyConfigured;
   // We couldn't check, so we don't know that anything is wrong with their DNS.
   const configCheckFailed =
-    domainStatus?.status.isValid && domainStatus.status.configCheckFailed;
+    trustedStatus?.isValid && trustedStatus.configCheckFailed;
 
   // A registration failure for a saved domain is stale once the check shows it serving.
   // A candidate's domain stays unregistered no matter what its DNS says.
@@ -153,7 +162,7 @@ function DomainCard_(
           ? {
               // Stays in the cname/apex variant so the DNS instructions keep
               // matching the record type, only the feedback note changes.
-              children: `Plasmic couldn't check the configuration of ${domain} right now. If your site is already live, it will keep working.`,
+              children: `We couldn't check the configuration of ${domain} right now. If the site is live, it will keep working.`,
             }
           : undefined
       }
@@ -177,7 +186,7 @@ function DomainCard_(
         rel: "noreferrer",
       }}
       refreshButton={{
-        onClick: () => spawn(mutate(apiKey(`checkDomain`, domain))),
+        onClick: () => spawn(mutate(checkKey)),
       }}
       cnameTab={{
         wrap: (node) => subdomain && node,

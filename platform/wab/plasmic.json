@@ -8887,22 +8887,22 @@
         {
           "id": "1fOBAQgR_YC",
           "name": "SearchSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_optimize/icons/PlasmicIcon__SearchSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg.tsx"
         },
         {
           "id": "WwUBV0GQ7FQ",
           "name": "CheckSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_optimize/icons/PlasmicIcon__CheckSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckSvg.tsx"
         },
         {
           "id": "X6hf2DFJIGGQ",
           "name": "ChevronDownSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_optimize/icons/PlasmicIcon__ChevronDownSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg.tsx"
         },
         {
           "id": "HgcWQamEyGiJ",
           "name": "ChevronUpSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_optimize/icons/PlasmicIcon__ChevronUpSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg.tsx"
         },
         {
           "id": "XoVue8d2QUwz",
@@ -10104,12 +10104,12 @@
         {
           "id": "aOGHT_bTEBZ",
           "name": "ChevronDownSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/icons/PlasmicIcon__ChevronDownSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg.tsx"
         },
         {
           "id": "JoQXtyo-2FA",
           "name": "ChevronUpSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/icons/PlasmicIcon__ChevronUpSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg.tsx"
         }
       ],
       "images": [],
@@ -11559,6 +11559,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.368",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.368/dist/plasmic.schema.json"
+  "cliVersion": "0.1.371",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.371/dist/plasmic.schema.json"
 }

@@ -383,6 +383,18 @@ function PlasmicDomainCard__RenderFunc(props: {
             data-plasmic-name={"refreshButton"}
             data-plasmic-override={overrides.refreshButton}
             caption={"Caption"}
+            className={classNames("__wab_instance", sty.refreshButton, {
+              [sty.refreshButtonerror_success]: hasVariant(
+                $state,
+                "error",
+                "success"
+              ),
+              [sty.refreshButtonrefreshing]: hasVariant(
+                $state,
+                "refreshing",
+                "refreshing"
+              ),
+            })}
             disabled={
               hasVariant($state, "refreshing", "refreshing") ? true : undefined
             }

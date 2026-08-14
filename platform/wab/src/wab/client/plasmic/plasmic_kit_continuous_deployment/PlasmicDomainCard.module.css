@@ -48,7 +48,7 @@
   width: 1rem;
   height: 1rem;
 }
-.svg__tw6Bx {
+.svg___6OIgC {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -111,6 +111,9 @@
   display: flex;
   flex-direction: row;
   column-gap: 8px;
+}
+.refreshButton:global(.__wab_instance) {
+  min-width: 110px;
 }
 .svg__fkj25 {
   display: flex;
