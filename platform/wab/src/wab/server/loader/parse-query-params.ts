@@ -1,4 +1,3 @@
-import { logger } from "@/wab/server/observability";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { GlobalVariantSpec } from "@plasmicapp/loader-react";
 import { isArray } from "lodash";
@@ -9,13 +8,12 @@ export const parseComponentProps = (rawComponentProps?: any) => {
   }
   try {
     const componentProps = JSON.parse(rawComponentProps);
-    logger().info("Parsed props", componentProps);
     if (!componentProps || isArray(componentProps)) {
       throw null;
     }
     return componentProps;
   } catch (e) {
-    throw new Error("Invalid componentProps value");
+    throw new BadRequestError("Invalid componentProps value");
   }
 };
 
