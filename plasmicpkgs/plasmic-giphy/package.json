@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-giphy",
-  "version": "0.0.91",
+  "version": "0.0.92",
   "description": "Plasmic Giphy components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -41,7 +41,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",

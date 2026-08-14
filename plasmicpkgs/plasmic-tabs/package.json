@@ -1,5 +1,5 @@
 {
-  "version": "0.0.100",
+  "version": "0.0.101",
   "description": "Plasmic code components for building customizable tab interfaces.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -65,7 +65,7 @@
     "tslib": "^2.3.1"
   },
   "dependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "constate": "^3.3.2"
   }
 }

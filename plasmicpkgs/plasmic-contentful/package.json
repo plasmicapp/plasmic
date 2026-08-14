@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-contentful",
-  "version": "0.0.207",
+  "version": "0.0.208",
   "description": "Plasmic code components for fetching and rendering Contentful content.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -44,9 +44,9 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@plasmicapp/query": "0.1.87",
-    "@plasmicpkgs/contentful": "0.0.31",
+    "@plasmicpkgs/contentful": "0.0.32",
     "@types/dlv": "^1.1.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",

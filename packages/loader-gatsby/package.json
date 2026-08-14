@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "2.0.22",
+  "version": "2.0.23",
   "description": "Plasmic loader SDK for Gatsby — render pages and components designed in Plasmic.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -61,7 +61,7 @@
   ],
   "dependencies": {
     "@plasmicapp/loader-core": "2.0.5",
-    "@plasmicapp/loader-react": "2.0.19",
+    "@plasmicapp/loader-react": "2.0.20",
     "@plasmicapp/watcher": "1.0.87",
     "lodash": "^4.17.21"
   },

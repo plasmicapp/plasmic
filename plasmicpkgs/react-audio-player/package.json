@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-audio-player",
-  "version": "0.0.86",
+  "version": "0.0.87",
   "description": "React Audio Player components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -39,7 +39,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",

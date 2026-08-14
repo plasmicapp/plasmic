@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-local",
-  "version": "0.0.257",
+  "version": "0.0.258",
   "description": "Local mock data provider for Plasmic commerce components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -25,10 +25,10 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.257"
+    "@plasmicpkgs/commerce": "0.0.258"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^14.18.63",
     "@types/react": "^18",

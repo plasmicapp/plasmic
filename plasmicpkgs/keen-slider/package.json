@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-keen-slider",
-  "version": "0.0.102",
+  "version": "0.0.103",
   "description": "Plasmic Keen slider components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -41,7 +41,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/resize-observer-browser": "^0.1.7",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web-runtime",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "description": "Custom JSX runtime for @plasmicapp/react-web, used by Plasmic-generated code.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@plasmicapp/react-web": "1.0.31",
+    "@plasmicapp/react-web": "1.0.32",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.4",

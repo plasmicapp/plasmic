@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/contentful",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Custom functions for querying Contentful content from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -34,7 +34,7 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@react-awesome-query-builder/core": "^6.6.15",
     "@types/json-logic-js": "^2.0.8",
     "typescript": "^5.2.2",

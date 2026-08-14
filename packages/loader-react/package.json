@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "2.0.19",
+  "version": "2.0.20",
   "description": "Plasmic loader SDK for React",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@plasmicapp/data-sources-context": "0.1.25",
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@plasmicapp/loader-core": "2.0.5",
     "@plasmicapp/loader-fetcher": "2.0.5",
     "@plasmicapp/loader-splits": "1.0.76",

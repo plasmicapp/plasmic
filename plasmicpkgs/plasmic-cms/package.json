@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-cms",
-  "version": "0.0.328",
+  "version": "0.0.329",
   "description": "Plasmic code components for querying and rendering Plasmic CMS content.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -42,13 +42,13 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/host": "2.0.17",
     "@plasmicapp/query": "0.1.87",
     "@types/node": "^17.0.45",
     "@types/react": "^18"
   },
   "dependencies": {
-    "@plasmicpkgs/cms": "0.0.37",
+    "@plasmicpkgs/cms": "0.0.38",
     "dayjs": "^1.10.7"
   },
   "peerDependencies": {

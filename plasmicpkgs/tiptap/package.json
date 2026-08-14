@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/tiptap",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "description": "Plasmic code components for the Tiptap rich text editor.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -62,8 +62,8 @@
     "test-storybook": "test-storybook"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "1.0.25",
-    "@plasmicapp/host": "2.0.16",
+    "@plasmicapp/data-sources": "1.0.26",
+    "@plasmicapp/host": "2.0.17",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
