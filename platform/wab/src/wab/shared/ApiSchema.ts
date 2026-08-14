@@ -503,6 +503,11 @@ export interface ApiProject extends ApiEntityBase {
   extraData: ProjectExtraData | null;
   readableByPublic: boolean;
   isUserStarter?: boolean;
+  /**
+   * Declared as `never` so that any attempt to build `ApiProject` by spreading
+   * `Project` fails to compile.
+   */
+  secretApiToken?: never;
 }
 
 export interface ApiProjectMeta

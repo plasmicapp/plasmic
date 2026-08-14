@@ -187,7 +187,7 @@ export function mkApiProject(project: Project): ApiProject {
     ? mkApiTeam(project.workspace.team)
     : null;
   return {
-    ...omit(project, "workspace"),
+    ...omit(project, "workspace", "secretApiToken"),
     workspaceName: project.workspace?.name || null,
     parentTeamId: team?.parentTeamId || null,
     teamId: project.workspace?.teamId || null,
@@ -1700,8 +1700,13 @@ export async function updateProject(req: Request, res: Response) {
       },
       data.regenerateSecretApiToken
     );
+    // Only return the secret token to callers who asked to regenerate it, which
+    // requires "editor". Returning it on every update would leak it to "content"
+    // collaborators who renames the project.
     const regeneratedSecretApiToken: string | undefined =
-      project.secretApiToken ?? undefined;
+      data.regenerateSecretApiToken
+        ? project.secretApiToken ?? undefined
+        : undefined;
 
     req.promLabels.projectId = project.id;
     const apiProject = mkApiProject(project);
