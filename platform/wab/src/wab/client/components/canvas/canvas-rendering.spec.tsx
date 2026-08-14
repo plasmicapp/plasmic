@@ -271,12 +271,17 @@ describe("useComponentLevelQueries", () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
+      // react-dom rethrows render errors through a synthetic DOM event, which jsdom reports
+      // as an uncaught error. The throw is the point of this test, so cancel the report.
+      const cancelErrorEvent = (e: ErrorEvent) => e.preventDefault();
+      window.addEventListener("error", cancelErrorEvent);
       try {
         expect(() => rerender(<Fetcher />)).toThrow(TypeError);
         expect(consoleError.mock.calls.flat().join("\n")).toMatch(
           /change in the order of Hooks/
         );
       } finally {
+        window.removeEventListener("error", cancelErrorEvent);
         consoleError.mockRestore();
       }
     });

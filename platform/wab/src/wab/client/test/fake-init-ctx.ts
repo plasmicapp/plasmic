@@ -100,6 +100,11 @@ function fakeDbCtx(opts?: {
       id: "ProjectId123",
       name: "Test Site",
       perms: [],
+      // There's no logged-in user in tests (appCtx.selfInfo is unset), so make this
+      // editable by anonymous users, ownerless and public. Otherwise StudioCtx blocks
+      // changes and undoes them async after the test has already asserted on them.
+      createdById: null,
+      readableByPublic: true,
       ...opts?.siteInfo,
     } as SiteInfo,
   });
@@ -108,6 +113,15 @@ function fakeDbCtx(opts?: {
     ...appCtxDeps,
   };
 }
+
+/**
+ * StudioCtxs keep evaluating the canvas in the background, so dispose once tests are
+ * done. Otherwise it outlives the test env, and vitest reports its logging.
+ */
+const undisposedStudioCtxs: StudioCtx[] = [];
+afterAll(() => {
+  undisposedStudioCtxs.splice(0).forEach((studioCtx) => studioCtx.dispose());
+});
 
 export function fakeStudioCtx(opts?: {
   site?: Site;
@@ -118,7 +132,10 @@ export function fakeStudioCtx(opts?: {
   const dbCtxDeps = fakeDbCtx(opts);
   const studioCtx = new StudioCtx({
     dbCtx: dbCtxDeps.dbCtx,
+    // Tests never persist anything, the timer would just poll the mocked api.
+    autoSave: false,
   });
+  undisposedStudioCtxs.push(studioCtx);
 
   studioCtx.tryGetViewCtxForFrame = (frame: ArenaFrame | undefined) => {
     if (!frame) {

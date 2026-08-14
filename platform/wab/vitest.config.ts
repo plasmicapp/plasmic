@@ -109,10 +109,6 @@ export default defineConfig({
       include: ["src/**/*.{js,jsx,ts,tsx}"],
       exclude: ["src/**/*.d.ts"],
     },
-    // A handful of studio operations leave a promise rejection unhandled (see
-    // the copilot specs). jest ignored those; failing the run on them is a
-    // separate cleanup.
-    dangerouslyIgnoreUnhandledErrors: true,
     // Generated code asserts on its own CSS module class names.
     css: { modules: { classNameStrategy: "non-scoped" } },
     // Modules read these at import time, so they must be set before the test
@@ -120,6 +116,7 @@ export default defineConfig({
     env: {
       COMMITHASH: "test",
       PUBLICPATH: "/",
+      AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE: "1",
     },
     testTimeout: 60000,
     hookTimeout: 60000,

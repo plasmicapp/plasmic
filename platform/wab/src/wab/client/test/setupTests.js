@@ -14,6 +14,21 @@ expect.extend(jestExtendedMatchers);
 // Use mocks for code that doesn't work in JSDOM
 vi.mock("@/wab/client/image/metadata");
 
+// Studio fetches its canvas/hostless bundles from the static server, which isn't
+// running under test. Left alone, StudioCtx kicks those fetches off from
+// its constructor and the rejections surface as unhandled errors.
+vi.mock(
+  "@/wab/client/components/studio/studio-bundles",
+  async (importOriginal) => ({
+    ...(await importOriginal()),
+    getCanvasPkgs: async () => "",
+    getReactWebBundle: async () => "",
+    getLiveFrameClientJs: async () => "",
+    getHostLessPkg: async () => "",
+    getSortedHostLessPkgs: async (pkgs) => pkgs.map((pkg) => [pkg, ""]),
+  })
+);
+
 DEVFLAGS.hostUrl = "http://localhost";
 
 // Web shims for APIs missing in JSDOM

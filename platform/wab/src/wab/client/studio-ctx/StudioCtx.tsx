@@ -454,6 +454,11 @@ const DEFAULT_ZOOM_PADDING = 40;
 
 interface StudioCtxArgs {
   dbCtx: DbCtx;
+  /**
+   * Whether to start the timer that periodically saves the project. Tests turn it off
+   * since they never persist anything. Defaults to true.
+   */
+  autoSave?: boolean;
 }
 
 interface ZoomState {
@@ -720,18 +725,20 @@ export class StudioCtx extends WithDbCtx {
     // This could be better (we can keep erroring as the user makes changes) but
     // we should really just move away from this mode of allowing the user to
     // continue making edits.  (And longer term, need real-time collaboration.)
-    this.asyncSaverTimer = window.setInterval(() => {
-      if (DEVFLAGS.autoSave && this.canEditProject()) {
-        spawn(
-          this.asyncSaver().then((r) => {
-            console.log("Save result is", r);
-            if (r === SaveResult.StopSaving) {
-              window.clearInterval(this.asyncSaverTimer);
-            }
-          })
-        );
-      }
-    }, 2000);
+    if (args.autoSave ?? true) {
+      this.asyncSaverTimer = window.setInterval(() => {
+        if (DEVFLAGS.autoSave && this.canEditProject()) {
+          spawn(
+            this.asyncSaver().then((r) => {
+              console.log("Save result is", r);
+              if (r === SaveResult.StopSaving) {
+                window.clearInterval(this.asyncSaverTimer);
+              }
+            })
+          );
+        }
+      }, 2000);
+    }
 
     this._serverUpdatesSummary = getEmptyDeletedAssetsSummary();
     this.undoLog = new UndoLog(
@@ -5663,8 +5670,11 @@ export class StudioCtx extends WithDbCtx {
 
   /** Throttled function that performs a save. */
   private asyncSaver: AsyncCallable;
-  /** Timer ID that regularly checks if we are dirty, and if so, performs a save */
-  private asyncSaverTimer: number;
+  /**
+   * Timer ID that regularly checks if we are dirty, and if so, performs a save.
+   * Undefined if the StudioCtx was created with `autoSave: false`.
+   */
+  private asyncSaverTimer: number | undefined;
   /**
    * Change counter, incremented on each meaningful change (change that requires
    * a save).  This is how we can detect if we are dirty and need to save

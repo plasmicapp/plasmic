@@ -1277,6 +1277,11 @@ export class ViewCtx extends WithDbCtx {
   private async syncInternal(optss: ViewCtxSyncArgs[]) {
     const opts = this.mergeEvalArgs(optss);
     const doEval = async () => {
+      if (this._isDisposed) {
+        // The queue may still hold syncs scheduled before disposal.
+        // csEvaluator is gone by now, so there's nothing left to evaluate.
+        return;
+      }
       console.log(
         `${this.tplMgr().describeArenaFrame(this.arenaFrame())}: Eval ${
           opts.asap ? "sync" : "async"
