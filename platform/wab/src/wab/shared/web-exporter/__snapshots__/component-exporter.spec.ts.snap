@@ -1491,7 +1491,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         <Prop name="initialSelectedKey" uuid="HAatoUv1hSxL" type="enum">
           <options>
             <ARRAY>
-              <ITEM>Dynamic options</ITEM>
+              <ITEM value="Dynamic options" label="Dynamic options"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -1763,12 +1763,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="placement" uuid="ouxVEFx2FrBF" type="enum" default="bottom">
           <options>
             <ARRAY>
-              <ITEM>top</ITEM>
-              <ITEM>bottom</ITEM>
-              <ITEM>start</ITEM>
-              <ITEM>end</ITEM>
-              <ITEM>left</ITEM>
-              <ITEM>right</ITEM>
+              <ITEM value="top" label="top"></ITEM>
+              <ITEM value="bottom" label="bottom"></ITEM>
+              <ITEM value="start" label="start"></ITEM>
+              <ITEM value="end" label="end"></ITEM>
+              <ITEM value="left" label="left"></ITEM>
+              <ITEM value="right" label="right"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2295,12 +2295,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="type" uuid="_7uuP-1qIQpX" type="enum">
           <options>
             <ARRAY>
-              <ITEM>text</ITEM>
-              <ITEM>search</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>password</ITEM>
+              <ITEM value="text" label="text"></ITEM>
+              <ITEM value="search" label="search"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="password" label="password"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2309,14 +2309,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="inputMode" uuid="BQY0K6FisZgm" type="enum">
           <options>
             <ARRAY>
-              <ITEM>none</ITEM>
-              <ITEM>text</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>numeric</ITEM>
-              <ITEM>decimal</ITEM>
-              <ITEM>search</ITEM>
+              <ITEM value="none" label="none"></ITEM>
+              <ITEM value="text" label="text"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="numeric" label="numeric"></ITEM>
+              <ITEM value="decimal" label="decimal"></ITEM>
+              <ITEM value="search" label="search"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2325,65 +2325,65 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="autoComplete" uuid="sx_j2d3PjIVu" type="enum">
           <options>
             <ARRAY>
-              <ITEM>on</ITEM>
-              <ITEM>off</ITEM>
-              <ITEM>name</ITEM>
-              <ITEM>honorific-prefix</ITEM>
-              <ITEM>given-name</ITEM>
-              <ITEM>additional-name</ITEM>
-              <ITEM>family-name</ITEM>
-              <ITEM>honorific-suffix</ITEM>
-              <ITEM>nickname</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>username</ITEM>
-              <ITEM>new-password</ITEM>
-              <ITEM>current-password</ITEM>
-              <ITEM>one-time-code</ITEM>
-              <ITEM>organization-title</ITEM>
-              <ITEM>organization</ITEM>
-              <ITEM>street-address</ITEM>
-              <ITEM>shipping</ITEM>
-              <ITEM>billing</ITEM>
-              <ITEM>address-line1</ITEM>
-              <ITEM>address-line2</ITEM>
-              <ITEM>address-line3</ITEM>
-              <ITEM>address-level4</ITEM>
-              <ITEM>address-level3</ITEM>
-              <ITEM>address-level2</ITEM>
-              <ITEM>address-level1</ITEM>
-              <ITEM>country</ITEM>
-              <ITEM>country-name</ITEM>
-              <ITEM>postal-code</ITEM>
-              <ITEM>cc-name</ITEM>
-              <ITEM>cc-given-name</ITEM>
-              <ITEM>cc-additional-name</ITEM>
-              <ITEM>cc-family-name</ITEM>
-              <ITEM>cc-number</ITEM>
-              <ITEM>cc-exp</ITEM>
-              <ITEM>cc-exp-month</ITEM>
-              <ITEM>cc-exp-year</ITEM>
-              <ITEM>cc-csc</ITEM>
-              <ITEM>cc-type</ITEM>
-              <ITEM>transaction-currency</ITEM>
-              <ITEM>transaction-amount</ITEM>
-              <ITEM>language</ITEM>
-              <ITEM>bday</ITEM>
-              <ITEM>bday-day</ITEM>
-              <ITEM>bday-month</ITEM>
-              <ITEM>bday-year</ITEM>
-              <ITEM>sex</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>tel-country-code</ITEM>
-              <ITEM>tel-national</ITEM>
-              <ITEM>tel-area-code</ITEM>
-              <ITEM>tel-local</ITEM>
-              <ITEM>tel-local-suffix</ITEM>
-              <ITEM>tel-local-prefix</ITEM>
-              <ITEM>tel-extension</ITEM>
-              <ITEM>impp</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>photo</ITEM>
-              <ITEM>webauthn</ITEM>
+              <ITEM value="on" label="on"></ITEM>
+              <ITEM value="off" label="off"></ITEM>
+              <ITEM value="name" label="name"></ITEM>
+              <ITEM value="honorific-prefix" label="honorific-prefix"></ITEM>
+              <ITEM value="given-name" label="given-name"></ITEM>
+              <ITEM value="additional-name" label="additional-name"></ITEM>
+              <ITEM value="family-name" label="family-name"></ITEM>
+              <ITEM value="honorific-suffix" label="honorific-suffix"></ITEM>
+              <ITEM value="nickname" label="nickname"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="username" label="username"></ITEM>
+              <ITEM value="new-password" label="new-password"></ITEM>
+              <ITEM value="current-password" label="current-password"></ITEM>
+              <ITEM value="one-time-code" label="one-time-code"></ITEM>
+              <ITEM value="organization-title" label="organization-title"></ITEM>
+              <ITEM value="organization" label="organization"></ITEM>
+              <ITEM value="street-address" label="street-address"></ITEM>
+              <ITEM value="shipping" label="shipping"></ITEM>
+              <ITEM value="billing" label="billing"></ITEM>
+              <ITEM value="address-line1" label="address-line1"></ITEM>
+              <ITEM value="address-line2" label="address-line2"></ITEM>
+              <ITEM value="address-line3" label="address-line3"></ITEM>
+              <ITEM value="address-level4" label="address-level4"></ITEM>
+              <ITEM value="address-level3" label="address-level3"></ITEM>
+              <ITEM value="address-level2" label="address-level2"></ITEM>
+              <ITEM value="address-level1" label="address-level1"></ITEM>
+              <ITEM value="country" label="country"></ITEM>
+              <ITEM value="country-name" label="country-name"></ITEM>
+              <ITEM value="postal-code" label="postal-code"></ITEM>
+              <ITEM value="cc-name" label="cc-name"></ITEM>
+              <ITEM value="cc-given-name" label="cc-given-name"></ITEM>
+              <ITEM value="cc-additional-name" label="cc-additional-name"></ITEM>
+              <ITEM value="cc-family-name" label="cc-family-name"></ITEM>
+              <ITEM value="cc-number" label="cc-number"></ITEM>
+              <ITEM value="cc-exp" label="cc-exp"></ITEM>
+              <ITEM value="cc-exp-month" label="cc-exp-month"></ITEM>
+              <ITEM value="cc-exp-year" label="cc-exp-year"></ITEM>
+              <ITEM value="cc-csc" label="cc-csc"></ITEM>
+              <ITEM value="cc-type" label="cc-type"></ITEM>
+              <ITEM value="transaction-currency" label="transaction-currency"></ITEM>
+              <ITEM value="transaction-amount" label="transaction-amount"></ITEM>
+              <ITEM value="language" label="language"></ITEM>
+              <ITEM value="bday" label="bday"></ITEM>
+              <ITEM value="bday-day" label="bday-day"></ITEM>
+              <ITEM value="bday-month" label="bday-month"></ITEM>
+              <ITEM value="bday-year" label="bday-year"></ITEM>
+              <ITEM value="sex" label="sex"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="tel-country-code" label="tel-country-code"></ITEM>
+              <ITEM value="tel-national" label="tel-national"></ITEM>
+              <ITEM value="tel-area-code" label="tel-area-code"></ITEM>
+              <ITEM value="tel-local" label="tel-local"></ITEM>
+              <ITEM value="tel-local-suffix" label="tel-local-suffix"></ITEM>
+              <ITEM value="tel-local-prefix" label="tel-local-prefix"></ITEM>
+              <ITEM value="tel-extension" label="tel-extension"></ITEM>
+              <ITEM value="impp" label="impp"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="photo" label="photo"></ITEM>
+              <ITEM value="webauthn" label="webauthn"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2549,12 +2549,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="inputType" uuid="_GLucYKGNfix" type="enum">
           <options>
             <ARRAY>
-              <ITEM>text</ITEM>
-              <ITEM>search</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>password</ITEM>
+              <ITEM value="text" label="text"></ITEM>
+              <ITEM value="search" label="search"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="password" label="password"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2563,14 +2563,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="inputMode" uuid="L-p-fBdxu7gF" type="enum">
           <options>
             <ARRAY>
-              <ITEM>none</ITEM>
-              <ITEM>text</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>numeric</ITEM>
-              <ITEM>decimal</ITEM>
-              <ITEM>search</ITEM>
+              <ITEM value="none" label="none"></ITEM>
+              <ITEM value="text" label="text"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="numeric" label="numeric"></ITEM>
+              <ITEM value="decimal" label="decimal"></ITEM>
+              <ITEM value="search" label="search"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2579,65 +2579,65 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="autoComplete" uuid="kDIK_agkNyrw" type="enum">
           <options>
             <ARRAY>
-              <ITEM>on</ITEM>
-              <ITEM>off</ITEM>
-              <ITEM>name</ITEM>
-              <ITEM>honorific-prefix</ITEM>
-              <ITEM>given-name</ITEM>
-              <ITEM>additional-name</ITEM>
-              <ITEM>family-name</ITEM>
-              <ITEM>honorific-suffix</ITEM>
-              <ITEM>nickname</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>username</ITEM>
-              <ITEM>new-password</ITEM>
-              <ITEM>current-password</ITEM>
-              <ITEM>one-time-code</ITEM>
-              <ITEM>organization-title</ITEM>
-              <ITEM>organization</ITEM>
-              <ITEM>street-address</ITEM>
-              <ITEM>shipping</ITEM>
-              <ITEM>billing</ITEM>
-              <ITEM>address-line1</ITEM>
-              <ITEM>address-line2</ITEM>
-              <ITEM>address-line3</ITEM>
-              <ITEM>address-level4</ITEM>
-              <ITEM>address-level3</ITEM>
-              <ITEM>address-level2</ITEM>
-              <ITEM>address-level1</ITEM>
-              <ITEM>country</ITEM>
-              <ITEM>country-name</ITEM>
-              <ITEM>postal-code</ITEM>
-              <ITEM>cc-name</ITEM>
-              <ITEM>cc-given-name</ITEM>
-              <ITEM>cc-additional-name</ITEM>
-              <ITEM>cc-family-name</ITEM>
-              <ITEM>cc-number</ITEM>
-              <ITEM>cc-exp</ITEM>
-              <ITEM>cc-exp-month</ITEM>
-              <ITEM>cc-exp-year</ITEM>
-              <ITEM>cc-csc</ITEM>
-              <ITEM>cc-type</ITEM>
-              <ITEM>transaction-currency</ITEM>
-              <ITEM>transaction-amount</ITEM>
-              <ITEM>language</ITEM>
-              <ITEM>bday</ITEM>
-              <ITEM>bday-day</ITEM>
-              <ITEM>bday-month</ITEM>
-              <ITEM>bday-year</ITEM>
-              <ITEM>sex</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>tel-country-code</ITEM>
-              <ITEM>tel-national</ITEM>
-              <ITEM>tel-area-code</ITEM>
-              <ITEM>tel-local</ITEM>
-              <ITEM>tel-local-suffix</ITEM>
-              <ITEM>tel-local-prefix</ITEM>
-              <ITEM>tel-extension</ITEM>
-              <ITEM>impp</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>photo</ITEM>
-              <ITEM>webauthn</ITEM>
+              <ITEM value="on" label="on"></ITEM>
+              <ITEM value="off" label="off"></ITEM>
+              <ITEM value="name" label="name"></ITEM>
+              <ITEM value="honorific-prefix" label="honorific-prefix"></ITEM>
+              <ITEM value="given-name" label="given-name"></ITEM>
+              <ITEM value="additional-name" label="additional-name"></ITEM>
+              <ITEM value="family-name" label="family-name"></ITEM>
+              <ITEM value="honorific-suffix" label="honorific-suffix"></ITEM>
+              <ITEM value="nickname" label="nickname"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="username" label="username"></ITEM>
+              <ITEM value="new-password" label="new-password"></ITEM>
+              <ITEM value="current-password" label="current-password"></ITEM>
+              <ITEM value="one-time-code" label="one-time-code"></ITEM>
+              <ITEM value="organization-title" label="organization-title"></ITEM>
+              <ITEM value="organization" label="organization"></ITEM>
+              <ITEM value="street-address" label="street-address"></ITEM>
+              <ITEM value="shipping" label="shipping"></ITEM>
+              <ITEM value="billing" label="billing"></ITEM>
+              <ITEM value="address-line1" label="address-line1"></ITEM>
+              <ITEM value="address-line2" label="address-line2"></ITEM>
+              <ITEM value="address-line3" label="address-line3"></ITEM>
+              <ITEM value="address-level4" label="address-level4"></ITEM>
+              <ITEM value="address-level3" label="address-level3"></ITEM>
+              <ITEM value="address-level2" label="address-level2"></ITEM>
+              <ITEM value="address-level1" label="address-level1"></ITEM>
+              <ITEM value="country" label="country"></ITEM>
+              <ITEM value="country-name" label="country-name"></ITEM>
+              <ITEM value="postal-code" label="postal-code"></ITEM>
+              <ITEM value="cc-name" label="cc-name"></ITEM>
+              <ITEM value="cc-given-name" label="cc-given-name"></ITEM>
+              <ITEM value="cc-additional-name" label="cc-additional-name"></ITEM>
+              <ITEM value="cc-family-name" label="cc-family-name"></ITEM>
+              <ITEM value="cc-number" label="cc-number"></ITEM>
+              <ITEM value="cc-exp" label="cc-exp"></ITEM>
+              <ITEM value="cc-exp-month" label="cc-exp-month"></ITEM>
+              <ITEM value="cc-exp-year" label="cc-exp-year"></ITEM>
+              <ITEM value="cc-csc" label="cc-csc"></ITEM>
+              <ITEM value="cc-type" label="cc-type"></ITEM>
+              <ITEM value="transaction-currency" label="transaction-currency"></ITEM>
+              <ITEM value="transaction-amount" label="transaction-amount"></ITEM>
+              <ITEM value="language" label="language"></ITEM>
+              <ITEM value="bday" label="bday"></ITEM>
+              <ITEM value="bday-day" label="bday-day"></ITEM>
+              <ITEM value="bday-month" label="bday-month"></ITEM>
+              <ITEM value="bday-year" label="bday-year"></ITEM>
+              <ITEM value="sex" label="sex"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="tel-country-code" label="tel-country-code"></ITEM>
+              <ITEM value="tel-national" label="tel-national"></ITEM>
+              <ITEM value="tel-area-code" label="tel-area-code"></ITEM>
+              <ITEM value="tel-local" label="tel-local"></ITEM>
+              <ITEM value="tel-local-suffix" label="tel-local-suffix"></ITEM>
+              <ITEM value="tel-local-prefix" label="tel-local-prefix"></ITEM>
+              <ITEM value="tel-extension" label="tel-extension"></ITEM>
+              <ITEM value="impp" label="impp"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="photo" label="photo"></ITEM>
+              <ITEM value="webauthn" label="webauthn"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -2876,14 +2876,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="inputMode" uuid="OHZWc7Z9mSmO" type="enum">
           <options>
             <ARRAY>
-              <ITEM>none</ITEM>
-              <ITEM>text</ITEM>
-              <ITEM>tel</ITEM>
-              <ITEM>url</ITEM>
-              <ITEM>email</ITEM>
-              <ITEM>numeric</ITEM>
-              <ITEM>decimal</ITEM>
-              <ITEM>search</ITEM>
+              <ITEM value="none" label="none"></ITEM>
+              <ITEM value="text" label="text"></ITEM>
+              <ITEM value="tel" label="tel"></ITEM>
+              <ITEM value="url" label="url"></ITEM>
+              <ITEM value="email" label="email"></ITEM>
+              <ITEM value="numeric" label="numeric"></ITEM>
+              <ITEM value="decimal" label="decimal"></ITEM>
+              <ITEM value="search" label="search"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -3116,10 +3116,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="placement" uuid="Gmk76MvO46b5" type="enum" default="top">
           <options>
             <ARRAY>
-              <ITEM>top</ITEM>
-              <ITEM>bottom</ITEM>
-              <ITEM>left</ITEM>
-              <ITEM>right</ITEM>
+              <ITEM value="top" label="top"></ITEM>
+              <ITEM value="bottom" label="bottom"></ITEM>
+              <ITEM value="left" label="left"></ITEM>
+              <ITEM value="right" label="right"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -3137,8 +3137,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         <Prop name="triggerAction" uuid="LBien6Xm-Qfz" type="enum">
           <options>
             <ARRAY>
-              <ITEM>focus</ITEM>
-              <ITEM>focus and hover</ITEM>
+              <ITEM value="focus" label="focus"></ITEM>
+              <ITEM value="focus and hover" label="focus and hover"></ITEM>
             </ARRAY>
           </options>
         </Prop>
@@ -5233,7 +5233,10 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         "__type": "Prop",
         "name": "initialSelectedKey",
         "options": [
-          "Dynamic options",
+          {
+            "label": "Dynamic options",
+            "value": "Dynamic options",
+          },
         ],
         "type": "enum",
         "uuid": "HAatoUv1hSxL",
@@ -5567,12 +5570,30 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "default": "bottom",
         "name": "placement",
         "options": [
-          "top",
-          "bottom",
-          "start",
-          "end",
-          "left",
-          "right",
+          {
+            "label": "top",
+            "value": "top",
+          },
+          {
+            "label": "bottom",
+            "value": "bottom",
+          },
+          {
+            "label": "start",
+            "value": "start",
+          },
+          {
+            "label": "end",
+            "value": "end",
+          },
+          {
+            "label": "left",
+            "value": "left",
+          },
+          {
+            "label": "right",
+            "value": "right",
+          },
         ],
         "type": "enum",
         "uuid": "ouxVEFx2FrBF",
@@ -6302,12 +6323,30 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "type",
         "options": [
-          "text",
-          "search",
-          "url",
-          "tel",
-          "email",
-          "password",
+          {
+            "label": "text",
+            "value": "text",
+          },
+          {
+            "label": "search",
+            "value": "search",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "password",
+            "value": "password",
+          },
         ],
         "type": "enum",
         "uuid": "_7uuP-1qIQpX",
@@ -6316,14 +6355,38 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "inputMode",
         "options": [
-          "none",
-          "text",
-          "tel",
-          "url",
-          "email",
-          "numeric",
-          "decimal",
-          "search",
+          {
+            "label": "none",
+            "value": "none",
+          },
+          {
+            "label": "text",
+            "value": "text",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "numeric",
+            "value": "numeric",
+          },
+          {
+            "label": "decimal",
+            "value": "decimal",
+          },
+          {
+            "label": "search",
+            "value": "search",
+          },
         ],
         "type": "enum",
         "uuid": "BQY0K6FisZgm",
@@ -6332,65 +6395,242 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "autoComplete",
         "options": [
-          "on",
-          "off",
-          "name",
-          "honorific-prefix",
-          "given-name",
-          "additional-name",
-          "family-name",
-          "honorific-suffix",
-          "nickname",
-          "email",
-          "username",
-          "new-password",
-          "current-password",
-          "one-time-code",
-          "organization-title",
-          "organization",
-          "street-address",
-          "shipping",
-          "billing",
-          "address-line1",
-          "address-line2",
-          "address-line3",
-          "address-level4",
-          "address-level3",
-          "address-level2",
-          "address-level1",
-          "country",
-          "country-name",
-          "postal-code",
-          "cc-name",
-          "cc-given-name",
-          "cc-additional-name",
-          "cc-family-name",
-          "cc-number",
-          "cc-exp",
-          "cc-exp-month",
-          "cc-exp-year",
-          "cc-csc",
-          "cc-type",
-          "transaction-currency",
-          "transaction-amount",
-          "language",
-          "bday",
-          "bday-day",
-          "bday-month",
-          "bday-year",
-          "sex",
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-suffix",
-          "tel-local-prefix",
-          "tel-extension",
-          "impp",
-          "url",
-          "photo",
-          "webauthn",
+          {
+            "label": "on",
+            "value": "on",
+          },
+          {
+            "label": "off",
+            "value": "off",
+          },
+          {
+            "label": "name",
+            "value": "name",
+          },
+          {
+            "label": "honorific-prefix",
+            "value": "honorific-prefix",
+          },
+          {
+            "label": "given-name",
+            "value": "given-name",
+          },
+          {
+            "label": "additional-name",
+            "value": "additional-name",
+          },
+          {
+            "label": "family-name",
+            "value": "family-name",
+          },
+          {
+            "label": "honorific-suffix",
+            "value": "honorific-suffix",
+          },
+          {
+            "label": "nickname",
+            "value": "nickname",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "username",
+            "value": "username",
+          },
+          {
+            "label": "new-password",
+            "value": "new-password",
+          },
+          {
+            "label": "current-password",
+            "value": "current-password",
+          },
+          {
+            "label": "one-time-code",
+            "value": "one-time-code",
+          },
+          {
+            "label": "organization-title",
+            "value": "organization-title",
+          },
+          {
+            "label": "organization",
+            "value": "organization",
+          },
+          {
+            "label": "street-address",
+            "value": "street-address",
+          },
+          {
+            "label": "shipping",
+            "value": "shipping",
+          },
+          {
+            "label": "billing",
+            "value": "billing",
+          },
+          {
+            "label": "address-line1",
+            "value": "address-line1",
+          },
+          {
+            "label": "address-line2",
+            "value": "address-line2",
+          },
+          {
+            "label": "address-line3",
+            "value": "address-line3",
+          },
+          {
+            "label": "address-level4",
+            "value": "address-level4",
+          },
+          {
+            "label": "address-level3",
+            "value": "address-level3",
+          },
+          {
+            "label": "address-level2",
+            "value": "address-level2",
+          },
+          {
+            "label": "address-level1",
+            "value": "address-level1",
+          },
+          {
+            "label": "country",
+            "value": "country",
+          },
+          {
+            "label": "country-name",
+            "value": "country-name",
+          },
+          {
+            "label": "postal-code",
+            "value": "postal-code",
+          },
+          {
+            "label": "cc-name",
+            "value": "cc-name",
+          },
+          {
+            "label": "cc-given-name",
+            "value": "cc-given-name",
+          },
+          {
+            "label": "cc-additional-name",
+            "value": "cc-additional-name",
+          },
+          {
+            "label": "cc-family-name",
+            "value": "cc-family-name",
+          },
+          {
+            "label": "cc-number",
+            "value": "cc-number",
+          },
+          {
+            "label": "cc-exp",
+            "value": "cc-exp",
+          },
+          {
+            "label": "cc-exp-month",
+            "value": "cc-exp-month",
+          },
+          {
+            "label": "cc-exp-year",
+            "value": "cc-exp-year",
+          },
+          {
+            "label": "cc-csc",
+            "value": "cc-csc",
+          },
+          {
+            "label": "cc-type",
+            "value": "cc-type",
+          },
+          {
+            "label": "transaction-currency",
+            "value": "transaction-currency",
+          },
+          {
+            "label": "transaction-amount",
+            "value": "transaction-amount",
+          },
+          {
+            "label": "language",
+            "value": "language",
+          },
+          {
+            "label": "bday",
+            "value": "bday",
+          },
+          {
+            "label": "bday-day",
+            "value": "bday-day",
+          },
+          {
+            "label": "bday-month",
+            "value": "bday-month",
+          },
+          {
+            "label": "bday-year",
+            "value": "bday-year",
+          },
+          {
+            "label": "sex",
+            "value": "sex",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "tel-country-code",
+            "value": "tel-country-code",
+          },
+          {
+            "label": "tel-national",
+            "value": "tel-national",
+          },
+          {
+            "label": "tel-area-code",
+            "value": "tel-area-code",
+          },
+          {
+            "label": "tel-local",
+            "value": "tel-local",
+          },
+          {
+            "label": "tel-local-suffix",
+            "value": "tel-local-suffix",
+          },
+          {
+            "label": "tel-local-prefix",
+            "value": "tel-local-prefix",
+          },
+          {
+            "label": "tel-extension",
+            "value": "tel-extension",
+          },
+          {
+            "label": "impp",
+            "value": "impp",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "photo",
+            "value": "photo",
+          },
+          {
+            "label": "webauthn",
+            "value": "webauthn",
+          },
         ],
         "type": "enum",
         "uuid": "sx_j2d3PjIVu",
@@ -6578,12 +6818,30 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "inputType",
         "options": [
-          "text",
-          "search",
-          "url",
-          "tel",
-          "email",
-          "password",
+          {
+            "label": "text",
+            "value": "text",
+          },
+          {
+            "label": "search",
+            "value": "search",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "password",
+            "value": "password",
+          },
         ],
         "type": "enum",
         "uuid": "_GLucYKGNfix",
@@ -6592,14 +6850,38 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "inputMode",
         "options": [
-          "none",
-          "text",
-          "tel",
-          "url",
-          "email",
-          "numeric",
-          "decimal",
-          "search",
+          {
+            "label": "none",
+            "value": "none",
+          },
+          {
+            "label": "text",
+            "value": "text",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "numeric",
+            "value": "numeric",
+          },
+          {
+            "label": "decimal",
+            "value": "decimal",
+          },
+          {
+            "label": "search",
+            "value": "search",
+          },
         ],
         "type": "enum",
         "uuid": "L-p-fBdxu7gF",
@@ -6608,65 +6890,242 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "autoComplete",
         "options": [
-          "on",
-          "off",
-          "name",
-          "honorific-prefix",
-          "given-name",
-          "additional-name",
-          "family-name",
-          "honorific-suffix",
-          "nickname",
-          "email",
-          "username",
-          "new-password",
-          "current-password",
-          "one-time-code",
-          "organization-title",
-          "organization",
-          "street-address",
-          "shipping",
-          "billing",
-          "address-line1",
-          "address-line2",
-          "address-line3",
-          "address-level4",
-          "address-level3",
-          "address-level2",
-          "address-level1",
-          "country",
-          "country-name",
-          "postal-code",
-          "cc-name",
-          "cc-given-name",
-          "cc-additional-name",
-          "cc-family-name",
-          "cc-number",
-          "cc-exp",
-          "cc-exp-month",
-          "cc-exp-year",
-          "cc-csc",
-          "cc-type",
-          "transaction-currency",
-          "transaction-amount",
-          "language",
-          "bday",
-          "bday-day",
-          "bday-month",
-          "bday-year",
-          "sex",
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-suffix",
-          "tel-local-prefix",
-          "tel-extension",
-          "impp",
-          "url",
-          "photo",
-          "webauthn",
+          {
+            "label": "on",
+            "value": "on",
+          },
+          {
+            "label": "off",
+            "value": "off",
+          },
+          {
+            "label": "name",
+            "value": "name",
+          },
+          {
+            "label": "honorific-prefix",
+            "value": "honorific-prefix",
+          },
+          {
+            "label": "given-name",
+            "value": "given-name",
+          },
+          {
+            "label": "additional-name",
+            "value": "additional-name",
+          },
+          {
+            "label": "family-name",
+            "value": "family-name",
+          },
+          {
+            "label": "honorific-suffix",
+            "value": "honorific-suffix",
+          },
+          {
+            "label": "nickname",
+            "value": "nickname",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "username",
+            "value": "username",
+          },
+          {
+            "label": "new-password",
+            "value": "new-password",
+          },
+          {
+            "label": "current-password",
+            "value": "current-password",
+          },
+          {
+            "label": "one-time-code",
+            "value": "one-time-code",
+          },
+          {
+            "label": "organization-title",
+            "value": "organization-title",
+          },
+          {
+            "label": "organization",
+            "value": "organization",
+          },
+          {
+            "label": "street-address",
+            "value": "street-address",
+          },
+          {
+            "label": "shipping",
+            "value": "shipping",
+          },
+          {
+            "label": "billing",
+            "value": "billing",
+          },
+          {
+            "label": "address-line1",
+            "value": "address-line1",
+          },
+          {
+            "label": "address-line2",
+            "value": "address-line2",
+          },
+          {
+            "label": "address-line3",
+            "value": "address-line3",
+          },
+          {
+            "label": "address-level4",
+            "value": "address-level4",
+          },
+          {
+            "label": "address-level3",
+            "value": "address-level3",
+          },
+          {
+            "label": "address-level2",
+            "value": "address-level2",
+          },
+          {
+            "label": "address-level1",
+            "value": "address-level1",
+          },
+          {
+            "label": "country",
+            "value": "country",
+          },
+          {
+            "label": "country-name",
+            "value": "country-name",
+          },
+          {
+            "label": "postal-code",
+            "value": "postal-code",
+          },
+          {
+            "label": "cc-name",
+            "value": "cc-name",
+          },
+          {
+            "label": "cc-given-name",
+            "value": "cc-given-name",
+          },
+          {
+            "label": "cc-additional-name",
+            "value": "cc-additional-name",
+          },
+          {
+            "label": "cc-family-name",
+            "value": "cc-family-name",
+          },
+          {
+            "label": "cc-number",
+            "value": "cc-number",
+          },
+          {
+            "label": "cc-exp",
+            "value": "cc-exp",
+          },
+          {
+            "label": "cc-exp-month",
+            "value": "cc-exp-month",
+          },
+          {
+            "label": "cc-exp-year",
+            "value": "cc-exp-year",
+          },
+          {
+            "label": "cc-csc",
+            "value": "cc-csc",
+          },
+          {
+            "label": "cc-type",
+            "value": "cc-type",
+          },
+          {
+            "label": "transaction-currency",
+            "value": "transaction-currency",
+          },
+          {
+            "label": "transaction-amount",
+            "value": "transaction-amount",
+          },
+          {
+            "label": "language",
+            "value": "language",
+          },
+          {
+            "label": "bday",
+            "value": "bday",
+          },
+          {
+            "label": "bday-day",
+            "value": "bday-day",
+          },
+          {
+            "label": "bday-month",
+            "value": "bday-month",
+          },
+          {
+            "label": "bday-year",
+            "value": "bday-year",
+          },
+          {
+            "label": "sex",
+            "value": "sex",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "tel-country-code",
+            "value": "tel-country-code",
+          },
+          {
+            "label": "tel-national",
+            "value": "tel-national",
+          },
+          {
+            "label": "tel-area-code",
+            "value": "tel-area-code",
+          },
+          {
+            "label": "tel-local",
+            "value": "tel-local",
+          },
+          {
+            "label": "tel-local-suffix",
+            "value": "tel-local-suffix",
+          },
+          {
+            "label": "tel-local-prefix",
+            "value": "tel-local-prefix",
+          },
+          {
+            "label": "tel-extension",
+            "value": "tel-extension",
+          },
+          {
+            "label": "impp",
+            "value": "impp",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "photo",
+            "value": "photo",
+          },
+          {
+            "label": "webauthn",
+            "value": "webauthn",
+          },
         ],
         "type": "enum",
         "uuid": "kDIK_agkNyrw",
@@ -6971,14 +7430,38 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "inputMode",
         "options": [
-          "none",
-          "text",
-          "tel",
-          "url",
-          "email",
-          "numeric",
-          "decimal",
-          "search",
+          {
+            "label": "none",
+            "value": "none",
+          },
+          {
+            "label": "text",
+            "value": "text",
+          },
+          {
+            "label": "tel",
+            "value": "tel",
+          },
+          {
+            "label": "url",
+            "value": "url",
+          },
+          {
+            "label": "email",
+            "value": "email",
+          },
+          {
+            "label": "numeric",
+            "value": "numeric",
+          },
+          {
+            "label": "decimal",
+            "value": "decimal",
+          },
+          {
+            "label": "search",
+            "value": "search",
+          },
         ],
         "type": "enum",
         "uuid": "OHZWc7Z9mSmO",
@@ -7289,10 +7772,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "default": "top",
         "name": "placement",
         "options": [
-          "top",
-          "bottom",
-          "left",
-          "right",
+          {
+            "label": "top",
+            "value": "top",
+          },
+          {
+            "label": "bottom",
+            "value": "bottom",
+          },
+          {
+            "label": "left",
+            "value": "left",
+          },
+          {
+            "label": "right",
+            "value": "right",
+          },
         ],
         "type": "enum",
         "uuid": "Gmk76MvO46b5",
@@ -7321,8 +7816,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         "__type": "Prop",
         "name": "triggerAction",
         "options": [
-          "focus",
-          "focus and hover",
+          {
+            "label": "focus",
+            "value": "focus",
+          },
+          {
+            "label": "focus and hover",
+            "value": "focus and hover",
+          },
         ],
         "type": "enum",
         "uuid": "LBien6Xm-Qfz",

@@ -585,10 +585,11 @@ export class RightPanel extends BaseModel {
    * Renames an allowed value (by index) in the open choice prop modal.
    */
   async renameChoiceComponentPropOption(index: number, value: string) {
+    // Each row has a value textbox followed by a label textbox; this renames the value.
     const itemInput = this.frame
       .locator(`[data-test-id="component-prop-choices-${index}"]`)
       .getByRole("textbox")
-      .last();
+      .first();
     await itemInput.fill(value);
     await itemInput.press("Enter");
   }

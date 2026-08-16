@@ -368,10 +368,22 @@ export function propSchema() {
         'Prop type, e.g. "text", "boolean", "number", "href", "enum", or a variant-group options string.'
       ),
     options: z
-      .array(z.string())
+      .array(
+        z.object({
+          label: z.string(),
+          value: z.union([z.string(), z.number(), z.boolean()]),
+        })
+      )
       .optional()
-      .describe("Allowed values, present for enum/choice props."),
-    default: z.any().optional().describe("Default value (real typed value)."),
+      .describe(
+        "Allowed values, present for enum/choice props. An option with no label of its own shows its value as the label."
+      ),
+    default: z
+      .union([z.any(), exprSchema()])
+      .optional()
+      .describe(
+        "Default value: the real typed value when statically known, otherwise a serialized dynamic expression."
+      ),
   });
 }
 export type PropJson = z.infer<ReturnType<typeof propSchema>>;
@@ -424,6 +436,8 @@ export type ExprJson =
   | CustomCodeExprJson
   | ObjectPathExprJson
   | TemplatedStringExprJson
+  | ImageAssetRefExprJson
+  | StyleTokenRefExprJson
   | VarRefExprJson
   | VariantsRefExprJson
   | TplRefExprJson
@@ -477,6 +491,16 @@ export type ObjectPathExprJson = {
 export type TemplatedStringExprJson = {
   __type: "TemplatedString";
   text: (string | CustomCodeExprJson | ObjectPathExprJson)[];
+};
+export type ImageAssetRefExprJson = {
+  __type: "ImageAssetRef";
+  uuid: string;
+  name: string;
+};
+export type StyleTokenRefExprJson = {
+  __type: "StyleTokenRef";
+  uuid: string;
+  name: string;
 };
 
 // Single instances so the recursive `z.lazy` reference below resolves to the

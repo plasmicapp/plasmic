@@ -364,12 +364,16 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
     .when(AnyType, () => "object")
     .when(Choice, (t) =>
       !shortDescription
-        ? `choice of ${t.options.map((v) => jsLiteral(v)).join(", ")}`
+        ? `choice of ${t.options
+            .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
+            .join(", ")}`
         : `choice`
     )
     .when(MultiChoice, (t) =>
       !shortDescription
-        ? `multi-choice of ${t.options.map((v) => jsLiteral(v)).join(", ")}`
+        ? `multi-choice of ${t.options
+            .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
+            .join(", ")}`
         : `multi-choice`
     )
     .when(

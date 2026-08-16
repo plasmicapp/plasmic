@@ -1,3 +1,4 @@
+import { mkStyleToken } from "@/wab/commons/StyleToken";
 import {
   ensureVariantSetting,
   getBaseVariant,
@@ -10,12 +11,16 @@ import {
 } from "@/wab/shared/copilot/dynamic-value-input";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { codeLit, customCode } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { mkImageAsset } from "@/wab/shared/core/image-assets";
 import { mkParam, mkVar } from "@/wab/shared/core/lang";
 import { TplTagType, mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   ExprText,
+  ImageAssetRef,
   ObjectPath,
   Rep,
+  StyleTokenRef,
   TplComponent,
   TplTag,
 } from "@/wab/shared/model/classes";
@@ -226,6 +231,58 @@ describe("Component Serialization", () => {
       const output = tplToHtml(instance, site);
       expect(output).toContain(`data-props=`);
       expect(output).toContain(`{{ currentItem.name }}`);
+    });
+
+    it("serializes prop defaults referencing project resources", () => {
+      const component = mkComponent({
+        name: "Badge",
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) =>
+          mkTplTagX("div", { baseVariant, attrs: { title: "Badge" } }),
+      });
+      const asset = mkImageAsset({
+        name: "logo",
+        type: ImageAssetType.Picture,
+      });
+      const token = mkStyleToken({
+        name: "Primary",
+        type: "Color",
+        value: "#000000",
+      });
+      component.params.push(
+        mkParam({
+          name: "icon",
+          type: typeFactory.img(),
+          paramType: "prop",
+          defaultExpr: new ImageAssetRef({ asset }),
+        }),
+        mkParam({
+          name: "tint",
+          type: typeFactory.color(),
+          paramType: "prop",
+          defaultExpr: new StyleTokenRef({ token }),
+        })
+      );
+
+      const resource = buildComponentResource(component, { site });
+      expect(resource.props).toMatchObject([
+        {
+          name: "icon",
+          default: {
+            __type: "ImageAssetRef",
+            uuid: asset.uuid,
+            name: "logo",
+          },
+        },
+        {
+          name: "tint",
+          default: {
+            __type: "StyleTokenRef",
+            uuid: token.uuid,
+            name: "Primary",
+          },
+        },
+      ]);
     });
   });
 

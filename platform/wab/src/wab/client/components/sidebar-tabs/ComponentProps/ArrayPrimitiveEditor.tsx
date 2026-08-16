@@ -9,50 +9,101 @@ import {
   arrayRemoveAt,
   arrayReplaceAt,
 } from "@/wab/shared/collections";
-import { ChoiceValue } from "@plasmicapp/host";
+import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
 import { observer } from "mobx-react";
 import React from "react";
 
+/**
+ * Represent option while it is being edited.
+ * For plain values, label is set to undefined, which is how the list keeps
+ * its shape until someone actually provides label.
+ */
+interface ChoiceRow {
+  value: ChoiceValue;
+  label: string | undefined;
+}
+
+function toChoiceRows(options: ChoiceOptions): ChoiceRow[] {
+  return options.map((option) => {
+    if (typeof option !== "object") {
+      return { value: option, label: undefined };
+    }
+    const label = String(option.label);
+    return {
+      value: option.value,
+      label: label === String(option.value) ? undefined : label,
+    };
+  });
+}
+
+/**
+ * Writes every option as labelled value for consistency.
+ * An option left unnamed takes its own value as its label.
+ */
+function toChoiceOptions(rows: ChoiceRow[]): ChoiceOptions {
+  return rows.map((row) => ({
+    label: row.label || String(row.value),
+    value: row.value,
+  }));
+}
+
+function parseValue(inputVal: string, rows: ChoiceRow[]): ChoiceValue {
+  const values = rows.map((row) => row.value).filter((value) => value !== "");
+  if (values.length && values.every((value) => typeof value === "number")) {
+    const parsed = Number(inputVal);
+    return inputVal.trim() !== "" && !Number.isNaN(parsed) ? parsed : inputVal;
+  }
+  if (
+    values.length &&
+    values.every((value) => typeof value === "boolean") &&
+    (inputVal === "true" || inputVal === "false")
+  ) {
+    return inputVal === "true";
+  }
+  return inputVal;
+}
+
+/** The value a new row starts with: the next number, or empty text. */
+function nextValue(rows: ChoiceRow[]): ChoiceValue {
+  const values = rows.map((row) => row.value);
+  // Auto-increment if the current values are all numeric
+  if (values.length && values.every((v) => !isNaN(parseFloat(String(v))))) {
+    const last = values[values.length - 1];
+    return typeof last === "number"
+      ? Number(last) + 1
+      : String(Number(last) + 1);
+  }
+  return "";
+}
+
 interface ArrayPrimitiveEditorProps {
   label?: string;
-  values: ChoiceValue[];
-  onChange: (val: ChoiceValue[]) => void;
+  options: ChoiceOptions;
+  onChange: (options: ChoiceOptions) => void;
   "data-test-id": string;
 }
 
 export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
   label,
-  values,
+  options,
   onChange,
   "data-test-id": dataTestId,
 }: ArrayPrimitiveEditorProps) {
-  const addNewElement = () => {
-    let newVal: ChoiceValue = "";
-    // Auto-increment if the current values are all numeric
-    if (
-      values.length &&
-      values.every((v) => !isNaN(parseFloat(v.toString())))
-    ) {
-      newVal = String(Number(values[values.length - 1]) + 1);
-    }
-    onChange([...(values ?? []), newVal]);
-  };
-  const handleReorder = (from: number, to: number) => {
-    onChange(arrayMoveIndex(values, from, to));
-  };
-  const handleValueChange = (index: number, newVal: string) => {
-    onChange(arrayReplaceAt(values, index, newVal));
-  };
+  const rows = toChoiceRows(options ?? []);
+  const change = (newRows: ChoiceRow[]) => onChange(toChoiceOptions(newRows));
+
   return (
     <LabeledItemRow
       layout={"vertical"}
-      noContent={values.length === 0}
+      noContent={rows.length === 0}
       label={
         <div className={"flex-fill flex-row flex-vcenter gap-m"}>
           <div>{label ?? ""}</div>
           <span data-test-id={`${dataTestId}-add-btn`}>
             <PlexusButton
-              onClick={addNewElement}
+              onClick={() =>
+                change([...rows, { value: nextValue(rows), label: undefined }])
+              }
               start={<Icon icon={PlusIcon} />}
               iconStart={true}
               label={null}
@@ -67,29 +118,51 @@ export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
     >
       <ListBox
         appendPrepend={"append"}
-        onReorder={(from, to) => {
-          handleReorder(from, to);
-        }}
+        onReorder={(from, to) => change(arrayMoveIndex(rows, from, to))}
         data-test-id={dataTestId}
       >
-        {values.map((value, index) => {
+        {rows.map((row, index) => {
           return (
             <ListBoxItem
               data-test-id={`${dataTestId}-${index}`}
               mainContent={
-                <PropValueEditor
-                  label={"item"}
-                  attr={"item"}
-                  propType={"string"}
-                  value={value}
-                  onChange={(val) => handleValueChange(index, val as string)}
-                />
+                <div className={"flex-fill flex-row gap-sm"}>
+                  <PropValueEditor
+                    label={"value"}
+                    attr={"value"}
+                    propType={"string"}
+                    value={String(row.value)}
+                    onChange={(val) =>
+                      change(
+                        arrayReplaceAt(rows, index, {
+                          ...row,
+                          value: parseValue(String(val ?? ""), rows),
+                        })
+                      )
+                    }
+                  />
+                  <PropValueEditor
+                    label={"label"}
+                    attr={"label"}
+                    propType={{
+                      type: "string",
+                      defaultValueHint: String(row.value),
+                    }}
+                    value={row.label ?? ""}
+                    onChange={(val) =>
+                      change(
+                        arrayReplaceAt(rows, index, {
+                          ...row,
+                          label: String(val ?? ""),
+                        })
+                      )
+                    }
+                  />
+                </div>
               }
               index={index}
               key={index}
-              onRemove={() => {
-                onChange(arrayRemoveAt(values, index));
-              }}
+              onRemove={() => change(arrayRemoveAt(rows, index))}
             />
           );
         })}
