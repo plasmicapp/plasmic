@@ -54,6 +54,7 @@ export const StringPropEditor = React.forwardRef<
 
   const {
     value: draft,
+    isDirty,
     push: setDraft,
     handleKeyDown,
     reset,
@@ -67,6 +68,7 @@ export const StringPropEditor = React.forwardRef<
 
   const submitDraft = () => {
     if (
+      isDirty &&
       draft !== undefined &&
       draft !== props.value &&
       checkStrSizeLimit(draft)
@@ -93,9 +95,7 @@ export const StringPropEditor = React.forwardRef<
       disabled={props.disabled}
       className={`form-control code`}
       value={`${curValue || ""}`}
-      onChange={(e) => {
-        setDraft(e.currentTarget.value);
-      }}
+      onChange={(e) => setDraft(e.currentTarget.value)}
       placeholder={props.defaultValueHint ?? "unset"}
       onKeyDown={handleKeyDown}
       onPressEnter={submitDraft}
@@ -158,6 +158,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
   );
   const {
     value: draft,
+    isDirty,
     push: setDraft,
     handleKeyDown,
     reset,
@@ -179,10 +180,14 @@ export const TemplatedStringPropEditor = React.forwardRef<
       reset(val);
     }
   };
-  useUnmount(() => {
-    if (draft !== undefined) {
-      defer(() => submitVal(draft));
+  const submitDraft = () => {
+    if (isDirty && draft !== undefined) {
+      submitVal(draft);
     }
+  };
+  useUnmount(() => {
+    // Same behavior of `useUnmount` in `StringPropEditor`.
+    defer(submitDraft);
   });
 
   const multiLineAllowed = !!props.component || props.control === "multiLine";
@@ -223,20 +228,14 @@ export const TemplatedStringPropEditor = React.forwardRef<
             // Let the editor handle the Enter key
             return;
           }
-          if (draft !== undefined) {
-            submitVal(draft);
-          }
+          submitDraft();
           e.preventDefault();
           e.stopPropagation();
         }
       }}
       // This may not fire! Doesn't seem to if triggered with .blur() in Playwright tests.
       // Maybe related? https://github.com/ianstormtaylor/slate/issues/3742
-      onBlur={() => {
-        if (draft !== undefined) {
-          submitVal(draft);
-        }
-      }}
+      onBlur={submitDraft}
       className={classNames({
         "text-set": props.valueSetState === "isSet",
         "text-unset": props.valueSetState === "isInherited",

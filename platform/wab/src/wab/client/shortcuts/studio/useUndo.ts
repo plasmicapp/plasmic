@@ -6,6 +6,8 @@ import React, { useCallback, useContext, useState } from "react";
 
 export interface UseUndoResult<T> {
   value: T;
+  /** Whether `value` is an edit pushed against the *current* `initialValue` */
+  isDirty: boolean;
   reset: (newInitialValue?: T) => void;
   push: (value: T) => void;
   /**
@@ -25,6 +27,8 @@ export interface UseUndoResult<T> {
 interface UndoState<T> {
   stack: T[];
   index: number;
+  /** The initialValue the stack was seeded from */
+  base: T;
 }
 
 /**
@@ -33,9 +37,10 @@ interface UndoState<T> {
 export function useUndo<T>(initialValue: T): UseUndoResult<T> {
   const studioCtx = useContext(StudioCtxContext);
 
-  const [{ stack, index }, setState] = useState<UndoState<T>>({
+  const [{ stack, index, base }, setState] = useState<UndoState<T>>({
     stack: [initialValue],
     index: 0,
+    base: initialValue,
   });
   const reset = useCallback(
     (newInitialValue?: T) => {
@@ -43,6 +48,7 @@ export function useUndo<T>(initialValue: T): UseUndoResult<T> {
       setState({
         stack: [value],
         index: 0,
+        base: value,
       });
       return value;
     },
@@ -51,6 +57,7 @@ export function useUndo<T>(initialValue: T): UseUndoResult<T> {
 
   return {
     value: stack[index],
+    isDirty: base === initialValue && index > 0,
     reset,
     push: (value) => {
       const nextIndex = index + 1;
@@ -59,6 +66,7 @@ export function useUndo<T>(initialValue: T): UseUndoResult<T> {
       setState({
         stack: nextStack,
         index: nextIndex,
+        base: initialValue,
       });
     },
     handleKeyDown: (event) => {
@@ -68,6 +76,7 @@ export function useUndo<T>(initialValue: T): UseUndoResult<T> {
           setState({
             stack,
             index: nextIndex,
+            base,
           });
           event.preventDefault();
           event.stopPropagation();
@@ -96,6 +105,7 @@ export function useUndo<T>(initialValue: T): UseUndoResult<T> {
           setState({
             stack,
             index: nextIndex,
+            base,
           });
           event.preventDefault();
           event.stopPropagation();

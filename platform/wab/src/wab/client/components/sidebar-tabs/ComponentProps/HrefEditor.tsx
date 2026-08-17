@@ -8,9 +8,9 @@ import { isPageComponent } from "@/wab/shared/core/components";
 import { codeLit, isPageHref } from "@/wab/shared/core/exprs";
 import {
   Component,
+  PageHref,
   isKnownComponent,
   isKnownPageHref,
-  PageHref,
 } from "@/wab/shared/model/classes";
 import TextArea from "antd/lib/input/TextArea";
 import { defer } from "lodash";
@@ -27,6 +27,7 @@ export function HrefEditor(props: {
 
   const {
     value: draft,
+    isDirty,
     push: setDraft,
     handleKeyDown,
     reset,
@@ -47,7 +48,7 @@ export function HrefEditor(props: {
     }
   };
   const submitDraft = () => {
-    if (draft !== undefined) {
+    if (isDirty && draft !== undefined) {
       submitVal(draft);
       reset(draft);
     } else {

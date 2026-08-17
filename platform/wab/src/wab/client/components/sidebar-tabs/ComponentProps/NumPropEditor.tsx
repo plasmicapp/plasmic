@@ -20,6 +20,7 @@ export function InputNumPropEditor(props: InputNumPropEditorProps) {
 
   const {
     value: draft,
+    isDirty,
     push: setDraft,
     handleKeyDown,
     reset,
@@ -31,7 +32,7 @@ export function InputNumPropEditor(props: InputNumPropEditorProps) {
 
   const submitDraft = () => {
     const val = draft;
-    if (val === undefined) {
+    if (!isDirty || val === undefined) {
       return;
     }
 
