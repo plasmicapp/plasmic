@@ -2,7 +2,7 @@
 
 ## Sandbox
 
-You might be in a sandbox. Check out [safehouse.sb](docs/internal/ai/safehouse.sb).
+You might be in a sandbox. Check out [safehouse.sb](docs/internal/ai-sandbox/macos/safehouse.sb).
 
 ## Key tools of root directory
 
@@ -32,5 +32,8 @@ Plasmic is an open-source visual web builder. This monorepo contains:
 
 ## Instructions for AI assistant
 
+- `CLAUDE.md` is the canonical instruction file, and `AGENTS.md` is a symlink to it. Edit `CLAUDE.md`, never `AGENTS.md`.
+- Instructions are scoped by directory: the file nearest a path applies to it, and adds to the root file rather than contradicting it. Read `platform/wab/CLAUDE.md` before changing anything under `platform/wab`.
 - Do not worry about styling/formatting. All files will be formatted to the same style in git hooks, which husky manages via the generated, gitignored `.husky/_` directory. In a fresh worktree that directory doesn't exist and git silently skips all hooks, so run `pnpm install` at the worktree root before your first commit.
 - When searching files, you should almost never look through node_modules/ files and other gitignored files unless you have a explicit reason to.
+- When you review a pull request or a diff, these files are the conventions to review it against.
