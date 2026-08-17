@@ -141,9 +141,11 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
           spawn(
             studioCtx.change(() => {
               if (!props.group.param.defaultExpr) {
-                props.group.param.defaultExpr = new ObjectPath({
-                  path: ["undefined"],
-                  fallback: null,
+                studioCtx.siteOps().updateState(props.group.linkedState, {
+                  initialValue: new ObjectPath({
+                    path: ["undefined"],
+                    fallback: null,
+                  }),
                 });
               }
               setVisibleDataPicker(true);
@@ -155,7 +157,9 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
         onRemoveDynamicValue: () => {
           spawn(
             studioCtx.change(() => {
-              props.group.param.defaultExpr = null;
+              studioCtx.siteOps().updateState(props.group.linkedState, {
+                initialValue: null,
+              });
               return ok();
             })
           );

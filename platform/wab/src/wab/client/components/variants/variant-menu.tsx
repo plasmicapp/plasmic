@@ -1,6 +1,5 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import DataPicker from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
-import { getExpectedValuesForVariantGroup } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { zIndex } from "@/wab/client/z-index";
@@ -10,6 +9,7 @@ import {
 } from "@/wab/shared/Labels";
 import {
   getBaseVariant,
+  getExpectedValuesForVariantGroup,
   isBaseVariant,
   isCodeComponentVariant,
   isPrivateStyleVariant,
@@ -435,7 +435,9 @@ export function VariantDataPicker(props: {
               );
               spawn(
                 studioCtx.change(() => {
-                  group.linkedState.param.defaultExpr = newExpr;
+                  studioCtx.siteOps().updateState(group.linkedState, {
+                    initialValue: newExpr,
+                  });
                   return ok();
                 })
               );
@@ -450,7 +452,9 @@ export function VariantDataPicker(props: {
               ) {
                 spawn(
                   studioCtx.change(() => {
-                    group.linkedState.param.defaultExpr = null;
+                    studioCtx.siteOps().updateState(group.linkedState, {
+                      initialValue: null,
+                    });
                     return ok();
                   })
                 );

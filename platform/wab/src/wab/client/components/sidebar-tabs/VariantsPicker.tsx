@@ -2,7 +2,6 @@ import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/C
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
-import { getExpectedValuesForVariantGroup } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import {
   LinkedPropIndicator,
   LinkToPropMenuItem,
@@ -61,6 +60,7 @@ import {
 import { isOptionsType } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import {
+  getExpectedValuesForVariantGroup,
   isParamCompatibleWithVariantGroup,
   isStandaloneVariantGroup,
   variantGroupToLinkedPropType,

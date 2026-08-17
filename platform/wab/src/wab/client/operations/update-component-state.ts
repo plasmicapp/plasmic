@@ -51,10 +51,6 @@ export interface ComponentStateChanges {
  *   initial value references `$`-vars.
  * - initialValue: any expression; null clears the initial value.
  *   Statically-known values are validated against the variable type.
- *
- * Implicit states only support accessType changes (that is how a child
- * element's state gets exposed from the component); variant-group states are
- * managed through variant group operations instead.
  */
 export function updateComponentState(
   state: State,
@@ -74,9 +70,12 @@ export function updateComponentState(
       message: `Component "${component.name}" is a code component; its states are managed by its code registration.`,
     });
   }
-  if (isKnownVariantGroupState(state)) {
+  if (
+    isKnownVariantGroupState(state) &&
+    (name !== undefined || variableType !== undefined)
+  ) {
     return err({
-      message: `State "${stateName}" backs a variant group; manage it through variant group operations.`,
+      message: `State "${stateName}" backs a variant group; only its access type and initial value can be changed.`,
     });
   }
   if (
@@ -108,7 +107,8 @@ export function updateComponentState(
     if (staticValue !== undefined) {
       const invalidMessage = validateStateInitialValue(
         variableType ?? state.variableType,
-        staticValue
+        staticValue,
+        component.variantGroups.find((vg) => vg.linkedState === state)
       );
       if (invalidMessage) {
         return err({ message: invalidMessage });

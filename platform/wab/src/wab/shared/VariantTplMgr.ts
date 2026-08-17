@@ -14,8 +14,8 @@ import {
   isGlobalVariant,
   isPrivateStyleVariant,
   isScreenVariant,
-  isStandaloneVariantGroup,
   mkVariantSetting,
+  resolveVariantGroupValue,
   tryGetPrivateStyleVariant,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
@@ -23,7 +23,6 @@ import {
   computedProjectFlags,
   findNonEmptyCombos,
 } from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
 import {
   arrayMoveIndex,
   arrayRemove,
@@ -438,21 +437,9 @@ export class VariantTplMgr {
             }).code,
             canvasEnv ?? {}
           ).val;
-          const tryToAddByName = (vname: string) => {
-            const variant = vg.variants.find(
-              (v) => toVarName(v.name) === toVarName(vname)
-            );
-            if (variant) {
-              variants.add(variant);
-            }
-          };
-          if (Array.isArray(evaledExpr)) {
-            evaledExpr.forEach((v) => tryToAddByName(v));
-          } else if (typeof evaledExpr === "string") {
-            tryToAddByName(evaledExpr);
-          } else if (evaledExpr && isStandaloneVariantGroup(vg)) {
-            variants.add(vg.variants[0]);
-          }
+          resolveVariantGroupValue(vg, evaledExpr).variants.forEach((v) =>
+            variants.add(v)
+          );
         }
       }
     }

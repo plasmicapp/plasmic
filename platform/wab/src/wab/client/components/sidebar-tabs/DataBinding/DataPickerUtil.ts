@@ -21,7 +21,6 @@ import {
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
-import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, isNonNil } from "@/wab/shared/common";
@@ -64,7 +63,6 @@ import {
   Site,
   State,
   TplNode,
-  VariantGroup,
   isKnownNamedState,
 } from "@/wab/shared/model/classes";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
@@ -261,12 +259,6 @@ export function evalExpr(path: (string | number)[], data: Record<string, any>) {
   } catch {
     return undefined;
   }
-}
-
-export function getExpectedValuesForVariantGroup(group: VariantGroup) {
-  return isStandaloneVariantGroup(group)
-    ? `true, false, "${toVarName(group.variants[0].name)}"`
-    : group.variants.map((v) => `"${toVarName(v.name)}"`).join(", ");
 }
 
 export function prepareEnvForDataPicker(

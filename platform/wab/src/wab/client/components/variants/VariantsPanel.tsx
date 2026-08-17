@@ -1171,9 +1171,11 @@ const ComponentVariantGroupSection = observer(
             spawn(
               studioCtx.change(() => {
                 if (!group.param.defaultExpr) {
-                  group.param.defaultExpr = new ObjectPath({
-                    path: ["undefined"],
-                    fallback: null,
+                  studioCtx.siteOps().updateState(group.linkedState, {
+                    initialValue: new ObjectPath({
+                      path: ["undefined"],
+                      fallback: null,
+                    }),
                   });
                 }
                 setVisibleDataPicker(true);
@@ -1185,7 +1187,9 @@ const ComponentVariantGroupSection = observer(
           onRemoveDynamicValue: () => {
             spawn(
               studioCtx.change(() => {
-                group.param.defaultExpr = null;
+                studioCtx.siteOps().updateState(group.linkedState, {
+                  initialValue: null,
+                });
                 return ok();
               })
             );

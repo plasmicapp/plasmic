@@ -11,6 +11,7 @@ import {
   mkBaseVariant,
   mkComponentVariantGroup,
   mkVariant,
+  resolveVariantGroupValue,
   variantGroupToLinkedPropType,
 } from "@/wab/shared/Variants";
 
@@ -402,3 +403,56 @@ function mkLinkGroup(opts: {
     variants: opts.variants.map((name) => mkVariant({ name })),
   });
 }
+
+describe("resolveVariantGroupValue", () => {
+  it("resolves names, arrays of names, and toggle truthiness", () => {
+    const size = mkLinkGroup({ name: "size", variants: ["small", "large"] });
+    expect(resolveVariantGroupValue(size, "small").variants).toEqual([
+      size.variants[0],
+    ]);
+    expect(resolveVariantGroupValue(size, ["small", "large"]).variants).toEqual(
+      size.variants
+    );
+    expect(resolveVariantGroupValue(size, null).variants).toEqual([]);
+
+    const dark = mkLinkGroup({ name: "dark", variants: ["dark"] });
+    expect(resolveVariantGroupValue(dark, true).variants).toEqual([
+      dark.variants[0],
+    ]);
+    expect(resolveVariantGroupValue(dark, "dark").variants).toEqual([
+      dark.variants[0],
+    ]);
+    expect(resolveVariantGroupValue(dark, false).variants).toEqual([]);
+  });
+
+  it("matches names regardless of spelling normalization", () => {
+    const tone = mkLinkGroup({ name: "tone", variants: ["Dark Mode"] });
+
+    expect(resolveVariantGroupValue(tone, "darkMode").variants).toEqual([
+      tone.variants[0],
+    ]);
+  });
+
+  it("collects values that select no variant", () => {
+    const size = mkLinkGroup({ name: "size", variants: ["small", "large"] });
+
+    expect(resolveVariantGroupValue(size, "huge").unknownValues).toEqual([
+      "huge",
+    ]);
+
+    const mixed = resolveVariantGroupValue(size, ["small", "wat"]);
+    expect(mixed.variants).toEqual([size.variants[0]]);
+    expect(mixed.unknownValues).toEqual(["wat"]);
+
+    expect(resolveVariantGroupValue(size, true).unknownValues).toEqual([]);
+
+    const nonStrings = resolveVariantGroupValue(size, [1, "small"]);
+    expect(nonStrings.variants).toEqual([size.variants[0]]);
+    expect(nonStrings.unknownValues).toEqual([1]);
+
+    const nums = mkLinkGroup({ name: "nums", variants: ["1"] });
+    const coerced = resolveVariantGroupValue(nums, [1]);
+    expect(coerced.variants).toEqual([nums.variants[0]]);
+    expect(coerced.unknownValues).toEqual([]);
+  });
+});

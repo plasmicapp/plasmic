@@ -61,7 +61,7 @@ import { typeFactory } from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { ChoiceObject } from "@plasmicapp/host";
 import { arrayContains } from "class-validator";
-import L, { orderBy, uniqBy } from "lodash";
+import L, { orderBy, toString, uniqBy } from "lodash";
 import type { OverrideProperties, SetNonNullable } from "type-fest";
 
 export const BASE_VARIANT_NAME = "base";
@@ -167,6 +167,39 @@ export function isStandaloneVariantGroup(
     group.variants.length === 1 &&
     group.param.variable.name === group.variants[0].name
   );
+}
+
+/** Human-readable list of the values a variant group's state accepts. */
+export function getExpectedValuesForVariantGroup(group: VariantGroup) {
+  return isStandaloneVariantGroup(group)
+    ? `true, false, "${toVarName(group.variants[0].name)}"`
+    : group.variants.map((v) => `"${toVarName(v.name)}"`).join(", ");
+}
+
+export function resolveVariantGroupValue(
+  group: VariantGroup,
+  value: unknown
+): { variants: Variant[]; unknownValues: unknown[] } {
+  const variants: Variant[] = [];
+  const unknownValues: unknown[] = [];
+  const tryToAddByName = (name: unknown) => {
+    const variant = group.variants.find(
+      (v) => toVarName(v.name) === toVarName(toString(name))
+    );
+    if (variant) {
+      variants.push(variant);
+    } else {
+      unknownValues.push(name);
+    }
+  };
+  if (typeof value === "string") {
+    tryToAddByName(value);
+  } else if (Array.isArray(value)) {
+    value.forEach((el) => tryToAddByName(el));
+  } else if (value && isStandaloneVariantGroup(group)) {
+    variants.push(group.variants[0]);
+  }
+  return { variants, unknownValues };
 }
 
 export function isStandaloneVariant(variant: Variant) {

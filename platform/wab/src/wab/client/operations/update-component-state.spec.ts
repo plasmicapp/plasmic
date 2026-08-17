@@ -13,7 +13,7 @@ import { codeLit, customCode, tryExtractJson } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
 import { getStateVarName } from "@/wab/shared/core/states";
 import * as Tpls from "@/wab/shared/core/tpls";
-import { TplTag, isKnownVariantGroupState } from "@/wab/shared/model/classes";
+import { TplTag } from "@/wab/shared/model/classes";
 import { isNumType } from "@/wab/shared/model/model-util";
 
 describe("updateComponentState", () => {
@@ -251,23 +251,184 @@ describe("updateComponentState", () => {
     expect(implicitState.accessType).toEqual("readonly");
   });
 
-  it("rejects variant-group states", () => {
-    const { site, tplMgr, button } = setupComponentWithInstance();
-    const variantGroupState = button.states.find((s) =>
-      isKnownVariantGroupState(s)
+  it("only allows accessType and initial value changes on variant-group states", () => {
+    const { site, tplMgr, button, sizeGroup } = setupComponentWithInstance();
+    const state = sizeGroup.linkedState;
+    const opts = { site, component: button, tplMgr };
+
+    const renamed = updateComponentState(state, { name: "kind" }, opts);
+
+    assert(renamed.isErr(), "expected error result");
+    expect(renamed.error.message).toEqual(
+      'State "size" backs a variant group; only its access type and initial value can be changed.'
     );
-    assert(variantGroupState, "expected a variant-group state");
+    expect(state.param.variable.name).toEqual("size");
+
+    const retyped = updateComponentState(state, { variableType: "text" }, opts);
+
+    assert(retyped.isErr(), "expected error result");
+    expect(state.variableType).toEqual("variant");
+  });
+
+  it("sets and clears a variant group's initial value", () => {
+    const { site, tplMgr, button, sizeGroup } = setupComponentWithInstance();
+    const state = sizeGroup.linkedState;
+    const opts = { site, component: button, tplMgr };
+
+    const dynamic = updateComponentState(
+      state,
+      { initialValue: customCode("$ctx.density") },
+      opts
+    );
+    assert(dynamic.isOk(), "expected success result");
+    expect(state.param.defaultExpr).not.toBeNull();
+
+    const cleared = updateComponentState(state, { initialValue: null }, opts);
+    assert(cleared.isOk(), "expected success result");
+    expect(state.param.defaultExpr).toBeNull();
+  });
+
+  it("flags initial values that name unknown variants", () => {
+    const { site, tplMgr, button, sizeGroup, featuresGroup } =
+      setupComponentWithInstance();
+    const opts = { site, component: button, tplMgr };
+
+    const unknownChoice = updateComponentState(
+      sizeGroup.linkedState,
+      { initialValue: codeLit("huge") },
+      opts
+    );
+    assert(unknownChoice.isErr(), "expected error result");
+    expect(unknownChoice.error.message).toEqual(
+      'Initial value refers to "huge", which is not a variant of group "size"; expected values: "small", "large".'
+    );
+
+    const unknownInList = updateComponentState(
+      featuresGroup.linkedState,
+      { initialValue: codeLit(["rounded", "wat"]) },
+      opts
+    );
+    assert(unknownInList.isErr(), "expected error result");
+    expect(unknownInList.error.message).toEqual(
+      'Initial value refers to "wat", which is not a variant of group "features"; expected values: "rounded", "shadow".'
+    );
+  });
+
+  it("accepts the value shapes the runtime interprets", () => {
+    const { site, tplMgr, button, sizeGroup, featuresGroup, darkGroup } =
+      setupComponentWithInstance();
+    const opts = { site, component: button, tplMgr };
+
+    const choiceByName = updateComponentState(
+      sizeGroup.linkedState,
+      { initialValue: codeLit("small") },
+      opts
+    );
+    assert(choiceByName.isOk(), "expected success result");
+    expect(tryExtractJson(sizeGroup.linkedState.param.defaultExpr!)).toEqual(
+      "small"
+    );
+
+    const multiAsList = updateComponentState(
+      featuresGroup.linkedState,
+      { initialValue: codeLit(["rounded"]) },
+      opts
+    );
+    assert(multiAsList.isOk(), "expected success result");
+
+    const multiAsBareName = updateComponentState(
+      featuresGroup.linkedState,
+      { initialValue: codeLit("rounded") },
+      opts
+    );
+    assert(multiAsBareName.isOk(), "expected success result");
+
+    const toggleAsBoolean = updateComponentState(
+      darkGroup.linkedState,
+      { initialValue: codeLit(true) },
+      opts
+    );
+    assert(toggleAsBoolean.isOk(), "expected success result");
+
+    const toggleByName = updateComponentState(
+      darkGroup.linkedState,
+      { initialValue: codeLit("dark") },
+      opts
+    );
+    assert(toggleByName.isOk(), "expected success result");
+  });
+
+  it("blocks a dynamic initial value on a read-and-write variant group", () => {
+    const { site, tplMgr, button, sizeGroup } = setupComponentWithInstance();
+    const state = sizeGroup.linkedState;
+    const opts = { site, component: button, tplMgr };
+    const madeWritable = updateComponentState(
+      state,
+      { accessType: "writable" },
+      opts
+    );
+    assert(madeWritable.isOk(), "setup failed");
 
     const result = updateComponentState(
-      variantGroupState,
-      { accessType: "readonly" },
-      { site, component: button, tplMgr }
+      state,
+      { initialValue: customCode("$ctx.density") },
+      opts
     );
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'State "size" backs a variant group; manage it through variant group operations.'
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
     );
+    expect(state.param.defaultExpr).toBeFalsy();
+  });
+
+  it("blocks making a variant group read-and-write while its initial value is dynamic", () => {
+    const { site, tplMgr, button, sizeGroup } = setupComponentWithInstance();
+    const state = sizeGroup.linkedState;
+    const opts = { site, component: button, tplMgr };
+    const setDynamic = updateComponentState(
+      state,
+      { initialValue: customCode("$ctx.density") },
+      opts
+    );
+    assert(setDynamic.isOk(), "setup failed");
+
+    const result = updateComponentState(
+      state,
+      { accessType: "writable" },
+      opts
+    );
+
+    assert(result.isErr(), "expected error result");
+    expect(state.accessType).toEqual("private");
+  });
+
+  it("makes a variant group public and back to private through its linked state", () => {
+    const { site, tplMgr, page, button, instance, sizeGroup } =
+      setupComponentWithInstance();
+    const state = sizeGroup.linkedState;
+    const opts = { site, component: button, tplMgr };
+
+    const exposed = updateComponentState(
+      state,
+      { accessType: "readonly" },
+      opts
+    );
+
+    assert(exposed.isOk(), "expected success result");
+    expect(state.accessType).toEqual("readonly");
+    expect(state.onChangeParam.exportType).toEqual(ParamExportType.External);
+    expect(
+      page.states.some(
+        (s) => s.implicitState === state && s.tplNode === instance
+      )
+    ).toEqual(true);
+
+    const hidden = updateComponentState(state, { accessType: "private" }, opts);
+
+    assert(hidden.isOk(), "expected success result");
+    expect(state.accessType).toEqual("private");
+    expect(page.states.some((s) => s.implicitState === state)).toEqual(false);
   });
 
   it("rejects an empty change set", () => {
