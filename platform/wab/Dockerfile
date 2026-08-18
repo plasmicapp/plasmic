@@ -40,9 +40,15 @@ WORKDIR /platform
 # `COPY . .` before install, any source edit would re-resolve and re-link
 # everything on every build. Patches ride along because patchedDependencies in
 # pnpm-workspace.yaml references them.
+#
+# The store is in a layer (not `--mount=type=cache`), since cache mounts are
+# builder-local, and CI builds on a fresh buildx builder whose mounts start empty
+# while layers come from the registry cache. A mount here leaves every replayed
+# `pnpm fetch` with an empty store, so installs below would refetch. Only the builder
+# stage carries the store.
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY patches/ ./patches/
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
+RUN pnpm fetch
 
 # Copy the whole workspace (node_modules, build outputs and generated files are
 # excluded via .dockerignore). pnpm needs every workspace member's package.json
@@ -50,9 +56,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 # register-library through the workspace.
 COPY . .
 
-# --offline: everything was fetched above (the lockfile has registry tarballs
-# only), so installs never hit the network here.
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --offline
+# --prefer-offline (not --offline) since the fetch above normally covers everything,
+# but partial cache restore must degrade into a refetch, not hard failure.
+RUN pnpm install --frozen-lockfile --prefer-offline
 
 # Build loader-bundle-env's internal_pkgs and loader-html-hydrate. wab's server
 # consumes their built output from the sibling directories at runtime.
@@ -72,10 +78,9 @@ RUN mkdir -p src/wab/gen && make
 # sibling-dir resolution (../loader-bundle-env/node_modules); see
 # https://github.com/pnpm/pnpm/issues/9283
 WORKDIR /platform
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    rm -rf node_modules wab/node_modules loader-bundle-env/node_modules \
+RUN rm -rf node_modules wab/node_modules loader-bundle-env/node_modules \
       loader-html-hydrate/node_modules canvas-packages/node_modules \
-    && pnpm install --frozen-lockfile --offline --prod \
+    && pnpm install --frozen-lockfile --prefer-offline --prod \
       --filter "wab..." --filter "loader-bundle-env..." \
       --filter "@plasmicapp/loader-html-hydrate..." \
       --config.confirmModulesPurge=false
