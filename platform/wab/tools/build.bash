@@ -16,4 +16,4 @@ mv ../../.eslintrc.js ../../.eslintrc_copy.js
 on_exit "mv ../../.eslintrc_copy.js ../../.eslintrc.js"
 
 NO_ESLINT=1 NO_TYPECHECK=1 NODE_OPTIONS="--max-old-space-size=12288 --max_old_space_size=12288" \
-  yarn run react-scripts build
+  pnpm exec react-scripts build

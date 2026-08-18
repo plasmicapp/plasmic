@@ -6,16 +6,16 @@ This directory contains code for sending transactional emails from Plasmic (not 
 
 ```shell
 # Start email host
-yarn email:host
+pnpm email:host
 
 # Sync Plasmic codegen
-yarn email:sync
+pnpm email:sync
 
 # Generate email
-yarn email:generate
+pnpm email:generate
 
 # Generate and send email
-yarn email:generate --email=you@plasmic.app
+pnpm email:generate --email=you@plasmic.app
 ```
 
 ## Directory Structure
@@ -51,7 +51,7 @@ Contains scripts for manual testing of email. The script outputs the generated H
 
 ```bash
 # From anywhere within the /wab folder
-yarn email:generate
+pnpm email:generate
 ```
 
 Choose the template to use by editing the `TEMPLATE_NAME` and `TEMPLATE_PROPS` constants in the script.
@@ -63,5 +63,5 @@ Choose the template to use by editing the `TEMPLATE_NAME` and `TEMPLATE_PROPS` c
 # Use the "SMTP credentials for one-off" credentials in Bitwarden
 EMAIL_SMTP_USER="<SMTP user name>" \
 EMAIL_SMTP_PASSWORD="<SMTP password>" \
-yarn email:generate --email=you@plasmic.app
+pnpm email:generate --email=you@plasmic.app
 ```

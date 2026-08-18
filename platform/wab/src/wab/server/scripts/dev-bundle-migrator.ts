@@ -121,7 +121,7 @@ async function migrate() {
       !path.includes("/stale-bundle.json"),
       () =>
         `The stale bundle should not be migrated here. Please use
-          \`yarn db:upgrade-stale-bundle\``
+          \`pnpm db:upgrade-stale-bundle\``
     );
     logger().info(`Migrating ${path}`);
     // await execa.command(sh.quote`git checkout ${path}`, {

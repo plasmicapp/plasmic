@@ -23,5 +23,6 @@
     "eslint": "8.57.1",
     "eslint-config-next": "13.5.11",
     "typescript": "6.0.3"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

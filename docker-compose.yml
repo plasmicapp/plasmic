@@ -26,16 +26,18 @@ services:
     command: # Override the default dockerfile startup command here for debugging purpose
       - |
         jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
-        yarn typeorm migration:run && \
-        yarn seed && \
+        pnpm typeorm migration:run && \
+        pnpm seed && \
         cd /plasmic && \
-        yarn dev
+        pnpm dev
     volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic
       # 2. Use named volumes to preserve built container files from being overwritten by unbuilt local code
       # --- Node Modules (Existing) ---
       - plasmic_node_modules:/plasmic/node_modules
+      # Has the pnpm store that platform/* node_modules symlink into.
+      - plasmic_platform_node_modules:/plasmic/platform/node_modules
       - plasmic_wab_node_modules:/plasmic/platform/wab/node_modules
       - plasmic_sub_node_modules:/plasmic/platform/sub/node_modules
       - plasmic_canvas_node_modules:/plasmic/platform/canvas-packages/node_modules
@@ -75,6 +77,7 @@ services:
 volumes:
   postgres_data:
   plasmic_node_modules:
+  plasmic_platform_node_modules:
   plasmic_wab_node_modules:
   plasmic_sub_node_modules:
   plasmic_canvas_node_modules:

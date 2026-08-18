@@ -11,22 +11,22 @@ WAB (Web Application Builder) is the core Plasmic Studio application codebase. I
 cd ../.. && pnpm setup-all
 
 # Start full dev environment (frontend, backend, host-server) at http://localhost:3003
-yarn dev
+pnpm dev
 
 # Run unit tests
-yarn test
+pnpm test
 
 # Update snapshots in unit tests
-yarn test:update-snapshots
+pnpm test:update-snapshots
 
 # Run TypeScript type checking
-yarn typecheck
+pnpm typecheck
 
 # Run ESLint (.eslintrc.js if in root directory)
-yarn eslint-all
+pnpm eslint-all
 
 # Build production frontend
-yarn build
+pnpm build
 ```
 
 ## Conventions

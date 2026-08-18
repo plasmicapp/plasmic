@@ -96,7 +96,7 @@ the various debug flags for those packages like `PLASMIC_DEFAULT_HOST`.
 
 For example, to have the CLI/PlasmicLoader point to your own localhost server:
 
-    PLASMIC_DEFAULT_HOST=http://localhost:3003 yarn backend
+    PLASMIC_DEFAULT_HOST=http://localhost:3003 pnpm backend
 
 This is ignored by the app server but consumed by CLI/PlasmicLoader.
 

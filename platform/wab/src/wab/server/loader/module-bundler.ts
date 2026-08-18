@@ -196,7 +196,17 @@ async function bundleModulesEsbuild(
       // to know what files to load in the loader, and we only know them
       // by the file names without the content hash.
       entryNames: "[name]",
-      preserveSymlinks: true,
+      // Resolve symlinks like Node does (its default). The codegen dir's
+      // node_modules is a symlink into ../loader-bundle-env/node_modules,
+      // which under pnpm contains only symlinks into the workspace's .pnpm
+      // store, holding just loader-bundle-env's *direct* deps at the top
+      // level. Transitive imports (e.g. classnames from react-web) only
+      // resolve if esbuild follows those symlinks into the store, where each
+      // package's own deps sit alongside it. Under the old flat yarn layout
+      // every transitive dep was hoisted to the top level, so this was
+      // preserveSymlinks: true from 2022 until the pnpm migration without
+      // observable difference.
+      preserveSymlinks: false,
       plugins: withoutNils([
         externalizeCssUrlsPlugin,
         fixAntdPathPlugin,

@@ -30,5 +30,5 @@ EOF
 EOF
 }
 
-yarn typeorm migration:run
-yarn seed
+pnpm typeorm migration:run
+pnpm seed

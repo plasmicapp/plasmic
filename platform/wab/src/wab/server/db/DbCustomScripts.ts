@@ -22,10 +22,10 @@ import { exit } from "process";
  * It can be used, for example, to implement long migrations that don't require
  * down time.
  *
- * To test the script locally, run `yarn db:one-time-job`.
+ * To test the script locally, run `pnpm db:one-time-job`.
  *
  * To run in prod, ssh into a kubernetes pod that uses the codegen-server image
- * and run yarn db:one-time-job -s <script> -db postgres://wab@proddb.c856obael8lq.us-west-2.rds.amazonaws.com/wab
+ * and run pnpm db:one-time-job -s <script> -db postgres://wab@proddb.c856obael8lq.us-west-2.rds.amazonaws.com/wab
  *
  * The custom script implementation can be written in the function `runScript`,
  * which runs inside a typeorm transaction.

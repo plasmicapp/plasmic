@@ -13,7 +13,7 @@ import path from "path";
  * PkgMgr is responsible for generating Plasmic projects from data/*-master-pkg.json files.
  * This helps seed our localhost dev setup with a set of important Plasmic projects (like Plume, Plexus, etc.)
  *
- * Feel free to add more projects to data/*-master-pkg.json and then running `yarn db:reset` should create those projects locally
+ * Feel free to add more projects to data/*-master-pkg.json and then running `pnpm db:reset` should create those projects locally
  *
  * To download a project's data/*-master-pkg.json file from prod, use studio.plasmic.app/admin/dev -> Download Pkg as JSON for Pkg-mgr
  */

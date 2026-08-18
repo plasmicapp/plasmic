@@ -51,7 +51,7 @@ To configure the platform locally follow the instructions in [getting started gu
 Internally we use [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up a local npm registry that you can publish your test packages to.
 
 ```
-yarn global add verdaccio
+pnpm add -g verdaccio
 verdaccio &  # Runs the verdaccio server at http://localhost:4873
 ```
 

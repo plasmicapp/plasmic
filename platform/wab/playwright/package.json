@@ -13,5 +13,6 @@
   },
   "dependencies": {
     "playwright-ctrf-json-reporter": "^0.0.29"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

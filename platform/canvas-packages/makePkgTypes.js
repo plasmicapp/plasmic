@@ -1,119 +1,177 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const typedPkgNames = require("./typedPkgsList.json");
-
 const fs = require("fs");
-const { promisify } = require("util");
-const exec = promisify(require("child_process").exec);
-const lockfileParser = require("@yarnpkg/lockfile");
+const path = require("path");
+const { createRequire } = require("module");
 
-const lockfile = fs.readFileSync("yarn.lock", "utf8");
-const tree = lockfileParser.parse(lockfile);
+// For each hostless code library, we provide the TypeScript declaration files
+// for the Studio code editor (Monaco) to use. `typedPkgsList` lists the NPM
+// packages that need to be typed; we bundle each package's `.d.ts` files and
+// `package.json` (plus those of its transitive dependencies) into
+// `src/generated-types/<pkgName>.json` as `{ files: [{ fileName, contents }] }`.
+//
+// Monaco loads each entry as an extra-lib at `file:///<fileName>` (see
+// FullCodeEditor.tsx), so `fileName` must be the *logical* module path that
+// TypeScript resolves bare imports against, i.e. `./node_modules/<pkg>/...`.
+// We therefore resolve each package's real location with `require.resolve`
+// (which follows both yarn's flat layout and pnpm's symlinked `.pnpm` store)
+// but emit files under `./node_modules/<pkg>/` rather than the physical path.
+// When two different versions of the same package are reachable, the first one
+// found keeps the flat path and the others are emitted nested under their
+// dependent (`./node_modules/<parent>/node_modules/<pkg>/...`), which is
+// exactly where TypeScript looks first when resolving from the parent.
 
-// For each hostless code library, we need to provide the typescript declaration
-// files for the code editor to use.
-// To do so, `typedPkgsList` should contain the list of NPM packages that need
-// to be typed.
-const genTsFiles = async () => {
-  for (const rootPkg of typedPkgNames) {
-    // For each NPM package, we generate `src/generated-types/pkgName.json`
-    // containing the file names (w/ path), and contents for `package.json` and
-    // the `.d.ts` files, in the format `{ fileName: string, contents: string }`
-
-    // Because the NPM package might depend on other packages, we traverse the
-    // dependencies and generate types for them as well.
-    const mainVersion = require(`./package.json`).dependencies[rootPkg];
-    const files = [];
-    const data = { files };
-    const alreadyIncludedInTopLevel = new Set();
-    const dfs = async (pkgName, versionRange, path) => {
-      // We need to generate the types for each `pkgName` and `versionRange`,
-      // since different versions of the same file might have different types.
-
-      // The `pkgData`, from the lockfile, contains the resolved version for
-      // the given version range.
-      const pkgData = tree.object[`${pkgName}@${versionRange}`];
-
-      // If the resolved version is installed at the top-level `node_modules`
-      // (and not, for example, in `node_modules/otherPkg/node_modules`), then
-      // we don't need to re-generate types for this version.
-      if (alreadyIncludedInTopLevel.has(`${pkgName}@${pkgData.version}`)) {
-        return;
-      }
-
-      // Try to find it in node_modules with pkgName + path
-      // If none is found, try again looking for @types/pkgName
-      const typesPkgName = `@types/${pkgName
-        .replace("@", "")
-        .replace(/\//g, "__")}`;
-      for (const lookupName of [pkgName, typesPkgName]) {
-        // We look for a local `node_module` and go up in the directory
-        // tree until we find a corresponding `node_module` for the given
-        // package
-        const newPath = [...path];
-        while (true) {
-          const pathStr = `./${newPath
-            .map((pkg) => `node_modules/${pkg}/`)
-            .join("")}node_modules/${lookupName}`;
-          // Once we find a package with types, we grab all `.d.ts` files
-          const tsFiles = await (async () => {
-            try {
-              return (
-                await exec(
-                  `bash -c "test -d ${pathStr} && find ${pathStr} -name *.d.ts -type f -not -path '${pathStr}/node_modules'"`
-                )
-              ).stdout
-                .split("\n")
-                .filter((l) => !!l);
-            } catch {
-              return [];
-            }
-          })();
-
-          if (tsFiles.length > 0) {
-            if (!newPath.length) {
-              alreadyIncludedInTopLevel.add(`${pkgName}@${pkgData.version}`);
-            }
-
-            for (const tsFile of tsFiles) {
-              const contents = fs.readFileSync(tsFile, "utf8");
-              files.push({
-                fileName: tsFile,
-                contents,
-              });
-            }
-
-            if (fs.existsSync(`${pathStr}/package.json`)) {
-              const contents = fs.readFileSync(
-                `${pathStr}/package.json`,
-                "utf8"
-              );
-              files.push({
-                fileName: `${pathStr}/package.json`,
-                contents,
-              });
-            }
-
-            // Now grab types from its dependencies
-            for (const [dep, version] of Object.entries(
-              pkgData.dependencies ?? {}
-            )) {
-              await dfs(dep, version, [...newPath, pkgName]);
-            }
-            return;
-          }
-
-          if (newPath.length === 0) {
-            // If we are already at the top directory, assume there are no types
-            // for that package.
-            break;
-          } else {
-            // If no types were found, try again in the parent directory
-            newPath.pop();
-          }
+// Resolve a package's install directory as seen from `fromDir`. Returns the
+// absolute directory that contains its package.json, or null if not found.
+const resolvePkgDir = (pkgName, fromDir) => {
+  const req = createRequire(path.join(fromDir, "__resolve__.js"));
+  try {
+    return path.dirname(req.resolve(`${pkgName}/package.json`));
+  } catch {
+    // Packages with a restrictive "exports" map may not expose package.json.
+    // Fall back to resolving the entry point and walking up to the package root.
+    try {
+      let dir = path.dirname(req.resolve(pkgName));
+      while (dir !== path.dirname(dir)) {
+        const pkgJsonPath = path.join(dir, "package.json");
+        if (
+          fs.existsSync(pkgJsonPath) &&
+          JSON.parse(fs.readFileSync(pkgJsonPath, "utf8")).name === pkgName
+        ) {
+          return dir;
         }
+        dir = path.dirname(dir);
       }
-    };
-    await dfs(rootPkg, mainVersion, []);
+    } catch {
+      // ignore
+    }
+    return null;
+  }
+};
+
+// Recursively collect `.d.ts` files under `dir`, skipping the package's own
+// nested node_modules.
+const collectDtsFiles = (dir) => {
+  const out = [];
+  const walk = (current) => {
+    let entries;
+    try {
+      entries = fs.readdirSync(current, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === "node_modules") {
+          continue;
+        }
+        walk(full);
+      } else if (entry.isFile() && entry.name.endsWith(".d.ts")) {
+        out.push(full);
+      }
+    }
+  };
+  walk(dir);
+  return out;
+};
+
+// Collect the `{ fileName, contents }` entries for `rootPkg` and its
+// transitive dependencies, resolving packages relative to `baseDir`.
+const collectPackageTypes = (rootPkg, baseDir) => {
+  const files = [];
+
+  // Logical top-level name -> physical dir emitted at ./node_modules/<name>/.
+  // A second physical dir for the same name is a version conflict and gets
+  // emitted nested under its dependent instead.
+  const topLevelDirByName = new Map();
+  // "<prefix>|<dir>" pairs already emitted, so shared deps are emitted once.
+  const emitted = new Set();
+
+  const addPackageFiles = (prefix, dir) => {
+    for (const dtsFile of collectDtsFiles(dir)) {
+      files.push({
+        fileName: `${prefix}${path
+          .relative(dir, dtsFile)
+          .split(path.sep)
+          .join("/")}`,
+        contents: fs.readFileSync(dtsFile, "utf8"),
+      });
+    }
+    const pkgJsonPath = path.join(dir, "package.json");
+    if (fs.existsSync(pkgJsonPath)) {
+      files.push({
+        fileName: `${prefix}package.json`,
+        contents: fs.readFileSync(pkgJsonPath, "utf8"),
+      });
+    }
+  };
+
+  const emitTopLevel = (logicalName, dir) => {
+    if (topLevelDirByName.has(logicalName)) {
+      return;
+    }
+    topLevelDirByName.set(logicalName, dir);
+    const prefix = `./node_modules/${logicalName}/`;
+    emitted.add(`${prefix}|${dir}`);
+    addPackageFiles(prefix, dir);
+  };
+
+  // `stack` holds the physical dirs on the current dependency chain, so
+  // dependency cycles among conflicting versions terminate.
+  const dfs = (pkgName, fromDir, parentPrefix, stack) => {
+    // A package may ship no declarations of its own; TypeScript then resolves
+    // its types from `@types/<pkg>`. Emit both when present. @types packages
+    // are typically devDependencies of the workspace root, hence the baseDir
+    // fallback.
+    const typesPkgName = `@types/${pkgName
+      .replace(/^@/, "")
+      .replace(/\//g, "__")}`;
+    const typesDir =
+      resolvePkgDir(typesPkgName, fromDir) ||
+      resolvePkgDir(typesPkgName, baseDir);
+    if (typesDir) {
+      emitTopLevel(typesPkgName, typesDir);
+    }
+
+    const pkgDir = resolvePkgDir(pkgName, fromDir);
+    if (!pkgDir || stack.has(pkgDir)) {
+      return;
+    }
+
+    const topDir = topLevelDirByName.get(pkgName);
+    let prefix;
+    if (topDir === undefined || topDir === pkgDir) {
+      topLevelDirByName.set(pkgName, pkgDir);
+      prefix = `./node_modules/${pkgName}/`;
+    } else {
+      prefix = `${parentPrefix}node_modules/${pkgName}/`;
+    }
+    if (emitted.has(`${prefix}|${pkgDir}`)) {
+      return;
+    }
+    emitted.add(`${prefix}|${pkgDir}`);
+    addPackageFiles(prefix, pkgDir);
+
+    // Recurse into the real package's dependencies, resolving them from the
+    // package's own directory so we get the version it actually uses.
+    const pkgJson = JSON.parse(
+      fs.readFileSync(path.join(pkgDir, "package.json"), "utf8")
+    );
+    const nextStack = new Set(stack);
+    nextStack.add(pkgDir);
+    for (const dep of Object.keys(pkgJson.dependencies ?? {})) {
+      dfs(dep, pkgDir, prefix, nextStack);
+    }
+  };
+
+  dfs(rootPkg, baseDir, "./", new Set());
+  return files;
+};
+
+const genTsFiles = () => {
+  const typedPkgNames = require("./typedPkgsList.json");
+  for (const rootPkg of typedPkgNames) {
+    const data = { files: collectPackageTypes(rootPkg, __dirname) };
     fs.mkdirSync(`./src/generated-types/${rootPkg.split("/").slice(0, -1)}`, {
       recursive: true,
     });
@@ -123,4 +181,9 @@ const genTsFiles = async () => {
     );
   }
 };
-genTsFiles();
+
+module.exports = { collectPackageTypes, resolvePkgDir, collectDtsFiles };
+
+if (require.main === module) {
+  genTsFiles();
+}

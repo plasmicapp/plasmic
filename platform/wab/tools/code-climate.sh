@@ -8,5 +8,5 @@ export CC_TEST_REPORTER_ID=5598426cb9150e7c48959602fb9a2513910d97581492995e13168
 curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 chmod +x ./cc-test-reporter
 ./cc-test-reporter before-build
-yarn test:coverage
+pnpm test:coverage
 ./cc-test-reporter after-build

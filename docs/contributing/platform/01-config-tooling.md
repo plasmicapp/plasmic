@@ -90,19 +90,19 @@ In `wab` folder
 Run backend
 
 ```
-yarn backend
+pnpm backend
 ```
 
 Run frontend client dev server
 
 ```
-yarn start
+pnpm start
 ```
 
 Run host client, just a proxy on port 3005 to the frontend
 
 ```
-yarn host-server
+pnpm host-server
 ```
 
 ### Running Servers using pm2
@@ -115,10 +115,10 @@ workon wab
 . ~/.node/*/bin/activate
 ```
 
-Install pm2 globally so you can use pm2 rather than "yarn pm2"
+Install pm2 globally so you can use pm2 rather than "pnpm pm2"
 
 ```
-yarn global add pm2
+npm install -g pm2
 ```
 
 To start all processes, just
@@ -153,7 +153,7 @@ Refer to https://pm2.keymetrics.io/docs/usage/quick-start/ for more usage inform
 Whenever you fetch the latest changes, most of the time, you just need to run:
 
 ```
-yarn
+pnpm install
 make
 # restart node server
 # restart webpack, once in a blue moon
@@ -179,7 +179,7 @@ To make sure your local database contains the latest version of the Plume
 package so that you can create components from Plume templates, run:
 
 ```
-yarn plume:dev update
+pnpm plume:dev update
 ```
 
 If you don't do so, studio may show a NotFoundError when you open any new
@@ -227,7 +227,7 @@ We have some local JSON bundles for development/test purposes, which you also ne
 To migrate these, run:
 
 ```bash
-yarn migrate-dev-bundles
+pnpm migrate-dev-bundles
 ```
 
 This runs any necessary migrations according to the version stamp.
@@ -245,7 +245,7 @@ In particular, the React Devtools Chrome extension will not work. However, you c
 Install and run `react-devtools`:
 
 ```bash
-    yarn global add react-devtools
+    npm install -g react-devtools
     react-devtools
 ```
 
@@ -282,18 +282,18 @@ pnpm knip:deps
 Check what needs to be updated:
 
 ```
-yarn outdated
+pnpm outdated
 ```
 
 Update the dependencies:
 
 ```
-yarn upgrade --latest
+pnpm up --latest
 ```
 
 This will upgrade everything. You can also try selectively upgrading individual
-packages, but things get complicated with how yarn handles upgrading
-dependencies that are also indirect dependencies of other dependencies.
+packages, but things get complicated with upgrading dependencies that are
+also indirect dependencies of other dependencies.
 
 ## Alternate configs
 
@@ -312,12 +312,12 @@ For Python dependencies, do this from each project directory:
 
 ## Production Build
 
-Run `yarn build` to build client app for production. This takes a long time (>5m).
+Run `pnpm build` to build client app for production. This takes a long time (>5m).
 
 You can test out your built artifact with:
 
 ```
-  yarn global add local-web-server
+  npm install -g local-web-server
   cd build/
   ws --spa index.html --rewrite '/api/(.*) -> http://localhost:3004/api/$1'
 ```

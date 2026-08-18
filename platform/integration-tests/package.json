@@ -20,5 +20,6 @@
     "jest": "^27.2.0",
     "tmp": "^0.2.1",
     "typescript": "6.0.3"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

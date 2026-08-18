@@ -99,10 +99,10 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
       );
     });
 
-    // This hook appends the source map reference when doing `yarn build`. Not
+    // This hook appends the source map reference when doing `pnpm build`. Not
     // sure why this is necessary and why the previous hook alone isn't enough;
     // with just the previous hook, the source map reference is stripped out
-    // completely for `yarn build`.
+    // completely for `pnpm build`.
     compiler.hooks.emit.tapAsync(
       "AppendSourceMapWithHash",
       (compilation, callback) => {
@@ -151,18 +151,25 @@ export default defineConfig({
       index: "src/wab/client/main.tsx",
     },
   },
-  resolve:
-    buildEnv === "production"
-      ? {}
-      : {
-          alias: {
+  resolve: {
+    alias: {
+      // Force a single jquery instance in the bundle. jquery plugins
+      // (jquery-serializejson) import "jquery" themselves, and under pnpm's
+      // isolated node_modules they can resolve a different copy than the app
+      // (the workspace has both 3.5.1 and 3.7.1), so the plugin registers
+      // itself on an instance the app never sees.
+      jquery: "./node_modules/jquery",
+      ...(buildEnv === "production"
+        ? {}
+        : {
             // In case you are linking to locally built packages,
             // sometimes you end up with duplicate React versions.
             // This fixes that issue.
             react: "./node_modules/react",
             "react-dom": "./node_modules/react-dom",
-          },
-        },
+          }),
+    },
+  },
   output: {
     assetPrefix: staticUrl,
     distPath: {

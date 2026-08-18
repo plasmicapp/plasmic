@@ -14,21 +14,24 @@ RUN apk add --no-cache \
     postgresql-client \
     build-base
 
-# Copy only dependency files first for caching
-COPY package.json yarn.lock ./
+# pnpm via corepack; versions are pinned by the "packageManager" fields in the
+# repo root and platform/ package.jsons. Enable ONLY the pnpm shim: the yarn
+# shim would refuse to run in the platform/* standalone yarn projects (sub,
+# react-web-bundle, ...) because it finds platform/package.json's
+# "packageManager": "pnpm@..." when walking up. The node image's bundled
+# classic yarn keeps serving those projects.
+RUN corepack enable pnpm
 
-# Install deps early for cache
-RUN yarn install --frozen-lockfile --prefer-offline
-
-# Then copy rest of the app
+# The repo root and platform/ are both pnpm workspaces, which need every
+# member's package.json to install, so there is no useful manifest-only copy
+# for layer caching; copy everything up front.
 COPY . .
 
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
-    yarn setup && \
-    yarn setup:canvas-packages && \
-    yarn cache clean
+    pnpm setup && \
+    pnpm setup:canvas-packages
 
 # --- Final stage ---
 FROM node:24-alpine
@@ -37,6 +40,7 @@ FROM node:24-alpine
 RUN addgroup -S plasmic && \
     adduser -S plasmic -G plasmic && \
     apk add --no-cache git jq bash && \
+    corepack enable pnpm && \
     echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
     sysctl -p && \
     mkdir -p $HOME && \
@@ -54,8 +58,8 @@ EXPOSE 3003 3004 3005
 
 ENTRYPOINT ["sh", "-c"]
 CMD [" jq '(.host = \"plasmic-db\") | (.password //= \"SEKRET\")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
-    yarn typeorm migration:run && \
-    yarn seed && \
+    pnpm typeorm migration:run && \
+    pnpm seed && \
     cd /plasmic && \
-    yarn dev \
+    pnpm dev \
 "]

@@ -40,7 +40,7 @@ There should also be an `init.ts` file that exports a function called `initDb()`
 ## Local dev
 
 ```
-yarn tutorialdb todo
+pnpm tutorialdb todo
 ```
 
 This will create a tutorialdb, print out the details, and add a corresponding entry into your tutorialdb table in wab.

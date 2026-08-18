@@ -1,7 +1,8 @@
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { getWabConnectionOptions } from "@/wab/server/db/DbCon";
 import { logger } from "@/wab/server/observability";
 import { parse as parseDbUri } from "pg-connection-string";
-import { createConnection, getConnectionOptions } from "typeorm";
+import { createConnection } from "typeorm";
 
 export async function createDbConnection(dburi?: string) {
   dburi = dburi ?? DEFAULT_DATABASE_URI;
@@ -13,7 +14,7 @@ export async function createDbConnection(dburi?: string) {
   );
   const options = Object.assign(
     {},
-    await getConnectionOptions(),
+    await getWabConnectionOptions(),
 
     // We parse dbUri into its component options, instead of specifying
     // `url:`, because we can't use `url:` in combination with `password:`

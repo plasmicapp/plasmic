@@ -13,10 +13,10 @@ import { parse as parseDbUri } from "pg-connection-string";
 import {
   Connection,
   ConnectionOptions,
+  ConnectionOptionsReader,
   createConnection,
   getConnection,
   getConnectionManager,
-  getConnectionOptions,
 } from "typeorm";
 
 // ormconfig.json points typeorm at the entity and migration source files, which
@@ -45,6 +45,23 @@ function getMigrationClasses() {
         ) as Function[]
     );
   })());
+}
+
+/**
+ * Reads wab's ormconfig.json, explicitly anchored to the wab package root.
+ *
+ * typeorm's getConnectionOptions() locates the config via app-root-path,
+ * which derives the root from its own physical location inside node_modules.
+ * Under pnpm that is the workspace store (platform/node_modules/.pnpm/...),
+ * so it looks for platform/ormconfig.json and finds nothing. (The typeorm
+ * CLI is unaffected: it passes root: process.cwd().)
+ */
+export function getWabConnectionOptions(): Promise<ConnectionOptions> {
+  // __dirname is src/wab/server/db; ormconfig.json lives four levels up at
+  // the wab package root.
+  return new ConnectionOptionsReader({
+    root: path.join(__dirname, "..", "..", "..", ".."),
+  }).get("default");
 }
 
 function getDatabaseUriForConnectionOptions(
@@ -112,7 +129,7 @@ export async function ensureDbConnection(
     const envPassword = process.env.WAB_DBPASSWORD;
     connOpts = Object.assign(
       {},
-      await getConnectionOptions(),
+      await getWabConnectionOptions(),
       {
         type: "postgres",
         extra: {

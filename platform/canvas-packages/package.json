@@ -1,13 +1,16 @@
 {
   "name": "canvas-packages",
   "scripts": {
-    "build": "tsc && NODE_ENV=production node ./esbuild.js",
-    "watch": "ESBUILD_WATCH=true node ./esbuild.js",
-    "prepare": "node ./makePkgTypes.js",
+    "build": "node ./makePkgTypes.js && tsc && NODE_ENV=production node ./esbuild.js",
+    "watch": "node ./makePkgTypes.js && ESBUILD_WATCH=true node ./esbuild.js",
+    "gen-types": "node ./makePkgTypes.js",
+    "test": "node --test makePkgTypes.test.js",
     "size": "size-limit",
-    "upgrade-aria": "yarn upgrade --latest react-aria && npx yarn-deduplicate@latest --scopes @react-aria @react-stately @react-types @internationalized && npx yarn-deduplicate@latest --packages react-aria @swc/helpers"
+    "upgrade-aria": "pnpm up --latest react-aria && pnpm dedupe"
   },
   "dependenciesComments": {
+    "@react-aria/focus": "Pinned to the version wab's patch targets; enforced by the workspace-wide override in ../pnpm-workspace.yaml. Upgrade there (and rebase the patch), not here.",
+    "@react-aria/overlays": "Pinned to the version wab's patch targets; enforced by the workspace-wide override in ../pnpm-workspace.yaml. Upgrade there (and rebase the patch), not here.",
     "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background",
     "rc-util": "Must be ^5.44.4. Earlier versions doesn't support React 19+ by attempting to use findDOMNode from react-dom. https://linear.app/plasmic/issue/PLA-11800/investigate-issue-with-rich-components-table-in-react-19"
   },
@@ -64,10 +67,12 @@
     "@plasmicpkgs/tiptap": "^0.0.51",
     "@plasmicpkgs/vanilla-cookieconsent": "^0.0.36",
     "@plasmicpkgs/wordpress": "^0.0.37",
-    "@react-aria/focus": "3.21.5",
+    "@react-aria/focus": "3.20.3",
     "@react-aria/interactions": "3.27.1",
-    "@react-aria/overlays": "3.31.2",
+    "@react-aria/overlays": "3.27.1",
     "@types/isomorphic-fetch": "^0.0.39",
+    "@types/lodash": "^4.17.24",
+    "dom-align": "^1.12.4",
     "@types/md5": "^2.3.6",
     "@types/papaparse": "^5.5.2",
     "@types/pluralize": "^0.0.33",
@@ -128,7 +133,6 @@
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18",
     "@types/react-slick": "^0.23.13",
-    "@yarnpkg/lockfile": "^1.1.0",
     "esbuild": "^0.15.11",
     "esbuild-plugin-alias": "^0.2.1",
     "esbuild-plugin-external-global": "^1.0.1",
@@ -140,12 +144,6 @@
     "sha256": "^0.2.0",
     "size-limit": "^12.1.0",
     "typescript": "6.0.3"
-  },
-  "resolutions": {
-    "@plasmicpkgs/antd/antd": "4.19.5",
-    "@plasmicpkgs/react-slick/antd": "4.19.5",
-    "rc-util": "^5.44.4",
-    "lottie-web": ">=5.13.0"
   },
   "size-limit": [
     {

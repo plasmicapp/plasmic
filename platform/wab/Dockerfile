@@ -1,3 +1,15 @@
+# syntax=docker/dockerfile:1
+#
+# Build context is the platform/ workspace root (not platform/wab), e.g.:
+#   docker build -f platform/wab/Dockerfile platform/
+#
+# wab, canvas-packages, loader-bundle-env and loader-html-hydrate share the pnpm
+# workspace rooted at platform/. wab's server reads loader-bundle-env and
+# loader-html-hydrate as sibling directories at runtime
+# (process.cwd()/../loader-bundle-env/node_modules), so the runtime image keeps
+# the /platform/{wab,loader-bundle-env,loader-html-hydrate} peer layout together
+# with the workspace-root node_modules/.pnpm store their symlinks point into.
+
 # See https://hub.docker.com/_/node/
 # Pinned to an exact patch (not the floating node:24-alpine tag) to avoid silently
 # pulling in Node patch regressions on rebuild. Node 24.17.0 introduced an http.Agent
@@ -7,49 +19,101 @@ FROM node:24.16.0-alpine AS builder
 
 ENV PUPPETEER_SKIP_DOWNLOAD=1
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV CYPRESS_INSTALL_BINARY=0
 ENV PLAYWRIGHT_DOWNLOAD_HOST=https://playwright-akamai.azureedge.net
 
+# make + bubblewrap for wab codegen and the runtime code-eval sandbox;
+# build-base/g++/gcc/python3/libc-dev to compile native addons (bcrypt, sharp,
+# @swc/core, ...) during pnpm install.
 RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc libc-dev
 
-# loader-bundle-env is expected to be a peer folder to wab, so we copy it there
-WORKDIR /app/loader-bundle-env
-# Don't bother optimizing Docker layer caching for loader-bundle-env
-# since it is more complicated with internal_pkgs/* directories
-COPY loader-bundle-env/ .
-RUN yarn install --frozen-lockfile --network-timeout 600000 --mutex file
+# pnpm via corepack; the version is pinned by "packageManager" in package.json.
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-# loader-html-hydrate is expected to be a peer folder to wab, so we copy it there
-WORKDIR /app/loader-html-hydrate
-COPY loader-html-hydrate/package.json loader-html-hydrate/yarn.lock ./
-RUN yarn install --frozen-lockfile --network-timeout 600000 --mutex file
-COPY loader-html-hydrate/ .
-RUN yarn build
+WORKDIR /platform
 
-# wab install
-WORKDIR /app/wab
-COPY wab/package.json wab/yarn.lock ./
-COPY wab/patches/ ./patches/
-RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --frozen-lockfile --network-timeout 600000 --mutex file
-COPY wab/ .
+# Download every package into the store first, from the lockfile alone, so this
+# expensive layer is invalidated only by lockfile changes — with a plain
+# `COPY . .` before install, any source edit would re-resolve and re-link
+# everything on every build. Patches ride along because patchedDependencies in
+# pnpm-workspace.yaml references them.
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY patches/ ./patches/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
+
+# Copy the whole workspace (node_modules, build outputs and generated files are
+# excluded via .dockerignore). pnpm needs every workspace member's package.json
+# present to satisfy the frozen lockfile, and canvas-packages links wab's
+# register-library through the workspace.
+COPY . .
+
+# --offline: everything was fetched above (the lockfile has registry tarballs
+# only), so installs never hit the network here.
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --offline
+
+# Build loader-bundle-env's internal_pkgs and loader-html-hydrate. wab's server
+# consumes their built output from the sibling directories at runtime.
+# NB: filters match package *names*, and loader-html-hydrate's package name is
+# @plasmicapp/loader-html-hydrate (a bare directory name would silently match
+# nothing).
+RUN pnpm --filter "loader-bundle-env..." --filter "@plasmicapp/loader-html-hydrate..." build
+
+# Code generation (peg parsers, model classes, style tokens, vendored CSS).
+WORKDIR /platform/wab
 RUN mkdir -p src/wab/gen && make
-# TODO: Use prune command after migrating to pnpm
-RUN rm -rf node_modules/
-RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --production --frozen-lockfile --network-timeout 600000 --mutex file
+
+# Re-resolve without devDependencies for the runtime image, and only for the
+# three packages that actually ship in it — this keeps canvas-packages',
+# analytics-rproxy's and mini-cache's prod deps out of the copied store.
+# NB: `pnpm deploy` would be tidier but flattens node_modules and breaks wab's
+# sibling-dir resolution (../loader-bundle-env/node_modules); see
+# https://github.com/pnpm/pnpm/issues/9283
+WORKDIR /platform
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    rm -rf node_modules wab/node_modules loader-bundle-env/node_modules \
+      loader-html-hydrate/node_modules canvas-packages/node_modules \
+    && pnpm install --frozen-lockfile --offline --prod \
+      --filter "wab..." --filter "loader-bundle-env..." \
+      --filter "@plasmicapp/loader-html-hydrate..." \
+      --config.confirmModulesPurge=false
 
 FROM node:24.16.0-alpine AS runner
 
-# System setup
+# make + bubblewrap for the runtime code-eval sandbox; toolchain kept so native
+# addons that resolve a prebuilt binary at load time still have their deps.
 RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc libc-dev
 
-COPY --from=builder /app/loader-bundle-env ./app/loader-bundle-env
-COPY --from=builder /app/loader-html-hydrate ./app/loader-html-hydrate
-COPY --from=builder /app/wab/ ./app/wab
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+# Keep corepack's cache in a world-readable location so the pnpm dist baked in
+# below (as root) is usable by the unprivileged node user at runtime.
+ENV COREPACK_HOME="/pnpm/corepack"
+RUN corepack enable
+
+WORKDIR /platform
+
+# Workspace-root store plus manifests, then the three peer packages wab needs at
+# runtime. Symlinks inside each package's node_modules point back into
+# /platform/node_modules/.pnpm, so both must be copied together.
+COPY --from=builder --chown=node:node /platform/node_modules ./node_modules
+COPY --from=builder --chown=node:node /platform/pnpm-workspace.yaml /platform/pnpm-lock.yaml /platform/package.json ./
+
+# Bake the pinned pnpm dist into the image; otherwise the first `pnpm ...` in a
+# pod (e.g. `pnpm db:one-time-job`) would download it from the registry at
+# container runtime.
+RUN pnpm --version && chmod -R a+rX "$COREPACK_HOME"
+COPY --from=builder --chown=node:node /platform/wab ./wab
+COPY --from=builder --chown=node:node /platform/loader-bundle-env ./loader-bundle-env
+COPY --from=builder --chown=node:node /platform/loader-html-hydrate ./loader-html-hydrate
 
 # Expose main server port
 EXPOSE 3004
 
 # Switch workdir back to wab
-WORKDIR /app/wab
+WORKDIR /platform/wab
 
 USER node
 

@@ -10,4 +10,4 @@ REACT_APP_DEFAULT_HOST_URL=${HOST_URL} \
   PUBLIC_URL=${REACT_APP_DEV_PROXY:-http://localhost:$port} \
   PORT=$port \
   NODE_OPTIONS="--max-old-space-size=16384" \
-  yarn rsbuild $cmd
+  pnpm rsbuild $cmd

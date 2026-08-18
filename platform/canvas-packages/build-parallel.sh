@@ -10,7 +10,7 @@ if [[ $ROLLUP_WATCH = 1 ]] ; then
 fi
 
 for ((i=0;i<builds_count;i++)); do
-    yarn $build_cmd --environment BUILD_INDEX:$i &
+    pnpm run $build_cmd --environment BUILD_INDEX:$i &
 done
 
 wait
