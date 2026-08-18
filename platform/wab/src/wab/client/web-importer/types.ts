@@ -56,7 +56,10 @@ export interface WIContainer extends WIBase {
 
 export interface WIText extends WIBase {
   type: "text";
-  text: string;
+  /**
+   * The element's content as a nested structure for RichText content.
+   */
+  content: (string | WIText)[];
 }
 
 export interface WISVG extends WIBase {

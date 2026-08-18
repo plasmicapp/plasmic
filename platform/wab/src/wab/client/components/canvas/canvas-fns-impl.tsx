@@ -1,6 +1,7 @@
 import "@/wab/client/components/canvas/slate";
 import { mkBaseVariant } from "@/wab/shared/Variants";
 import { assert } from "@/wab/shared/common";
+import { nodeMarkerText } from "@/wab/shared/core/rich-text-util";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { TplTagType, mkTplTag } from "@/wab/shared/core/tpls";
 import { normProp, parseCssNumericNew } from "@/wab/shared/css";
@@ -55,10 +56,6 @@ export function isExplicitlySized(effectiveVs: EffectiveVariantSetting) {
   return hasExplicitSize("width") && hasExplicitSize("height");
 }
 
-// nodeMarkerText is the string that replaces NodeMarkers in RawText.text.
-// This value is used, for example, in tpl-tree, i.e. a text like `This is a
-// <a href="...">link</a>` will be seen as `This is a {nodeMarkerText}` there.
-const nodeMarkerText = "[child]";
 export type ResolvedMarkers = {
   text: RawText["text"];
   markers: Marker[];

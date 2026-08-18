@@ -1,4 +1,5 @@
 import { animationStyleKeys } from "@/wab/shared/css/animations";
+import { textBlockTags, textInlineTags } from "@/wab/shared/html";
 
 export const BASE_VARIANT = "base";
 export const SELF_SELECTOR = "self";
@@ -17,23 +18,12 @@ export const ignoredTags = new Set([
 ]);
 
 /**
- * Do not try to nest divs under these or treat them as having flow layout.
- *
- * If you try to import a `p > div` via innerHTML, then you'll get two `p` tags
- * and a `div` that is hoisted outside the `p`!
- *
- * NOTE: I don't really know what counts as a paragraph - here are just some
- * common cases I can think of.
+ * Tags that can be imported as a text element (a text-type TplTag)
  */
-export const paragraphTags = new Set([
+export const textEligibleTags = new Set([
+  ...textInlineTags,
+  ...textBlockTags,
   "p",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "span",
 ]);
 
 const textStylesKeys = new Set<string>([

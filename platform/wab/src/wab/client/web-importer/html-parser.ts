@@ -4,9 +4,9 @@ import {
   ignoredStyles,
   ignoredTags,
   layoutStyleKeys,
-  paragraphTags,
   recognizedStylesKeys,
   SELF_SELECTOR,
+  textEligibleTags,
   translationTable,
 } from "@/wab/client/web-importer/constants";
 import { WIError, WIImportFailedError } from "@/wab/client/web-importer/errors";
@@ -22,6 +22,7 @@ import {
   WIKeyFrame,
   WIRule,
   WISafeStyles,
+  WIText,
   WITree,
   WIUnsafeStyles,
   WIUnsanitizedStyles,
@@ -46,7 +47,13 @@ import { parseFlexShorthand } from "@/wab/shared/css/flex";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import { CssTransforms } from "@/wab/shared/css/transforms";
 import { hasInvalidUrl } from "@/wab/shared/css/urls";
-import { GENERAL_TAGS } from "@/wab/shared/html";
+import {
+  collapseAsciiWhitespace,
+  GENERAL_TAGS,
+  isTagInline,
+  normalizeHtmlWhitespace,
+  trimAsciiWhitespace,
+} from "@/wab/shared/html";
 import { Site } from "@/wab/shared/model/classes";
 import { VariantGroupType } from "@/wab/shared/Variants";
 import {
@@ -700,6 +707,73 @@ function isLikelyEmptyContainer(containerNode: WIContainer) {
   );
 }
 
+function getElementAttrs(elt: Element): Record<string, string> {
+  return [...elt.attributes].reduce((acc, attr) => {
+    acc[attr.name] = attr.value;
+    return acc;
+  }, {} as Record<string, string>);
+}
+
+function isElementNode(node: Node): node is Element {
+  return node.nodeType === Node.ELEMENT_NODE;
+}
+
+function isInlineTextContent(elt: Element): boolean {
+  return [...elt.childNodes].every((child) => {
+    if (
+      child.nodeType === Node.TEXT_NODE ||
+      child.nodeType === Node.COMMENT_NODE
+    ) {
+      return true;
+    }
+    return (
+      isElementNode(child) &&
+      isTagInline(child.tagName.toLowerCase()) &&
+      isInlineTextContent(child)
+    );
+  });
+}
+
+function parseWITextContent(
+  elt: Element,
+  defaultStyles: CSSStyleDeclaration,
+  errors: WIError[]
+): WIText["content"] {
+  const parts: WIText["content"] = [];
+  for (const child of elt.childNodes) {
+    if (child.nodeType === Node.TEXT_NODE) {
+      const text = child.textContent ?? "";
+      if (!text) {
+        continue;
+      }
+      const last = parts[parts.length - 1];
+      if (typeof last === "string") {
+        parts[parts.length - 1] = last + text;
+      } else {
+        parts.push(text);
+      }
+    } else if (isElementNode(child)) {
+      const content = parseWITextContent(child, defaultStyles, errors);
+      if (content.length === 0) {
+        continue;
+      }
+      parts.push({
+        type: "text",
+        tag: child.tagName.toLowerCase(),
+        path: describeNodePath(child),
+        content,
+        attrs: getElementAttrs(child),
+        variantSettings: getVariantSettingsForNode(
+          child,
+          defaultStyles,
+          errors
+        ),
+      });
+    }
+  }
+  return parts;
+}
+
 function getElementsWITree(
   node: Node,
   defaultStyles: CSSStyleDeclaration,
@@ -707,14 +781,18 @@ function getElementsWITree(
 ) {
   function rec(elt: Node): WIElement | null {
     if (elt.nodeType === Node.TEXT_NODE) {
-      const text = (elt.textContent ?? "").trim();
+      const raw = elt.textContent ?? "";
+      // Inside a <pre>, whitespace is content and is kept as-is.
+      const text = elt.parentElement?.closest("pre")
+        ? raw
+        : trimAsciiWhitespace(collapseAsciiWhitespace(raw));
       if (!text) {
         return null;
       }
 
       return {
         type: "text",
-        text: text,
+        content: [text],
         tag: "span",
         // Text nodes can't be targeted by selectors; they inherit their
         // parent element's path.
@@ -746,10 +824,7 @@ function getElementsWITree(
       errors
     );
 
-    const attrs = [...elt.attributes].reduce((acc, attr) => {
-      acc[attr.name] = attr.value;
-      return acc;
-    }, {} as Record<string, string>);
+    const attrs = getElementAttrs(elt);
 
     if (elt instanceof HTMLElement && tag === "plasmic-component") {
       return parseComponent(
@@ -843,12 +918,18 @@ function getElementsWITree(
       };
     }
 
-    if (paragraphTags.has(tag) && !hasLayoutStyleKeys(allVariantSettings)) {
-      /* elt.innerText is undefined in jsdom environment, so we won't be able to test it.
-         https://github.com/testing-library/dom-testing-library/issues/853
-       */
-      const text = ((elt as HTMLElement).textContent ?? "").trim();
-      if (!text) {
+    if (
+      textEligibleTags.has(tag) &&
+      !hasLayoutStyleKeys(allVariantSettings) &&
+      isInlineTextContent(elt)
+    ) {
+      const rawContent = parseWITextContent(elt, defaultStyles, errors);
+      // Anywhere inside a <pre>, whitespace is content and is kept as-is.
+      // closest also matches the element itself when it is the <pre>.
+      const content = elt.closest("pre")
+        ? rawContent
+        : normalizeHtmlWhitespace(rawContent);
+      if (content.length === 0) {
         return null;
       }
 
@@ -856,7 +937,7 @@ function getElementsWITree(
         type: "text",
         tag,
         path,
-        text,
+        content,
         attrs,
         variantSettings: allVariantSettings,
       };

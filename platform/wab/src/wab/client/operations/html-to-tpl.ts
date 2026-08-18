@@ -18,6 +18,7 @@ import {
   WIElement,
   WIFragment,
   WIScreenVariant,
+  WIText,
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -44,6 +45,7 @@ import {
   mkParam,
   ParamExportType,
 } from "@/wab/shared/core/lang";
+import { nodeMarkerText } from "@/wab/shared/core/rich-text-util";
 import {
   allAnimationSequences,
   getResponsiveStrategy,
@@ -84,8 +86,11 @@ import {
   isKnownTplSlot,
   isKnownTplTag,
   KeyFrame,
+  NodeMarker,
   ObjectPath,
   Param,
+  RawText,
+  RichText,
   Site,
   TplNode,
   TplTag,
@@ -656,6 +661,60 @@ async function wiTreeToTpl(
     return result;
   }
 
+  /**
+   * Builds a text-type TplTag from a WIText, in the same shape the canvas
+   * text editor saves.
+   */
+  function buildTextBlockTpl(node: WIText): TplTag {
+    const markers: NodeMarker[] = [];
+    let richText: RichText;
+    if (node.content.length === 1 && typeof node.content[0] === "string") {
+      richText = interpolatedStringToRichText(node.content[0]);
+    } else {
+      let text = "";
+      const addMarkerTpl = (markerTpl: TplTag) => {
+        markers.push(
+          new NodeMarker({
+            position: text.length,
+            length: nodeMarkerText.length,
+            tpl: markerTpl,
+          })
+        );
+        text += nodeMarkerText;
+      };
+      for (const part of node.content) {
+        if (typeof part !== "string") {
+          addMarkerTpl(buildTextBlockTpl(part));
+        } else if (isDynamicValue(part)) {
+          const dynamicValTpl = vtm.mkTplTagX("span", {
+            type: TplTagType.Text,
+          });
+          vtm.ensureBaseVariantSetting(dynamicValTpl).text =
+            interpolatedStringToRichText(part);
+          addMarkerTpl(dynamicValTpl);
+        } else {
+          text += part;
+        }
+      }
+      richText = new RawText({ text, markers });
+    }
+
+    const tpl = vtm.mkTplTagX(
+      node.tag,
+      {
+        attrs: htmlAttrsToTplAttrs(node),
+        name: node.attrs["data-plasmic-name"],
+        type: TplTagType.Text,
+      },
+      // NodeMarker tpls are also the text block's normal children.
+      markers.map((m) => m.tpl)
+    );
+    vtm.ensureBaseVariantSetting(tpl).text = richText;
+    collectWIVariantData(node, tpl);
+    collectStructuralBindings(node, tpl);
+    return tpl;
+  }
+
   async function rec(node: WIElement): Promise<TplNode[]> {
     // Fragment expands its children in place
     if (node.type === "fragment") {
@@ -667,16 +726,7 @@ async function wiTreeToTpl(
     const tplName = node.attrs["data-plasmic-name"];
     const nodePath = node.path;
     if (node.type === "text") {
-      const tpl = vtm.mkTplTagX(node.tag, {
-        attrs: htmlAttrsToTplAttrs(node),
-        name: tplName,
-        type: TplTagType.Text,
-      });
-      const vs = vtm.ensureBaseVariantSetting(tpl);
-      vs.text = interpolatedStringToRichText(node.text);
-      collectWIVariantData(node, tpl);
-      collectStructuralBindings(node, tpl);
-      return [tpl];
+      return [buildTextBlockTpl(node)];
     }
 
     if (node.type === "svg") {

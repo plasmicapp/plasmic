@@ -11,10 +11,16 @@ export interface XmlElement {
   name: string;
   attributes?: XmlAttrs;
   elements: XmlNode[];
+  /**
+   * Render this element's subtree without pretty-printing. Used for rich
+   * text blocks, where an indentation newline between text and a nested
+   * inline element would reimport as a visible space.
+   */
+  noPrettyPrint?: boolean;
 }
 
 /** A child of an element: a nested element or literal text content. */
-type XmlChild = XmlElement | string;
+export type XmlChild = XmlElement | string;
 
 /**
  * Builds an element node with the given attributes and children. String
@@ -49,12 +55,13 @@ function writeElement(el: XmlElement, spaces: number, depth: number): string {
   const attrs = Object.entries(el.attributes ?? {})
     .map(([name, value]) => ` ${name}=${quoteAttr(value)}`)
     .join("");
+  const childSpaces = el.noPrettyPrint ? 0 : spaces;
   const indent = (d: number) =>
-    spaces > 0 ? "\n" + " ".repeat(spaces * d) : "";
+    childSpaces > 0 ? "\n" + " ".repeat(childSpaces * d) : "";
   const children = el.elements;
   const parts = children.map((child) =>
     child.type === "element"
-      ? indent(depth + 1) + writeElement(child, spaces, depth + 1)
+      ? indent(depth + 1) + writeElement(child, childSpaces, depth + 1)
       : child.type === "cdata"
       ? `<![CDATA[${child.cdata}]]>`
       : escapeText(child.text)

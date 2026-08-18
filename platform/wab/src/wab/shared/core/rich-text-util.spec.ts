@@ -52,6 +52,27 @@ describe("renderRichTextChildren", () => {
     ]);
   });
 
+  it("maps keyword font weights like bold to their numeric value", () => {
+    const children = renderRichTextChildren(
+      new RawText({
+        text: "hello world",
+        markers: [
+          new StyleMarker({
+            position: 6,
+            length: 5,
+            rs: mkRuleSet({ values: { "font-weight": "bold" } }),
+          }),
+        ],
+      }),
+      descriptorTarget,
+      opts
+    );
+    expect(children).toEqual([
+      { kind: "text", text: "hello " },
+      { kind: "styledRun", text: "world", cssRules: { fontWeight: 700 } },
+    ]);
+  });
+
   it("degenerates an empty-rules styleMarker into a plain text child", () => {
     const children = renderRichTextChildren(
       new RawText({

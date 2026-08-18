@@ -14,6 +14,7 @@ import {
 } from "@/wab/shared/core/components";
 import { stripParens, tryExtractJson } from "@/wab/shared/core/exprs";
 import { JsonValue } from "@/wab/shared/core/lang";
+import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import {
   UpdateVariableOperations,
   UpdateVariantOperations,
@@ -108,6 +109,7 @@ import {
 } from "@/wab/shared/web-exporter/schema";
 import {
   XmlAttrs,
+  XmlChild,
   XmlElement,
   mkXmlElement,
   toXml,
@@ -279,13 +281,19 @@ function getStructuralBindingAttrs(
   return { ...attrs, ...getVisibilityAttrs(vs) };
 }
 
+/** Serializes a styles record to a style attribute value. */
+function stylesToStyleAttr(styles: Record<string, unknown>): string {
+  return Object.entries(styles)
+    .map(([prop, value]) => `${normProp(prop)}: ${value}`)
+    .join("; ");
+}
+
 function getStyleString(vs: VariantSetting, tpl: TplNode): string | undefined {
   const styles = getStylesFromVariantSetting(vs, tpl);
-  const entries = Object.entries(styles);
-  if (entries.length === 0) {
+  if (Object.keys(styles).length === 0) {
     return undefined;
   }
-  return entries.map(([prop, value]) => `${prop}: ${value}`).join("; ");
+  return stylesToStyleAttr(styles);
 }
 
 function buildTplTag(tpl: TplTag, site: Site): XmlElement {
@@ -319,9 +327,24 @@ function buildTplTag(tpl: TplTag, site: Site): XmlElement {
 
   // For text blocks, render inline with text content
   if (isTplTextBlock(tpl)) {
-    // Try to get text from vsettings.text (RawText)
+    // RawText: serialize the marker structure — plain runs as text, styled
+    // runs as <span style>, nested elements (NodeMarkers) recursively.
     if (isKnownRawText(vs.text)) {
-      return mkXmlElement(tpl.tag, attrs, [vs.text.text]);
+      const children = renderRichTextChildren<XmlChild>(
+        vs.text,
+        {
+          text: (text) => text,
+          styledRun: (text, cssRules) =>
+            mkXmlElement("span", { style: stylesToStyleAttr(cssRules) }, [
+              text,
+            ]),
+          nodeMarker: (markerTpl) => buildTplNode(markerTpl, site),
+        },
+        { spanClassName: "" }
+      );
+      const el = mkXmlElement(tpl.tag, attrs, children);
+      el.noPrettyPrint = true;
+      return el;
     }
     // Dynamic text (ExprText) -> `{{ jsExpr }}` interpolation.
     if (isKnownExprText(vs.text)) {

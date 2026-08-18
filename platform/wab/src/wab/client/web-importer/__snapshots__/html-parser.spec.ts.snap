@@ -119,9 +119,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                   },
                   {
                     "attrs": {},
+                    "content": [
+                      "StyleHub",
+                    ],
                     "path": "body > header > nav > div:nth-of-type(1)",
                     "tag": "span",
-                    "text": "StyleHub",
                     "type": "text",
                     "variantSettings": [],
                   },
@@ -175,19 +177,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                         "attrs": {
                           "href": "#home",
                         },
-                        "children": [
-                          {
-                            "attrs": {},
-                            "path": "body > header > nav > ul > li:nth-of-type(1) > a",
-                            "tag": "span",
-                            "text": "Home",
-                            "type": "text",
-                            "variantSettings": [],
-                          },
+                        "content": [
+                          "Home",
                         ],
                         "path": "body > header > nav > ul > li:nth-of-type(1) > a",
                         "tag": "a",
-                        "type": "container",
+                        "type": "text",
                         "variantSettings": [
                           {
                             "safeStyles": {
@@ -271,19 +266,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                         "attrs": {
                           "href": "#features",
                         },
-                        "children": [
-                          {
-                            "attrs": {},
-                            "path": "body > header > nav > ul > li:nth-of-type(2) > a",
-                            "tag": "span",
-                            "text": "Features",
-                            "type": "text",
-                            "variantSettings": [],
-                          },
+                        "content": [
+                          "Features",
                         ],
                         "path": "body > header > nav > ul > li:nth-of-type(2) > a",
                         "tag": "a",
-                        "type": "container",
+                        "type": "text",
                         "variantSettings": [
                           {
                             "safeStyles": {
@@ -367,19 +355,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                         "attrs": {
                           "href": "#about",
                         },
-                        "children": [
-                          {
-                            "attrs": {},
-                            "path": "body > header > nav > ul > li:nth-of-type(3) > a",
-                            "tag": "span",
-                            "text": "About",
-                            "type": "text",
-                            "variantSettings": [],
-                          },
+                        "content": [
+                          "About",
                         ],
                         "path": "body > header > nav > ul > li:nth-of-type(3) > a",
                         "tag": "a",
-                        "type": "container",
+                        "type": "text",
                         "variantSettings": [
                           {
                             "safeStyles": {
@@ -463,19 +444,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                         "attrs": {
                           "href": "#contact",
                         },
-                        "children": [
-                          {
-                            "attrs": {},
-                            "path": "body > header > nav > ul > li:nth-of-type(4) > a",
-                            "tag": "span",
-                            "text": "Contact",
-                            "type": "text",
-                            "variantSettings": [],
-                          },
+                        "content": [
+                          "Contact",
                         ],
                         "path": "body > header > nav > ul > li:nth-of-type(4) > a",
                         "tag": "a",
-                        "type": "container",
+                        "type": "text",
                         "variantSettings": [
                           {
                             "safeStyles": {
@@ -615,19 +589,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       "class": "contact-button",
                       "href": "#contact",
                     },
-                    "children": [
-                      {
-                        "attrs": {},
-                        "path": "body > header > nav > div:nth-of-type(2) > a",
-                        "tag": "span",
-                        "text": "Contact Us",
-                        "type": "text",
-                        "variantSettings": [],
-                      },
+                    "content": [
+                      "Contact Us",
                     ],
                     "path": "body > header > nav > div:nth-of-type(2) > a",
                     "tag": "a",
-                    "type": "container",
+                    "type": "text",
                     "variantSettings": [
                       {
                         "safeStyles": {
@@ -847,9 +814,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
             "children": [
               {
                 "attrs": {},
+                "content": [
+                  "Discover Your Style",
+                ],
                 "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > h1",
                 "tag": "h1",
-                "text": "Discover Your Style",
                 "type": "text",
                 "variantSettings": [
                   {
@@ -935,9 +904,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
               },
               {
                 "attrs": {},
+                "content": [
+                  "Premium fashion and lifestyle products curated just for you",
+                ],
                 "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > p",
                 "tag": "p",
-                "text": "Premium fashion and lifestyle products curated just for you",
                 "type": "text",
                 "variantSettings": [
                   {
@@ -978,9 +949,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                 "children": [
                   {
                     "attrs": {},
+                    "content": [
+                      "Shop Now",
+                    ],
                     "path": "body > section[data-plasmic-name="Hero"]:nth-of-type(1) > div > a",
                     "tag": "span",
-                    "text": "Shop Now",
                     "type": "text",
                     "variantSettings": [],
                   },
@@ -1138,9 +1111,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
             "children": [
               {
                 "attrs": {},
+                "content": [
+                  "Why Choose StyleHub?",
+                ],
                 "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > h2",
                 "tag": "h2",
-                "text": "Why Choose StyleHub?",
                 "type": "text",
                 "variantSettings": [
                   {
@@ -1228,9 +1203,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "content": [
+                          "Free Shipping",
+                        ],
                         "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(1) > h3",
                         "tag": "h3",
-                        "text": "Free Shipping",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -1265,9 +1242,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "content": [
+                          "Free shipping on orders over $50. Fast and reliable delivery to your doorstep.",
+                        ],
                         "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(1) > p",
                         "tag": "p",
-                        "text": "Free shipping on orders over $50. Fast and reliable delivery to your doorstep.",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -1392,9 +1371,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "content": [
+                          "Secure Payment",
+                        ],
                         "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(2) > h3",
                         "tag": "h3",
-                        "text": "Secure Payment",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -1429,9 +1410,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "content": [
+                          "Your payment information is protected with industry-leading security measures.",
+                        ],
                         "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(2) > p",
                         "tag": "p",
-                        "text": "Your payment information is protected with industry-leading security measures.",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -1556,9 +1539,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "content": [
+                          "Premium Quality",
+                        ],
                         "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(3) > h3",
                         "tag": "h3",
-                        "text": "Premium Quality",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -1593,9 +1578,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       },
                       {
                         "attrs": {},
+                        "content": [
+                          "Carefully selected products that meet our high standards for quality and style.",
+                        ],
                         "path": "body > section[data-plasmic-name="Features"]:nth-of-type(2) > div > div > div:nth-of-type(3) > p",
                         "tag": "p",
-                        "text": "Carefully selected products that meet our high standards for quality and style.",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -1792,9 +1779,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
             "children": [
               {
                 "attrs": {},
+                "content": [
+                  "Stay Updated",
+                ],
                 "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > h2",
                 "tag": "h2",
-                "text": "Stay Updated",
                 "type": "text",
                 "variantSettings": [
                   {
@@ -1827,9 +1816,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
               },
               {
                 "attrs": {},
+                "content": [
+                  "Subscribe to our newsletter for exclusive offers and new arrivals",
+                ],
                 "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > p",
                 "tag": "p",
-                "text": "Subscribe to our newsletter for exclusive offers and new arrivals",
                 "type": "text",
                 "variantSettings": [
                   {
@@ -1850,6 +1841,74 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                       "margin": "0",
                       "margin-bottom": "2rem",
                       "opacity": "0.9",
+                      "padding": "0",
+                    },
+                    "variantCombo": [
+                      {
+                        "type": "base",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                "attrs": {},
+                "content": [
+                  "StyleHub completely changed how I shop. — A happy customer",
+                ],
+                "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > blockquote",
+                "tag": "blockquote",
+                "type": "text",
+                "variantSettings": [
+                  {
+                    "safeStyles": {
+                      "marginBottom": "0",
+                      "marginLeft": "0",
+                      "marginRight": "0",
+                      "marginTop": "0",
+                      "paddingBottom": "0",
+                      "paddingLeft": "0",
+                      "paddingRight": "0",
+                      "paddingTop": "0",
+                    },
+                    "unsafeStyles": {},
+                    "unsanitizedStyles": {
+                      "box-sizing": "border-box",
+                      "margin": "0",
+                      "padding": "0",
+                    },
+                    "variantCombo": [
+                      {
+                        "type": "base",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                "attrs": {},
+                "content": [
+                  "PROMO-2026",
+                ],
+                "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > pre",
+                "tag": "pre",
+                "type": "text",
+                "variantSettings": [
+                  {
+                    "safeStyles": {
+                      "marginBottom": "0",
+                      "marginLeft": "0",
+                      "marginRight": "0",
+                      "marginTop": "0",
+                      "paddingBottom": "0",
+                      "paddingLeft": "0",
+                      "paddingRight": "0",
+                      "paddingTop": "0",
+                    },
+                    "unsafeStyles": {},
+                    "unsanitizedStyles": {
+                      "box-sizing": "border-box",
+                      "margin": "0",
                       "padding": "0",
                     },
                     "variantCombo": [
@@ -1922,9 +1981,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "content": [
+                          "Subscribe",
+                        ],
                         "path": "body > section[data-plasmic-name="Newsletter"]:nth-of-type(3) > div > form > button",
                         "tag": "span",
-                        "text": "Subscribe",
                         "type": "text",
                         "variantSettings": [],
                       },
@@ -2144,9 +2205,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "content": [
+                          "Quick Links",
+                        ],
                         "path": "body > footer > div > div > div:nth-of-type(1) > h3",
                         "tag": "h3",
-                        "text": "Quick Links",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -2187,19 +2250,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#home",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(1) > a",
-                                    "tag": "span",
-                                    "text": "Home",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Home",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(1) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2284,19 +2340,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#features",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(2) > a",
-                                    "tag": "span",
-                                    "text": "Features",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Features",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(2) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2381,19 +2430,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#about",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(3) > a",
-                                    "tag": "span",
-                                    "text": "About Us",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "About Us",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(3) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2478,19 +2520,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#contact",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(4) > a",
-                                    "tag": "span",
-                                    "text": "Contact",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Contact",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(1) > ul > li:nth-of-type(4) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2642,9 +2677,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "content": [
+                          "Customer Service",
+                        ],
                         "path": "body > footer > div > div > div:nth-of-type(2) > h3",
                         "tag": "h3",
-                        "text": "Customer Service",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -2685,19 +2722,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(1) > a",
-                                    "tag": "span",
-                                    "text": "Shipping Info",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Shipping Info",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(1) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2782,19 +2812,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(2) > a",
-                                    "tag": "span",
-                                    "text": "Returns",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Returns",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(2) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2879,19 +2902,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(3) > a",
-                                    "tag": "span",
-                                    "text": "Size Guide",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Size Guide",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(3) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -2976,19 +2992,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(4) > a",
-                                    "tag": "span",
-                                    "text": "FAQ",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "FAQ",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(2) > ul > li:nth-of-type(4) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -3140,9 +3149,11 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                     "children": [
                       {
                         "attrs": {},
+                        "content": [
+                          "Connect",
+                        ],
                         "path": "body > footer > div > div > div:nth-of-type(3) > h3",
                         "tag": "h3",
-                        "text": "Connect",
                         "type": "text",
                         "variantSettings": [
                           {
@@ -3183,19 +3194,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(1) > a",
-                                    "tag": "span",
-                                    "text": "Facebook",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Facebook",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(1) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -3280,19 +3284,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(2) > a",
-                                    "tag": "span",
-                                    "text": "Instagram",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Instagram",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(2) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -3377,19 +3374,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(3) > a",
-                                    "tag": "span",
-                                    "text": "Twitter",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Twitter",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(3) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -3474,19 +3464,12 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                                 "attrs": {
                                   "href": "#",
                                 },
-                                "children": [
-                                  {
-                                    "attrs": {},
-                                    "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(4) > a",
-                                    "tag": "span",
-                                    "text": "Pinterest",
-                                    "type": "text",
-                                    "variantSettings": [],
-                                  },
+                                "content": [
+                                  "Pinterest",
                                 ],
                                 "path": "body > footer > div > div > div:nth-of-type(3) > ul > li:nth-of-type(4) > a",
                                 "tag": "a",
-                                "type": "container",
+                                "type": "text",
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
@@ -3848,9 +3831,11 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
             "children": [
               {
                 "attrs": {},
+                "content": [
+                  "Welcome",
+                ],
                 "path": "body > div > div:nth-of-type(2) > h1",
                 "tag": "h1",
-                "text": "Welcome",
                 "type": "text",
                 "variantSettings": [],
               },
@@ -3887,9 +3872,11 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
                 "children": [
                   {
                     "attrs": {},
+                    "content": [
+                      "Full Name:",
+                    ],
                     "path": "body > div > div:nth-of-type(3) > label",
                     "tag": "span",
-                    "text": "Full Name:",
                     "type": "text",
                     "variantSettings": [],
                   },
@@ -4025,9 +4012,11 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
               "header": [
                 {
                   "attrs": {},
+                  "content": [
+                    "Task List",
+                  ],
                   "path": "body > div > plasmic-component[List]:nth-of-type(4) > slot > h2",
                   "tag": "h2",
-                  "text": "Task List",
                   "type": "text",
                   "variantSettings": [],
                 },
@@ -4087,17 +4076,21 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
               "children": [
                 {
                   "attrs": {},
+                  "content": [
+                    "Total Users: 1,234",
+                  ],
                   "path": "body > div > plasmic-component[Card]:nth-of-type(5) > slot:nth-of-type(1) > p:nth-of-type(1)",
                   "tag": "p",
-                  "text": "Total Users: 1,234",
                   "type": "text",
                   "variantSettings": [],
                 },
                 {
                   "attrs": {},
+                  "content": [
+                    "Active: 567",
+                  ],
                   "path": "body > div > plasmic-component[Card]:nth-of-type(5) > slot:nth-of-type(1) > p:nth-of-type(2)",
                   "tag": "p",
-                  "text": "Active: 567",
                   "type": "text",
                   "variantSettings": [],
                 },
@@ -4122,9 +4115,11 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
               "body": [
                 {
                   "attrs": {},
+                  "content": [
+                    "Are you sure you want to proceed?",
+                  ],
                   "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(2) > p",
                   "tag": "p",
-                  "text": "Are you sure you want to proceed?",
                   "type": "text",
                   "variantSettings": [],
                 },
@@ -4132,9 +4127,11 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
               "footer": [
                 {
                   "attrs": {},
+                  "content": [
+                    "Choose an action:",
+                  ],
                   "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(3) > span",
                   "tag": "span",
-                  "text": "Choose an action:",
                   "type": "text",
                   "variantSettings": [],
                 },
@@ -4176,9 +4173,11 @@ exports[`snapshot tests > parses component page with props and slots correctly 1
               "header": [
                 {
                   "attrs": {},
+                  "content": [
+                    "Confirm Action",
+                  ],
                   "path": "body > div > plasmic-component[Modal]:nth-of-type(6) > slot:nth-of-type(1) > h2",
                   "tag": "h2",
-                  "text": "Confirm Action",
                   "type": "text",
                   "variantSettings": [],
                 },

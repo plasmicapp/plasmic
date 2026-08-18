@@ -14,12 +14,16 @@ import { codeLit, customCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAsset } from "@/wab/shared/core/image-assets";
 import { mkParam, mkVar } from "@/wab/shared/core/lang";
+import { mkRuleSet } from "@/wab/shared/core/styles";
 import { TplTagType, mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   ExprText,
   ImageAssetRef,
+  NodeMarker,
   ObjectPath,
+  RawText,
   Rep,
+  StyleMarker,
   StyleTokenRef,
   TplComponent,
   TplTag,
@@ -114,6 +118,45 @@ describe("Component Serialization", () => {
     expect(result.variantSettings).toMatchObject([
       { elements: [{ attrs: { "data-visibility": "visible" } }] },
     ]);
+  });
+
+  it("serializes rich text markers as nested inline HTML", () => {
+    const component = mkComponent({
+      name: "RichText",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) =>
+        mkTplTagX("p", { baseVariant, type: TplTagType.Text }),
+    });
+    const tpl = component.tplTree as TplTag;
+    const baseVariant = getBaseVariant(component);
+    const link = mkTplTagX("a", {
+      baseVariant,
+      type: TplTagType.Text,
+      attrs: { href: "/pricing" },
+    });
+    ensureVariantSetting(link, [baseVariant]).text = new RawText({
+      text: "pricing",
+      markers: [],
+    });
+    link.parent = tpl;
+    tpl.children = [link];
+    const vs = ensureVariantSetting(tpl, [baseVariant]);
+    vs.text = new RawText({
+      text: "See our [child] for bold details",
+      markers: [
+        new NodeMarker({ position: 8, length: 7, tpl: link }),
+        new StyleMarker({
+          position: 20,
+          length: 4,
+          rs: mkRuleSet({ values: { "font-weight": "700" } }),
+        }),
+      ],
+    });
+
+    const output = tplToHtml(tpl, site);
+    expect(output).toEqual(
+      `<p id="${tpl.uuid}">See our <a id="${link.uuid}" href="/pricing">pricing</a> for <span style="font-weight: 700">bold</span> details</p>`
+    );
   });
 
   describe("dynamic values", () => {

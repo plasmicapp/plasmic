@@ -45,9 +45,148 @@ describe("parseHtmlToWebImporterTree", () => {
           type: "text",
           path: expect.any(String),
           tag: "span",
-          text: "plasmic",
+          content: ["plasmic"],
           attrs: {},
           variantSettings: [],
+        },
+      ],
+    });
+  });
+
+  it("imports links and paragraphs with inline markup as text elements", async () => {
+    const html = `
+      <a href="/pricing">See pricing</a>
+      <p>Hello <strong>World</strong> and <a href="/x">a link</a>!</p>
+    `;
+    const { wiTree: rootEl } = await parseHtml(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "text",
+          tag: "a",
+          content: ["See pricing"],
+          attrs: { href: "/pricing" },
+        },
+        {
+          type: "text",
+          tag: "p",
+          content: [
+            "Hello ",
+            { type: "text", tag: "strong", content: ["World"] },
+            " and ",
+            {
+              type: "text",
+              tag: "a",
+              content: ["a link"],
+              attrs: { href: "/x" },
+            },
+            "!",
+          ],
+        },
+      ],
+    });
+  });
+
+  it("collapses source formatting whitespace in rich text content", async () => {
+    const html = "<p>\n      Hello\n      <strong>World</strong>\n    </p>";
+    const { wiTree: rootEl } = await parseHtml(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "text",
+          tag: "p",
+          content: ["Hello ", { type: "text", content: ["World"] }],
+        },
+      ],
+    });
+  });
+
+  it("keeps line breaks and indentation inside pre", async () => {
+    // The newline right after <pre> is dropped by the HTML parser itself;
+    // everything else is preserved, including the nested tag's spacing.
+    const html = "<pre>\nconst x = 1;\n  <em>indented</em>\n</pre>";
+    const { wiTree: rootEl } = await parseHtml(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "text",
+          tag: "pre",
+          content: [
+            "const x = 1;\n  ",
+            { type: "text", tag: "em", content: ["indented"] },
+            "\n",
+          ],
+        },
+      ],
+    });
+  });
+
+  it("keeps line breaks inside pre even when pre imports as a container", async () => {
+    // display:flex sends the pre down the container path; its text (bare
+    // or inside a nested span) must still keep its whitespace.
+    const html = '<pre style="display: flex"><span>a\nb</span>c\nd</pre>';
+    const { wiTree: rootEl } = await parseHtml(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "container",
+          tag: "pre",
+          children: [
+            { type: "text", tag: "span", content: ["a\nb"] },
+            { type: "text", content: ["c\nd"] },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("keeps elements as containers when their content or styles disqualify text import", async () => {
+    const html = `
+      <a href="/x"><img src="https://site.com/x.png"></a>
+      <h1><img src="https://site.com/x.png"></h1>
+      <a href="/y" style="display: flex">text</a>
+    `;
+    const { wiTree: rootEl } = await parseHtml(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject({
+      type: "fragment",
+      children: [
+        // The img child means the link cannot become a text element.
+        {
+          type: "container",
+          tag: "a",
+          attrs: { href: "/x" },
+          children: [{ type: "container", tag: "img" }],
+        },
+        // A heading with only an image still imports; it must not be dropped.
+        {
+          type: "container",
+          tag: "h1",
+          children: [{ type: "container", tag: "img" }],
+        },
+        // display:flex makes it a layout box even though it only holds text.
+        {
+          type: "container",
+          tag: "a",
+          children: [{ type: "text", content: ["text"] }],
         },
       ],
     });
@@ -73,7 +212,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "h1",
-              text: "Blue Heading 1",
+              content: ["Blue Heading 1"],
               attrs: {},
               variantSettings: [],
             },
@@ -136,7 +275,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "h1",
-              text: "Blue Heading 1",
+              content: ["Blue Heading 1"],
               attrs: {},
               variantSettings: [
                 {
@@ -239,7 +378,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "span",
-              text: "Content",
+              content: ["Content"],
               attrs: {},
               variantSettings: [],
             },
@@ -284,7 +423,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "span",
-              text: "Content",
+              content: ["Content"],
               attrs: {},
               variantSettings: [],
             },
@@ -371,7 +510,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "h1",
-              text: "Responsive Heading",
+              content: ["Responsive Heading"],
               attrs: {},
               variantSettings: [
                 {
@@ -476,7 +615,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "h1",
-              text: "Responsive Heading",
+              content: ["Responsive Heading"],
               attrs: {},
               variantSettings: [
                 {
@@ -589,7 +728,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "span",
-              text: "Click me",
+              content: ["Click me"],
               attrs: {},
               variantSettings: [],
             },
@@ -818,7 +957,7 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               path: expect.any(String),
               tag: "span",
-              text: "Responsive Button",
+              content: ["Responsive Button"],
               attrs: {},
               variantSettings: [],
             },
@@ -963,7 +1102,7 @@ describe("parseHtmlToWebImporterTree", () => {
                 {
                   type: "text",
                   path: expect.any(String),
-                  text: "Mixed Properties",
+                  content: ["Mixed Properties"],
                   tag: "span",
                   attrs: {},
                   variantSettings: [],
@@ -1463,7 +1602,7 @@ describe("keyframes and animations parsing", () => {
               type: "text",
               path: expect.any(String),
               tag: "span",
-              text: "Test",
+              content: ["Test"],
               attrs: {},
               variantSettings: [],
             },
@@ -1599,7 +1738,7 @@ describe("keyframes and animations parsing", () => {
         {
           type: "text",
           tag: "p",
-          text: "Hello",
+          content: ["Hello"],
         },
       ],
     });

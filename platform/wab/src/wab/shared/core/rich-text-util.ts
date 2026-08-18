@@ -1,5 +1,5 @@
 import { cleanPlainText, plainTextToReact } from "@/wab/shared/codegen/util";
-import { getCssRulesFromRs } from "@/wab/shared/css";
+import { fontWeightNumber, getCssRulesFromRs } from "@/wab/shared/css";
 import { isTagInline } from "@/wab/shared/html";
 import {
   isKnownTplTag,
@@ -12,6 +12,11 @@ import {
 import "@/wab/client/components/canvas/slate";
 import L from "lodash";
 import type { MakeADT } from "ts-adt/MakeADT";
+
+// nodeMarkerText is the string that replaces NodeMarkers in RawText.text.
+// This value is used, for example, in tpl-tree, i.e. a text like `This is a
+// <a href="...">link</a>` will be seen as `This is a {nodeMarkerText}` there.
+export const nodeMarkerText = "[child]";
 
 export type NormalizedMarker = {
   position: number;
@@ -150,7 +155,9 @@ export function renderRichTextChildren<T>(
     if (marker.type === "styleMarker") {
       const cssRules: Record<string, any> = getCssRulesFromRs(marker.rs, true);
       if ("fontWeight" in cssRules) {
-        cssRules["fontWeight"] = parseInt(cssRules["fontWeight"]);
+        cssRules["fontWeight"] = fontWeightNumber(
+          String(cssRules["fontWeight"])
+        );
       }
       if (L.isEmpty(cssRules)) {
         children.push(target.text(textPart, `t-${i}`));

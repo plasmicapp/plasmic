@@ -1,4 +1,5 @@
 import { isOneOf } from "@/wab/shared/common";
+import { pattern, regex } from "regex";
 
 /**
  * Table tags are kept separate from TAGS because Studio attaches no metadata
@@ -169,3 +170,134 @@ export function tagDisplayLabel(tag: string) {
   const meta = TAGS[tag as TagName];
   return meta ? `${meta.displayName} <${tag}>` : `<${tag}>`;
 }
+
+// HTML "ASCII whitespace": tab, newline, form feed, carriage return, space.
+// The space must be written \x20, since the regex package ignores literal
+// spaces inside character classes.
+const asciiWhitespaceCharPattern = pattern`[\t\n\f\r\x20]`;
+const asciiWhitespaceRegex = regex("g")`${asciiWhitespaceCharPattern}+`;
+const edgeAsciiWhitespaceRegex = regex(
+  "g"
+)`^${asciiWhitespaceCharPattern}+|${asciiWhitespaceCharPattern}+$`;
+const trailingAsciiWhitespaceRegex = regex`${asciiWhitespaceCharPattern}+$`;
+
+/**
+ * Replaces HTML whitespace (tab, newline, form feed, carriage
+ * return, space) to one space. Unlike `\s`, this keeps non-breaking
+ * spaces since HTML renders them as visible characters.
+ */
+export function collapseAsciiWhitespace(text: string): string {
+  return text.replace(asciiWhitespaceRegex, " ");
+}
+
+/**
+ * Removes HTML whitespace from both ends of the text. Unlike
+ * `String.trim`, this keeps non-breaking spaces since
+ * HTML renders them as visible characters.
+ */
+export function trimAsciiWhitespace(text: string): string {
+  return text.replace(edgeAsciiWhitespaceRegex, "");
+}
+
+/** Like trimAsciiWhitespace, but only for the end of the text. */
+function trimTrailingAsciiWhitespace(text: string): string {
+  return text.replace(trailingAsciiWhitespaceRegex, "");
+}
+
+/**
+ * A part of inline HTML content: a string of text, or a nested element
+ * holding more of the same.
+ */
+interface InlineContent {
+  content: (string | InlineContent)[];
+}
+
+function mkInlineContent(
+  ...content: (string | InlineContent)[]
+): InlineContent {
+  return { content };
+}
+
+/**
+ * Rewrites inline content the way a browser renders whitespace under
+ * `white-space: normal`.
+ *
+ * This exists since Plasmic text renders under `white-space: pre-wrap`,
+ * where every stored character shows; code that reads HTML source applies
+ * the browser's rules instead. Non-breaking spaces are kept, they are visible characters.
+ */
+export function normalizeHtmlWhitespace<T extends InlineContent>(
+  parts: (string | T)[]
+): (string | T)[] {
+  collapseTextParts(parts);
+  collapseBoundarySpaces(parts, true);
+  trimTrailingSpace(parts);
+  return parts;
+}
+
+function collapseTextParts(parts: (string | InlineContent)[]) {
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (typeof part === "string") {
+      parts[i] = collapseAsciiWhitespace(part);
+    } else {
+      collapseTextParts(part.content);
+    }
+  }
+}
+
+/**
+ * Removes the doubled space when both sides of a nested element have one,
+ * like "Hello <strong> World</strong>", and any space at the start of the
+ * block. Parts left empty are removed. Returns whether the text so far
+ * ends with a space.
+ */
+function collapseBoundarySpaces(
+  parts: (string | InlineContent)[],
+  endsWithSpace: boolean
+): boolean {
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (typeof part === "string") {
+      const text = endsWithSpace && part.startsWith(" ") ? part.slice(1) : part;
+      if (!text) {
+        parts.splice(i, 1);
+        i--;
+        continue;
+      }
+      parts[i] = text;
+      endsWithSpace = text.endsWith(" ");
+    } else {
+      endsWithSpace = collapseBoundarySpaces(part.content, endsWithSpace);
+      if (part.content.length === 0) {
+        parts.splice(i, 1);
+        i--;
+      }
+    }
+  }
+  return endsWithSpace;
+}
+
+/**
+ * Removes the space at the very end of the text, even when it sits inside a
+ * trailing nested element like <em>World </em>. Parts at the tail that
+ * become empty are dropped. Returns true once some real text was found.
+ */
+function trimTrailingSpace(parts: (string | InlineContent)[]): boolean {
+  while (parts.length > 0) {
+    const last = parts[parts.length - 1];
+    if (typeof last === "string") {
+      const trimmed = trimTrailingAsciiWhitespace(last);
+      if (trimmed) {
+        parts[parts.length - 1] = trimmed;
+        return true;
+      }
+    } else if (trimTrailingSpace(last.content)) {
+      return true;
+    }
+    parts.pop();
+  }
+  return false;
+}
+
+export const _testOnlyUtils = { mkInlineContent };
