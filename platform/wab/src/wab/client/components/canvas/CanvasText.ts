@@ -15,6 +15,7 @@ import {
   TplTagElement,
 } from "@/wab/client/components/canvas/slate";
 import { SubDeps } from "@/wab/client/components/canvas/subdeps";
+import { withUndoBatching } from "@/wab/client/components/canvas/undo-batching";
 import {
   reactPrompt,
   ReactPromptOpts,
@@ -743,9 +744,6 @@ const isModEnter = isHotkey("mod+enter");
 const isEscape = isHotkey("escape");
 const isSpace = isHotkey("space");
 
-// A pause in typing longer than this starts a new undo batch.
-const UNDO_BATCH_PAUSE_MS = 1000;
-
 type PlasmicRichTextOpts = {
   inline: boolean;
 };
@@ -756,46 +754,12 @@ const withPlasmic = (
   opts: PlasmicRichTextOpts,
   sub: SubDeps
 ) => {
-  const { apply, insertFragment, insertText, isInline, isVoid } = editor;
+  const { insertFragment, insertText, isInline, isVoid } = editor;
 
-  const { HistoryEditor } = sub.slateHistory;
-  const { DOMEditor } = sub.slateDom;
-
-  // By default, slate-history records the user's typing in the same block as
-  // one undo/redo batch, no matter how long they pause in the middle.
-  // We override apply to manually split if the user pauses typing for 1 second.
-  // The override only mutates history and always calls the original apply.
-  let lastTypingTime = 0;
-  editor.apply = (op) => {
-    if (HistoryEditor.isSaving(editor) === false) {
-      // `isSaving(editor) === false` means this op is an undo/redo.
-      // Reset last typing time so the next op starts a new batch.
-      lastTypingTime = 0;
-    } else if (
-      // `operations.length === 0` means this is the first op of a user action.
-      editor.operations.length === 0 &&
-      // "insert_text" and "remove_text" are typing ops.
-      (op.type === "insert_text" || op.type === "remove_text")
-    ) {
-      // If both of the above are true, we need to update the last typing time,
-      // and MAYBE start a new batch.
-      const now = Date.now();
-
-      if (
-        // Never split if user is composing in their IME.
-        !DOMEditor.isComposing(editor) &&
-        // Split if more than pause time.
-        now - lastTypingTime > UNDO_BATCH_PAUSE_MS
-      ) {
-        // `setSplittingOnce` tells history to split before this op.
-        HistoryEditor.setSplittingOnce(editor, true);
-      }
-
-      lastTypingTime = now;
-    }
-
-    apply(op);
-  };
+  withUndoBatching(editor, {
+    HistoryEditor: sub.slateHistory.HistoryEditor,
+    DOMEditor: sub.slateDom.DOMEditor,
+  });
 
   editor.isInline = (element) => {
     if (element.type === "TplTag" || element.type === "TplTagExprText") {

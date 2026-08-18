@@ -64,8 +64,8 @@ export type HostFrameApi = {
   /** Resolves once the studio and its active canvas are ready. */
   waitForStudioReady(): Promise<void>;
   listMentionableResources(): Promise<MentionableResource[]>;
-  /** Rewrite `@<…>` mentions in the text to their resolved (uuid-carrying) form. */
-  resolveMentions(text: string): Promise<string>;
+  /** Labels of `@<…>` mentions whose resource no longer exists. */
+  findMissingMentions(text: string): Promise<string[]>;
   navigateToMentionedResource(
     kind: MentionableResourceKind,
     uuid: string

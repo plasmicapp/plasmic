@@ -1,9 +1,8 @@
 import {
-  findUnresolvedMentions,
-  formatMentionInsert,
+  findMissingMentions,
   getMentionUiId,
+  mkMentionRaw,
   parseMention,
-  resolveMentions,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import {
   mkModelUiId,
@@ -11,7 +10,7 @@ import {
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
 import { TplMgr } from "@/wab/shared/TplMgr";
-import { getVariantGroupName, mkVariant } from "@/wab/shared/Variants";
+import { mkVariant } from "@/wab/shared/Variants";
 import { mkShortId } from "@/wab/shared/common";
 import {
   ComponentType,
@@ -92,244 +91,109 @@ describe("parseMention", () => {
   });
 });
 
-describe("resolveMentions", () => {
-  const { site, component, page, tpl, token, variant, animation } =
-    mkTestSite();
-
-  it("folds a component's uuid into the mention", () => {
-    expect(resolveMentions("@<component:Card>", site)).toBe(
-      `@<component:${component.uuid}|Card>`
+describe("mkMentionRaw", () => {
+  it("stores the uuid, so a later rename can't break the mention", () => {
+    expect(mkMentionRaw({ kind: "token", uuid: "t1", label: "primary" })).toBe(
+      "token:t1|primary"
     );
   });
 
-  it("folds a page's uuid into the mention", () => {
-    expect(resolveMentions("@<page:HomePage>", site)).toBe(
-      `@<page:${page.uuid}|HomePage>`
-    );
-  });
-
-  it("folds a token's uuid into the mention", () => {
-    expect(resolveMentions("@<token:primary>", site)).toBe(
-      `@<token:${token.uuid}|primary>`
-    );
-  });
-
-  it("folds an animation's uuid into the mention", () => {
-    expect(resolveMentions("@<animation:FadeIn>", site)).toBe(
-      `@<animation:${animation.uuid}|FadeIn>`
-    );
-  });
-
-  it("folds a global variant's uuid into the mention, matched by group", () => {
-    const inserted = `@<${formatMentionInsert({
-      kind: "globalVariant",
-      uuid: variant.uuid,
-      label: variant.name,
-      owners: [getVariantGroupName(variant) ?? ""],
-    })}>`;
-    expect(resolveMentions(inserted, site)).toBe(
-      `@<globalVariant:${variant.uuid}|Mobile>`
-    );
-  });
-
-  it("resolves same-named variants in different groups to the right uuid", () => {
-    const { site: collisionSite } = mkTestSite();
-    const tplMgr = new TplMgr({ site: collisionSite });
-    const { themeDark, modeDark } = runInAction(() => {
-      const theme = tplMgr.createGlobalVariantGroup("Theme");
-      const mode = tplMgr.createGlobalVariantGroup("Mode");
-      return {
-        themeDark: tplMgr.createGlobalVariant(theme, "Dark"),
-        modeDark: tplMgr.createGlobalVariant(mode, "Dark"),
-      };
-    });
-
-    expect(resolveMentions("@<globalVariant:Theme/Dark>", collisionSite)).toBe(
-      `@<globalVariant:${themeDark.uuid}|Dark>`
-    );
-    expect(resolveMentions("@<globalVariant:Mode/Dark>", collisionSite)).toBe(
-      `@<globalVariant:${modeDark.uuid}|Dark>`
-    );
-  });
-
-  it("resolves a tpl by owning component and name to a composite uuid", () => {
-    expect(resolveMentions("@<tpl:Card/MyElement>", site)).toBe(
-      `@<tpl:${component.uuid}/${tpl.uuid}|MyElement>`
-    );
-  });
-
-  it("resolves a component variant by component + group + name", () => {
-    const { site: s, component: comp } = mkTestSite();
-    const tplMgr = new TplMgr({ site: s });
-    const compVariant = runInAction(() => {
-      const group = tplMgr.createVariantGroup({
-        component: comp,
-        name: "Size",
-      });
-      return tplMgr.createVariant(comp, group, "Large");
-    });
-    const group = getVariantGroupName(compVariant);
-    expect(resolveMentions(`@<componentVariant:Card/${group}/Large>`, s)).toBe(
-      `@<componentVariant:${comp.uuid}/${compVariant.uuid}|Large>`
-    );
-  });
-
-  it("disambiguates same-named component variants by group", () => {
-    const { site: s, component: comp } = mkTestSite();
-    const tplMgr = new TplMgr({ site: s });
-    const { sizeMed, prioMed } = runInAction(() => {
-      const size = tplMgr.createVariantGroup({ component: comp, name: "Size" });
-      const prio = tplMgr.createVariantGroup({
-        component: comp,
-        name: "Priority",
-      });
-      return {
-        sizeMed: tplMgr.createVariant(comp, size, "Medium"),
-        prioMed: tplMgr.createVariant(comp, prio, "Medium"),
-      };
-    });
+  it("escapes the grammar's delimiters in the label", () => {
+    // `/` is not a delimiter of this grammar, so it stays readable.
     expect(
-      resolveMentions(
-        `@<componentVariant:Card/${getVariantGroupName(sizeMed)}/Medium>`,
-        s
-      )
-    ).toBe(`@<componentVariant:${comp.uuid}/${sizeMed.uuid}|Medium>`);
+      mkMentionRaw({ kind: "token", uuid: "t1", label: "a|b>c/d%e" })
+    ).toBe("token:t1|a%7Cb%3Ec/d%25e");
+  });
+
+  it("scopes a tpl uuid by its component", () => {
     expect(
-      resolveMentions(
-        `@<componentVariant:Card/${getVariantGroupName(prioMed)}/Medium>`,
-        s
-      )
-    ).toBe(`@<componentVariant:${comp.uuid}/${prioMed.uuid}|Medium>`);
+      mkMentionRaw({
+        kind: "tpl",
+        uuid: "tpl1",
+        componentUuid: "comp1",
+        tplType: "text",
+        label: "Title",
+      })
+    ).toBe("tpl:comp1/tpl1|Title");
   });
 
-  it("leaves an unresolvable mention untouched", () => {
-    expect(resolveMentions("@<component:Nope>", site)).toBe(
-      "@<component:Nope>"
-    );
+  it("scopes a component variant uuid by its component", () => {
+    expect(
+      mkMentionRaw({
+        kind: "componentVariant",
+        uuid: "v1",
+        componentUuid: "comp1",
+        label: "Large",
+      })
+    ).toBe("componentVariant:comp1/v1|Large");
   });
 
-  it("leaves an unknown-kind mention untouched", () => {
-    expect(resolveMentions("@<widget:Comp>", site)).toBe("@<widget:Comp>");
-  });
-
-  it("does not touch an already-resolved mention", () => {
-    expect(resolveMentions("@<component:c1|Foo>", site)).toBe(
-      "@<component:c1|Foo>"
-    );
-  });
-
-  it("leaves text without mentions untouched", () => {
-    expect(resolveMentions("just some text", site)).toBe("just some text");
+  it("round-trips through parseMention", () => {
+    const raw = mkMentionRaw({
+      kind: "token",
+      uuid: "t1",
+      label: "brand/primary | dark",
+    });
+    expect(parseMention(`@<${raw}>`)).toEqual({
+      kind: "token",
+      uuid: "t1",
+      label: "brand/primary | dark",
+    });
   });
 });
 
-describe("findUnresolvedMentions", () => {
-  const { site } = mkTestSite();
-
-  it("returns labels of mentions that don't resolve", () => {
-    const text = resolveMentions(
-      "use @<component:Card>, @<component:Nope> and @<tpl:Card/Gone>",
-      site
-    );
-    // Composite bodies keep their `owner/name` form, which identifies the tag.
-    expect(findUnresolvedMentions(text)).toEqual(["Nope", "Card/Gone"]);
+describe("findMissingMentions", () => {
+  let site: ReturnType<typeof mkTestSite>["site"];
+  let component: ReturnType<typeof mkTestSite>["component"];
+  let tpl: ReturnType<typeof mkTestSite>["tpl"];
+  let token: ReturnType<typeof mkTestSite>["token"];
+  beforeEach(() => {
+    ({ site, component, tpl, token } = mkTestSite());
   });
 
-  it("returns empty when every mention resolves", () => {
-    const text = resolveMentions("use @<component:Card>", site);
-    expect(findUnresolvedMentions(text)).toEqual([]);
+  it("returns nothing when every mention still resolves", () => {
+    const text = `use @<token:${token.uuid}|primary> in @<component:${component.uuid}|Card>`;
+    expect(findMissingMentions(text, site)).toEqual([]);
+  });
+
+  it("returns the label of a mention whose resource is gone", () => {
+    expect(findMissingMentions("use @<token:deleted|primary>", site)).toEqual([
+      "primary",
+    ]);
+  });
+
+  it("catches a hand-typed mention that carries no uuid", () => {
+    expect(findMissingMentions("use @<token:primary>", site)).toEqual([
+      "primary",
+    ]);
+  });
+
+  it("resolves a mention whose uuid is scoped by its component", () => {
+    const raw = mkMentionRaw({
+      kind: "tpl",
+      uuid: tpl.uuid,
+      componentUuid: component.uuid,
+      tplType: "text",
+      label: "MyElement",
+    });
+    expect(findMissingMentions(`tweak @<${raw}>`, site)).toEqual([]);
+  });
+
+  it("returns the label of a component-scoped mention whose resource is gone", () => {
+    expect(
+      findMissingMentions(`tweak @<tpl:${component.uuid}/gone|MyElement>`, site)
+    ).toEqual(["MyElement"]);
+    expect(
+      findMissingMentions(`tweak @<tpl:gone/${tpl.uuid}|MyElement>`, site)
+    ).toEqual(["MyElement"]);
+  });
+
+  it("ignores text that looks like a mention of an unknown kind", () => {
+    expect(findMissingMentions("use @<widget:Thing>", site)).toEqual([]);
   });
 
   it("returns empty for text without mentions", () => {
-    expect(findUnresolvedMentions("just some text")).toEqual([]);
-  });
-
-  it("ignores unknown-kind mentions", () => {
-    expect(
-      findUnresolvedMentions("@<widget:Comp> and @<component:Nope>")
-    ).toEqual(["Nope"]);
-  });
-});
-
-describe("grammar-char escaping", () => {
-  it("escapes grammar delimiters but leaves `/` readable", () => {
-    expect(
-      formatMentionInsert({ kind: "token", uuid: "t1", label: "a|b>c/d" })
-    ).toBe("token:a%7Cb%3Ec/d");
-  });
-
-  it("qualifies a variant mention with its group (owner keeps folder `/`s)", () => {
-    expect(
-      formatMentionInsert({
-        kind: "globalVariant",
-        uuid: "v1",
-        label: "Dark",
-        owners: ["Theme"],
-      })
-    ).toBe("globalVariant:Theme/Dark");
-  });
-
-  it("qualifies a component variant mention with its component and group", () => {
-    expect(
-      formatMentionInsert({
-        kind: "componentVariant",
-        uuid: "v1",
-        label: "Large",
-        owners: ["Card", "Size"],
-      })
-    ).toBe("componentVariant:Card/Size/Large");
-  });
-
-  it("resolves a token whose name contains multiple escapable characters", () => {
-    const site = createSite();
-    const token = mkStyleToken({
-      name: "brand/primary | dark",
-      type: "Color",
-      value: "#000000",
-    });
-    runInAction(() => site.styleTokens.push(token));
-
-    const inserted = `@<${formatMentionInsert({
-      kind: "token",
-      uuid: token.uuid,
-      label: token.name,
-    })}>`;
-    const resolved = resolveMentions(inserted, site);
-    expect(resolved).toBe(`@<token:${token.uuid}|brand/primary %7C dark>`);
-    expect(parseMention(resolved)?.label).toBe("brand/primary | dark");
-  });
-
-  it("resolves a tpl whose owning component name contains folder `/`s", () => {
-    const site = createSite();
-    const tpl = mkTplTagX("div", { name: "MyElement" });
-    const component = mkComponent({
-      name: "Buttons/Primary",
-      type: ComponentType.Plain,
-      tplTree: tpl,
-    });
-    runInAction(() => site.components.push(component));
-
-    // The owner keeps its folder `/`s literally; splitting on the last `/`
-    // separates it from the tpl name.
-    expect(resolveMentions("@<tpl:Buttons/Primary/MyElement>", site)).toBe(
-      `@<tpl:${component.uuid}/${tpl.uuid}|MyElement>`
-    );
-  });
-
-  it("escapes `/` in the tpl name so the last `/` is the separator", () => {
-    const site = createSite();
-    const tpl = mkTplTagX("div", { name: "Icon/Left" });
-    const component = mkComponent({
-      name: "Nav/Bar",
-      type: ComponentType.Plain,
-      tplTree: tpl,
-    });
-    runInAction(() => site.components.push(component));
-
-    // Owner "Nav/Bar" stays literal; tpl "Icon/Left" escapes its "/" to "%2F".
-    expect(resolveMentions("@<tpl:Nav/Bar/Icon%2FLeft>", site)).toBe(
-      `@<tpl:${component.uuid}/${tpl.uuid}|Icon%2FLeft>`
-    );
+    expect(findMissingMentions("no mentions here", site)).toEqual([]);
   });
 });
 

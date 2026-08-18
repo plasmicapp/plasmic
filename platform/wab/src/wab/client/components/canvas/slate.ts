@@ -32,12 +32,23 @@ type TplTagExprTextAttributes = TplTagAttributes & {
   html: boolean;
 };
 
+/**
+ * A `@`-mention chip
+ */
+type MentionAttributes = {
+  /** The raw text the mention serializes to between `@<` and `>` */
+  raw: string;
+  /** Always a single empty text node: the element is void. */
+  children: Descendant[];
+};
+
 type CustomElement = MakeADT<
   "type",
   {
     paragraph: ParagraphAttributes;
     TplTag: TplTagAttributes;
     TplTagExprText: TplTagExprTextAttributes;
+    mention: MentionAttributes;
   }
 >;
 type CustomText = { text: string } & CSSProperties;
@@ -46,6 +57,7 @@ export type ParagraphElement = Record<"type", "paragraph"> &
   ParagraphAttributes;
 export type TplTagExprTextElement = Record<"type", "TplTagExprText"> &
   TplTagExprTextAttributes;
+export type MentionElement = Record<"type", "mention"> & MentionAttributes;
 
 declare module "slate" {
   interface CustomTypes {

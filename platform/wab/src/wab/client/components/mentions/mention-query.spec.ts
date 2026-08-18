@@ -1,9 +1,8 @@
 import {
-  _testOnlyMentionUtils,
+  findMentionText,
+  getMentionStartIndex,
   matchScore,
-} from "@/wab/client/components/mentions/useMentions";
-
-const { getMentionStartIndex, findMentionText } = _testOnlyMentionUtils;
+} from "@/wab/client/components/mentions/mention-query";
 
 const better = (a: number | undefined, b: number | undefined) =>
   (a ?? -Infinity) > (b ?? -Infinity);

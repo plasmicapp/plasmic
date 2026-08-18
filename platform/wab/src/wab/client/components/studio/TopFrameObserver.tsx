@@ -1,7 +1,7 @@
 import {
   MentionableResource,
+  findMissingMentions,
   getMentionUiId,
-  resolveMentions,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { COPILOT_TOOLS } from "@/wab/client/copilot";
@@ -239,13 +239,13 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             if (isTplNamable(tpl) && tpl.name) {
               tpls.push({
                 kind: "tpl",
-                uuid: `${focusedComponent.uuid}/${tpl.uuid}`,
+                uuid: tpl.uuid,
+                componentUuid: focusedComponent.uuid,
                 label: tpl.name,
                 tplType: getTplType(
                   tpl,
                   getEffectiveVariantSetting(tpl, [baseVariant])
                 ),
-                owners: [focusedComponent.name],
                 // For an instance, show which component it is an instance of.
                 detail: isTplComponent(tpl) ? tpl.component.name : undefined,
               });
@@ -260,8 +260,8 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             resources.push({
               kind: "componentVariant",
               uuid: variant.uuid,
+              componentUuid: focusedComponent.uuid,
               label: variant.name,
-              owners: [focusedComponent.name, group ?? ""],
               detail: group,
             });
           }
@@ -299,7 +299,6 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             uuid: variant.uuid,
             label: variant.name,
             detail: group,
-            owners: [group ?? ""],
           });
         }
 
@@ -313,8 +312,8 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
 
         return resources;
       },
-      async resolveMentions(text: string): Promise<string> {
-        return resolveMentions(text, studioCtx.site);
+      async findMissingMentions(text: string): Promise<string[]> {
+        return findMissingMentions(text, studioCtx.site);
       },
       async navigateToMentionedResource(kind, uuid): Promise<void> {
         const uiId = getMentionUiId(kind, uuid, studioCtx.site);
