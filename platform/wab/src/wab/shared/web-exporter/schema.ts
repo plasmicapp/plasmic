@@ -286,6 +286,30 @@ export function legacyDataQuerySchema() {
     op: dataSourceOpSchema()
       .optional()
       .describe("The integration operation this query runs, if configured."),
+    references: z
+      .number()
+      .describe(
+        "Number of places that may reference this query: bindings in its own " +
+          "component (a dynamic access like `$queries[someVar]` counts toward " +
+          "every query), plus query invalidations anywhere in the project."
+      ),
+    migratable: z
+      .boolean()
+      .describe(
+        "Whether this query can be migrated to a modern `$q` data query."
+      ),
+    migrationBlockers: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Why it can't be migrated. Report these to the user instead of attempting the migration."
+      ),
+    migrationWarnings: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Caveats that don't prevent the migration. Report these to the user after migrating."
+      ),
   });
 }
 export type LegacyDataQueryJson = z.infer<
@@ -304,6 +328,21 @@ export function dataSourceOpSchema() {
       .string()
       .optional()
       .describe("Integration type, e.g. `postgres`, `http`."),
+    baseUrl: z
+      .string()
+      .optional()
+      .describe(
+        "Public base URL for HTTP/GraphQL integrations. Reduced to the host when not " +
+          "migratable, since a base URL can have credentials."
+      ),
+    defaultHeaders: z
+      .record(z.string(), z.string())
+      .optional()
+      .describe(
+        "Headers the integration sends with every request. A migrated query " +
+          "must send them itself: merge them into `opts.headers`, with the " +
+          "op's own `headers` arg winning on conflict."
+      ),
     opName: z.string().describe("Operation name."),
     opLabel: z
       .string()

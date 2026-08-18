@@ -31,14 +31,20 @@ import {
 } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   coerceArgStringToType,
+  DataSourceMeta,
   OperationTemplate,
   SettingFieldMeta,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { dropFakeDatabase } from "@/wab/shared/data-sources-meta/fake-meta";
+import {
+  generatedDefaultHeaders,
+  isGeneratedDefaultHeader,
+} from "@/wab/shared/data-sources-meta/legacy-query-migration";
 import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { canEditDataSource } from "@/wab/shared/perms";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
+import { isEmpty, omitBy } from "lodash";
 
 export function mkApiDataSource(
   dataSource: DataSource,
@@ -53,12 +59,46 @@ export function mkApiDataSource(
     settings: !excludeSettings
       ? dataSource.settings
       : Object.fromEntries(
-          Object.entries(dataSource.settings).filter(
-            ([key, _]) => meta.settings[key].public
-          )
+          Object.entries(dataSource.settings).flatMap(([key, value]) => {
+            if (meta.settings[key]?.public) {
+              return [[key, value]];
+            }
+            const generated =
+              key === "commonHeaders" ? generatedDefaultHeaders(value) : {};
+            return isEmpty(generated) ? [] : [[key, generated]];
+          })
         ),
     ownerId: dataSource.createdById ?? undefined,
+    hasPrivateConfig: hasPrivateConfig(dataSource, meta),
   } as const;
+}
+
+/**
+ * Whether the integration has auth data that only the server proxy applies.
+ * Credentials, or private settings like default headers.
+ */
+function hasPrivateConfig(
+  dataSource: DataSource,
+  meta: DataSourceMeta
+): boolean {
+  const isSet = (value: unknown) =>
+    value != null &&
+    value !== "" &&
+    !(typeof value === "object" && isEmpty(value));
+  const privatePart = (key: string, value: unknown) =>
+    key === "commonHeaders" && typeof value === "object" && value != null
+      ? omitBy(value, (v, header) => isGeneratedDefaultHeader(header, v))
+      : value;
+  return (
+    // Credentials never reach the client, so nothing in them is exempt.
+    Object.entries(dataSource.credentials ?? {}).some(([_key, value]) =>
+      isSet(value)
+    ) ||
+    Object.entries(dataSource.settings ?? {}).some(
+      ([key, value]) =>
+        !meta.settings[key]?.public && isSet(privatePart(key, value))
+    )
+  );
 }
 
 export async function listDataSources(req: Request, res: Response) {
@@ -72,13 +112,19 @@ export async function listDataSources(req: Request, res: Response) {
   const sources = await Promise.all(
     workspaces.map(async (workspace) => {
       const dataSources = await mgr.getWorkspaceDataSources(workspace.id);
-      const accessLevel = await mgr.getActorAccessLevelToWorkspace(workspace.id);
+      const accessLevel = await mgr.getActorAccessLevelToWorkspace(
+        workspace.id
+      );
       return {
         workspace: mkApiWorkspace(workspace),
         dataSources: dataSources.map((dataSource) =>
           mkApiDataSource(
             dataSource,
-            !canEditDataSource(dataSource.createdById, req.user?.id, accessLevel)
+            !canEditDataSource(
+              dataSource.createdById,
+              req.user?.id,
+              accessLevel
+            )
           )
         ),
       };

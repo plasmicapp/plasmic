@@ -96,6 +96,7 @@ export interface TopFrameChromeProps {
   setShowUpsellForm: (_: undefined) => void;
   showAppAuthModal: boolean;
   showCopilotChatModal: boolean;
+  copilotStarterPrompt: { prompt: string } | undefined;
   subjectComponentInfo:
     | {
         pathOrComponent: string;
@@ -364,6 +365,7 @@ export function TopFrameChrome({
               {hostFrameApiReady && rest.showCopilotChatModal && (
                 <CopilotChatDialog
                   projectId={project.id}
+                  initialPrompt={rest.copilotStarterPrompt}
                   onClose={() => topFrameApi.toggleCopilotChat()}
                 />
               )}
@@ -478,11 +480,24 @@ export function useTopFrameState({
     TopBarPromptBillingArgs | undefined
   >(undefined);
   const [showAppAuthModal, setShowAppAuthModal] = React.useState(false);
+  // Object-wrapped so a repeat request with identical text is still a state
+  // change, re-triggering the prefill of an already open dialog.
+  const [copilotStarterPrompt, setCopilotStarterPrompt] = React.useState<
+    { prompt: string } | undefined
+  >(undefined);
 
   const showCopilotChatModal = React.useMemo(() => {
     const searchParams = new URLSearchParams(history.location.search);
     return searchParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true";
   }, [history.location.search]);
+
+  // A starter prompt is scoped to one dialog session, clear when the dialog
+  // closes so it can't come back prefilled on a later history navigation.
+  React.useEffect(() => {
+    if (!showCopilotChatModal) {
+      setCopilotStarterPrompt(undefined);
+    }
+  }, [showCopilotChatModal]);
 
   const [noComponents, setNoComponents] = React.useState(true);
   const [subjectComponentInfo, setSubjectComponentInfo] = React.useState<{
@@ -590,6 +605,15 @@ export function useTopFrameState({
         history.push({ search: queryParams.toString() });
         forceUpdate();
       },
+      openCopilotChat: async (prompt) => {
+        setCopilotStarterPrompt({ prompt });
+        const queryParams = new URLSearchParams(history.location.search);
+        if (queryParams.get(SEARCH_PARAM_COPILOT_CHAT) !== "true") {
+          queryParams.set(SEARCH_PARAM_COPILOT_CHAT, "true");
+          history.push({ search: queryParams.toString() });
+        }
+        forceUpdate();
+      },
       setOnboardingTour: asyncWrapper(setOnboardingTour),
       pickDataSource: async (opts) => {
         return new Promise((resolve) => {
@@ -652,6 +676,7 @@ export function useTopFrameState({
     setShowUpsellForm,
     showAppAuthModal,
     showCopilotChatModal,
+    copilotStarterPrompt,
     defaultPageRoleId,
     setDefaultPageRoleId,
     onboardingTour,

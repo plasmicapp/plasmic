@@ -37,6 +37,7 @@ import {
   isKnownFunctionExpr,
   isKnownFunctionType,
   isKnownGenericEventHandler,
+  isKnownMapExpr,
   isKnownNodeMarker,
   isKnownObjectPath,
   isKnownPageHref,
@@ -2578,6 +2579,10 @@ export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
     for (const _expr of expr.exprs) {
       pushExprs(exprs, _expr);
     }
+  } else if (isKnownMapExpr(expr)) {
+    for (const _expr of Object.values(expr.mapExpr)) {
+      pushExprs(exprs, _expr);
+    }
   } else if (isKnownFunctionArg(expr)) {
     pushExprs(exprs, expr.expr);
   } else if (isKnownTemplatedString(expr)) {
@@ -2590,6 +2595,9 @@ export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
     pushExprs(exprs, expr.bodyExpr);
   } else if (isKnownDataSourceOpExpr(expr)) {
     pushExprs(exprs, expr.queryInvalidation);
+    // A cache key is a real expr and can reference queries/params/state, so it
+    // has to be visited too — renames that skip it silently break the key.
+    pushExprs(exprs, expr.cacheKey);
     for (const template of Object.values(expr.templates)) {
       if (isKnownExpr(template.value)) {
         pushExprs(exprs, template.value);

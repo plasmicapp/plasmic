@@ -121,25 +121,37 @@ export type ScopeNode =
   | ast.Program
   | ast.FunctionDeclaration
   | ast.FunctionExpression
-  | ast.ArrowFunctionExpression;
+  | ast.ArrowFunctionExpression
+  | ast.StaticBlock;
 export function isScope(node: ast.Node): node is ScopeNode {
   return (
     node.type === "FunctionExpression" ||
     node.type === "FunctionDeclaration" ||
     node.type === "ArrowFunctionExpression" ||
-    node.type === "Program"
+    node.type === "Program" ||
+    node.type === "StaticBlock"
   );
 }
 
 export type BlockScopeNode =
   | ScopeNode
   | ast.BlockStatement
-  | ast.SwitchStatement;
+  | ast.SwitchStatement
+  | ast.ForStatement
+  | ast.ForInStatement
+  | ast.ForOfStatement;
 export function isBlockScope(node: ast.Node): node is BlockScopeNode {
   // The body of switch statement is a block.
   return (
     node.type === "BlockStatement" ||
     node.type === "SwitchStatement" ||
+    // A `for` head scopes its own let/const bindings to the loop: the `x` in
+    // `for (const x of xs)` is visible across the head and body, but not after
+    // the loop. Without this, such a binding would land on the enclosing block
+    // and shadow the global of that name for the whole block.
+    node.type === "ForStatement" ||
+    node.type === "ForInStatement" ||
+    node.type === "ForOfStatement" ||
     isScope(node)
   );
 }

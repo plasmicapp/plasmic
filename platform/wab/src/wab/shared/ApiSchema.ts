@@ -1184,6 +1184,8 @@ export interface ApiDataSource {
   source: DataSourceType;
   settings: Record<string, any>;
   ownerId?: string;
+  /** Whether the integration has server-side auth data that only the proxy applies. */
+  hasPrivateConfig: boolean;
 }
 
 export interface ApiDataSourceTest {

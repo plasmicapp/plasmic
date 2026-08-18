@@ -318,6 +318,9 @@ describe("Component Serialization", () => {
         name: "Get Users",
         uuid: "dq1",
         reference: "$queries.getUsers",
+        references: 2,
+        migratable: false,
+        migrationBlockers: ["postgres integrations run on Plasmic's server."],
         op: {
           __type: "DataSourceOp",
           sourceId: "src1",

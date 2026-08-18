@@ -30,8 +30,8 @@ export async function setViewportSize(
   await page.setViewportSize(VIEWPORT_SIZES[viewport]);
 }
 
-// Sets image loading to eager and scrolls to the bottom of the page to ensure
-// all assets are loaded. Must be evaluated in page context.
+// Settles webfonts, sets image loading to eager, and scrolls to the bottom of
+// the page to ensure all assets are loaded. Must be evaluated in page context.
 async function preparePageForScreenshot() {
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -47,6 +47,37 @@ async function preparePageForScreenshot() {
       img.addEventListener("error", done, { once: true });
     });
   };
+
+  // Plasmic gets webfonts via Google Fonts <link> with display=swap, which domcontentloaded
+  // doesn't wait for. So initially, text paints with fallbacks, which reflow the page and
+  // break the snapshot.
+  const settleFonts = () =>
+    Promise.race([
+      (async () => {
+        await Promise.all(
+          Array.from(
+            document.querySelectorAll<HTMLLinkElement>("link[rel=stylesheet]"),
+            (link) =>
+              link.sheet
+                ? Promise.resolve()
+                : new Promise<void>((resolve) => {
+                    const done = () => resolve();
+                    link.addEventListener("load", done, { once: true });
+                    link.addEventListener("error", done, { once: true });
+                  })
+          )
+        );
+        await Promise.all(
+          Array.from(document.fonts ?? [], (font) =>
+            font.status === "loaded" ? null : font.load().catch(() => undefined)
+          )
+        );
+        await document.fonts?.ready;
+      })(),
+      delay(15000),
+    ]);
+
+  await settleFonts();
 
   for (const img of Array.from(document.images)) {
     img.loading = "eager";
@@ -69,8 +100,9 @@ async function preparePageForScreenshot() {
   window.scrollTo(0, 0);
   await nextFrame();
 
+  // Scrolling reveals text that can declare further faces, so settle again.
   await Promise.all([
-    document.fonts?.ready ?? Promise.resolve(),
+    settleFonts(),
     ...Array.from(document.images, waitForImage),
   ]);
 

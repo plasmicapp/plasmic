@@ -65,9 +65,14 @@ export type DataSourceType = keyof typeof DATA_SOURCE_METAS;
 
 export function getDataSourceMeta(type: string): DataSourceMeta {
   return ensure(
-    DATA_SOURCE_METAS[type],
+    tryGetDataSourceMeta(type),
     () => `Unexpected ${DATA_SOURCE_LOWER} type ${type}`
   );
+}
+
+/** For callers that can carry on without knowing the type, e.g. a stale tab. */
+export function tryGetDataSourceMeta(type: string): DataSourceMeta | undefined {
+  return DATA_SOURCE_METAS[type];
 }
 
 export function getAllPublicDataSourceMetas() {

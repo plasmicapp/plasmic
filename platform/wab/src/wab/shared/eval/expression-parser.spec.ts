@@ -5,6 +5,7 @@ import {
   codeUsesGlobalObjects,
   emptyParsedExprInfo,
   extractDataTokenIdentifiers,
+  findMemberChainsInCode,
   isDataTokenExpr,
   parseCodeExpression,
   parseDataTokenIdentifier,
@@ -141,10 +142,24 @@ describe("parseCodeExpression", function () {
     expect(parsed).toEqual(expected);
   });
 
-  it("should find $ctx with no keys", () => {
+  it("should treat $ctx with no keys as unknown-key usage", () => {
+    // A bare `$ctx` escapes to code that can read any of its keys.
     const parsed = parseCodeExpression("new Date($ctx).getMonth()");
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$ctx = true;
+    expected.usesUnknownDollarVarKeys.$ctx = true;
+    expect(parsed).toEqual(expected);
+  });
+
+  it("should treat bare and dynamic $queries uses as unknown-key usage", () => {
+    const parsed = parseCodeExpression(
+      "Object.keys($queries).length + $queries[someVar].data + $queries.known.data"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$queries = true;
+    expected.usesUnknownDollarVarKeys.$queries = true;
+    expected.usedDollarVarKeys.$queries.add("known");
+    expected.usedFreeVars = new Set(["Object", "someVar"]);
     expect(parsed).toEqual(expected);
   });
 
@@ -152,6 +167,147 @@ describe("parseCodeExpression", function () {
     const parsed = parseCodeExpression("({x: 1, y: 2})");
     const expected = emptyParsedExprInfo();
     expect(parsed).toEqual(expected);
+  });
+
+  // A `for` head binding is scoped to the loop, so it must not shadow the
+  // dollar var for the rest of the enclosing block; missing the trailing use
+  // here would report the query as unreferenced.
+  it("should keep a loop binding from shadowing the rest of its block", () => {
+    const parsed = parseCodeExpression(
+      "(() => { for (const $queries of xs) { g($queries); } return $queries.getUsers.data })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$queries = true;
+    expected.usedDollarVarKeys.$queries.add("getUsers");
+    expected.usedFreeVars = new Set(["xs", "g"]);
+    expect(parsed).toEqual(expected);
+  });
+
+  it("should treat classic for and for-in bindings as loop-scoped", () => {
+    const parsed = parseCodeExpression(
+      "(() => { for (let $props = 0; $props < n; $props++) {} for (const $ctx in o) {} return $props.a + $ctx.b })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$props = true;
+    expected.usesDollarVars.$ctx = true;
+    expected.usedDollarVarKeys.$props.add("a");
+    expected.usedDollarVarKeys.$ctx.add("b");
+    expected.usedFreeVars = new Set(["n", "o"]);
+    expect(parsed).toEqual(expected);
+  });
+
+  it("should still treat a loop binding as local inside the loop", () => {
+    const parsed = parseCodeExpression(
+      "(() => { for (const $queries of xs) { g($queries.getUsers.data); } })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usedFreeVars = new Set(["xs", "g"]);
+    expect(parsed).toEqual(expected);
+  });
+
+  // A function declaration in a block is block-scoped, so it must not shadow
+  // the dollar var after the block.
+  it("should keep a block function declaration from shadowing its enclosing scope", () => {
+    const parsed = parseCodeExpression(
+      "(() => { { function $queries() {} } return $queries.getUsers.data })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$queries = true;
+    expected.usedDollarVarKeys.$queries.add("getUsers");
+    expect(parsed).toEqual(expected);
+  });
+
+  it("should still treat a block function declaration as local inside the block", () => {
+    const parsed = parseCodeExpression(
+      "(() => { { function $queries() {} g($queries.getUsers.data); } })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usedFreeVars = new Set(["g"]);
+    expect(parsed).toEqual(expected);
+  });
+
+  // A class static block is its own scope, for `var` as well as let/const.
+  it("should keep a static block binding from shadowing its enclosing scope", () => {
+    const parsed = parseCodeExpression(
+      "(() => { class A { static { const $queries = o } } return $queries.getUsers.data })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$queries = true;
+    expected.usedDollarVarKeys.$queries.add("getUsers");
+    expected.usedFreeVars = new Set(["o"]);
+    expect(parsed).toEqual(expected);
+  });
+
+  it("should scope a static block var to the static block", () => {
+    const parsed = parseCodeExpression(
+      "(() => { class A { static { var $props = o } } return $props.a })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usesDollarVars.$props = true;
+    expected.usedDollarVarKeys.$props.add("a");
+    expected.usedFreeVars = new Set(["o"]);
+    expect(parsed).toEqual(expected);
+  });
+
+  it("should still treat a static block binding as local inside the block", () => {
+    const parsed = parseCodeExpression(
+      "(() => { class A { static { const $queries = o; g($queries.getUsers.data); } } })()"
+    );
+    const expected = emptyParsedExprInfo();
+    expected.usedFreeVars = new Set(["o", "g"]);
+    expect(parsed).toEqual(expected);
+  });
+});
+
+describe("findMemberChainsInCode", () => {
+  it("reports each occurrence's outermost chain", () => {
+    expect(
+      findMemberChainsInCode(
+        "$queries.getUsers.data.response.length + $queries.getUsers.error",
+        "$queries",
+        "getUsers"
+      )
+    ).toEqual([["data", "response", "length"], ["error"]]);
+  });
+
+  it("truncates chains at chain ends and dynamic accessors", () => {
+    expect(
+      findMemberChainsInCode(
+        "f($queries.getUsers) + $queries.getUsers.data[someVar].name",
+        "$queries",
+        "getUsers"
+      )
+    ).toEqual([[], ["data"]]);
+  });
+
+  it("ignores other roots and other keys", () => {
+    expect(
+      findMemberChainsInCode(
+        "$queries.getTeams.data + $q.getUsers.data + $queries[someVar].data",
+        "$queries",
+        "getUsers"
+      )
+    ).toEqual([]);
+  });
+
+  it("ignores a locally shadowed root", () => {
+    expect(
+      findMemberChainsInCode(
+        "$queries.getUsers.error + (($queries) => $queries.getUsers.data)(other)",
+        "$queries",
+        "getUsers"
+      )
+    ).toEqual([["error"]]);
+  });
+
+  it("only shadows the root inside the loop that binds it", () => {
+    expect(
+      findMemberChainsInCode(
+        "(() => { for (const $queries of xs) { g($queries.getUsers.data); } return $queries.getUsers.error })()",
+        "$queries",
+        "getUsers"
+      )
+    ).toEqual([["error"]]);
   });
 });
 
@@ -231,6 +387,70 @@ describe("renameObjectKey", function () {
       "new.yek"
     );
     expect(newCode).toEqual("$ctx.a + $state.new.yek + $ctx.b");
+  });
+
+  // The local binding is a different object from the dollar var, so renaming it
+  // would repoint reads at a query that isn't in scope there.
+  it("should not rename a locally shadowed object", () => {
+    const newCode = renameObjectKey(
+      "$queries.getUsers.data + (($queries) => $queries.getUsers.data)(other)",
+      "$queries",
+      "$q",
+      "getUsers",
+      "fetchUsers"
+    );
+    expect(newCode.replace(/\s+/g, " ")).toEqual(
+      "$q.fetchUsers.data + ($queries => $queries.getUsers.data)(other)"
+    );
+  });
+
+  it("should not rename an object shadowed by a local declaration", () => {
+    const newCode = renameObjectKey(
+      "(() => { const $props = other; return $props.oldKey })()",
+      "$props",
+      "$props",
+      "oldKey",
+      "newKey"
+    );
+    expect(newCode).toContain("$props.oldKey");
+  });
+
+  // The rewrite would read the local binding instead of the dollar var, while
+  // the old reference would look migrated.
+  it("should not rename into a locally shadowed object", () => {
+    const newCode = renameObjectKey(
+      "(() => { const $q = other; return $queries.getUsers.data })()",
+      "$queries",
+      "$q",
+      "getUsers",
+      "fetchUsers"
+    );
+    expect(newCode).toContain("$queries.getUsers.data");
+  });
+
+  // A loop binding shadows the dollar var only within its own loop; uses after
+  // the loop still refer to the global and must be renamed.
+  it("should rename uses outside the loop that shadows the object", () => {
+    const newCode = renameObjectKey(
+      "(() => { for (const $queries of xs) { g($queries.getUsers.data); } return $queries.getUsers.data })()",
+      "$queries",
+      "$q",
+      "getUsers",
+      "fetchUsers"
+    );
+    expect(newCode).toContain("$q.fetchUsers.data");
+    expect(newCode).toContain("g($queries.getUsers.data)");
+  });
+
+  it("should rename uses outside the block that declares a shadowing function", () => {
+    const newCode = renameObjectKey(
+      "(() => { { function $queries() {} } return $queries.getUsers.data })()",
+      "$queries",
+      "$q",
+      "getUsers",
+      "fetchUsers"
+    );
+    expect(newCode).toContain("$q.fetchUsers.data");
   });
 
   it("should rename variable in object", () => {

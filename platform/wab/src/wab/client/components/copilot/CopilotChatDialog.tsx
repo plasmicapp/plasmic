@@ -3,6 +3,7 @@ import { ProjectId } from "@/wab/shared/ApiSchema";
 
 export interface CopilotChatDialogProps extends DefaultCopilotChatDialogProps {
   projectId: ProjectId;
+  initialPrompt?: { prompt: string };
   onClose: () => void;
 }
 

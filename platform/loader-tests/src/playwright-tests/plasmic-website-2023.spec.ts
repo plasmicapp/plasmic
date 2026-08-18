@@ -25,6 +25,10 @@ const ENVS = [
 ] as const;
 
 test.describe(`Plasmic Website`, async () => {
+  // Run ENVs in parallel, but per-ENV desktop/mobile tests in serial so
+  // setup can be shared.
+  test.describe.configure({ mode: "parallel" });
+
   let bundleCtx: ProjectContext;
   test.beforeAll(async () => {
     bundleCtx = await setupBundle("plasmic-website-2023.json");
@@ -35,6 +39,8 @@ test.describe(`Plasmic Website`, async () => {
 
   for (const env of ENVS) {
     test.describe(makeEnvName(env), async () => {
+      test.describe.configure({ mode: "default" });
+
       let serverCtx: ServerContext;
       test.beforeAll(async () => {
         serverCtx = await setupServer(env, bundleCtx);

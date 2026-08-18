@@ -3779,9 +3779,9 @@ function getQueryFetcherHookCounts(ctx: RenderingCtx, component: Component) {
 /**
  * Computes this component's `$q` and `$queries` and seeds them into `ctx.env`.
  *
- * `$q` must be seeded before `eagerInitializeStates()` and the legacy `dataQueries` ops,
- * on first render `$q` is still the empty `useState({})` object, so an unseeded read is a
- * TypeError, not the deferrable "not ready yet" throw that the retry paths recover from.
+ * Both must be seeded before `eagerInitializeStates()`, and `$q` before the legacy
+ * `dataQueries` ops: unseeded they are still the empty `useState({})` object, so a read
+ * is a TypeError, not the deferrable "not ready yet" throw the retry paths recover from.
  */
 function useComponentLevelQueries(
   sub: SubDeps,
@@ -3902,11 +3902,10 @@ function useComponentLevelQueries(
   // object manually.
   const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
 
-  // Must run after `$q` is seeded above, since state initializers can reference
-  // `$q`, and before the legacy ops below, which can reference `$state`.
-  ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
-
-  const getDataOp = (query: ComponentDataQuery) =>
+  const getDataOp = (
+    query: ComponentDataQuery,
+    $queries: DataOrServerQueries
+  ) =>
     query.op
       ? () => {
           return evalCodeWithEnv(
@@ -3915,23 +3914,28 @@ function useComponentLevelQueries(
               projectFlags: ctx.projectFlags,
               inStudio: true,
             }).code,
-            ctx.env,
+            { ...ctx.env, $queries },
             ctx.viewCtx.canvasCtx.win()
           );
         }
       : undefined;
-  const new$Queries = Object.fromEntries([
-    ...component.dataQueries
-      .filter((query) => !!query.op)
-      .map(
-        (query) =>
-          [
-            toVarName(query.name),
-            sub.dataSources?.usePlasmicDataOp(getDataOp(query)),
-          ] as const
-      ),
-  ]);
+  // Each op sees the results of the queries before it, dependents resolve in this pass.
+  // Codegen does this by re-rendering on setDollarQueries(), here $queries is in a layout
+  // effect, too late for a render that reads it.
+  const new$Queries: DataOrServerQueries = {};
+  const soFar$Queries: DataOrServerQueries = { ...ctx.env.$queries };
+  for (const query of component.dataQueries.filter((q) => !!q.op)) {
+    const result = sub.dataSources?.usePlasmicDataOp(
+      getDataOp(query, soFar$Queries)
+    );
+    new$Queries[toVarName(query.name)] = result;
+    soFar$Queries[toVarName(query.name)] = result;
+  }
   const shouldUpdate$Queries = updateCtxQueries(ctx.env.$queries, new$Queries);
+
+  // Must run here since state initializers can reference queries. The ops above
+  // read `$state` through its lazy proxy.
+  ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
 
   useReactiveDollarQ(sub, new$Q, ctx.setDollarQ);
 

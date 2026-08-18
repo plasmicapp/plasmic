@@ -3699,7 +3699,11 @@ export class StudioCtx extends WithDbCtx {
   );
 
   getDataSource = memoize((sourceId: string) =>
-    this.appCtx.api.getDataSourceById(sourceId)
+    this.appCtx.api.getDataSourceById(sourceId).catch((dataSourceErr) => {
+      // Don't cache rejections, so a transient failure can be retried.
+      this.getDataSource.cache.delete(sourceId);
+      throw dataSourceErr;
+    })
   );
 
   refreshFetchedDataFromPlasmicQuery = (invalidateKey?: string) => {

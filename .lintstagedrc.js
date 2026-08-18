@@ -1,8 +1,11 @@
 module.exports = {
   "*.{js,jsx,ts,tsx,cjs,mjs,cts,mts}": (files) => {
-    // Examples lint themselves via `next lint`; the monorepo eslint can't
-    // load their eslint-config-next (`extends` resolves before ignores).
-    const eslintable = files.filter((f) => !/(^|\/)examples\//.test(f));
+    // Examples and the loader-test app templates lint themselves via
+    // `next lint`; the monorepo eslint can't load their eslint-config-next
+    // (`extends` resolves before ignores).
+    const selfLinted =
+      /(^|\/)(examples|platform\/loader-tests\/src\/(cra|gatsby|html|nextjs)\/[^/]+)\//;
+    const eslintable = files.filter((f) => !selfLinted.test(f));
     const cmds = [];
     if (eslintable.length) {
       cmds.push(`eslint --fix ${eslintable.map((f) => `"${f}"`).join(" ")}`);

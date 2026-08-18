@@ -77,6 +77,7 @@ export interface TopFrameApi {
   setOnboardingTour(val: TopFrameTourState): Promise<void>;
   toggleAdminMode(val: boolean): Promise<void>;
   toggleCopilotChat(): Promise<void>;
+  openCopilotChat(prompt: string): Promise<void>;
 }
 
 export type TopFrameApiArgs<Method extends keyof TopFrameApi> = Parameters<

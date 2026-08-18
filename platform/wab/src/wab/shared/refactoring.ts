@@ -5,7 +5,7 @@ import {
   makeShortProjectId,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { assert, isPrefixArray, uniqueName } from "@/wab/shared/common";
+import { assert, uniqueName } from "@/wab/shared/common";
 import * as Exprs from "@/wab/shared/core/exprs";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
 import {
@@ -16,6 +16,7 @@ import {
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
   extractDataTokenIdentifiersFromCode,
+  findMemberChainsInCode,
   isPathDataToken,
   makeDataTokenIdentifier,
   parseCode,
@@ -25,6 +26,7 @@ import {
   replaceVarWithProp,
   transformDataTokensInExpr,
 } from "@/wab/shared/eval/expression-parser";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Component,
   ComponentDataQuery,
@@ -36,16 +38,18 @@ import {
   Interaction,
   ObjectPath,
   Param,
+  QueryRef,
   Site,
   TplNode,
   isKnownCustomCode,
   isKnownFunctionExpr,
   isKnownObjectPath,
+  isKnownQueryInvalidationExpr,
   isKnownVarRef,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import type * as ast from "estree";
-import { get } from "lodash";
+import { get, isString } from "lodash";
 
 /**
  * Returns boolean indicating whether `expr` is referencing `param`.
@@ -88,6 +92,54 @@ export function isQueryUsedInExpr(
     return info.usedDollarVarKeys.$queries.has(varName);
   }
   return false;
+}
+
+/**
+ * The subset of `queries` that `expr` could read. Static `$queries.<name>`, plus
+ * every query for dynamic access (`$queries[someVar]`) or exprs that fail to parse.
+ */
+function queriesPossiblyUsedInExpr(
+  queries: ComponentDataQuery[],
+  expr: Expr | null | undefined
+): ComponentDataQuery[] {
+  if (!Exprs.isRealCodeExpr(expr)) {
+    return [];
+  }
+  assert(
+    isKnownCustomCode(expr) || isKnownObjectPath(expr),
+    "Real code expression must be CustomCode or ObjectPath"
+  );
+  try {
+    const info = parseExpr(expr);
+    return info.usesUnknownDollarVarKeys.$queries
+      ? queries
+      : queries.filter((q) =>
+          info.usedDollarVarKeys.$queries.has(toVarName(q.name))
+        );
+  } catch {
+    return queries;
+  }
+}
+
+/**
+ * The other legacy queries `query`'s own op reads to build its request. A migrated
+ * query runs before every legacy one, so it can never read one left behind.
+ */
+export function findLegacyQueriesReadByOp(
+  query: ComponentDataQuery,
+  queries: ComponentDataQuery[]
+): ComponentDataQuery[] {
+  if (!query.op) {
+    return [];
+  }
+  const others = queries.filter((q) => q !== query);
+  const found = new Set<ComponentDataQuery>();
+  for (const expr of Tpls.flattenExprs(query.op)) {
+    for (const q of queriesPossiblyUsedInExpr(others, expr)) {
+      found.add(q);
+    }
+  }
+  return others.filter((q) => found.has(q));
 }
 
 /**
@@ -155,6 +207,52 @@ export function isInteractionResultUsedInExpr(
 }
 
 /**
+ * `ObjectPath.path` stores array indices as numbers while rewrite paths are
+ * dotted strings, so `data.0.name` and `["data", 0, "name"]` are the same path.
+ */
+function toPathSegments(dottedPath: string): (string | number)[] {
+  return dottedPath.split(".").map((segment) => {
+    const asNumber = Number(segment);
+    return Number.isInteger(asNumber) && String(asNumber) === segment
+      ? asNumber
+      : segment;
+  });
+}
+
+function isPathPrefix(
+  prefix: (string | number)[],
+  path: (string | number)[]
+): boolean {
+  return (
+    prefix.length <= path.length &&
+    prefix.every((segment, i) => String(segment) === String(path[i]))
+  );
+}
+
+/**
+ * Only writes back when the rename matched, so non-renamed exprs aren't dirtied.
+ */
+function renameObjectInCode(
+  expr: CustomCode,
+  oldObject: string,
+  newObject: string,
+  oldVarName: string,
+  newVarName: string
+) {
+  const oldCode = expr.code.slice(1, -1);
+  const newCode = renameObjectKey(
+    oldCode,
+    oldObject,
+    newObject,
+    oldVarName,
+    newVarName
+  );
+  if (newCode !== oldCode) {
+    expr.code = `(${newCode})`;
+  }
+}
+
+/**
  * Updates `expr` replacing `oldObject`.`oldVarName` with
  * `newObject`.`newVarName`.
  */
@@ -166,31 +264,25 @@ export function renameObjectInExpr(
   newVarName: string
 ) {
   if (isKnownCustomCode(expr) && Exprs.isRealCodeExpr(expr)) {
-    expr.code = `(${renameObjectKey(
-      expr.code.slice(1, -1),
-      oldObject,
-      newObject,
-      oldVarName,
-      newVarName
-    )})`;
+    renameObjectInCode(expr, oldObject, newObject, oldVarName, newVarName);
   } else if (isKnownObjectPath(expr)) {
-    const oldPath = [oldObject, ...oldVarName.split(".")];
-    if (isPrefixArray(oldPath, expr.path)) {
+    const oldPath = [oldObject, ...toPathSegments(oldVarName)];
+    if (isPathPrefix(oldPath, expr.path)) {
       expr.path = [
         newObject,
-        ...newVarName.split("."),
+        ...toPathSegments(newVarName),
         ...expr.path.slice(oldPath.length),
       ];
     }
   } else if (isKnownFunctionExpr(expr) && Exprs.isRealCodeExpr(expr.bodyExpr)) {
     if (isKnownCustomCode(expr.bodyExpr)) {
-      expr.bodyExpr.code = `(${renameObjectKey(
-        expr.bodyExpr.code.slice(1, -1),
+      renameObjectInCode(
+        expr.bodyExpr,
         oldObject,
         newObject,
         oldVarName,
         newVarName
-      )})`;
+      );
     } else if (isKnownObjectPath(expr.bodyExpr)) {
       renameObjectInExpr(
         expr.bodyExpr,
@@ -418,6 +510,142 @@ export function renameServerQueryAndFixExprs(
   for (const { expr } of refs) {
     renameObjectInExpr(expr, "$q", "$q", oldVarName, newVarName);
   }
+}
+
+/**
+ * Rewrite of sub-path when replacing a legacy query reference, e.g.
+ * `{ from: "data.response", to: "data.body" }`.
+ */
+export interface QuerySubPathRewrite {
+  from: string;
+  to: string;
+}
+
+export interface MigrateQueryReferencesResult {
+  /** References to `$queries.<old>` the rewrite left, incl. query invalidations. */
+  remainingReferences: number;
+}
+
+/**
+ * Every query-invalidation expr in the site. Mutation in one component can point at a
+ * query owned by another, so we walk the whole site.
+ */
+function findQueryInvalidationExprs(site: Site) {
+  return site.components.flatMap((comp) =>
+    Tpls.findExprsInComponent(comp)
+      .map(({ expr }) => expr)
+      .filter(isKnownQueryInvalidationExpr)
+  );
+}
+
+export const findQueryInvalidationRefs = maybeComputedFn(
+  function findQueryInvalidationRefs(site: Site): QueryRef[] {
+    return findQueryInvalidationExprs(site).flatMap((expr) =>
+      expr.invalidationQueries.filter(
+        (queryRef): queryRef is QueryRef => !isString(queryRef)
+      )
+    );
+  }
+);
+
+/**
+ * Number of references that may read the legacy `query`. `$queries.<name>` in its
+ * own component, dynamic access which counts towards all queries, and `invalidationRefs`.
+ */
+export function countQueryReferences(
+  component: Component,
+  queries: ComponentDataQuery[],
+  invalidationRefs: QueryRef[]
+): Map<ComponentDataQuery, number> {
+  const counts = new Map(queries.map((q) => [q, 0]));
+  for (const { expr } of Tpls.findExprsInComponent(component)) {
+    for (const query of queriesPossiblyUsedInExpr(queries, expr)) {
+      counts.set(query, counts.get(query)! + 1);
+    }
+  }
+  for (const query of queries) {
+    counts.set(
+      query,
+      counts.get(query)! +
+        invalidationRefs.filter(({ ref }) => ref === query).length
+    );
+  }
+  return counts;
+}
+
+/**
+ * Updates references from `legacyQuery` (`$queries.<name>`) to (`$q.<name>`) and
+ * reports whatever it could not rewrite. Query invalidations are counted as
+ * remaining references, since all plasmic.fetch queries share one refresh key.
+ *
+ * `subPathRewrites` maps differing sub-paths of the two queries' results; the
+ * most specific rewrite wins, and anything not covered keeps its sub-path.
+ */
+export function migrateQueryReferences(
+  site: Site,
+  component: Component,
+  legacyQuery: ComponentDataQuery,
+  serverQuery: ComponentServerQuery,
+  subPathRewrites: QuerySubPathRewrite[] = []
+): MigrateQueryReferencesResult {
+  const oldVarName = toVarName(legacyQuery.name);
+  const newVarName = toVarName(serverQuery.name);
+
+  // Longest source path first: rewriting `foo` before `foo.data.response`
+  // would leave the latter unmatched.
+  const rewrites = [...subPathRewrites]
+    .sort((a, b) => b.from.length - a.from.length)
+    .map(({ from, to }) => ({
+      from: `${oldVarName}.${from}`,
+      to: `${newVarName}.${to}`,
+    }));
+  // The bare reference catches every sub-path no rewrite claimed.
+  rewrites.push({ from: oldVarName, to: newVarName });
+
+  const fromPaths = subPathRewrites.map(({ from }) => toPathSegments(from));
+
+  // A reference that stops partway into a rewritten `from` path (alias, whole result
+  // binding, or dynamic access) hides reads whose sub-path would need rewriting. Renaming it
+  // could silently break those reads, so it's skipped and reported for manual migration.
+  const hidesRewrittenSubPath = (expr: Expr): boolean => {
+    // An ObjectPath here matched isQueryUsedInExpr, so it's rooted at the query.
+    const subPaths = isKnownObjectPath(expr)
+      ? [expr.path.slice(2)]
+      : isKnownCustomCode(expr)
+      ? findMemberChainsInCode(expr.code.slice(1, -1), "$queries", oldVarName)
+      : [];
+    return subPaths.some((subPath) =>
+      fromPaths.some(
+        (from) => subPath.length < from.length && isPathPrefix(subPath, from)
+      )
+    );
+  };
+
+  // `$queries` only resolves within its own component, so nothing else can read it.
+  const legacyRefs = Tpls.findExprsInComponent(component).filter(({ expr }) => {
+    try {
+      return isQueryUsedInExpr(legacyQuery.name, expr);
+    } catch {
+      // Unparseable; the remaining-reference count below reports it.
+      return false;
+    }
+  });
+  for (const { expr } of legacyRefs) {
+    if (hidesRewrittenSubPath(expr)) {
+      continue;
+    }
+    for (const { from, to } of rewrites) {
+      renameObjectInExpr(expr, "$queries", "$q", from, to);
+    }
+  }
+
+  return {
+    remainingReferences: countQueryReferences(
+      component,
+      [legacyQuery],
+      findQueryInvalidationRefs(site)
+    ).get(legacyQuery)!,
+  };
 }
 
 export function renameDollarFunctions(

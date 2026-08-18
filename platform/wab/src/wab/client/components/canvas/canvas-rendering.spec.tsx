@@ -33,11 +33,11 @@ function mkEmptyComponent(): Component {
   });
 }
 
-/** A legacy dataQuery whose args read `$q.myQuery`. */
-function mkLegacyDataQuery() {
+/** A legacy dataQuery whose args read `binding`. */
+function mkLegacyDataQuery(binding = "{{ $q.myQuery.data }}", name = "Legacy") {
   return new ComponentDataQuery({
-    uuid: "dq1",
-    name: "Legacy",
+    uuid: `dq-${name}`,
+    name,
     op: new DataSourceOpExpr({
       parent: undefined,
       sourceId: "src1",
@@ -46,7 +46,7 @@ function mkLegacyDataQuery() {
       templates: {
         filters: mkDataSourceTemplate({
           fieldType: "filter[]",
-          value: interpolatedStringToTemplatedString("{{ $q.myQuery.data }}"),
+          value: interpolatedStringToTemplatedString(binding),
           bindings: null,
         }),
       },
@@ -194,6 +194,114 @@ describe("useComponentLevelQueries", () => {
     expect(ctx.setDollarQ).toHaveBeenCalledWith({
       myQuery: { data: [1, 2], isLoading: false },
     });
+  });
+
+  it("seeds $queries before initializing a state that reads it, while the legacy op still reads $state", async () => {
+    const component = mkEmptyComponent();
+    component.dataQueries.push(mkLegacyDataQuery("{{ $state.filter }}"));
+
+    const resolved: { op?: any; err?: unknown }[] = [];
+    const env = mkEnv();
+    const stateSpecs: $StateSpec<any>[] = [
+      {
+        path: "filter",
+        type: "private",
+        variableType: "text",
+        initFunc: () => "sport",
+      },
+      {
+        path: "fromLegacy",
+        type: "private",
+        variableType: "array",
+        initFunc: ({ $queries }) => $queries.legacy.data,
+      },
+    ];
+    const ctx = mkCtx(env, new Map(), stateSpecs);
+
+    const sub = {
+      React,
+      dataSources: {
+        usePlasmicQueries: () => ({}),
+        usePlasmicDataOp: (dataOp: (() => any) | undefined) => {
+          try {
+            resolved.push({ op: dataOp?.() });
+          } catch (err) {
+            resolved.push({ err });
+          }
+          return { isLoading: false, data: [3, 4] };
+        },
+      },
+    } as unknown as SubDeps;
+
+    function Harness() {
+      env.$state = useDollarState(stateSpecs, env, { inCanvas: true });
+      useComponentLevelQueries(sub, ctx, component);
+      return null;
+    }
+    await act(async () => {
+      render(<Harness />);
+    });
+
+    // The state initializer saw the seeded legacy query rather than an empty
+    // $queries, which would have made `.data` a TypeError and killed the render.
+    expect(env.$state.fromLegacy).toEqual([3, 4]);
+    // The op read $state through the lazily-initializing proxy.
+    expect(resolved.map((r) => r.err)).toEqual(resolved.map(() => undefined));
+    expect(resolved[resolved.length - 1].op).toMatchObject({
+      userArgs: { filters: ["sport"] },
+    });
+  });
+
+  it("gives a legacy op the results of the legacy queries before it", async () => {
+    const component = mkEmptyComponent();
+    component.dataQueries.push(
+      mkLegacyDataQuery("{{ $state.filter }}", "First")
+    );
+    component.dataQueries.push(
+      mkLegacyDataQuery("{{ $queries.first.data }}", "Second")
+    );
+
+    const resolved: { op?: any; err?: unknown }[] = [];
+    const env = mkEnv();
+    const stateSpecs: $StateSpec<any>[] = [
+      {
+        path: "filter",
+        type: "private",
+        variableType: "text",
+        initFunc: () => "sport",
+      },
+    ];
+    const ctx = mkCtx(env, new Map(), stateSpecs);
+
+    const sub = {
+      React,
+      dataSources: {
+        usePlasmicQueries: () => ({}),
+        usePlasmicDataOp: (dataOp: (() => any) | undefined) => {
+          const idx = resolved.length;
+          try {
+            resolved.push({ op: dataOp?.() });
+          } catch (err) {
+            resolved.push({ err });
+          }
+          return { isLoading: false, data: [`q${idx}`] };
+        },
+      },
+    } as unknown as SubDeps;
+
+    function Harness() {
+      env.$state = useDollarState(stateSpecs, env, { inCanvas: true });
+      useComponentLevelQueries(sub, ctx, component);
+      return null;
+    }
+    await act(async () => {
+      render(<Harness />);
+    });
+
+    // Second read First's result from this same render, not the previous one's.
+    expect(resolved.map((r) => r.err)).toEqual(resolved.map(() => undefined));
+    expect(resolved[0].op).toMatchObject({ userArgs: { filters: ["sport"] } });
+    expect(resolved[1].op).toMatchObject({ userArgs: { filters: [["q0"]] } });
   });
 
   describe("late custom function registration", () => {

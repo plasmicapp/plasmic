@@ -13,8 +13,17 @@ import {
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
+import { useDataSource } from "@/wab/client/contexts/AppContexts";
+import {
+  makeAllLegacyQueriesMigrationPrompt,
+  makeLegacyQueryMigrationPrompt,
+} from "@/wab/client/copilot/query-migration";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  RightTabKey,
+  StudioCtx,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
 import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { DATA_QUERY_LOWER, DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
@@ -25,6 +34,7 @@ import { spawn } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
+import { checkLegacyQueryMigratable } from "@/wab/shared/data-sources-meta/legacy-query-migration";
 import {
   Component,
   ComponentDataQuery,
@@ -33,7 +43,11 @@ import {
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import { renameQueryAndFixExprs } from "@/wab/shared/refactoring";
+import {
+  findLegacyQueriesReadByOp,
+  findQueryInvalidationRefs,
+  renameQueryAndFixExprs,
+} from "@/wab/shared/refactoring";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import { autorun } from "mobx";
@@ -41,17 +55,49 @@ import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
 
+// Opens Chat Copilot with a migration prompt prefilled for the user to review.
+function startQueryMigrationChat(studioCtx: StudioCtx, prompt: string) {
+  spawn(studioCtx.appCtx.topFrameApi?.openCopilotChat(prompt));
+}
+
 const DataQueryRow = observer(
   ({
     query,
     viewCtx,
     component,
+    isDeprecated,
   }: {
     component: Component;
     query: ComponentDataQuery;
     viewCtx: ViewCtx;
+    isDeprecated: boolean;
   }) => {
     const studioCtx = viewCtx.studioCtx;
+    const showMigrateItem = isDeprecated && studioCtx.chatCopilotEnabled();
+    // The integration is only needed for the migrate menu item; don't fetch
+    // (and on 403, retry) it otherwise.
+    const {
+      data: dataSource,
+      error: dataSourceError,
+      isLoading: isLoadingDataSource,
+    } = useDataSource(showMigrateItem ? query.op?.sourceId : undefined);
+    const invalidationRefCount = showMigrateItem
+      ? findQueryInvalidationRefs(studioCtx.site).filter(
+          ({ ref }) => ref === query
+        ).length
+      : 0;
+    const migration = checkLegacyQueryMigratable(
+      query.op,
+      dataSource,
+      invalidationRefCount,
+      showMigrateItem
+        ? findLegacyQueriesReadByOp(query, component.dataQueries).map(
+            (q) => q.name
+          )
+        : [],
+      dataSourceError
+    );
+    const canMigrate = !isLoadingDataSource && migration.migratable;
     const exprCtx: ExprCtx = {
       projectFlags: studioCtx.projectFlags(),
       component,
@@ -92,6 +138,24 @@ const DataQueryRow = observer(
           <Menu.Item onClick={() => openDataSourceModal()}>
             Configure {DATA_QUERY_LOWER}
           </Menu.Item>
+          {showMigrateItem && (
+            <Menu.Item
+              disabled={!canMigrate}
+              title={
+                isLoadingDataSource
+                  ? undefined
+                  : [...migration.blockers, ...migration.warnings].join(" ")
+              }
+              onClick={() =>
+                startQueryMigrationChat(
+                  studioCtx,
+                  makeLegacyQueryMigrationPrompt(component, query)
+                )
+              }
+            >
+              Migrate with Copilot
+            </Menu.Item>
+          )}
           <Menu.Divider />
           <Menu.Item
             onClick={() =>
@@ -182,6 +246,24 @@ function ComponentQueriesSection_(props: {
     );
   };
 
+  const makeLegacyQueriesMenu = () => (
+    <Menu>
+      <Menu.Item
+        onClick={() =>
+          startQueryMigrationChat(
+            studioCtx,
+            makeAllLegacyQueriesMigrationPrompt(
+              component,
+              component.dataQueries
+            )
+          )
+        }
+      >
+        Migrate all queries with Copilot
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <SidebarSection
       id="data-queries-section"
@@ -197,6 +279,13 @@ function ComponentQueriesSection_(props: {
       }
       emptyBody={component.dataQueries.length === 0 && tplFetchers.length === 0}
       zeroBodyPadding
+      makeHeaderMenu={
+        isDeprecated &&
+        studioCtx.chatCopilotEnabled() &&
+        component.dataQueries.length > 0
+          ? makeLegacyQueriesMenu
+          : undefined
+      }
       controls={
         <IconLinkButton
           id="data-queries-add-btn"
@@ -213,6 +302,7 @@ function ComponentQueriesSection_(props: {
           component={component}
           query={query}
           viewCtx={viewCtx}
+          isDeprecated={isDeprecated}
         />
       ))}
       {tplFetchers.map((tpl) => {

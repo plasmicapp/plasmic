@@ -57,10 +57,31 @@ export async function installCustomFunctionsPackage(
       ({ customFunction }) => customFunction.uid
     )
   );
-  await studioCtx.runFakeItem(
-    createFakeHostLessComponent(installable.item, installable.projectIds)
-  );
-  return allCustomFunctions(studioCtx.site)
-    .map(({ customFunction }) => customFunction)
-    .filter((fn) => !beforeUids.has(fn.uid));
+  const newlyAdded = () =>
+    allCustomFunctions(studioCtx.site)
+      .map(({ customFunction }) => customFunction)
+      .filter((fn) => !beforeUids.has(fn.uid));
+  try {
+    await studioCtx.runFakeItem(
+      createFakeHostLessComponent(installable.item, installable.projectIds)
+    );
+  } catch (err) {
+    // post-install can fail after package function are registered. If so the
+    // install worked and failing here would leave the caller in a bad state.
+    const added = newlyAdded();
+    if (added.length > 0) {
+      console.warn(
+        `Installing "${installable.item.componentName}" reported an error after ` +
+          `registering its functions; continuing with the installed functions.`,
+        err
+      );
+      return added;
+    }
+    throw new Error(
+      `Installing "${installable.item.componentName}" failed: ${
+        (err as Error)?.message ?? err
+      }`
+    );
+  }
+  return newlyAdded();
 }
