@@ -359,7 +359,7 @@ importers:
   packages/create-plasmic-app:
     dependencies:
       '@plasmicapp/cli':
-        specifier: 0.1.372
+        specifier: 0.1.373
         version: link:../cli
       '@sentry/node':
         specifier: ^6.2.2
