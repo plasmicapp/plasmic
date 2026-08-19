@@ -3,6 +3,7 @@ import { logger } from "@/wab/server/observability";
 import * as fs from "fs";
 import nodemailer from "nodemailer";
 import * as path from "path";
+import { Resend } from "resend";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
@@ -205,31 +206,49 @@ await writeHtmlToFile(html, outputPath);
 logger().info(`HTML saved to ${outputPath}. Open in the browser to preview!`);
 
 if (args.email) {
-  const transporter = nodemailer.createTransport({
-    host: "email-smtp.us-west-2.amazonaws.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_SMTP_USER,
-      pass: process.env.EMAIL_SMTP_PASSWORD,
-    },
-  });
+  if (process.env.RESEND_API_KEY) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-  transporter.sendMail(
-    {
+    const { data, error } = await resend.emails.send({
       from: "test@plasmic.app",
       to: [args.email],
       subject: "Test email",
       html,
-    },
-    (err, info) => {
-      if (err) {
-        logger().error("Error sending email", err);
-        return;
-      }
-      logger().info(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
+    });
+    if (error) {
+      logger().error("Error sending email", error);
+    } else {
+      logger().info(`Email sent to ${args.email}. Email ID: ${data?.id}`);
     }
-  );
+  } else {
+    const transporter = nodemailer.createTransport({
+      host: "email-smtp.us-west-2.amazonaws.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_SMTP_USER,
+        pass: process.env.EMAIL_SMTP_PASSWORD,
+      },
+    });
+
+    transporter.sendMail(
+      {
+        from: "test@plasmic.app",
+        to: [args.email],
+        subject: "Test email",
+        html,
+      },
+      (err, info) => {
+        if (err) {
+          logger().error("Error sending email", err);
+          return;
+        }
+        logger().info(
+          `Email sent to ${args.email}. Email ID: ${info.messageId}`
+        );
+      }
+    );
+  }
 }
 
 /**

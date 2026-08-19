@@ -30,6 +30,7 @@ interface Secrets {
   };
   encryptionKey?: string;
   dataSourceOperationEncryptionKey?: string;
+  resendApiKey?: string;
   smtpAuth?: {
     user: string;
     pass: string;
@@ -84,6 +85,10 @@ export function getGoogleClientId() {
 
 export function getGoogleClientSecret() {
   return loadSecrets().google?.clientSecret ?? "fake";
+}
+
+export function getResendApiKey() {
+  return process.env.RESEND_API_KEY || loadSecrets().resendApiKey;
 }
 
 export function getSmtpAuth() {

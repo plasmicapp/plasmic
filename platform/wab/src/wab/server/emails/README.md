@@ -59,7 +59,12 @@ Choose the template to use by editing the `TEMPLATE_NAME` and `TEMPLATE_PROPS` c
 **Testing with Email Delivery:**
 
 ```bash
-# Send test email to a specific address
+# Send test email to a specific address via Resend (preferred)
+# Use the Resend API key in Bitwarden
+RESEND_API_KEY="<Resend API key>" \
+pnpm email:generate --email=you@plasmic.app
+
+# Or send via SES SMTP (fallback when no RESEND_API_KEY is set)
 # Use the "SMTP credentials for one-off" credentials in Bitwarden
 EMAIL_SMTP_USER="<SMTP user name>" \
 EMAIL_SMTP_PASSWORD="<SMTP password>" \

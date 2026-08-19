@@ -371,6 +371,7 @@
     "regexp.execall": "^1.0.2",
     "remark-gfm": "^3.0.1",
     "request-filtering-agent": "3.2.0",
+    "resend": "^6.20.0",
     "resize-observer-polyfill": "^1.5.1",
     "safe-stable-stringify": "^2.5.0",
     "sass": "1.99.0",
