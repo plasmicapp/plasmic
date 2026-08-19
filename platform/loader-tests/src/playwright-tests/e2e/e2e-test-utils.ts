@@ -21,8 +21,8 @@ export interface E2eTestCase {
  * On the CI, all changed packages are published to verdaccio and contribute to these tests.
  * To run this test locally, build/publish all changed packages to verdaccio and then run the test.
  *
- * 1. yarn local-publish
- * 3. yarn run local:playwright-ui
+ * 1. pnpm local-publish
+ * 3. pnpm run local:playwright-ui
  */
 export function defineE2eTests(
   platform: CodegenPlatform,

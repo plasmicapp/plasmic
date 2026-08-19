@@ -236,10 +236,16 @@ declare module '*.module.css' {
     );
   }
   try {
-    // Compile ts to js
-    await promisify(exec)("node_modules/.bin/tsc", { cwd: dir });
+    // Compile by real path, node_modules symlink above only has to
+    // resolve for the generated code's imports.
+    await promisify(exec)(path.join(process.cwd(), "node_modules/.bin/tsc"), {
+      cwd: dir,
+    });
   } catch (err) {
-    throw new Error(`Typescript compilation failed: ${err.stdout}`);
+    // tsc writes diagnostics to stdout, a failure to start only reaches stderr.
+    throw new Error(
+      `Typescript compilation failed: ${err.stdout || err.stderr || err}`
+    );
   }
   return { importFromProject, readFromProject, existsInProject };
 }

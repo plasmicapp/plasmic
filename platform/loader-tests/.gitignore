@@ -1,4 +1,6 @@
 __diff_output__/
 screenshots/
 videos/
+# Template dirs get a throwaway lockfile when regenerating. Root lockfile is still kept.
 pnpm-workspace.yaml
+!/pnpm-workspace.yaml

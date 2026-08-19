@@ -8,13 +8,13 @@
   "scripts": {
     "prepare": "playwright install chromium",
     "playwright-ui": "playwright test --ui",
-    "test": "yarn test-playwright",
-    "test-docker": "yarn docker-build && yarn docker-run",
+    "test": "pnpm test-playwright",
+    "test-docker": "pnpm docker-build && pnpm docker-run",
     "update-snapshots": "PLAYWRIGHT_REPORTER_OPEN=never npx playwright test --update-snapshots",
     "docker-build": "docker build --no-cache -t loader-tests .",
     "docker-run": "docker run --add-host host.docker.internal:host-gateway --rm loader-tests",
     "test-playwright": "npx playwright test",
-    "local:playwright-ui": "NPM_CONFIG_REGISTRY=http://localhost:4873 yarn run playwright-ui"
+    "local:playwright-ui": "NPM_CONFIG_REGISTRY=http://localhost:4873 pnpm run playwright-ui"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.12",
@@ -31,5 +31,5 @@
     "playwright-ctrf-json-reporter": "^0.0.29",
     "tmp": "^0.2.1"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "pnpm@11.8.0"
 }

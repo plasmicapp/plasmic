@@ -12,7 +12,11 @@ pnpm -r up --latest \
   --registry "${NPM_CONFIG_REGISTRY:-https://registry.npmjs.org}" \
   "@plasmicapp/*" "@plasmicpkgs/*"
 
-# The remaining platform projects are standalone yarn projects.
+# The remaining platform projects are standalone yarn projects. Jobs that only
+# build the pnpm workspace (studio-tests-root: tsc, eslint, vitest in wab) skip them.
+if [[ "${1:-}" == "--workspace-only" ]]; then
+  exit 0
+fi
 
 # flock: For some reason, yarn --mutex contention can cause yarn install to just quietly abort!
 npx --yes concurrently \
