@@ -318,6 +318,9 @@ export interface ApiWorkspace extends ApiEntityBase {
   contentCreatorConfig: UiConfig | null;
 }
 
+/** Header used to send the captcha token on captcha-protected routes. */
+export const CAPTCHA_TOKEN_HEADER = "x-plasmic-captcha-token";
+
 export interface SignUpRequest {
   email: string;
   password: string;

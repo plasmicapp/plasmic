@@ -53,6 +53,7 @@ import {
   BillingFrequency,
   BranchId,
   BranchStatus,
+  CAPTCHA_TOKEN_HEADER,
   CheckDomainRequest,
   CheckDomainResponse,
   CloneProjectRequest,
@@ -580,7 +581,8 @@ export abstract class SharedApi {
     const res: ForgotPasswordResponse = await this.post(
       "/auth/forgotPassword",
       data,
-      true
+      true,
+      await this.captchaToken("forgot_password")
     );
     return res;
   }
@@ -595,7 +597,12 @@ export abstract class SharedApi {
   }
 
   async signUp(data: SignUpRequest): Promise<SignUpResponse> {
-    const res: LoginResponse = await this.post("/auth/sign-up", data, true);
+    const res: LoginResponse = await this.post(
+      "/auth/sign-up",
+      data,
+      true,
+      await this.captchaToken("sign_up")
+    );
     if (res.status) {
       await this.refreshCsrfToken();
       this.setUser(res.user);
@@ -1376,10 +1383,15 @@ export abstract class SharedApi {
     return this.get(`/projects/${projectId}/repositories`);
   }
 
+  protected async captchaToken(
+    _action: string
+  ): Promise<{ [CAPTCHA_TOKEN_HEADER]: string } | undefined> {
+    return undefined;
+  }
+
   protected githubToken(): { "x-plasmic-github-token": string } {
     throw new NotImplementedError();
   }
-
   async setupNewGithubRepo(
     args: Omit<NewGithubRepoRequest, "token">
   ): Promise<NewGithubRepoResponse> {

@@ -830,6 +830,19 @@ export function scriptExec(window: Window, code: string) {
   }
 }
 
+/** Load a <script/> tag by URL. */
+export function scriptLoad(window: Window, src: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const doc = window.document;
+    const script = doc.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+    doc.head.appendChild(script);
+  });
+}
+
 export function hasAncestorElement(
   target: HTMLElement,
   pred: (element: HTMLElement) => boolean

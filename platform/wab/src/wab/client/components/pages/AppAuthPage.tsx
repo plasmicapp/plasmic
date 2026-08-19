@@ -18,7 +18,7 @@ import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
-import { Button, Divider, Input, notification, Spin, Tooltip } from "antd";
+import { Button, Divider, Input, Spin, Tooltip, notification } from "antd";
 import $ from "jquery";
 import React from "react";
 import { useLocation } from "react-router";
@@ -489,19 +489,26 @@ export function AppEmailVerification(props: {
                 No email in your inbox or spam folder? Let’s
                 <LinkButton
                   onClick={async () => {
-                    showEmailSentNotification();
-                    if (!selfInfo.isFake) {
-                      await nonAuthCtx.api.sendEmailVerification({
-                        email: selfInfo.email,
-                        nextPath: emailVerificationPath,
-                        appName,
+                    try {
+                      if (!selfInfo.isFake) {
+                        await nonAuthCtx.api.sendEmailVerification({
+                          email: selfInfo.email,
+                          nextPath: emailVerificationPath,
+                          appName,
+                        });
+                      } else {
+                        await nonAuthCtx.api.forgotPassword({
+                          email: selfInfo.email,
+                          appName,
+                          nextPath: emailVerificationPath,
+                        });
+                      }
+                      showEmailSentNotification();
+                    } catch (err) {
+                      notification.error({
+                        message: "Failed to send email. Please try again.",
                       });
-                    } else {
-                      await nonAuthCtx.api.forgotPassword({
-                        email: selfInfo.email,
-                        appName,
-                        nextPath: emailVerificationPath,
-                      });
+                      throw err;
                     }
                   }}
                 >
@@ -555,16 +562,25 @@ export function AppForgotPasswordForm({
             e.preventDefault();
             const { email } = $(e.target).serializeJSON();
             setSubmitting(true);
-            await nonAuthCtx.api.forgotPassword({
-              email: email.trim(),
-              appName,
-              nextPath: emailResetPasswordPath,
-            });
-            setFeedback({
-              type: "success",
-              content: "Success! Check your email for instructions.",
-            });
-            setSubmitting(false);
+            try {
+              await nonAuthCtx.api.forgotPassword({
+                email: email.trim(),
+                appName,
+                nextPath: emailResetPasswordPath,
+              });
+              setFeedback({
+                type: "success",
+                content: "Success! Check your email for instructions.",
+              });
+            } catch (err) {
+              setFeedback({
+                type: "error",
+                content: "Unexpected error occurred. Please try again.",
+              });
+              throw err;
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
           <FormFeedback feedback={feedback} />

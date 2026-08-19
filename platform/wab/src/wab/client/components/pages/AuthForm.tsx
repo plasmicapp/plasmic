@@ -442,12 +442,21 @@ export function ForgotPasswordForm() {
             e.preventDefault();
             const { email } = $(e.target).serializeJSON();
             setSubmitting(true);
-            await nonAuthCtx.api.forgotPassword({ email: email.trim() });
-            setFeedback({
-              type: "success",
-              content: "Success! Check your email for instructions.",
-            });
-            setSubmitting(false);
+            try {
+              await nonAuthCtx.api.forgotPassword({ email: email.trim() });
+              setFeedback({
+                type: "success",
+                content: "Success! Check your email for instructions.",
+              });
+            } catch (err) {
+              setFeedback({
+                type: "error",
+                content: "Unexpected error occurred. Please try again.",
+              });
+              throw err;
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
           <FormFeedback feedback={feedback} />

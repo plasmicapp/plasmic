@@ -8,6 +8,9 @@ export function PageFooter() {
         <a href="https://www.plasmic.app/tos">Terms & Conditions</a>
       </div>
       <div className={"LoginForm__FooterCopy"}>
+        This site is protected by reCAPTCHA.
+      </div>
+      <div className={"LoginForm__FooterCopy"}>
         Copyright © {new Date().getFullYear()} Plasmic Inc. All rights reserved.
       </div>
     </div>

@@ -591,6 +591,10 @@ const DEFAULT_DEVFLAGS = {
   // Existing users from these domains can still log in; this only blocks signup.
   blockedSignupDomains: [] as string[],
 
+  recaptchaSiteKey: "",
+  recaptchaMinScore: 0.5,
+  recaptchaEnforce: false,
+
   newProjectModal: false,
 
   authUsersTab: false,

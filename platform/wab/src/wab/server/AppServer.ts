@@ -20,6 +20,7 @@ import { setupPassport } from "@/wab/server/auth/passport-cfg";
 import * as authRoutes from "@/wab/server/auth/routes";
 import { apiAuth } from "@/wab/server/auth/routes";
 import { doLogout } from "@/wab/server/auth/util";
+import { checkCaptchaToken } from "@/wab/server/captcha";
 import { Config } from "@/wab/server/config";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
@@ -296,6 +297,7 @@ import {
   isApiError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
+import { CAPTCHA_TOKEN_HEADER } from "@/wab/shared/ApiSchema";
 import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import { Bundler } from "@/wab/shared/bundler";
 import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
@@ -1190,6 +1192,7 @@ export function addMainAppServerRoutes(
   app.post(
     "/api/v1/auth/sign-up",
     sensitiveRateLimiter,
+    captcha("sign_up"),
     withNext(authRoutes.signUp)
   );
   app.get("/api/v1/auth/self", authRoutes.self);
@@ -1204,6 +1207,7 @@ export function addMainAppServerRoutes(
   app.post(
     "/api/v1/auth/forgotPassword",
     sensitiveRateLimiter,
+    captcha("forgot_password"),
     withNext(authRoutes.forgotPassword)
   );
   app.post(
@@ -1982,6 +1986,21 @@ export async function createApp(
   trackPostgresPool(name);
 
   return { app };
+}
+
+function captcha(expectedAction: string) {
+  return async (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      await checkCaptchaToken({
+        req,
+        captchaToken: req.get(CAPTCHA_TOKEN_HEADER) ?? "",
+        expectedAction,
+      });
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 function corsPreflight() {

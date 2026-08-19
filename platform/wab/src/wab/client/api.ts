@@ -5,6 +5,7 @@ import {
   githubTokenKey,
   storageViewAsKey,
 } from "@/wab/client/LocalStorageKey";
+import { getCaptchaToken } from "@/wab/client/captcha";
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
 import {
   SerializableClipboardData,
@@ -15,7 +16,11 @@ import { analytics } from "@/wab/client/observability";
 import { PushPullQueue } from "@/wab/commons/asyncutil";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { transformErrors } from "@/wab/shared/ApiErrors/errors";
-import { ApiUser, ProjectId } from "@/wab/shared/ApiSchema";
+import {
+  ApiUser,
+  CAPTCHA_TOKEN_HEADER,
+  ProjectId,
+} from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import {
@@ -231,7 +236,14 @@ export class Api extends SharedApi {
     ensure(this.socket, "Unexpected nullish socket").emit(eventName, data);
   }
 
-  githubToken() {
+  protected async captchaToken(
+    action: string
+  ): Promise<{ [CAPTCHA_TOKEN_HEADER]: string } | undefined> {
+    const token = await getCaptchaToken({ action });
+    return token ? { [CAPTCHA_TOKEN_HEADER]: token } : undefined;
+  }
+
+  protected githubToken() {
     const token = this.getStorageItem(githubTokenKey);
     if (!token) {
       throw new Error("Missing GitHub token");
