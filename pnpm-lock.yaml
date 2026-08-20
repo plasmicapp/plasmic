@@ -1033,7 +1033,7 @@ importers:
   plasmicpkgs-dev:
     dependencies:
       '@plasmicapp/loader-nextjs':
-        specifier: 2.0.23
+        specifier: 2.0.24
         version: link:../packages/loader-nextjs
       '@plasmicpkgs/cms':
         specifier: 0.0.38
