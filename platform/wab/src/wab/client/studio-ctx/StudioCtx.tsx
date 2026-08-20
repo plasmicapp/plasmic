@@ -292,6 +292,7 @@ import {
   isTplAttachedToSite,
   isValidArena,
   siteIsEmpty,
+  tryGetGlobalVariantByUuid,
 } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { SplitStatus } from "@/wab/shared/core/splits";
@@ -807,8 +808,10 @@ export class StudioCtx extends WithDbCtx {
                 this.switchLeftTab("animationSequences");
                 break;
               case "Variant": {
-                const globalVariant = allGlobalVariants(this.site).find(
-                  (v) => v.uuid === parsed.uuid
+                const globalVariant = tryGetGlobalVariantByUuid(
+                  this.site,
+                  parsed.uuid,
+                  { includeDeps: "direct" }
                 );
                 if (!globalVariant) {
                   // A component variant: focus its owning component so the

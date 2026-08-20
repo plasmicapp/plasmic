@@ -2,6 +2,7 @@ import {
   MentionableResource,
   findMissingMentions,
   getMentionUiId,
+  mkSiteMentionableResources,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { COPILOT_TOOLS } from "@/wab/client/copilot";
@@ -22,10 +23,9 @@ import {
   allComponentVariants,
   isFrameComponent,
   isPageComponent,
-  isPlasmicComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
-import { allGlobalVariants } from "@/wab/shared/core/sites";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   flattenTpls,
   getTplType,
@@ -37,7 +37,7 @@ import { formatErrorMessage } from "@/wab/shared/error-handling";
 import { Component } from "@/wab/shared/model/classes";
 import { naturalSort, naturalSortByName } from "@/wab/shared/sort";
 import { notification } from "antd";
-import { partition, sortBy } from "lodash";
+import { sortBy } from "lodash";
 import { autorun, computed } from "mobx";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -267,47 +267,17 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           }
         }
 
-        // Code components and arena frames aren't things a user would refer
-        // to by name in a prompt.
-        const [pages, components] = partition(
-          site.components.filter(isPlasmicComponent),
-          isPageComponent
-        );
-        for (const comp of naturalSortByName(components)) {
-          resources.push({
-            kind: "component",
-            uuid: comp.uuid,
-            label: comp.name,
-          });
-        }
-        for (const page of naturalSortByName(pages)) {
-          resources.push({ kind: "page", uuid: page.uuid, label: page.name });
-        }
-
-        for (const token of naturalSortByName(site.styleTokens)) {
-          resources.push({
-            kind: "token",
-            uuid: token.uuid,
-            label: token.name,
-          });
-        }
-
-        for (const variant of naturalSortByName(allGlobalVariants(site))) {
-          const group = getVariantGroupName(variant);
-          resources.push({
-            kind: "globalVariant",
-            uuid: variant.uuid,
-            label: variant.name,
-            detail: group,
-          });
-        }
-
-        for (const animation of naturalSortByName(site.animationSequences)) {
-          resources.push({
-            kind: "animation",
-            uuid: animation.uuid,
-            label: animation.name,
-          });
+        // Local resources come first: on a tie they should outrank an imported
+        // project's resources
+        resources.push(...mkSiteMentionableResources(site));
+        // Direct deps only, matching what the `read` copilot tool can fetch.
+        for (const dep of walkDependencyTree(site, "direct")) {
+          resources.push(
+            ...mkSiteMentionableResources(
+              dep.site,
+              studioCtx.projectDependencyManager.getNiceDepName(dep)
+            )
+          );
         }
 
         return resources;

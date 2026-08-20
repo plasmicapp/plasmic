@@ -1930,6 +1930,14 @@ export function allGlobalVariants(
   return allGlobalVariantGroups(site, opts).flatMap((vg) => vg.variants);
 }
 
+export function tryGetGlobalVariantByUuid(
+  site: Site,
+  uuid: string,
+  opts: { includeDeps?: DependencyWalkScope } = {}
+): Variant | undefined {
+  return allGlobalVariants(site, opts).find((v) => v.uuid === uuid);
+}
+
 export function allGlobalVariantGroups(
   site: Site,
   opts: {

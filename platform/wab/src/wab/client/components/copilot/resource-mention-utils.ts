@@ -4,14 +4,29 @@ import {
   mkModelUiId,
   mkTplUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import {
+  getVariantGroupName,
+  isScreenVariantGroup,
+} from "@/wab/shared/Variants";
 import { assertNever, isNonNil } from "@/wab/shared/common";
 import {
   allComponentVariants,
+  isPageComponent,
+  isPlasmicComponent,
   tryGetComponentByUuid,
 } from "@/wab/shared/core/components";
-import { allGlobalVariants } from "@/wab/shared/core/sites";
+import { siteStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
+import {
+  allAnimationSequences,
+  allComponents,
+  allGlobalVariants,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
 import { tryGetTplByUuid, type TplType } from "@/wab/shared/core/tpls";
-import { Site } from "@/wab/shared/model/classes";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { Component, Site } from "@/wab/shared/model/classes";
+import { naturalSortByName } from "@/wab/shared/sort";
+import { partition } from "lodash";
 import { regex } from "regex";
 
 export const MENTION_KIND_TYPE_TAG_MAP = {
@@ -33,10 +48,85 @@ export type MentionableResource = {
   uuid: string;
   label: string;
   detail?: string;
+  /** Display name of the imported project this came from; unset for local ones. */
+  fromProject?: string;
 } & (
   | { kind: Exclude<MentionableResourceKind, "tpl" | "componentVariant"> }
   | { kind: "tpl"; tplType: TplType; componentUuid: string }
   | { kind: "componentVariant"; componentUuid: string }
+);
+
+export const mkSiteMentionableResources = maybeComputedFn(
+  function mkSiteMentionableResources(
+    site: Site,
+    fromProject?: string
+  ): ReadonlyArray<MentionableResource> {
+    const isImported = fromProject !== undefined;
+    const resources: MentionableResource[] = [];
+
+    // Code components and arena frames aren't things a user would refer to by
+    // name in a prompt.
+    const [pages, components] = partition<Component>(
+      site.components.filter(isPlasmicComponent),
+      isPageComponent
+    );
+    for (const comp of naturalSortByName(components)) {
+      resources.push({
+        kind: "component",
+        uuid: comp.uuid,
+        label: comp.name,
+        fromProject,
+      });
+    }
+    if (!isImported) {
+      for (const page of naturalSortByName(pages)) {
+        resources.push({ kind: "page", uuid: page.uuid, label: page.name });
+      }
+    }
+
+    const styleTokens =
+      isImported && !isHostLessPackage(site)
+        ? site.styleTokens.filter((token) => !token.isRegistered)
+        : site.styleTokens;
+    for (const token of naturalSortByName(styleTokens)) {
+      resources.push({
+        kind: "token",
+        uuid: token.uuid,
+        label: token.name,
+        fromProject,
+      });
+    }
+
+    // Of the screen variant groups, only the project's active one is mentionable (stored as `site.activeScreenVariantGroup`)
+    const globalVariantGroups = site.globalVariantGroups.filter(
+      (group) => !isScreenVariantGroup(group)
+    );
+    if (!isImported && site.activeScreenVariantGroup) {
+      globalVariantGroups.push(site.activeScreenVariantGroup);
+    }
+    for (const variant of naturalSortByName(
+      globalVariantGroups.flatMap((group) => group.variants)
+    )) {
+      resources.push({
+        kind: "globalVariant",
+        uuid: variant.uuid,
+        label: variant.name,
+        detail: getVariantGroupName(variant),
+        fromProject,
+      });
+    }
+
+    for (const animation of naturalSortByName(site.animationSequences)) {
+      resources.push({
+        kind: "animation",
+        uuid: animation.uuid,
+        label: animation.name,
+        fromProject,
+      });
+    }
+
+    return resources;
+  }
 );
 
 /** The uuid a mention stores: scoped by component where the kind needs it. */
@@ -126,7 +216,7 @@ export function parseMention(text: string): ParsedMention | undefined {
 
 /** The Model UiId for `uuid` if a matching candidate exists, else undefined. */
 function tryGetModelUiId(
-  candidates: { uuid: string }[],
+  candidates: readonly { uuid: string }[],
   uuid: string,
   typeTag: ModelTypeTag
 ): UiId | undefined {
@@ -148,25 +238,25 @@ export function getMentionUiId(
     case "component":
     case "page":
       return tryGetModelUiId(
-        site.components,
+        allComponents(site, { includeDeps: "direct" }),
         uuid,
         MENTION_KIND_TYPE_TAG_MAP[kind]
       );
     case "token":
       return tryGetModelUiId(
-        site.styleTokens,
+        siteStyleTokensDirectDeps(site),
         uuid,
         MENTION_KIND_TYPE_TAG_MAP[kind]
       );
     case "animation":
       return tryGetModelUiId(
-        site.animationSequences,
+        allAnimationSequences(site, { includeDeps: "direct" }),
         uuid,
         MENTION_KIND_TYPE_TAG_MAP[kind]
       );
     case "globalVariant":
       return tryGetModelUiId(
-        allGlobalVariants(site),
+        allGlobalVariants(site, { includeDeps: "direct" }),
         uuid,
         MENTION_KIND_TYPE_TAG_MAP[kind]
       );

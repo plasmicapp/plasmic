@@ -2,7 +2,7 @@ import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import { sum } from "lodash";
 import React from "react";
-import { VariableSizeList } from "react-window";
+import { ListChildComponentProps, VariableSizeList } from "react-window";
 
 export interface Item<I> {
   type: "item";
@@ -21,6 +21,7 @@ export type ItemOrGroup<G, I> = Item<I> | Group<G, I>;
 
 interface GroupedItem<G, I> {
   type: "grouped_item";
+  key: string;
   group: Group<G, I>;
   item: Item<I>;
 }
@@ -28,6 +29,36 @@ type Row<G, I> = Item<I> | Group<G, I> | GroupedItem<G, I>;
 
 export interface VirtualGroupedListHandle {
   scrollTo: (key: string) => void;
+}
+
+type RenderRow = (index: number, style: React.CSSProperties) => React.ReactNode;
+
+function ListRow({ data, index, style }: ListChildComponentProps) {
+  const renderRow: RenderRow = data;
+  return <>{renderRow(index, style)}</>;
+}
+
+/** The groups enclosing `key`, outermost first; `undefined` if not found. */
+function groupsContaining<G, I>(
+  itemsOrGroups: ItemOrGroup<G, I>[],
+  key: string,
+  enclosing: Group<G, I>[] = []
+): Group<G, I>[] | undefined {
+  for (const itemOrGroup of itemsOrGroups) {
+    if (itemOrGroup.key === key) {
+      return enclosing;
+    }
+    if (itemOrGroup.type === "group") {
+      const found = groupsContaining(itemOrGroup.items, key, [
+        ...enclosing,
+        itemOrGroup,
+      ]);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return undefined;
 }
 
 export function VirtualGroupedList<I, G>(props: {
@@ -72,6 +103,7 @@ export function VirtualGroupedList<I, G>(props: {
         if (group) {
           return {
             type: "grouped_item",
+            key: itemOrGroup.key,
             group,
             item: itemOrGroup,
           };
@@ -109,16 +141,46 @@ export function VirtualGroupedList<I, G>(props: {
 
   const listRef = React.useRef<VariableSizeList>(null);
 
+  const pendingScrollKey = React.useRef<string | undefined>(undefined);
+
+  const scrollToRow = (key: string) => {
+    const index = flattenedItems.findIndex((row) =>
+      row.type === "grouped_item" ? row.item.key === key : row.key === key
+    );
+    if (index < 0 || !listRef.current) {
+      return false;
+    }
+    listRef.current.scrollToItem(index, "smart");
+    return true;
+  };
+
+  const scrollToPending = () => {
+    const key = pendingScrollKey.current;
+    if (key !== undefined && scrollToRow(key)) {
+      pendingScrollKey.current = undefined;
+    }
+  };
+
   React.useImperativeHandle(handleRef, () => ({
     scrollTo: (key: string) => {
-      const index = flattenedItems.findIndex((row) =>
-        row.type === "grouped_item" ? row.item.key === key : row.key === key
-      );
-      if (index >= 0) {
-        listRef.current?.scrollToItem(index, "smart");
+      const enclosing = groupsContaining(items, key);
+      if (enclosing === undefined) {
+        return;
       }
+      pendingScrollKey.current = key;
+      // A collapsed group renders no rows, so expand all enclosing groups one on the way down
+      if (enclosing.length) {
+        setCollapsed((prev) => ({
+          ...prev,
+          ...Object.fromEntries(enclosing.map((group) => [group.key, false])),
+        }));
+      }
+      // scroll to the item on the next render
+      scrollToPending();
     },
   }));
+
+  React.useEffect(scrollToPending, [collapsed]);
 
   React.useEffect(() => {
     if (listRef.current) {
@@ -128,51 +190,49 @@ export function VirtualGroupedList<I, G>(props: {
     }
   }, [JSON.stringify(flattenedSizes)]);
 
+  const renderRow: RenderRow = (index, style) => {
+    const row = flattenedItems[index];
+    if (row.type === "group") {
+      return (
+        <ListSectionHeader
+          className={row.items.length > 0 ? "pointer" : undefined}
+          collapseState={isCollapsed(row) ? "collapsed" : "expanded"}
+          onToggle={() =>
+            setCollapsed({
+              ...collapsed,
+              [row.key]: !collapsed[row.key],
+            })
+          }
+          style={style}
+        >
+          {renderGroupHeader(row.group)}
+        </ListSectionHeader>
+      );
+    } else if (row.type === "grouped_item") {
+      return (
+        <li style={{ ...style }}>{renderItem(row.item.item, row.group)}</li>
+      );
+    } else {
+      return <li style={{ ...style }}>{renderItem(row.item, undefined)}</li>;
+    }
+  };
+
   return (
     <ListSpace space={totalSpace}>
       {({ height }) => (
         <VariableSizeList
           height={height}
-          itemData={flattenedItems}
+          itemData={renderRow}
           itemSize={itemSizer}
           layout="vertical"
           width="100%"
           overscanCount={2}
           itemCount={flattenedItems.length}
-          itemKey={(index, data) => data[index].key}
+          itemKey={(index) => flattenedItems[index].key}
           estimatedItemSize={itemHeight}
           ref={listRef}
         >
-          {({ data, index, style }) => {
-            const row: Row<G, I> = data[index];
-            if (row.type === "group") {
-              return (
-                <ListSectionHeader
-                  className={row.items.length > 0 ? "pointer" : undefined}
-                  collapseState={isCollapsed(row) ? "collapsed" : "expanded"}
-                  onToggle={() =>
-                    setCollapsed({
-                      ...collapsed,
-                      [row.key]: !collapsed[row.key],
-                    })
-                  }
-                  style={style}
-                >
-                  {renderGroupHeader(row.group)}
-                </ListSectionHeader>
-              );
-            } else if (row.type === "grouped_item") {
-              return (
-                <li style={{ ...style }}>
-                  {renderItem(row.item.item, row.group)}
-                </li>
-              );
-            } else {
-              return (
-                <li style={{ ...style }}>{renderItem(row.item, undefined)}</li>
-              );
-            }
-          }}
+          {ListRow}
         </VariableSizeList>
       )}
     </ListSpace>
