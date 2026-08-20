@@ -20,7 +20,7 @@
     "dev:reset": "pnpm setup && pnpm db:reset && pnpm dev",
     "format": "prettier --write",
     "lint": "eslint --fix",
-    "knip:deps": "NODE_ENV=test NODE_OPTIONS=\"--max-old-space-size=10000\" knip --include dependencies",
+    "knip:deps": "NODE_ENV=test NODE_OPTIONS=\"--max-old-space-size=6144\" knip --include dependencies",
     "local-canary": "pnpm local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
     "local-publish": "./scripts/local-publish.sh",
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",
