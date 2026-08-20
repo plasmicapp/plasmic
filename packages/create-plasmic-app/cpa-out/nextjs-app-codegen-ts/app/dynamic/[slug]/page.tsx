@@ -7,11 +7,11 @@ import {
   PlasmicDynamicPageServer,
   makeAppRouterPageCtx,
   generateDynamicMetadata,
-  DynamicPageServerSkeletonProps,
   serverQueryTree
 } from "../../../components/plasmic/create_plasmic_app/PlasmicDynamicPageServer";
 import type { Metadata, ResolvingMetadata } from "next";
-import { unstable_executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import type { PlasmicPageProps } from "@plasmicapp/react-web";
+import { executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 
 // Uncomment and populate to statically pre-render this route at build time.
 // Each entry should be an object whose keys match the dynamic segments in the route path.
@@ -26,23 +26,20 @@ const $$ = {};
 const metadataQueryTree = { ...serverQueryTree, children: [] };
 
 export async function generateMetadata(
-  { params, searchParams }: DynamicPageServerSkeletonProps,
+  { params, searchParams }: PlasmicPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
-  const { queries: $q } = await unstable_executePlasmicQueries(
-    metadataQueryTree,
-    { $props: {}, $ctx: ctx }
-  );
+  const { queries: $q } = await executePlasmicQueries(metadataQueryTree, {
+    $props: {},
+    $ctx: ctx
+  });
   const metadata = generateDynamicMetadata($q, ctx);
 
   return { ...(await parent), ...metadata } as unknown as Metadata;
 }
 
-async function DynamicPage({
-  params,
-  searchParams
-}: DynamicPageServerSkeletonProps) {
+async function DynamicPage({ params, searchParams }: PlasmicPageProps) {
   // Use PlasmicDynamicPage to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You

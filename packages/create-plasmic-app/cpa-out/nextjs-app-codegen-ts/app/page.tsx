@@ -6,13 +6,13 @@ import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/host";
 import {
   PlasmicHomepageServer,
   makeAppRouterPageCtx,
-  generateDynamicMetadata,
-  HomepageServerSkeletonProps
+  generateDynamicMetadata
 } from "../components/plasmic/create_plasmic_app/PlasmicHomepageServer";
 import type { Metadata, ResolvingMetadata } from "next";
+import type { PlasmicPageProps } from "@plasmicapp/react-web";
 
 export async function generateMetadata(
-  { params, searchParams }: HomepageServerSkeletonProps,
+  { params, searchParams }: PlasmicPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
@@ -21,7 +21,7 @@ export async function generateMetadata(
   return { ...(await parent), ...metadata } as unknown as Metadata;
 }
 
-async function Homepage({ params, searchParams }: HomepageServerSkeletonProps) {
+async function Homepage({ params, searchParams }: PlasmicPageProps) {
   // Use PlasmicHomepage to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You

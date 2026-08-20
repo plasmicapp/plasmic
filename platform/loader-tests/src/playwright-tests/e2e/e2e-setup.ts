@@ -197,27 +197,33 @@ function patchLoaderHost(
   host: string
 ) {
   const ext = typescript ? "ts" : "js";
-  const filePath =
+  const filePaths =
     platform === "nextjs"
-      ? path.join(projectDir, `plasmic-init.${ext}`)
-      : path.join(projectDir, `gatsby-config.${ext}`);
-  const content = fs.readFileSync(filePath, "utf-8");
-  let patchedContent = content.replace(
-    "projects: [",
-    `host: "${host}",\n    projects: [`
-  );
+      ? [
+          path.join(projectDir, `plasmic-init.${ext}`),
+          path.join(projectDir, "app", `sitemap.${ext}`),
+        ]
+      : [path.join(projectDir, `gatsby-config.${ext}`)];
 
-  if (platform === "nextjs") {
-    patchedContent = patchedContent
-      .replace('import * as NextNavigation from "next/navigation";\n\n', "")
-      .replace(
-        /\/\/ Needed for Next\.js app router support\.\n\s*nextNavigation: NextNavigation,\n/,
-        "platformOptions: {\n    nextjs: {\n      appDir: true,\n    },\n  },\n"
-      );
+  for (const filePath of filePaths.filter((p) => fs.existsSync(p))) {
+    const content = fs.readFileSync(filePath, "utf-8");
+    let patchedContent = content.replace(
+      "projects: ",
+      `host: "${host}",\n    projects: `
+    );
+
+    if (platform === "nextjs") {
+      patchedContent = patchedContent
+        .replace('import * as NextNavigation from "next/navigation";\n\n', "")
+        .replace(
+          /\/\/ Needed for Next\.js app router support\.\n\s*nextNavigation: NextNavigation,\n/,
+          "platformOptions: {\n    nextjs: {\n      appDir: true,\n    },\n  },\n"
+        );
+    }
+
+    fs.writeFileSync(filePath, patchedContent);
+    console.log(`[codegen-setup] Patched loader host in ${filePath}`);
   }
-
-  fs.writeFileSync(filePath, patchedContent);
-  console.log(`[codegen-setup] Patched loader host in ${filePath}`);
 }
 
 async function buildAndStartServer(

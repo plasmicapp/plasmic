@@ -8,7 +8,7 @@ import {
   generateDynamicMetadata,
   serverQueryTree
 } from "../../../components/plasmic/create_plasmic_app/PlasmicDynamicPageServer";
-import { unstable_executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 // Uncomment and populate to statically pre-render this route at build time.
 // Each entry should be an object whose keys match the dynamic segments in the route path.
 // See https://nextjs.org/docs/app/api-reference/functions/generate-static-params
@@ -23,10 +23,10 @@ const metadataQueryTree = { ...serverQueryTree, children: [] };
 
 export async function generateMetadata({ params, searchParams }, parent) {
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
-  const { queries: $q } = await unstable_executePlasmicQueries(
-    metadataQueryTree,
-    { $props: {}, $ctx: ctx }
-  );
+  const { queries: $q } = await executePlasmicQueries(metadataQueryTree, {
+    $props: {},
+    $ctx: ctx
+  });
   const metadata = generateDynamicMetadata($q, ctx);
   return { ...(await parent), ...metadata };
 }

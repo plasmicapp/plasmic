@@ -30,10 +30,9 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   };
 }
 
-function mkPathFromRouteAndParams(
-  route: string,
-  params: Record<string, string | string[] | undefined>
-) {
+import type { ParamsRecord, PlasmicPageProps } from "@plasmicapp/react-web";
+
+function mkPathFromRouteAndParams(route: string, params: ParamsRecord) {
   if (!params) {
     return route;
   }
@@ -52,15 +51,10 @@ function mkPathFromRouteAndParams(
   return path;
 }
 
-export interface HomepageServerSkeletonProps {
-  params?: Promise<Record<string, string | string[] | undefined>>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}
-
 export async function makeAppRouterPageCtx({
   params,
   searchParams
-}: HomepageServerSkeletonProps) {
+}: PlasmicPageProps) {
   const pageRoute = "/";
   const pageParams = (await params) ?? {};
   const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
@@ -75,7 +69,7 @@ export async function makeAppRouterPageCtx({
 }
 
 export type PlasmicHomepageServerProps = DefaultHomepageProps &
-  HomepageServerSkeletonProps;
+  PlasmicPageProps;
 
 export function PlasmicHomepageServer(props: PlasmicHomepageServerProps) {
   return <ClientHomepage {...props} />;

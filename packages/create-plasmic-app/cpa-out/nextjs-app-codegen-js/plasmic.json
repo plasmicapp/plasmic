@@ -14,10 +14,6 @@
     "publicDir": "../public",
     "publicUrlPrefix": "/"
   },
-  "tokens": {
-    "scheme": "theo",
-    "tokensFilePath": "plasmic-tokens.theo.json"
-  },
   "srcDir": "components",
   "defaultPlasmicDir": "./plasmic",
   "projects": [
@@ -143,6 +139,6 @@
   "nextjsConfig": {
     "pagesDir": "../app"
   },
-  "cliVersion": "0.1.364",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.364/dist/plasmic.schema.json"
+  "cliVersion": "0.1.372",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.372/dist/plasmic.schema.json"
 }

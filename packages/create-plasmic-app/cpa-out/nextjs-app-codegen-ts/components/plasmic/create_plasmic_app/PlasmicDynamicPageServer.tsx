@@ -14,7 +14,7 @@ import { ClientDynamicPage } from "../../../app/dynamic/[slug]/page-client"; // 
 
 const $$ = {};
 
-import { unstable_executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 import type {
   PlasmicQuery,
   PlasmicQueryResult
@@ -125,10 +125,9 @@ export const serverQueryTree: QueryComponentNode = {
   ]
 };
 
-function mkPathFromRouteAndParams(
-  route: string,
-  params: Record<string, string | string[] | undefined>
-) {
+import type { ParamsRecord, PlasmicPageProps } from "@plasmicapp/react-web";
+
+function mkPathFromRouteAndParams(route: string, params: ParamsRecord) {
   if (!params) {
     return route;
   }
@@ -147,15 +146,10 @@ function mkPathFromRouteAndParams(
   return path;
 }
 
-export interface DynamicPageServerSkeletonProps {
-  params?: Promise<Record<string, string | string[] | undefined>>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}
-
 export async function makeAppRouterPageCtx({
   params,
   searchParams
-}: DynamicPageServerSkeletonProps) {
+}: PlasmicPageProps) {
   const pageRoute = "/dynamic/[slug]";
   const pageParams = (await params) ?? {};
   const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
@@ -170,14 +164,14 @@ export async function makeAppRouterPageCtx({
 }
 
 export type PlasmicDynamicPageServerProps = DefaultDynamicPageProps &
-  DynamicPageServerSkeletonProps;
+  PlasmicPageProps;
 
 export async function PlasmicDynamicPageServer(
   props: PlasmicDynamicPageServerProps
 ) {
   const { params, searchParams, ...rest } = props;
   const ctx = await makeAppRouterPageCtx({ params, searchParams });
-  const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+  const { cache: prefetchedCache } = await executePlasmicQueries(
     serverQueryTree,
     { $props: rest, $ctx: ctx }
   );

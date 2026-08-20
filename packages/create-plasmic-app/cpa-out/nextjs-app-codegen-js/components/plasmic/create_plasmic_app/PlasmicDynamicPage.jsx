@@ -18,7 +18,7 @@ import {
   deriveRenderOpts
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/host";
-import { unstable_usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 import { generateDynamicMetadata } from "./PlasmicDynamicPageServer"; // plasmic-import: AO44A-w7hh/rscServer
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
@@ -107,7 +107,7 @@ function PlasmicDynamicPage__RenderFunc(props) {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-  const $q = unstable_usePlasmicQueries(pageQueryTree, $ctx, $props, null);
+  const $q = usePlasmicQueries(pageQueryTree, { $ctx, $props, $state: null });
   const pageMetadata = generateDynamicMetadata(
     wrapQueriesWithLoadingProxy($q),
     $ctx

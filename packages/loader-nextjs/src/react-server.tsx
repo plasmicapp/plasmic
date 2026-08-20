@@ -7,10 +7,15 @@ import {
 import type { IncomingMessage, ServerResponse } from "http";
 import NextHead from "next/head.js";
 import NextLink from "next/link.js";
-import * as NextNavigation from "next/navigation.js";
-import * as NextRouter from "next/router.js";
+import type * as NextNavigationModule from "next/navigation.js";
+import type * as NextRouterModule from "next/router.js";
 import { initPlasmicLoaderWithCache } from "./cache";
+import { lazyServerModule } from "./server-require";
 import type { InitOptions } from "./shared-exports";
+
+const NextNavigation =
+  lazyServerModule<typeof NextNavigationModule>("next/navigation");
+const NextRouter = lazyServerModule<typeof NextRouterModule>("next/router");
 
 export * from "./shared-exports";
 

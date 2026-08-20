@@ -20,11 +20,21 @@ import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-pag
 import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
 import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
 import { makePlasmicInitClient_app_loader } from "./templates/app-loader/plasmic-init-client";
+import {
+  makeRobots_app,
+  makeSitemap_app_codegen,
+  makeSitemap_app_loader,
+} from "./templates/app-seo";
 import { makeCustomApp_pages_codegen } from "./templates/pages-codegen/app";
 import { makePlasmicHostPage_pages_codegen } from "./templates/pages-codegen/plasmic-host";
 import { makeCatchallPage_pages_loader } from "./templates/pages-loader/catchall-page";
 import { makePlasmicHostPage_pages_loader } from "./templates/pages-loader/plasmic-host";
 import { makePlasmicInit_pages_loader } from "./templates/pages-loader/plasmic-init";
+import {
+  makeRobots_pages,
+  makeSitemap_pages_codegen,
+  makeSitemap_pages_loader,
+} from "./templates/pages-seo";
 
 export const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
@@ -124,6 +134,12 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   // Delete existing pages
   deleteGlob(path.join(projectPath, "app", "page.*"));
 
+  // ./app/robots.ts
+  await fs.writeFile(
+    path.join(projectPath, "app", `robots.${jsOrTs}`),
+    makeRobots_app(jsOrTs)
+  );
+
   if (scheme === "loader") {
     // ./plasmic-init.ts
     await fs.writeFile(
@@ -153,6 +169,12 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
       makeCatchallPage_app_loader(jsOrTs)
     );
+
+    // ./app/sitemap.ts
+    await fs.writeFile(
+      path.join(projectPath, "app", `sitemap.${jsOrTs}`),
+      makeSitemap_app_loader(jsOrTs)
+    );
   } else {
     // ./plasmic-init-client.tsx
     await fs.writeFile(
@@ -176,6 +198,12 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       projectApiToken,
       projectPath,
     });
+
+    // ./app/sitemap.ts
+    await fs.writeFile(
+      path.join(projectPath, "app", `sitemap.${jsOrTs}`),
+      makeSitemap_app_codegen(jsOrTs)
+    );
 
     // Read plasmic.json so we can wire each top-level project's plasmic.css
     // import directly into the root layout template.
@@ -216,6 +244,12 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
   // Delete existing pages
   deleteGlob(path.join(projectPath, "pages", "*.*"));
 
+  // ./pages/robots.txt.ts
+  await fs.writeFile(
+    path.join(projectPath, "pages", `robots.txt.${jsOrTs}`),
+    makeRobots_pages(jsOrTs)
+  );
+
   if (scheme === "loader") {
     // ./plasmic-init.ts
     await fs.writeFile(
@@ -237,6 +271,12 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       path.join(projectPath, "pages", `[[...catchall]].${jsOrTs}x`),
       makeCatchallPage_pages_loader(jsOrTs)
     );
+
+    // ./pages/sitemap.xml.ts
+    await fs.writeFile(
+      path.join(projectPath, "pages", `sitemap.xml.${jsOrTs}`),
+      makeSitemap_pages_loader(jsOrTs)
+    );
   } else {
     // ./pages/plasmic-host.tsx
     await fs.writeFile(
@@ -253,6 +293,12 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       projectApiToken,
       projectPath,
     });
+
+    // ./pages/sitemap.xml.ts
+    await fs.writeFile(
+      path.join(projectPath, "pages", `sitemap.xml.${jsOrTs}`),
+      makeSitemap_pages_codegen(jsOrTs)
+    );
 
     // Read plasmic.json so we can wire each top-level project's plasmic.css
     // import directly into the _app template.

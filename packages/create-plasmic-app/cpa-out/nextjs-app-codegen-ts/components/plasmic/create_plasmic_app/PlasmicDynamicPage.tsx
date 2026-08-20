@@ -61,7 +61,7 @@ import {
   useGlobalActions
 } from "@plasmicapp/host";
 
-import { unstable_usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 
 import type { QueryComponentNode } from "@plasmicapp/react-web/lib/data-sources";
 import { generateDynamicMetadata, PageCtx } from "./PlasmicDynamicPageServer"; // plasmic-import: AO44A-w7hh/rscServer
@@ -181,7 +181,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const $q = unstable_usePlasmicQueries(pageQueryTree, $ctx, $props, null);
+  const $q = usePlasmicQueries(pageQueryTree, { $ctx, $props, $state: null });
 
   const pageMetadata = generateDynamicMetadata(
     wrapQueriesWithLoadingProxy($q),
