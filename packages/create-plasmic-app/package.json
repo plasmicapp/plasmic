@@ -26,7 +26,6 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/findup-sync": "^2.0.2",
     "@types/glob": "^7.2.0",
     "@types/inquirer": "^8.2.13",
     "@types/jest": "^26.0.24",
@@ -43,7 +42,6 @@
     "@sentry/node": "^6.2.2",
     "chalk": "^4.1.0",
     "execa": "^5.0.0",
-    "findup-sync": "^4.0.0",
     "glob": "^7.1.6",
     "inquirer": "^8.2.7",
     "lodash": "^4.17.21",

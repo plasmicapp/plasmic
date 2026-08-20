@@ -3,7 +3,11 @@ import * as inquirer from "inquirer";
 import * as path from "path";
 import yargs from "yargs";
 import { spawnOrFail } from "./src/utils/cmd-utils";
-import { PlatformType, SchemeType } from "./src/utils/types";
+import {
+  PackageManagerType,
+  PlatformType,
+  SchemeType,
+} from "./src/utils/types";
 
 // https://studio.plasmic.app/projects/47tFXWjN2C4NyHFGGpaYQ3
 const projectId = "47tFXWjN2C4NyHFGGpaYQ3";
@@ -60,12 +64,17 @@ async function run() {
     `Runs create-plasmic-app with predefined sets of args for you.
 
 Valid arg sets:\n\tall\n\t${allArgSetNames.join("\n\t")}`,
-    (yargs2) => yargs2
+    (yargs2) =>
+      yargs2.option("package-manager", {
+        describe: "Package manager to scaffold and build with",
+        choices: ["npm", "yarn", "pnpm"],
+        default: "npm",
+      })
   );
 
-  const cliArgSetNames = yargsCommand.strict().argv["arg-sets"] as
-    | string[]
-    | undefined;
+  const cliArgv = yargsCommand.strict().argv;
+  const packageManager = cliArgv["package-manager"] as PackageManagerType;
+  const cliArgSetNames = cliArgv["arg-sets"] as string[] | undefined;
 
   // If arg sets were not passed in via CLI args, prompt for them.
   const selectedArgSetNames =
@@ -123,11 +132,13 @@ Valid arg sets:\n\tall\n\t${allArgSetNames.join("\n\t")}`,
       `--scheme=${argSet.scheme}`,
       `--typescript=${argSet.typescript}`,
       `--projectId=${projectId}`,
+      `--packageManager=${packageManager}`,
     ].join(" ");
 
     const cpa = path.resolve("dist/index.js");
     // this probably only works on *nix systems, sorry :(
-    const cmd = `mkdir -p ${tmpOutDir} && cd ${tmpOutDir} && node ${cpa} ${projectName} ${options} && cd ${projectName} && yarn build`;
+    const runCmd = packageManager === "yarn" ? "yarn" : `${packageManager} run`;
+    const cmd = `mkdir -p ${tmpOutDir} && cd ${tmpOutDir} && node ${cpa} ${projectName} ${options} && cd ${projectName} && ${runCmd} build`;
     await spawnOrFail(cmd);
 
     const tmpProjectDir = path.join(tmpOutDir, projectName);

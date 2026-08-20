@@ -6,6 +6,7 @@ export type PlatformOptions = {
   };
 };
 export type SchemeType = "codegen" | "loader";
+export type PackageManagerType = "npm" | "yarn" | "yarn2" | "pnpm";
 
 export type PlasmicCssImport = {
   projectId: string;

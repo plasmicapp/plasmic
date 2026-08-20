@@ -3,14 +3,18 @@ import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import { deleteGlob } from "../utils/file-utils";
-import { installUpgrade } from "../utils/npm-utils";
+import {
+  initYarnBerryProject,
+  installUpgrade,
+  packageManagerCommand,
+} from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
 import { makePlasmicHostPage_fileRouter_codegen } from "./templates/file-router/plasmic-host";
 import { makeCustomRoot_file_router_codegen } from "./templates/file-router/root";
 
 export const tanstackStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, template } = args;
+    const { projectPath, template, packageManager } = args;
     if (template) {
       console.warn(
         `Warning: Ignoring template '${template}' (argument is not supported by TanStack).`
@@ -39,27 +43,34 @@ export const tanstackStrategy: CPAStrategy = {
       "--framework React",
       "--router-only",
       "--no-toolchain",
-      "--package-manager yarn",
+      `--package-manager ${packageManagerCommand(packageManager)}`,
       "--git",
       "--no-intent",
       "--no-examples",
       "--yes",
+      // Berry must install into the project we set up below, not the default PnP one
+      ...(packageManager === "yarn2" ? ["--no-install"] : []),
     ].join(" ");
 
     await spawnOrFail(createCommand);
 
+    if (packageManager === "yarn2") {
+      await initYarnBerryProject(fullProjectPath);
+    }
+
     // Install peer-dep of @tanstack/react-router-with-query
     await installUpgrade("@tanstack/react-query", {
       workingDir: projectPath,
+      packageManager,
     });
   },
-  installDeps: async ({ scheme, projectPath }) => {
+  installDeps: async ({ scheme, projectPath, packageManager }) => {
     if (scheme === "loader") {
       throw new Error(
         "Plasmic loader scheme is not supported for TanStack platform. Please use the codegen scheme instead."
       );
     } else {
-      return await installCodegenDeps({ projectPath });
+      return await installCodegenDeps({ projectPath, packageManager });
     }
   },
   overwriteConfig: async (args) => {
@@ -106,7 +117,8 @@ export const tanstackStrategy: CPAStrategy = {
 };
 
 async function generateFilesFileRouterTemplate(args: GenerateFilesArgs) {
-  const { projectPath, scheme, projectId, projectApiToken } = args;
+  const { projectPath, scheme, projectId, projectApiToken, packageManager } =
+    args;
 
   // Delete existing pages
   deleteGlob(path.join(projectPath, "src/routes", "*.*"));
@@ -136,6 +148,7 @@ async function generateFilesFileRouterTemplate(args: GenerateFilesArgs) {
       projectId,
       projectApiToken,
       projectPath,
+      packageManager,
     });
   }
 }

@@ -10,7 +10,7 @@ import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
 import { ensure } from "./lang-utils";
 import { installUpgrade } from "./npm-utils";
-import { JsOrTs, PlatformType } from "./types";
+import { JsOrTs, PackageManagerType, PlatformType } from "./types";
 
 /**
  * Runs the search pattern through `glob` and deletes all resulting files
@@ -215,12 +215,16 @@ export async function getPlasmicConfig(
 
 // Create tsconfig.json if it doesn't exist
 // this will force Plasmic to recognize Typescript
-export async function ensureTsconfig(projectPath: string): Promise<void> {
+export async function ensureTsconfig(
+  projectPath: string,
+  packageManager: PackageManagerType
+): Promise<void> {
   const tsconfigPath = path.join(projectPath, "tsconfig.json");
   if (!existsSync(tsconfigPath)) {
     await fs.writeFile(tsconfigPath, "");
     const installTsResult = await installUpgrade("typescript @types/react", {
       workingDir: projectPath,
+      packageManager,
     });
     if (!installTsResult) {
       throw new Error("Failed to install Typescript");

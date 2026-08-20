@@ -60,7 +60,7 @@ import {
 
 import { useMutablePlasmicQueryData } from "@plasmicapp/query";
 
-import { unstable_usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 import type {
   PlasmicQuery,
   PlasmicQueryResult
@@ -135,7 +135,7 @@ export const serverQueryTree: QueryComponentNode = {
   type: "component",
   queries: {
     sha256: {
-      id: "custom:krgWtF9Kkesx",
+      id: "custom-code:krgWtF9Kkesx",
       fn: async ({ $q, $props, $ctx, $state }) => {
         console.log("Running SHA-256");
         const data = new TextEncoder().encode($ctx.params.slug);
@@ -199,7 +199,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const $q = unstable_usePlasmicQueries(serverQueryTree, $ctx, $props, null);
+  const $q = usePlasmicQueries(serverQueryTree, { $ctx, $props, $state: null });
 
   const styleTokensClassNames = _useStyleTokens();
 

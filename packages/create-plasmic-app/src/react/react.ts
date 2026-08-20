@@ -9,12 +9,12 @@ import {
   generateWelcomePage,
   getPlasmicConfig,
 } from "../utils/file-utils";
-import { installUpgrade } from "../utils/npm-utils";
+import { initYarnBerryProject, installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy } from "../utils/strategy";
 
 export const reactStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, jsOrTs } = args;
+    const { projectPath, jsOrTs, packageManager } = args;
     let { template } = args;
 
     /* create-vite package checks if the targetDir doesn't exist then it creates the targetDir in the
@@ -45,14 +45,19 @@ export const reactStrategy: CPAStrategy = {
 
     const templateArg = template ? ` --template ${template}` : "";
     await spawnOrFail(`${createCommand}${templateArg}`);
+
+    if (packageManager === "yarn2") {
+      await initYarnBerryProject(fullProjectPath);
+    }
   },
-  installDeps: async ({ projectPath, scheme }) => {
+  installDeps: async ({ projectPath, scheme, packageManager }) => {
     if (scheme === "loader") {
       return await installUpgrade("@plasmicapp/loader-react", {
         workingDir: projectPath,
+        packageManager,
       });
     } else {
-      return await installCodegenDeps({ projectPath });
+      return await installCodegenDeps({ projectPath, packageManager });
     }
   },
   overwriteConfig: async (args) => {
@@ -81,6 +86,7 @@ export const reactStrategy: CPAStrategy = {
     projectId,
     projectPath,
     jsOrTs,
+    packageManager,
   }) => {
     if (scheme === "loader") {
       // Nothing to do
@@ -92,6 +98,7 @@ export const reactStrategy: CPAStrategy = {
         projectId,
         projectApiToken,
         projectPath,
+        packageManager,
       });
 
       // Pick a page for the entry point App.tsx page

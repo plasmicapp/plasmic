@@ -2,10 +2,11 @@
 @typescript-eslint/no-var-requires: 0,
 */
 import * as execa from "execa";
-import { existsSync } from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 import * as semver from "semver";
 import updateNotifier from "update-notifier";
+import { PackageManagerType } from "./types";
 
 /**
  * Call this to check if there's an update available
@@ -54,6 +55,13 @@ export async function spawn(
   return cp.exitCode === 0;
 }
 
+interface InstallOpts {
+  global?: boolean;
+  dev?: boolean;
+  workingDir?: string;
+  packageManager: PackageManagerType;
+}
+
 /**
  * Install a package using either `npm` or `yarn`
  * @param pkg - package name
@@ -62,7 +70,7 @@ export async function spawn(
  */
 export async function installUpgrade(
   pkg: string,
-  opts: { global?: boolean; dev?: boolean; workingDir?: string } = {}
+  opts: InstallOpts
 ): Promise<boolean> {
   const cmd = installCommand(pkg, opts);
   const r = await spawn(cmd, opts.workingDir);
@@ -83,11 +91,8 @@ export async function installUpgrade(
  * @param opts
  * @returns
  */
-function installCommand(
-  pkg: string,
-  opts: { global?: boolean; dev?: boolean; workingDir?: string } = {}
-): string {
-  const mgr = detectPackageManager(opts.workingDir);
+function installCommand(pkg: string, opts: InstallOpts): string {
+  const mgr = opts.packageManager;
   if (mgr === "yarn") {
     if (opts.global) {
       return `yarn global add ${pkg}`;
@@ -95,6 +100,14 @@ function installCommand(
       return `yarn add --dev --ignore-scripts -W ${pkg}`;
     } else {
       return `yarn add --ignore-scripts -W ${pkg}`;
+    }
+  } else if (mgr === "yarn2") {
+    if (opts.global) {
+      return `npm install -g ${pkg}`;
+    } else if (opts.dev) {
+      return `yarn add -D ${pkg}`;
+    } else {
+      return `yarn add ${pkg}`;
     }
   } else if (mgr === "pnpm") {
     if (opts.global) {
@@ -116,23 +129,63 @@ function installCommand(
 }
 
 /**
- * Detect if you should use `npm` or `yarn`
- * @param dir
- * @returns
+ * The package manager to install with: the one requested, else the one we were run
+ * with. `npx` overwrites npm_config_user_agent, so this must be read before spawning
+ * nested create commands.
  */
-export function detectPackageManager(dir?: string): "yarn" | "pnpm" | "npm" {
-  // We should look only inside the directory instead of looking to the ancestors
-  // with findupSync, the reason for this is that the current gatsby template
-  // uses npm, so if the user has some yarn.lock in a parent directory it's
-  // going to run yarn commands, this is going to trigger an error with sharp
-
-  const yarnLock = existsSync(path.join(dir ? dir : "", "yarn.lock"));
-  const pnpmLock = existsSync(path.join(dir ? dir : "", "pnpm-lock.yaml"));
-  if (yarnLock) {
-    return "yarn";
-  } else if (pnpmLock) {
-    return "pnpm";
-  } else {
-    return "npm";
+export function resolvePackageManager(
+  requested?: PackageManagerType
+): PackageManagerType {
+  if (requested) {
+    return requested === "yarn"
+      ? yarnVariant(installedYarnVersion())
+      : requested;
   }
+  const [name, version] = (process.env.npm_config_user_agent ?? "")
+    .split(" ")[0]
+    .split("/");
+  if (name === "yarn") {
+    return yarnVariant(version);
+  }
+  return name === "pnpm" ? "pnpm" : "npm";
+}
+
+function yarnVariant(version: string | undefined): PackageManagerType {
+  const parsed = version ? semver.coerce(version) : null;
+  return parsed && parsed.major >= 2 ? "yarn2" : "yarn";
+}
+
+function installedYarnVersion(): string | undefined {
+  try {
+    return execa.commandSync("yarn --version").stdout.trim();
+  } catch {
+    return undefined;
+  }
+}
+
+/** Scaffolders and run scripts only know the `yarn` command. */
+export function packageManagerCommand(
+  mgr: PackageManagerType
+): "npm" | "yarn" | "pnpm" {
+  return mgr === "yarn2" ? "yarn" : mgr;
+}
+
+/** Run a locally installed bin. `npx` can't see Yarn Berry's PnP installs. */
+export function packageManagerExec(mgr: PackageManagerType): string {
+  const cmd = packageManagerCommand(mgr);
+  return cmd === "yarn" ? "yarn" : cmd === "pnpm" ? "pnpm exec" : "npx";
+}
+
+/**
+ * Make a freshly scaffolded app its own Yarn Berry project. Without a lockfile Berry
+ * claims the app for the nearest ancestor project, and its default PnP linker can't
+ * load CommonJS from Node 24's ESM resolver (EBADF), which breaks every framework we
+ * scaffold. Must run before anything invokes yarn in `projectPath`.
+ */
+export async function initYarnBerryProject(projectPath: string): Promise<void> {
+  await fs.writeFile(path.join(projectPath, "yarn.lock"), "");
+  await fs.writeFile(
+    path.join(projectPath, ".yarnrc.yml"),
+    "nodeLinker: node-modules\n"
+  );
 }

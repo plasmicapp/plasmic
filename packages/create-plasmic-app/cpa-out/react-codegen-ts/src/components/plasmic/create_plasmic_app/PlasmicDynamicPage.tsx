@@ -57,7 +57,7 @@ import {
 
 import { useMutablePlasmicQueryData } from "@plasmicapp/query";
 
-import { unstable_usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { usePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 import type {
   PlasmicQuery,
   PlasmicQueryResult
@@ -189,7 +189,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const $q = unstable_usePlasmicQueries(serverQueryTree, $ctx, $props, null);
+  const $q = usePlasmicQueries(serverQueryTree, { $ctx, $props, $state: null });
 
   const styleTokensClassNames = _useStyleTokens();
 

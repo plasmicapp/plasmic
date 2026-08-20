@@ -370,9 +370,6 @@ importers:
       execa:
         specifier: ^5.0.0
         version: 5.1.1
-      findup-sync:
-        specifier: ^4.0.0
-        version: 4.0.0
       glob:
         specifier: ^7.1.6
         version: 7.2.3
@@ -398,9 +395,6 @@ importers:
         specifier: ^16.2.2
         version: 16.2.2
     devDependencies:
-      '@types/findup-sync':
-        specifier: ^2.0.2
-        version: 2.0.2
       '@types/glob':
         specifier: ^7.2.0
         version: 7.2.0

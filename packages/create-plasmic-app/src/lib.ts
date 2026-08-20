@@ -3,10 +3,15 @@ import chalk from "chalk";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
 import { ensureTsconfig, overwriteReadme } from "./utils/file-utils";
-import { detectPackageManager } from "./utils/npm-utils";
+import {
+  packageManagerCommand,
+  packageManagerExec,
+  resolvePackageManager,
+} from "./utils/npm-utils";
 import { CPAStrategy } from "./utils/strategy";
 import {
   JsOrTs,
+  PackageManagerType,
   PlatformOptions,
   PlatformType,
   SchemeType,
@@ -34,6 +39,7 @@ export interface CreatePlasmicAppArgs {
   jsOrTs: JsOrTs;
   projectApiToken?: string;
   template?: string;
+  packageManager?: PackageManagerType;
 }
 
 export async function create(args: CreatePlasmicAppArgs): Promise<void> {
@@ -47,6 +53,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     template,
   } = args;
   let { projectApiToken } = args;
+  const packageManager = resolvePackageManager(args.packageManager);
   console.log("Let's get started! Here's what we'll do: ");
   console.log("1. Authenticate with Plasmic");
   console.log("2. Create a React/Next/Gatsby repo");
@@ -87,16 +94,18 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   // Create project using strategy for platform
   await cpaStrategy.create({
     projectPath: resolvedProjectPath,
+    projectId,
     jsOrTs,
     template,
     platformOptions,
+    packageManager,
   });
 
   // Ensure that we have a empty tsconfig and @types packages.
   // Gatsby and Next.js by default support typescript handling internally
   // tsconfig so we don't have to ensure it.
   if (jsOrTs === "ts" && platform === "react") {
-    await ensureTsconfig(resolvedProjectPath);
+    await ensureTsconfig(resolvedProjectPath, packageManager);
   }
 
   // Make sure we have an api token for loader
@@ -113,6 +122,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     scheme,
     projectPath: resolvedProjectPath,
     jsOrTs,
+    packageManager,
   });
 
   if (!installResult) {
@@ -137,14 +147,14 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     projectId,
     projectApiToken,
     platformOptions,
+    packageManager,
   });
 
   /**
    * INSTRUCT USER ON NEXT STEPS
    */
-  const pkgMgr = detectPackageManager(resolvedProjectPath);
-  const npmRunCmd =
-    pkgMgr === "yarn" ? "yarn" : pkgMgr === "pnpm" ? "pnpm run" : "npm run";
+  const pmCmd = packageManagerCommand(packageManager);
+  const npmRunCmd = pmCmd === "yarn" ? "yarn" : `${pmCmd} run`;
   const command =
     platform === "nextjs"
       ? `${npmRunCmd} dev`
@@ -183,7 +193,9 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     console.log(
       "To watch for changes in Plasmic components, in a separate terminal run:"
     );
-    console.log(chalk.bold(`npx plasmic watch`));
+    console.log(
+      chalk.bold(`${packageManagerExec(packageManager)} plasmic watch`)
+    );
   }
 }
 

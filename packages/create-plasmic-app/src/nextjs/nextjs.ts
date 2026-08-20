@@ -10,7 +10,11 @@ import {
   getPlasmicConfig,
 } from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
-import { installUpgrade } from "../utils/npm-utils";
+import {
+  initYarnBerryProject,
+  installUpgrade,
+  packageManagerCommand,
+} from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
 import { PlasmicCssImport } from "../utils/types";
 import { makeLayout_app_codegen } from "./templates/app-codegen/layout";
@@ -38,28 +42,40 @@ import {
 
 export const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, template, jsOrTs, platformOptions } = args;
+    const { projectPath, template, jsOrTs, platformOptions, packageManager } =
+      args;
     const typescriptArg = `--${jsOrTs}`;
     const experimentalAppArg = platformOptions.nextjs?.appDir
       ? "--app"
       : "--no-app";
     const templateArg = template ? ` --example ${template}` : "";
+    const isYarnBerry = packageManager === "yarn2";
     // NOTE: Not using create-next-app@latest to keep major version bumps deliberate
     const createCommand =
       `npx create-next-app@16 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
-      ` --eslint --no-src-dir  --import-alias "@/*" --no-tailwind`;
+      ` --use-${packageManagerCommand(
+        packageManager
+      )} --eslint --no-src-dir  --import-alias "@/*" --no-tailwind` +
+      // Berry must install into the project we set up below, not the default PnP one
+      (isYarnBerry ? " --skip-install" : "");
 
     // Default Next.js starter already supports Typescript
     // See where we `touch tsconfig.json` later on
     await spawnOrFail(createCommand);
+
+    if (isYarnBerry) {
+      await initYarnBerryProject(projectPath);
+      await spawnOrFail("yarn install", projectPath);
+    }
   },
-  installDeps: async ({ scheme, projectPath }) => {
+  installDeps: async ({ scheme, projectPath, packageManager }) => {
     if (scheme === "loader") {
       return await installUpgrade("@plasmicapp/loader-nextjs", {
         workingDir: projectPath,
+        packageManager,
       });
     } else {
-      return await installCodegenDeps({ projectPath });
+      return await installCodegenDeps({ projectPath, packageManager });
     }
   },
   overwriteConfig: async (args) => {
@@ -129,7 +145,14 @@ a {
 }
 
 async function generateFilesAppDir(args: GenerateFilesArgs) {
-  const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
+  const {
+    projectPath,
+    scheme,
+    jsOrTs,
+    projectId,
+    projectApiToken,
+    packageManager,
+  } = args;
 
   // Delete existing pages
   deleteGlob(path.join(projectPath, "app", "page.*"));
@@ -197,6 +220,7 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       projectId,
       projectApiToken,
       projectPath,
+      packageManager,
     });
 
     // ./app/sitemap.ts
@@ -239,7 +263,14 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
 }
 
 async function generateFilesPagesDir(args: GenerateFilesArgs) {
-  const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
+  const {
+    projectPath,
+    scheme,
+    jsOrTs,
+    projectId,
+    projectApiToken,
+    packageManager,
+  } = args;
 
   // Delete existing pages
   deleteGlob(path.join(projectPath, "pages", "*.*"));
@@ -292,6 +323,7 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       projectId,
       projectApiToken,
       projectPath,
+      packageManager,
     });
 
     // ./pages/sitemap.xml.ts

@@ -1,10 +1,17 @@
-import { JsOrTs, PlatformOptions, SchemeType } from "./types";
+import {
+  JsOrTs,
+  PackageManagerType,
+  PlatformOptions,
+  SchemeType,
+} from "./types";
 
 export interface CreateArgs {
   projectPath: string;
+  projectId: string;
   template?: string;
   jsOrTs: JsOrTs;
   platformOptions: PlatformOptions;
+  packageManager: PackageManagerType;
 }
 
 export interface ConfigArgs {
@@ -23,6 +30,7 @@ export interface GenerateFilesArgs {
   projectId: string;
   projectApiToken: string | undefined;
   platformOptions: PlatformOptions;
+  packageManager: PackageManagerType;
 }
 
 export interface BuildArgs {
@@ -34,6 +42,7 @@ export interface InstallArgs {
   scheme: SchemeType;
   projectPath: string;
   jsOrTs: JsOrTs;
+  packageManager: PackageManagerType;
 }
 
 // TODO: Remove this interface and use a single "create" entry point.

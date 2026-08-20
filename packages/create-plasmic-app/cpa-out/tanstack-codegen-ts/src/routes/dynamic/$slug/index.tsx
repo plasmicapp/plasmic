@@ -9,7 +9,7 @@ import {
   serverQueryTree
 } from "../../../components/plasmic/create_plasmic_app/PlasmicDynamicPage";
 import { createFileRoute } from "@tanstack/react-router";
-import { unstable_executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
+import { executePlasmicQueries } from "@plasmicapp/react-web/lib/data-sources";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
 export const Route = createFileRoute("/dynamic/$slug/")({
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/dynamic/$slug/")({
         string | string[] | undefined
       >
     };
-    const { cache: prefetchedCache } = await unstable_executePlasmicQueries(
+    const { cache: prefetchedCache } = await executePlasmicQueries(
       serverQueryTree,
       { $props: {}, $ctx }
     );
