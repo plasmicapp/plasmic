@@ -81,14 +81,6 @@ export class CopilotRateLimitExceededError extends ApiError {
   statusCode = 429;
 }
 
-export class CaptchaError extends ApiError {
-  name = "CaptchaError";
-  statusCode = 503;
-  constructor() {
-    super("Service unavailable");
-  }
-}
-
 export class PublicCopilotServiceUnavailable extends ApiError {
   name = "PublicCopilotServiceUnavailable";
   statusCode = 503;
@@ -140,7 +132,6 @@ const errorNameRegistry = {
   BundleTypeError,
   EntityNotFound: NotFoundError,
   BadRequestError,
-  CaptchaError,
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,
   PreconditionFailedError,
