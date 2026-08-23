@@ -9,7 +9,6 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { createPath } from "history";
 import React, { useEffect } from "react";
 
@@ -25,7 +24,7 @@ export const AlertSpec = {
       const { projectId: newProjectId } =
         await studioCtx.appCtx.api.cloneProject(studioCtx.siteInfo.id);
       assert(window.top, "Unexpected null reference");
-      window.top.location.href = fillRoute(APP_ROUTES.project, {
+      window.top.location.href = APP_ROUTES.project.fill({
         projectId: newProjectId,
       });
     },
@@ -69,8 +68,7 @@ export const AlertSpec = {
     stateVariant: "unlogged",
     actionFn: async (studioCtx: StudioCtx) => {
       assert(window.top, "Unexpected null reference");
-      window.top.location.href = fillRoute(
-        APP_ROUTES.signup,
+      window.top.location.href = APP_ROUTES.signup.fill(
         {},
         { continueTo: createPath(studioCtx.appCtx.history.location) }
       );
@@ -81,8 +79,7 @@ export const AlertSpec = {
     stateVariant: "welcomeGuest",
     actionFn: async (studioCtx: StudioCtx) => {
       assert(window.top, "Unexpected null reference");
-      window.top.location.href = fillRoute(
-        APP_ROUTES.signup,
+      window.top.location.href = APP_ROUTES.signup.fill(
         {},
         { continueTo: createPath(studioCtx.appCtx.history.location) }
       );

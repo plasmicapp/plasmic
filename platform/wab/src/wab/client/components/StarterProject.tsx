@@ -8,15 +8,14 @@ import {
   PlasmicStarterProject,
   PlasmicStarterProject__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit/PlasmicStarterProject";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, interleave, unexpected } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Tooltip } from "antd";
 import L from "lodash";
 import React, { ReactNode } from "react";
-import { useHistory } from "react-router-dom";
 
 interface StarterProjectProps {
   name: string;
@@ -158,7 +157,7 @@ function StarterProject(props: StarterProjectProps) {
                 .createProject({ workspaceId: props.workspaceId })
                 .then(({ project }) => {
                   history.push(
-                    fillRoute(APP_ROUTES.project, {
+                    APP_ROUTES.project.fill({
                       projectId: project.id,
                     })
                   );
@@ -187,7 +186,7 @@ function StarterProject(props: StarterProjectProps) {
               );
 
               // Perform a full page load so that we aren't using stale JS.
-              location.href = fillRoute(APP_ROUTES.project, {
+              location.href = APP_ROUTES.project.fill({
                 projectId: newProjectId,
               });
             } else if (props.baseProjectId) {
@@ -200,7 +199,7 @@ function StarterProject(props: StarterProjectProps) {
               );
 
               // Perform a full page load so that we aren't using stale JS.
-              location.href = fillRoute(APP_ROUTES.project, {
+              location.href = APP_ROUTES.project.fill({
                 projectId: newProjectId,
               });
             } else {

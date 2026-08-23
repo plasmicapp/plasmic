@@ -1,8 +1,8 @@
 /** @format */
 
-import { promptNewWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
-import { ProjectsFilterProps } from "@/wab/client/components/dashboard/ProjectsFilter";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
+import { ProjectsFilterProps } from "@/wab/client/components/dashboard/ProjectsFilter";
+import { promptNewWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
 import Textbox from "@/wab/client/components/widgets/Textbox";
@@ -12,6 +12,7 @@ import {
   PlasmicTeamPageHeader,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPageHeader";
 import ChartsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChartSvg";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";
@@ -20,10 +21,8 @@ import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
 
 interface TeamPageHeaderProps extends DefaultTeamPageHeaderProps {
   team?: ApiTeam;
@@ -121,7 +120,7 @@ function TeamPageHeader_(
       numMembers={`${numMembers}`}
       settingsButton={{
         props: {
-          href: fillRoute(APP_ROUTES.orgSettings, { teamId: team.id }),
+          href: APP_ROUTES.orgSettings.fill({ teamId: team.id }),
           tooltip: `${ORGANIZATION_CAP} settings`,
         },
         wrap: (node) => {
@@ -130,7 +129,7 @@ function TeamPageHeader_(
               <>
                 {node}
                 <IconButton
-                  href={fillRoute(APP_ROUTES.orgAnalytics, { teamId: team.id })}
+                  href={APP_ROUTES.orgAnalytics.fill({ teamId: team.id })}
                   tooltip={`${ORGANIZATION_CAP} analytics`}
                 >
                   <Icon icon={ChartsvgIcon} />

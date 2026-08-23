@@ -1,5 +1,4 @@
 import { useUsersMap } from "@/wab/client/api-hooks";
-import { useRRouteMatch } from "@/wab/client/cli-routes";
 import MenuItem from "@/wab/client/components/MenuItem";
 import { renderContentEntryFormFields } from "@/wab/client/components/cms/CmsEntryDetails";
 import {
@@ -14,14 +13,16 @@ import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { useApi } from "@/wab/client/contexts/AppContexts";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { Redirect } from "@/wab/client/route/Redirect";
+import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { CmsDatabaseId, CmsRowId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { formatDateMediumTimeShort } from "@/wab/shared/utils/date-utils";
 import { Form, message } from "antd";
 import React from "react";
-import { Redirect, Route, Switch, useHistory } from "react-router";
 
 export function CmsEntryHistory(props: {
   databaseId: CmsDatabaseId;
@@ -47,81 +48,91 @@ export function CmsEntryHistory(props: {
       }}
     >
       <div style={{ overflow: "auto", maxHeight: "100%" }}>
-        <Switch>
-          <Route
-            path={APP_ROUTES.cmsEntryRevision.pattern}
-            render={({ match }) => (
-              <>
-                {revisions.map((revision) => (
-                  <MenuItem
-                    selected={match.params.revisionId === revision.id}
-                    href={fillRoute(APP_ROUTES.cmsEntryRevision, {
-                      revisionId: revision.id,
-                      tableId,
-                      rowId,
-                      databaseId,
-                    })}
-                    key={revision.id}
-                  >
-                    <div>
-                      {formatDateMediumTimeShort(new Date(revision.createdAt))}
+        <Switch
+          cases={[
+            switchCase({
+              route: APP_ROUTES.cmsEntryRevision,
+              render: ({ revisionId }) => (
+                <>
+                  {revisions.map((revision) => (
+                    <MenuItem
+                      selected={revisionId === revision.id}
+                      href={APP_ROUTES.cmsEntryRevision.fill({
+                        revisionId: revision.id,
+                        tableId,
+                        rowId,
+                        databaseId,
+                      })}
+                      key={revision.id}
+                    >
                       <div>
-                        {revision.isPublished ? (
-                          <span style={{ color: "#4b4" }}>Published</span>
-                        ) : (
-                          <span style={{ color: "#999" }}>Autosave</span>
+                        {formatDateMediumTimeShort(
+                          new Date(revision.createdAt)
                         )}
-                        {userById &&
-                          revision.createdById &&
-                          userById[revision.createdById] &&
-                          ((user) => (
-                            <span>
-                              {" "}
-                              <span style={{ color: "#999" }}>by</span>{" "}
-                              {user.firstName} {user.lastName}
-                            </span>
-                          ))(userById[revision.createdById])}
+                        <div>
+                          {revision.isPublished ? (
+                            <span style={{ color: "#4b4" }}>Published</span>
+                          ) : (
+                            <span style={{ color: "#999" }}>Autosave</span>
+                          )}
+                          {userById &&
+                            revision.createdById &&
+                            userById[revision.createdById] &&
+                            ((user) => (
+                              <span>
+                                {" "}
+                                <span style={{ color: "#999" }}>by</span>{" "}
+                                {user.firstName} {user.lastName}
+                              </span>
+                            ))(userById[revision.createdById])}
+                        </div>
                       </div>
-                    </div>
-                  </MenuItem>
-                ))}
-              </>
-            )}
-          />
-          <Route
-            path={APP_ROUTES.cmsEntryRevisions.pattern}
-            render={() => {
-              if (revisions.length === 0) {
-                return "No revision history";
-              } else {
-                return (
-                  <Redirect
-                    to={fillRoute(APP_ROUTES.cmsEntryRevision, {
-                      ...props,
-                      revisionId: revisions[0].id,
-                    })}
-                  />
-                );
-              }
-            }}
-          />
-        </Switch>
+                    </MenuItem>
+                  ))}
+                </>
+              ),
+            }),
+            switchCase({
+              route: APP_ROUTES.cmsEntryRevisions,
+              render: () => {
+                if (revisions.length === 0) {
+                  return "No revision history";
+                } else {
+                  return (
+                    <Redirect
+                      to={APP_ROUTES.cmsEntryRevision.fill({
+                        ...props,
+                        revisionId: revisions[0].id,
+                      })}
+                    />
+                  );
+                }
+              },
+            }),
+            switchDefault({ render: () => null }),
+          ]}
+        />
       </div>
-      <Route
-        exact
-        path={APP_ROUTES.cmsEntryRevision.pattern}
-        render={({ match }) => (
-          <EntryRevisionView {...props} key={match.params.revisionId} />
-        )}
+      <Switch
+        cases={[
+          switchCase({
+            exact: true,
+            route: APP_ROUTES.cmsEntryRevision,
+            render: ({ revisionId }) => (
+              <EntryRevisionView {...props} key={revisionId} />
+            ),
+          }),
+          switchDefault({ render: () => null }),
+        ]}
       />
     </div>
   );
 }
 
 function EntryRevisionView() {
-  const { databaseId, tableId, rowId, revisionId } = useRRouteMatch(
+  const { databaseId, tableId, rowId, revisionId } = useMatchedRoute(
     APP_ROUTES.cmsEntryRevision
-  )!.params;
+  )!.pathParams;
 
   const database = useCmsDatabase(databaseId);
   const table = useCmsTable(databaseId, tableId);
@@ -180,7 +191,7 @@ function EntryRevisionView() {
               );
 
               history.push(
-                fillRoute(APP_ROUTES.cmsEntry, { databaseId, tableId, rowId })
+                APP_ROUTES.cmsEntry.fill({ databaseId, tableId, rowId })
               );
             }}
           >

@@ -11,16 +11,17 @@ import {
   DefaultCmsEntriesListProps,
   PlasmicCmsEntriesList,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntriesList";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { ApiCmseRow, CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { naturalSort } from "@/wab/shared/sort";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu } from "antd";
 import fastStringify from "fast-stringify";
 import { debounce } from "lodash";
 import * as React from "react";
-import { useHistory, useRouteMatch } from "react-router";
 
 interface SortConfig {
   key: string;
@@ -100,11 +101,14 @@ function CmsEntriesList_(
   const { rows, ...rest } = props;
   const api = useApi();
   const history = useHistory();
-  const match = useRouteMatch<{
-    databaseId: CmsDatabaseId;
-    tableId: CmsTableId;
-  }>();
-  const { databaseId, tableId } = match.params;
+  const match = ensure(
+    useMatchedRoute<{
+      databaseId: CmsDatabaseId;
+      tableId: CmsTableId;
+    }>(),
+    "CmsEntriesList must be rendered within a matched route"
+  );
+  const { databaseId, tableId } = match.pathParams;
   const table = useCmsTable(databaseId, tableId);
   const mutateTableRows = useMutateTableRows();
   const [query, setQuery] = React.useState("");
@@ -188,7 +192,7 @@ function CmsEntriesList_(
           });
           await mutateTableRows(tableId);
           history.push(
-            fillRoute(APP_ROUTES.cmsEntry, {
+            APP_ROUTES.cmsEntry.fill({
               databaseId,
               tableId,
               rowId: row.id,

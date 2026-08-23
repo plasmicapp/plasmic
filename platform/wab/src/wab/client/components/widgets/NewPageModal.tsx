@@ -217,7 +217,10 @@ function NewPageModal(props: NewPageModalProps) {
                         }
                         const route = APP_ROUTES.projectFullPreview.pattern
                           .replace(":projectId", comp.projectId)
-                          .replace(":previewPath*", template.component.uuid);
+                          .replace(
+                            "{/*previewPath}",
+                            `/${template.component.uuid}`
+                          );
                         window.open(route, "_blank");
                       }}
                     />

@@ -1,4 +1,3 @@
-import { useRRouteMatch } from "@/wab/client/cli-routes";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import {
   UniqueFieldStatus,
@@ -24,6 +23,8 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import Trash2Icon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash2";
 import ArrowDownSvg from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowDownSvg";
 import ArrowUpSvg from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpSvg";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import {
   ApiCmsDatabase,
   CmsDatabaseId,
@@ -36,7 +37,6 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { assert, ensure, ensureType } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { naturalSort } from "@/wab/shared/sort";
 import { PlasmicImg } from "@plasmicapp/react-web";
 import Pickr from "@simonwep/pickr";
@@ -57,7 +57,6 @@ import * as React from "react";
 import { ReactElement, ReactNode, createContext, useContext } from "react";
 import { useHover } from "react-aria";
 import { GrNewWindow } from "react-icons/all";
-import { useHistory } from "react-router";
 const LazyRichTextEditor = React.lazy(
   () => import("@/wab/client/components/RichTextEditor")
 );
@@ -396,7 +395,7 @@ function MaybeFormItem({
   uniqueStatus?: UniqueFieldStatus;
 }) {
   const history = useHistory();
-  const match = useRRouteMatch(APP_ROUTES.cmsEntry);
+  const match = useMatchedRoute(APP_ROUTES.cmsEntry);
   const commonRules = [
     { required: props.required, message: "Field is required" },
     {
@@ -407,8 +406,8 @@ function MaybeFormItem({
           uniqueStatus.status === "violation" &&
           uniqueStatus.conflictRowId
         ) {
-          const conflictingRowRoute = fillRoute(APP_ROUTES.cmsEntry, {
-            ...match!.params,
+          const conflictingRowRoute = APP_ROUTES.cmsEntry.fill({
+            ...match!.pathParams,
             rowId: uniqueStatus.conflictRowId,
           });
           return Promise.reject(
@@ -838,7 +837,7 @@ export function renderMaybeLocalizedInput({
               ))}
               <div>
                 <PublicLink
-                  href={fillRoute(APP_ROUTES.cmsSettings, { databaseId })}
+                  href={APP_ROUTES.cmsSettings.fill({ databaseId })}
                   target={"_blank"}
                 >
                   Setup locales <GrNewWindow />

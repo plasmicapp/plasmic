@@ -28,7 +28,6 @@ import {
   isUpgradableTier,
 } from "@/wab/shared/pricing/pricing-utils";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import {
   CardNumberElement,
   Elements,
@@ -617,7 +616,7 @@ export async function maybeShowPaywall<T>(
     );
   }
   await showUpsellConfirm(
-    fillRoute(APP_ROUTES.orgSettings, { teamId: billing.team.id })
+    APP_ROUTES.orgSettings.fill({ teamId: billing.team.id })
   );
 
   return maybeShowPaywall(appCtx, action, args);

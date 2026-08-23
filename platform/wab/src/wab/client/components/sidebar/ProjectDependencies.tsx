@@ -29,7 +29,6 @@ import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { ProjectDependency } from "@/wab/shared/model/classes";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { extractProjectIdFromUrlOrId, getPublicUrl } from "@/wab/shared/urls";
 import { areEquivalentScreenVariants } from "@/wab/shared/Variants";
 import { Menu, notification, Tooltip } from "antd";
@@ -65,7 +64,7 @@ const DependencyItem = observer(function DependencyItem(props: {
             key="jump-newtab"
             onClick={() => {
               openNewTab(
-                fillRoute(APP_ROUTES.project, {
+                APP_ROUTES.project.fill({
                   projectId: targetProjectId,
                 })
               );

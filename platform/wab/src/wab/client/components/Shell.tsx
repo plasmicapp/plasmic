@@ -9,6 +9,7 @@ import {
   useHostFrameCtxIfHostFrame,
 } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { initObservability } from "@/wab/client/observability";
+import { HistoryProvider } from "@/wab/client/route/HistoryProvider";
 import { isLiteralObject, swallow, tuple } from "@/wab/shared/common";
 import { DEVFLAGS, applyDevFlagOverrides } from "@/wab/shared/devflags";
 import * as Sentry from "@sentry/browser";
@@ -16,7 +17,6 @@ import { createBrowserHistory } from "history";
 import * as React from "react";
 import { OverlayProvider } from "react-aria";
 import * as ReactDOM from "react-dom";
-import { Router } from "react-router-dom";
 
 const localStoragePrefixesThatAreSafeToRemove = ["__mpq_"];
 
@@ -137,7 +137,9 @@ export function main() {
 
 export function Shell() {
   const hostFrameCtx = useHostFrameCtxIfHostFrame();
-  const history = hostFrameCtx ? hostFrameCtx.history : createBrowserHistory();
+  const [history] = React.useState(() =>
+    hostFrameCtx ? hostFrameCtx.history : createBrowserHistory()
+  );
 
   const isProjectPathRef = React.useRef(
     isProjectPath(history.location.pathname)
@@ -148,9 +150,9 @@ export function Shell() {
       return;
     }
 
-    const onHistoryChange = ({ pathname }) => {
+    return history.listen(({ location }) => {
       const studioPlaceholder = getStudioPlaceholderElement();
-      const _isProjectPath = isProjectPath(pathname);
+      const _isProjectPath = isProjectPath(location.pathname);
 
       if (_isProjectPath && !isProjectPathRef.current) {
         isProjectPathRef.current = true;
@@ -161,18 +163,15 @@ export function Shell() {
         studioPlaceholder.classList.remove("visible");
         studioPlaceholder.classList.remove("fadeOut");
       }
-    };
-
-    history.listen(onHistoryChange);
+    });
   }, []);
 
   return (
-    // @ts-ignore
-    <Router history={history}>
+    <HistoryProvider history={history}>
       <OverlayProvider style={{ width: "100%", height: "100%" }}>
         <Root />
       </OverlayProvider>
-    </Router>
+    </HistoryProvider>
   );
 }
 

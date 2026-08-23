@@ -1,15 +1,14 @@
-import { parseRoute } from "@/wab/client/cli-routes";
-import { promptNewTeam } from "@/wab/client/components/dashboard/dashboard-actions";
+import { recentlyEndedTrial } from "@/wab/client/components/FreeTrial";
+import NewProjectModal from "@/wab/client/components/NewProjectModal";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 import NavSeparator from "@/wab/client/components/dashboard/NavSeparator";
 import NavTeamSection from "@/wab/client/components/dashboard/NavTeamSection";
 import NavWorkspaceButton from "@/wab/client/components/dashboard/NavWorkspaceButton";
-import { recentlyEndedTrial } from "@/wab/client/components/FreeTrial";
+import { promptNewTeam } from "@/wab/client/components/dashboard/dashboard-actions";
 import {
   canUpgradeTeam,
   promptBilling,
 } from "@/wab/client/components/modals/PricingModal";
-import NewProjectModal from "@/wab/client/components/NewProjectModal";
-import { PublicLink } from "@/wab/client/components/PublicLink";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -17,18 +16,17 @@ import {
   PlasmicDefaultLayout,
   PlasmicDefaultLayout__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDefaultLayout";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
 import { TeamId, WorkspaceId } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import { useHistory } from "react-router";
 
 type DefaultLayoutProps = DefaultDefaultLayoutProps & {
   helpButton: PlasmicDefaultLayout__OverridesType["helpButton"];
@@ -53,20 +51,17 @@ function DefaultLayout_(
   >(undefined);
 
   const updateLocation = (path: string) => {
-    const matchTeam = parseRoute(APP_ROUTES.org, path);
-    const matchTeamSettings = parseRoute(APP_ROUTES.orgSettings, path);
-    const matchWorkspace = parseRoute(APP_ROUTES.workspace, path);
+    const matchTeam = APP_ROUTES.org.parse(path);
+    const matchTeamSettings = APP_ROUTES.orgSettings.parse(path);
+    const matchWorkspace = APP_ROUTES.workspace.parse(path);
 
     setActiveTeam(
-      (matchTeam?.params.teamId ||
-        matchTeamSettings?.params.teamId ||
-        appCtx.workspaces.find(
-          (w) => w.id === matchWorkspace?.params.workspaceId
-        )?.team.id) as TeamId | undefined
+      (matchTeam?.teamId ||
+        matchTeamSettings?.teamId ||
+        appCtx.workspaces.find((w) => w.id === matchWorkspace?.workspaceId)
+          ?.team.id) as TeamId | undefined
     );
-    setActiveWorkspace(
-      matchWorkspace?.params.workspaceId as WorkspaceId | undefined
-    );
+    setActiveWorkspace(matchWorkspace?.workspaceId as WorkspaceId | undefined);
   };
 
   const teams = appCtx.getAllTeams();
@@ -82,7 +77,7 @@ function DefaultLayout_(
 
   React.useEffect(() => {
     updateLocation(history.location.pathname);
-    const disposeHistory = history.listen((location) => {
+    const disposeHistory = history.listen(({ location }) => {
       updateLocation(location.pathname);
     });
 
@@ -98,9 +93,7 @@ function DefaultLayout_(
   const userMenu = (
     <Menu>
       <Menu.Item>
-        <PublicLink href={fillRoute(APP_ROUTES.settings, {})}>
-          Settings
-        </PublicLink>
+        <PublicLink href={APP_ROUTES.settings.fill({})}>Settings</PublicLink>
       </Menu.Item>
       <Menu.Item
         onClick={async () => {
@@ -185,7 +178,7 @@ function DefaultLayout_(
             <NavSeparator />
             <NavTeamSection
               name={t.name}
-              href={fillRoute(APP_ROUTES.org, { teamId: t.id })}
+              href={APP_ROUTES.org.fill({ teamId: t.id })}
               selected={activeTeam === t.id}
               freeTrial={t.onTrial}
             >
@@ -195,7 +188,7 @@ function DefaultLayout_(
                   <NavWorkspaceButton
                     key={w.id}
                     name={w.name}
-                    href={fillRoute(APP_ROUTES.workspace, {
+                    href={APP_ROUTES.workspace.fill({
                       workspaceId: w.id,
                     })}
                     selected={activeWorkspace === w.id}

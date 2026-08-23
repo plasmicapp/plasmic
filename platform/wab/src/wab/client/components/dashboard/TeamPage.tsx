@@ -1,9 +1,9 @@
+import { freeTrialKey } from "@/wab/client/LocalStorageKey";
 import FreeTrialModal from "@/wab/client/components/dashboard/FreeTrialModal";
-import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import WorkspaceSection from "@/wab/client/components/dashboard/WorkspaceSection";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { freeTrialKey } from "@/wab/client/LocalStorageKey";
 import {
   useAsyncFnStrict,
   useAsyncStrict,
@@ -14,11 +14,10 @@ import {
   PlasmicTeamPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPage";
 import { TeamId } from "@/wab/shared/ApiSchema";
+import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { isNonNil } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
-import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
@@ -42,9 +41,9 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
           description: response.reason,
           duration: 0,
         });
-        appCtx.router.routeTo(fillRoute(APP_ROUTES.dashboard, {}));
+        appCtx.router.routeTo(APP_ROUTES.dashboard.fill({}));
       } else {
-        appCtx.router.routeTo(fillRoute(APP_ROUTES.org, { teamId: teamId }));
+        appCtx.router.routeTo(APP_ROUTES.org.fill({ teamId: teamId }));
       }
     }
     const res = await appCtx.api.listTeamProjects(teamId);
@@ -109,7 +108,7 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
             !asyncData?.value ? <Spinner /> : children,
           helpButton: {
             props: {
-              href: fillRoute(APP_ROUTES.orgSupport, { teamId }),
+              href: APP_ROUTES.orgSupport.fill({ teamId }),
             },
           },
         }}

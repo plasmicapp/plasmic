@@ -30,7 +30,6 @@ import {
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { pruneUnusedImageAssets } from "@/wab/shared/prune-site";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { naturalSort } from "@/wab/shared/sort";
 import {
   canEditProjectConfig,
@@ -369,7 +368,7 @@ function _TopBar({ preview }: TopBarProps) {
             <Tooltip title={brand.logoTooltip ?? "Back to dashboard"}>
               <PublicLink
                 {...props}
-                href={brand.logoHref ?? fillRoute(APP_ROUTES.dashboard, {})}
+                href={brand.logoHref ?? APP_ROUTES.dashboard.fill({})}
               >
                 {brand.logoImgSrc ? (
                   <img src={brand.logoImgSrc} style={{ maxHeight: 40 }} />

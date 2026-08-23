@@ -6,7 +6,6 @@ import {
   PlasmicDocsPortalBranches,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalBranches";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 
 type DocsPortalBranchesProps = DefaultDocsPortalBranchesProps;
@@ -18,13 +17,13 @@ function DocsPortalBranches(props: DocsPortalBranchesProps) {
     <PlasmicDocsPortalBranches
       {...props}
       codegenBranch={{
-        destination: fillRoute(APP_ROUTES.projectDocsCodegenType, {
+        destination: APP_ROUTES.projectDocsCodegenType.fill({
           projectId,
           codegenType: "codegen",
         }),
       }}
       loaderBranch={{
-        destination: fillRoute(APP_ROUTES.projectDocsCodegenType, {
+        destination: APP_ROUTES.projectDocsCodegenType.fill({
           projectId,
           codegenType: "loader",
         }),

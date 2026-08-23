@@ -1,32 +1,31 @@
-import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { HostConfig } from "@/wab/client/components/HostConfig";
-import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { PublicLink } from "@/wab/client/components/PublicLink";
+import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { PlasmicProjectListItem } from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectListItem";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";
-import { ApiPermission, ApiProject } from "@/wab/shared/ApiSchema";
-import { ensure } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ApiPermission, ApiProject, WorkspaceId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { PERSONAL_WORKSPACE } from "@/wab/shared/Labels";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   getAccessLevelToParent,
   getAccessLevelToResource,
 } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Menu, notification } from "antd";
 import moment from "moment";
 import React from "react";
-import { useHistory } from "react-router-dom";
 
 interface ProjectListItemProps {
   // className prop is required for positioning instances of
@@ -76,7 +75,7 @@ function ProjectListItem(props: ProjectListItemProps) {
           as: PublicLink,
           props: {
             className: props.className,
-            href: fillRoute(APP_ROUTES.project, {
+            href: APP_ROUTES.project.fill({
               projectId: project.id,
             }),
           },
@@ -102,9 +101,9 @@ function ProjectListItem(props: ProjectListItemProps) {
             onClick: () => {
               history.push(
                 project.workspaceId === personalWorkspace?.id
-                  ? fillRoute(APP_ROUTES.playground, {})
-                  : fillRoute(APP_ROUTES.workspace, {
-                      workspaceId: project.workspaceId || "",
+                  ? APP_ROUTES.playground.fill({})
+                  : APP_ROUTES.workspace.fill({
+                      workspaceId: project.workspaceId || ("" as WorkspaceId),
                     })
               );
             },
@@ -212,7 +211,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                       );
 
                     history.push(
-                      fillRoute(APP_ROUTES.project, {
+                      APP_ROUTES.project.fill({
                         projectId: newProjectId,
                       })
                     );

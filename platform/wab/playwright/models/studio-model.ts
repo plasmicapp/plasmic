@@ -962,7 +962,12 @@ export class StudioModel extends BaseModel {
   }
 
   async createNewComponent(name: string) {
+    const framesBefore = await this.frames.count();
     await this.leftPanel.addComponent(name);
+    // The new component's artboard mounts asynchronously after the naming
+    // modal closes; wait for it so createNewFrame doesn't race its own
+    // before/after frame count against it.
+    await expect(this.frames).toHaveCount(framesBefore + 1);
     const frame = await this.createNewFrame();
     await waitForFrameToLoad(this.page);
     return frame;

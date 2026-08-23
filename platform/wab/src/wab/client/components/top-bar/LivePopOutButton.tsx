@@ -12,6 +12,7 @@ import {
   DefaultLivePopOutButtonProps,
   PlasmicLivePopOutButton,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicLivePopOutButton";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { getFrameHeight } from "@/wab/shared/Arenas";
@@ -19,7 +20,6 @@ import { spawn } from "@/wab/shared/common";
 import { getPublicUrl, getStaticBaseUrl } from "@/wab/shared/urls";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { useHistory } from "react-router";
 
 type LivePopOutButtonProps = DefaultLivePopOutButtonProps;
 

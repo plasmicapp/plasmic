@@ -4,7 +4,6 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { ApiProject, MainBranchId } from "@/wab/shared/ApiSchema";
 import { assert, spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 
@@ -50,7 +49,7 @@ export const CloneProjectModal = observer(function ProjectNameModal({
             })
           );
           window.open(
-            fillRoute(APP_ROUTES.project, { projectId: newProjectId }),
+            APP_ROUTES.project.fill({ projectId: newProjectId }),
             "_blank"
           );
         }

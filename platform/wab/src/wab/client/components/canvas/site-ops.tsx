@@ -186,7 +186,6 @@ import {
   frameSizeGroups,
 } from "@/wab/shared/responsiveness";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import {
   TplVisibility,
   getVariantSettingVisibility,
@@ -807,7 +806,7 @@ export class SiteOps {
               <li key={dep.uid}>
                 {projectId ? (
                   <a
-                    href={fillRoute(APP_ROUTES.project, { projectId })}
+                    href={APP_ROUTES.project.fill({ projectId })}
                     target="_blank"
                   >
                     {dep.name}

@@ -4,7 +4,6 @@ import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { LinkButton, SearchBox } from "@/wab/client/components/widgets";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Table, TableProps } from "antd";
 import L from "lodash";
 import React, { useMemo, useState } from "react";
@@ -41,7 +40,7 @@ export function AdminUserTable<T extends Item = Item>({
 
   async function handleLogin(email: string) {
     await nonAuthCtx.api.adminLoginAs({ email });
-    document.location.href = fillRoute(APP_ROUTES.dashboard, {});
+    document.location.href = APP_ROUTES.dashboard.fill({});
   }
 
   return (

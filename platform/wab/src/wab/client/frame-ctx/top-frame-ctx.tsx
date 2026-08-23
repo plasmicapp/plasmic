@@ -16,7 +16,6 @@ import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { bindMethods } from "@/wab/commons/proxies";
 import { assert } from "@/wab/shared/common";
 import * as Comlink from "comlink";
-import { UnregisterCallback } from "history";
 import * as React from "react";
 
 export interface TopFrameCtx {
@@ -102,7 +101,7 @@ export function TopFrameCtxProvider({
         ...topFrameApi,
 
         // Override some methods to hide Comlink implementation details.
-        registerLocationListener(locationListener): UnregisterCallback {
+        registerLocationListener(locationListener): () => void {
           return Comlink.proxy(
             topFrameApi.registerLocationListener(locationListener)
           );

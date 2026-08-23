@@ -14,7 +14,6 @@ import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/Pl
 import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import { ensure } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Dropdown, Menu } from "antd";
 import * as React from "react";
 import { ReactNode } from "react";
@@ -65,9 +64,7 @@ export class NormalLayout extends AppComponent {
     const menu = (
       <Menu>
         <Menu.Item>
-          <PublicLink href={fillRoute(APP_ROUTES.settings, {})}>
-            Settings
-          </PublicLink>
+          <PublicLink href={APP_ROUTES.settings.fill({})}>Settings</PublicLink>
         </Menu.Item>
         <Menu.Item
           onClick={async () => {

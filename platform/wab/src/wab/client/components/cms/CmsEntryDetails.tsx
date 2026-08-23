@@ -21,6 +21,10 @@ import {
   DefaultCmsEntryDetailsProps,
   PlasmicCmsEntryDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryDetails";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
+import { useBeforeNavigation } from "@/wab/client/route/useBeforeNavigation";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
@@ -40,15 +44,13 @@ import { Dict } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Drawer, Form, Menu, Tooltip, message, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { isEqual, isNil, mapValues, pickBy } from "lodash";
 import * as React from "react";
-import { Prompt, Route, useHistory, useRouteMatch } from "react-router";
-import { useBeforeUnload, useInterval } from "react-use";
+import { useInterval } from "react-use";
 
 export type CmsEntryDetailsProps = DefaultCmsEntryDetailsProps;
 export type UniqueFieldStatus =
@@ -120,12 +122,12 @@ function CmsEntryDetails_(
   ref: HTMLElementRefOf<"div">
 ) {
   const { ...rest } = props;
-  const match = useRouteMatch<{
+  const match = useMatchedRoute<{
     databaseId: CmsDatabaseId;
     tableId: CmsTableId;
     rowId: CmsRowId;
-  }>();
-  const { tableId, rowId, databaseId } = match.params;
+  }>()!;
+  const { tableId, rowId, databaseId } = match.pathParams;
   const database = useCmsDatabase(databaseId);
   const row = useCmsRow(tableId, rowId);
   const table = useCmsTable(databaseId, tableId);
@@ -490,9 +492,10 @@ function CmsEntryDetailsForm_(
     spawn(validateFields());
   }, [row, validateFields]);
 
-  useBeforeUnload(() => {
-    return hasChanges();
-  }, "You have unsaved changes, are you sure?");
+  useBeforeNavigation(
+    hasUnsavedChanges,
+    "You have unsaved changes, are you sure?"
+  );
 
   const { identifier: entryIdenfitier, placeholder: entryPlaceholder } =
     getRowIdentifierText(table, row);
@@ -503,35 +506,36 @@ function CmsEntryDetailsForm_(
 
   return (
     <>
-      <Prompt
-        when={hasUnsavedChanges}
-        message={"You have unsaved changes, are you sure?"}
-      />
-      <Route
-        path={APP_ROUTES.cmsEntryRevisions.pattern}
-        render={() => (
-          <Drawer
-            title={"Entry revisions"}
-            placement="right"
-            onClose={() =>
-              history.push(
-                fillRoute(APP_ROUTES.cmsEntry, {
-                  databaseId: database.id,
-                  tableId: table.id,
-                  rowId: row.id,
-                })
-              )
-            }
-            visible={true}
-            width={"80%"}
-          >
-            <CmsEntryHistory
-              databaseId={database.id}
-              tableId={table.id}
-              rowId={row.id}
-            />
-          </Drawer>
-        )}
+      <Switch
+        cases={[
+          switchCase({
+            route: APP_ROUTES.cmsEntryRevisions,
+            render: () => (
+              <Drawer
+                title={"Entry revisions"}
+                placement="right"
+                onClose={() =>
+                  history.push(
+                    APP_ROUTES.cmsEntry.fill({
+                      databaseId: database.id,
+                      tableId: table.id,
+                      rowId: row.id,
+                    })
+                  )
+                }
+                visible={true}
+                width={"80%"}
+              >
+                <CmsEntryHistory
+                  databaseId={database.id}
+                  tableId={table.id}
+                  rowId={row.id}
+                />
+              </Drawer>
+            ),
+          }),
+          switchDefault({ render: () => null }),
+        ]}
       />
       <Form
         form={form}
@@ -787,7 +791,7 @@ function CmsEntryDetailsForm_(
                       );
                       await mutateRow();
                       history.push(
-                        fillRoute(APP_ROUTES.cmsModelContent, {
+                        APP_ROUTES.cmsModelContent.fill({
                           databaseId: database.id,
                           tableId: table.id,
                         })
@@ -802,7 +806,7 @@ function CmsEntryDetailsForm_(
             ),
           }}
           historyButton={{
-            href: fillRoute(APP_ROUTES.cmsEntryRevisions, {
+            href: APP_ROUTES.cmsEntryRevisions.fill({
               databaseId: database.id,
               tableId: table.id,
               rowId: row.id,
@@ -857,7 +861,7 @@ function CmsEntryDetailsForm_(
             await mutateTableRows(table.id);
             setShowDuplicateModal(false);
             history.push(
-              fillRoute(APP_ROUTES.cmsEntry, {
+              APP_ROUTES.cmsEntry.fill({
                 databaseId: database.id,
                 tableId: table.id,
                 rowId: clonedRow.id,

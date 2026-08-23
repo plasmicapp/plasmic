@@ -290,6 +290,20 @@ export const PreviewFrame = observer(function PreviewFrame(
     if (!previewCtx.component) {
       return;
     }
+    if (!previousComponent) {
+      // Initial load: the URL (from getUrlsForLiveMode or a shared preview
+      // link) may already specify an explicit viewport size; respect it and
+      // only default to the arena frame size when it doesn't. Otherwise this
+      // races the URL-driven viewport and can clobber it with stale
+      // dimensions. (This race predates the react-router removal; it just
+      // resolved in the URL's favor on some environments.)
+      const hashParams = new URLSearchParams(
+        previewCtx.hostFrameCtx.history.location.hash.replace(/^#/, "")
+      );
+      if (hashParams.has("width") || hashParams.has("height")) {
+        return;
+      }
+    }
     if (
       previousComponent &&
       isPageComponent(previousComponent) &&

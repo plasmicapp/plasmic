@@ -6,7 +6,6 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { SurveyRequest } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { AutoComplete, Button, Form, Tooltip } from "antd";
 import * as React from "react";
 import { ReactNode, useState } from "react";
@@ -26,7 +25,7 @@ export function SurveyForm() {
   const nextPath =
     continueToPath && isPlasmicPath(continueToPath)
       ? continueToPath
-      : fillRoute(APP_ROUTES.emailVerification, {});
+      : APP_ROUTES.emailVerification.fill({});
 
   const [form] = Form.useForm();
 

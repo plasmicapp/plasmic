@@ -14,7 +14,6 @@ import {
 } from "@/wab/client/tours/tutorials/tutorials-types";
 import { RevalidatePlasmicHostingResponse } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { notification } from "antd";
 import { createElement } from "react";
 import { render } from "react-dom";
@@ -139,7 +138,7 @@ And don't forget to:
     });
   },
   onSecondary: async () => {
-    location.href = fillRoute(APP_ROUTES.dashboard, {});
+    location.href = APP_ROUTES.dashboard.fill({});
   },
   secondaryButtonText: "Exit to dashboard",
 };

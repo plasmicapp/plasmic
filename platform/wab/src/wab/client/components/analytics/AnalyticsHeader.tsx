@@ -5,13 +5,13 @@ import {
   DefaultAnalyticsHeaderProps,
   PlasmicAnalyticsHeader,
 } from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicAnalyticsHeader";
-import { ensure } from "@/wab/shared/common";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { TeamId } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_CAP, ORGANIZATION_LOWER } from "@/wab/shared/Labels";
+import { ensure } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { useHistory } from "react-router";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -27,7 +27,7 @@ import { useHistory } from "react-router";
 // You can also stop extending from DefaultAnalyticsHeaderProps altogether and have
 // total control over the props for your component.
 export interface AnalyticsHeaderProps extends DefaultAnalyticsHeaderProps {
-  teamId: string;
+  teamId: TeamId;
 }
 
 function AnalyticsHeader_(
@@ -48,13 +48,13 @@ function AnalyticsHeader_(
       args={{ teamName: team.name }}
       logo={{
         onClick: () => {
-          history.push(fillRoute(APP_ROUTES.dashboard, {}));
+          history.push(APP_ROUTES.dashboard.fill({}));
         },
       }}
       teamName={team.name}
       backBtn={{
         onClick: () => {
-          history.push(fillRoute(APP_ROUTES.org, { teamId }));
+          history.push(APP_ROUTES.org.fill({ teamId }));
         },
       }}
       {...rest}

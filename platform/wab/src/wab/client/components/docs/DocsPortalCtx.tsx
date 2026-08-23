@@ -1,10 +1,9 @@
-import { parseRoute } from "@/wab/client/cli-routes";
+import { codegenTypeKey } from "@/wab/client/LocalStorageKey";
 import {
   resolveCollisionsForComponentProp,
   serializeToggledComponent,
   updateComponentCode,
 } from "@/wab/client/components/docs/serialize-docs-preview";
-import { codegenTypeKey } from "@/wab/client/LocalStorageKey";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import { toClassName, toVarName } from "@/wab/shared/codegen/util";
@@ -18,7 +17,6 @@ import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { TplNamable } from "@/wab/shared/core/tpls";
 import { Component, ImageAsset, Param } from "@/wab/shared/model/classes";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { History } from "history";
 import { action, makeObservable, observable } from "mobx";
 import React from "react";
@@ -276,27 +274,24 @@ export class DocsPortalCtx {
     const icons = this.studioCtx.site.imageAssets.filter(
       (icon) => icon.type === ImageAssetType.Icon && !!icon.dataUri
     );
-    const matchDocs = parseRoute(APP_ROUTES.projectDocs, path, false);
+    const matchDocs = APP_ROUTES.projectDocs.parse(path, false);
     if (!matchDocs) {
       // Not a Docs Portal URL
       return;
     }
 
-    const matchComponent = parseRoute(APP_ROUTES.projectDocsComponent, path);
-    const matchIcon = parseRoute(APP_ROUTES.projectDocsIcon, path);
-    const matchComponents = parseRoute(APP_ROUTES.projectDocsComponents, path);
-    const matchIcons = parseRoute(APP_ROUTES.projectDocsIcons, path);
-    const matchCodegenType = parseRoute(
-      APP_ROUTES.projectDocsCodegenType,
-      path
-    );
+    const matchComponent = APP_ROUTES.projectDocsComponent.parse(path);
+    const matchIcon = APP_ROUTES.projectDocsIcon.parse(path);
+    const matchComponents = APP_ROUTES.projectDocsComponents.parse(path);
+    const matchIcons = APP_ROUTES.projectDocsIcons.parse(path);
+    const matchCodegenType = APP_ROUTES.projectDocsCodegenType.parse(path);
     const codegenType = [
       matchComponent,
       matchIcon,
       matchComponents,
       matchIcons,
       matchCodegenType,
-    ].find((match) => match?.params.codegenType)?.params.codegenType;
+    ].find((match) => match?.codegenType)?.codegenType;
 
     // No codegen type selected, show the intro tab.
     if (!codegenType) {
@@ -315,7 +310,7 @@ export class DocsPortalCtx {
       if (components.length !== 0) {
         // Redirects to first component
         replace(
-          fillRoute(APP_ROUTES.projectDocsComponent, {
+          APP_ROUTES.projectDocsComponent.fill({
             projectId: projectId,
             componentIdOrClassName:
               toClassName(components[0].name) || components[0].uuid,
@@ -329,7 +324,7 @@ export class DocsPortalCtx {
         } else {
           // Redirects to docs/components
           replace(
-            fillRoute(APP_ROUTES.projectDocsComponents, {
+            APP_ROUTES.projectDocsComponents.fill({
               projectId: projectId,
               codegenType,
             })
@@ -341,7 +336,7 @@ export class DocsPortalCtx {
       if (icons.length !== 0) {
         // Redirects to first icon
         replace(
-          fillRoute(APP_ROUTES.projectDocsIcon, {
+          APP_ROUTES.projectDocsIcon.fill({
             projectId: projectId,
             iconIdOrClassName: toClassName(icons[0].name) || icons[0].uuid,
             codegenType,
@@ -354,7 +349,7 @@ export class DocsPortalCtx {
         } else {
           // Redirects to docs/icons
           replace(
-            fillRoute(APP_ROUTES.projectDocsIcons, {
+            APP_ROUTES.projectDocsIcons.fill({
               projectId: projectId,
               codegenType,
             })
@@ -364,8 +359,7 @@ export class DocsPortalCtx {
     };
 
     if (matchComponent) {
-      const componentIdOrClassName =
-        matchComponent.params.componentIdOrClassName;
+      const componentIdOrClassName = matchComponent.componentIdOrClassName;
       const component = components.find(
         (value) =>
           value.uuid === componentIdOrClassName ||
@@ -378,7 +372,7 @@ export class DocsPortalCtx {
         this._xDocsTabKey.set("components");
       }
     } else if (matchIcon) {
-      const iconIdOrClassName = matchIcon.params.iconIdOrClassName;
+      const iconIdOrClassName = matchIcon.iconIdOrClassName;
       const icon = icons.find(
         (value) =>
           value.uuid === iconIdOrClassName ||
@@ -386,7 +380,7 @@ export class DocsPortalCtx {
       );
       if (!icon) {
         replace(
-          fillRoute(APP_ROUTES.projectDocs, {
+          APP_ROUTES.projectDocs.fill({
             projectId: projectId,
           })
         );

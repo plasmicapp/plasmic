@@ -13,7 +13,6 @@ import { ApiProject } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { LocalizationConfig } from "@/wab/shared/localization";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Form, notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -149,7 +148,7 @@ async function canEnableLocalization(appCtx: AppCtx, project: ApiProject) {
   }
 
   await showUpsellConfirm(
-    fillRoute(APP_ROUTES.orgSettings, { teamId: projectTeam.id })
+    APP_ROUTES.orgSettings.fill({ teamId: projectTeam.id })
   );
   return true;
 }

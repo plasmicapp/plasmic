@@ -32,7 +32,6 @@ import {
 import { POSTGRES_META } from "@/wab/shared/data-sources-meta/postgres-meta";
 import { DATA_SOURCE_CAP, DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Alert, Form, FormInstance, Input, notification } from "antd";
 import { jsonrepair } from "jsonrepair";
 import { isEqual, noop } from "lodash";
@@ -777,7 +776,7 @@ function AirtableSignInButton(props: {
       onStart={onStart}
       onSuccess={onSuccess}
       onFailure={onFailure}
-      url={fillRoute(APP_ROUTES.airtableAuth, {})}
+      url={APP_ROUTES.airtableAuth.fill({})}
       waitingChildren={"Signing into airtable..."}
       disabled={disabled}
     >
@@ -800,7 +799,7 @@ function GoogleSheetsSignInButton(props: {
       onStart={onStart}
       onSuccess={onSuccess}
       onFailure={onFailure}
-      url={fillRoute(APP_ROUTES.googleSheetsAuth, {})}
+      url={APP_ROUTES.googleSheetsAuth.fill({})}
       waitingChildren={"Connect to Google"}
       disabled={disabled}
       style={{

@@ -7,7 +7,6 @@ import { toClassName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
 import { isPlasmicComponent } from "@/wab/shared/core/components";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import { defer } from "lodash";
@@ -41,12 +40,12 @@ export const CodeButton = observer(function CodeButton() {
     hasClicked &&
     isFocusedComponentPlasmicComponent &&
     focusedComponentNameOrUuid
-      ? fillRoute(APP_ROUTES.projectDocsComponent, {
+      ? APP_ROUTES.projectDocsComponent.fill({
           projectId: studioCtx.siteInfo.id,
           componentIdOrClassName: focusedComponentNameOrUuid,
           codegenType,
         })
-      : fillRoute(APP_ROUTES.projectDocs, {
+      : APP_ROUTES.projectDocs.fill({
           projectId: studioCtx.siteInfo.id,
         });
 

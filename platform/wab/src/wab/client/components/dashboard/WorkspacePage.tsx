@@ -12,7 +12,6 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspacePage";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { uniqBy } from "lodash";
 import * as React from "react";
@@ -73,7 +72,7 @@ function WorkspacePage_(
           helpButton: workspace
             ? {
                 props: {
-                  href: fillRoute(APP_ROUTES.orgSupport, {
+                  href: APP_ROUTES.orgSupport.fill({
                     teamId: workspace.team.id,
                   }),
                 },

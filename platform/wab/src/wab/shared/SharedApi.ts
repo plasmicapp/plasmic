@@ -502,7 +502,7 @@ export abstract class SharedApi {
       keepProjectIdsAndNames?: boolean;
       projectName?: string;
     }
-  ): Promise<{ projectId: string }> {
+  ): Promise<{ projectId: ProjectId }> {
     return this.post(`/projects/import`, {
       data,
       keepProjectIdsAndNames: opts?.keepProjectIdsAndNames,

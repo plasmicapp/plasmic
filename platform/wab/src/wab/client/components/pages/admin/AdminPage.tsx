@@ -29,7 +29,6 @@ import { ApiFeatureTier, ApiProjectRevision } from "@/wab/shared/ApiSchema";
 import { assert, tryRemove } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
   Button,
@@ -203,7 +202,7 @@ function CloneProjectView() {
               message: "Project cloned",
               description: (
                 <a
-                  href={fillRoute(APP_ROUTES.project, {
+                  href={APP_ROUTES.project.fill({
                     projectId: res.projectId,
                   })}
                   target="_blank"
@@ -239,7 +238,7 @@ function UploadProject() {
         onClick={() =>
           getUploadedFile(async (data: string) => {
             await nonAuthCtx.api.importProject(data).then(({ projectId }) => {
-              document.location.href = fillRoute(APP_ROUTES.project, {
+              document.location.href = APP_ROUTES.project.fill({
                 projectId: projectId,
               });
             });

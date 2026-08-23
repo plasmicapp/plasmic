@@ -21,6 +21,7 @@ import {
   DefaultWorkspaceSectionProps,
   PlasmicWorkspaceSection,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceSection";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";
@@ -41,7 +42,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as _ from "lodash";
 import { trimStart } from "lodash";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
 
 interface WorkspaceSectionProps
   extends Omit<DefaultWorkspaceSectionProps, "databases"> {

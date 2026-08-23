@@ -1,8 +1,8 @@
+import CmsModelItem from "@/wab/client/components/cms/CmsModelItem";
 import {
   useCmsDatabase,
   useMutateTables,
 } from "@/wab/client/components/cms/cms-contexts";
-import CmsModelItem from "@/wab/client/components/cms/CmsModelItem";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
 import { Matcher } from "@/wab/client/components/view-common";
 import { useApi } from "@/wab/client/contexts/AppContexts";
@@ -10,13 +10,13 @@ import {
   DefaultCmsModelsListProps,
   PlasmicCmsModelsList,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelsList";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { partition, sortBy } from "lodash";
 import * as React from "react";
-import { useHistory, useRouteMatch } from "react-router";
 
 export type CmsModelsListProps = DefaultCmsModelsListProps;
 
@@ -24,11 +24,11 @@ function CmsModelsList_(
   props: CmsModelsListProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const match = useRouteMatch<{
+  const match = useMatchedRoute<{
     databaseId: CmsDatabaseId;
     tableId?: CmsTableId;
-  }>();
-  const { databaseId, tableId } = match.params;
+  }>()!;
+  const { databaseId, tableId } = match.pathParams;
   const database = useCmsDatabase(databaseId);
   const api = useApi();
   const mutateTables = useMutateTables();
@@ -78,7 +78,7 @@ function CmsModelsList_(
           });
           await mutateTables(databaseId);
           history.push(
-            fillRoute(APP_ROUTES.cmsModelSchema, {
+            APP_ROUTES.cmsModelSchema.fill({
               databaseId,
               tableId: table.id,
             })

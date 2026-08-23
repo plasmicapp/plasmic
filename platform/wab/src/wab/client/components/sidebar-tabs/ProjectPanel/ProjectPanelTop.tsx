@@ -1,5 +1,4 @@
 import { apiKey } from "@/wab/client/api";
-import { parseRoute } from "@/wab/client/cli-routes";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import {
   reactConfirm,
@@ -369,8 +368,7 @@ function BranchPanelTop_(
               dismissSearch();
               if (
                 studioCtx.isLiveMode &&
-                parseRoute(
-                  APP_ROUTES.projectPreview,
+                APP_ROUTES.projectPreview.parse(
                   studioCtx.appCtx.history.location.pathname
                 )
               ) {

@@ -1,4 +1,4 @@
-import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
+import { parseProjectLocation } from "@/wab/client/cli-routes";
 import { showCanvasPageNavigationNotification } from "@/wab/client/components/canvas/studio-canvas-util";
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
@@ -31,14 +31,14 @@ import {
   SEARCH_PARAM_BRANCH,
   mkProjectLocation,
 } from "@/wab/shared/route/app-routes";
-import { Route, fillRoute } from "@/wab/shared/route/route";
+import { Route } from "@/wab/shared/route/route";
 import {
   getMatchingPagePathParams,
   substituteUrlParams,
 } from "@/wab/shared/utils/url-utils";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
-import { Location, LocationDescriptorObject } from "history";
+import { Location } from "history";
 import _ from "lodash";
 import * as mobx from "mobx";
 import { makeObservable, observable } from "mobx";
@@ -86,7 +86,7 @@ export class PreviewCtx {
   private disposals: (() => void)[] = [];
 
   previewData: PreviewDataOutput | undefined = undefined;
-  private previousLocation: Location | undefined = undefined;
+  private previousLocation: Partial<Location> | undefined = undefined;
 
   get previewPath() {
     return this.previewData?.previewPath || "";
@@ -159,7 +159,9 @@ export class PreviewCtx {
       }
       spawn(this.parseRoute());
     };
-    const disposeHistoryListener = hostFrameCtx.history.listen(historyListener);
+    const disposeHistoryListener = hostFrameCtx.history.listen(({ location }) =>
+      historyListener(location)
+    );
     this.disposals.push(disposeHistoryListener);
 
     // Trigger initial history listener
@@ -259,7 +261,7 @@ export class PreviewCtx {
 
     history.push(
       this.previousLocation ||
-        fillRoute(APP_ROUTES.project, { projectId: this.studioCtx.siteInfo.id })
+        APP_ROUTES.project.fill({ projectId: this.studioCtx.siteInfo.id })
     );
   }
 
@@ -285,7 +287,8 @@ export class PreviewCtx {
               pathname: url.pathname,
               search: url.search,
               hash: url.hash,
-              state: undefined,
+              state: null,
+              key: "",
             });
           }
         };
@@ -314,15 +317,15 @@ export class PreviewCtx {
     }
 
     let full = false;
-    let matchRoute = parseRoute(APP_ROUTES.projectPreview, location.pathname);
+    let matchRoute = APP_ROUTES.projectPreview.parse(location.pathname);
     if (!matchRoute) {
-      matchRoute = parseRoute(APP_ROUTES.projectFullPreview, location.pathname);
+      matchRoute = APP_ROUTES.projectFullPreview.parse(location.pathname);
       if (matchRoute) {
         full = true;
       }
     }
 
-    const previewPath = matchRoute?.params.previewPath || "";
+    const previewPath = (matchRoute?.previewPath ?? []).join("/");
     const componentPath = getComponentByPath(this.studioCtx, previewPath);
 
     const pageQuery = queryStringToRecord(location.search);
@@ -470,7 +473,7 @@ export class PreviewCtx {
   }
 
   private async pushRouteToHistoryOrPopup(
-    location: LocationDescriptorObject,
+    location: Partial<Location>,
     replace = false
   ): Promise<void> {
     if (this.popup) {
@@ -548,14 +551,16 @@ function isVariantActive(
 
 function mkPreviewPathname<PathParams extends {}>(
   route: Route<PathParams>,
-  params: PathParams
+  params: { [K in keyof PathParams]: string }
 ) {
-  // We do not use cli-routes U/R.fill because formatRoute (from
-  // react-router-named-routes) does not currently support parameters
-  // with asterisks.
-  let path = route.pattern.replace("*", "");
+  // We do not use Route.fill because the preview path's inner slashes must
+  // stay un-encoded, and path-to-regexp would percent-encode them.
+  let path = route.pattern;
   for (const [k, v] of Object.entries(params)) {
-    path = path.replace(`:${k}`, _.trim(hackyCast(v), "/"));
+    const value = _.trim(hackyCast(v), "/");
+    path = path
+      .replace(`{/*${k}}`, value ? `/${value}` : "")
+      .replace(`:${k}`, value);
   }
   return path;
 }
@@ -567,7 +572,7 @@ export function isLiveMode(pathname: string) {
 function mkPreviewRoute(
   projectId: ProjectId,
   previewData: PreviewInputData
-): LocationDescriptorObject {
+): Partial<Location> {
   const { full, componentPath, pageQuery } = previewData;
 
   const pathname = mkPreviewPathname(
@@ -662,7 +667,7 @@ function mkPreviewHash({
 export async function getUrlsForLiveMode(
   studioCtx: StudioCtx,
   full: boolean
-): Promise<LocationDescriptorObject> {
+): Promise<Partial<Location>> {
   const viewCtx = await studioCtx.getPreviewInitialViewCtx();
   const arenaFrame = viewCtx.arenaFrame();
   const component = viewCtx.component;

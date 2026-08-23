@@ -549,7 +549,7 @@ export interface CloneProjectRequest {
 }
 
 export interface CloneProjectResponse {
-  projectId: string;
+  projectId: ProjectId;
 }
 
 export interface CreateProjectResponse {

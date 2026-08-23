@@ -19,7 +19,6 @@ import {
   DATA_SOURCE_PLURAL_LOWER,
 } from "@/wab/shared/Labels";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Form } from "antd";
 import React from "react";
 import useSWR from "swr";
@@ -198,7 +197,7 @@ export function DataSourcePicker({
               <a
                 target={"_blank"}
                 href={
-                  fillRoute(APP_ROUTES.workspace, {
+                  APP_ROUTES.workspace.fill({
                     workspaceId: thisProjectsWorkspace.id,
                   }) + "#tab=dataSources"
                 }

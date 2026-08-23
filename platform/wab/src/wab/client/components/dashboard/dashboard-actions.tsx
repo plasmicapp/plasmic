@@ -11,6 +11,7 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import {
   ApiPermission,
   ApiTeam,
@@ -19,7 +20,6 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
-import { ensure } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   ORGANIZATION_CAP,
@@ -27,18 +27,17 @@ import {
   ORGANIZATION_PLURAL_LOWER,
   PERSONAL_WORKSPACE,
 } from "@/wab/shared/Labels";
+import { ensure } from "@/wab/shared/common";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import {
+  UiConfig,
   canEditUiConfig,
   mergeUiConfigs,
-  UiConfig,
 } from "@/wab/shared/ui-config-utils";
 import { Form, Menu } from "antd";
 import { History } from "history";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
 import { MakeADT } from "ts-adt/MakeADT";
 
 interface TeamMenuProps {
@@ -155,7 +154,7 @@ export function TeamMenu(props: TeamMenuProps) {
             await appCtx.api.deleteTeam(team.id);
             await appCtx.reloadAppCtx();
             if (redirectOnDelete) {
-              history.push(fillRoute(APP_ROUTES.allProjects, {}));
+              history.push(APP_ROUTES.allProjects.fill({}));
             } else {
               await onUpdate();
             }
@@ -286,9 +285,7 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
             await appCtx.api.deleteWorkspace(workspace.id);
             await appCtx.reloadAppCtx();
             if (redirectOnDelete) {
-              history.push(
-                fillRoute(APP_ROUTES.org, { teamId: workspace.team.id })
-              );
+              history.push(APP_ROUTES.org.fill({ teamId: workspace.team.id }));
             } else {
               await onUpdate();
             }
@@ -555,7 +552,7 @@ export async function promptNewTeam(appCtx: AppCtx, history: History) {
   await appCtx.reloadAppCtx();
   // Redirect to the team page immediately
   history.push(
-    fillRoute(APP_ROUTES.org, {
+    APP_ROUTES.org.fill({
       teamId: team.id,
     })
   );
@@ -588,7 +585,7 @@ export async function promptNewWorkspace(
   );
   await appCtx.reloadAppCtx();
   history.push(
-    fillRoute(APP_ROUTES.workspace, {
+    APP_ROUTES.workspace.fill({
       workspaceId: workspace.id,
     })
   );
@@ -609,7 +606,7 @@ export async function promptNewDatabase(
   }
   const database = await appCtx.api.createDatabase(workspaceId, { name });
   history.push(
-    fillRoute(APP_ROUTES.cmsRoot, {
+    APP_ROUTES.cmsRoot.fill({
       databaseId: database.id,
     })
   );
@@ -633,7 +630,7 @@ export async function promptNewTable(
     identifier: name,
   });
   history.push(
-    fillRoute(APP_ROUTES.model, {
+    APP_ROUTES.model.fill({
       databaseId,
       tableId: table.id,
     })

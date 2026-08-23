@@ -5,14 +5,13 @@ import {
   DefaultCmsModelItemProps,
   PlasmicCmsModelItem,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelItem";
+import { Link } from "@/wab/client/route/Link";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { ApiCmsTable, CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import * as React from "react";
-import { useRouteMatch } from "react-router";
-import { Link } from "react-router-dom";
 
 export interface CmsModelItemProps extends DefaultCmsModelItemProps {
   table: ApiCmsTable;
@@ -21,11 +20,11 @@ export interface CmsModelItemProps extends DefaultCmsModelItemProps {
 
 function CmsModelItem_(props: CmsModelItemProps, ref: HTMLElementRefOf<"div">) {
   const { table, matcher, ...rest } = props;
-  const match = useRouteMatch<{
+  const match = useMatchedRoute<{
     databaseId: CmsDatabaseId;
     tableId?: CmsTableId;
-  }>();
-  const params = { databaseId: match.params.databaseId, tableId: table.id };
+  }>()!;
+  const params = { databaseId: match.pathParams.databaseId, tableId: table.id };
   return (
     <Tooltip title={table.description}>
       <PlasmicCmsModelItem
@@ -33,16 +32,14 @@ function CmsModelItem_(props: CmsModelItemProps, ref: HTMLElementRefOf<"div">) {
         root={{
           as: Link,
           props: {
-            to: fillRoute(
-              match.path.includes("/schemas")
-                ? APP_ROUTES.cmsModelSchema
-                : APP_ROUTES.cmsModelContent,
-              params
-            ),
+            to: (match.route.pattern.includes("/schemas")
+              ? APP_ROUTES.cmsModelSchema
+              : APP_ROUTES.cmsModelContent
+            ).fill(params),
             ref,
           },
         }}
-        isActive={match.params.tableId === table.id}
+        isActive={match.pathParams.tableId === table.id}
         children={matcher ? matcher.boldSnippets(table.name) : table.name}
       />
     </Tooltip>

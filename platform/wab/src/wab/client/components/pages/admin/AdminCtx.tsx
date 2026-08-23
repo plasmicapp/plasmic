@@ -1,16 +1,14 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
-import { parseRoute } from "@/wab/client/cli-routes";
 import { AsyncState, useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { ApiFeatureTier, ApiUser, TeamId } from "@/wab/shared/ApiSchema";
 import { ensure, unexpected } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import React, { useCallback, useContext, useMemo } from "react";
-import { useHistory } from "react-router";
 
 interface AdminState {
-  /** Active tab on AdminPage. */
-  tab: string;
+  /** Active tab on AdminPage; undefined at the bare /admin route. */
+  tab: string | undefined;
   /** Selected team ID. */
   teamId: TeamId | undefined;
   /** State for listing all users. */
@@ -20,7 +18,7 @@ interface AdminState {
 }
 
 interface AdminActions {
-  navigate(to: { tab: string; id?: string }): void;
+  navigate(to: { tab: string; id?: TeamId }): void;
 }
 
 export type AdminCtx = AdminState & AdminActions;
@@ -40,18 +38,18 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
   const history = useHistory();
   const pathname = history.location.pathname;
   const pathState = useMemo(() => {
-    const matchesTeams = parseRoute(APP_ROUTES.adminTeams, pathname);
+    const matchesTeams = APP_ROUTES.adminTeams.parse(pathname);
     if (matchesTeams) {
       return {
         tab: "teams",
-        teamId: matchesTeams.params.teamId,
+        teamId: matchesTeams.teamId,
       };
     }
 
-    const matchesAdmin = parseRoute(APP_ROUTES.admin, pathname);
+    const matchesAdmin = APP_ROUTES.admin.parse(pathname);
     if (matchesAdmin) {
       return {
-        tab: matchesAdmin.params.tab,
+        tab: matchesAdmin.tab,
         teamId: undefined,
       };
     }
@@ -62,9 +60,9 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
   const navigate = useCallback<AdminActions["navigate"]>(
     ({ tab, id }) => {
       if (tab === "teams") {
-        history.push(fillRoute(APP_ROUTES.adminTeams, { teamId: id }));
+        history.push(APP_ROUTES.adminTeams.fill({ teamId: id }));
       } else {
-        history.push(fillRoute(APP_ROUTES.admin, { tab }));
+        history.push(APP_ROUTES.admin.fill({ tab }));
       }
     },
     [history, pathState]

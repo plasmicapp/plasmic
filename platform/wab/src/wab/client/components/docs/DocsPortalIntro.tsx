@@ -12,7 +12,6 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalIntro";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 import { DetailedHTMLProps } from "react";
 
@@ -63,7 +62,7 @@ function DocsPortalIntro(props: DocsPortalIntroProps) {
   ) {
     return replaceLink(props, (linkText) => (
       <PublicLink
-        href={fillRoute(APP_ROUTES.projectDocsCodegenType, {
+        href={APP_ROUTES.projectDocsCodegenType.fill({
           projectId,
           codegenType: codegenTypeToRoute(
             oppCodegenType(docsPortalCtx.getCodegenType())

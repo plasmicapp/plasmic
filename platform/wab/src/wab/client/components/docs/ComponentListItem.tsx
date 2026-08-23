@@ -5,7 +5,6 @@ import { toClassName } from "@/wab/shared/codegen/util";
 import { asOne } from "@/wab/shared/common";
 import { Component } from "@/wab/shared/model/classes";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -18,7 +17,7 @@ const ComponentListItem = observer(function ComponentListItem(
   props: ComponentListItemProps
 ) {
   const { component, docsCtx } = props;
-  const url = fillRoute(APP_ROUTES.projectDocsComponent, {
+  const url = APP_ROUTES.projectDocsComponent.fill({
     projectId: docsCtx.studioCtx.siteInfo.id,
     componentIdOrClassName: toClassName(component.name) || component.uuid,
     codegenType: docsCtx.getCodegenType(),

@@ -5,12 +5,13 @@ import {
   DefaultCmsModelContentProps,
   PlasmicCmsModelContent,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelContent";
+import { Redirect } from "@/wab/client/route/Redirect";
+import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
+import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 
 export type CmsModelContentProps = DefaultCmsModelContentProps;
 
@@ -18,73 +19,76 @@ function CmsModelContent_(
   props: CmsModelContentProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const match_ = useRouteMatch<{
+  const match_ = useMatchedRoute<{
     databaseId: CmsDatabaseId;
     tableId: CmsTableId;
-  }>();
+  }>()!;
   const { rows } = useCmsRows(
-    match_.params.databaseId,
-    match_.params.tableId as CmsTableId
+    match_.pathParams.databaseId,
+    match_.pathParams.tableId as CmsTableId
   );
 
   return (
-    <Switch>
-      <Route
-        path={APP_ROUTES.cmsEntry.pattern}
-        render={({ match }) => {
-          if (rows && !rows.find((r) => r.id === match.params.rowId)) {
-            return (
-              <Redirect
-                to={fillRoute(APP_ROUTES.cmsModelContent, {
-                  databaseId: match.params.databaseId,
-                  tableId: match.params.tableId,
-                })}
-              />
-            );
-          } else {
-            return (
-              <PlasmicCmsModelContent
-                root={{ ref }}
-                {...props}
-                entriesList={{
-                  rows,
-                }}
-                entryDetail={{
-                  key: match.params.rowId,
-                }}
-              />
-            );
-          }
-        }}
-      />
-      <Route
-        path={APP_ROUTES.cmsModelContent.pattern}
-        render={({ match }) => {
-          if (rows && rows.length > 0) {
-            return (
-              <Redirect
-                to={fillRoute(APP_ROUTES.cmsEntry, {
-                  databaseId: match.params.databaseId,
-                  tableId: match.params.tableId,
-                  rowId: rows[0].id,
-                })}
-              />
-            );
-          } else {
-            return (
-              <PlasmicCmsModelContent
-                root={{ ref }}
-                {...props}
-                noEntries={true}
-                entriesList={{
-                  rows,
-                }}
-              />
-            );
-          }
-        }}
-      />
-    </Switch>
+    <Switch
+      cases={[
+        switchCase({
+          route: APP_ROUTES.cmsEntry,
+          render: ({ databaseId, tableId, rowId }) => {
+            if (rows && !rows.find((r) => r.id === rowId)) {
+              return (
+                <Redirect
+                  to={APP_ROUTES.cmsModelContent.fill({
+                    databaseId,
+                    tableId,
+                  })}
+                />
+              );
+            } else {
+              return (
+                <PlasmicCmsModelContent
+                  root={{ ref }}
+                  {...props}
+                  entriesList={{
+                    rows,
+                  }}
+                  entryDetail={{
+                    key: rowId,
+                  }}
+                />
+              );
+            }
+          },
+        }),
+        switchCase({
+          route: APP_ROUTES.cmsModelContent,
+          render: ({ databaseId, tableId }) => {
+            if (rows && rows.length > 0) {
+              return (
+                <Redirect
+                  to={APP_ROUTES.cmsEntry.fill({
+                    databaseId,
+                    tableId,
+                    rowId: rows[0].id,
+                  })}
+                />
+              );
+            } else {
+              return (
+                <PlasmicCmsModelContent
+                  root={{ ref }}
+                  {...props}
+                  noEntries={true}
+                  entriesList={{
+                    rows,
+                  }}
+                />
+              );
+            }
+          },
+        }),
+        switchDefault({ render: () => null }),
+      ]}
+    />
   );
 }
 

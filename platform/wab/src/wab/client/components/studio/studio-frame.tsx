@@ -1,21 +1,21 @@
+import { reportError } from "@/wab/client/ErrorNotifications";
 import {
   getLoginRouteWithContinuation,
   parseProjectLocation,
 } from "@/wab/client/cli-routes";
 import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import { PublicLink } from "@/wab/client/components/PublicLink";
-import { TopFrameCopilotToolsBridge } from "@/wab/client/components/studio/TopFrameCopilotToolsBridge";
 import { HostLoadTimeoutPrompt } from "@/wab/client/components/TopFrame/HostLoadTimeoutPrompt";
 import {
   TopFrameChrome,
   useTopFrameState,
 } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { TopFrameCopilotToolsBridge } from "@/wab/client/components/studio/TopFrameCopilotToolsBridge";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { reportError } from "@/wab/client/ErrorNotifications";
 import { buildPlasmicStudioArgsHash } from "@/wab/client/frame-ctx/plasmic-studio-args";
 import {
-  handleIframeLoad,
   TopFrameCtxProvider,
+  handleIframeLoad,
 } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { usePreventDefaultBrowserPinchToZoomBehavior } from "@/wab/client/hooks/usePreventDefaultBrowserPinchToZoomBehavior";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
@@ -29,12 +29,11 @@ import {
   MainBranchId,
   ProjectId,
 } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { maybeOne, spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { notification } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { Location } from "history";
@@ -93,11 +92,9 @@ export function StudioFrame({
     [fetchBranches]
   );
 
-  const previousLocation = React.useRef<Location<unknown>>(
-    appCtx.history.location
-  );
+  const previousLocation = React.useRef<Location>(appCtx.history.location);
   React.useEffect(() => {
-    const dispose = appCtx.history.listen((newLocation) => {
+    const dispose = appCtx.history.listen(({ location: newLocation }) => {
       const oldBranchName = parseProjectLocation(
         previousLocation.current
       )?.branchName;
@@ -237,7 +234,7 @@ export function StudioFrame({
         <br />
         <br />
         Enter the domain <code>{hostOrigin}</code> to add it to your{" "}
-        <PublicLink href={fillRoute(APP_ROUTES.settings, {})}>
+        <PublicLink href={APP_ROUTES.settings.fill({})}>
           trusted list
         </PublicLink>
         .

@@ -20,7 +20,6 @@ import { getProjectFlags } from "@/wab/shared/devflags";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { ProjectDependency } from "@/wab/shared/model/classes";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import { notification } from "antd";
 import * as React from "react";
@@ -148,7 +147,7 @@ export async function checkDepPkgHosts(
             imports components from{" "}
             <a
               target="_blank"
-              href={fillRoute(APP_ROUTES.project, {
+              href={APP_ROUTES.project.fill({
                 projectId: pkgVersion.pkg.pkg?.projectId,
               })}
             >

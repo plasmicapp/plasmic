@@ -5,12 +5,12 @@ import {
   DefaultCmsRootProps,
   PlasmicCmsRoot,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsRoot";
+import { Redirect } from "@/wab/client/route/Redirect";
+import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
 import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { Redirect, Route, Switch } from "react-router";
 
 export interface CmsRootProps extends DefaultCmsRootProps {
   databaseId: CmsDatabaseId;
@@ -24,31 +24,35 @@ function CmsRoot_(props: CmsRootProps, ref: HTMLElementRefOf<"div">) {
     return <Spinner />;
   }
   return (
-    <Switch>
-      <Route
-        path={APP_ROUTES.cmsContentRoot.pattern}
-        render={({ match }) => (
-          <PlasmicCmsRoot root={{ ref }} activeTab={"content"} {...rest} />
-        )}
-      />
-      <Route
-        path={APP_ROUTES.cmsSchemaRoot.pattern}
-        render={({ match }) => (
-          <PlasmicCmsRoot root={{ ref }} activeTab={"schema"} {...rest} />
-        )}
-      />
-      <Route
-        path={APP_ROUTES.cmsSettings.pattern}
-        render={() => (
-          <PlasmicCmsRoot root={{ ref }} activeTab={"settings"} {...rest} />
-        )}
-      />
-      <Route>
-        <Redirect
-          to={fillRoute(APP_ROUTES.cmsContentRoot, { databaseId: databaseId })}
-        />
-      </Route>
-    </Switch>
+    <Switch
+      cases={[
+        switchCase({
+          route: APP_ROUTES.cmsContentRoot,
+          render: () => (
+            <PlasmicCmsRoot root={{ ref }} activeTab={"content"} {...rest} />
+          ),
+        }),
+        switchCase({
+          route: APP_ROUTES.cmsSchemaRoot,
+          render: () => (
+            <PlasmicCmsRoot root={{ ref }} activeTab={"schema"} {...rest} />
+          ),
+        }),
+        switchCase({
+          route: APP_ROUTES.cmsSettings,
+          render: () => (
+            <PlasmicCmsRoot root={{ ref }} activeTab={"settings"} {...rest} />
+          ),
+        }),
+        switchDefault({
+          render: () => (
+            <Redirect
+              to={APP_ROUTES.cmsContentRoot.fill({ databaseId: databaseId })}
+            />
+          ),
+        }),
+      ]}
+    />
   );
 }
 

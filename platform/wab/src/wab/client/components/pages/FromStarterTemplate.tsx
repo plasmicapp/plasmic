@@ -3,7 +3,6 @@ import { Spinner } from "@/wab/client/components/widgets";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 
 export function FromStarterTemplate(props: {
@@ -42,19 +41,17 @@ export function FromStarterTemplate(props: {
       spawn(
         createProject().then((newProjectId) => {
           if (newProjectId) {
-            location.href = fillRoute(APP_ROUTES.project, {
+            location.href = APP_ROUTES.project.fill({
               projectId: newProjectId,
             });
           }
         })
       );
     } else if (!appCtx.selfInfo) {
-      appCtx.router.routeTo(
-        fillRoute(APP_ROUTES.login, {}, { continueTo: path })
-      );
+      appCtx.router.routeTo(APP_ROUTES.login.fill({}, { continueTo: path }));
     } else {
       appCtx.router.routeTo(
-        fillRoute(APP_ROUTES.emailVerification, {}, { continueTo: path })
+        APP_ROUTES.emailVerification.fill({}, { continueTo: path })
       );
     }
   }, [projectId, baseProjectId, appCtx, name]);

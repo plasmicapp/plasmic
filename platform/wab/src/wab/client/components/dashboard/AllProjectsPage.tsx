@@ -10,12 +10,11 @@ import {
   DefaultAllProjectsPageProps,
   PlasmicAllProjectsPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicAllProjectsPage";
+import { useHistory, useLocation } from "@/wab/client/route/HistoryProvider";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as querystring from "querystring";
 import * as React from "react";
-import { useHistory, useLocation } from "react-router-dom";
 
 type AllProjectsPageProps = DefaultAllProjectsPageProps;
 
@@ -59,10 +58,8 @@ function AllProjectsPage_(
     }
     // Success
     const team = billing.team;
-    await showUpsellConfirm(
-      fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
-    );
-    history.push(fillRoute(APP_ROUTES.org, { teamId: team.id }));
+    await showUpsellConfirm(APP_ROUTES.orgSettings.fill({ teamId: team.id }));
+    history.push(APP_ROUTES.org.fill({ teamId: team.id }));
   }, [search]);
 
   return (

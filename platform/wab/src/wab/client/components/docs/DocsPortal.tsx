@@ -9,13 +9,13 @@ import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { PlasmicDocsPortal } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortal";
 import CodegenTypeContext from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicGlobalVariant__CodegenType";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
+import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import { Route, Switch } from "react-router";
-import { useHistory } from "react-router-dom";
 
 interface DocsPortalProps {
   hostFrameCtx: HostFrameCtx;
@@ -37,7 +37,7 @@ const DocsPortal = observer(function DocsPortal(props: DocsPortalProps) {
 
   React.useEffect(() => {
     // First subscribes to update docsCtx on any redirect
-    const disposeHistoryListener = history.listen((location) => {
+    const disposeHistoryListener = history.listen(({ location }) => {
       docsCtx.updateStateFromRoute(history, location.pathname);
     });
 
@@ -56,28 +56,34 @@ const DocsPortal = observer(function DocsPortal(props: DocsPortalProps) {
       value={codegenType === "loader" ? "loader2" : codegenType}
     >
       <TopFrameObserver />
-      <Switch>
-        <Route path={APP_ROUTES.projectDocs.pattern} exact>
-          <DocsPortalBranches />
-        </Route>
-        <Route>
-          <BottomModalsProvider>
-            <PlasmicDocsPortal
-              activeTab={docsCtx.docsTabKey}
-              docsPortalHeader={{ projectName: studioCtx.siteInfo.name }}
-              root={{
-                style: {
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                },
-              }}
-            />
-          </BottomModalsProvider>
-        </Route>
-      </Switch>
+      <Switch
+        cases={[
+          switchCase({
+            route: APP_ROUTES.projectDocs,
+            exact: true,
+            render: () => <DocsPortalBranches />,
+          }),
+          switchDefault({
+            render: () => (
+              <BottomModalsProvider>
+                <PlasmicDocsPortal
+                  activeTab={docsCtx.docsTabKey}
+                  docsPortalHeader={{ projectName: studioCtx.siteInfo.name }}
+                  root={{
+                    style: {
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                    },
+                  }}
+                />
+              </BottomModalsProvider>
+            ),
+          }),
+        ]}
+      />
     </CodegenTypeContext.Provider>
   );
 });

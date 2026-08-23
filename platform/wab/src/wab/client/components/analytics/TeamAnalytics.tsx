@@ -12,12 +12,14 @@ import {
   DefaultTeamAnalyticsProps,
   PlasmicTeamAnalytics,
 } from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicTeamAnalytics";
-import { ensure } from "@/wab/shared/common";
+import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { TeamId } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import moment from "moment";
 import * as React from "react";
-import { useHistory, useLocation } from "react-router";
+
+import { useLocation } from "@/wab/client/route/HistoryProvider";
 
 export interface TeamAnalyticsProps extends DefaultTeamAnalyticsProps {
   teamId: TeamId;

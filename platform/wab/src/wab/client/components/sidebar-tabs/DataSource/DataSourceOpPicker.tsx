@@ -184,7 +184,6 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { smartHumanize } from "@/wab/shared/strs";
 import { explorerPlugin } from "@graphiql/plugin-explorer";
 import {
@@ -1426,7 +1425,7 @@ export function DataSourceOpDraftForm(props: {
                   <a
                     target={"_blank"}
                     href={
-                      fillRoute(APP_ROUTES.workspace, {
+                      APP_ROUTES.workspace.fill({
                         workspaceId: studioCtx.siteInfo.workspaceId,
                       }) + "#tab=dataSources"
                     }

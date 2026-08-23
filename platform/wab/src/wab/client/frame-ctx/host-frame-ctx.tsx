@@ -11,14 +11,11 @@ import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { ensure, spawn, spawnWrapper } from "@/wab/shared/common";
 import * as Comlink from "comlink";
 import {
+  Action,
+  Blocker,
   History,
-  Href,
-  LocationDescriptor,
-  LocationDescriptorObject,
-  LocationListener,
-  Path,
-  TransitionPromptHook,
-  UnregisterCallback,
+  Listener,
+  To,
   createMemoryHistory,
 } from "history";
 import * as React from "react";
@@ -100,7 +97,7 @@ export function useHostFrameCtxIfHostFrame(): HostFrameCtx | undefined {
  * All "read" methods are supported.
  * Only push and replace "write" methods are supported.
  */
-class HostHistory implements History<unknown> {
+export class HostHistory implements History {
   private readonly memoryHistory = createMemoryHistory();
   private readonly unregisterLocationListenerPromise: Promise<() => void>;
 
@@ -108,24 +105,24 @@ class HostHistory implements History<unknown> {
     // complex objects sent over Comlink must be proxied
     this.unregisterLocationListenerPromise =
       topFrameApi.registerLocationListener(
-        Comlink.proxy((location, action) => {
+        Comlink.proxy<Listener>(({ location, action }) => {
           const path = location.pathname + location.search + location.hash;
           console.log(
             `Host history ${action} ${location.key} ${path}`,
             history
           );
           switch (action) {
-            case "PUSH": {
+            case Action.Push: {
               // Store key in state. Used later in POP.
               this.memoryHistory.push(path, location.key);
               break;
             }
-            case "REPLACE": {
+            case Action.Replace: {
               // Store key in state. Used later in POP.
               this.memoryHistory.replace(path, location.key);
               break;
             }
-            case "POP": {
+            case Action.Pop: {
               // POP has multiple scenarios.
               // https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event
 
@@ -158,18 +155,16 @@ class HostHistory implements History<unknown> {
   get action() {
     return this.memoryHistory.action;
   }
-  block = (
-    _prompt: boolean | string | TransitionPromptHook | undefined
-  ): UnregisterCallback => {
+  block = (_blocker: Blocker): (() => void) => {
     throw new Error("unsupported HostHistory method");
   };
-  createHref = (location: LocationDescriptorObject): Href => {
+  createHref = (location: To): string => {
     return this.memoryHistory.createHref(location);
   };
   get length() {
-    return this.memoryHistory.length;
+    return this.memoryHistory.entries.length;
   }
-  listen = (listener: LocationListener): UnregisterCallback => {
+  listen = (listener: Listener): (() => void) => {
     return this.memoryHistory.listen(listener);
   };
   get location() {
@@ -178,23 +173,23 @@ class HostHistory implements History<unknown> {
   go = (_n: number): void => {
     throw new Error("unsupported HostHistory method");
   };
-  goBack = (): void => {
+  back = (): void => {
     throw new Error("unsupported HostHistory method");
   };
-  goForward = (): void => {
+  forward = (): void => {
     throw new Error("unsupported HostHistory method");
   };
-  push = (path: Path | LocationDescriptor, _state?: unknown): void => {
+  push = (path: To, _state?: unknown): void => {
     const { pathname, search, hash } = toPathSearchHash(path);
     spawn(this.topFrameApi.pushLocation(pathname, search, hash));
   };
-  replace = (path: Path | LocationDescriptor, _state?: unknown): void => {
+  replace = (path: To, _state?: unknown): void => {
     const { pathname, search, hash } = toPathSearchHash(path);
     spawn(this.topFrameApi.replaceLocation(pathname, search, hash));
   };
 }
 
-function toPathSearchHash(path: Path | LocationDescriptor): {
+function toPathSearchHash(path: To): {
   pathname?: string;
   search?: string;
   hash?: string;

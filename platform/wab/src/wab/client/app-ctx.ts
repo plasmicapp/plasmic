@@ -1,9 +1,9 @@
-import { Api, setUser } from "@/wab/client/api";
-import { isHostFrame, Router } from "@/wab/client/cli-routes";
-import { getClientDevFlagOverrides } from "@/wab/client/client-dev-flags";
 import { loadCacheKey } from "@/wab/client/LocalStorageKey";
-import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import { Api, setUser } from "@/wab/client/api";
+import { Router, isHostFrame } from "@/wab/client/cli-routes";
+import { getClientDevFlagOverrides } from "@/wab/client/client-dev-flags";
 import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { App } from "@/wab/client/components/top-view";
 import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
@@ -20,14 +20,13 @@ import { parseBundle } from "@/wab/shared/bundles";
 import { ensure, swallowAsync } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
+  DEVFLAGS,
+  DevFlagsType,
   applyDevFlagOverrides,
   applyDevFlagOverridesToTarget,
   applyPlasmicUserDevFlagOverrides,
-  DEVFLAGS,
-  DevFlagsType,
 } from "@/wab/shared/devflags";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { notification } from "antd";
 import { History } from "history";
 import $ from "jquery";
@@ -201,7 +200,7 @@ export class AppCtx {
     // Explicitly setting window.location.href, instead of
     // using router, to make sure we completely clear in-page
     // js state
-    window.location.href = fillRoute(APP_ROUTES.login, {});
+    window.location.href = APP_ROUTES.login.fill({});
   }
 
   isWhiteLabelUser() {

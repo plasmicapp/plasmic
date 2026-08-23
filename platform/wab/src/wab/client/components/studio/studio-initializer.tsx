@@ -1,8 +1,5 @@
+import { plexusKey, storageViewAsKey } from "@/wab/client/LocalStorageKey";
 import { AppCtx } from "@/wab/client/app-ctx";
-import {
-  plexusKey,
-  storageViewAsKey,
-} from "@/wab/client/LocalStorageKey";
 import { isHostFrame } from "@/wab/client/cli-routes";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import importAndRetry from "@/wab/client/components/dynamic-import";
@@ -20,6 +17,7 @@ import { checkRootSubHostVersion } from "@/wab/client/frame-ctx/windows";
 import { initStudioCtx } from "@/wab/client/init-view-ctx";
 import "@/wab/client/moment-config";
 import "@/wab/client/react-global-hook/globalHook"; // Run once studio loads to inject our hook
+import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
 import { initializePlasmicExtension } from "@/wab/client/screenshot-util";
 import {
   StudioCtx,
@@ -36,7 +34,6 @@ import { notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Route, Switch } from "react-router";
 
 type StudioInitializerProps = {
   projectId: ProjectId;
@@ -230,69 +227,71 @@ class StudioInitializer_ extends React.Component<
                   />
                 </Studio>
               )}
-              <Switch>
-                <Route
-                  exact
-                  path={[
-                    APP_ROUTES.project.pattern,
-                    APP_ROUTES.projectSlug.pattern,
-                  ]}
-                  render={() => {
-                    return (
-                      // @ts-expect-error
-                      <Helmet>
-                        <body className="no-text-select" />
-                      </Helmet>
-                    );
-                  }}
-                />
-                <Route
-                  path={APP_ROUTES.projectDocs.pattern}
-                  render={() => (
-                    <>
-                      {this.hideStudio()}
-                      <widgets.ObserverLoadable
-                        loader={() =>
-                          importAndRetry(
-                            () =>
-                              import("@/wab/client/components/docs/DocsPortal")
-                          ).then(({ default: DocsPortal }) => DocsPortal)
-                        }
-                        contents={(DocsPortal) => (
-                          <DocsPortal
-                            hostFrameCtx={previewCtx.hostFrameCtx}
-                            studioCtx={studioCtx}
-                          />
-                        )}
-                      />
-                    </>
-                  )}
-                />
-                <Route
-                  path={[
-                    APP_ROUTES.projectPreview.pattern,
-                    APP_ROUTES.projectFullPreview.pattern,
-                  ]}
-                  render={() => {
-                    return (
+              <Switch
+                cases={[
+                  switchCase<{}>({
+                    exact: true,
+                    route: [APP_ROUTES.project, APP_ROUTES.projectSlug],
+                    render: () => {
+                      return (
+                        // @ts-expect-error
+                        <Helmet>
+                          <body className="no-text-select" />
+                        </Helmet>
+                      );
+                    },
+                  }),
+                  switchCase({
+                    route: APP_ROUTES.projectDocs,
+                    render: () => (
                       <>
                         {this.hideStudio()}
                         <widgets.ObserverLoadable
                           loader={() =>
                             importAndRetry(
                               () =>
-                                import("@/wab/client/components/live/Preview")
-                            ).then(({ default: Preview }) => Preview)
+                                import(
+                                  "@/wab/client/components/docs/DocsPortal"
+                                )
+                            ).then(({ default: DocsPortal }) => DocsPortal)
                           }
-                          contents={(Preview) => (
-                            <Preview studioCtx={studioCtx} />
+                          contents={(DocsPortal) => (
+                            <DocsPortal
+                              hostFrameCtx={previewCtx.hostFrameCtx}
+                              studioCtx={studioCtx}
+                            />
                           )}
                         />
                       </>
-                    );
-                  }}
-                />
-              </Switch>
+                    ),
+                  }),
+                  switchCase({
+                    route: [
+                      APP_ROUTES.projectPreview,
+                      APP_ROUTES.projectFullPreview,
+                    ],
+                    render: () => {
+                      return (
+                        <>
+                          {this.hideStudio()}
+                          <widgets.ObserverLoadable
+                            loader={() =>
+                              importAndRetry(
+                                () =>
+                                  import("@/wab/client/components/live/Preview")
+                              ).then(({ default: Preview }) => Preview)
+                            }
+                            contents={(Preview) => (
+                              <Preview studioCtx={studioCtx} />
+                            )}
+                          />
+                        </>
+                      );
+                    },
+                  }),
+                  switchDefault({ render: () => null }),
+                ]}
+              />
             </>
           )
         )

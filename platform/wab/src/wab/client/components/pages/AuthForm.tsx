@@ -1,3 +1,4 @@
+import { ssoEmailKey } from "@/wab/client/LocalStorageKey";
 import { NonAuthCtx, useNonAuthCtx } from "@/wab/client/app-ctx";
 import { isPlasmicPath } from "@/wab/client/cli-routes";
 import {
@@ -8,17 +9,15 @@ import "@/wab/client/components/pages/AuthForm.sass";
 import { IntakeFlowForm } from "@/wab/client/components/pages/IntakeFlowForm";
 import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { ssoEmailKey } from "@/wab/client/LocalStorageKey";
+import { Redirect } from "@/wab/client/route/Redirect";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { mkUuid, spawnWrapper } from "@/wab/shared/common";
 import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { Button, Divider, Input, notification } from "antd";
 import $ from "jquery";
 import * as React from "react";
 import { useState } from "react";
-import { Redirect } from "react-router-dom";
 import useSWR from "swr";
 
 const LazyPasswordStrengthBar = React.lazy(
@@ -192,11 +191,10 @@ export function AuthForm({ mode, onLoggedIn }: AuthFormProps) {
         appCtx.router.routeTo(nextPath);
       } else {
         appCtx.router.routeTo(
-          fillRoute(
-            APP_ROUTES.survey,
+          APP_ROUTES.survey.fill(
             {},
             {
-              continueTo: fillRoute(APP_ROUTES.emailVerification, {}),
+              continueTo: APP_ROUTES.emailVerification.fill({}),
             }
           )
         );
@@ -229,7 +227,7 @@ export function AuthForm({ mode, onLoggedIn }: AuthFormProps) {
                       content: "Unexpected error occurred logging in.",
                     });
                   }}
-                  googleAuthUrl={fillRoute(APP_ROUTES.googleAuth, {})}
+                  googleAuthUrl={APP_ROUTES.googleAuth.fill({})}
                 >
                   {mode === "sign in"
                     ? "Sign in with Google"
@@ -579,14 +577,14 @@ function setMode(nonAuthCtx: NonAuthCtx, newMode: Mode) {
   const nextPath = getNextPath();
   nonAuthCtx.router.routeTo(
     newMode === "sign in"
-      ? fillRoute(APP_ROUTES.login, {}, { continueTo: nextPath })
+      ? APP_ROUTES.login.fill({}, { continueTo: nextPath })
       : newMode === "sign up"
-      ? fillRoute(APP_ROUTES.signup, {}, { continueTo: nextPath })
+      ? APP_ROUTES.signup.fill({}, { continueTo: nextPath })
       : newMode === "sso"
-      ? fillRoute(APP_ROUTES.sso, {}, { continueTo: nextPath })
+      ? APP_ROUTES.sso.fill({}, { continueTo: nextPath })
       : newMode === "forgot password"
-      ? fillRoute(APP_ROUTES.forgotPassword, {}, { continueTo: nextPath })
-      : fillRoute(APP_ROUTES.resetPassword, {}, { continueTo: nextPath })
+      ? APP_ROUTES.forgotPassword.fill({}, { continueTo: nextPath })
+      : APP_ROUTES.resetPassword.fill({}, { continueTo: nextPath })
   );
 }
 
@@ -594,7 +592,7 @@ function getNextPath() {
   const continueToPath = new URLSearchParams(location.search).get("continueTo");
   return continueToPath && isPlasmicPath(continueToPath)
     ? continueToPath
-    : fillRoute(APP_ROUTES.dashboard, {});
+    : APP_ROUTES.dashboard.fill({});
 }
 
 function createFakeUser(

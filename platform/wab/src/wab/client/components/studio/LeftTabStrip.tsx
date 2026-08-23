@@ -41,7 +41,6 @@ import { spawn, unexpected } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { BASE_URL } from "@/wab/shared/discourse/config";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import {
   LeftTabKey,
   LeftTabUiKey,
@@ -332,7 +331,7 @@ Help
           icon: <HelpsvgIcon />,
           label: "Help",
           href: studioCtx.siteInfo.teamId
-            ? fillRoute(APP_ROUTES.orgSupport, {
+            ? APP_ROUTES.orgSupport.fill({
                 teamId: studioCtx.siteInfo.teamId!,
               })
             : undefined,

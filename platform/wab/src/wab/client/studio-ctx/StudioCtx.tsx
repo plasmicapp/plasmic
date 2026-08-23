@@ -17,7 +17,7 @@ import {
   getProjectReleases,
   listUnpublishedProjectRevisions,
 } from "@/wab/client/api-hooks";
-import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
+import { parseProjectLocation } from "@/wab/client/cli-routes";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
@@ -761,11 +761,7 @@ export class StudioCtx extends WithDbCtx {
     this.fontManager = new FontManager(this.site);
     this.fontManager.installAllUsedFonts([$(document.head)]);
 
-    this.isDocs = !!parseRoute(
-      APP_ROUTES.projectDocs,
-      location.pathname,
-      false
-    );
+    this.isDocs = !!APP_ROUTES.projectDocs.parse(location.pathname, false);
 
     spawn(
       this.getProjectReleases().then((releases) =>
@@ -780,7 +776,7 @@ export class StudioCtx extends WithDbCtx {
     );
 
     this.disposals.push(
-      this.appCtx.history.listen((location) => {
+      this.appCtx.history.listen(({ location }) => {
         spawn(this.handleRouteChange(location));
       }),
       this.uiActionBus.registerListener((uiId, _type) => {

@@ -1,5 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { isPlasmicPath, parseRoute } from "@/wab/client/cli-routes";
+import { isPlasmicPath } from "@/wab/client/cli-routes";
 import { HostConfig } from "@/wab/client/components/HostConfig";
 import { DataSourcePicker } from "@/wab/client/components/TopFrame/DataSourcePicker";
 import CloneProjectModal from "@/wab/client/components/TopFrame/TopBar/CloneProjectModal";
@@ -28,6 +28,7 @@ import {
 } from "@/wab/client/frame-ctx/top-frame-api";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { useHistory, useLocation } from "@/wab/client/route/HistoryProvider";
 import { Shortcut } from "@/wab/client/shortcuts/shortcut";
 import { useBindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import {
@@ -52,13 +53,11 @@ import {
   APP_ROUTES,
   SEARCH_PARAM_COPILOT_CHAT,
 } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
 import { Action, Location } from "history";
 import { ExtendedKeyboardEvent } from "mousetrap";
 import React from "react";
-import { useHistory, useLocation } from "react-router";
 import * as Signals from "signals";
 
 export interface MergeModalContext {
@@ -137,8 +136,7 @@ export function TopFrameChrome({
 }: TopFrameChromeProps) {
   const { hostFrameApiReady } = useTopFrameCtx();
   const location = useLocation();
-  const fullPreview = !!parseRoute(
-    APP_ROUTES.projectFullPreview,
+  const fullPreview = !!APP_ROUTES.projectFullPreview.parse(
     location.pathname,
     false
   );
@@ -202,7 +200,7 @@ export function TopFrameChrome({
                 <p style={{ textAlign: "left" }}>
                   Click{" "}
                   <a
-                    href={fillRoute(APP_ROUTES.project, {
+                    href={APP_ROUTES.project.fill({
                       projectId: project.id,
                     })}
                     target="_blank"
@@ -231,7 +229,7 @@ export function TopFrameChrome({
   return (
     <>
       {!fullPreview &&
-        (parseRoute(APP_ROUTES.projectDocs, pathname, false) ? null : (
+        (APP_ROUTES.projectDocs.parse(pathname, false) ? null : (
           <>
             <ProjectNameModal
               project={project}
@@ -450,6 +448,7 @@ export function useTopFrameState({
   toggleAdminMode: (val: boolean) => Promise<void>;
 }) {
   const history = useHistory();
+  const currentLocation = useLocation();
 
   const [latestPublishedVersionData, setLatestPublishedVersionData] =
     React.useState<{ revisionId: string; version: string }>();
@@ -487,9 +486,9 @@ export function useTopFrameState({
   >(undefined);
 
   const showCopilotChatModal = React.useMemo(() => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(currentLocation.search);
     return searchParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true";
-  }, [history.location.search]);
+  }, [currentLocation.search]);
 
   // A starter prompt is scoped to one dialog session, clear when the dialog
   // closes so it can't come back prefilled on a later history navigation.
@@ -534,32 +533,29 @@ export function useTopFrameState({
     () => ({
       pushLocation(path, query, hash) {
         validateNewLocation(path, history.location);
+        // history@5 doesn't resolve missing parts like history@4 did:
+        // a missing pathname means "stay here", missing search/hash clear.
         history.push({
-          pathname: path,
-          search: query,
-          hash,
+          pathname: path ?? history.location.pathname,
+          search: query ?? "",
+          hash: hash ?? "",
         });
         forceUpdate();
       },
       replaceLocation(path, query, hash) {
         validateNewLocation(path, history.location);
         history.replace({
-          pathname: path,
-          search: query,
-          hash,
+          pathname: path ?? history.location.pathname,
+          search: query ?? "",
+          hash: hash ?? "",
         });
         forceUpdate();
       },
       registerLocationListener: (listener) => {
-        const historyListener = (location: Location, action: Action) => {
-          // copy into a plain object so that Comlink can transfer it
-          const locationCopy = { ...location };
-          listener(locationCopy, action);
-        };
-        const unregister = history.listen(historyListener);
+        const unregister = history.listen(listener);
 
         // replace host's initial location
-        historyListener(history.location, "REPLACE");
+        listener({ location: history.location, action: Action.Replace });
 
         return unregister;
       },
@@ -696,16 +692,14 @@ function validateNewLocation(
   assert(isPlasmicPath(path), `${path} is not Plasmic`);
 
   // https://app.shortcut.com/plasmic/story/20746/improve-isolation-to-support-arbitrary-code
-  if (
-    parseRoute(APP_ROUTES.projectFullPreview, previousLocation.pathname, false)
-  ) {
+  if (APP_ROUTES.projectFullPreview.parse(previousLocation.pathname, false)) {
     assert(
-      parseRoute(APP_ROUTES.projectFullPreview, path, false),
+      APP_ROUTES.projectFullPreview.parse(path, false),
       `Cannot navigate from full preview mode to outside of it, from ${previousLocation.pathname} to ${path}`
     );
   } else {
     assert(
-      !parseRoute(APP_ROUTES.projectFullPreview, path, false),
+      !APP_ROUTES.projectFullPreview.parse(path, false),
       `Cannot navigate from studio to full preview mode, from ${previousLocation.pathname} to ${path}`
     );
   }

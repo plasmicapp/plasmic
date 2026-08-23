@@ -9,7 +9,6 @@ import { toClassName } from "@/wab/shared/codegen/util";
 import { asOne, ensure } from "@/wab/shared/common";
 import { ImageAsset } from "@/wab/shared/model/classes";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -31,7 +30,7 @@ const ImageListItem = observer(function ImageListItem(
             <PublicLink
               {...(rest2 as any)}
               children={asOne(children)}
-              href={fillRoute(APP_ROUTES.projectDocsIcon, {
+              href={APP_ROUTES.projectDocsIcon.fill({
                 projectId: docsCtx.studioCtx.siteInfo.id,
                 iconIdOrClassName: toClassName(icon.name) || icon.uuid,
                 codegenType: docsCtx.getCodegenType(),

@@ -19,7 +19,6 @@ import { assert } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, notification } from "antd";
 import moment from "moment";
@@ -55,7 +54,7 @@ function DatabaseListItem_(
         props: {
           ref,
           className,
-          href: fillRoute(APP_ROUTES.cmsRoot, {
+          href: APP_ROUTES.cmsRoot.fill({
             databaseId: database.id,
           }),
         },

@@ -1,12 +1,12 @@
 import { Api } from "@/wab/client/api";
-import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
 import { MergeModalContext } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
 import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
 import { ApiBranch, ApiTeam } from "@/wab/shared/ApiSchema";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { LocalizationConfig } from "@/wab/shared/localization";
-import { LocationListener, UnregisterCallback } from "history";
+import { Listener } from "history";
 
 /**
  * API the TopFrame exposes to HostFrame.
@@ -23,7 +23,7 @@ export type TopFrameFullApi = {
 export interface TopFrameApi {
   pushLocation(path?: string, query?: string, hash?: string): void;
   replaceLocation(path?: string, query?: string, hash?: string): void;
-  registerLocationListener(listener: LocationListener): UnregisterCallback;
+  registerLocationListener(listener: Listener): () => void;
 
   setPrimitiveValues(vals: {
     noComponents: boolean;

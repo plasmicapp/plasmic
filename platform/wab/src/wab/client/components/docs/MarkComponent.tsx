@@ -5,7 +5,6 @@ import {
   PlasmicMarkComponent,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicMarkComponent";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 
 type MarkComponentProps = DefaultMarkComponentProps;
@@ -15,7 +14,7 @@ function MarkComponent(props: MarkComponentProps) {
     <PlasmicMarkComponent
       {...props}
       iconButton={{
-        href: fillRoute(APP_ROUTES.dashboard, {}),
+        href: APP_ROUTES.dashboard.fill({}),
         title: "Back to dashboard",
       }}
     />

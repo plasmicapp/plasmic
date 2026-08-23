@@ -29,7 +29,6 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
@@ -119,9 +118,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         description: promptResult.errorMsg,
       });
     } else if (promptResult.type === "success") {
-      await showUpsellConfirm(
-        fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
-      );
+      await showUpsellConfirm(APP_ROUTES.orgSettings.fill({ teamId: team.id }));
     }
 
     // Refresh the latest team data
@@ -151,9 +148,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       });
     } else if (promptResult.type === "success") {
       // TODO: custom confirm, currently using same as for upsell
-      await showUpsellConfirm(
-        fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
-      );
+      await showUpsellConfirm(APP_ROUTES.orgSettings.fill({ teamId: team.id }));
     }
 
     // Refresh the latest team data
@@ -305,7 +300,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         team.stripeCustomerId
           ? {
               props: {
-                href: fillRoute(APP_ROUTES.orgBilling, { teamId: team.id }),
+                href: APP_ROUTES.orgBilling.fill({ teamId: team.id }),
                 target: "_blank",
               },
             }
