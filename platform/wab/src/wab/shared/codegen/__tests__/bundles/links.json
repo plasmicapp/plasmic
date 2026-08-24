@@ -1637,7 +1637,8 @@
           "page": { "__ref": "GfT4fmMuD4ON" },
           "params": {},
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "Q_mHO9YxOC-0": {
           "__type": "TplTag",
@@ -1672,7 +1673,7 @@
         "eWxy7ITden5Q": { "__type": "RawText", "markers": [], "text": "Home" }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

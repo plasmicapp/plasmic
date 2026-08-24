@@ -2563,16 +2563,6 @@ export function removeComponentMetadata(component: Component, key: string) {
   delete component.metadata[key];
 }
 
-/**
- * Extracts param names from page path, but retains the `...`
- * prefix for catchall params
- *
- * /hello/[yes]/and/[...what] => ["yes", "...what"]
- */
-export function extractParamsFromPagePath(path: string) {
-  return [...path.matchAll(/\[\[?([^\]]*)\]/g)].map((m) => m[1]);
-}
-
 export function getRepetitionElementName(dataRep: Rep) {
   return toVarName(dataRep.element.name);
 }
@@ -2620,16 +2610,6 @@ export function tryGetComponentByUuid(
   uuid: string
 ): Component | undefined {
   return site.components.find((c) => c.uuid === uuid);
-}
-
-export function tryGetComponentByName(
-  site: Site,
-  name: string,
-  opts: { plasmicOnly?: boolean } = {}
-): Component | undefined {
-  return site.components.find(
-    (c) => c.name === name && (!opts.plasmicOnly || isPlasmicComponent(c))
-  );
 }
 
 export function getAllComponentsInTopologicalOrder(site: Site) {

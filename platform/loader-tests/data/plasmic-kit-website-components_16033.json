@@ -5846,7 +5846,8 @@
           "params": {},
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "42180454": {
           "uuid": "hmkBqlSLwWbP",
@@ -23349,7 +23350,8 @@
           "params": {},
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "42183339": {
           "uuid": "J9QAA-Pwrydu",
@@ -161758,7 +161760,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

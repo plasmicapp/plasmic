@@ -602,7 +602,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -2807,7 +2807,8 @@
             "query2": { "__ref": "TFtMhkgaNq-g" }
           },
           "fragment": { "__ref": "RG4HhENzLJfF" },
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "encode": false
         },
         "f3JGDcgSmlOq": {
           "text": ["", { "__ref": "TY25F26nO_l9" }, ""],
@@ -3145,7 +3146,7 @@
         }
       },
       "deps": ["3f6783bc-83da-4ce7-98cc-69413a54d3b3"],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

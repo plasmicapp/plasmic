@@ -28465,7 +28465,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -29272,7 +29272,8 @@
           },
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "3015503": {
           "code": "\"value\"",
@@ -36802,7 +36803,8 @@
           },
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "5022615": { "text": ["123"], "__type": "TemplatedString" },
         "5022616": {
@@ -55521,7 +55523,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

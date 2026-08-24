@@ -34,6 +34,7 @@ import {
 import { Route } from "@/wab/shared/route/route";
 import {
   getMatchingPagePathParams,
+  joinDecodedSegments,
   substituteUrlParams,
 } from "@/wab/shared/utils/url-utils";
 import * as Sentry from "@sentry/browser";
@@ -325,7 +326,7 @@ export class PreviewCtx {
       }
     }
 
-    const previewPath = (matchRoute?.previewPath ?? []).join("/");
+    const previewPath = joinDecodedSegments(matchRoute?.previewPath);
     const componentPath = getComponentByPath(this.studioCtx, previewPath);
 
     const pageQuery = queryStringToRecord(location.search);

@@ -11,6 +11,7 @@ import {
   TplTagSection,
 } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
+import { LinkSection } from "@/wab/client/components/sidebar-tabs/LinkSection";
 import { ListStyleSection } from "@/wab/client/components/sidebar-tabs/ListStyleSection";
 import {
   MergedSlotsPropsSection,
@@ -128,6 +129,7 @@ export enum Section {
   RepeatingElement = "repeating-element",
   CustomBehaviors = "custom-behavior",
   HTMLAttributes = "html-attributes",
+  Link = "link",
   PrivateStyleVariants = "private-style-variants",
   ComponentProps = "component-props",
   ComponentStyleProps = "component-style-props",
@@ -231,6 +233,9 @@ const SECTION_SETTINGS: AllSectionsPresent<SectionSetting> = {
   [Section.HTMLAttributes]: {
     publicSection: PublicStyleSection.HTMLAttributes,
   },
+  [Section.Link]: {
+    publicSection: PublicStyleSection.HTMLAttributes,
+  },
   [Section.PrivateStyleVariants]: {
     publicSection: PublicStyleSection.ElementStates,
   },
@@ -292,6 +297,7 @@ const settingSections = new Set([
   Section.RepeatingElement,
   Section.CustomBehaviors,
   Section.HTMLAttributes,
+  Section.Link,
   Section.ComponentProps,
   Section.VariantsPicker,
   Section.Repeater,
@@ -356,6 +362,7 @@ function getRenderBySection(
 ) {
   const isSlot = isTplSlot(tpl);
   const isTag = isTplTag(tpl);
+  const isLink = isTplTag(tpl) && tpl.tag === "a";
   const isColumns = isTplColumns(tpl);
   const isColumn = isTplColumn(tpl);
   const isGridChild =
@@ -440,6 +447,7 @@ function getRenderBySection(
     return true;
   };
 
+  const showLink = isLink && showSection(Section.Link);
   const map = new Map([
     [
       Section.SimplifiedCodeComponentMode,
@@ -740,11 +748,24 @@ function getRenderBySection(
       Section.TextContentOnly,
       () =>
         hasTextContent(tpl) &&
-        showSection(Section.Typography) && (
+        showSection(Section.Typography) &&
+        !showLink && (
           <TextOnlySection
             key={`${tpl.uuid}-text`}
             expsProvider={sc.props.expsProvider}
             viewCtx={viewCtx}
+          />
+        ),
+    ],
+    [
+      Section.Link,
+      () =>
+        showLink && (
+          <LinkSection
+            key={`${tpl.uuid}-link`}
+            viewCtx={viewCtx}
+            tpl={tpl as TplTag}
+            expsProvider={expsProvider}
           />
         ),
     ],
@@ -986,6 +1007,9 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   if (isTplTextBlock(tpl)) {
     pushIfNew(Section.Tag);
   }
+  if (isTplTag(tpl) && tpl.tag === "a") {
+    pushIfNew(Section.Link);
+  }
   if (isTplTag(tpl) && htmlTagsWithAttributes.has(tpl.tag)) {
     pushIfNew(Section.HTMLAttributes);
   }
@@ -1060,6 +1084,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   pushIfNew(Section.TransitionsPanel);
   pushIfNew(Section.TransformPanel);
   pushIfNew(Section.Tag);
+  pushIfNew(Section.Link);
   pushIfNew(Section.HTMLAttributes);
   if (isTplContainer(tpl)) {
     pushIfNew(Section.Typography);

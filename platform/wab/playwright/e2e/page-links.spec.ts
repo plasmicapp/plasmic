@@ -87,6 +87,14 @@ test.describe("Page Links", () => {
         fragment: "123",
       });
 
+      // expect query param and fragment editors shown
+      await expect(
+        models.studio.frame.locator('[data-test-id="prop-editor-row-a"]')
+      ).toBeVisible();
+      await expect(
+        models.studio.frame.locator('[data-test-id="prop-editor-row-fragment"]')
+      ).toBeVisible();
+
       await models.studio.leftPanel.switchToTreeTab();
       await models.studio.leftPanel.selectTreeNode([
         "vertical stack",
@@ -106,6 +114,13 @@ test.describe("Page Links", () => {
           ? { pageParam: dynamicPage.dynamicPageParam }
           : undefined
       );
+
+      // expect path param editor shown
+      if (dynamicPage.dynamicPageParam) {
+        await expect(
+          models.studio.frame.locator('[data-test-id="prop-editor-row-id"]')
+        ).toBeVisible();
+      }
 
       // assert hrefs in interaction
       await models.studio.leftPanel.switchToTreeTab();

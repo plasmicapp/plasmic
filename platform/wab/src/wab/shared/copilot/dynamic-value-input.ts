@@ -248,9 +248,10 @@ export function exprToInterpolatedString(expr: Expr): string | undefined {
 
 /**
  * Renders a `PageHref` as its URL with dynamic params/query/fragment inlined as
- * `{{ }}`, e.g. `/products/{{ $state.slug }}?ref={{ $props.ref }}`. The
- * interpolated counterpart of `pageHrefPathToCode`, so it round-trips through
- * the write path (as an equivalent static string or TemplatedString).
+ * `{{ }}`, e.g. `/products/{{ $state.slug }}?ref={{ $props.ref }}`.
+ *
+ * TODO: Support `PageHref.encode`, current ignored since it's not clear how to
+ * express it as an interpolated string.
  */
 function pageHrefToInterpolatedString(pageHref: PageHref): string | undefined {
   // Parts are all renderable, only a dangling VarRef reads as an empty segment.

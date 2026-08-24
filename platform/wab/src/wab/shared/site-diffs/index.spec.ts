@@ -14,6 +14,8 @@ import {
   CustomFunction,
   GlobalVariantGroup,
   Mixin,
+  PageHref,
+  PageMeta,
   ProjectDependency,
   RawText,
   RuleSet,
@@ -291,6 +293,77 @@ describe("compareSites / calculateSemVer", () => {
   });
 
   // site.globalVariantGroups
+  it("semver-pageHref", () => {
+    let site = nextSite();
+    const page = mkComponent({
+      name: "page",
+      tplTree: newTpl(),
+      type: ComponentType.Page,
+      pageMeta: new PageMeta({
+        path: "/blog/[slug]",
+        params: {},
+        query: {},
+        title: null,
+        description: "",
+        canonical: null,
+        roleId: null,
+        openGraphImage: null,
+      }),
+    });
+    const component = newComponent("component1");
+    $$$(component.tplTree).append(newTpl());
+    site.components.unshift(page);
+    site.components.unshift(component);
+    const link = () =>
+      (site.components[0].tplTree as TplTag).children[0] as TplTag;
+    ensureBaseVariantSetting(site.components[0], link());
+    link().vsettings[0].attrs["href"] = new PageHref({
+      page: site.components[1],
+      params: {
+        slug: new CustomCode({ code: "($state.slug)", fallback: null }),
+      },
+      query: {},
+      fragment: null,
+      encode: true,
+    });
+    compareCheck("minor");
+
+    const href = () => link().vsettings[0].attrs["href"] as PageHref;
+
+    // Toggling encode is a patch change
+    site = nextSite();
+    href().encode = false;
+    compareCheck("patch", 1);
+
+    // Changing a param expr is a patch change
+    site = nextSite();
+    href().params["slug"] = new CustomCode({
+      code: "($state.otherSlug)",
+      fallback: null,
+    });
+    compareCheck("patch", 1);
+
+    // Adding a query param is a patch change
+    site = nextSite();
+    href().query["ref"] = new CustomCode({
+      code: JSON.stringify("nav"),
+      fallback: null,
+    });
+    compareCheck("patch", 1);
+
+    // Setting a fragment is a patch change
+    site = nextSite();
+    href().fragment = new CustomCode({
+      code: JSON.stringify("top"),
+      fallback: null,
+    });
+    compareCheck("patch", 1);
+
+    // No change
+    site = nextSite();
+    compareCheck("patch", 0);
+  });
+
   it("semver-globalVariantGroups", () => {
     // - add new VariantGroup
     nextSite().globalVariantGroups.unshift(

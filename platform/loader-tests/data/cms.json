@@ -149,7 +149,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -1943,7 +1943,8 @@
           "params": { "slug": { "__ref": "lGiytaLWTBHi" } },
           "query": {},
           "fragment": null,
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "encode": false
         },
         "lGiytaLWTBHi": {
           "path": ["currentItem", "id"],
@@ -2121,7 +2122,7 @@
         }
       },
       "deps": ["fab02607-a7c5-462d-a6f7-735890794fea"],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

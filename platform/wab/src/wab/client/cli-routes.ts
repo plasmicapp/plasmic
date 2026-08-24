@@ -14,6 +14,7 @@ import {
 } from "@/wab/shared/route/app-routes";
 import { Route } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
+import { joinDecodedSegments } from "@/wab/shared/utils/url-utils";
 import { History, Location, To, createPath } from "history";
 import { trimStart } from "lodash";
 
@@ -72,7 +73,7 @@ export function parseProjectLocation(
       trimStart(location.hash, "#")
     );
     branchName = previewHashParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
-    const previewPath = (matchProjectPreview.previewPath ?? []).join("/");
+    const previewPath = joinDecodedSegments(matchProjectPreview.previewPath);
     return {
       projectId: matchProjectPreview.projectId,
       slug: undefined,

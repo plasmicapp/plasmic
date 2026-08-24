@@ -60,8 +60,9 @@ test.describe("dynamic-pages-simplified", () => {
     const selectedElt = framed.locator(".__wab_rich_text");
     await expect(selectedElt).toHaveText("1");
 
-    const pageParamInput =
-      await models.studio.rightPanel.getPageParamNameInput();
+    const pageParamInput = await models.studio.rightPanel.getPageParamInput(
+      "product_id"
+    );
     await expect(pageParamInput).toHaveValue("1");
 
     await models.studio.rightPanel.clickViewDifferentRecord();

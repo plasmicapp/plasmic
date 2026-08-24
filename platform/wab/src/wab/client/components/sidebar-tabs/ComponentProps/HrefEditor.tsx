@@ -12,6 +12,7 @@ import {
   isKnownComponent,
   isKnownPageHref,
 } from "@/wab/shared/model/classes";
+import { extractPathParamMetas } from "@/wab/shared/utils/url-utils";
 import TextArea from "antd/lib/input/TextArea";
 import { defer } from "lodash";
 import React from "react";
@@ -89,7 +90,12 @@ export function HrefEditor(props: {
   const onSelect = (v: { item: Component | string }) => {
     if (isKnownComponent(v.item)) {
       const defaultParams = Object.fromEntries(
-        Object.keys(v.item.pageMeta?.params ?? {}).map((k) => [k, codeLit("")])
+        v.item.pageMeta
+          ? extractPathParamMetas(v.item.pageMeta).map((param) => [
+              param.key,
+              codeLit(param.previewValue),
+            ])
+          : []
       );
       submitVal(
         new PageHref({
@@ -97,6 +103,7 @@ export function HrefEditor(props: {
           params: defaultParams,
           query: {},
           fragment: null,
+          encode: true,
         })
       );
     } else {

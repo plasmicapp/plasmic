@@ -5,8 +5,8 @@ import { PageParamsTooltip } from "@/wab/client/components/widgets/DetailedToolt
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure } from "@/wab/shared/common";
-import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
+import { extractPathParamMetas } from "@/wab/shared/utils/url-utils";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
@@ -21,7 +21,7 @@ const PageParamsPanel = observer(function PageParamsPanel(props: {
     page.pageMeta,
     "Page components are expected to have pageMeta"
   );
-  const params = extractParamsFromPagePath(pageMeta.path);
+  const params = extractPathParamMetas(pageMeta);
 
   if (params.length === 0) {
     return null;
@@ -44,12 +44,15 @@ const PageParamsPanel = observer(function PageParamsPanel(props: {
       isHeaderActive={true}
     >
       {params.map((param) => (
-        <LabeledItemRow label={param} data-test-id={`page-param-${param}`}>
+        <LabeledItemRow
+          label={param.key}
+          data-test-id={`page-param-${param.key}`}
+        >
           <StringPropEditor
             disabled={false}
             leftAligned={true}
-            onChange={(v) => changePageParam(param, v)}
-            value={pageMeta.params[param]}
+            onChange={(v) => changePageParam(param.key, v)}
+            value={pageMeta.params[param.key]}
           />
         </LabeledItemRow>
       ))}

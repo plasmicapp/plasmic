@@ -201,7 +201,7 @@ export const TextOnlySection = observer(function TextOnlySection(props: {
   );
 });
 
-const TextContentRow = observer(function TextContentRow(props: {
+export const TextContentRow = observer(function TextContentRow(props: {
   viewCtx: ViewCtx;
   expsProvider: TplExpsProvider;
 }) {

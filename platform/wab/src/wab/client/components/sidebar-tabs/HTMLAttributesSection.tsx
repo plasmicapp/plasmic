@@ -100,11 +100,17 @@ export function getInputTagType(tpl: TplTag) {
   return (expr && tryExtractString(expr)) || "text";
 }
 
+/**
+ * Attrs of an `a` tag that are edited in the dedicated Link section, rather
+ * than in the generic HTML attributes section.
+ */
+export const LINK_ATTRS = ["href", "target"];
+
 export function getEditableTagAttrs(viewCtx: ViewCtx, tpl: TplTag) {
   if (tpl.tag === "img") {
     return ["alt", "loading", ...COMMON_GLOBAL_ATTRS];
   } else if (tpl.tag === "a") {
-    return ["href", "target", ...COMMON_GLOBAL_ATTRS];
+    return [...LINK_ATTRS, ...COMMON_GLOBAL_ATTRS];
   } else if (tpl.tag === "textarea") {
     // Note that even though textarea does not take `value` attr, we do use
     // `value` attr here to represent the content of the textarea.
@@ -136,9 +142,12 @@ export function getEditableTagAttrs(viewCtx: ViewCtx, tpl: TplTag) {
   }
 }
 
-function getHiddenTagAttrs(tpl: TplTag) {
-  if (tpl.tag === "img") {
+function getHiddenTagAttrs(tag: string) {
+  if (tag === "img") {
     return ["width", "height"];
+  } else if (tag === "a") {
+    // These are edited in the Link section instead
+    return LINK_ATTRS;
   }
   return [];
 }
@@ -330,20 +339,17 @@ export const HTMLAttributesSection = observer(
 
     const effectiveVs = expsProvider.effectiveVs();
 
-    const attrsToHide = isTplTag(tpl) ? getHiddenTagAttrs(tpl) : [];
+    const attrsToHide = isTplTag(tpl) ? getHiddenTagAttrs(tpl.tag) : [];
     const attrs = uniq([
       // Explicitly added
       ...addedAttrs,
       // Explicitly set
       ...Object.keys(effectiveVs.attrs).filter(
-        (attr) =>
-          !SPECIAL_ATTRS.includes(attr) &&
-          !isAttrEventHandler(attr) &&
-          !attrsToHide.includes(attr)
+        (attr) => !SPECIAL_ATTRS.includes(attr) && !isAttrEventHandler(attr)
       ),
       // Always show by default for this tag type
       ...params.map((it) => (isKnownParam(it) ? it.variable.name : it.name)),
-    ]);
+    ]).filter((attr) => !attrsToHide.includes(attr));
 
     const attrInfos = attrs.map((attr) => {
       const attrSource = effectiveVs.getAttrSource(attr);
@@ -460,7 +466,10 @@ function AddHtmlAttrButton(props: {
   onSelect: (attr: string) => void;
 }) {
   const { tag, onSelect } = props;
-  const params = metaSvc.paramsForTag(tag);
+  const hiddenAttrs = getHiddenTagAttrs(tag);
+  const params = metaSvc
+    .paramsForTag(tag)
+    .filter((p) => !hiddenAttrs.includes(p.name));
   const [searchValue, setSearchValue] = React.useState<string | undefined>(
     undefined
   );
@@ -606,77 +615,79 @@ interface HTMLAttributePropEditorProps {
   about?: string;
 }
 
-export function HTMLAttributePropEditor(props: HTMLAttributePropEditorProps) {
-  const { viewCtx, tpl, expsProvider, attr, onChange, about } = props;
-  const vtm = viewCtx.variantTplMgr();
-  const effectiveVs = expsProvider.effectiveVs();
-  const baseVs = vtm.tryGetBaseVariantSetting(tpl);
-  const curSharedVS = vtm.tryGetCurrentSharedVariantSetting(tpl);
+export const HTMLAttributePropEditor = observer(
+  function HTMLAttributePropEditor(props: HTMLAttributePropEditorProps) {
+    const { viewCtx, tpl, expsProvider, attr, onChange, about } = props;
+    const vtm = viewCtx.variantTplMgr();
+    const effectiveVs = expsProvider.effectiveVs();
+    const baseVs = vtm.tryGetBaseVariantSetting(tpl);
+    const curSharedVS = vtm.tryGetCurrentSharedVariantSetting(tpl);
 
-  if (!curSharedVS || !baseVs) {
-    return null;
-  }
+    if (!curSharedVS || !baseVs) {
+      return null;
+    }
 
-  const expr = effectiveVs.attrs[attr];
-  const attrSource = effectiveVs.getAttrSource(attr);
-  const propType = inferPropTypeFromAttr(viewCtx, tpl, attr) ?? "string";
-  const defined = computeDefinedIndicator(
-    viewCtx.site,
-    viewCtx.currentComponent(),
-    attrSource,
-    expsProvider.targetIndicatorCombo
-  );
+    const expr = effectiveVs.attrs[attr];
+    const attrSource = effectiveVs.getAttrSource(attr);
+    const propType = inferPropTypeFromAttr(viewCtx, tpl, attr) ?? "string";
+    const defined = computeDefinedIndicator(
+      viewCtx.site,
+      viewCtx.currentComponent(),
+      attrSource,
+      expsProvider.targetIndicatorCombo
+    );
 
-  return (
-    <PropEditorRow
-      key={attr}
-      attr={attr}
-      propType={propType}
-      expr={expr}
-      label={viewCtx.tagMeta().expandLabel(attr) || attr}
-      about={about}
-      definedIndicator={defined}
-      onDelete={
-        (isTplTag(tpl) && isRequiredAttr(tpl.tag, attr)) ||
-        defined.source !== "set" ||
-        isKnownVarRef(expr)
-          ? undefined
-          : () => {
-              viewCtx.change(() => {
-                delete curSharedVS.attrs[attr];
-              });
-            }
-      }
-      onChange={(newExpr) =>
-        viewCtx.change(() => {
-          if (newExpr) {
-            const isVarRef = isKnownVarRef(newExpr);
-            const targetVs = isVarRef ? baseVs : curSharedVS;
-            if (isVarRef) {
-              unsetTplVariantableAttr(tpl, attr);
-              const referencedParam = extractReferencedParam(
-                viewCtx.currentComponent(),
-                newExpr
-              );
-              if (
-                referencedParam &&
-                expr &&
-                isAllowedDefaultExpr(expr) &&
-                isAllowedDefaultExprForPropType(propType)
-              ) {
-                referencedParam.defaultExpr = clone(expr);
+    return (
+      <PropEditorRow
+        key={attr}
+        attr={attr}
+        propType={propType}
+        expr={expr}
+        label={viewCtx.tagMeta().expandLabel(attr) || attr}
+        about={about}
+        definedIndicator={defined}
+        onDelete={
+          (isTplTag(tpl) && isRequiredAttr(tpl.tag, attr)) ||
+          defined.source !== "set" ||
+          isKnownVarRef(expr)
+            ? undefined
+            : () => {
+                viewCtx.change(() => {
+                  delete curSharedVS.attrs[attr];
+                });
               }
+        }
+        onChange={(newExpr) =>
+          viewCtx.change(() => {
+            if (newExpr) {
+              const isVarRef = isKnownVarRef(newExpr);
+              const targetVs = isVarRef ? baseVs : curSharedVS;
+              if (isVarRef) {
+                unsetTplVariantableAttr(tpl, attr);
+                const referencedParam = extractReferencedParam(
+                  viewCtx.currentComponent(),
+                  newExpr
+                );
+                if (
+                  referencedParam &&
+                  expr &&
+                  isAllowedDefaultExpr(expr) &&
+                  isAllowedDefaultExprForPropType(propType)
+                ) {
+                  referencedParam.defaultExpr = clone(expr);
+                }
+              }
+              targetVs.attrs[attr] = newExpr;
+            } else {
+              const targetVs = isKnownVarRef(expr) ? baseVs : curSharedVS;
+              delete targetVs.attrs[attr];
             }
-            targetVs.attrs[attr] = newExpr;
-          } else {
-            const targetVs = isKnownVarRef(expr) ? baseVs : curSharedVS;
-            delete targetVs.attrs[attr];
-          }
-          onChange?.(newExpr);
-        })
-      }
-      tpl={tpl}
-      viewCtx={viewCtx}
-    />
-  );
-}
+            onChange?.(newExpr);
+          })
+        }
+        tpl={tpl}
+        viewCtx={viewCtx}
+      />
+    );
+  }
+);

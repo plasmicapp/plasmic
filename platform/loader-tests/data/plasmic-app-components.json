@@ -4204,7 +4204,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -32453,7 +32453,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -32914,7 +32914,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -33249,7 +33249,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -35763,7 +35763,8 @@
           "params": {},
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "3668303": { "text": ["Home"], "__type": "TemplatedString" },
         "3668304": { "text": ["Unhighlighted"], "__type": "TemplatedString" },
@@ -38106,7 +38107,7 @@
         "65a542ff-c445-4eae-8300-db6b033274a2",
         "5878a35c-1286-432e-b733-feab6baae378"
       ],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

@@ -249,6 +249,7 @@ export function clone(_expr: Expr): Expr {
             Object.entries(expr.query).map(([k, v]) => [k, clone(v)])
           ),
           fragment: expr.fragment && clone(expr.fragment),
+          encode: expr.encode,
         })
     )
     .when(
@@ -1413,6 +1414,10 @@ export function getLastDynExprFromTemplatedString(expr: TemplatedString) {
   return typed;
 }
 
+/**
+ * Converts a PageHref to an equivalent CustomCode URL expression, e.g. when
+ * the referenced page is deleted or is not local to the site.
+ */
 export function convertHrefExprToCodeExpr(
   site: Site,
   owner: Component,
@@ -1422,24 +1427,24 @@ export function convertHrefExprToCodeExpr(
   if (!page.pageMeta) {
     return null;
   }
-  if (Object.keys(expr.params).length === 0) {
+  if (
+    Object.keys(expr.params).length === 0 &&
+    Object.keys(expr.query ?? {}).length === 0 &&
+    expr.fragment == null
+  ) {
     return codeLit(page.pageMeta.path);
   }
 
-  let urlCode = "`" + page.pageMeta.path + "`";
-  for (const [param, value] of Object.entries(expr.params)) {
-    urlCode = urlCode.replace(
-      `[${param}]`,
-      "${" +
-        asCode(value, {
-          component: owner,
-          inStudio: false,
-          projectFlags: getProjectFlags(site),
-        }).code +
-        "}"
-    );
-  }
-  return customCode(urlCode);
+  return code(
+    pageHrefPathToCode({
+      expr,
+      exprCtx: {
+        component: owner,
+        inStudio: false,
+        projectFlags: getProjectFlags(site),
+      },
+    })
+  );
 }
 
 /**

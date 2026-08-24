@@ -1159,7 +1159,8 @@
           "params": {},
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "62876001": {
           "uuid": "NYgUxD3cLk",
@@ -1564,7 +1565,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

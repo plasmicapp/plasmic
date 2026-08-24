@@ -51,9 +51,9 @@ import {
   tuple,
   uniqueName,
 } from "@/wab/shared/common";
-import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { extractParamsFromPagePath } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
   Collapse,

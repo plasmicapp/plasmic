@@ -109,7 +109,6 @@ import {
   cloneComponentServerQuery,
   clonePageMeta,
   cloneVariant,
-  extractParamsFromPagePath,
   findStateForParam,
   getComponentDisplayName,
   getComponentForVariantGroup,
@@ -277,6 +276,7 @@ import { FrameSize } from "@/wab/shared/responsiveness";
 import { setPageSizeType } from "@/wab/shared/sizingutils";
 import { removeSvgIds } from "@/wab/shared/svg-utils";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
+import { extractParamsFromPagePath } from "@/wab/shared/utils/url-utils";
 import {
   TplVisibility,
   getVariantSettingVisibility,
@@ -1791,17 +1791,12 @@ export class TplMgr {
 
     pageMeta.path = this.getUniquePagePath(path, page);
 
-    const newParams = extractParamsFromPagePath(pageMeta.path);
-    for (const existingParam of Object.keys(pageMeta.params)) {
-      if (!newParams.includes(existingParam)) {
-        delete pageMeta.params[existingParam];
-      }
-    }
-    for (const param of newParams) {
-      if (!pageMeta.params[param]) {
-        pageMeta.params[param] = "value";
-      }
-    }
+    pageMeta.params = Object.fromEntries(
+      extractParamsFromPagePath(pageMeta.path).map((param) => [
+        param,
+        pageMeta.params[param] || "value",
+      ])
+    );
   }
 
   clonePage(page: Component, name: string, attachComponent: boolean) {

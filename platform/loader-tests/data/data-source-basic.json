@@ -28340,7 +28340,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -32548,7 +32548,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -32883,7 +32883,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -36418,7 +36418,8 @@
           "params": {},
           "__type": "PageHref",
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "nZK5MaUvFXBk": { "text": ["Home"], "__type": "TemplatedString" },
         "eBwiFMkvj_Ql": {
@@ -37663,7 +37664,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

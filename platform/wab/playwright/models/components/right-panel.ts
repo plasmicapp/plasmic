@@ -757,9 +757,7 @@ export class RightPanel extends BaseModel {
   }
 
   async setPageParamPreviewValue(paramName: string, value: string) {
-    const pageParamInput = this.frame.locator(
-      `[data-test-id="page-param-${paramName}"] input`
-    );
+    const pageParamInput = await this.getPageParamInput(paramName);
     await pageParamInput.click();
     await this.page.keyboard.press("ControlOrMeta+a");
     await this.page.keyboard.press("Backspace");
@@ -1219,8 +1217,14 @@ export class RightPanel extends BaseModel {
     return this.frame.locator('[data-test-id="page-path"] input');
   }
 
-  async getPageParamNameInput() {
-    return this.frame.locator('[data-test-id="page-param-name"] input');
+  /**
+   * Preview value input of a URL param row in the page's "URL parameters"
+   * section, found by the row's label.
+   */
+  async getPageParamInput(paramName: string) {
+    return this.frame.locator(
+      `[data-plasmic-role="labeled-item"]:has(:text-is("${paramName}")) input[type="text"]`
+    );
   }
 
   async clickViewDifferentRecord() {

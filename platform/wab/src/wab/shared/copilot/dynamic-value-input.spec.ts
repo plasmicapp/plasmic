@@ -319,12 +319,14 @@ describe("exprToInterpolatedString", () => {
     params?: Record<string, TemplatedString | CustomCode | ObjectPath | VarRef>;
     query?: Record<string, TemplatedString | CustomCode | ObjectPath | VarRef>;
     fragment?: TemplatedString | CustomCode | ObjectPath | VarRef;
+    encode?: boolean;
   }) {
     return new PageHref({
-      page: { pageMeta: { path: props.path } } as Component,
+      page: { pageMeta: { path: props.path, params: {} } } as Component,
       params: props.params ?? {},
       query: props.query ?? {},
       fragment: props.fragment,
+      encode: props.encode ?? true,
     });
   }
 
@@ -349,6 +351,36 @@ describe("exprToInterpolatedString", () => {
     );
   });
 
+  it("renders a catchall param with mixed static and dynamic parts", () => {
+    const expr = mkPageHref({
+      path: "/blog/[...slug]",
+      params: {
+        "...slug": interpolatedStringToTemplatedString(
+          "cats & dogs/50% off/{{ $state.rest }}"
+        ),
+      },
+    });
+    expect(exprToInterpolatedString(expr)).toEqual(
+      "/blog/cats & dogs/50% off/{{ $state.rest }}"
+    );
+  });
+
+  it("renders values raw regardless of encode", () => {
+    // `encode` is intentionally not reflected in the interpolated form.
+    const props = {
+      path: "/products/[slug]",
+      params: { slug: codeToDynExpr("$state.slug") },
+      query: { s: interpolatedStringToTemplatedString("Cats & Dogs") },
+    };
+    const expected = "/products/{{ $state.slug }}?s=Cats & Dogs";
+    expect(
+      exprToInterpolatedString(mkPageHref({ ...props, encode: true }))
+    ).toEqual(expected);
+    expect(
+      exprToInterpolatedString(mkPageHref({ ...props, encode: false }))
+    ).toEqual(expected);
+  });
+
   it("keeps the placeholder for a PageHref param with no value", () => {
     expect(
       exprToInterpolatedString(mkPageHref({ path: "/blog/[slug]" }))
@@ -361,6 +393,7 @@ describe("exprToInterpolatedString", () => {
       params: {},
       query: {},
       fragment: undefined,
+      encode: true,
     });
     expect(exprToInterpolatedString(expr)).toBeUndefined();
   });
@@ -464,6 +497,7 @@ describe("dynamic-value round trip (insertHtml <-> read)", () => {
         params: { slug: codeToDynExpr("currentItem.slug") },
         query: {},
         fragment: undefined,
+        encode: true,
       }),
     },
   ];

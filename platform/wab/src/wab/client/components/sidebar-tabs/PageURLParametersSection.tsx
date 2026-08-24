@@ -24,7 +24,6 @@ import {
   swallow,
   unexpected,
 } from "@/wab/shared/common";
-import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import {
   getSingleDynExprFromTemplatedString,
   tryCoerceString,
@@ -40,13 +39,18 @@ import {
   isKnownObjectPath,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
+import {
+  extractParamsFromPagePath,
+  extractPathParamMetas,
+  extractQueryParamMetas,
+} from "@/wab/shared/utils/url-utils";
 import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
-import { isEqual, size } from "lodash";
+import { defer, isEqual, size } from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
-import React, { useMemo, useState } from "react";
+import React from "react";
 
-export type URLParamType = "Path" | "Query" | "Fragment";
+type URLParamType = "Path" | "Query" | "Fragment";
 
 export function URLParamTooltip(props: { type: URLParamType }) {
   const { type } = props;
@@ -95,64 +99,46 @@ export function URLParamTooltip(props: { type: URLParamType }) {
   );
 }
 
-const URLParameterRow = observer(
-  (props: {
-    type: URLParamType;
-    label: string;
-    value: string;
-    onChange: (key: string, value: string) => void;
-    onDelete: (key: string) => void;
-  }) => {
-    const [value, setValue] = useState(props.value);
+function URLParameterRow(props: {
+  type: URLParamType;
+  label: string;
+  value: string;
+  onCommit: (value: string) => void;
+  onRemove?: () => void;
+}) {
+  const [draft, setDraft] = React.useState(props.value);
+  React.useEffect(() => setDraft(props.value), [props.value]);
+  const commit = () => defer(() => props.onCommit(draft));
 
-    const pushCurrentValueUp = React.useCallback(
-      () => requestAnimationFrame(() => props.onChange(props.label, value)),
-      [props.label, props.onChange, value]
-    );
-
-    const handleKeyUp = (e) => {
-      if (e.keyCode === 13 /* RETURN | ENTER */) {
-        pushCurrentValueUp();
-      }
-    };
-
-    const handleChange = (e) => {
-      const newValue = e.target.value;
-      setValue(newValue);
-    };
-
-    const handleDeletionRequest = () => props.onDelete(props.label);
-
-    React.useEffect(() => {
-      setValue(props.value);
-    }, [props.value]);
-
-    return (
-      <LabeledListItem
-        data-test-id="page-param-name"
-        subtitle={<URLParamTooltip type={props.type} />}
-        withSubtitle
-        label={props.label}
-        padding={"noContent"}
-        menu={
+  return (
+    <LabeledListItem
+      subtitle={<URLParamTooltip type={props.type} />}
+      withSubtitle
+      label={props.label}
+      padding={"noContent"}
+      menu={
+        props.onRemove && (
           <Menu>
-            <Menu.Item onClick={handleDeletionRequest}>
-              Remove URL parameter
-            </Menu.Item>
+            <Menu.Item onClick={props.onRemove}>Remove URL parameter</Menu.Item>
           </Menu>
-        }
-      >
-        <Input
-          className="transparent"
-          onChange={handleChange}
-          onBlur={pushCurrentValueUp}
-          onKeyUp={handleKeyUp}
-          value={value}
-        />
-      </LabeledListItem>
-    );
-  }
-);
+        )
+      }
+    >
+      <Input
+        className="transparent"
+        placeholder={"Preview value"}
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            commit();
+          }
+        }}
+      />
+    </LabeledListItem>
+  );
+}
 
 interface DetailsSpec {
   sourceId: string;
@@ -171,54 +157,10 @@ export const PageURLParametersSection = observer(
       "Page components are expected to have pageMeta"
     );
 
-    const pathParams = extractParamsFromPagePath(pageMeta.path);
-    const urlSearchParams = Object.keys(pageMeta.query);
-    const hasAnyParam = pathParams.length + urlSearchParams.length > 0;
-
-    const onAdd = async (key: string) => {
-      await sc.change(() => {
-        pageMeta.query[key] = "REPLACEME";
-        return ok();
-      });
-    };
-
-    const handleValueChange = React.useCallback(
-      (source: { [key: string]: string }) =>
-        (key: string, newValue: string) => {
-          void sc.change(() => {
-            source[key] = newValue;
-            return ok();
-          });
-        },
-      []
-    );
-
-    const handleParamDeletion = React.useCallback(
-      (source: { [key: string]: string }) => (key: string) => {
-        void sc.change(() => {
-          delete source[key];
-          return ok();
-        });
-      },
-      []
-    );
-
-    const handlePathParamValueChange = useMemo(
-      () => handleValueChange(pageMeta.params),
-      []
-    );
-    const handleSearchParamValueChange = React.useMemo(
-      () => handleValueChange(pageMeta.query),
-      []
-    );
-    const handlePathParamDeletion = React.useMemo(
-      () => handleParamDeletion(pageMeta.params),
-      []
-    );
-    const handleSearchParamDeletion = React.useMemo(
-      () => handleParamDeletion(pageMeta.query),
-      []
-    );
+    const paramMetas = [
+      ...extractPathParamMetas(pageMeta),
+      ...extractQueryParamMetas(pageMeta),
+    ];
 
     const mainDetailsSpec: DetailsSpec | undefined = maybeFirst(
       page.dataQueries.flatMap((query) => {
@@ -309,14 +251,21 @@ export const PageURLParametersSection = observer(
           </LabelWithDetailedTooltip>
         }
         controls={
-          <AddQueryParamButton onAdd={onAdd}>
+          <AddQueryParamButton
+            onAdd={(key) =>
+              void sc.change(() => {
+                pageMeta.query[key] = "value";
+                return ok();
+              })
+            }
+          >
             <IconLinkButton>
               <Icon icon={PlusIcon} />
             </IconLinkButton>
           </AddQueryParamButton>
         }
         zeroBodyPadding
-        emptyBody={!hasAnyParam}
+        emptyBody={paramMetas.length === 0}
         isHeaderActive={true}
       >
         <div className="vlist-gap-m">
@@ -362,24 +311,29 @@ export const PageURLParametersSection = observer(
               </SidebarSection>
             </>
           )}
-          {pathParams.map((key) => (
+          {paramMetas.map((param) => (
             <URLParameterRow
-              key={`path-${key}`}
-              type={"Path"}
-              label={key}
-              value={pageMeta.params[key]}
-              onChange={handlePathParamValueChange}
-              onDelete={handlePathParamDeletion}
-            />
-          ))}
-          {urlSearchParams.map((key) => (
-            <URLParameterRow
-              key={`search-${key}`}
-              type={"Query"}
-              label={key}
-              value={pageMeta.query[key]}
-              onChange={handleSearchParamValueChange}
-              onDelete={handleSearchParamDeletion}
+              key={`${param.type}-${param.key}`}
+              type={param.type}
+              label={param.key}
+              value={param.previewValue}
+              onCommit={(value) =>
+                void sc.change(() => {
+                  const previewValues =
+                    param.type === "Path" ? pageMeta.params : pageMeta.query;
+                  previewValues[param.key] = value;
+                  return ok();
+                })
+              }
+              onRemove={
+                param.type === "Query"
+                  ? () =>
+                      void sc.change(() => {
+                        delete pageMeta.query[param.key];
+                        return ok();
+                      })
+                  : undefined
+              }
             />
           ))}
         </div>

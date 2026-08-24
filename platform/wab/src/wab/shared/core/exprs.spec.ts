@@ -8,6 +8,7 @@ import {
   asCode,
   code,
   codeLit,
+  convertHrefExprToCodeExpr,
   customCode,
   deserCompositeExpr,
   deserCompositeExprMaybe,
@@ -18,9 +19,11 @@ import {
 import { createSite } from "@/wab/shared/core/sites";
 import { getProjectFlags } from "@/wab/shared/devflags";
 import {
+  Component,
   CompositeExpr,
   CustomCode,
   ObjectPath,
+  PageHref,
   QueryInvalidationExpr,
   QueryRef,
   TemplatedString,
@@ -355,5 +358,100 @@ describe("serCompositeExprMaybe/deserCompositeExprMaybe/deserCompositeExpr", () 
         },
       ]);
     });
+  });
+});
+
+describe("convertHrefExprToCodeExpr", () => {
+  const site = createSite();
+  const owner = null as unknown as Component;
+
+  const makePageHref = (
+    props: Partial<PageHref> & { path: string }
+  ): PageHref => {
+    const { query, params, fragment, path, encode } = props;
+    return {
+      typeTag: "PageHref",
+      uid: 1,
+      query: query ?? {},
+      params: params ?? {},
+      fragment,
+      encode: encode ?? false,
+      page: {
+        pageMeta: { path },
+      } as Component,
+    } as PageHref;
+  };
+
+  const stateVal = (path: string[]) => new ObjectPath({ path, fallback: null });
+
+  const evalCode = (expr: CustomCode | null, $state?: any) =>
+    // eslint-disable-next-line no-new-func
+    new Function("$state", `return ${expr!.code};`)($state);
+
+  it("converts a param-less PageHref to a static string literal", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({ path: "/mypage" })
+    );
+    expect(result?.code).toEqual('"/mypage"');
+  });
+
+  it("preserves encoding of param values", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/blog/[slug]",
+        params: { slug: stateVal(["$state", "slug"]) },
+        encode: true,
+      })
+    );
+    expect(evalCode(result, { slug: "a/b" })).toEqual("/blog/a%2Fb");
+  });
+
+  it("encodes each segment of a catchall param value", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/blog/[...slug]",
+        params: { "...slug": stateVal(["$state", "slug"]) },
+        encode: true,
+      })
+    );
+    expect(evalCode(result, { slug: "a b/c" })).toEqual("/blog/a%20b/c");
+    expect(evalCode(result, { slug: ["a b", "c/d"] })).toEqual(
+      "/blog/a%20b/c%2Fd"
+    );
+  });
+
+  it("leaves legacy non-encoded PageHrefs raw", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/blog/[slug]",
+        params: { slug: stateVal(["$state", "slug"]) },
+        encode: false,
+      })
+    );
+    expect(evalCode(result, { slug: "a/b" })).toEqual("/blog/a/b");
+  });
+
+  it("preserves query and fragment", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/mypage",
+        query: { q: stateVal(["$state", "q"]) },
+        fragment: stateVal(["$state", "frag"]),
+        encode: true,
+      })
+    );
+    expect(evalCode(result, { q: "1 2", frag: "frag" })).toEqual(
+      "/mypage?q=1%202#frag"
+    );
   });
 });

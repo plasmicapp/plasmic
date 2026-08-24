@@ -258,7 +258,6 @@ import {
   ComponentType,
   PageComponent,
   allComponentVariants,
-  extractParamsFromPagePath,
   getRealParams,
   isCodeComponent,
   isFrameComponent,
@@ -400,6 +399,10 @@ import {
   getLeftTabPermission,
   mergeUiConfigs,
 } from "@/wab/shared/ui-config-utils";
+import {
+  extractParamsFromPagePath,
+  isCatchallParam,
+} from "@/wab/shared/utils/url-utils";
 import {
   DataOp,
   executePlasmicDataOp,
@@ -5570,14 +5573,14 @@ export class StudioCtx extends WithDbCtx {
     }
     const params = extractParamsFromPagePath(newPath);
     for (let i = 0; i < params.length; i++) {
-      if (params[i].startsWith("...") && i !== params.length - 1) {
+      if (isCatchallParam(params[i]) && i !== params.length - 1) {
         notification.error({
           message: "Catch-all path slugs must be the last slug in the path",
         });
         return;
       }
     }
-    if (params.some((p) => p.startsWith("..."))) {
+    if (params.some((p) => isCatchallParam(p))) {
       // catch all routes only supported if host is greater than
       // 1.0.186
       const hostVersion = getRootSubHostVersion();

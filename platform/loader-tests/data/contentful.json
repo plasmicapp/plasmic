@@ -117,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -1847,7 +1847,8 @@
           "params": { "slug": { "__ref": "1x4JtLjTcmwy" } },
           "query": {},
           "fragment": null,
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "encode": false
         },
         "1x4JtLjTcmwy": {
           "text": ["", { "__ref": "g8Q6GOzEC6nD" }, ""],
@@ -2283,7 +2284,7 @@
         }
       },
       "deps": ["e44dffc5-685f-4e8f-89c1-ff00982efc3c"],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

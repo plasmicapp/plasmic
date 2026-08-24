@@ -361,6 +361,7 @@ describe("replaceNestedExprInExpr", () => {
       params: {},
       query: { key: oldExpr },
       fragment: undefined,
+      encode: true,
     });
 
     const result = Tpls.replaceNestedExprInExpr(pageHref, oldExpr, newExpr);
@@ -381,6 +382,7 @@ describe("replaceNestedExprInExpr", () => {
       params: {},
       query: {},
       fragment: oldExpr,
+      encode: true,
     });
 
     const result = Tpls.replaceNestedExprInExpr(pageHref, oldExpr, newExpr);

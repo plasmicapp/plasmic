@@ -14,10 +14,7 @@ import {
   LinkToPropMenuItem,
   UnlinkFromPropMenuItem,
 } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
-import {
-  URLParamTooltip,
-  URLParamType,
-} from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
+import { URLParamTooltip } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
 import {
   PropValueEditor,
   shouldEditAsTemplatedString,
@@ -36,14 +33,14 @@ import {
   ValueSetState,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
-import { InlineIcon } from "@/wab/client/components/widgets";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import Button from "@/wab/client/components/widgets/Button";
-import { Icon } from "@/wab/client/components/widgets/Icon";
-import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
   DataTokenRef,
   DataTokenType,
@@ -184,6 +181,10 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import {
   evalPageHrefPath,
   EvalPageHrefProps,
+  extractPathParamMetas,
+  extractQueryParamMetas,
+  PathParamMeta,
+  QueryParamMeta,
 } from "@/wab/shared/utils/url-utils";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
@@ -1190,20 +1191,23 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               <LabeledItemRow
                 data-test-id={`prop-editor-row-${attr ?? label}`}
                 label={
-                  <div className={about ? "pointer" : ""}>
-                    {isPlainObjectPropType(propType) &&
-                    hackyCast(propType).required ? (
-                      <span className="required-prop">{label}</span>
-                    ) : (
-                      label
+                  <MaybeWrap
+                    cond={!!about}
+                    wrapper={(x) => (
+                      <LabelWithDetailedTooltip tooltip={about}>
+                        {x}
+                      </LabelWithDetailedTooltip>
                     )}
-                    {about ? (
-                      <InlineIcon>
-                        &thinsp;
-                        <Icon icon={InfoIcon} className="dimfg" />
-                      </InlineIcon>
-                    ) : null}
-                  </div>
+                  >
+                    <div>
+                      {isPlainObjectPropType(propType) &&
+                      hackyCast(propType).required ? (
+                        <span className="required-prop">{label}</span>
+                      ) : (
+                        label
+                      )}
+                    </div>
+                  </MaybeWrap>
                 }
                 subtitle={subtitle}
                 definedIndicator={definedIndicator}
@@ -1215,15 +1219,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 }
                 noMenuButton
                 icon={icon}
-                tooltip={
-                  props.tooltip ? (
-                    props.tooltip
-                  ) : about ? (
-                    <>
-                      <strong>{label}</strong>: {about}
-                    </>
-                  ) : undefined
-                }
+                tooltip={props.tooltip}
               >
                 <div className="flex-col fill-width flex-align-start">
                   <ContextMenuIndicator
@@ -1286,7 +1282,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 expr={expr}
                 exprCtx={exprCtx}
                 canvasEnv={canvasEnv}
-                definedIndicator={definedIndicator}
+                definedIndicator={{ source: "invariantable" }}
                 disableLinkToProp={props.disableLinkToProp}
                 disableDynamicValue={props.disableDynamicValue}
                 maybeWrapExpr={maybeWrapExpr}
@@ -1391,12 +1387,6 @@ interface PageHrefRowsProps
   maybeWrapExpr: MaybeUnwrapExpr;
 }
 
-type TypedURLParams = {
-  param: string;
-  type: URLParamType;
-  showIndicator: boolean;
-}[];
-
 type DeletePageHrefProps =
   | { type: "Fragment" }
   | { type: "Path" | "Query"; param: string };
@@ -1409,7 +1399,6 @@ function PageHrefRows({
   expr,
   exprCtx,
   canvasEnv,
-  definedIndicator,
   disableLinkToProp,
   disableDynamicValue,
   maybeWrapExpr,
@@ -1419,16 +1408,27 @@ function PageHrefRows({
     expr.page.pageMeta,
     "PageHref is expected to contain a page"
   );
-  const pathParams: TypedURLParams = Object.keys(meta.params).map((param) => ({
-    param,
-    type: "Path",
-    showIndicator: true,
-  }));
-  const queryParams: TypedURLParams = Object.keys(expr.query).map((param) => ({
-    param,
-    type: "Query",
-    showIndicator: !!meta.query[param],
-  }));
+
+  // Show params in this order:
+  // - path params in PageMeta, ordered by PageMeta (based on path)
+  // - query params in PageHref, ordered by PageMeta
+  // - remaining query params in PageHref that are not in PageMeta
+  const pathParamMetas = extractPathParamMetas(meta);
+  const queryParamMetas = extractQueryParamMetas(meta);
+  const paramMetas: (PathParamMeta | QueryParamMeta)[] = [
+    ...pathParamMetas,
+    ...queryParamMetas.filter((queryMeta) => queryMeta.key in expr.query),
+    ...Object.keys(expr.query)
+      .filter(
+        (queryKey) =>
+          !queryParamMetas.find((queryMeta) => queryMeta.key === queryKey)
+      )
+      .map((queryKey) => ({
+        type: "Query" as const,
+        key: queryKey,
+        previewValue: "",
+      })),
+  ];
 
   const updatePageHrefField = (props: UpdatePageHrefProps) => {
     const { type, paramValue } = props;
@@ -1462,34 +1462,38 @@ function PageHrefRows({
     onChange(maybeWrapExpr(newExpr));
   };
 
-  const ParamRows = [...pathParams, ...queryParams].map(
-    ({ param, type, showIndicator }) => {
-      return (
-        <InnerPropEditorRow
-          key={param}
-          expr={type === "Path" ? expr.params[param] : expr.query[param]}
-          attr={param}
-          propType={"string"}
-          label={param}
-          subtitle={<URLParamTooltip type={type} />}
-          definedIndicator={showIndicator ? definedIndicator : undefined}
-          onChange={(paramValue) => {
-            if (paramValue) {
-              updatePageHrefField({ type, param, paramValue });
-            } else {
-              deletePageHrefField({ type, param });
-            }
-          }}
-          onDelete={() => {
+  const ParamRows = paramMetas.map((paramMeta) => {
+    const type = paramMeta.type;
+    const param = paramMeta.key;
+    return (
+      <InnerPropEditorRow
+        key={param}
+        expr={type === "Path" ? expr.params[param] : expr.query[param]}
+        attr={param}
+        propType={"string"}
+        label={param}
+        subtitle={<URLParamTooltip type={type} />}
+        onChange={(paramValue) => {
+          if (paramValue) {
+            updatePageHrefField({ type, param, paramValue });
+          } else {
             deletePageHrefField({ type, param });
-          }}
-          disableLinkToProp={disableLinkToProp}
-          disableDynamicValue={disableDynamicValue}
-          icon={<div className="property-connector-line-icon" />}
-        />
-      );
-    }
-  );
+          }
+        }}
+        // Path params are always present, so they can't be removed
+        onDelete={
+          type === "Path"
+            ? undefined
+            : () => {
+                deletePageHrefField({ type, param });
+              }
+        }
+        disableLinkToProp={disableLinkToProp}
+        disableDynamicValue={disableDynamicValue}
+        icon={<div className="property-connector-line-icon" />}
+      />
+    );
+  });
   return (
     <>
       <PageHrefPreview expr={expr} exprCtx={exprCtx} canvasEnv={canvasEnv} />
@@ -1563,6 +1567,42 @@ function PageHrefRows({
           </Button>
         )}
       </div>
+      {paramMetas.length > 0 && (
+        <div className="panel-row">
+          <LabeledItemRow
+            data-test-id="page-href-encode"
+            label={
+              <LabelWithDetailedTooltip
+                tooltip={
+                  <>
+                    Encodes path and query params using{" "}
+                    <code>encodeURIComponent</code> to ensure a valid link
+                    destination. Turning this off should only be reserved for
+                    advanced cases where encoding is handled in a dynamic value.
+                  </>
+                }
+              >
+                Encode?
+              </LabelWithDetailedTooltip>
+            }
+            noMenuButton
+          >
+            <div className="flex justify-start flex-fill">
+              <StyleSwitch
+                data-plasmic-prop="encode"
+                isChecked={expr.encode}
+                onChange={(checked) => {
+                  const newExpr = clone(expr);
+                  newExpr.encode = checked;
+                  onChange(maybeWrapExpr(newExpr));
+                }}
+              >
+                {null}
+              </StyleSwitch>
+            </div>
+          </LabeledItemRow>
+        </div>
+      )}
     </>
   );
 }
@@ -1575,8 +1615,10 @@ function PageHrefPreview(props: EvalPageHrefProps) {
       label={"Preview"}
       noMenuButton
     >
-      <div className="flex flex-vcenter justify-start flex-fill token-ref-cycle-item">
-        <span className={err && "value-preview--error"}>{val ?? err}</span>
+      <div className="flex flex-vcenter justify-start flex-fill text-wrap selectable-text token-ref-cycle-item">
+        <span className={err && "value-preview--error"}>
+          {val ?? err?.message}
+        </span>
       </div>
     </LabeledItemRow>
   );

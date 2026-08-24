@@ -117,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -14084,7 +14084,7 @@
         }
       },
       "deps": [],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ],
   [
@@ -16159,7 +16159,8 @@
           "page": { "__ref": "QfK5QgUL98B5" },
           "params": { "test": { "__ref": "8-CQFA0MrUsR" } },
           "query": {},
-          "fragment": null
+          "fragment": null,
+          "encode": false
         },
         "8-CQFA0MrUsR": { "__type": "TemplatedString", "text": ["value"] },
         "4kJJ1d6PCfo2": {
@@ -25097,7 +25098,7 @@
         "b2e01d10-3282-4f9f-87d8-bce7a95e80a3",
         "f4483259-aeaa-4edf-8a35-b6fce6089cc5"
       ],
-      "version": "257-add-code-component-subtree-prefetching-config"
+      "version": "258-add-page-href-encode"
     }
   ]
 ]

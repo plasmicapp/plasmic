@@ -182,14 +182,27 @@ describe("mkProjectLocation/parseProjectLocation", () => {
       }
     );
   });
-  it("Can parse preview locations", () => {
+  it("parses preview locations", () => {
     expect(
       parseProjectLocation({
-        pathname: "/projects/PROJECT_ID/preview/ARENA_UUID",
+        pathname: "/projects/PROJECT_ID/preview/ARENA NAME",
       })
     ).toEqual({
       arenaType: undefined,
-      arenaUuidOrNameOrPath: "ARENA_UUID",
+      arenaUuidOrNameOrPath: "ARENA%20NAME",
+      branchVersion: "latest",
+      branchName: "main",
+      isPreview: true,
+      projectId: "PROJECT_ID",
+      slug: undefined,
+    });
+    expect(
+      parseProjectLocation({
+        pathname: "/projects/PROJECT_ID/preview/ARENA%20NAME",
+      })
+    ).toEqual({
+      arenaType: undefined,
+      arenaUuidOrNameOrPath: "ARENA%20NAME",
       branchVersion: "latest",
       branchName: "main",
       isPreview: true,

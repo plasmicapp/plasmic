@@ -1089,7 +1089,19 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
     .when(VarRef, (expr) => expr.variable.uuid)
     .when(StyleTokenRef, (expr) => expr.token.value)
     .when(ImageAssetRef, (expr) => expr.asset.dataUri)
-    .when(PageHref, (expr) => expr.page.uuid)
+    .when(
+      PageHref,
+      (expr) =>
+        `${expr.page.uuid}` +
+        `?encode=${expr.encode}` +
+        Object.entries(expr.params)
+          .map(([key, val]) => `[${key}]=${hashExpr(site, val, exprCtx)}`)
+          .join("") +
+        Object.entries(expr.query)
+          .map(([key, val]) => `&${key}=${hashExpr(site, val, exprCtx)}`)
+          .join("") +
+        (expr.fragment ? `#${hashExpr(site, expr.fragment, exprCtx)}` : "")
+    )
     .when(VariantsRef, (expr) => expr.variants.map((v) => v.uuid).join(""))
     .when(
       ObjectPath,

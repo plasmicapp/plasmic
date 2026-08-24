@@ -7,7 +7,11 @@ import {
   mkCustomFunctionExpr,
   mkServerQuery,
 } from "@/wab/shared/codegen/react-p/server-queries/test-utils";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import {
+  ComponentType,
+  PageComponent,
+  mkComponent,
+} from "@/wab/shared/core/components";
 import { mkVar } from "@/wab/shared/core/lang";
 import { createSite } from "@/wab/shared/core/sites";
 import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
@@ -414,5 +418,53 @@ describe("TplMgr.removeComponentServerQuery", () => {
 
     mgr.removeComponentServerQuery(component, q1);
     expect(expr.invalidationQueries).toHaveLength(0);
+  });
+});
+
+describe("TplMgr.changePagePath", () => {
+  function mkPage(path: string) {
+    const site = createSite();
+    const mgr = new TplMgr({ site });
+    const page = mgr.addComponent({
+      type: ComponentType.Page,
+      name: "Page",
+      pageMeta: { path },
+    }) as PageComponent;
+    return { mgr, page };
+  }
+
+  it("keeps pageMeta.params in path order when params are added", () => {
+    const { mgr, page } = mkPage("/[a]/[b]");
+    page.pageMeta.params.a = "aValue";
+    page.pageMeta.params.b = "bValue";
+
+    mgr.changePagePath(page, "/[c]/[a]/[b]");
+
+    expect(Object.keys(page.pageMeta.params)).toEqual(["c", "a", "b"]);
+    expect(page.pageMeta.params).toEqual({
+      c: "value",
+      a: "aValue",
+      b: "bValue",
+    });
+  });
+
+  it("reorders and drops params to match the new path", () => {
+    const { mgr, page } = mkPage("/[a]/[b]/[c]");
+    page.pageMeta.params.a = "aValue";
+    page.pageMeta.params.b = "bValue";
+    page.pageMeta.params.c = "cValue";
+
+    mgr.changePagePath(page, "/[c]/[a]");
+
+    expect(Object.keys(page.pageMeta.params)).toEqual(["c", "a"]);
+    expect(page.pageMeta.params).toEqual({ c: "cValue", a: "aValue" });
+  });
+
+  it("keeps the catchall prefix in param keys", () => {
+    const { mgr, page } = mkPage("/[a]");
+
+    mgr.changePagePath(page, "/[a]/[[...rest]]");
+
+    expect(Object.keys(page.pageMeta.params)).toEqual(["a", "...rest"]);
   });
 });

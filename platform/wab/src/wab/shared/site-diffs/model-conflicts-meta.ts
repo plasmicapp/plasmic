@@ -1231,6 +1231,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     query: "generic",
     fragment: "generic",
     page: "generic",
+    encode: "generic",
   },
   VariantsRef: {
     variants: {
