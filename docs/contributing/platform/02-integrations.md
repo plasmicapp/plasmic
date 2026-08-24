@@ -4,7 +4,7 @@
 
 To be able to locallly access a plasmic hosted project in dev environment it's required to have the `hosting` application running (`pm2-dev.config.js` has a configuration to run it locally with the proper environment variables).
 
-With hosting running, you can access a published project by going to `http://localhost:3009/_sites/yourdomain.plasmic.run` which is going to be the equivalent of going to `yourdomain.plasmic.run`.
+With hosting running, you can access a published project by going to `http://localhost:3010/_sites/yourdomain.plasmic.run` which is going to be the equivalent of going to `yourdomain.plasmic.run`.
 
 ## Setting up Google SSO
 
