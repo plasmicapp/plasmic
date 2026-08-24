@@ -1,5 +1,9 @@
-import playwright from "playwright";
-import { APIRequestContext, BrowserContext, Page } from "playwright/test";
+import {
+  APIRequestContext,
+  BrowserContext,
+  Page,
+  request as playwrightRequest,
+} from "@playwright/test";
 
 export class ApiClient {
   private token: string | undefined = undefined;
@@ -22,7 +26,7 @@ export class ApiClient {
   private async withAdminContext<T>(
     operation: (context: APIRequestContext, token: string) => Promise<T>
   ): Promise<T> {
-    const adminContext = await playwright.request.newContext({
+    const adminContext = await playwrightRequest.newContext({
       baseURL: this.baseUrl,
     });
 

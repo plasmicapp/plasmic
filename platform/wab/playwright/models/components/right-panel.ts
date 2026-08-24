@@ -1,4 +1,4 @@
-import { FrameLocator, Locator, Page, expect, test } from "playwright/test";
+import { FrameLocator, Locator, Page, expect, test } from "@playwright/test";
 import { modifierKey } from "../../utils/key-utils";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
 import { BaseModel } from "../BaseModel";

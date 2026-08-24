@@ -26,5 +26,5 @@
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "pnpm@11.8.0"
 }

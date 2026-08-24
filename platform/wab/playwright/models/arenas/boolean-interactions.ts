@@ -1,4 +1,4 @@
-import { FrameLocator, Locator, Page } from "playwright/test";
+import { FrameLocator, Locator, Page } from "@playwright/test";
 import { BaseModel } from "../BaseModel";
 
 export class BooleanInteractionsArena extends BaseModel {

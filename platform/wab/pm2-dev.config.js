@@ -46,6 +46,7 @@ function getPlasmicCodegenApps() {
       autorestart: false,
       time: true,
       node_args: ["--max-old-space-size=2000"],
+      // codegen-hosting lives outside this repo and is still a yarn project.
       script: "yarn",
       args: ["dev"],
       env: {
@@ -122,7 +123,7 @@ module.exports = {
           },
           {
             name: "sub-watch",
-            script: "yarn",
+            script: "pnpm",
             args: ["watch"],
             cwd: "../sub",
             exec_mode: "fork_mode",

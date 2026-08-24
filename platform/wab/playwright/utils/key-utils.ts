@@ -1,5 +1,5 @@
 import type { Locator } from "@playwright/test";
-import { Page } from "playwright";
+import { Page } from "@playwright/test";
 
 export const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
 

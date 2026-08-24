@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "host-test",
       cwd: "../host-test",
-      script: "yarn",
+      script: "pnpm",
       args: ["start"],
       log_date_format: "HH:mm:ss.SSS",
       env: {

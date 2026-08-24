@@ -6,11 +6,11 @@ export PREPARE_NO_BUILD=true
 pnpm install
 
 # Some packages require running an install in their own directory to build
-# successfully. platform/host-test is a standalone yarn project (not part of the
-# root pnpm workspace).
+# successfully. platform/host-test is its own pnpm root (not part of the root
+# pnpm workspace).
 for package in platform/host-test; do
   pushd $package
-  yarn install
+  pnpm install
   popd
 done
 

@@ -1,17 +1,21 @@
-FROM node:18.19.0
+FROM node:24.4.0
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json first for better caching
-COPY package*.json ./
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Copy the manifests first for better caching
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git && \
     npm install -g @plasmicapp/cli@latest create-plasmic-app@latest && \
-    yarn install && \
-    yarn cache clean && \
+    pnpm install --frozen-lockfile && \
+    pnpm store prune && \
     apt-get purge -y --auto-remove git && \
     rm -rf /var/lib/apt/lists/*
 
@@ -19,4 +23,4 @@ RUN apt-get update && \
 COPY . .
 
 # Run tests
-CMD ["yarn", "test"]
+CMD ["pnpm", "test"]

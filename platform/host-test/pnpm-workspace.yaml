@@ -1,0 +1,12 @@
+# Own pnpm root, so `pnpm install` here does not walk up to
+# platform/pnpm-workspace.yaml and install the wab workspace instead.
+packages: []
+
+# upgrade-internal runs right after the release pipeline publishes
+# @plasmicapp/*, so pnpm's 24h default quarantine would skip them.
+minimumReleaseAge: 0
+
+allowBuilds:
+  # Native addon (eslint-config-next's resolver); needs its postinstall to link
+  # the platform binary.
+  unrs-resolver: true

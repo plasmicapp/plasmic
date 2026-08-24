@@ -1,4 +1,4 @@
-import { expect, FrameLocator, Locator, Page, test } from "playwright/test";
+import { expect, FrameLocator, Locator, Page, test } from "@playwright/test";
 import { waitForFrameToLoad } from "../utils/studio-utils";
 import { BaseModel } from "./BaseModel";
 import { LeftPanel } from "./components/left-panel";

@@ -1,22 +1,31 @@
-FROM node:18.7.0-alpine3.16
+FROM node:24-alpine
 
 # Config
 ARG RENDERER_PORT=3010
 ENV RENDERER_PORT=${RENDERER_PORT}
 
 # System setup
-RUN apk update && apk add --no-cache bubblewrap=0.6.2-r0 bash=5.1.16-r2 make=4.3-r0 python3=3.10.13-r0 g++=11.2.1_git20220219-r2 libseccomp-dev=2.5.2-r1
+RUN apk add --no-cache bubblewrap~=0.11 bash~=5 make~=4 python3 g++ libseccomp-dev
 SHELL ["/bin/bash","-o", "pipefail","-l","-c"]
+
+# Keep corepack's cache world-readable and bake the pnpm dist in, so the
+# unprivileged user below does not download it at container startup.
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV COREPACK_HOME="/pnpm/corepack"
+RUN corepack enable && pnpm --version && chmod -R a+rX "$COREPACK_HOME"
 
 WORKDIR /
 
-COPY package*.json yarn.lock ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-RUN yarn
+RUN pnpm install --frozen-lockfile
 
 COPY *.cc *.c *.h *.gyp ./
 
-RUN yarn # build
+# Builds the seccomp addon. A repeat `pnpm install` would short-circuit with
+# "Already up to date" and never run the implicit binding.gyp rebuild.
+RUN pnpm build
 
 COPY . .
 
@@ -27,4 +36,4 @@ USER normaluser
 
 ENV BWRAP_ARGS='--ro-bind /home /home'
 
-CMD ["yarn", "start-prod"]
+CMD ["pnpm", "start-prod"]

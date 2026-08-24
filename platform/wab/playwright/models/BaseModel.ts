@@ -1,4 +1,4 @@
-import { FrameLocator, Page } from "playwright/test";
+import { FrameLocator, Page } from "@playwright/test";
 import { getStudioFrame } from "../utils/studio-utils";
 
 export abstract class BaseModel {

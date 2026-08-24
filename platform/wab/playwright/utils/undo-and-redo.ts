@@ -1,4 +1,4 @@
-import { Page } from "playwright/test";
+import { Page } from "@playwright/test";
 
 export async function undoAndRedo(page: Page, { repetitions = 100 } = {}) {
   for (let i = 0; i < repetitions; i++) {

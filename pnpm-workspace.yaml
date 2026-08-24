@@ -42,8 +42,9 @@ overrides:
   "@storybook/theming": "8.5.5"
   # Only pulled in transitively (@storybook/test-runner, jest-playwright-preset),
   # both with open ranges, so this would otherwise float to whatever is latest at
-  # resolve time. Pin it to the version the yarn workspaces use, so the runner
-  # image only pre-installs one set of browsers (devops/manual/runner-image).
+  # resolve time. Pin it to the version platform/wab, platform/wab/playwright
+  # and platform/loader-tests use, so the runner image only pre-installs one set
+  # of browsers (devops/manual/runner-image).
   playwright: "1.60.0"
   playwright-core: "1.60.0"
   react: "18.3.1"

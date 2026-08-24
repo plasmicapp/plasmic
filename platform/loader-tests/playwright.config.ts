@@ -46,7 +46,7 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     bypassCSP: true,
   },
-  timeout: 900000, // 10 minutes, to saturate CI server parallelism - there are a lot of yarn mutexes
+  timeout: 900000, // 10 minutes, to saturate CI server parallelism
   expect: {
     timeout: 60000, // 1 minute,
   },

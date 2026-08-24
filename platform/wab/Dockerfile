@@ -28,7 +28,6 @@ ENV PLAYWRIGHT_DOWNLOAD_HOST=https://playwright-akamai.azureedge.net
 # @swc/core, ...) during pnpm install.
 RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc libc-dev
 
-# pnpm via corepack; the version is pinned by "packageManager" in package.json.
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable

@@ -242,7 +242,8 @@ void NodeSeccomp::New(const FunctionCallbackInfo<Value>& args) {
 }
 
 void NodeSeccomp::SeccompLoad(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  NodeSeccomp* obj = ObjectWrap::Unwrap<NodeSeccomp>(args.Holder());
+  // Node 22 dropped FunctionCallbackInfo::Holder(); This() is its replacement.
+  NodeSeccomp* obj = ObjectWrap::Unwrap<NodeSeccomp>(args.This());
   setup();
 }
 

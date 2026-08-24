@@ -15,11 +15,7 @@ RUN apk add --no-cache \
     build-base
 
 # pnpm via corepack; versions are pinned by the "packageManager" fields in the
-# repo root and platform/ package.jsons. Enable ONLY the pnpm shim: the yarn
-# shim would refuse to run in the platform/* standalone yarn projects (sub,
-# react-web-bundle, ...) because it finds platform/package.json's
-# "packageManager": "pnpm@..." when walking up. The node image's bundled
-# classic yarn keeps serving those projects.
+# repo root and platform/ package.jsons.
 RUN corepack enable pnpm
 
 # The repo root and platform/ are both pnpm workspaces, which need every

@@ -1,4 +1,4 @@
-import { expect, FrameLocator, Locator, Page } from "playwright/test";
+import { expect, FrameLocator, Locator, Page } from "@playwright/test";
 import { test } from "../../fixtures/test";
 import { BaseModel } from "../BaseModel";
 
