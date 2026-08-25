@@ -2,9 +2,12 @@ import { expect, FrameLocator, Page } from "@playwright/test";
 import { v4 } from "uuid";
 import { test } from "../../fixtures/test";
 import type { StudioModel } from "../../models/studio-model";
+import {
+  createPostgresTestDatabase,
+  type PostgresTestDatabase,
+} from "../../utils/postgres-test-db";
 import { goToProject, waitForFrameToLoad } from "../../utils/studio-utils";
 
-const TUTORIAL_DB_TYPE = "northwind";
 const DEFAULT_CUSTOMERS = [
   "Maria Anders",
   "Ana Trujillo",
@@ -34,11 +37,16 @@ type InteractionConfig = {
 test.describe("Postgres Data Source", () => {
   let projectId: string;
   let dataSourceName: string;
+  let testDatabase: PostgresTestDatabase | undefined;
 
   test.beforeEach(async ({ apiClient, page, context, request }) => {
-    dataSourceName = `TutorialDB ${v4()}`;
+    dataSourceName = `Postgres ${v4()}`;
 
-    await apiClient.createTutorialDataSource(TUTORIAL_DB_TYPE, dataSourceName);
+    testDatabase = await createPostgresTestDatabase();
+    await apiClient.createPostgresDataSource(
+      dataSourceName,
+      testDatabase.connection
+    );
 
     await apiClient.login("user2@example.com", "!53kr3tz!");
     const storageState = await request.storageState();
@@ -52,9 +60,16 @@ test.describe("Postgres Data Source", () => {
   });
 
   test.afterEach(async ({ apiClient }) => {
-    await apiClient.deleteDataSourceOfCurrentTest();
-    if (projectId) {
-      await apiClient.removeProject(projectId);
+    try {
+      try {
+        await apiClient.deleteDataSourceOfCurrentTest();
+      } finally {
+        if (projectId) {
+          await apiClient.removeProject(projectId);
+        }
+      }
+    } finally {
+      await testDatabase?.dispose();
     }
   });
 
@@ -103,8 +118,8 @@ test.describe("Postgres Data Source", () => {
     await studio.leftPanel.insertNode("Text");
     await studio.bindRichTextBlockToDynamicValue(["insertedId"]);
 
-    const updateStepName = "tutorialdbUpdateById";
-    const createStepName = "tutorialdbCreate";
+    const updateStepName = "postgresUpdateById";
+    const createStepName = "postgresCreate";
 
     const { actionLabels: updateActionLabels } =
       await configureButtonInteractions(studio, page, "Update", [

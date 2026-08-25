@@ -97,15 +97,8 @@ export function DataSourcePicker({
             (() => {
               const sources =
                 data.find(
-                  ({ workspace, dataSources }) =>
-                    workspace.id === thisProjectsWorkspace.id
+                  ({ workspace }) => workspace.id === thisProjectsWorkspace.id
                 )?.dataSources ?? [];
-              const nonTutorialSources = sources.filter(
-                (source) => source.source !== "tutorialdb"
-              );
-              const tutorialSources = sources.filter(
-                (source) => source.source === "tutorialdb"
-              );
               return (
                 <Form.Item label={DATA_SOURCE_CAP} name={"sourceId"}>
                   <div className="flex">
@@ -133,7 +126,7 @@ export function DataSourcePicker({
                       >
                         Create a new {DATA_SOURCE_LOWER}...
                       </Select.Option>
-                      {nonTutorialSources
+                      {sources
                         .filter(
                           (source) =>
                             !readOpsOnly ||
@@ -150,27 +143,6 @@ export function DataSourcePicker({
                             {source.name}
                           </Select.Option>
                         ))}
-                      {tutorialSources.length > 0 && (
-                        <Select.OptionGroup title="Plasmic Tutorial Integrations">
-                          {tutorialSources
-                            .filter(
-                              (source) =>
-                                !readOpsOnly ||
-                                getDataSourceMeta(source.source).ops.some(
-                                  (op) => op.type === "read"
-                                )
-                            )
-                            .map((source) => (
-                              <Select.Option
-                                key={source.id}
-                                textValue={source.name}
-                                value={source.id}
-                              >
-                                {source.name}
-                              </Select.Option>
-                            ))}
-                        </Select.OptionGroup>
-                      )}
                     </Select>
                     <IconButton onClick={() => mutate()}>
                       <Icon icon={RefreshsvgIcon} />

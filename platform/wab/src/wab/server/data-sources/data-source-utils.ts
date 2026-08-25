@@ -5,7 +5,6 @@ import { makeGraphqlFetcher } from "@/wab/server/data-sources/graphql-fetcher";
 import { makeHttpFetcher } from "@/wab/server/data-sources/http-fetcher";
 import { makePostgresFetcher } from "@/wab/server/data-sources/postgres-fetcher";
 import { makeSupabaseFetcher } from "@/wab/server/data-sources/supabase-fetcher";
-import { makeTutorialDbFetcher } from "@/wab/server/data-sources/tutorialdb-fetcher";
 import { makeZapierFetcher } from "@/wab/server/data-sources/zapier-fetcher";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
@@ -135,8 +134,6 @@ export async function makeFetcher(
       return makePostgresFetcher(source);
     case "zapier":
       return makeZapierFetcher(source);
-    case "tutorialdb":
-      return await makeTutorialDbFetcher(dbCon, source);
     case "fake":
       return await makeFakeFetcher(source);
   }
@@ -360,8 +357,7 @@ async function updateDataSourceExprSourceId(
       ? oldToNewSourceIds[expr.sourceId]
       : expr.sourceId;
 
-  // If the sourceId changed, this should be a tutorialdb data source
-  // which we can issue a new operation id for it
+  // If the sourceId changed, issue a new operation id for the replacement.
   if (oldSourceId !== sourceId) {
     const newOpId = await makeDataSourceOperationId(dbMgr, sourceId, operation);
     expr.opId = newOpId;

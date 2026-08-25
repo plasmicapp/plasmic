@@ -5,22 +5,42 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import {
+  POKEDEX_SEED_SQL,
+  PostgresTestDatabase,
+  createPostgresTestDatabase,
+} from "../../postgres-test-db";
+import { createPostgresDataSource, removeDataSource } from "../../utils";
 
 test.describe(`Data Source basic`, async () => {
   let ctx: NextJsContext;
+  let testDatabase: PostgresTestDatabase | undefined;
+  let dataSourceId: string | undefined;
   test.beforeEach(async () => {
+    testDatabase = await createPostgresTestDatabase(POKEDEX_SEED_SQL);
+    dataSourceId = await createPostgresDataSource(
+      `Pokedex ${testDatabase.connection.name}`,
+      testDatabase.connection
+    );
     ctx = await setupNextJs({
       bundleFile: "data-source-basic.json",
       projectName: "Data Source basic",
       removeComponentsPage: true,
       dataSourceReplacement: {
-        type: "pokedex",
+        fakeSourceId: dataSourceId,
       },
     });
   });
 
   test.afterEach(async () => {
-    await teardownNextJs(ctx);
+    try {
+      await teardownNextJs(ctx);
+    } finally {
+      if (dataSourceId) {
+        await removeDataSource(dataSourceId);
+      }
+      await testDatabase?.dispose();
+    }
   });
 
   test(`it works`, async ({ page }) => {

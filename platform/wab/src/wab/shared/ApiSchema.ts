@@ -61,7 +61,6 @@ export type CommentId = Opaque<string, "CommentId">;
 export type CommentReactionId = Opaque<string, "CommentReactionId">;
 export type ThreadHistoryId = Opaque<string, "ThreadHistoryId">;
 export type SsoConfigId = Opaque<string, "SsoConfigId">;
-export type TutorialDbId = Opaque<string, "TutorialDbId">;
 export type DataSourceId = Opaque<string, "DataSourceId">;
 export type CopilotInteractionId = Opaque<string, "CopilotInteractionId">;
 export type CommentThreadId = Opaque<string, "CommentThreadId">;

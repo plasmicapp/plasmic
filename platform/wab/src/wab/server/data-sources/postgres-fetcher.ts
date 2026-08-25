@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import { asyncTimed } from "@/wab/server/timing-util";
 import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { assert, ensure } from "@/wab/shared/common";
@@ -105,6 +106,11 @@ export class PostgresFetcher {
       max: 20,
       ...poolOptions,
     });
+    // An idle client dropped by the database emits on the pool, an unhandled
+    // 'error' event would take down the server.
+    _pool.on("error", (err) =>
+      logger().warn(`Postgres data source pool error: ${err.message}`)
+    );
     this.pool = Object.fromEntries(
       ["connect", "query"].map((op) => [
         op,

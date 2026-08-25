@@ -54,7 +54,6 @@ import {
   userDbMgr,
 } from "@/wab/server/routes/util";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
-import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { withSpan } from "@/wab/server/util/apm-util";
 import {
   BadRequestError,
@@ -342,13 +341,9 @@ export async function clonePublishedTemplate(req: Request, res: Response) {
   res.json({ projectId: project.id, token: project.projectApiToken });
 }
 
-type DataSourceReplacement =
-  | {
-      type: string;
-    }
-  | {
-      fakeSourceId: string;
-    };
+type DataSourceReplacement = {
+  fakeSourceId: string;
+};
 
 export async function importProject(req: Request, res: Response) {
   const {
@@ -746,22 +741,11 @@ export async function doImportProject(
   }
 
   if (opts?.dataSourceReplacement) {
-    let oldToNewSourceIds: Record<string, string> = {};
     const sourceIds = getAllOpExprSourceIdsUsedInSite(unbundledSite);
-    if ("type" in opts.dataSourceReplacement) {
-      const { type } = opts.dataSourceReplacement;
-      const newDataSource = await mgr.createTutorialDbDataSource(
-        type as TutorialType,
-        project.workspaceId!,
-        "Imported data source"
-      );
-      oldToNewSourceIds = fromPairs(
-        sourceIds.map((id) => [id, newDataSource.id])
-      );
-    } else {
-      const { fakeSourceId } = opts.dataSourceReplacement;
-      oldToNewSourceIds = fromPairs(sourceIds.map((id) => [id, fakeSourceId]));
-    }
+    const { fakeSourceId } = opts.dataSourceReplacement;
+    const oldToNewSourceIds = fromPairs(
+      sourceIds.map((id) => [id, fakeSourceId])
+    );
     await reevaluateDataSourceExprOpIds(mgr, unbundledSite, oldToNewSourceIds);
     const newBundle = bundler.bundle(
       unbundledSite,

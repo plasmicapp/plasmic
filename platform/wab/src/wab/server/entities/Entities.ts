@@ -2,7 +2,6 @@
 // TODO Use real UUID type, both in PG and in Typescript.
 
 import { getEncryptionKey } from "@/wab/server/secrets";
-import type { TutorialDbInfo } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { makeStableEncryptor } from "@/wab/server/util/crypt";
 import type {
   AppAuthProvider,
@@ -1620,14 +1619,6 @@ export class AppAccessRegistry extends Base<"AppAccessRegistryId"> {
   @Index()
   @Column("text")
   endUserId: string;
-}
-
-@Entity()
-export class TutorialDb extends Base<"TutorialDbId"> {
-  @Column("jsonb", {
-    transformer: [jsonTransformer, encryptTransformer],
-  })
-  info: TutorialDbInfo;
 }
 
 @Entity()

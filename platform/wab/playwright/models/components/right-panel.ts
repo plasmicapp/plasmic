@@ -25,9 +25,9 @@ export class RightPanel extends BaseModel {
   readonly stateButton: Locator = this.frame.locator(
     '[data-plasmic-prop="variable"]'
   );
-  readonly windowSaveButton: Locator = this.frame
-    .locator('[data-test-id="data-picker"]')
-    .locator("text=Save");
+  readonly windowSaveButton: Locator = this.frame.locator(
+    "#data-picker-save-btn"
+  );
   readonly operationDropdownButton: Locator = this.frame.locator(
     '[data-plasmic-prop="operation"]'
   );
@@ -208,9 +208,7 @@ export class RightPanel extends BaseModel {
   readonly pagePathInput: Locator = this.frame.locator(
     '[data-test-id="page-path"] input'
   );
-  readonly dataPickerSaveButton: Locator = this.frame.locator(
-    '[data-test-id="data-picker"] button:has-text("Save")'
-  );
+  readonly dataPickerSaveButton: Locator = this.windowSaveButton;
 
   readonly projectMenuButton: Locator = this.frame.locator(
     '[data-test-id="project-menu-btn"]'
@@ -1197,10 +1195,7 @@ export class RightPanel extends BaseModel {
       await this.page.waitForTimeout(1000);
 
       await this.importedDataSourceDropdownButton.click();
-      await this.page
-        .getByLabel("Plasmic Tutorial Integrations")
-        .getByText(dataSourceName)
-        .click();
+      await this.page.getByRole("option", { name: dataSourceName }).click();
 
       await this.page.getByRole("button", { name: "Confirm" }).click();
     } else {
@@ -1209,7 +1204,7 @@ export class RightPanel extends BaseModel {
   }
 
   async clickPageData() {
-    await this.frame.getByText("Page data").click();
+    await this.frame.getByRole("tab", { name: "Page data" }).click();
   }
 
   async getPagePathInput() {
@@ -1235,9 +1230,9 @@ export class RightPanel extends BaseModel {
   }
 
   async getViewButtons() {
-    return this.frame.locator(
-      ".bottom-modals tbody tr[data-row-key] td:has-text('View'):first-child"
-    );
+    return this.frame
+      .getByRole("table")
+      .getByRole("button", { name: "View", exact: true });
   }
 
   async clickCreateDynamicPageButton() {
@@ -1482,116 +1477,6 @@ export class RightPanel extends BaseModel {
     const confirmButton = this.frame.locator('[data-test-id="confirm"]');
     await confirmButton.click();
     await this.page.waitForTimeout(2000);
-  }
-
-  async pickIntegration(dataSourceId?: string) {
-    const pickIntegrationBtn = this.frame.locator(
-      "#data-source-modal-pick-integration-btn"
-    );
-
-    await pickIntegrationBtn.waitFor({ state: "visible", timeout: 10000 });
-
-    if (await pickIntegrationBtn.isVisible()) {
-      await pickIntegrationBtn.click();
-
-      let result = null;
-
-      if (dataSourceId) {
-        result = await this.page.evaluate((dsId) => {
-          const w = window as any;
-          if (w.dbg?.testControls?.dataSource?.setByValue) {
-            return w.dbg.testControls.dataSource.setByValue(dsId);
-          }
-          return null;
-        }, dataSourceId);
-
-        if (result !== null) {
-          const confirmButton = this.page
-            .getByRole("button", { name: "Confirm" })
-            .or(
-              this.page
-                .locator("button")
-                .filter({ hasText: /confirm|ok|select/i })
-                .first()
-            );
-
-          await confirmButton.waitFor({ timeout: 5000 });
-          await confirmButton.click();
-          await this.page.waitForTimeout(3000);
-          return;
-        }
-      }
-
-      if (result === null) {
-        result = await this.page.evaluate(() => {
-          const w = window as any;
-          if (w.dbg?.testControls?.dataSource?.setByValue) {
-            const dataSourceControl = w.dbg.testControls.dataSource;
-            if (
-              dataSourceControl.options &&
-              dataSourceControl.options.length > 0
-            ) {
-              return dataSourceControl.setByValue(
-                dataSourceControl.options[0].value
-              );
-            }
-          }
-          return null;
-        });
-      }
-
-      if (result === null) {
-        const selectIntegrationBtn = this.page
-          .locator("button")
-          .filter({
-            hasText: "Select an integration from your workspace to use",
-          })
-          .or(
-            this.page
-              .locator("button")
-              .filter({ hasText: /select.*integration.*workspace/i })
-          )
-          .or(
-            this.page
-              .locator("button")
-              .filter({ hasText: /select.*integration/i })
-          );
-
-        await selectIntegrationBtn.waitFor({ timeout: 10000 });
-        await selectIntegrationBtn.click();
-
-        let integrationOption = this.page
-          .getByRole("option")
-          .filter({ hasText: /Fake Data Source/i })
-          .first();
-
-        const foundFakeSource = (await integrationOption.count()) > 0;
-
-        if (!foundFakeSource) {
-          integrationOption = this.page
-            .getByRole("option")
-            .filter({ hasText: /TutorialDB/i })
-            .first();
-        }
-
-        await integrationOption.waitFor({ timeout: 5000 });
-        await integrationOption.click();
-      }
-
-      const confirmButton = this.page
-        .getByRole("button", { name: "Confirm" })
-        .or(
-          this.page
-            .locator("button")
-            .filter({ hasText: /confirm|ok|select/i })
-            .first()
-        );
-
-      await confirmButton.waitFor({ timeout: 5000 });
-      await confirmButton.click();
-    } else {
-      await this.setDataPlasmicProp("dataSource", "default");
-    }
   }
 
   async addComponentQuery() {

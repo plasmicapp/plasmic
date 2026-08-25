@@ -84,7 +84,6 @@ import {
   TemporaryTeamApiToken,
   TokenData,
   TrustedHost,
-  TutorialDb,
   User,
   Workspace,
   WorkspaceApiToken,
@@ -94,10 +93,6 @@ import {
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { CompatRequest } from "@/wab/server/routes/util";
-import {
-  TutorialType,
-  createTutorialDb,
-} from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
   makeFieldMetaMap,
@@ -157,7 +152,6 @@ import {
   TeamMember,
   TeamWhiteLabelInfo,
   ThreadHistoryId,
-  TutorialDbId,
   UniqueFieldCheck,
   UserId,
   WorkspaceId,
@@ -1036,10 +1030,6 @@ export class DbMgr implements MigrationDbMgr {
 
   private appAccessRegistries() {
     return this.entMgr.getRepository(AppAccessRegistry);
-  }
-
-  private tutorialDbs() {
-    return this.entMgr.getRepository(TutorialDb);
   }
 
   private copilotUsages() {
@@ -10463,45 +10453,6 @@ export class DbMgr implements MigrationDbMgr {
       personalWorkspace,
       `User's personal workspace`
     );
-  }
-
-  async createTutorialDb(type: TutorialType) {
-    const result = await createTutorialDb(type);
-    const db = this.tutorialDbs().create({
-      ...this.stampNew(),
-      info: result,
-    });
-    await this.entMgr.save(db);
-    return db;
-  }
-
-  async getTutorialDb(id: TutorialDbId) {
-    return ensureFound<TutorialDb>(
-      await this.tutorialDbs().findOne({
-        id,
-        ...excludeDeleted(),
-      }),
-      `Tutorial DB with id ${id}`
-    );
-  }
-
-  async createTutorialDbDataSource(
-    type: TutorialType,
-    workspaceId: WorkspaceId,
-    name: string
-  ) {
-    const newTutorialDb = await this.createTutorialDb(type);
-    const newDataSource = await this.createDataSource(workspaceId, {
-      name,
-      source: "tutorialdb",
-      credentials: {
-        tutorialDbId: newTutorialDb.id,
-      },
-      settings: {
-        type,
-      },
-    });
-    return newDataSource;
   }
 
   async createPromotionCode(

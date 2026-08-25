@@ -392,6 +392,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             },
           }}
           saveButton={{
+            id: "data-picker-save-btn",
             onClick: () => {
               if (editorRef.current && trySave(editorRef.current.getValue())) {
                 const code = editorRef.current.getValue();

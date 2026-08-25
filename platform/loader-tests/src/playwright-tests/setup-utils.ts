@@ -51,9 +51,6 @@ export type ProjectConfig =
       bundleFile: string;
       transform?: (value: string) => string;
       projectName?: string;
-      dataSourceReplacement?: {
-        type: string;
-      };
     };
 
 export interface LoaderTestConfig {

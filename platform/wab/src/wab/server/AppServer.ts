@@ -1368,16 +1368,6 @@ export function addMainAppServerRoutes(
     withNext(adminRoutes.upsertSsoConfig)
   );
   app.get("/api/v1/admin/get-sso", adminOnly, adminRoutes.getSsoByTeam);
-  app.post(
-    "/api/v1/admin/create-tutorial-db",
-    adminOnly,
-    withNext(adminRoutes.createTutorialDb)
-  );
-  app.post(
-    "/api/v1/admin/reset-tutorial-db",
-    adminOnly,
-    withNext(adminRoutes.resetTutorialDb)
-  );
   app.get(
     "/api/v1/admin/get-team-by-white-label-name",
     adminOnly,

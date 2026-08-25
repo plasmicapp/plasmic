@@ -1,15 +1,21 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import {
+  createPostgresTestDatabase,
+  type PostgresTestDatabase,
+} from "../utils/postgres-test-db";
 import { goToProject } from "../utils/studio-utils";
 
 test.describe("dynamic-pages-simplified", () => {
   let projectId: string;
   let dsname: string;
+  let testDatabase: PostgresTestDatabase | undefined;
 
   test.beforeEach(async ({ apiClient, page, context, request }) => {
-    dsname = `TutorialDB ${Date.now()}`;
+    dsname = `Postgres ${Date.now()}`;
 
-    await apiClient.createTutorialDataSource("northwind", dsname);
+    testDatabase = await createPostgresTestDatabase();
+    await apiClient.createPostgresDataSource(dsname, testDatabase.connection);
 
     await apiClient.makeApiClient(
       request,
@@ -25,11 +31,21 @@ test.describe("dynamic-pages-simplified", () => {
   });
 
   test.afterEach(async ({ apiClient }) => {
-    await apiClient.removeProjectAfterTest(
-      projectId,
-      "user2@example.com",
-      "!53kr3tz!"
-    );
+    try {
+      try {
+        await apiClient.deleteDataSourceOfCurrentTest();
+      } finally {
+        if (projectId) {
+          await apiClient.removeProjectAfterTest(
+            projectId,
+            "user2@example.com",
+            "!53kr3tz!"
+          );
+        }
+      }
+    } finally {
+      await testDatabase?.dispose();
+    }
   });
 
   test("simplified works", async ({ models }) => {

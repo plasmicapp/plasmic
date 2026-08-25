@@ -28,11 +28,6 @@ import {
   SupabaseDataSource,
 } from "@/wab/shared/data-sources-meta/supabase-meta";
 import {
-  QueryBuilderTutorialDbConfig,
-  TUTORIALDB_META,
-  TutorialDbDataSource,
-} from "@/wab/shared/data-sources-meta/tutorialdb-meta";
-import {
   ZAPIER_META,
   ZapierDataSource,
 } from "@/wab/shared/data-sources-meta/zapier-meta";
@@ -47,7 +42,6 @@ export type GenericDataSource =
   | SupabaseDataSource
   | PostgresDataSource
   | ZapierDataSource
-  | TutorialDbDataSource
   | FakeDataSource;
 
 const DATA_SOURCE_METAS = {
@@ -57,7 +51,6 @@ const DATA_SOURCE_METAS = {
   supabase: SUPABASE_META,
   postgres: POSTGRES_META,
   zapier: ZAPIER_META,
-  tutorialdb: TUTORIALDB_META,
   fake: FAKE_META,
 } as const;
 
@@ -92,7 +85,6 @@ export function getAllDataSourceTypes() {
 export const DATA_SOURCE_QUERY_BUILDER_CONFIG = {
   postgres: QueryBuilderPostgresConfig,
   airtable: QueryBuilderAirtableConfig,
-  tutorialdb: QueryBuilderTutorialDbConfig,
   fake: QueryBuilderFakeConfig,
 };
 

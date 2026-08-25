@@ -7,6 +7,7 @@ import tmp from "tmp";
 import { getEnvVar } from "../env";
 import { NextJsEnv, ProjectContext } from "../playwright-tests/setup-utils";
 import {
+  DataSourceReplacement,
   runCommand,
   uploadProject,
   waitUntilServerDown,
@@ -20,6 +21,7 @@ export interface NextJsContext {
   tmpdirCleanup: () => void;
   server: ExecaChildProcess;
   host: string;
+  cleanup?: () => Promise<void>;
 }
 
 export async function prepareTemplate(opts: {
@@ -153,9 +155,7 @@ export async function setupNextJs(opts: {
   nextVersion?: string;
   reactVersion?: string;
   tsConfigOverrides?: Record<string, unknown>;
-  dataSourceReplacement?: {
-    type: string;
-  };
+  dataSourceReplacement?: DataSourceReplacement;
   env?: Record<string, string>;
 }): Promise<NextJsContext> {
   const {
@@ -215,6 +215,8 @@ export async function teardownNextJs(ctx: NextJsContext | undefined) {
   const { tmpdirCleanup } = ctx;
 
   await teardownNextJsServer(ctx);
+
+  await ctx.cleanup?.();
 
   // TODO -- implement a way to identify/delete dependency projects. Without that, this leaves
   // dangling deps in the workspace

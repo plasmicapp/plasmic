@@ -3,6 +3,7 @@ import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
 import { getEnvVar } from "./env";
+import { PostgresTestDatabase } from "./postgres-test-db";
 
 export interface TestOpts {
   projectId: string;
@@ -149,6 +150,32 @@ export async function getApiToken() {
   return result.token.token;
 }
 
+export interface DataSourceReplacement {
+  fakeSourceId: string;
+}
+
+export async function createPostgresDataSource(
+  name: string,
+  connection: PostgresTestDatabase["connection"]
+): Promise<string> {
+  const { id } = await apiRequestWithLogin("POST", "/data-source/sources", {
+    source: "postgres",
+    name,
+    credentials: { password: connection.password },
+    settings: {
+      host: connection.host,
+      port: connection.port,
+      name: connection.name,
+      user: connection.user,
+    },
+  });
+  return id;
+}
+
+export async function removeDataSource(sourceId: string) {
+  await apiRequestWithLogin("DELETE", `/data-source/sources/${sourceId}`);
+}
+
 export async function uploadProject(
   fileName: string,
   projectName: string,
@@ -156,9 +183,7 @@ export async function uploadProject(
     bundleTransformation?: (value: string) => string;
     keepProjectIdsAndNames?: boolean;
     publish?: boolean;
-    dataSourceReplacement?: {
-      type: string;
-    };
+    dataSourceReplacement?: DataSourceReplacement;
   }
 ) {
   const {

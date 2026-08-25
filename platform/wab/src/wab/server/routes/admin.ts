@@ -24,16 +24,11 @@ import {
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
-import {
-  TutorialType,
-  resetTutorialDb as doResetTutorialDb,
-} from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiFeatureTier,
   ApiTeamDiscourseInfo,
   BranchId,
-  DataSourceId,
   FeatureTierId,
   ListFeatureTiersResponse,
   ListUsersResponse,
@@ -42,13 +37,11 @@ import {
   ProjectId,
   SendEmailsResponse,
   TeamId,
-  TutorialDbId,
   UpdateSelfAdminModeRequest,
   UserId,
 } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
 import {
-  assert,
   ensure,
   ensureType,
   uncheckedCast,
@@ -413,25 +406,6 @@ export async function getSsoByTeam(req: Request, res: Response) {
   const teamId = req.query.teamId as TeamId;
   const sso = await mgr.getSsoConfigByTeam(teamId);
   res.json(sso ?? null);
-}
-
-export async function createTutorialDb(req: Request, res: Response) {
-  logger().info(`Creating tutorialDB of type ${req.body.type}`);
-  const mgr = superDbMgr(req);
-  const type = req.body.type as TutorialType;
-  const result = await mgr.createTutorialDb(type);
-  res.json({ id: result.id, ...result.info });
-}
-
-export async function resetTutorialDb(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const sourceId = req.body.sourceId as DataSourceId;
-  const source = await mgr.getDataSourceById(sourceId);
-  assert(source.source === "tutorialdb", "Can only reset tutorialdb");
-  const tutorialDbId = source.credentials.tutorialDbId as TutorialDbId;
-  const tutorialDb = await mgr.getTutorialDb(tutorialDbId);
-  await doResetTutorialDb(tutorialDb.info);
-  res.json({});
 }
 
 export async function getTeamByWhiteLabelName(req: Request, res: Response) {

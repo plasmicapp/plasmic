@@ -1234,10 +1234,6 @@ export abstract class SharedApi {
     return res.team;
   }
 
-  async createTutorialDb(type: any): Promise<any> {
-    return await this.post(`/admin/create-tutorial-db`, { type });
-  }
-
   async createPromotionCode(
     id: string,
     message?: string,
@@ -1250,10 +1246,6 @@ export abstract class SharedApi {
       expirationDate,
       trialDays,
     });
-  }
-
-  async resetTutorialDb(sourceId: string): Promise<any> {
-    return await this.post(`/admin/reset-tutorial-db`, { sourceId });
   }
 
   async adminLoginAs(args: { email: string }): Promise<LoginResponse> {

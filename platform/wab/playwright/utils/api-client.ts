@@ -235,22 +235,18 @@ export class ApiClient {
     return tokenData.token.token;
   }
 
-  async createTutorialDb(type: string) {
-    return this.withAdminContext(async (context, token) => {
-      const response = await context.post(
-        `${this.baseUrl}/api/v1/admin/create-tutorial-db`,
-        {
-          data: { type },
-          headers: { "X-CSRF-Token": token },
-        }
-      );
-      return (await response.json()).id;
-    });
-  }
-
-  async createTutorialDataSource(type: string, dsname: string) {
-    let csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-    let csrf = (await csrfRes.json()).csrf;
+  async createPostgresDataSource(
+    dsname: string,
+    connection: {
+      host: string;
+      port: string;
+      name: string;
+      user: string;
+      password: string;
+    }
+  ) {
+    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+    const csrf = (await csrfRes.json()).csrf;
 
     const workspaceRes = await this.request.get(
       `${this.baseUrl}/api/v1/personal-workspace`,
@@ -258,23 +254,21 @@ export class ApiClient {
     );
     const workspaceId = (await workspaceRes.json()).workspace.id;
 
-    await this.logout();
-    const dbId = await this.createTutorialDb(type);
-    csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-    csrf = (await csrfRes.json()).csrf;
-
     const response = await this.request.post(
       `${this.baseUrl}/api/v1/data-source/sources`,
       {
         data: {
-          source: "tutorialdb",
+          source: "postgres",
           name: dsname,
           workspaceId: workspaceId,
           credentials: {
-            tutorialDbId: dbId,
+            password: connection.password,
           },
           settings: {
-            type: "northwind",
+            host: connection.host,
+            port: connection.port,
+            name: connection.name,
+            user: connection.user,
           },
         },
         headers: { "X-CSRF-Token": csrf },
@@ -397,7 +391,7 @@ export class ApiClient {
     templateNameOrBundle: string | any,
     options?: {
       keepProjectIdsAndNames?: boolean;
-      dataSourceReplacement?: Record<string, string>;
+      dataSourceReplacement?: { fakeSourceId: string };
     }
   ) {
     let bundle: any;
