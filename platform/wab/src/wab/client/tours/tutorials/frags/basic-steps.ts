@@ -87,7 +87,7 @@ export function addElementStepFunc({
         event.params.itemKey !== componentName &&
         event.params.itemSystemName !== componentName
       ) {
-        notification.warn({
+        notification.warning({
           message: "Wrong component inserted",
         });
         return false;

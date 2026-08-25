@@ -417,9 +417,9 @@ input[type="text"].textbox--unset, textarea.textbox-unset, .select-dropdown__but
 .ant-tooltip
   pointer-events: none
 
+// Background comes from the colorBgSpotlight token, so the arrow matches too.
 .ant-tooltip-inner
   min-height: 0
-  background-color: $inverse-bg
 
 .preset-preview-tooltip
   max-width: 500px
@@ -430,9 +430,9 @@ input[type="text"].textbox--unset, textarea.textbox-unset, .select-dropdown__but
   max-width: 550px
   max-height: 400px
 
-.ant-tooltip-arrow
+.ant-tooltip .ant-tooltip-arrow
   display: none
-.show-ant-tooltip-arrow .ant-tooltip-arrow
+.ant-tooltip.show-ant-tooltip-arrow .ant-tooltip-arrow
   display: initial
 
 .ant-select.textboxlike
@@ -5483,9 +5483,11 @@ $size-controls-width: $spacing-control-width - 2 * ($spacing-control-x-thickness
   display: flex
   justify-content: space-between
 
-.defined-indicator__popover
+.ant-popover.defined-indicator__popover
   min-width: 200px
   max-width: 50vw
+  .ant-popover-inner
+    padding: 0
   .ant-popover-title
     min-height: auto
     border-bottom: none
@@ -5582,11 +5584,11 @@ $size-controls-width: $spacing-control-width - 2 * ($spacing-control-x-thickness
   color: red
 
 .ant-popover.ant-popover--tight
-  .ant-popover-inner-content
+  .ant-popover-inner
     padding: 2px 4px
 
 .ant-popover.ant-popover--dropdown-like
-  .ant-popover-inner-content
+  .ant-popover-inner
     padding: 0
   .ant-popover-arrow
     display: none
@@ -5715,10 +5717,10 @@ a, button.link-like
 .ql-container.ql-snow
   background-color: white
 
-.data-picker-popover-overlay
+.ant-popover.data-picker-popover-overlay
   & .ant-popover-arrow
     display: none
-  & .ant-popover-inner-content
+  & .ant-popover-inner
     padding: 0px
 
 .panel-row.fallback-spacing
@@ -5775,8 +5777,8 @@ a, button.link-like
   &:focus-within
     box-shadow: 0px 0px 0px 1px $focus-color
 
-.NoPaddingPopover
-  .ant-popover-inner-content
+.ant-popover.NoPaddingPopover
+  .ant-popover-inner
     padding: 0
 
 .NoBackgroundStyles
@@ -5850,12 +5852,11 @@ a, button.link-like
   li
     list-style-type: initial
 
-.sidebar-popover
+.ant-popover.sidebar-popover
   > *
     transform: translateX(-16px)
   .ant-popover-inner
     border-radius: 8px
-  .ant-popover-inner-content
     padding: 8px
 
 .floating-inset-toolbar

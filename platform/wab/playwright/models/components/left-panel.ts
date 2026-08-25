@@ -281,6 +281,7 @@ export class LeftPanel extends BaseModel {
 
   async switchToComponentsTab() {
     await this.assetsTabButton.hover();
+    await this.componentsTabButton.waitFor({ state: "visible" });
     const isActive =
       (await this.componentsTabButton.getAttribute("data-state-isselected")) ===
       "true";
@@ -293,6 +294,7 @@ export class LeftPanel extends BaseModel {
 
   async switchToDataTokensTab() {
     await this.assetsTabButton.hover();
+    await this.dataTokensTabButton.waitFor({ state: "visible" });
     const isActive =
       (await this.dataTokensTabButton.getAttribute("data-state-isselected")) ===
       "true";

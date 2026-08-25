@@ -426,7 +426,7 @@ export class CanvasCtx {
               // If no changes happened, and we resized a bunch of times anyway,
               // then there's probably a code component messing with our height (e.g. 100vh)
               // See https://app.shortcut.com/plasmic/story/23759/high-pri-infinitely-expanding-canvas-when-css-overflows-vertically
-              notification.warn({
+              notification.warning({
                 message: `Incompatible height in ${sc
                   .tplMgr()
                   .describeArenaFrame(arenaFrame)}`,

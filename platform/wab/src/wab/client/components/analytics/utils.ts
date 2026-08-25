@@ -1,5 +1,8 @@
 import { useChartData } from "@/wab/client/components/analytics/useChartData";
-import moment, { Moment } from "moment";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export enum TeamAnalyticsFilterParams {
   WorkspaceId = "workspaceId",
@@ -38,7 +41,7 @@ export const ANALYTICS_EVENTS = [
   // },
 ];
 
-export type TimeRange = [Moment | null, Moment | null];
+export type TimeRange = [Dayjs | null, Dayjs | null];
 
 export function getAnalyticsQueryTypeFromEvent(event: string) {
   if (event === "conversion_rate") {
@@ -57,7 +60,7 @@ export function getEventLabel(event: string) {
 }
 
 export function getXAxisLabel(timeRange: TimeRange) {
-  return `From ${moment.utc(timeRange[0]).format("MM-DD")} to ${moment
+  return `From ${dayjs.utc(timeRange[0]).format("MM-DD")} to ${dayjs
     .utc(timeRange[1])
     .format("MM-DD")}`;
 }
@@ -85,8 +88,8 @@ export function getYAxisLabel(event: string, period: string) {
 }
 
 export function getFormattedRange(
-  from: Moment,
-  to: Moment,
+  from: Dayjs,
+  to: Dayjs,
   period: "day" | "month"
 ) {
   // format data to include all hours/days in the range
@@ -95,8 +98,8 @@ export function getFormattedRange(
     month: "YYYY-MM-DD",
   };
   return {
-    from: moment(from).startOf(period).format(FORMAT[period]),
-    to: moment(to).endOf(period).format(FORMAT[period]),
+    from: dayjs(from).startOf(period).format(FORMAT[period]),
+    to: dayjs(to).endOf(period).format(FORMAT[period]),
   };
 }
 

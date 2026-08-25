@@ -128,7 +128,7 @@ async function pasteRouter(
       }
     }
 
-    notification.warn({
+    notification.warning({
       message: "Nothing to paste - the clipboard is empty",
     });
     return false;

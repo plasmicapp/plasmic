@@ -1,3 +1,4 @@
+import { AntdConfigProvider } from "@/wab/client/antd-theme";
 import styles from "@/wab/client/components/ContextMenu.module.scss";
 import {
   plasmicIFrameMouseDownEvent,
@@ -56,12 +57,14 @@ export function maybeShowContextMenu(
   }
 
   ReactDOM.render(
-    <ContextMenu
-      overlay={menu}
-      pageX={opts.pageX || event.pageX}
-      pageY={opts.pageY || event.pageY}
-      onHide={destroy}
-    />,
+    <AntdConfigProvider>
+      <ContextMenu
+        overlay={menu}
+        pageX={opts.pageX || event.pageX}
+        pageY={opts.pageY || event.pageY}
+        onHide={destroy}
+      />
+    </AntdConfigProvider>,
     div
   );
 
@@ -167,7 +170,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps, {}> {
   render() {
     const popup = (
       <Dropdown
-        visible={true}
+        open={true}
         onVisibleChange={this.onDropdownVisible}
         overlay={this.props.overlay}
         trigger={["click"]}

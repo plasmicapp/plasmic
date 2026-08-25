@@ -5913,7 +5913,7 @@ export class StudioCtx extends WithDbCtx {
           // Even if no save has been committed yet, the request could be
           // fulfilled afterwards, so we will just discard the local changes.
           const notificationKey = mkShortId();
-          notification.warn({
+          notification.warning({
             message: "Failed to sync project",
             description: `Loading latest changes...`,
             duration: 0,
@@ -5921,7 +5921,7 @@ export class StudioCtx extends WithDbCtx {
             closeIcon: null,
           });
           await this.loadVersion(undefined, true).finally(() =>
-            notification.close(notificationKey)
+            notification.destroy(notificationKey)
           );
           return SaveResult.TimedOut;
         } else {
@@ -6762,7 +6762,7 @@ export class StudioCtx extends WithDbCtx {
     "global-context-notification-starters";
 
   closeGlobalContextNotificationForStarters() {
-    notification.close(
+    notification.destroy(
       this.notificationKeyForGlobalContextNotificationStarters
     );
   }
@@ -6808,7 +6808,7 @@ export class StudioCtx extends WithDbCtx {
         });
       };
 
-      notification.warn({
+      notification.warning({
         message: "Configure this project's dynamic data source",
         duration: null,
         description: (
@@ -7134,7 +7134,7 @@ export class StudioCtx extends WithDbCtx {
         }
         console.log("Failed to sync. Downloading entire bundle...");
         if (hasUnsavedChanges) {
-          notification.warn({
+          notification.warning({
             message: "Failed to sync project",
             description: `Someone else has edited the project and it wasn't possible to sync with your latest changes. Refreshing the project...`,
             duration: 5,
@@ -7303,7 +7303,7 @@ export class StudioCtx extends WithDbCtx {
         return false;
       }
     } else {
-      notification.warn({
+      notification.warning({
         message: "The screenshot of presets can be degraded. ",
         description:
           "For better screenshot quality, please install Plasmic screenshoter Chrome extension at https://chrome.google.com/webstore/detail/plasmic-screenshoter/ekdpninpaghonjjjikcmffpgbagdjjkh?hl=en&authuser=3",
@@ -7655,7 +7655,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private debouncedWarn = debounce(
-    (args: ArgsProps) => notification.warn(args),
+    (args: ArgsProps) => notification.warning(args),
     60000,
     {
       leading: true,

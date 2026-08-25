@@ -9,16 +9,16 @@ import PublishFlowDialog, {
 import PublishWizard from "@/wab/client/components/TopFrame/TopBar/PublishWizard";
 import { StatusPlasmicHosting } from "@/wab/client/components/TopFrame/TopBar/SubsectionPlasmicHosting";
 import {
-  mkPushDeployPublishState,
   StatusPushDeploy,
+  mkPushDeployPublishState,
 } from "@/wab/client/components/TopFrame/TopBar/SubsectionPushDeploy";
 import {
-  mkSaveVersionPublishState,
   StatusSaveVersion,
+  mkSaveVersionPublishState,
 } from "@/wab/client/components/TopFrame/TopBar/SubsectionSaveVersion";
 import {
-  mkWebhooksPublishState,
   StatusWebhooks,
+  mkWebhooksPublishState,
 } from "@/wab/client/components/TopFrame/TopBar/SubsectionWebhooks";
 import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
@@ -49,24 +49,24 @@ import { useInterval } from "react-use";
 import useSWR from "swr";
 
 /**
-* When `useInterval()` is passed `null`, the polling loop is paused.
-*/
+ * When `useInterval()` is passed `null`, the polling loop is paused.
+ */
 export const DELAY_PAUSED = null;
 
 /**
-* Delay used while waiting for GitHub to create the first workflow run.
-* This is still throttled so that we never hammer the server.
-*/
+ * Delay used while waiting for GitHub to create the first workflow run.
+ * This is still throttled so that we never hammer the server.
+ */
 export const DELAY_FAST_POLL = 50;
 
 /**
-* Delay used when a workflow job is in the `in_progress` state.
-*/
+ * Delay used when a workflow job is in the `in_progress` state.
+ */
 export const DELAY_MEDIUM_POLL = 1000;
 
 /**
-* Delay used for other non-critical polling states (e.g. queued).
-*/
+ * Delay used for other non-critical polling states (e.g. queued).
+ */
 export const DELAY_SLOW_POLL = 3000;
 
 export type Delay =
@@ -557,7 +557,7 @@ export const PublishFlowDialogWrapper = observer(
             duration: 0,
           });
         } else {
-          notification.warn({
+          notification.warning({
             message: "The latest publish failed",
             description: `An error occurred when publishing. Please try again!`,
           });

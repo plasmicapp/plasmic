@@ -4,7 +4,10 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { Textbox, TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
-import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
+import {
+  useFocusOnDisplayed,
+  useToggleDisplayed,
+} from "@/wab/client/dom-utils";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
@@ -726,6 +729,30 @@ export function useOnIFrameMouseDown(handler: () => void) {
   }, [handler]);
 }
 
+/**
+ * antd 5 mounts popup content while it is still display:none, so autoFocus and
+ * focusing from onOpenChange are no-ops. Render this inside the popup content
+ * to focus targetId as soon as the popup is actually displayed.
+ */
+export function PopupFocuser(props: {
+  targetId: string;
+  targetRef: React.RefObject<{ focus: () => void }>;
+}) {
+  const { targetId, targetRef } = props;
+  useToggleDisplayed(
+    React.useCallback(() => document.getElementById(targetId), [targetId]),
+    React.useCallback(
+      (displayed: boolean) => {
+        if (displayed) {
+          targetRef.current?.focus();
+        }
+      },
+      [targetRef]
+    )
+  );
+  return null;
+}
+
 export const IFrameAwareDropdownMenu = (props: {
   menu: React.ReactNode | MenuMaker;
   children?: ReactNode;
@@ -772,7 +799,7 @@ export const IFrameAwareDropdownMenu = (props: {
         });
       }}
       trigger={["click"]}
-      visible={menuVisible}
+      open={menuVisible}
       onVisibleChange={(visible) => setMenuVisible(visible)}
       overlayClassName={props.overlayClassName}
       overlayStyle={props.overlayStyle}

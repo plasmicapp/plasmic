@@ -43,10 +43,14 @@ import {
   Tabs,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import L from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import useSWR from "swr/immutable";
+
+dayjs.extend(utc);
 
 export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
   return (

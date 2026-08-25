@@ -169,7 +169,7 @@ function _Typography({
                     parsed?.units &&
                     ["em", "%", "rem"].includes(parsed.units)
                   ) {
-                    notification.warn({
+                    notification.warning({
                       message:
                         "Font size is set in relative units (em, %, rem). This may cause unexpected results when font size is inherited.",
                     });

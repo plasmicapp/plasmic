@@ -71,7 +71,6 @@
   "devDependencies": {
     "@plasmicapp/cli": "^0.1.373",
     "@rsbuild/core": "1.3.22",
-    "@rsbuild/plugin-less": "1.2.4",
     "@rsbuild/plugin-react": "1.3.1",
     "@rsbuild/plugin-sass": "1.3.1",
     "@rspack/core": "1.3.12",
@@ -160,9 +159,6 @@
     "wait-on": "9.0.1",
     "whatwg-fetch": "^3.6.20"
   },
-  "dependenciesComments": {
-    "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
-  },
   "dependencies": {
     "@ai-sdk/anthropic": "3.0.71",
     "@ai-sdk/google-vertex": "4.0.112",
@@ -230,7 +226,7 @@
     "acorn-walk": "^8.3.5",
     "ai": "6.0.168",
     "airtable": "0.12.2",
-    "antd": "4.24.14",
+    "antd": "^5.12.7",
     "async": "^3.2.6",
     "async-mutex": "0.4.0",
     "aws-sdk": "^2.1693.0",
@@ -254,7 +250,7 @@
     "css-initials": "^0.3.1",
     "css-tree": "^3.2.1",
     "css.escape": "^1.5.1",
-    "dayjs": "1.11.20",
+    "dayjs": "1.11.21",
     "debug": "2.6.9",
     "dom-align": "^1.12.4",
     "dotenv": "8.2.0",

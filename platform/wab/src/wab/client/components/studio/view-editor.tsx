@@ -1108,7 +1108,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     });
 
     if (closest == null) {
-      notification.warn({
+      notification.warning({
         message: "Unknown element",
         description: (
           <span>
@@ -1153,7 +1153,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   }
 
   private throttledWarn = throttle(
-    (args: ArgsProps) => notification.warn(args),
+    (args: ArgsProps) => notification.warning(args),
     5000,
     {
       trailing: false,

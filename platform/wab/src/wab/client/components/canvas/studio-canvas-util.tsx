@@ -206,7 +206,7 @@ export function showCanvasPageNavigationNotification(
                   studioCtx.switchToComponentArena(maybeFound.component);
                   return ok();
                 });
-                notification.close("navigation-notification");
+                notification.destroy("navigation-notification");
               }}
             >
               Switch to editing that page
@@ -219,7 +219,7 @@ export function showCanvasPageNavigationNotification(
               href={href}
               target={"_blank"}
               onClick={async () => {
-                notification.close("navigation-notification");
+                notification.destroy("navigation-notification");
               }}
             >
               Open {href} in a new tab
@@ -278,7 +278,7 @@ export function trapInteractionError(
         argName: loc.type === "InteractionArgLoc" ? loc.argName : undefined,
       });
       await delay(1000);
-      notification.close("interaction-error");
+      notification.destroy("interaction-error");
     }
     title = (
       <>

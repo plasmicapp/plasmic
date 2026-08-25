@@ -475,7 +475,7 @@ const DataSourceOpExprBottomModalContent = observer(
     const wrappedOnSave = React.useCallback(
       (newExpr: DataSourceOpExpr, opExprName?: string) => {
         if (hasUnsafeCurrentUserBinding(newExpr, exprCtx)) {
-          notification.warn({
+          notification.warning({
             message: INVALID_CURRENT_USER_OPERATION_MESSAGE(),
           });
           return;

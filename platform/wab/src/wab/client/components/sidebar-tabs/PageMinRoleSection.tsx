@@ -245,7 +245,7 @@ function PageMinRoleSection_({ page }: { page: Component }) {
             });
 
             if (upgradeOperations.length > 0) {
-              notification.warn({
+              notification.warning({
                 message:
                   "Data source operations have been upgraded to match the new page minimum role.",
               });

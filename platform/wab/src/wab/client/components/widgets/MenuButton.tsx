@@ -31,6 +31,7 @@ function MenuButton(props: MenuButtonProps) {
   const button = (
     <PlasmicMenuButton
       onClick={(e: React.MouseEvent) => {
+        e.preventDefault();
         e.stopPropagation();
         onContextMenu?.(e);
       }}

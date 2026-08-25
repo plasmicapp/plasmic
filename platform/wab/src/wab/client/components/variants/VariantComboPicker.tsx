@@ -88,7 +88,7 @@ function VariantComboPicker_({
       transitionName=""
       trigger={["click"]}
       placement={"topLeft"}
-      visible={showDropdown}
+      open={showDropdown}
       onVisibleChange={(v) => {
         onVisibleChange?.(v);
         setShowDropdown(v);

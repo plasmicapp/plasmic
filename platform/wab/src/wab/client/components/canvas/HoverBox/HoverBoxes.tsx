@@ -133,7 +133,7 @@ function getObjResizability(
 }
 
 const _throttledWarn = throttle(
-  (args: ArgsProps) => notification.warn(args),
+  (args: ArgsProps) => notification.warning(args),
   5000,
   {
     trailing: false,
@@ -738,7 +738,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                           <LinkButton
                                             onClick={() => {
                                               setSuppressSpacingToast(true);
-                                              notification.close("spacing");
+                                              notification.destroy("spacing");
                                             }}
                                           >
                                             never show again
@@ -872,7 +872,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                     return ok();
                                   });
                                   setTimeout(
-                                    () => notification.close("spacing"),
+                                    () => notification.destroy("spacing"),
                                     3000
                                   );
                                 }

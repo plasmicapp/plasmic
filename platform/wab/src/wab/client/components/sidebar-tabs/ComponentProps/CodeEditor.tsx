@@ -28,14 +28,14 @@ const hardStrSizeLimit = 5000 * 1024; // 5MB
 
 export function checkStrSizeLimit(val: string) {
   if (val.length > hardStrSizeLimit) {
-    notification.warn({
+    notification.warning({
       message: "Value is longer than 5MB",
       description: "Please provide a shorter value.",
     });
     return false;
   }
   if (val.length > softStrSizeLimit) {
-    notification.warn({
+    notification.warning({
       message: "Value is longer than 500KB",
       description:
         "This long content will be embedded into your page, which will increase load time.",
@@ -52,7 +52,7 @@ export function checkSyntaxError(val: string) {
     );
   } catch (err) {
     if (err instanceof SyntaxError) {
-      notification.warn({
+      notification.warning({
         message: "Syntax error",
         description: `The expression has a syntax error, it's required to fix it before saving. ${err.message}`,
       });
@@ -65,7 +65,7 @@ export function checkSyntaxError(val: string) {
 
 export function checkDisallowedUseOfLibs(val: string) {
   if (hasUnexpected$$Usage(val)) {
-    notification.warn({
+    notification.warning({
       message: (
         <>
           Unexpected usage of <code>$$</code>
@@ -89,7 +89,7 @@ export function checkDisallowedUseOfLibs(val: string) {
 
 export function checkWindowGlobalUsage(val: string) {
   if (codeUsesGlobalObjects(val)) {
-    notification.warn({
+    notification.warning({
       message: "Global object usage detected",
       description: (
         <>
@@ -180,7 +180,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
     }
     if (lang === "json" && requireObject) {
       if (val[0] !== "{") {
-        notification.warn({
+        notification.warning({
           message: "Invalid JSON object",
           description: "Only JSON objects (wrapped in {}) are supported.",
         });
@@ -194,7 +194,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
         setDraft(undefined);
         return true;
       } catch (err) {
-        notification.warn({
+        notification.warning({
           message: "Invalid JSON",
           description: `${err}`,
         });

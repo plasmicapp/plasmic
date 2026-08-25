@@ -1,7 +1,7 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
+import { tourSeenForProjectKey } from "@/wab/client/LocalStorageKey";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
-import { tourSeenForProjectKey } from "@/wab/client/LocalStorageKey";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import IconButton from "@/wab/client/components/widgets/IconButton";
@@ -229,7 +229,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
           flags: {},
         });
 
-        notification.warn({
+        notification.warning({
           message:
             "Since you navigated away from the tour, it was paused. By navigating back to the previous state, you can resume the tour.",
         });
@@ -291,9 +291,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
     });
   };
 
-  const advanceToNextStep = async (
-    flags: Partial<TutorialStateFlags> = {}
-  ) => {
+  const advanceToNextStep = async (flags: Partial<TutorialStateFlags> = {}) => {
     studioCtx.setOnboardingTourState({
       ...studioCtx.onboardingTourState,
       run: false, // sneakily disable the tour so that the tutorial is hidden while waiting

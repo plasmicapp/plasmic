@@ -17,7 +17,7 @@ import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import { TplNode } from "@/wab/shared/model/classes";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
-import { IconType } from "antd/lib/notification";
+import { IconType } from "antd/lib/notification/interface";
 import React from "react";
 
 const errorMessageCounters = new Map<string, number>();
@@ -222,7 +222,7 @@ export function notifyReferencingNode(
               spawn(
                 studioCtx.setStudioFocusOnTpl(owningComponent, referencingNode)
               );
-              notification.close(key);
+              notification.destroy(key);
             }}
           >
             [Go to reference]

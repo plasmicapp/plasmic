@@ -435,7 +435,7 @@ export function makeTplMenu(
               viewCtx.change(() => {
                 const valNode = tryGetValNode();
                 if (!valNode) {
-                  notification.warn({
+                  notification.warning({
                     message:
                       "Cannot edit component in place when the component instance is invisible",
                   });

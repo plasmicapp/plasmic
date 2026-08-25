@@ -1,4 +1,8 @@
 import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
+import {
+  AntdConfigProvider,
+  configureAntdStatics,
+} from "@/wab/client/antd-theme";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import { Root } from "@/wab/client/components/root-view";
@@ -85,6 +89,8 @@ export function main() {
 
   applyDevFlagOverrides(initClientFlags(DEVFLAGS));
 
+  configureAntdStatics();
+
   initObservability();
 
   (window as any).commithash = ENV.COMMITHASH;
@@ -168,9 +174,11 @@ export function Shell() {
 
   return (
     <HistoryProvider history={history}>
-      <OverlayProvider style={{ width: "100%", height: "100%" }}>
-        <Root />
-      </OverlayProvider>
+      <AntdConfigProvider>
+        <OverlayProvider style={{ width: "100%", height: "100%" }}>
+          <Root />
+        </OverlayProvider>
+      </AntdConfigProvider>
     </HistoryProvider>
   );
 }

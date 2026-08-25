@@ -112,7 +112,7 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
     return await showModalToRefreshCodeComponentProps(userStaleDiffs, _opts);
   },
   onNewDefaultComponents: (message) => {
-    notification.warn({
+    notification.warning({
       message,
       duration: 5,
     });
@@ -148,7 +148,7 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
     });
   },
   onInvalidJsonForDefaultValue: (message) => {
-    notification.warn({
+    notification.warning({
       message,
     });
   },

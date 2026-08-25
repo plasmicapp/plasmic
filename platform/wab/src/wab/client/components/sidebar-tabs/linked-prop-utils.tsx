@@ -171,7 +171,7 @@ export function notifyLinkedPropDrift(
         <a
           onClick={() => {
             studioCtx.switchLeftTab("lint", { highlight: true });
-            notification.close(key);
+            notification.destroy(key);
           }}
         >
           [Review in Issues tab]

@@ -250,7 +250,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
                 onClick={async () => {
                   await studioCtx.change(() => {
                     studioCtx.switchLeftTab("lint", { highlight: true });
-                    notification.close(key);
+                    notification.destroy(key);
                     return ok();
                   });
                 }}

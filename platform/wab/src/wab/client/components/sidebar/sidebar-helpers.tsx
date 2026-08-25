@@ -697,7 +697,7 @@ export const LabeledStyleComboBoxItem = observer(
             }
             suffixIcon={<Icon icon={TriangleBottomIcon} />}
             options={selectOpts.options}
-            dropdownClassName=""
+            popupClassName=""
             data-test-id={props["data-test-id"]}
             {...(fieldProps ?? {})}
             disabled={isDisabled}

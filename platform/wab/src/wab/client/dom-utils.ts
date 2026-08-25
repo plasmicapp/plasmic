@@ -331,7 +331,7 @@ export async function maybeUploadImage(
       imageFile: blob,
     });
     if (uploadedImage.warning) {
-      notification.warn({ message: uploadedImage.warning, duration: 0 });
+      notification.warning({ message: uploadedImage.warning, duration: 0 });
     }
     imageResult = new ResizableImage(
       uploadedImage.dataUri,

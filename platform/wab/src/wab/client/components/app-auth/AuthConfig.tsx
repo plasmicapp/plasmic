@@ -107,7 +107,7 @@ function AuthConfig_(props: AuthConfigProps, ref: HTMLElementRefOf<"div">) {
                     await mutateHostAppAuthData();
                     await hostFrameApi.refreshSiteInfo();
 
-                    notification.warn({
+                    notification.warning({
                       message: `App auth has been disabled. You can re-enable it at any time.`,
                     });
 

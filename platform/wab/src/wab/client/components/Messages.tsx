@@ -40,7 +40,7 @@ export function showReloadNotice() {
         {RELOAD_EXPLANATION}{" "}
         <a
           onClick={() => {
-            notification.close(key);
+            notification.destroy(key);
             reload();
           }}
         >
@@ -63,7 +63,7 @@ export function showReloadError() {
         Changes could not be saved. {RELOAD_EXPLANATION}{" "}
         <a
           onClick={() => {
-            notification.close(key);
+            notification.destroy(key);
             reload();
           }}
         >

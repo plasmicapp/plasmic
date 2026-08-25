@@ -5,6 +5,7 @@ import {
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   IconLinkButton,
+  PopupFocuser,
   useOnIFrameMouseDown,
 } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -361,35 +362,36 @@ export function AddQueryParamButton({
   return (
     <Popover
       trigger={["click"]}
-      onVisibleChange={(visible) => {
+      onOpenChange={(visible) => {
         setShowing(visible);
         setValue("");
-        if (visible) {
-          inputRef.current?.focus();
-        }
       }}
       overlayClassName="ant-popover--tight"
-      visible={showing}
+      open={showing}
       placement={"left"}
       destroyTooltipOnHide
       content={
-        <Input
-          ref={inputRef}
-          value={value}
-          placeholder="Enter key for new URL query param"
-          bordered={false}
-          autoFocus
-          style={{ width: 200 }}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={() => setShowing(false)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              onAdd(value);
-              setShowing(false);
-            }
-          }}
-        />
+        <>
+          <PopupFocuser targetId="url-query-param-input" targetRef={inputRef} />
+          <Input
+            id="url-query-param-input"
+            ref={inputRef}
+            value={value}
+            placeholder="Enter key for new URL query param"
+            bordered={false}
+            autoFocus
+            style={{ width: 200 }}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={() => setShowing(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onAdd(value);
+                setShowing(false);
+              }
+            }}
+          />
+        </>
       }
     >
       {children}

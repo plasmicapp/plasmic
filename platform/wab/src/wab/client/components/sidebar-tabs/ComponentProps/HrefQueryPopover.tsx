@@ -1,4 +1,7 @@
-import { useOnIFrameMouseDown } from "@/wab/client/components/widgets";
+import {
+  PopupFocuser,
+  useOnIFrameMouseDown,
+} from "@/wab/client/components/widgets";
 import { PageHref } from "@/wab/shared/model/classes";
 import { Popover, RefSelectProps, Select } from "antd";
 import React from "react";
@@ -31,17 +34,16 @@ export function HrefQueryPopover({
       onOpenChange={(open) => {
         setShowing(open);
         setSearchValue("");
-        if (open) {
-          selectRef.current?.focus();
-        }
       }}
       overlayClassName="ant-popover--tight"
-      visible={showing}
+      open={showing}
       placement={"left"}
       destroyTooltipOnHide
       content={
         <FocusScope autoFocus contain restoreFocus>
+          <PopupFocuser targetId="href-query-select" targetRef={selectRef} />
           <Select
+            id="href-query-select"
             showSearch={true}
             searchValue={searchValue}
             onSearch={(val) => setSearchValue(val)}

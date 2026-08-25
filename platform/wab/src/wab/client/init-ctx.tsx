@@ -139,7 +139,7 @@ export async function checkDepPkgHosts(
         pkgVersion.pkg.hostUrl
       )
     ) {
-      notification.warn({
+      notification.warning({
         message: "This project imports from a project hosted by another app",
         description: (
           <p>

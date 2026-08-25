@@ -1,0 +1,136 @@
+.ant-popover-inner-content {
+  width: auto;
+}
+
+// v5 emits menu rules as `.ant-dropdown .ant-dropdown-menu <part>` (and the same
+// under -submenu for popups), so these have to match that depth to win.
+.ant-dropdown .ant-dropdown-menu,
+.ant-dropdown-menu-submenu .ant-dropdown-menu {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 2px 2px 10px rgba(0, 0, 0, 0.15);
+
+  .ant-dropdown-menu-item-group-list {
+    margin: 0;
+
+    & [role="menuitem"]:not(.ant-dropdown-menu-submenu),
+    & .ant-dropdown-menu-submenu .ant-dropdown-menu-submenu-title {
+      padding-left: 24px;
+    }
+  }
+
+  .ant-dropdown-menu-item {
+    padding-left: 12px;
+  }
+
+  .ant-dropdown-menu-item,
+  .ant-dropdown-menu-submenu-title {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    line-height: 22px;
+    transition: all 0ms;
+  }
+
+  .ant-dropdown-menu-submenu-title {
+    padding-right: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .ant-dropdown-menu-item:hover,
+  .ant-dropdown-menu-submenu-title:hover {
+    background: #f0f2f5;
+  }
+
+  .ant-dropdown-menu-submenu-arrow {
+    margin-left: 20px;
+
+    svg {
+      width: 9px;
+      height: 9px;
+    }
+  }
+}
+
+.ant-input:focus {
+  box-shadow: none;
+}
+
+.ant-input-number-focused {
+  box-shadow: none;
+}
+
+.ant-btn-primary:disabled {
+  background-color: #04a4f4;
+  border-color: #04a4f4;
+  opacity: 0.5;
+  color: #fff;
+  &:hover {
+    background-color: #04a4f4;
+    border-color: #04a4f4;
+    color: #fff;
+  }
+}
+
+.tag-select .ant-select.textboxlike .ant-select-selector,
+.labeled-item .ant-select.textboxlike .ant-select-selector,
+[data-plasmic-role="labeled-item"] .ant-select.textboxlike .ant-select-selector,
+.labeled-item .ant-input-number,
+[data-plasmic-role="labeled-item"] .ant-input-number,
+.labeled-item .ant-input,
+[data-plasmic-role="labeled-item"] .ant-input {
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+  padding: 6px 6px 6px 8px !important;
+  background-color: #f3f3f2;
+  border-radius: 6px;
+  min-height: 32px;
+  height: 32px;
+  &:hover {
+    background-color: #eeeeec;
+  }
+}
+
+.tag-select .ant-select.textboxlike,
+.labeled-item .ant-select.textboxlike,
+[data-plasmic-role="labeled-item"] .ant-select.textboxlike {
+  border-radius: 6px;
+
+  &:focus-within {
+    box-shadow: 0px 0px 0px 1px #0091ff80 !important;
+  }
+}
+
+:where(.labeled-item .ant-input-number-input)::placeholder,
+:where([data-plasmic-role="labeled-item"] .ant-input-number-input)::placeholder,
+:where(.labeled-item .ant-input)::placeholder,
+:where([data-plasmic-role="labeled-item"] .ant-input)::placeholder {
+  color: #90908c;
+  opacity: 1;
+}
+
+.tag-select .ant-select.textboxlike .ant-select-selector,
+.labeled-item .ant-select.textboxlike .ant-select-selector,
+[data-plasmic-role="labeled-item"]
+  .ant-select.textboxlike
+  .ant-select-selector {
+  min-height: 32px;
+  height: 32px;
+}
+
+.labeled-item input,
+[data-plasmic-role="labeled-item"] input,
+.labeled-item textarea,
+[data-plasmic-role="labeled-item"] textarea {
+  font-family: Inter, Helvetica, Arial, sans-serif !important;
+  padding-right: 0 !important;
+}
+
+.labeled-item .ant-input-number-sm input,
+[data-plasmic-role="labeled-item"] .ant-input-number-sm input {
+  height: 18px;
+  padding: 0px;
+}
+
+.ant-checkbox {
+  top: 4px;
+}

@@ -7,6 +7,7 @@ import {
   formatChartData,
   getChartHeaders,
 } from "@/wab/client/components/analytics/utils";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import {
   DefaultDataFiltersProps,
   PlasmicDataFilters,
@@ -14,12 +15,11 @@ import {
 import PlasmicLabeledSelect from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicLabeledSelect";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { DatePicker } from "antd";
-import moment, { Moment } from "moment";
+import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
 import { CSVLink } from "react-csv";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
-type TimeRange = [Moment | null, Moment | null];
+type TimeRange = [Dayjs | null, Dayjs | null];
 export interface DataFiltersProps extends DefaultDataFiltersProps {
   projectId?: string;
   timeRange: TimeRange;
@@ -68,26 +68,27 @@ function DataFilters_(props: DataFiltersProps, ref: HTMLElementRefOf<"div">) {
                   render: () => {
                     return (
                       <DatePicker.RangePicker
-                        value={timeRange as any}
-                        ranges={
+                        value={timeRange}
+                        presets={[
                           {
-                            "Last week": () => [
-                              moment().subtract(1, "week"),
-                              moment(),
+                            label: "Last week",
+                            value: () => [dayjs().subtract(1, "week"), dayjs()],
+                          },
+                          {
+                            label: "Last month",
+                            value: () => [
+                              dayjs().subtract(1, "month"),
+                              dayjs(),
                             ],
-                            "Last month": () => [
-                              moment().subtract(1, "month"),
-                              moment(),
-                            ],
-                          } as any
-                        }
+                          },
+                        ]}
                         onChange={(values) => {
                           if (values) {
                             setTimeRange(values);
                           }
                         }}
                         disabledDate={(date) => {
-                          return moment(date).isAfter(moment().endOf("day"));
+                          return dayjs(date).isAfter(dayjs().endOf("day"));
                         }}
                       ></DatePicker.RangePicker>
                     );

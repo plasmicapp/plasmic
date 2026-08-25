@@ -30,6 +30,7 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import {
   IconLinkButton,
+  PopupFocuser,
   useOnIFrameMouseDown,
 } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -266,50 +267,55 @@ const AddHandlerFunctionButton = observer(
         onOpenChange={(visible) => {
           setShowing(visible);
           setSearchValue(undefined);
-          if (visible) {
-            selectRef.current?.focus();
-          }
         }}
         overlayClassName="ant-popover--tight"
         open={showing}
         placement={"left"}
         destroyTooltipOnHide
         content={
-          <Select
-            id="interactions-select"
-            showSearch={true}
-            searchValue={searchValue}
-            onSearch={(val) => setSearchValue(val)}
-            onSelect={(val) => {
-              const eventHandlerKey = ensure(
-                options.find((opt) => val === getIdNameOfEventHandlerKey(opt)),
-                "selected value should have an option with the same name"
-              );
-              onSelect(eventHandlerKey);
-              setShowing(false);
-            }}
-            onBlur={() => setShowing(false)}
-            style={{
-              width: 200,
-            }}
-            autoFocus
-            bordered={false}
-            ref={selectRef}
-            placeholder="Search or enter any attribute"
-            open
-          >
-            {options.map((opt) => (
-              <Select.Option
-                id={`interactions-select-opt-${getIdNameOfEventHandlerKey(
-                  opt
-                )}`}
-                key={getIdNameOfEventHandlerKey(opt)}
-                value={getIdNameOfEventHandlerKey(opt)}
-              >
-                {getDisplayNameOfEventHandlerKey(opt, { tpl })}
-              </Select.Option>
-            ))}
-          </Select>
+          <>
+            <PopupFocuser
+              targetId="interactions-select"
+              targetRef={selectRef}
+            />
+            <Select
+              id="interactions-select"
+              showSearch={true}
+              searchValue={searchValue}
+              onSearch={(val) => setSearchValue(val)}
+              onSelect={(val) => {
+                const eventHandlerKey = ensure(
+                  options.find(
+                    (opt) => val === getIdNameOfEventHandlerKey(opt)
+                  ),
+                  "selected value should have an option with the same name"
+                );
+                onSelect(eventHandlerKey);
+                setShowing(false);
+              }}
+              onBlur={() => setShowing(false)}
+              style={{
+                width: 200,
+              }}
+              autoFocus
+              bordered={false}
+              ref={selectRef}
+              placeholder="Search or enter any attribute"
+              open
+            >
+              {options.map((opt) => (
+                <Select.Option
+                  id={`interactions-select-opt-${getIdNameOfEventHandlerKey(
+                    opt
+                  )}`}
+                  key={getIdNameOfEventHandlerKey(opt)}
+                  value={getIdNameOfEventHandlerKey(opt)}
+                >
+                  {getDisplayNameOfEventHandlerKey(opt, { tpl })}
+                </Select.Option>
+              ))}
+            </Select>
+          </>
         }
       >
         <IconLinkButton data-test-id="add-interaction">

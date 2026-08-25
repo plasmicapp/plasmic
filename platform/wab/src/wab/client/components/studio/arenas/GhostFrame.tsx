@@ -137,7 +137,7 @@ export const GhostFrame = React.forwardRef(function GhostFrame_(
   if (menu) {
     content = (
       <Dropdown
-        visible={showMenu}
+        open={showMenu}
         overlayClassName={menuOverlayClassName}
         onVisibleChange={(show) => setShowMenu(show)}
         transitionName=""

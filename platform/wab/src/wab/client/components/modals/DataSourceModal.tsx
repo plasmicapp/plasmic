@@ -270,7 +270,7 @@ export function DataSourceModal({
                   }),
                 },
               });
-              notification.warn({
+              notification.warning({
                 message: "Connection failed",
                 description:
                   "SSL is not enabled for this connection. Add ssl:true and sslmode:require to connection options and try again.",
@@ -590,7 +590,7 @@ function CredentialsAndSettingsSection(props: {
     } catch {}
 
     if (val[0] !== "{") {
-      notification.warn({
+      notification.warning({
         message: "Invalid JSON object",
         description: "Only JSON objects (wrapped in {}) are supported.",
       });
@@ -603,7 +603,7 @@ function CredentialsAndSettingsSection(props: {
         credentials: { credentials: jsonObj },
       });
     } catch (err) {
-      notification.warn({
+      notification.warning({
         message: "Invalid JSON",
         description: `${err}`,
       });

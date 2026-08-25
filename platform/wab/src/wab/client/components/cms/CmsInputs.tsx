@@ -51,8 +51,8 @@ import {
 } from "antd";
 import { FormItemProps } from "antd/lib/form";
 import TextArea from "antd/lib/input/TextArea";
+import dayjs, { Dayjs } from "dayjs";
 import { upperFirst } from "lodash";
-import moment from "moment";
 import * as React from "react";
 import { ReactElement, ReactNode, createContext, useContext } from "react";
 import { useHover } from "react-aria";
@@ -97,10 +97,10 @@ export function StringDateTimePicker(props: any) {
       showTime
       format="YYYY-MM-DDTHH:mm:ss"
       {...props}
-      value={props.value ? moment(new Date(props.value)) : undefined}
+      value={props.value ? dayjs(new Date(props.value)) : undefined}
       onChange={
         props.onChange
-          ? (date: moment.Moment | null) => {
+          ? (date: Dayjs | null) => {
               const curDate = date?.toDate();
               curDate?.setMilliseconds(0);
               return props.onChange(curDate?.toISOString());

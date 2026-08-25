@@ -12,14 +12,15 @@ import {
   DefaultTeamAnalyticsProps,
   PlasmicTeamAnalytics,
 } from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicTeamAnalytics";
-import { useHistory } from "@/wab/client/route/HistoryProvider";
+import {
+  useHistory,
+  useLocation,
+} from "@/wab/client/route/HistoryProvider";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import moment from "moment";
+import dayjs from "dayjs";
 import * as React from "react";
-
-import { useLocation } from "@/wab/client/route/HistoryProvider";
 
 export interface TeamAnalyticsProps extends DefaultTeamAnalyticsProps {
   teamId: TeamId;
@@ -95,10 +96,10 @@ function TeamAnalytics_(
   const extractTimeRange = (): TimeRange => {
     const fromStr = searchParams.get(TeamAnalyticsFilterParams.TimeRangeFrom);
     const from = fromStr
-      ? moment(fromStr)
-      : moment().subtract(1, "month").startOf("month");
+      ? dayjs(fromStr)
+      : dayjs().subtract(1, "month").startOf("month");
     const toStr = searchParams.get(TeamAnalyticsFilterParams.TimeRangeTo);
-    const to = toStr ? moment(toStr) : moment().endOf("day");
+    const to = toStr ? dayjs(toStr) : dayjs().endOf("day");
     return [from, to];
   };
 

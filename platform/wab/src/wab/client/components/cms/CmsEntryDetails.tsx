@@ -368,7 +368,7 @@ function CmsEntryDetailsForm_(
                 })
               );
               await mutateRow();
-              notification.close("cms-row-conflict");
+              notification.destroy("cms-row-conflict");
               await resetFormByRow();
               message.destroy("update-message");
               setInConflict(false);
@@ -523,7 +523,7 @@ function CmsEntryDetailsForm_(
                     })
                   )
                 }
-                visible={true}
+                open={true}
                 width={"80%"}
               >
                 <CmsEntryHistory

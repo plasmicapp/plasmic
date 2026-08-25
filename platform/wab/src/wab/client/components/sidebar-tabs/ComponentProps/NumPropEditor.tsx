@@ -49,17 +49,17 @@ export function InputNumPropEditor(props: InputNumPropEditorProps) {
 
     const numeric = typeof val === "string" ? +val : val;
     if (isNaN(numeric)) {
-      notification.warn({
+      notification.warning({
         message: "Invalid value",
         description: `Expected a number, but got "${val}"`,
       });
     } else if (!isNil(props.min) && numeric < props.min) {
-      notification.warn({
+      notification.warning({
         message: "Value is out of range",
         description: `Minimum value is ${props.min}, but got "${val}"`,
       });
     } else if (!isNil(props.max) && numeric > props.max) {
-      notification.warn({
+      notification.warning({
         message: "Value is out of range",
         description: `Maximum value is ${props.max}, but got "${val}"`,
       });

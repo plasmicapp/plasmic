@@ -73,7 +73,7 @@ class ThrottledNotification {
   private doNotify: () => void;
   constructor(argsProps: NotificationArgs, waitMs: number) {
     const warnMissingFont = () => {
-      notification.warn(argsProps);
+      notification.warning(argsProps);
     };
     this.doNotify = L.throttle(warnMissingFont, waitMs);
   }

@@ -1,13 +1,13 @@
 // TODO note that cursorPosition logic is broken / not correctly being
 //  tracked, since the use case hasn't come up.
 
-import { Cancelable, ensure, makeCancelable, spawn } from "@/wab/shared/common";
-import sty from "@/wab/commons/components/inputs/BetterAutoComplete.module.css";
 import {
-  callEventHandlers,
   KeyModifiers,
+  callEventHandlers,
 } from "@/wab/commons/components/ReactUtil";
-import { Dropdown, Menu } from "antd";
+import sty from "@/wab/commons/components/inputs/BetterAutoComplete.module.css";
+import { Cancelable, ensure, makeCancelable, spawn } from "@/wab/shared/common";
+import { Dropdown, Menu, MenuRef } from "antd";
 import Downshift, {
   ControllerStateAndHelpers,
   DownshiftProps,
@@ -18,7 +18,6 @@ import $ from "jquery";
 import L, * as _ from "lodash";
 import * as React from "react";
 import { Component, createRef } from "react";
-import ReactDOM from "react-dom";
 
 export interface AutoCompleteSource<T> {
   query: (
@@ -133,18 +132,18 @@ function OverlayMenu(props: {
   scrollClipperAncestors?: string[];
   children: React.ReactNode;
 }) {
-  const menuContainer = React.useRef<Menu | null>(null);
+  const menuContainer = React.useRef<MenuRef | null>(null);
   React.useEffect(() => {
     if (
       menuContainer.current &&
       props.scrollClipperAncestors &&
       props.scrollClipperAncestors.length > 0
     ) {
-      const menuDom = ReactDOM.findDOMNode(menuContainer.current);
+      const menuDom = menuContainer.current.menu?.list;
       if (!menuDom) {
         return;
       }
-      const menu = menuDom as HTMLDivElement;
+      const menu = menuDom as unknown as HTMLDivElement;
       if (menu.style.height !== "") {
         return;
       }

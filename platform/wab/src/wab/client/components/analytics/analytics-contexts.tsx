@@ -1,8 +1,8 @@
 import { getFormattedRange } from "@/wab/client/components/analytics/utils";
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import { omitNils } from "@/wab/shared/common";
 import { ApiAnalyticsQueryType, TeamId } from "@/wab/shared/ApiSchema";
-import { Moment } from "moment";
+import { omitNils } from "@/wab/shared/common";
+import { Dayjs } from "dayjs";
 import useSWR from "swr";
 
 const REFRESH_INTERVAL = 30000;
@@ -35,8 +35,8 @@ export function useAnalyticsData(opts: {
   teamId: string;
   projectId?: string;
   componentId?: string;
-  from?: Moment;
-  to?: Moment;
+  from?: Dayjs;
+  to?: Dayjs;
   splitId?: string;
   period?: string;
   type: ApiAnalyticsQueryType;

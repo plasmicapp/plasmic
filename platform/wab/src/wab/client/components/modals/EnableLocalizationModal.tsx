@@ -140,7 +140,7 @@ async function canEnableLocalization(appCtx: AppCtx, project: ApiProject) {
     return false;
   } else if (promptResult.type === "fail") {
     // Show errors
-    notification.warn({
+    notification.warning({
       message: `Issue with payment, please try again.`,
       description: promptResult.errorMsg,
     });

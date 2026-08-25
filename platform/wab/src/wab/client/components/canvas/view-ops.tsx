@@ -1262,7 +1262,7 @@ export class ViewOps {
 
     const blockedText = this.textEditingIsBlocked(textValNode);
     if (blockedText !== undefined) {
-      notification.warn({ message: blockedText });
+      notification.warning({ message: blockedText });
       return;
     }
     if (Tpls.isExprText(textValNode.text)) {
@@ -1271,7 +1271,7 @@ export class ViewOps {
     }
     const editHandle = handle.enterEdit();
     if (editHandle !== undefined) {
-      notification.warn({ message: blockedText });
+      notification.warning({ message: blockedText });
       return;
     }
     const variantTplMgr = this.viewCtx().variantTplMgr();
@@ -1704,7 +1704,7 @@ export class ViewOps {
     if (targets.some((t) => t instanceof SlotSelection)) {
       // Only support clearing one SlotSelection at a time
       if (targets.length > 1) {
-        notification.warn({
+        notification.warning({
           message:
             "Removing multi-selections with slots is not supported at the moment.",
         });
@@ -1773,7 +1773,7 @@ export class ViewOps {
                       tpl: tpls,
                       forceDelete: true,
                     });
-                    notification.close(key);
+                    notification.destroy(key);
                   }}
                 >
                   Delete instead
@@ -2064,7 +2064,7 @@ export class ViewOps {
     const focusedObjs = this.viewCtx().focusedTplsOrSlotSelections();
     if (focusedObjs.length > 1) {
       if (focusedObjs.some((node) => node instanceof SlotSelection)) {
-        notification.warn({
+        notification.warning({
           message:
             "Copying multi-selections with slots is not supported at the moment.",
         });
@@ -2227,7 +2227,7 @@ export class ViewOps {
 
     console.log("Copied styles", clip?.cssProps);
     if (!clip) {
-      notification.warn({
+      notification.warning({
         message: "Cannot copy styles from this element",
       });
       return;
@@ -2275,7 +2275,7 @@ export class ViewOps {
     } else if (tplClip) {
       styleClip = this.copyStyleHelper(tplClip.node);
       if (!styleClip) {
-        notification.warn({
+        notification.warning({
           message: "Cannot extract styles from this element",
         });
         return;
@@ -2299,7 +2299,7 @@ export class ViewOps {
       !Tpls.isTplTag(targetTpl) &&
       !(Tpls.isTplComponent(targetTpl) && isCodeComponent(targetTpl.component))
     ) {
-      notification.warn({
+      notification.warning({
         message: "Cannot paste styles - must select an element",
       });
       return false;
@@ -2383,7 +2383,7 @@ export class ViewOps {
     }
 
     if (appliedCount === 0) {
-      notification.warn({
+      notification.warning({
         message: "No styles were pasted",
         description:
           "The copied styles are empty, or none of them can be applied to this element.",
@@ -3316,7 +3316,7 @@ export class ViewOps {
         );
       }
       for (const warning of warnings) {
-        notification.warn({
+        notification.warning({
           message: "Fallback omitted",
           description: warning,
           duration: 0,
@@ -3347,7 +3347,7 @@ export class ViewOps {
                     }
                   }
                 });
-                notification.close(key);
+                notification.destroy(key);
               }}
             >
               {isMixedArena(arena)
@@ -4607,7 +4607,7 @@ export class ViewOps {
             <a
               onClick={() => {
                 this.viewCtx().setStudioFocusByTpl(tplWithExpr);
-                notification.close(key);
+                notification.destroy(key);
               }}
             >
               [Go to reference]

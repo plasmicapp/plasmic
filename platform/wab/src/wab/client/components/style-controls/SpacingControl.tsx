@@ -376,7 +376,7 @@ class SpacingControl_ extends StyleComponent<
                         !isDraggableSize(maybeTokenValue);
                       return (
                         <Tooltip
-                          visible={false}
+                          open={false}
                           title={getLabelForStyleName(
                             `${spacingStyleProp}-${side}`
                           )}

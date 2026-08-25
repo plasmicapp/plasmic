@@ -469,7 +469,7 @@ export class SiteOps {
             <a
               onClick={() => {
                 viewCtx.setStudioFocusByTpl(maybeNode);
-                notification.close(key);
+                notification.destroy(key);
               }}
             >
               [Go to reference]
@@ -1149,7 +1149,7 @@ export class SiteOps {
               <a
                 onClick={() => {
                   viewCtx.setStudioFocusByTpl(maybeNode);
-                  notification.close(key);
+                  notification.destroy(key);
                 }}
               >
                 [Go to reference]
@@ -1216,7 +1216,7 @@ export class SiteOps {
               <a
                 onClick={() => {
                   viewCtx.setStudioFocusByTpl(maybeNode);
-                  notification.close(key);
+                  notification.destroy(key);
                 }}
               >
                 [Go to reference]
@@ -1492,7 +1492,7 @@ export class SiteOps {
                       }
                     });
                   }
-                  notification.close(key);
+                  notification.destroy(key);
                 }}
               >
                 [Go to reference]

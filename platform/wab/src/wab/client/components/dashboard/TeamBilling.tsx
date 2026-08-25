@@ -113,7 +113,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       return;
     } else if (promptResult.type === "fail") {
       // Show errors
-      notification.warn({
+      notification.warning({
         message: `Issue with payment, please try again.`,
         description: promptResult.errorMsg,
       });
@@ -142,7 +142,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       return;
     } else if (promptResult.type === "fail") {
       // Show errors
-      notification.warn({
+      notification.warning({
         message: `Issue with updating payment method, please try again.`,
         description: promptResult.errorMsg,
       });

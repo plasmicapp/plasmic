@@ -5,7 +5,8 @@ import {
   PlasmicIndicator,
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIndicator";
 import { Popover, Tooltip } from "antd";
-import { RenderFunction, TooltipPlacement } from "antd/lib/tooltip";
+import { RenderFunction } from "antd/lib/_util/getRenderPropValue";
+import { TooltipPlacement } from "antd/lib/tooltip";
 import * as React from "react";
 
 interface IndicatorProps extends Omit<DefaultIndicatorProps, "color"> {

@@ -220,7 +220,7 @@ export function TopFrameChrome({
             type: "info",
           })
         );
-        return () => notification.close(key);
+        return () => notification.destroy(key);
       }
     }
     return () => {};

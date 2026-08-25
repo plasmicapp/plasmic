@@ -3,6 +3,7 @@ import {
   ClickStopper,
   IFrameAwareDropdownMenu,
 } from "@/wab/client/components/widgets";
+import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
 import PlasmicZoomButton from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicZoomButton";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -14,9 +15,14 @@ import * as React from "react";
 const ZoomSpinner = observer(ZoomSpinner_);
 function ZoomSpinner_() {
   const studioCtx = useStudioCtx();
+  const ref = React.useRef<HTMLInputElement>(null);
+  // antd 5 mounts the dropdown content while it is still display:none, so
+  // autoFocus alone never fires here.
+  useFocusOnDisplayed(ref, { autoFocus: true, selectAll: true });
   return (
     <ClickStopper>
       <InputNumber
+        ref={ref}
         value={+(studioCtx.zoom * 100).toFixed(0)}
         className="form-control textboxlike"
         formatter={(v) => `${v}%`}

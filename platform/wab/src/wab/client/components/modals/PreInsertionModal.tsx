@@ -1,19 +1,20 @@
+import { AntdConfigProvider } from "@/wab/client/antd-theme";
 import { InnerPropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import {
   StudioCtx,
   providesStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { hackyCast } from "@/wab/shared/common";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
 import {
   StudioPropType,
   isPlainObjectPropType,
   maybePropTypeToDisplayName,
 } from "@/wab/shared/code-components/code-components";
+import { hackyCast } from "@/wab/shared/common";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { Component, Expr } from "@/wab/shared/model/classes";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export async function getPreInsertionProps(
   studioCtx: StudioCtx,
@@ -30,11 +31,13 @@ export async function getPreInsertionProps(
     const modalElement = document.createElement("div");
     const root = createRoot(modalElement);
     root.render(
-      <PreInsertionModal
-        onClose={handleModalClose}
-        studioCtx={studioCtx}
-        component={component}
-      />
+      <AntdConfigProvider>
+        <PreInsertionModal
+          onClose={handleModalClose}
+          studioCtx={studioCtx}
+          component={component}
+        />
+      </AntdConfigProvider>
     );
   });
 }

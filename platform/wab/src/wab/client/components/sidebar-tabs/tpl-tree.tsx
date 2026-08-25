@@ -1425,7 +1425,7 @@ export class TreeDndManager {
     }
 
     if (this.draggedItems.some((item) => item.node.parent == null)) {
-      notification.warn({ message: "The root node is not movable" });
+      notification.warning({ message: "The root node is not movable" });
       return;
     }
 

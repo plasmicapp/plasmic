@@ -102,7 +102,7 @@ function _UserManagedFontsPanel(props: {}) {
       return;
     }
     if (sc.site.userManagedFonts.find((f) => f === newFont)) {
-      notification.warn({
+      notification.warning({
         message: `${newFont} is already in the fonts list`,
       });
 

@@ -1,5 +1,4 @@
 import { defineConfig } from "@rsbuild/core";
-import { pluginLess } from "@rsbuild/plugin-less";
 import { pluginReact } from "@rsbuild/plugin-react";
 import { pluginSass } from "@rsbuild/plugin-sass";
 import {
@@ -181,7 +180,7 @@ export default defineConfig({
       css: true,
     },
   },
-  plugins: [pluginReact(), pluginLess(), pluginSass()],
+  plugins: [pluginReact(), pluginSass()],
   tools: {
     // We use html-webpack-plugin directly instead of relying in @rsbuild/core
     // html plugin so it works with StudioHtmlPlugin.

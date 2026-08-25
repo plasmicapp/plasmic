@@ -17,7 +17,7 @@ export function DropdownTooltip(props: DropdownTooltipProps) {
   return (
     <Dropdown
       {...rest}
-      visible={isDropdownOpen}
+      open={isDropdownOpen}
       onVisibleChange={(visible) => {
         setDropdownOpen(visible);
         if (!visible) {
@@ -40,7 +40,7 @@ export function DropdownTooltip(props: DropdownTooltipProps) {
     >
       <Tooltip
         title={title}
-        visible={isTooltipShown && !isDropdownOpen}
+        open={isTooltipShown && !isDropdownOpen}
         onVisibleChange={(visible) => setTooltipShown(visible)}
       >
         {children}

@@ -1,5 +1,6 @@
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
@@ -54,6 +55,16 @@ interface _XMultiSelectState<Item> {
   draggedFromIndex?: number;
   draggedToIndex?: number;
 }
+// antd 5 mounts overlay content while it is still display:none, so the input's
+// autoFocus never fires when this is rendered inside a Popover or Dropdown.
+function AutoFocuser(props: {
+  inputBox: React.RefObject<HTMLInputElement>;
+  autoFocus?: boolean;
+}) {
+  useFocusOnDisplayed(props.inputBox, { autoFocus: props.autoFocus });
+  return null;
+}
+
 class _XMultiSelect<Item> extends React.Component<
   _XMultiSelectProps<Item>,
   _XMultiSelectState<Item>
@@ -155,8 +166,9 @@ class _XMultiSelect<Item> extends React.Component<
                 data-plasmic-prop={this.props["data-plasmic-prop"]}
                 {...getRootProps(undefined, { suppressRefError: true })}
               >
+                <AutoFocuser inputBox={this.inputBox} autoFocus={autoFocus} />
                 <Dropdown
-                  visible={downshift.isOpen && renderOptions.length > 0}
+                  open={downshift.isOpen && renderOptions.length > 0}
                   // We compartmentalize the Ant dropdown menu item padding style tweaks into .xselect.
                   // Don't want to globally affect all Ant dropdown menus.
                   getPopupContainer={() =>

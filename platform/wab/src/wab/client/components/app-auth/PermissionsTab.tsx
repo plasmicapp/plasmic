@@ -128,14 +128,14 @@ function PermissionsTab_(
     unfilteredEmails.forEach((email) => {
       if (validator.isEmail(email)) {
         if (accessesByEmail.find((u) => u.email === email)) {
-          notification.warn({
+          notification.warning({
             message: `Email ${email} has already been added`,
           });
         } else {
           emails.push(email);
         }
       } else {
-        notification.warn({
+        notification.warning({
           message: `Email ${email} is not valid`,
         });
       }
@@ -145,14 +145,14 @@ function PermissionsTab_(
     unfilteredDomains.forEach((domain) => {
       if (domain.startsWith("@") && validator.isFQDN(domain.substring(1))) {
         if (accessesByDomain.find((u) => u.domain === domain)) {
-          notification.warn({
+          notification.warning({
             message: `Domain ${domain} has already been added`,
           });
         } else {
           domains.push(domain);
         }
       } else {
-        notification.warn({
+        notification.warning({
           message: `Domain ${domain} is not valid`,
         });
       }
@@ -162,7 +162,7 @@ function PermissionsTab_(
     unfilteredGroupIds.forEach((groupId) => {
       if (accessesByGroup.find((u) => u.directoryEndUserGroupId === groupId)) {
         const group = groups.find((g) => g.id === groupId);
-        notification.warn({
+        notification.warning({
           message: `Group ${group?.name} has already been added`,
         });
       } else {

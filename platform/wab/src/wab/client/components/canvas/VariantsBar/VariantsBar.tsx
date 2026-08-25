@@ -419,7 +419,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
               transitionName=""
               trigger={["click"]}
               placement={"bottomLeft"}
-              visible={studioCtx.showVariantsDrawer}
+              open={studioCtx.showVariantsDrawer}
               onVisibleChange={handleDropdownVisibleChange}
               overlay={() => (
                 <VariantsDrawer

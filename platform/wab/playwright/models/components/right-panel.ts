@@ -926,14 +926,13 @@ export class RightPanel extends BaseModel {
   }
 
   async closeNotificationWarning() {
-    await this.frame
-      .locator(".ant-notification-notice-message")
-      .filter({ hasText: "Unsupported host app detected" })
-      .waitFor();
-    await this.frame.locator(".ant-notification-notice-close").click();
-    await this.frame
-      .locator(".ant-notification-topRight")
-      .waitFor({ state: "hidden" });
+    const notice = this.frame
+      .locator(".ant-notification-notice")
+      .filter({ hasText: "Unsupported host app detected" });
+    await notice.waitFor();
+    await notice.locator(".ant-notification-notice-close").click();
+    // antd5 keeps the notice mounted for its leave animation, so wait on the notice.
+    await expect(this.frame.locator(".ant-notification-notice")).toHaveCount(0);
   }
 
   async addComplexInteraction(
@@ -1653,11 +1652,9 @@ export class RightPanel extends BaseModel {
   }) {
     const { formType, tableName, lookupField, idValue } = options;
 
-    const formTypeElements = this.frame
-      .locator("*")
-      .filter({ hasText: "Select the form type" });
-    await formTypeElements.first().click();
-    const selectElement = this.frame
+    const modal = this.frame.locator(".ant-modal");
+    await modal.getByText("Select the form type").waitFor();
+    const selectElement = modal
       .locator("select")
       .filter({ hasText: formType })
       .first();

@@ -111,7 +111,7 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
       transitionName=""
       trigger={["click"]}
       placement={"topLeft"}
-      visible={showDropdown}
+      open={showDropdown}
       onVisibleChange={(v) => {
         setIsOpen(v);
         setShowDropdown(v);

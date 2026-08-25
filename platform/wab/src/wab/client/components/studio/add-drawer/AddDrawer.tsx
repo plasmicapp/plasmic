@@ -808,7 +808,7 @@ async function createDraftQueryForFunction(
 ): Promise<ComponentServerQuery | undefined> {
   const component = studioCtx.focusedOrFirstViewCtx()?.component;
   if (!component) {
-    notification.warn({
+    notification.warning({
       message: "Can't add data query",
       description: "Select an artboard first, then try again.",
     });
@@ -1177,7 +1177,7 @@ export function maybeShowGlobalContextNotification(
     await studioCtx.change(() => {
       studioCtx.hidePresetsModal();
       studioCtx.switchLeftTab("settings", { highlight: true });
-      notification.close(key);
+      notification.destroy(key);
       return ok();
     });
   };

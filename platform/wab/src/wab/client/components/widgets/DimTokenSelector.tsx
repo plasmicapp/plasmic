@@ -929,7 +929,7 @@ const Row = React.memo(function Row(props: {
     if (action.type === "token") {
       const realValue = resolver(action.token, vsh);
       return (
-        <Tooltip title={action.token.name} placement="left" visible={isFocused}>
+        <Tooltip title={action.token.name} placement="left" open={isFocused}>
           <li {...itemProps} aria-label={action.token.name}>
             <ListItem
               isFocused={isFocused}

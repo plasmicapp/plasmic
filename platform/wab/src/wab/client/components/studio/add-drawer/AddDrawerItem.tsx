@@ -145,7 +145,10 @@ const InsertActions = observer(function InsertActions(props: {
     const component = item.component;
     if (getComponentPresets(studioCtx, item.component).length > 0) {
       preset = (
-        <Tooltip title="Insert a component template" trigger="focus hover">
+        <Tooltip
+          title="Insert a component template"
+          trigger={["focus", "hover"]}
+        >
           <IconButton
             onClick={(e) => {
               studioCtx.showPresetsModal(component);
@@ -188,7 +191,7 @@ const InsertActions = observer(function InsertActions(props: {
     <>
       {preset}
       {validTplLocs.has(InsertRelLoc.wrap) && item.canWrap && (
-        <Tooltip title="Wrap current selection" trigger="focus hover">
+        <Tooltip title="Wrap current selection" trigger={["focus", "hover"]}>
           <IconButton
             onClick={async (e) => await insert(e, InsertRelLoc.wrap)}
             aria-label={`Wrap current selection with ${item.label}`}
@@ -201,7 +204,10 @@ const InsertActions = observer(function InsertActions(props: {
       )}
 
       {validTplLocs.has(InsertRelLoc.before) && (
-        <Tooltip title="Insert before current selection" trigger="focus hover">
+        <Tooltip
+          title="Insert before current selection"
+          trigger={["focus", "hover"]}
+        >
           <IconButton
             onClick={async (e) => await insert(e, InsertRelLoc.before)}
             aria-label={`Insert ${item.label} before current selection`}
@@ -214,7 +220,10 @@ const InsertActions = observer(function InsertActions(props: {
       )}
 
       {validTplLocs.has(InsertRelLoc.after) && (
-        <Tooltip title="Insert after current selection" trigger="focus hover">
+        <Tooltip
+          title="Insert after current selection"
+          trigger={["focus", "hover"]}
+        >
           <IconButton
             onClick={async (e) => await insert(e, InsertRelLoc.after)}
             aria-label={`Insert ${item.label} after current selection`}

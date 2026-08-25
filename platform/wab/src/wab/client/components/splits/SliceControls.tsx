@@ -2,11 +2,11 @@
 // This file is owned by you, feel free to edit as you see fit.
 import ScheduleControls from "@/wab/client/components/splits/ScheduleControls";
 import SegmentControls from "@/wab/client/components/splits/SegmentControls";
-import { Split } from "@/wab/shared/model/classes";
 import { SplitType } from "@/wab/shared/core/splits";
+import { Split } from "@/wab/shared/model/classes";
 import { DatePicker, Slider } from "antd";
+import dayjs, { Dayjs } from "dayjs";
 import { observer } from "mobx-react";
-import moment from "moment";
 import * as React from "react";
 
 const SliceControls = observer(function SliceControls(props: {
@@ -48,12 +48,9 @@ const SliceControls = observer(function SliceControls(props: {
       from: val?.["<="]?.[0],
       to: val?.["<="]?.[2],
     };
-    const onDateChange = (
-      value: moment.Moment | null,
-      label: "from" | "to"
-    ) => {
+    const onDateChange = (value: Dayjs | null, label: "from" | "to") => {
       if (value) {
-        const newValue = moment(value).toISOString();
+        const newValue = dayjs(value).toISOString();
         const newFromValue =
           label === "from" ? newValue : range.from ?? newValue;
         const newToValue = label === "to" ? newValue : range.to ?? newValue;
@@ -82,8 +79,7 @@ const SliceControls = observer(function SliceControls(props: {
             }}
             format="YYYY-MM-DDTHH:mm"
             value={
-              range.from &&
-              moment(moment(range.from).format("YYYY-MM-DDTHH:mm"))
+              range.from && dayjs(dayjs(range.from).format("YYYY-MM-DDTHH:mm"))
             }
             onChange={(e) => {
               onDateChange(e, "from");
@@ -98,7 +94,7 @@ const SliceControls = observer(function SliceControls(props: {
             }}
             format="YYYY-MM-DDTHH:mm"
             value={
-              range.to && moment(moment(range.to).format("YYYY-MM-DDTHH:mm"))
+              range.to && dayjs(dayjs(range.to).format("YYYY-MM-DDTHH:mm"))
             }
             onChange={(e) => {
               onDateChange(e, "to");

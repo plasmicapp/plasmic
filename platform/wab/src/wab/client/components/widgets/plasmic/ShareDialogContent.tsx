@@ -164,7 +164,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       return { enqueued };
     } catch (err) {
       if (err instanceof PaywallError && err.type === "requireTeam") {
-        notification.warn({
+        notification.warning({
           message: personalProjectPaywallMessage,
           duration: 0,
         });

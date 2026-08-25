@@ -8,6 +8,7 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import {
   IconLinkButton,
+  PopupFocuser,
   useOnIFrameMouseDown,
 } from "@/wab/client/components/widgets";
 import { AttributesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
@@ -481,49 +482,53 @@ function AddHtmlAttrButton(props: {
   return (
     <Popover
       trigger={["click"]}
-      onVisibleChange={(visible) => {
+      onOpenChange={(visible) => {
         setShowing(visible);
         setSearchValue(undefined);
-        if (visible) {
-          selectRef.current?.focus();
-        }
       }}
       overlayClassName="ant-popover--tight"
-      visible={showing}
+      open={showing}
       placement={"left"}
       destroyTooltipOnHide
       content={
-        <Select
-          showSearch={true}
-          searchValue={searchValue}
-          onSearch={(val) => setSearchValue(val)}
-          onSelect={(val) => {
-            onSelect(val as string);
-            setShowing(false);
-          }}
-          onBlur={() => setShowing(false)}
-          style={{
-            width: 200,
-          }}
-          autoFocus
-          bordered={false}
-          ref={selectRef}
-          placeholder="Search or enter any attribute"
-          open
-        >
-          {searchValue && (
-            <Select.Option key={"__custom__"} value={searchValue}>
-              {searchValue}
-            </Select.Option>
-          )}
-          {params.map((p) =>
-            SPECIAL_ATTRS.includes(p.name) ? null : (
-              <Select.Option key={p.name} value={p.name}>
-                {p.name}
+        <>
+          <PopupFocuser
+            targetId="html-attribute-select"
+            targetRef={selectRef}
+          />
+          <Select
+            id="html-attribute-select"
+            showSearch={true}
+            searchValue={searchValue}
+            onSearch={(val) => setSearchValue(val)}
+            onSelect={(val) => {
+              onSelect(val as string);
+              setShowing(false);
+            }}
+            onBlur={() => setShowing(false)}
+            style={{
+              width: 200,
+            }}
+            autoFocus
+            bordered={false}
+            ref={selectRef}
+            placeholder="Search or enter any attribute"
+            open
+          >
+            {searchValue && (
+              <Select.Option key={"__custom__"} value={searchValue}>
+                {searchValue}
               </Select.Option>
-            )
-          )}
-        </Select>
+            )}
+            {params.map((p) =>
+              SPECIAL_ATTRS.includes(p.name) ? null : (
+                <Select.Option key={p.name} value={p.name}>
+                  {p.name}
+                </Select.Option>
+              )
+            )}
+          </Select>
+        </>
       }
     >
       <IconLinkButton data-test-id="add-html-attribute">

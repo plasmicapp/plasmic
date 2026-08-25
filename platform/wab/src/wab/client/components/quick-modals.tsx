@@ -1,3 +1,4 @@
+import { AntdConfigProvider } from "@/wab/client/antd-theme";
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
@@ -30,7 +31,7 @@ function showTemporaryWidget(children: React.ReactElement<any>) {
     }
   }
 
-  ReactDOM.render(children, div);
+  ReactDOM.render(<AntdConfigProvider>{children}</AntdConfigProvider>, div);
   return { destroy };
 }
 

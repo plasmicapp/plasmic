@@ -1,6 +1,6 @@
 import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/DateRangeStringsEditor.module.scss";
 import { DatePicker } from "antd";
-import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
 import React, { useMemo } from "react";
 
 // What is a good place to define these props?
@@ -17,11 +17,11 @@ const DateRangeStringsEditor = ({
 }) => {
   const valueProp = useMemo(
     () => [
-      value[0] ? moment(value[0]) : undefined,
-      value[1] ? moment(value[1]) : undefined,
+      value[0] ? dayjs(value[0]) : undefined,
+      value[1] ? dayjs(value[1]) : undefined,
     ],
     [value]
-  ) as [moment.Moment | null, moment.Moment | null];
+  ) as [Dayjs | null, Dayjs | null];
 
   return (
     <DatePicker.RangePicker

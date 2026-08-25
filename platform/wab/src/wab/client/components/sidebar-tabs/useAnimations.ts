@@ -82,7 +82,7 @@ export function useAnimations(options: UseAnimationsOptions) {
   const addAnimationLayer = () => {
     if (allAnimSequences.length === 0) {
       studioCtx.switchLeftTab("animationSequences", { highlight: true });
-      notification.warn({
+      notification.warning({
         message: `Please add ${ANIMATIONS_LOWER} in your project.`,
       });
       return;

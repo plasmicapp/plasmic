@@ -2,8 +2,8 @@ import { HostConfig } from "@/wab/client/components/HostConfig";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
-import { mkUuid, spawn } from "@/wab/shared/common";
 import { ApiProject } from "@/wab/shared/ApiSchema";
+import { mkUuid, spawn } from "@/wab/shared/common";
 import { notification } from "antd";
 import * as React from "react";
 
@@ -21,7 +21,7 @@ export function HostLoadTimeoutPrompt({
     if (!!project && !hostConnected) {
       const key = mkUuid();
       const id = setTimeout(() => {
-        notification.warn({
+        notification.warning({
           message: "Looks like the host app is taking a while to load.",
           duration: 0,
           ...(editorPerm
@@ -46,7 +46,7 @@ export function HostLoadTimeoutPrompt({
                             />
                           ))
                         );
-                        notification.close(key);
+                        notification.destroy(key);
                       }}
                     >
                       update
@@ -60,7 +60,7 @@ export function HostLoadTimeoutPrompt({
       }, 10000);
       return () => {
         clearTimeout(id);
-        notification.close(key);
+        notification.destroy(key);
       };
     }
     return () => {};

@@ -59,7 +59,7 @@ export class Studio extends React.Component<StudioProps, {}> {
           <p>
             <a
               onClick={() => {
-                notification.close(id);
+                notification.destroy(id);
                 return showPlasmicImgModal(studioCtx);
               }}
             >

@@ -1,6 +1,6 @@
 import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/DateStringEditor.module.scss";
 import { DatePicker } from "antd";
-import moment from "moment";
+import dayjs from "dayjs";
 import React from "react";
 
 const DateStringEditor = ({
@@ -18,7 +18,7 @@ const DateStringEditor = ({
 }) => (
   <DatePicker
     className={styles.DateStringEditor}
-    value={value && moment(value).isValid() ? moment(value) : null}
+    value={value && dayjs(value).isValid() ? dayjs(value) : null}
     onChange={(newValue) => onChange(newValue?.toISOString())}
     disabled={disabled}
     placeholder={defaultValueHint}
