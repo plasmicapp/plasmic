@@ -314,7 +314,6 @@ export function SanityFetcher({
 
   const generateUnfilteredGroq = () => {
     if (groq) {
-      console.log("ORIG GROQ", groq);
       return groq;
     } else if (docType) {
       let query = `*[_type=='${docType}']`;
@@ -324,7 +323,6 @@ export function SanityFetcher({
       } else if (limit) {
         query += `[0...${limit}]`;
       }
-      console.log("UNFILTERED GROQ", query);
       return query;
     } else {
       return null;
@@ -369,7 +367,6 @@ export function SanityFetcher({
     } else {
       query = `${query}]`;
     }
-    console.log("FILTERED GROQ", query);
     return query;
   };
 
