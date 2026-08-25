@@ -79,6 +79,7 @@ import {
 import {
   siteFinalStyleTokens,
   siteFinalStyleTokensAllDeps,
+  siteFinalStyleTokensAllDepsDict,
   styleTokenOverridesForDep,
 } from "@/wab/shared/core/site-style-tokens";
 import {
@@ -96,7 +97,11 @@ import {
   removeComponentState,
 } from "@/wab/shared/core/states";
 import { cloneAnimationSequence, cloneMixin } from "@/wab/shared/core/styles";
-import { MutableToken, toFinalToken } from "@/wab/shared/core/tokens";
+import {
+  FinalToken,
+  MutableToken,
+  toFinalToken,
+} from "@/wab/shared/core/tokens";
 import {
   clone,
   findExprsInComponent,
@@ -209,9 +214,16 @@ export function extractTransitiveDepsFromComponents(
   _depMap?: ObjDepMap
 ) {
   const refs = new Set<ImportableObject>();
+  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
   for (const component of components) {
     for (const tpl of flattenTpls(component.tplTree)) {
-      collectUsedImportableObjectsForTpl(refs, component, tpl, site);
+      collectUsedImportableObjectsForTpl(
+        refs,
+        component,
+        tpl,
+        site,
+        allTokensDict
+      );
     }
   }
 
@@ -222,7 +234,8 @@ function collectUsedImportableObjectsForTpl(
   refs: Set<ImportableObject>,
   component: Component,
   tpl: TplNode,
-  site: Site
+  site: Site,
+  allTokensDict: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>
 ) {
   if (isTplComponent(tpl)) {
     refs.add(tpl.component);
@@ -231,6 +244,7 @@ function collectUsedImportableObjectsForTpl(
   collectUsedTokensForTpl(refs as Set<StyleToken>, tpl, site, {
     derefTokens: false,
     expandMixins: false,
+    allTokensDict,
   });
   collectUsedIconAssetsForTpl(refs as Set<ImageAsset>, component, tpl);
   collectUsedPictureAssetsForTpl(
@@ -280,11 +294,18 @@ export function extractTransitiveDepsFromComponentDefaultSlots(
   _depMap?: ObjDepMap
 ) {
   const refs = new Set<ImportableObject>();
+  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
   for (const component of components) {
     for (const slot of getTplSlots(component)) {
       for (const defaultContent of slot.defaultContents) {
         for (const tpl of flattenTpls(defaultContent)) {
-          collectUsedImportableObjectsForTpl(refs, component, tpl, site);
+          collectUsedImportableObjectsForTpl(
+            refs,
+            component,
+            tpl,
+            site,
+            allTokensDict
+          );
         }
       }
     }
@@ -388,12 +409,14 @@ export function getDependenciesWithReferencedCss(
   };
 
   // Start from references from the site's global CSS and the rendered components.
-  const usedTokens = extractUsedTokensForProjectCss(site, site);
+  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
+  const usedTokens = extractUsedTokensForProjectCss(site, site, allTokensDict);
   xAddAll(
     usedTokens,
     extractUsedTokensForComponents(site, components, {
       expandMixins: true,
       derefTokens: true,
+      allTokensDict,
     })
   );
   enqueueReferencedDepSite({
@@ -415,7 +438,7 @@ export function getDependenciesWithReferencedCss(
   while (queue.length > 0) {
     const ds = ensure(queue.pop(), "queue is non-empty");
     enqueueReferencedDepSite({
-      tokens: extractUsedTokensForProjectCss(ds, site),
+      tokens: extractUsedTokensForProjectCss(ds, site, allTokensDict),
     });
   }
 

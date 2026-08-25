@@ -26,11 +26,13 @@ import { xAddAll } from "@/wab/shared/common";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
 import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import { isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import {
   Component,
   Site,
+  StyleToken,
   TplNode,
   Variant,
   VariantGroup,
@@ -197,7 +199,8 @@ export function serializeVariantGroupMembersType(vg: VariantGroup) {
 export function extractUsedGlobalVariantsForComponents(
   site: Site,
   components: Component[],
-  usePlasmicImg: boolean
+  usePlasmicImg: boolean,
+  allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>
 ) {
   const usedGlobalVariants = new Set<Variant>();
   for (const component of components) {
@@ -221,8 +224,10 @@ export function extractUsedGlobalVariantsForComponents(
         // variant, then this component also needs to know when that global
         // variant changes, to apply the right styles on the root element.
         derefTokens: true,
+        allTokensDict,
       }),
-      site
+      site,
+      allTokensDict
     )
   );
   return usedGlobalVariants;

@@ -358,7 +358,9 @@ export function serializeComponentRootResetClasses(
     // Context global variants require className to render their CSS changes.
     // Screen variants are rendered through media query
     const contextGlobalVariantCombos =
-      getContextGlobalVariantsWithVariantedTokens(ctx.site).map((v) => [v]);
+      getContextGlobalVariantsWithVariantedTokens(
+        ctx.componentGenHelper.siteHelper.allStyleTokensAndOverrides()
+      ).map((v) => [v]);
 
     if (contextGlobalVariantCombos.length > 0) {
       const sorter = makeGlobalVariantComboSorter(ctx.site);

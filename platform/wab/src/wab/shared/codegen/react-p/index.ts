@@ -736,7 +736,7 @@ export function exportReactPresentational(
   }
 
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
-    site,
+    componentGenHelper.siteHelper,
     component,
     projectFlags
   );

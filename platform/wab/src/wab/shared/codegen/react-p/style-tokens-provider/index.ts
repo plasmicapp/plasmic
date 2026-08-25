@@ -32,6 +32,7 @@ import {
   wrapInTemplateString,
 } from "@/wab/shared/codegen/util";
 import { assert, ensure } from "@/wab/shared/common";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
 import { Site } from "@/wab/shared/model/classes";
 import {
@@ -170,7 +171,9 @@ function projectStyleTokenData(
   ].map(serializeGlobalCssClass);
 
   const contextGlobalVariantCombos =
-    getContextGlobalVariantsWithVariantedTokens(site).map((v) => [v]);
+    getContextGlobalVariantsWithVariantedTokens(
+      siteFinalStyleTokensAllDeps(site)
+    ).map((v) => [v]);
   const sorter = makeGlobalVariantComboSorter(site);
 
   const globalVariantDataEntries = sortedVariantCombos(

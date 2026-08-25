@@ -107,6 +107,7 @@ import {
 export const tplMarker = `/*__TPL_MARKER__*/`;
 
 export function exportReactPlain(
+  siteHelper: SiteGenHelper,
   component: Component,
   site: Site,
   projectConfig: ProjectConfig,
@@ -141,8 +142,9 @@ export function exportReactPlain(
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
   const projectFlags = getProjectFlags(site);
 
+  const compHelper = new ComponentGenHelper(siteHelper, undefined);
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
-    site,
+    siteHelper,
     component,
     projectFlags
   );
@@ -151,8 +153,6 @@ export function exportReactPlain(
     reactHookSpecs,
     "triggers"
   );
-  const siteHelper = new SiteGenHelper(site, false);
-  const compHelper = new ComponentGenHelper(siteHelper, undefined);
   const ctx: SerializerBaseContext = {
     componentGenHelper: compHelper,
     component,
@@ -644,6 +644,7 @@ export function exportReactPlainTypical(
     exportOpts
   );
   const { skeletonModule } = exportReactPlain(
+    new SiteGenHelper(project, false),
     component,
     project,
     projectConfig,

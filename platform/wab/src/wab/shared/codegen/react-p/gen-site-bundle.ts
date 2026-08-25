@@ -119,6 +119,7 @@ export function exportSiteComponents(
       );
     } else {
       return exportReactPlain(
+        siteGenHelper,
         component,
         site,
         projectConfig,

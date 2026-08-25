@@ -4,6 +4,7 @@ import {
   getReferencedVariantGroups,
   isMediaQueryVariantGroup,
 } from "@/wab/shared/Variants";
+import { SiteGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   makeCreateUseGlobalVariantsName,
   makeUseGlobalVariantsName,
@@ -15,11 +16,12 @@ import {
   makeGlobalVariantGroupUseName,
   makeUniqueUseScreenVariantsName,
 } from "@/wab/shared/codegen/variants";
-import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import { DevFlagsType } from "@/wab/shared/devflags";
 import {
   Component,
   Site,
+  StyleToken,
   Variant,
   VariantGroup,
   ensureKnownVariantGroup,
@@ -102,36 +104,41 @@ export function serializeUseGlobalVariants(groups: Set<VariantGroup>) {
 }
 
 /**
- * @param site The Site containing the component and global variant groups
+ * @param siteGenHelper Helper for the Site containing the component and global variant groups. Shared across components of a codegen request so the site's tokens are only computed once.
  * @param component The component to get the used global variant groups for
  * @param projectFlags The project flags
  * @returns The global variant groups that the component must read from to apply token CSS and JS changes
  */
 export function getUsedGlobalVariantGroups(
-  site: Site,
+  siteGenHelper: SiteGenHelper,
   component: Component,
   projectFlags: DevFlagsType
 ) {
   return getReferencedVariantGroups([
     ...extractUsedGlobalVariantsForComponents(
-      site,
+      siteGenHelper.site,
       [component],
-      projectFlags.usePlasmicImg
+      projectFlags.usePlasmicImg,
+      siteGenHelper.allStyleTokensAndOverridesDict()
     ),
     // These global variants are not necessarily used by the component, but they contribute to varianted values of style tokens, which may be used within the component's slots, so we still include them.
-    ...getContextGlobalVariantsWithVariantedTokens(site),
+    ...getContextGlobalVariantsWithVariantedTokens(
+      siteGenHelper.allStyleTokensAndOverrides()
+    ),
   ]);
 }
 
 /**
  *
- * @param site The Site containing the varianted style tokens
+ * @param allTokens All final style tokens of the site and its dependencies, e.g. `siteFinalStyleTokensAllDeps(site)` or `SiteGenHelper.allStyleTokensAndOverrides()`
  * @returns Variant groups that contribute to varianted values of style tokens.
  * All codegen'd React components in the given site must read from these global variants' context to apply token CSS changes (even though they may not use the tokens directly).
  */
-export function getContextGlobalVariantsWithVariantedTokens(site: Site) {
+export function getContextGlobalVariantsWithVariantedTokens(
+  allTokens: ReadonlyArray<FinalToken<StyleToken>>
+) {
   return uniqBy(
-    siteFinalStyleTokensAllDeps(site)
+    allTokens
       .map((t) => t.variantedValues.flatMap((v) => v.variants))
       .flat()
       .filter((v) => v.parent && !isMediaQueryVariantGroup(v.parent)),

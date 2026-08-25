@@ -29,6 +29,7 @@ import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
+import keyBy from "lodash/keyBy";
 
 export class SiteGenHelper {
   private cache: Map<string, DeepMap<any>> = new Map();
@@ -45,6 +46,11 @@ export class SiteGenHelper {
     this.cache,
     () => siteFinalStyleTokensAllDeps(this.site),
     { funcKey: "allStyleTokensAndOverrides" }
+  );
+  allStyleTokensAndOverridesDict = deepMapMemoized(
+    this.cache,
+    () => keyBy(this.allStyleTokensAndOverrides(), (t) => t.uuid),
+    { funcKey: "allStyleTokensAndOverridesDict" }
   );
   allMixins = deepMapMemoized(
     this.cache,
