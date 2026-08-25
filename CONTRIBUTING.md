@@ -184,6 +184,8 @@ To create a new plasmicpkg, the easiest approach is to clone one of the existing
 
 The directory name should be the same name as the main package you'll be using to import the React components. Your package must be named `@plasmicpkgs/{package-name}` and start with version 1.0.0.
 
+Call out the new package in your PR: releases are automated, but a Plasmic maintainer has to publish a package's first version by hand before CI can take it over.
+
 ### Versioning
 
 `@plasmicpkgs/*` packages should depend on `@plasmicapp/*` packages as both peer dependencies and dev dependencies.

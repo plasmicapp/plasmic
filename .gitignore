@@ -43,6 +43,8 @@ storybook-static/
 # ignore decrypted yaml files by sops
 *.dec.*
 dist/
+# Packed by devops/cicd/cicd.bash for the publish-npm job
+/tarballs/
 # Playwright test results
 test-results/
 playwright-report/
