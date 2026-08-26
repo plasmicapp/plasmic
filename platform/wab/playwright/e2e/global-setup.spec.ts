@@ -30,6 +30,23 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
 
     branching: true,
 
+    // copilot-mentions.spec.ts — the mentions UI is gated behind this,
+    // and shift-click multi-select behind `multiSelect`.
+    enableChatCopilot: true,
+    multiSelect: true,
+    // Backstop behind the `noCopilotApi` fixture: if a request ever escapes,
+    // it must not reach a real model. Deliberately invalid.
+    chatCopilotModelProviderOpts: {
+      provider: "NotAProvider",
+      modelName: "not-a-model",
+      maxTokens: 1,
+    },
+    uiCopilotModelProviderOpts: {
+      provider: "NotAProvider",
+      modelName: "not-a-model",
+      maxTokens: 1,
+    },
+
     // tutorial.spec.ts
     templateTours: {
       "8eH4mLFb7TqLYDMGjj5BLd": "portfolio",

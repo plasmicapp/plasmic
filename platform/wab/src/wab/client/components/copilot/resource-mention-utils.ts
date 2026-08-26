@@ -1,3 +1,4 @@
+import { matchScore } from "@/wab/client/components/mentions/mention-query";
 import {
   ModelTypeTag,
   UiId,
@@ -5,6 +6,7 @@ import {
   mkTplUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import {
+  getBaseVariant,
   getVariantGroupName,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
@@ -15,6 +17,7 @@ import {
   isPlasmicComponent,
   tryGetComponentByUuid,
 } from "@/wab/shared/core/components";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { siteStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
 import {
   allAnimationSequences,
@@ -22,9 +25,24 @@ import {
   allGlobalVariants,
   isHostLessPackage,
 } from "@/wab/shared/core/sites";
-import { tryGetTplByUuid, type TplType } from "@/wab/shared/core/tpls";
+import {
+  flattenTpls,
+  getTplType,
+  isTplComponent,
+  isTplNamable,
+  summarizeTpl,
+  summarizeTplNamable,
+  tryGetTplByUuid,
+  type TplType,
+} from "@/wab/shared/core/tpls";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
-import { Component, Site } from "@/wab/shared/model/classes";
+import {
+  Component,
+  ProjectDependency,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { naturalSortByName } from "@/wab/shared/sort";
 import { partition } from "lodash";
 import { regex } from "regex";
@@ -46,7 +64,11 @@ export type MentionableResourceKind = keyof typeof MENTION_KIND_TYPE_TAG_MAP;
  * narrows the search scope on lookup */
 export type MentionableResource = {
   uuid: string;
-  label: string;
+  /**
+   * The resource's own name. It is what a mention stores and a chip shows
+   */
+  name: string;
+  /* Additional data about the resource */
   detail?: string;
   /** Display name of the imported project this came from; unset for local ones. */
   fromProject?: string;
@@ -56,7 +78,83 @@ export type MentionableResource = {
   | { kind: "componentVariant"; componentUuid: string }
 );
 
-export const mkSiteMentionableResources = maybeComputedFn(
+export interface MentionableResources {
+  selection?: {
+    component: MentionableResource;
+    elements: MentionableResource[];
+  };
+  searchable: MentionableResource[];
+}
+
+/**
+ * Composes all resources available for @-mentions
+ */
+export function mkMentionableResources({
+  site,
+  focusedComponent,
+  selectedTpls,
+  getDepName,
+}: {
+  site: Site;
+  focusedComponent: Component | undefined;
+  selectedTpls: TplNode[];
+  getDepName: (dep: ProjectDependency) => string;
+}): MentionableResources {
+  const searchable: MentionableResource[] = [];
+  if (focusedComponent) {
+    searchable.push(...mkComponentMentionableResources(focusedComponent));
+  }
+  // Local resources come first: on a tie they should outrank an imported
+  // project's resources
+  searchable.push(...mkSiteMentionableResources(site));
+  // Direct deps only, matching what the `read` copilot tool can fetch.
+  for (const dep of walkDependencyTree(site, "direct")) {
+    searchable.push(...mkSiteMentionableResources(dep.site, getDepName(dep)));
+  }
+  return {
+    selection: mkCanvasSelectionResources(focusedComponent, selectedTpls),
+    searchable,
+  };
+}
+
+function mkComponentMentionableResources(
+  component: Component
+): MentionableResource[] {
+  const baseVariant = getBaseVariant(component);
+  const resources: MentionableResource[] = [];
+
+  const tpls: MentionableResource[] = [];
+  for (const tpl of flattenTpls(component.tplTree)) {
+    if (isTplNamable(tpl) && tpl.name) {
+      tpls.push({
+        kind: "tpl",
+        uuid: tpl.uuid,
+        componentUuid: component.uuid,
+        name: tpl.name,
+        tplType: getTplType(
+          tpl,
+          getEffectiveVariantSetting(tpl, [baseVariant])
+        ),
+        // For an instance, show which component it is an instance of.
+        detail: isTplComponent(tpl) ? tpl.component.name : undefined,
+      });
+    }
+  }
+  resources.push(...naturalSortByName(tpls));
+
+  for (const variant of naturalSortByName(allComponentVariants(component))) {
+    resources.push({
+      kind: "componentVariant",
+      uuid: variant.uuid,
+      componentUuid: component.uuid,
+      name: variant.name,
+      detail: getVariantGroupName(variant),
+    });
+  }
+  return resources;
+}
+
+const mkSiteMentionableResources = maybeComputedFn(
   function mkSiteMentionableResources(
     site: Site,
     fromProject?: string
@@ -74,13 +172,13 @@ export const mkSiteMentionableResources = maybeComputedFn(
       resources.push({
         kind: "component",
         uuid: comp.uuid,
-        label: comp.name,
+        name: comp.name,
         fromProject,
       });
     }
     if (!isImported) {
       for (const page of naturalSortByName(pages)) {
-        resources.push({ kind: "page", uuid: page.uuid, label: page.name });
+        resources.push({ kind: "page", uuid: page.uuid, name: page.name });
       }
     }
 
@@ -92,7 +190,7 @@ export const mkSiteMentionableResources = maybeComputedFn(
       resources.push({
         kind: "token",
         uuid: token.uuid,
-        label: token.name,
+        name: token.name,
         fromProject,
       });
     }
@@ -110,7 +208,7 @@ export const mkSiteMentionableResources = maybeComputedFn(
       resources.push({
         kind: "globalVariant",
         uuid: variant.uuid,
-        label: variant.name,
+        name: variant.name,
         detail: getVariantGroupName(variant),
         fromProject,
       });
@@ -120,7 +218,7 @@ export const mkSiteMentionableResources = maybeComputedFn(
       resources.push({
         kind: "animation",
         uuid: animation.uuid,
-        label: animation.name,
+        name: animation.name,
         fromProject,
       });
     }
@@ -129,11 +227,55 @@ export const mkSiteMentionableResources = maybeComputedFn(
   }
 );
 
-/** The uuid a mention stores: scoped by component where the kind needs it. */
-function mentionUuid(resource: MentionableResource): string {
-  return "componentUuid" in resource
-    ? `${resource.componentUuid}/${resource.uuid}`
-    : resource.uuid;
+/**
+ * The user's current canvas selection as mentionable resources.
+ */
+function mkCanvasSelectionResources(
+  currentComponent: Component | undefined,
+  selectedTpls: TplNode[]
+): MentionableResources["selection"] {
+  if (!currentComponent || !isPlasmicComponent(currentComponent)) {
+    return undefined;
+  }
+  const baseVariant = getBaseVariant(currentComponent);
+  return {
+    component: {
+      kind: isPageComponent(currentComponent) ? "page" : "component",
+      uuid: currentComponent.uuid,
+      name: currentComponent.name,
+    },
+    elements: selectedTpls.map((tpl) => {
+      const vs = getEffectiveVariantSetting(tpl, [baseVariant]);
+      return {
+        kind: "tpl",
+        uuid: tpl.uuid,
+        componentUuid: currentComponent.uuid,
+        tplType: getTplType(tpl, vs),
+        name: isTplNamable(tpl)
+          ? summarizeTplNamable(tpl, vs.rsh())
+          : summarizeTpl(tpl, vs.rsh()),
+      };
+    }),
+  };
+}
+
+/**
+ * Scores @param resource against what the user typed after `@`;
+ * `undefined` drops it.
+ */
+export function getResourceMatchScore(
+  resource: MentionableResource,
+  query: string
+): number | undefined {
+  return matchScore(
+    [
+      resource.name,
+      resource.detail,
+      resource.kind,
+      resource.fromProject,
+    ].filter(isNonNil),
+    query
+  );
 }
 
 const MENTIONABLE_KINDS: string[] = Object.keys(MENTION_KIND_TYPE_TAG_MAP);
@@ -144,14 +286,11 @@ function isKnownKind(kind: string): kind is MentionableResourceKind {
 
 const kindPattern = new RegExp(MENTIONABLE_KINDS.join("|"));
 
-/** Matches one whole mention, capturing its kind, optional uuid, and label. */
-const mentionParseRegex = regex`
-  ^ @<
-    (?<kind> ${kindPattern} )
-    :
-    (?: (?<uuid> [^\|>]* ) \| )?   # optional, present only once resolved
-    (?<label> [^>]* )
-  > $
+/**
+ * Matches and captures one whole mention
+ */
+export const mentionSplitRegex = regex`
+  (?<mention> @< ${kindPattern} : [^>]* > )
 `;
 
 const MENTION_ESCAPE_CODES: Record<string, string> = {
@@ -160,7 +299,9 @@ const MENTION_ESCAPE_CODES: Record<string, string> = {
   "7C": "|",
 };
 
-// Percent-encode the grammar's delimiters so a resource name containing them can't break parsing
+/**
+ * Percent-encode the grammar's delimiters so a resource name containing them can't break parsing
+ */
 function escapeMentionLabel(label: string): string {
   return label.replace(/%/g, "%25").replace(/>/g, "%3E").replace(/\|/g, "%7C");
 }
@@ -169,31 +310,30 @@ function unescapeMentionLabel(label: string): string {
   return label.replace(/%(25|3E|7C)/g, (_, code) => MENTION_ESCAPE_CODES[code]);
 }
 
+/** The uuid a mention stores: scoped by component where the kind needs it. */
+function mentionUuid(resource: MentionableResource): string {
+  return "componentUuid" in resource
+    ? `${resource.componentUuid}/${resource.uuid}`
+    : resource.uuid;
+}
+
 /**
  * The raw text stored in a chip for a picked resource: `kind:uuid|label`.
- *
- * The uuid is known at pick time, so there is nothing to resolve later — the
- * chip hides it, and a mention keeps working even if the resource is renamed.
  */
 export function mkMentionRaw(resource: MentionableResource): string {
   return `${resource.kind}:${mentionUuid(resource)}|${escapeMentionLabel(
-    resource.label
+    resource.name
   )}`;
 }
 
-/* Labels of mentions in @param text whose resource no longer exists in @param site */
-export function findMissingMentions(text: string, site: Site): string[] {
-  return text
-    .split(mentionSplitRegex)
-    .map((part) => parseMention(part))
-    .filter(isNonNil)
-    .filter(({ kind, uuid }) => !uuid || !getMentionUiId(kind, uuid, site))
-    .map(({ label }) => label);
-}
-
-/** Matches and captures one whole mention */
-export const mentionSplitRegex = regex`
-  (?<mention> @< ${kindPattern} : [^>]* > )
+/** Matches one whole mention, capturing its kind, optional uuid, and label. */
+const mentionParseRegex = regex`
+  ^ @<
+    (?<kind> ${kindPattern} )
+    :
+    (?: (?<uuid> [^\|>]* ) \| )?   # optional: only a hand-typed mention lacks one
+    (?<label> [^>]* )
+  > $
 `;
 
 export interface ParsedMention {
@@ -214,15 +354,16 @@ export function parseMention(text: string): ParsedMention | undefined {
   return { kind, uuid, label: unescapeMentionLabel(label) };
 }
 
-/** The Model UiId for `uuid` if a matching candidate exists, else undefined. */
-function tryGetModelUiId(
-  candidates: readonly { uuid: string }[],
-  uuid: string,
-  typeTag: ModelTypeTag
-): UiId | undefined {
-  return candidates.some((c) => c.uuid === uuid)
-    ? mkModelUiId({ typeTag, uuid })
-    : undefined;
+/**
+ * Labels of mentions in @param text whose resource no longer exists in @param site
+ */
+export function findMissingMentions(text: string, site: Site): string[] {
+  return text
+    .split(mentionSplitRegex)
+    .map(parseMention)
+    .filter(isNonNil)
+    .filter(({ kind, uuid }) => !uuid || !getMentionUiId(kind, uuid, site))
+    .map(({ label }) => label);
 }
 
 /**
@@ -281,4 +422,17 @@ export function getMentionUiId(
     default:
       return assertNever(kind);
   }
+}
+
+/**
+ * The Model UiId for `uuid` if a matching candidate exists, else undefined.
+ */
+function tryGetModelUiId(
+  candidates: readonly { uuid: string }[],
+  uuid: string,
+  typeTag: ModelTypeTag
+): UiId | undefined {
+  return candidates.some((c) => c.uuid === uuid)
+    ? mkModelUiId({ typeTag, uuid })
+    : undefined;
 }

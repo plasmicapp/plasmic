@@ -1,8 +1,8 @@
 import {
-  MentionableResource,
+  MentionableResources,
   findMissingMentions,
   getMentionUiId,
-  mkSiteMentionableResources,
+  mkMentionableResources,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { COPILOT_TOOLS } from "@/wab/client/copilot";
@@ -14,28 +14,22 @@ import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioAppUser, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
-import { getBaseVariant, getVariantGroupName } from "@/wab/shared/Variants";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
-import { filterFalsy, jsonClone, spawn } from "@/wab/shared/common";
+import {
+  filterFalsy,
+  jsonClone,
+  spawn,
+  withoutNils,
+} from "@/wab/shared/common";
 import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import {
-  allComponentVariants,
   isFrameComponent,
   isPageComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import {
-  flattenTpls,
-  getTplType,
-  isTplComponent,
-  isTplNamable,
-} from "@/wab/shared/core/tpls";
-import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { formatErrorMessage } from "@/wab/shared/error-handling";
 import { Component } from "@/wab/shared/model/classes";
-import { naturalSort, naturalSortByName } from "@/wab/shared/sort";
 import { notification } from "antd";
 import { sortBy } from "lodash";
 import { autorun, computed } from "mobx";
@@ -227,60 +221,15 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       /**
        * List the project resources that can be `@`-mentioned in Copilot Chat.
        */
-      async listMentionableResources(): Promise<MentionableResource[]> {
-        const site = studioCtx.site;
-        const resources: MentionableResource[] = [];
-
-        const focusedComponent = studioCtx.focusedViewCtx()?.currentComponent();
-        if (focusedComponent) {
-          const baseVariant = getBaseVariant(focusedComponent);
-          const tpls: MentionableResource[] = [];
-          for (const tpl of flattenTpls(focusedComponent.tplTree)) {
-            if (isTplNamable(tpl) && tpl.name) {
-              tpls.push({
-                kind: "tpl",
-                uuid: tpl.uuid,
-                componentUuid: focusedComponent.uuid,
-                label: tpl.name,
-                tplType: getTplType(
-                  tpl,
-                  getEffectiveVariantSetting(tpl, [baseVariant])
-                ),
-                // For an instance, show which component it is an instance of.
-                detail: isTplComponent(tpl) ? tpl.component.name : undefined,
-              });
-            }
-          }
-          resources.push(...naturalSort(tpls, (t) => t.label));
-
-          for (const variant of naturalSortByName(
-            allComponentVariants(focusedComponent)
-          )) {
-            const group = getVariantGroupName(variant);
-            resources.push({
-              kind: "componentVariant",
-              uuid: variant.uuid,
-              componentUuid: focusedComponent.uuid,
-              label: variant.name,
-              detail: group,
-            });
-          }
-        }
-
-        // Local resources come first: on a tie they should outrank an imported
-        // project's resources
-        resources.push(...mkSiteMentionableResources(site));
-        // Direct deps only, matching what the `read` copilot tool can fetch.
-        for (const dep of walkDependencyTree(site, "direct")) {
-          resources.push(
-            ...mkSiteMentionableResources(
-              dep.site,
-              studioCtx.projectDependencyManager.getNiceDepName(dep)
-            )
-          );
-        }
-
-        return resources;
+      async listMentionableResources(): Promise<MentionableResources> {
+        const viewCtx = studioCtx.focusedViewCtx();
+        return mkMentionableResources({
+          site: studioCtx.site,
+          focusedComponent: viewCtx?.currentComponent(),
+          selectedTpls: withoutNils(viewCtx?.focusedTpls() ?? []),
+          getDepName: (dep) =>
+            studioCtx.projectDependencyManager.getNiceDepName(dep),
+        });
       },
       async findMissingMentions(text: string): Promise<string[]> {
         return findMissingMentions(text, studioCtx.site);

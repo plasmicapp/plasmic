@@ -3,7 +3,7 @@ import {
   getMentionStartIndex,
   matchScore,
 } from "@/wab/client/components/mentions/mention-query";
-import { useMentions } from "@/wab/client/components/mentions/useMentions";
+import { useMentionsPopover } from "@/wab/client/components/mentions/useMentionsPopover";
 import { UserMentionsPopoverContent } from "@/wab/client/components/user-mentions/UserMentionsPopoverContent";
 import { useQuerySelector } from "@/wab/client/hooks/useQuerySelector";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -12,7 +12,7 @@ import * as React from "react";
 
 /**
  * User `@`-mentions for the comments composer. A thin wrapper over the generic
- * {@link useMentions} machinery.
+ * {@link useMentionsPopover} machinery.
  */
 export function useUserMentions({
   popoverOffset = 0,
@@ -71,8 +71,14 @@ export function useUserMentions({
     [inputElement, value, insertText]
   );
 
-  const { mentionsPopover, onKeyHandler, setMentionText } = useMentions({
-    popoverOffset,
+  const [mentionQuery, setMentionQuery] = React.useState<string | undefined>(
+    undefined
+  );
+
+  const { mentionsPopover, onKeyHandler } = useMentionsPopover({
+    query: mentionQuery,
+    onClose: () => setMentionQuery(undefined),
+    offset: popoverOffset,
     items: users,
     getMatchScore: (user, query) =>
       matchScore(
@@ -81,27 +87,27 @@ export function useUserMentions({
         ),
         query
       ),
-    renderPopoverContent: ({ suggestions, highlightIndex, onSelect }) => (
-      <UserMentionsPopoverContent
-        users={suggestions}
-        highlightIndex={highlightIndex}
-        onSelectUser={onSelect}
-      />
-    ),
+    renderPopoverContent: ({ suggestions, highlightIndex, onSelect }) =>
+      suggestions.length === 0 ? null : (
+        <UserMentionsPopoverContent
+          users={suggestions}
+          highlightIndex={highlightIndex}
+          onSelectUser={onSelect}
+        />
+      ),
     anchorElement: inputElement,
     onPick,
-    onRefocus: () => inputElement?.focus(),
   });
 
   const onSelectHandler = React.useCallback(() => {
     if (!inputElement) {
-      setMentionText(undefined);
+      setMentionQuery(undefined);
       return;
     }
 
     const caretIndex = inputElement.selectionStart || 0;
-    setMentionText(findMentionText(value, caretIndex));
-  }, [inputElement, value, setMentionText]);
+    setMentionQuery(findMentionText(value, caretIndex));
+  }, [inputElement, value]);
 
   const handleMentionClick = React.useCallback(() => {
     if (!inputElement) {
@@ -112,8 +118,8 @@ export function useUserMentions({
     const prevCharacter = value[caretIndex - 1];
 
     insertText(caretIndex === 0 || /\s/.test(prevCharacter) ? "@" : " @");
-    setMentionText("");
-  }, [inputElement, value, insertText, setMentionText]);
+    setMentionQuery("");
+  }, [inputElement, value, insertText]);
 
   return {
     userMentionsPopover: mentionsPopover,

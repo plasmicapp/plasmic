@@ -1,6 +1,6 @@
 import type {
-  MentionableResource,
   MentionableResourceKind,
+  MentionableResources,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import {
   PublishResult,
@@ -63,7 +63,7 @@ export type HostFrameApi = {
   setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void>;
   /** Resolves once the studio and its active canvas are ready. */
   waitForStudioReady(): Promise<void>;
-  listMentionableResources(): Promise<MentionableResource[]>;
+  listMentionableResources(): Promise<MentionableResources>;
   /** Labels of `@<…>` mentions whose resource no longer exists. */
   findMissingMentions(text: string): Promise<string[]>;
   navigateToMentionedResource(

@@ -1,22 +1,25 @@
 import {
   findMissingMentions,
   getMentionUiId,
+  getResourceMatchScore,
   mkMentionRaw,
-  mkSiteMentionableResources,
+  mkMentionableResources,
   parseMention,
+  type MentionableResource,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import {
   mkModelUiId,
   mkTplUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
+import { FREE_CONTAINER_LOWER } from "@/wab/shared/Labels";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   VariantGroupType,
   mkGlobalVariantGroup,
   mkVariant,
 } from "@/wab/shared/Variants";
-import { mkShortId } from "@/wab/shared/common";
+import { ensure, mkShortId } from "@/wab/shared/common";
 import {
   ComponentType,
   mkComponent,
@@ -24,19 +27,22 @@ import {
 } from "@/wab/shared/core/components";
 import { mkParam } from "@/wab/shared/core/lang";
 import { createSite, writeable } from "@/wab/shared/core/sites";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { deepTrackComponents, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   AnimationSequence,
   CodeComponentMeta,
+  Component,
   HostLessPackageInfo,
   ProjectDependency,
+  TplNode,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { runInAction } from "mobx";
 
 function mkTestSite() {
   const site = createSite();
-  const tpl = mkTplTagX("div", { name: "MyElement" });
+  const unnamedTpl = mkTplTagX("div");
+  const tpl = mkTplTagX("div", { name: "MyElement" }, unnamedTpl);
   const component = mkComponent({
     name: "Card",
     type: ComponentType.Plain,
@@ -94,12 +100,22 @@ function mkTestSite() {
     site.animationSequences.push(animation);
     site.projectDependencies.push(imported.dep);
   });
+  // Registers the components in the maps `getOwnerSite` reads, which a site
+  // built by hand misses; without it `getEffectiveVariantSetting` throws.
+  deepTrackComponents(site);
+  const tplMgr = new TplMgr({ site });
+  const componentVariant = runInAction(() => {
+    const group = tplMgr.createVariantGroup({ component, name: "Size" });
+    return tplMgr.createVariant(component, group, "Large");
+  });
   return {
     site,
     component,
+    componentVariant,
     page,
     codeComponent,
     tpl,
+    unnamedTpl,
     token,
     registeredToken,
     variant,
@@ -196,7 +212,7 @@ function mkTestDep(
 }
 
 describe("parseMention", () => {
-  it("parses an unresolved mention", () => {
+  it("parses a mention that carries no uuid", () => {
     expect(parseMention("@<component:Comp>")).toEqual({
       kind: "component",
       uuid: undefined,
@@ -204,7 +220,7 @@ describe("parseMention", () => {
     });
   });
 
-  it("parses a resolved mention", () => {
+  it("parses a mention that carries a uuid", () => {
     expect(parseMention("@<component:c1|Comp>")).toEqual({
       kind: "component",
       uuid: "c1",
@@ -231,16 +247,16 @@ describe("parseMention", () => {
 
 describe("mkMentionRaw", () => {
   it("stores the uuid, so a later rename can't break the mention", () => {
-    expect(mkMentionRaw({ kind: "token", uuid: "t1", label: "primary" })).toBe(
+    expect(mkMentionRaw({ kind: "token", uuid: "t1", name: "primary" })).toBe(
       "token:t1|primary"
     );
   });
 
   it("escapes the grammar's delimiters in the label", () => {
     // `/` is not a delimiter of this grammar, so it stays readable.
-    expect(
-      mkMentionRaw({ kind: "token", uuid: "t1", label: "a|b>c/d%e" })
-    ).toBe("token:t1|a%7Cb%3Ec/d%25e");
+    expect(mkMentionRaw({ kind: "token", uuid: "t1", name: "a|b>c/d%e" })).toBe(
+      "token:t1|a%7Cb%3Ec/d%25e"
+    );
   });
 
   it("scopes a tpl uuid by its component", () => {
@@ -250,7 +266,7 @@ describe("mkMentionRaw", () => {
         uuid: "tpl1",
         componentUuid: "comp1",
         tplType: "text",
-        label: "Title",
+        name: "Title",
       })
     ).toBe("tpl:comp1/tpl1|Title");
   });
@@ -261,7 +277,7 @@ describe("mkMentionRaw", () => {
         kind: "componentVariant",
         uuid: "v1",
         componentUuid: "comp1",
-        label: "Large",
+        name: "Large",
       })
     ).toBe("componentVariant:comp1/v1|Large");
   });
@@ -270,7 +286,7 @@ describe("mkMentionRaw", () => {
     const raw = mkMentionRaw({
       kind: "token",
       uuid: "t1",
-      label: "brand/primary | dark",
+      name: "brand/primary | dark",
     });
     expect(parseMention(`@<${raw}>`)).toEqual({
       kind: "token",
@@ -290,40 +306,33 @@ describe("findMissingMentions", () => {
   });
 
   it("returns nothing when every mention still resolves", () => {
-    const text = `use @<token:${token.uuid}|primary> in @<component:${component.uuid}|Card>`;
+    // Covers both uuid shapes: plain, and scoped by the owning component.
+    const text =
+      `use @<token:${token.uuid}|primary> in ` +
+      `@<component:${component.uuid}|Card> and tweak ` +
+      `@<tpl:${component.uuid}/${tpl.uuid}|MyElement>`;
     expect(findMissingMentions(text, site)).toEqual([]);
   });
 
-  it("returns the label of a mention whose resource is gone", () => {
-    expect(findMissingMentions("use @<token:deleted|primary>", site)).toEqual([
+  it("returns the label of every mention whose resource is gone", () => {
+    const text =
+      // token is gone
+      `use @<token:deleted|primary>, ` +
+      // tpl is gone
+      `tweak @<tpl:${component.uuid}/gone|MissingElement> ` +
+      // component is gone
+      `and @<tpl:gone/${tpl.uuid}|OrphanElement>`;
+    expect(findMissingMentions(text, site)).toEqual([
       "primary",
+      "MissingElement",
+      "OrphanElement",
     ]);
   });
 
-  it("catches a hand-typed mention that carries no uuid", () => {
+  it("flags a hand-typed mention that carries no uuid", () => {
     expect(findMissingMentions("use @<token:primary>", site)).toEqual([
       "primary",
     ]);
-  });
-
-  it("resolves a mention whose uuid is scoped by its component", () => {
-    const raw = mkMentionRaw({
-      kind: "tpl",
-      uuid: tpl.uuid,
-      componentUuid: component.uuid,
-      tplType: "text",
-      label: "MyElement",
-    });
-    expect(findMissingMentions(`tweak @<${raw}>`, site)).toEqual([]);
-  });
-
-  it("returns the label of a component-scoped mention whose resource is gone", () => {
-    expect(
-      findMissingMentions(`tweak @<tpl:${component.uuid}/gone|MyElement>`, site)
-    ).toEqual(["MyElement"]);
-    expect(
-      findMissingMentions(`tweak @<tpl:gone/${tpl.uuid}|MyElement>`, site)
-    ).toEqual(["MyElement"]);
   });
 
   it("accepts a mention of a directly imported project's resource", () => {
@@ -352,8 +361,17 @@ describe("findMissingMentions", () => {
 });
 
 describe("getMentionUiId", () => {
-  const { site, component, page, tpl, token, variant, animation } =
-    mkTestSite();
+  const {
+    site,
+    component,
+    page,
+    tpl,
+    token,
+    variant,
+    animation,
+    imported,
+    transitive,
+  } = mkTestSite();
 
   it("returns a Model UiId for a component", () => {
     expect(getMentionUiId("component", component.uuid, site)).toBe(
@@ -413,131 +431,323 @@ describe("getMentionUiId", () => {
     ).toBeUndefined();
   });
 
-  describe("imported projects", () => {
-    const { site: s, imported, transitive } = mkTestSite();
+  it("resolves a directly imported animation", () => {
+    expect(getMentionUiId("animation", imported.animation.uuid, site)).toBe(
+      mkModelUiId({
+        typeTag: "AnimationSequence",
+        uuid: imported.animation.uuid,
+      })
+    );
+  });
 
-    // Component and token resolution is covered through findMissingMentions
-    // above; these are the kinds that reach for a different accessor. The
-    // component-scoped kinds are absent on purpose: they only ever name the
-    // focused component, which Studio never lets be an imported one.
-    it("resolves a directly imported animation", () => {
-      expect(getMentionUiId("animation", imported.animation.uuid, s)).toBe(
-        mkModelUiId({
-          typeTag: "AnimationSequence",
-          uuid: imported.animation.uuid,
-        })
-      );
-    });
+  it("resolves a directly imported global variant", () => {
+    expect(getMentionUiId("globalVariant", imported.variant.uuid, site)).toBe(
+      mkModelUiId({ typeTag: "Variant", uuid: imported.variant.uuid })
+    );
+  });
 
-    it("resolves a directly imported global variant", () => {
-      expect(getMentionUiId("globalVariant", imported.variant.uuid, s)).toBe(
-        mkModelUiId({ typeTag: "Variant", uuid: imported.variant.uuid })
-      );
-    });
-
-    it("does not resolve a transitively imported resource", () => {
-      // Mentions stop at direct deps, matching what the `read` tool can fetch.
-      expect(
-        getMentionUiId("component", transitive.component.uuid, s)
-      ).toBeUndefined();
-      expect(getMentionUiId("token", transitive.token.uuid, s)).toBeUndefined();
-      expect(
-        getMentionUiId("animation", transitive.animation.uuid, s)
-      ).toBeUndefined();
-      expect(
-        getMentionUiId("globalVariant", transitive.variant.uuid, s)
-      ).toBeUndefined();
-    });
+  it("does not resolve a transitively imported resource", () => {
+    // Mentions stop at direct deps, matching what the `read` tool can fetch.
+    expect(
+      getMentionUiId("component", transitive.component.uuid, site)
+    ).toBeUndefined();
+    expect(
+      getMentionUiId("token", transitive.token.uuid, site)
+    ).toBeUndefined();
+    expect(
+      getMentionUiId("animation", transitive.animation.uuid, site)
+    ).toBeUndefined();
+    expect(
+      getMentionUiId("globalVariant", transitive.variant.uuid, site)
+    ).toBeUndefined();
   });
 });
 
-describe("mkSiteMentionableResources", () => {
-  const {
-    site,
-    component,
-    page,
-    token,
-    registeredToken,
-    variant,
-    screenVariant,
-    animation,
-  } = mkTestSite();
-  const fromProject = "Design kit";
+const fixture = mkTestSite();
+const depName = (dep: ProjectDependency) => `${dep.name} (nice)`;
+const mkResources = (
+  fx: ReturnType<typeof mkTestSite>,
+  focusedComponent?: Component,
+  selectedTpls: TplNode[] = []
+) =>
+  mkMentionableResources({
+    site: fx.site,
+    focusedComponent,
+    selectedTpls,
+    getDepName: depName,
+  });
+/** What an imported project contributed to the searchable list. */
+const importedResources = (fx: ReturnType<typeof mkTestSite>) =>
+  mkResources(fx).searchable.filter((resource) => resource.fromProject);
 
-  it("lists everything mentionable in a site", () => {
-    expect(mkSiteMentionableResources(site)).toEqual([
-      { kind: "component", uuid: component.uuid, label: "Card" },
-      { kind: "page", uuid: page.uuid, label: "HomePage" },
-      { kind: "token", uuid: token.uuid, label: "primary" },
-      { kind: "token", uuid: registeredToken.uuid, label: "registered" },
+describe("mkMentionableResources", () => {
+  it("lists the project's own resources, then its direct dependencies'", () => {
+    const {
+      component,
+      page,
+      token,
+      registeredToken,
+      variant,
+      screenVariant,
+      animation,
+      imported,
+    } = fixture;
+    const fromProject = depName(imported.dep);
+    // Exact, so a resource that should have been dropped fails here even if it
+    // leaked in unstamped — a page carries no `fromProject` to filter on.
+    expect(mkResources(fixture).searchable).toEqual([
+      { kind: "component", uuid: component.uuid, name: "Card" },
+      { kind: "page", uuid: page.uuid, name: "HomePage" },
+      { kind: "token", uuid: token.uuid, name: "primary" },
+      { kind: "token", uuid: registeredToken.uuid, name: "registered" },
       {
         kind: "globalVariant",
         uuid: variant.uuid,
-        label: "Dark",
+        name: "Dark",
         detail: "Theme",
       },
       {
         kind: "globalVariant",
         uuid: screenVariant.uuid,
-        label: "Mobile",
+        name: "Mobile",
         detail: "Screen",
       },
-      { kind: "animation", uuid: animation.uuid, label: "FadeIn" },
-    ]);
-  });
-
-  it("drops the pages, screen variants and registered tokens of an imported project, stamping the rest", () => {
-    expect(mkSiteMentionableResources(site, fromProject)).toEqual([
-      { kind: "component", uuid: component.uuid, label: "Card", fromProject },
-      { kind: "token", uuid: token.uuid, label: "primary", fromProject },
+      { kind: "animation", uuid: animation.uuid, name: "FadeIn" },
+      // An imported project contributes no pages, code components, registered
+      // tokens or screen variants
       {
-        kind: "globalVariant",
-        uuid: variant.uuid,
-        label: "Dark",
-        detail: "Theme",
+        kind: "component",
+        uuid: imported.component.uuid,
+        name: "ImportedCard",
         fromProject,
       },
-      { kind: "animation", uuid: animation.uuid, label: "FadeIn", fromProject },
+      {
+        kind: "token",
+        uuid: imported.token.uuid,
+        name: "Imported-primary",
+        fromProject,
+      },
+      {
+        kind: "globalVariant",
+        uuid: imported.variant.uuid,
+        name: "ImportedDark",
+        detail: "ImportedTheme",
+        fromProject,
+      },
+      {
+        kind: "animation",
+        uuid: imported.animation.uuid,
+        name: "ImportedFade",
+        fromProject,
+      },
     ]);
   });
 
   it("keeps the registered tokens of a hostless package, which the tokens panel lists", () => {
-    const { imported } = mkTestSite();
+    const own = mkTestSite();
     runInAction(() => {
-      writeable(imported.site).hostLessPackageInfo = new HostLessPackageInfo({
-        name: "plasmic-rich-components",
-        npmPkg: [],
-        cssImport: [],
-        deps: [],
-        registerCalls: [],
-        minimumReactVersion: null,
-      });
+      writeable(own.imported.site).hostLessPackageInfo =
+        new HostLessPackageInfo({
+          name: "plasmic-rich-components",
+          npmPkg: [],
+          cssImport: [],
+          deps: [],
+          registerCalls: [],
+          minimumReactVersion: null,
+        });
     });
 
-    expect(
-      mkSiteMentionableResources(imported.site, fromProject)
-    ).toContainEqual(
-      expect.objectContaining({ uuid: imported.registeredToken.uuid })
+    expect(importedResources(own)).toContainEqual(
+      expect.objectContaining({ uuid: own.imported.registeredToken.uuid })
     );
   });
 
   it("takes the breakpoints from the active screen variant group, even when an imported project owns it", () => {
-    const fixture = mkTestSite();
+    const own = mkTestSite();
     runInAction(() => {
-      fixture.site.activeScreenVariantGroup =
-        fixture.imported.site.globalVariantGroups[0];
+      own.site.activeScreenVariantGroup =
+        own.imported.site.globalVariantGroups[0];
     });
 
-    const resources = mkSiteMentionableResources(fixture.site);
+    const resources = mkResources(own).searchable;
     expect(resources).toContainEqual({
       kind: "globalVariant",
-      uuid: fixture.imported.screenVariant.uuid,
-      label: "ImportedTablet",
+      uuid: own.imported.screenVariant.uuid,
+      name: "ImportedTablet",
       detail: "Screen",
     });
     // The site's own screen variant group is no longer the active one
     expect(resources).not.toContainEqual(
-      expect.objectContaining({ uuid: fixture.screenVariant.uuid })
+      expect.objectContaining({ uuid: own.screenVariant.uuid })
     );
+  });
+
+  it("puts local resources ahead of imported ones, so ties favour local", () => {
+    const { searchable } = mkResources(fixture);
+    const firstImported = searchable.findIndex((r) => r.fromProject);
+    expect(firstImported).toBeGreaterThan(0);
+    // Nothing local appears after the imports begin.
+    expect(searchable.slice(firstImported).every((r) => r.fromProject)).toBe(
+      true
+    );
+  });
+
+  it("mentions direct dependencies only, matching what `read` can fetch", () => {
+    const { searchable } = mkResources(fixture);
+    expect(
+      searchable.some((r) => r.uuid === fixture.imported.component.uuid)
+    ).toBe(true);
+    // The transitive dep is reachable from the imported one, but out of scope.
+    expect(
+      searchable.some((r) => r.uuid === fixture.transitive.component.uuid)
+    ).toBe(false);
+  });
+
+  it("adds the open component's named elements and its variants", () => {
+    const { searchable } = mkResources(fixture, fixture.component, [
+      fixture.tpl,
+    ]);
+    expect(searchable).toContainEqual(
+      expect.objectContaining({ kind: "tpl", uuid: fixture.tpl.uuid })
+    );
+    expect(searchable).toContainEqual({
+      kind: "componentVariant",
+      uuid: fixture.componentVariant.uuid,
+      componentUuid: fixture.component.uuid,
+      name: "Large",
+      detail: "Size",
+    });
+    // An unnamed element is not searchable, so it is left out of `searchable`.
+    expect(searchable).not.toContainEqual(
+      expect.objectContaining({ uuid: fixture.unnamedTpl.uuid })
+    );
+  });
+
+  it("leaves out component-scoped resources when nothing is open", () => {
+    const { searchable } = mkResources(fixture);
+    expect(searchable.some((r) => r.kind === "tpl")).toBe(false);
+    expect(searchable.some((r) => r.kind === "componentVariant")).toBe(false);
+  });
+});
+
+const selectionOf = (
+  fx: ReturnType<typeof mkTestSite>,
+  focusedComponent?: Component,
+  selectedTpls: TplNode[] = []
+) => mkResources(fx, focusedComponent, selectedTpls).selection;
+
+describe("mkMentionableResources: the canvas selection", () => {
+  it("reports the open component and the element selected in it", () => {
+    expect(selectionOf(fixture, fixture.component, [fixture.tpl])).toEqual({
+      component: {
+        kind: "component",
+        uuid: fixture.component.uuid,
+        name: "Card",
+      },
+      elements: [
+        {
+          kind: "tpl",
+          uuid: fixture.tpl.uuid,
+          componentUuid: fixture.component.uuid,
+          tplType: "freeContainer",
+          name: "MyElement",
+        },
+      ],
+    });
+  });
+
+  it("describes a selected element that has no name", () => {
+    const { elements } = ensure(
+      selectionOf(fixture, fixture.component, [fixture.unnamedTpl]),
+      "a component is open"
+    );
+    expect(elements[0].name).toBe(`(unnamed ${FREE_CONTAINER_LOWER})`);
+  });
+
+  it("reports a page as a page", () => {
+    expect(selectionOf(fixture, fixture.page)).toEqual({
+      component: { kind: "page", uuid: fixture.page.uuid, name: "HomePage" },
+      elements: [],
+    });
+  });
+
+  it("reports nothing when no component is open", () => {
+    expect(selectionOf(fixture, undefined, [fixture.tpl])).toBeUndefined();
+  });
+
+  it("reports every selected element, in selection order", () => {
+    const { elements } = ensure(
+      selectionOf(fixture, fixture.component, [
+        fixture.tpl,
+        fixture.unnamedTpl,
+      ]),
+      "a component is open"
+    );
+    expect(elements.map((el) => el.uuid)).toEqual([
+      fixture.tpl.uuid,
+      fixture.unnamedTpl.uuid,
+    ]);
+  });
+
+  it("mentions the selected element as the resource it resolves to", () => {
+    const { elements } = ensure(
+      selectionOf(fixture, fixture.component, [fixture.unnamedTpl]),
+      "a component is open"
+    );
+    const content = mkMentionRaw(elements[0]);
+    expect(findMissingMentions(`tweak @<${content}>`, fixture.site)).toEqual(
+      []
+    );
+    const { kind, uuid } = ensure(
+      parseMention(`@<${content}>`),
+      "must parse back"
+    );
+    expect(
+      getMentionUiId(kind, ensure(uuid, "must carry a uuid"), fixture.site)
+    ).toBe(`Tpl:${fixture.component.uuid}/${fixture.unnamedTpl.uuid}`);
+  });
+});
+
+describe("getResourceMatchScore", () => {
+  const token: MentionableResource = {
+    kind: "token",
+    uuid: "t1",
+    name: "primary",
+    detail: "Colors",
+  };
+
+  it("matches by name, detail and kind", () => {
+    expect(getResourceMatchScore(token, "prim")).toBeDefined();
+    expect(getResourceMatchScore(token, "Colors")).toBeDefined();
+    expect(getResourceMatchScore(token, "token")).toBeDefined();
+    expect(getResourceMatchScore(token, "nope")).toBeUndefined();
+  });
+
+  it("ranks a prefix match above a substring match", () => {
+    const other: MentionableResource = {
+      kind: "token",
+      uuid: "t2",
+      name: "the-primary",
+    };
+    expect(
+      ensure(getResourceMatchScore(token, "prim"), "matches")
+    ).toBeGreaterThan(
+      ensure(getResourceMatchScore(other, "prim"), "also matches")
+    );
+  });
+
+  it("matches an imported resource by the project it came from", () => {
+    expect(
+      getResourceMatchScore(
+        { ...token, fromProject: "Design system" },
+        "Design"
+      )
+    ).toBeDefined();
+  });
+
+  it("scores everything on a bare `@`, leaving the choice to the caller", () => {
+    // Which rows a bare `@` offers is decided by which set is handed to the
+    // dropdown, not by scoring.
+    expect(getResourceMatchScore(token, "")).toBeDefined();
   });
 });

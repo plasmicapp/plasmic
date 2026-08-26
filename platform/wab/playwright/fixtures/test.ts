@@ -1,4 +1,4 @@
-import { APIRequestContext, test as base } from "@playwright/test";
+import { APIRequestContext, test as base, expect } from "@playwright/test";
 
 import { AuthPage } from "../models/auth-page";
 import { StudioModel } from "../models/studio-model";
@@ -14,9 +14,31 @@ export interface TestModels {
 }
 export interface TestFixtures extends TestModels {
   apiClient: ApiClient;
+  /** Auto fixture; see below. Never requested by name. */
+  noCopilotApi: void;
 }
 
 export const testModels = base.extend<TestFixtures>({
+  /**
+   * Copilot requests reach a real model provider and cost real money, so no
+   * test may make one. Applies to every spec automatically — a test that
+   * submits a prompt fails here rather than quietly spending tokens.
+   */
+  noCopilotApi: [
+    async ({ page }, use) => {
+      const attempted: string[] = [];
+      await page.route("**/api/v1/copilot**", async (route) => {
+        attempted.push(route.request().url());
+        await route.abort("failed");
+      });
+      await use();
+      expect(
+        attempted,
+        "e2e tests must not call the copilot API; stub it or avoid submitting"
+      ).toEqual([]);
+    },
+    { auto: true },
+  ],
   models: async ({ page }, use) => {
     const models = {
       studio: new StudioModel(page),
