@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "description": "Runtime library for rendering Plasmic-generated React components — variants, slots, overrides, and styling.",
   "homepage": "https://www.plasmic.app",
   "repository": {
@@ -92,7 +92,7 @@
     "test-storybook": "test-storybook"
   },
   "dependencies": {
-    "@plasmicapp/auth-react": "0.0.31",
+    "@plasmicapp/auth-react": "0.0.32",
     "@plasmicapp/data-sources": "1.0.26",
     "@plasmicapp/data-sources-context": "0.1.25",
     "@plasmicapp/host": "2.0.17",

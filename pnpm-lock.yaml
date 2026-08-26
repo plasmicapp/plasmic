@@ -176,7 +176,7 @@ importers:
   packages/auth-react:
     dependencies:
       '@plasmicapp/auth-api':
-        specifier: 0.0.19
+        specifier: 0.0.20
         version: link:../auth-api
       '@plasmicapp/isomorphic-unfetch':
         specifier: 1.0.3
@@ -830,7 +830,7 @@ importers:
   packages/react-web:
     dependencies:
       '@plasmicapp/auth-react':
-        specifier: 0.0.31
+        specifier: 0.0.32
         version: link:../auth-react
       '@plasmicapp/data-sources':
         specifier: 1.0.26
@@ -987,7 +987,7 @@ importers:
   packages/react-web-runtime:
     devDependencies:
       '@plasmicapp/react-web':
-        specifier: 1.0.32
+        specifier: 1.0.33
         version: link:../react-web
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -1202,7 +1202,7 @@ importers:
         specifier: 0.1.87
         version: link:../../packages/query
       '@plasmicapp/react-web':
-        specifier: 1.0.32
+        specifier: 1.0.33
         version: link:../../packages/react-web
       '@rollup/plugin-commonjs':
         specifier: ^11.0.0

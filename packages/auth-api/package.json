@@ -1,5 +1,5 @@
 {
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Framework-agnostic client for Plasmic Auth login, logout, and user session flows.",
   "homepage": "https://www.plasmic.app",
   "repository": {
