@@ -35,8 +35,6 @@ export async function getPlasmicAppUserFromToken(opts: {
     },
   });
 
-  const user = await result.json();
-
   if (result.status >= 400) {
     return {
       user: null,
@@ -46,7 +44,7 @@ export async function getPlasmicAppUserFromToken(opts: {
   }
 
   return {
-    user,
+    user: await result.json(),
     token,
   };
 }

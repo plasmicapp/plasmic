@@ -1,11 +1,10 @@
-import { Fetcher } from '@plasmicpkgs/commerce';
+import { Fetcher } from "@plasmicpkgs/commerce";
 
 export const fetcher: Fetcher = async () => {
-  console.log('FETCHER')
-  const res = await fetch('./data.json')
+  const res = await fetch("./data.json");
   if (res.ok) {
-    const { data } = await res.json()
-    return data
+    const { data } = await res.json();
+    return data;
   }
-  throw res
-}
+  throw res;
+};

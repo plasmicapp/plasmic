@@ -81,7 +81,7 @@ async function handleCallback(opts: {
   });
 
   if (result.error) {
-    console.log(`Error while performing code exchange: ${result.error}`);
+    console.error(`Error while performing code exchange: ${result.error}`);
     return undefined;
   }
 
@@ -116,7 +116,7 @@ async function checkAlreadyLoggedUser(opts: {
     // If there is an error, we just remove the token
     // But ideally we should check if the reason is token expired
     localStorage.removeItem(storageUserKey(appId));
-    console.log(`Error while checking logged user`);
+    console.error(`Error while checking logged user`);
     return { user: null, token: null };
   }
 

@@ -1,7 +1,7 @@
 import { GlobalActionsProvider, useSelector } from "@plasmicapp/host";
 import {
-  default as registerToken,
   TokenRegistration,
+  default as registerToken,
 } from "@plasmicapp/host/registerToken";
 import { addLoadingStateListener } from "@plasmicapp/query";
 import { ConfigProvider, message, notification, theme } from "antd";
@@ -15,7 +15,7 @@ import type { Locale } from "antd/lib/locale";
 import enUS from "antd/lib/locale/en_US.js";
 import React from "react";
 import { useIsMounted } from "./react-utils";
-import { makeRegisterGlobalContext, Registerable } from "./utils";
+import { Registerable, makeRegisterGlobalContext } from "./utils";
 
 // enUS is a CJS file, and it doesn't always import correctly in
 // esm mode (nextjs does it right, but create-react-app does it wrong).
@@ -168,6 +168,7 @@ function InnerConfigProvider(props: {
     () => ({
       showNotification: (
         type: "success" | "error" | "info" | "warning",
+        // eslint-disable-next-line no-shadow
         message: React.ReactNode,
         description?: React.ReactNode,
         duration?: number,
@@ -223,7 +224,7 @@ function InnerConfigProvider(props: {
 let warned = false;
 function warnOutdatedDeps() {
   if (!warned) {
-    console.log(
+    console.warn(
       `You are using a version of @plasmicapp/* that is too old. Please upgrade to the latest version.`
     );
     warned = true;

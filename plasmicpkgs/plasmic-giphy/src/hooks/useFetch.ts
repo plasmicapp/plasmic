@@ -1,30 +1,32 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface HookProps {
-    keyword: string
+  keyword: string;
 }
 export const useFetch = ({ keyword }: HookProps) => {
-    const [giphyId, setGiphyId] = useState("");
+  const [giphyId, setGiphyId] = useState("");
 
-    useEffect(() => {
-        if (keyword) fetchGiphy();
-    }, [keyword]);
+  useEffect(() => {
+    if (keyword) {
+      fetchGiphy();
+    }
+  }, [keyword]);
 
-    const fetchGiphy = async () => {
-        try {
-            const response = await fetch(
-                `https://api.giphy.com/v1/gifs/search?api_key=X1q3afkDR9WHSZJhLS6H9yYTQMPIWOTK&q=${keyword
-                    .split(" ")
-                    .join("")}&limit=1`
-            );
+  const fetchGiphy = async () => {
+    try {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/search?api_key=X1q3afkDR9WHSZJhLS6H9yYTQMPIWOTK&q=${keyword
+          .split(" ")
+          .join("")}&limit=1`
+      );
 
-            const { data } = await response.json();
+      const { data } = await response.json();
 
-            setGiphyId(data[0]?.id);
-        } catch (error) {
-            console.log("Error in gif api retrieval: ", error);
-            setGiphyId("");
-        }
-    };
-    return giphyId;
+      setGiphyId(data[0]?.id);
+    } catch (error) {
+      console.error("Error in gif api retrieval: ", error);
+      setGiphyId("");
+    }
+  };
+  return giphyId;
 };
