@@ -58,17 +58,17 @@ export const PlasmicLabeledItem__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicLabeledItem__ArgsType = {
+  gap?: number;
   label?: React.ReactNode;
   value?: React.ReactNode;
   rightExtras?: React.ReactNode;
-  gap?: number;
 };
 type ArgPropType = keyof PlasmicLabeledItem__ArgsType;
 export const PlasmicLabeledItem__ArgProps = new Array<ArgPropType>(
+  "gap",
   "label",
   "value",
-  "rightExtras",
-  "gap"
+  "rightExtras"
 );
 
 export type PlasmicLabeledItem__OverridesType = {
@@ -76,10 +76,10 @@ export type PlasmicLabeledItem__OverridesType = {
 };
 
 export interface DefaultLabeledItemProps {
+  gap?: number;
   label?: React.ReactNode;
   value?: React.ReactNode;
   rightExtras?: React.ReactNode;
-  gap?: number;
   layout?: SingleChoiceArg<"vertical" | "horizontal">;
   labelSize?: SingleChoiceArg<"half">;
   withRightExtras?: SingleBooleanChoiceArg<"withRightExtras">;
@@ -137,7 +137,19 @@ function PlasmicLabeledItem__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          !!$props.rightExtras ?? $props.withRightExtras,
+          (() => {
+            try {
+              return $props.rightExtras ? true : undefined;
+            } catch (e) {
+              if (
+                e instanceof TypeError ||
+                e?.plasmicType === "PlasmicUndefinedDataError"
+              ) {
+                return undefined;
+              }
+              throw e;
+            }
+          })() ?? $props.withRightExtras,
       },
     ],
     [$props, $ctx, $refs]
