@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.25
         version: 0.1.25(react@18.3.1)
       '@plasmicapp/react-web':
-        specifier: ^1.0.32
-        version: 1.0.32(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.33
+        version: 1.0.33(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -199,12 +199,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@plasmicapp/auth-api@0.0.19':
-    resolution: {integrity: sha512-loDxQFCUYDk6hKxHl0GCyp+AwodnB4Mqda08ydIjBhB0p8Y2Z2rKjDtuI3kFeABUzTiF13FPu3whUWFA2e4o5g==}
+  '@plasmicapp/auth-api@0.0.20':
+    resolution: {integrity: sha512-/qdJx92s6cEhyS7dwaJjm+GB6+klputltx/BwX3XftYznqqLOi60PWgnP7uzQ9Uj5bM/YsiwPps/Coso4XBeyw==}
     engines: {node: '>=10'}
 
-  '@plasmicapp/auth-react@0.0.31':
-    resolution: {integrity: sha512-HmeclB+0XBA9ySaX0GI7jR+zHUKmfdmeRw7FIyzAgm0WDjFN4odow+nQX0D23YcRqjZUHNG5RaHrUil1zz3CXw==}
+  '@plasmicapp/auth-react@0.0.32':
+    resolution: {integrity: sha512-FG6vQvPRmtp9R9G3pFSXk7mkJN8sv3DmMDiUHkmFugPK8j1i21tld6bqavO7BFyS9EmITVVv2x2z0fdzvIOmVg==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16.8.0'
@@ -252,8 +252,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@plasmicapp/react-web@1.0.32':
-    resolution: {integrity: sha512-kuh1RMG9Sdnonl2ote2TJ2pC3JH4uvLtKNJvyI7EM9wssZcfU5JWXm5fZjFAAYkjnvycDieEJ4qqVW4y5YbjpQ==}
+  '@plasmicapp/react-web@1.0.33':
+    resolution: {integrity: sha512-p2nSXWbfBaV32S1kFLpCpYKOk1tlqOoHRU4J58XKLx5efoVOqRi5IuDpsmHWths48waRciO2mqLc8PBOnVkcmw==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1740,13 +1740,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@plasmicapp/auth-api@0.0.19':
+  '@plasmicapp/auth-api@0.0.20':
     dependencies:
       '@plasmicapp/isomorphic-unfetch': 1.0.3
 
-  '@plasmicapp/auth-react@0.0.31(react@18.3.1)':
+  '@plasmicapp/auth-react@0.0.32(react@18.3.1)':
     dependencies:
-      '@plasmicapp/auth-api': 0.0.19
+      '@plasmicapp/auth-api': 0.0.20
       '@plasmicapp/isomorphic-unfetch': 1.0.3
       '@plasmicapp/query': 0.1.87(react@18.3.1)
       react: 18.3.1
@@ -1797,9 +1797,9 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/react-web@1.0.32(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/react-web@1.0.33(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@plasmicapp/auth-react': 0.0.31(react@18.3.1)
+      '@plasmicapp/auth-react': 0.0.32(react@18.3.1)
       '@plasmicapp/data-sources': 1.0.26(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@plasmicapp/data-sources-context': 0.1.25(react@18.3.1)
       '@plasmicapp/host': 2.0.17(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
