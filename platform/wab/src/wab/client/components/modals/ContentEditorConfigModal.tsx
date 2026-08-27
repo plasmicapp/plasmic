@@ -117,15 +117,17 @@ export function ContentEditorConfigModal(props: {
           <Form.Item name={["canInsertHostless"]} noStyle>
             <BooleanPreferencesControl
               label="Can use components from component store?"
-              prefKeys={[
-                ...uniqBy(
-                  appCtx.appConfig.hostLessComponents ?? [],
-                  (p) => p.codeName
-                ).map((pkg) => ({
-                  value: pkg.codeName ?? "",
-                  label: pkg.name,
-                })),
-              ]}
+              prefKeys={uniqBy(
+                [
+                  // The "plume" key gates both Plume and Plexus components
+                  { value: "plume", label: "Plasmic Customizable Components" },
+                  ...(appCtx.appConfig.hostLessComponents ?? []).map((pkg) => ({
+                    value: pkg.codeName ?? "",
+                    label: pkg.name,
+                  })),
+                ],
+                (p) => p.value
+              ).sort((a, b) => a.label.localeCompare(b.label))}
             />
           </Form.Item>
 

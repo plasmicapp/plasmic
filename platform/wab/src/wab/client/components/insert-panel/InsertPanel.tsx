@@ -1315,7 +1315,10 @@ export function buildAddItemGroups({
                     meta.projectId === installableProjectId
                 )
               : undefined;
-            if (installable) {
+            if (
+              installable &&
+              canInsertHostlessPackage(uiConfig, "plume", canInsertContext)
+            ) {
               sectionInstallableItem = createAddInstallable(installable);
             }
           }
@@ -1577,7 +1580,8 @@ export function buildAddItemGroups({
         ),
       },
 
-    hasPlexus
+    // The "plume" key gates all customizable components, Plexus included
+    hasPlexus && canInsertHostlessPackage(uiConfig, "plume", canInsertContext)
       ? {
           key: "ui-kits",
           sectionLabel: "Design systems",
