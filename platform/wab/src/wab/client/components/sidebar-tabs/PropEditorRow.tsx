@@ -74,6 +74,7 @@ import {
   swallow,
   switchType,
   tuple,
+  withoutNils,
 } from "@/wab/shared/common";
 import { inferPropTypeFromParam } from "@/wab/shared/component-props";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
@@ -151,6 +152,7 @@ import {
   isKnownQueryData,
   isKnownRenderExpr,
   isKnownTemplatedString,
+  isKnownTplComponent,
   isKnownVarRef,
   MapExpr,
   ObjectPath,
@@ -210,6 +212,10 @@ export interface PropValueEditorContextData {
    * context; each row looks up its own entry.
    */
   invalidArgs?: Record<string, InvalidArg>;
+  /** Most specific first. */
+  paramOwnerNames: readonly string[];
+  paramName?: string;
+  onSelectDataToken?: (ref: DataTokenRef) => void;
   tpl?: TplTag | TplComponent;
   viewCtx?: ViewCtx;
   env: { [key: string]: any } | undefined;
@@ -222,6 +228,7 @@ export const PropValueEditorContext =
   React.createContext<PropValueEditorContextData>({
     componentPropValues: {},
     ccContextData: {},
+    paramOwnerNames: [],
     env: undefined,
   });
 
@@ -749,6 +756,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     disabledDynamicValue
   );
   const ownerComponent = tpl && $$$(tpl).owningComponent();
+
   const referencedParam =
     ownerComponent && expr && !disableLinkToProp
       ? extractReferencedParam(ownerComponent, expr)
@@ -805,6 +813,12 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const allowDynamicValue =
     !readOnly && !referencedParam && !disabledDynamicValue && !disabled;
 
+  const canSuggestDataTokens =
+    allowDynamicValue &&
+    !isCustomCode &&
+    !isTemplatedStringWithDynamicParts &&
+    studioCtx.showDataTokens();
+
   const showDynamicValueButton =
     allowDynamicValue &&
     allowPointerInteractions &&
@@ -852,7 +866,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
       !allowDynamicValue ||
       isCustomCode ||
       isTemplatedStringWithDynamicParts ||
-      !viewCtx?.studioCtx.showDataTokens()
+      !studioCtx.showDataTokens()
     ) {
       return null;
     }
@@ -1171,6 +1185,10 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               env: canvasEnv,
               schema,
               exprCtx,
+              paramName: attr,
+              onSelectDataToken: canSuggestDataTokens
+                ? switchToDynamicValue
+                : undefined,
             }}
           >
             {invalidArg ? (
@@ -1746,10 +1764,20 @@ function PropEditorRow_(
     getCurrentComponentEvalContext();
   const env = !props.env ? viewCtx.getCanvasEnvForTpl(tpl) : props.env;
   const schema = !props.schema ? viewCtx.customFunctionsSchema() : props.schema;
+  const owningComponent = $$$(tpl).tryGetOwningComponent();
 
   return (
     <PropValueEditorContext.Provider
       value={{
+        paramOwnerNames: withoutNils([
+          tpl.name,
+          isKnownTplComponent(tpl)
+            ? getComponentDisplayName(tpl.component)
+            : undefined,
+          owningComponent
+            ? getComponentDisplayName(owningComponent)
+            : undefined,
+        ]),
         tpl,
         viewCtx,
         componentPropValues: componentPropValues ?? {},

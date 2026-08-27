@@ -415,6 +415,7 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
                       tpl,
                       componentPropValues: componentProps,
                       ccContextData: {},
+                      paramOwnerNames: [],
                       env: {},
                     }}
                   >

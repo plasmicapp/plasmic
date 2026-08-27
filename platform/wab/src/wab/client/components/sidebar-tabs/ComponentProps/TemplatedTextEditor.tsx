@@ -5,6 +5,7 @@ import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/Template
 import DataPicker, {
   DataPickerTypesSchema,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { useDataTokenSuggestionsMenu } from "@/wab/client/components/sidebar-tabs/DataBinding/useDataTokenSuggestionsMenu";
 import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { zIndex } from "@/wab/client/z-index";
@@ -26,6 +27,7 @@ import {
   codeLit,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
+  flattenTemplatedStringToString,
   isRealCodeExpr,
   summarizeExpr,
 } from "@/wab/shared/core/exprs";
@@ -239,6 +241,16 @@ export const TemplatedTextEditor = React.forwardRef<
       return getTextFromDescendents(descendants, exprCtx) === "``";
     };
 
+    const queryText = templatedString
+      ? flattenTemplatedStringToString(templatedString)
+      : "";
+    const { openMenu, getComboboxProps, getInputProps, menu } =
+      useDataTokenSuggestionsMenu({
+        category: "string",
+        queryText,
+        openDelayMs: 200,
+      });
+
     const onSlateChange = React.useCallback(
       async (newValue: Descendant[]) => {
         // @hack Some browsers will try to get the contenteditable
@@ -255,6 +267,8 @@ export const TemplatedTextEditor = React.forwardRef<
 
         const newVal = resolveTemplatedString(newValue);
 
+        openMenu();
+
         if (sql) {
           if (!(await isValidSqlString(newVal))) {
             setValidSqlString(false);
@@ -266,7 +280,7 @@ export const TemplatedTextEditor = React.forwardRef<
 
         onChange(newVal);
       },
-      [value, onChange, sql]
+      [value, onChange, sql, openMenu]
     );
 
     const renderElementFn = React.useMemo(
@@ -326,7 +340,7 @@ export const TemplatedTextEditor = React.forwardRef<
     }, [value, component, studioCtx]);
 
     return (
-      <div className="flex-col fill-width">
+      <div {...getComboboxProps()} className="flex-col fill-width">
         <div
           ref={slateContainerRef}
           onPointerMove={() => setMoved(true)}
@@ -361,14 +375,17 @@ export const TemplatedTextEditor = React.forwardRef<
               placeholder={placeholder}
               readOnly={readOnly || disabled}
               disabled={disabled}
-              onKeyDown={(event) => {
-                setMoved(false);
-                onKeyDown?.(event);
-              }}
-              onBlur={onBlur}
+              {...getInputProps({
+                onKeyDown: (event) => {
+                  setMoved(false);
+                  onKeyDown?.(event);
+                },
+                onBlur: (event) => onBlur?.(event),
+              })}
             />
           </Slate>
         </div>
+        {menu}
         <div className="flex-row fill-width">
           {sql && !validSqlString && (
             <small className={cx(styles.errorMsg, "flex-no-shrink")}>

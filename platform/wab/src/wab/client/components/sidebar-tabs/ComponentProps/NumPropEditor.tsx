@@ -1,5 +1,6 @@
+import { useDataTokenSuggestionsMenu } from "@/wab/client/components/sidebar-tabs/DataBinding/useDataTokenSuggestionsMenu";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
-import { InputNumber, notification, Slider } from "antd";
+import { InputNumber, Slider, notification } from "antd";
 import { defer, isNil } from "lodash";
 import React, { useEffect } from "react";
 import { useUnmount } from "react-use";
@@ -16,8 +17,6 @@ interface InputNumPropEditorProps {
 }
 
 export function InputNumPropEditor(props: InputNumPropEditorProps) {
-  const ref = React.useRef<HTMLInputElement | null>(null);
-
   const {
     value: draft,
     isDirty,
@@ -72,26 +71,54 @@ export function InputNumPropEditor(props: InputNumPropEditorProps) {
     reset();
   };
 
+  // Picking a token switches the prop to a dynamic value, which unmounts this
+  // editor — and the unmount below submits the draft. Without this the stale
+  // draft would overwrite the token that was just picked.
+  const pickedTokenRef = React.useRef(false);
   useUnmount(() => {
+    if (pickedTokenRef.current) {
+      return;
+    }
     // Same behavior of `useUnmount` in `StringPropEditor`.
     defer(submitDraft);
   });
 
+  const queryText = draft?.toString() ?? "";
+  const {
+    openMenu,
+    getComboboxProps,
+    getInputProps,
+    menu: dataTokenSuggestionsMenu,
+  } = useDataTokenSuggestionsMenu({
+    category: "number",
+    queryText,
+    onSelect: () => {
+      pickedTokenRef.current = true;
+    },
+  });
+
   return (
-    <InputNumber
-      type="number" // https://ant.design/components/input-number#notes
-      className="code textboxlike fill-width"
-      size="small"
-      placeholder={props.defaultValueHint?.toString() ?? "unset"}
-      value={draft}
-      onChange={(val) => setDraft(val ?? undefined)}
-      onKeyDown={handleKeyDown}
-      onPressEnter={submitDraft}
-      onBlur={submitDraft}
-      ref={ref}
-      readOnly={props.readOnly}
-      data-plasmic-prop={props["data-plasmic-prop"]}
-    />
+    <div {...getComboboxProps()}>
+      <InputNumber
+        {...getInputProps({
+          onKeyDown: handleKeyDown,
+          onBlur: submitDraft,
+        })}
+        type="number" // https://ant.design/components/input-number#notes
+        className="code textboxlike fill-width"
+        size="small"
+        placeholder={props.defaultValueHint?.toString() ?? "unset"}
+        value={draft}
+        onChange={(val) => {
+          setDraft(val ?? undefined);
+          openMenu();
+        }}
+        onPressEnter={submitDraft}
+        readOnly={props.readOnly}
+        data-plasmic-prop={props["data-plasmic-prop"]}
+      />
+      {dataTokenSuggestionsMenu}
+    </div>
   );
 }
 

@@ -42,7 +42,9 @@ import {
   spawn,
   switchType,
   withoutFalsy,
+  withoutNils,
 } from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import {
   getCustomFunctionParams,
   StatefulQueryState,
@@ -328,7 +330,15 @@ export const ServerQueryOpDraftForm = observer(
 
     const propValueEditorContext =
       React.useMemo<PropValueEditorContextData>(() => {
+        const func = value?.fnExpr?.func;
         return {
+          paramOwnerNames: withoutNils([
+            value?.queryName,
+            func ? func.displayName ?? func.importName : undefined,
+            exprCtx.component
+              ? getComponentDisplayName(exprCtx.component)
+              : undefined,
+          ]),
           tpl: viewCtx?.tplRoot() as TplTag | undefined,
           viewCtx,
           componentPropValues: funcParamsValues ?? [],
@@ -346,6 +356,8 @@ export const ServerQueryOpDraftForm = observer(
         exprCtx,
         ccContextData,
         invalidArgs,
+        value?.fnExpr?.func,
+        value?.queryName,
       ]);
 
     React.useEffect(() => {

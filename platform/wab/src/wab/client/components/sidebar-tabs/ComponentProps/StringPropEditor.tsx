@@ -7,17 +7,17 @@ import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
-  asCode,
   ExprCtx,
-  simplifyTemplatedString,
   TemplatedStringPropEditorValue,
+  asCode,
+  simplifyTemplatedString,
 } from "@/wab/shared/core/exprs";
 import {
   Component,
+  TemplatedString,
   isKnownCustomCode,
   isKnownObjectPath,
   isKnownTemplatedString,
-  TemplatedString,
 } from "@/wab/shared/model/classes";
 import { Input, InputRef } from "antd";
 import { default as classNames } from "classnames";

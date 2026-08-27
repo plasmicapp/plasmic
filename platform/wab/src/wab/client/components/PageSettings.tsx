@@ -268,6 +268,7 @@ const PageSettings = observer(function PageSettings({
         value={{
           componentPropValues: {},
           ccContextData: {},
+          paramOwnerNames: [],
           env: undefined,
         }}
       >

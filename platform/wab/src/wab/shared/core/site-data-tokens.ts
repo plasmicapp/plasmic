@@ -1,4 +1,8 @@
-import { DataTokenType, getDataTokenType } from "@/wab/commons/DataToken";
+import {
+  DataTokenRef,
+  DataTokenType,
+  getDataTokenType,
+} from "@/wab/commons/DataToken";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -79,6 +83,29 @@ export const siteFinalDataTokensOfType = maybeComputedFn(
 
     return tokens.filter((t) => getDataTokenType(t.value) === category);
   }
+);
+
+/**
+ * Local + direct-dependency data tokens of the given type as
+ * {@link DataTokenRef}s, keeping each token's owning project id
+ */
+export const siteDataTokenRefsDirectDeps = maybeComputedFn(
+  (
+    site: Site,
+    projectId: ProjectId,
+    category: DataTokenType
+  ): ReadonlyArray<DataTokenRef> => [
+    ...siteFinalDataTokensOfType(site, category).map((finalToken) => ({
+      token: finalToken.base,
+      projectId,
+    })),
+    ...walkDependencyTree(site, "direct").flatMap((dep) =>
+      siteFinalDataTokensOfType(dep.site, category).map((finalToken) => ({
+        token: finalToken.base,
+        projectId: dep.projectId as ProjectId,
+      }))
+    ),
+  ]
 );
 
 export function finalDataTokensForDep(
