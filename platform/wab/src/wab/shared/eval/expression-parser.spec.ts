@@ -17,6 +17,7 @@ import {
   transformDataTokenPathToDisplay,
   transformDataTokensInCode,
   transformDataTokensToDisplay,
+  tryCodeWritesToGlobalVariable,
   tryParseAsObjectPath,
 } from "@/wab/shared/eval/expression-parser";
 import {
@@ -256,6 +257,76 @@ describe("parseCodeExpression", function () {
     const expected = emptyParsedExprInfo();
     expected.usedFreeVars = new Set(["o", "g"]);
     expect(parsed).toEqual(expected);
+  });
+});
+
+describe("tryCodeWritesToGlobalVariable", () => {
+  it("finds direct writes to the ambient binding", () => {
+    expect(tryCodeWritesToGlobalVariable("$state = nextState", "$state")).toBe(
+      true
+    );
+    expect(tryCodeWritesToGlobalVariable("$state ||= {}", "$state")).toBe(true);
+    expect(tryCodeWritesToGlobalVariable("$state++", "$state")).toBe(true);
+    expect(
+      tryCodeWritesToGlobalVariable("({ value: $state } = source)", "$state")
+    ).toBe(true);
+    expect(
+      tryCodeWritesToGlobalVariable("for ($state of states) {}", "$state")
+    ).toBe(true);
+  });
+
+  it("allows property writes", () => {
+    expect(
+      tryCodeWritesToGlobalVariable("$state.count = $state.count + 1", "$state")
+    ).toBe(false);
+    expect(
+      tryCodeWritesToGlobalVariable("for ($state.item of items) {}", "$state")
+    ).toBe(false);
+  });
+
+  it("reads expression-only code, which is not a valid program", () => {
+    expect(
+      tryCodeWritesToGlobalVariable("{ first: 1, second: 2 }", "$state")
+    ).toBe(false);
+    expect(
+      tryCodeWritesToGlobalVariable("function () { return $state }", "$state")
+    ).toBe(false);
+    expect(
+      tryCodeWritesToGlobalVariable("{ first: ($state = 1) }", "$state")
+    ).toBe(true);
+  });
+
+  it("ignores writes to locally shadowed bindings", () => {
+    expect(
+      tryCodeWritesToGlobalVariable(
+        "(($state) => { $state = nextState })({})",
+        "$state"
+      )
+    ).toBe(false);
+    expect(
+      tryCodeWritesToGlobalVariable(
+        "let $state = {}; $state = nextState",
+        "$state"
+      )
+    ).toBe(false);
+  });
+
+  it("parses code in the same async function-body context as validation", () => {
+    expect(
+      tryCodeWritesToGlobalVariable("using resource = acquire()", "$state")
+    ).toBe(false);
+    expect(
+      tryCodeWritesToGlobalVariable(
+        "await using resource = acquire()",
+        "$state"
+      )
+    ).toBe(false);
+  });
+
+  it("returns undefined for runtime syntax that Acorn cannot parse", () => {
+    expect(
+      tryCodeWritesToGlobalVariable('return import.source("module")', "$state")
+    ).toBe(undefined);
   });
 });
 

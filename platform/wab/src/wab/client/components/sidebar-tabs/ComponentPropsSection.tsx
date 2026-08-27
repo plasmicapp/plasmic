@@ -78,7 +78,11 @@ import {
   extractValueSavedFromDataPicker,
 } from "@/wab/shared/core/exprs";
 import { ComponentPropOrigin } from "@/wab/shared/core/lang";
-import { StateVariableType, getStateVarName } from "@/wab/shared/core/states";
+import {
+  StateVariableType,
+  getStateVarName,
+  validateInteractionCode,
+} from "@/wab/shared/core/states";
 import {
   EventHandlerKeyType,
   getDisplayNameOfEventHandlerKey,
@@ -112,7 +116,6 @@ import {
   isKnownFunctionType,
 } from "@/wab/shared/model/classes";
 import { wabToTsType } from "@/wab/shared/model/model-util";
-import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { Dropdown, Input, Menu, Tooltip, notification } from "antd";
 import L, { defer, isArray, sortBy } from "lodash";
@@ -631,10 +634,11 @@ export function InteractionExprEditor(props: {
             currentInteraction,
             "should have an interaction to execute a run code action"
           );
-          if (!isValidJavaScriptCode(runValue)) {
+          const invalidCodeMessage = validateInteractionCode(runValue);
+          if (invalidCodeMessage) {
             notification.error({
-              message: "Invalid JavaScript code",
-              description: "Please check your code and try again.",
+              message: "Invalid run code",
+              description: invalidCodeMessage,
             });
             return;
           }

@@ -13,7 +13,10 @@ import { readUploadedFileAsText } from "@/wab/client/dom-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ensure, swallow } from "@/wab/shared/common";
 import { tryEvalExpr } from "@/wab/shared/eval";
-import { codeUsesGlobalObjects } from "@/wab/shared/eval/expression-parser";
+import {
+  codeUsesGlobalObjects,
+  tryCodeWritesToGlobalVariable,
+} from "@/wab/shared/eval/expression-parser";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { hasUnexpected$$Usage } from "@/wab/shared/utils/regex-dollardollar";
 import { Tooltip, notification } from "antd";
@@ -81,6 +84,26 @@ export function checkDisallowedUseOfLibs(val: string) {
         </>
       ),
       duration: 20,
+    });
+    return false;
+  }
+  return true;
+}
+
+export function checkDisallowedStateBindingAssignment(val: string) {
+  const writesToState = tryCodeWritesToGlobalVariable(val, "$state");
+  if (writesToState === undefined) {
+    notification.warning({
+      message: "Unsupported JavaScript syntax",
+      description: "This code cannot be analyzed safely.",
+    });
+    return false;
+  }
+  if (writesToState) {
+    notification.warning({
+      message: "Cannot reassign $state",
+      description:
+        "Update one of its properties instead, for example: $state.count = value.",
     });
     return false;
   }

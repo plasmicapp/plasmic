@@ -9,6 +9,7 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { customCode } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
+import * as expressionParser from "@/wab/shared/eval/expression-parser";
 import {
   TplTag,
   isKnownEventHandler,
@@ -200,6 +201,65 @@ describe("createInteraction", () => {
 
     expect(result).toEqual(
       err({ message: "Interaction code is not valid JavaScript" })
+    );
+  });
+
+  it("rejects reassigning the $state binding", () => {
+    const { page, root } = setup();
+
+    const result = createInteraction({
+      component: page,
+      tpl: root,
+      eventName: "onClick",
+      name: "Replace state",
+      action: { actionName: "customFunction", code: "$state = nextState" },
+    });
+
+    expect(result).toEqual(
+      err({
+        message:
+          "$state cannot be reassigned. Update one of its properties instead, for example: $state.count = value.",
+      })
+    );
+  });
+
+  it("accepts valid function-body syntax", () => {
+    const { page, root } = setup();
+
+    expect(
+      createInteraction({
+        component: page,
+        tpl: root,
+        eventName: "onClick",
+        name: "Acquire resource",
+        action: {
+          actionName: "customFunction",
+          code: "using resource = acquire()",
+        },
+      }).isOk()
+    ).toBe(true);
+  });
+
+  it("returns a validation error when static analysis cannot parse valid syntax", () => {
+    const { page, root } = setup();
+    vi.spyOn(
+      expressionParser,
+      "tryCodeWritesToGlobalVariable"
+    ).mockReturnValueOnce(undefined);
+
+    expect(
+      createInteraction({
+        component: page,
+        tpl: root,
+        eventName: "onClick",
+        name: "Run valid code",
+        action: {
+          actionName: "customFunction",
+          code: "return importModuleSource()",
+        },
+      })
+    ).toEqual(
+      err({ message: "Interaction code uses unsupported JavaScript syntax" })
     );
   });
 

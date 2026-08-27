@@ -128,6 +128,16 @@ describe("updateInteraction", () => {
         action: { actionName: "customFunction", code: "const = ;" },
       })
     ).toEqual(err({ message: "Interaction code is not valid JavaScript" }));
+    expect(
+      updateInteraction(page, first, {
+        action: { actionName: "customFunction", code: "$state = nextState" },
+      })
+    ).toEqual(
+      err({
+        message:
+          "$state cannot be reassigned. Update one of its properties instead, for example: $state.count = value.",
+      })
+    );
     expect(bodyCode(first)).toMatchObject({ code: "($state.count + 1)" });
   });
 });

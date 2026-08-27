@@ -38,6 +38,7 @@ import {
 import {
   isBlockScope,
   isScope,
+  isValidJavaScriptCode,
   parseJsCode,
   wrapJavaScriptCodeInParens,
   writeJs,
@@ -788,6 +789,79 @@ function traverseCode(code: string, visitors: Visitors, withLocals = false) {
   }
   traverse(ast, visitors);
   return ast;
+}
+
+/**
+ * Whether `code` writes to an identifier that resolves outside of its scope.
+ * Member writes like `$state.count = 1` are not included. Returns undefined if
+ * Acorn cannot parse syntax that the JavaScript runtime accepts.
+ */
+export function tryCodeWritesToGlobalVariable(
+  code: string,
+  name: string
+): boolean | undefined {
+  let foundWrite = false;
+  const targetContainsName = (target: ast.Node): boolean => {
+    switch (target.type) {
+      case "Identifier":
+        return target.name === name;
+      case "ObjectPattern":
+        return target.properties.some((property) =>
+          targetContainsName(
+            property.type === "Property" ? property.value : property.argument
+          )
+        );
+      case "ArrayPattern":
+        return target.elements.some(
+          (element) => !!element && targetContainsName(element)
+        );
+      case "AssignmentPattern":
+        return targetContainsName(target.left);
+      case "RestElement":
+        return targetContainsName(target.argument);
+      case "MemberExpression":
+        return false;
+      default:
+        return false;
+    }
+  };
+  const writesNonLocalTarget = (
+    target: ast.Node,
+    parents: WithLocals<ast.Node>[]
+  ) => targetContainsName(target) && !resolvesToLocal(name, parents);
+
+  try {
+    traverseCode(
+      isValidJavaScriptCode(code)
+        ? `(async function () {\n${code}\n})`
+        : wrapJavaScriptCodeInParens(code),
+      {
+        AssignmentExpression: (node, parents: WithLocals<ast.Node>[]) => {
+          foundWrite ||= writesNonLocalTarget(node.left, parents);
+        },
+        UpdateExpression: (node, parents: WithLocals<ast.Node>[]) => {
+          foundWrite ||= writesNonLocalTarget(node.argument, parents);
+        },
+        ForInStatement: (node, parents: WithLocals<ast.Node>[]) => {
+          if (node.left.type !== "VariableDeclaration") {
+            foundWrite ||= writesNonLocalTarget(node.left, parents);
+          }
+        },
+        ForOfStatement: (node, parents: WithLocals<ast.Node>[]) => {
+          if (node.left.type !== "VariableDeclaration") {
+            foundWrite ||= writesNonLocalTarget(node.left, parents);
+          }
+        },
+      },
+      true
+    );
+  } catch (error) {
+    if (error instanceof EvaluationError) {
+      return undefined;
+    }
+    throw error;
+  }
+  return foundWrite;
 }
 
 export function exprUsesCtxOrFreeVars(expr: Expr) {

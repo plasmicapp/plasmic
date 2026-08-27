@@ -45,7 +45,10 @@ import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { DevFlagsType } from "@/wab/shared/devflags";
-import { parseExpr } from "@/wab/shared/eval/expression-parser";
+import {
+  parseExpr,
+  tryCodeWritesToGlobalVariable,
+} from "@/wab/shared/eval/expression-parser";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   Component,
@@ -1721,6 +1724,18 @@ export function validateInteractionCode(
 
   if (!isValidJavaScriptCode(interactionCode)) {
     return `Interaction code is not valid JavaScript`;
+  }
+
+  const writesToState = tryCodeWritesToGlobalVariable(
+    interactionCode,
+    "$state"
+  );
+  if (writesToState === undefined) {
+    return "Interaction code uses unsupported JavaScript syntax";
+  }
+
+  if (writesToState) {
+    return "$state cannot be reassigned. Update one of its properties instead, for example: $state.count = value.";
   }
 
   return undefined;

@@ -1,5 +1,6 @@
 import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import {
+  checkDisallowedStateBindingAssignment,
   checkDisallowedUseOfLibs,
   checkStrSizeLimit,
   checkSyntaxError,
@@ -351,6 +352,10 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
       }
 
       if (!checkSyntaxError(val)) {
+        return false;
+      }
+
+      if (!checkDisallowedStateBindingAssignment(val)) {
         return false;
       }
 
