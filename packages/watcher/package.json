@@ -1,5 +1,5 @@
 {
-  "version": "1.0.87",
+  "version": "1.0.88",
   "description": "Watch a Plasmic project for changes over socket.io and trigger live updates during development.",
   "homepage": "https://www.plasmic.app",
   "repository": {

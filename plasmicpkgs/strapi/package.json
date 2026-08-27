@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/strapi",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "Custom functions for querying Strapi content from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
