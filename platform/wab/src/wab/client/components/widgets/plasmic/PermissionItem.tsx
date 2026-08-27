@@ -15,6 +15,7 @@ interface PermissionItemProps {
   onGrant: (value: GrantableAccessLevel) => Promise<void>;
   onRevoke: () => Promise<void>;
   accessLevel: AccessLevel;
+  showOwnerOption?: boolean;
 }
 
 export const designerRoleHelp = `Only organizations with at least the Scale plan can invite collaborators as designers.`;
@@ -111,6 +112,12 @@ function PermissionItem(props: PermissionItemProps) {
             )}
           </Select.Option>,
           <Select.Option value="editor">{developerTooltip}</Select.Option>,
+          <Select.Option
+            value="owner"
+            style={props.showOwnerOption ? {} : { display: "none" }}
+          >
+            Owner
+          </Select.Option>,
         ],
         isDisabled: !canEdit || loading,
       }}

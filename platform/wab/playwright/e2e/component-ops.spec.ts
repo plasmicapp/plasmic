@@ -192,10 +192,12 @@ test.describe("component-ops - tricky operations", () => {
 
     await models.studio.leftPanel.selectTreeNode(["vertical stack"]);
     await page.keyboard.press("Enter");
-    await models.studio.rightPanel.textContentButton.click({ force: true });
+    await models.studio.rightPanel.textContentButton.click();
 
     await page.keyboard.insertText("--->Hello!");
     await page.keyboard.press("Escape");
+
+    await expect(compAFrame.getByText("--->Hello!")).toBeVisible();
 
     await models.studio.waitAllEval();
 

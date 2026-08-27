@@ -107,8 +107,10 @@ test.describe("dynamic-pages", () => {
 
       await models.studio.frame.locator('[data-plasmic-prop="href"]').click();
       await models.studio.frame
-        .locator(".ant-dropdown-menu-item")
-        .filter({ hasText: `Greeter - /hello/[name]/[...more]` })
+        .getByRole("option", {
+          name: "Greeter /hello/[name]/[...more]",
+          exact: true,
+        })
         .click();
       await models.studio.waitForSave();
       await models.studio.bindPropToDynamicValue(
@@ -176,8 +178,10 @@ test.describe("dynamic-pages", () => {
 
       await models.studio.frame.locator('[data-plasmic-prop="href"]').click();
       await models.studio.frame
-        .locator(".ant-dropdown-menu-item")
-        .filter({ hasText: `Greeter - /hello/[name]/[...more]` })
+        .getByRole("option", {
+          name: "Greeter /hello/[name]/[...more]",
+          exact: true,
+        })
         .click();
       await models.studio.waitForSave();
 

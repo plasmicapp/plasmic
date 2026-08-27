@@ -1498,6 +1498,33 @@ describe("DbMgr", () => {
           db2().grantTeamPermissionByEmail(team.id, user2.email, "editor")
         ).toReject();
       }));
+
+    it("owner can transfer project ownership via 2-phase promote then self-demote", () =>
+      withDb(async (sudo, [user1, user2], [db1, db2], project) => {
+        // Cannot self-demote when last owner
+        await expect(
+          db1().grantProjectPermissionByEmail(project.id, user1.email, "editor")
+        ).toReject();
+
+        // Phase 1: promote user2 to owner
+        await db1().grantProjectPermissionByEmail(
+          project.id,
+          user2.email,
+          "owner"
+        );
+
+        // Phase 2: self-demote is now safe since user2 is also an owner
+        await db1().grantProjectPermissionByEmail(
+          project.id,
+          user1.email,
+          "editor"
+        );
+
+        // user2 is now the sole owner and cannot self-demote
+        await expect(
+          db2().grantProjectPermissionByEmail(project.id, user2.email, "editor")
+        ).toReject();
+      }));
   });
 
   it("ensures user can access inviteOnly=false projects without a explicit permission nor workspace/team permission", () =>

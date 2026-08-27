@@ -1120,8 +1120,10 @@ export class RightPanel extends BaseModel {
     const modal = this.frame.locator(
       '[data-test-id="server-query-bottom-modal"]'
     );
-    await modal.getByText("Select...").click();
-    await this.frame.locator('[data-key="__custom_code__"]').click();
+    await modal.getByRole("button", { name: "Select...", exact: true }).click();
+    await this.frame
+      .getByRole("option", { name: "Custom code query...", exact: true })
+      .click();
 
     const editor = modal.locator("div.react-monaco-editor-container");
     await editor.click();

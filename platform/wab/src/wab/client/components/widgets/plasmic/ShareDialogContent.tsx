@@ -5,6 +5,7 @@ import {
   PaywallError,
   maybeShowPaywall,
 } from "@/wab/client/components/modals/PricingModal";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import {
   ClickStopper,
   Spinner,
@@ -265,11 +266,45 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             accessLevel={perm.accessLevel}
             tier={tier}
             canEdit={canEdit}
+            showOwnerOption={
+              resource.type === "project" && ownAccessLevel === "owner"
+            }
             onGrant={async (accessLevel) => {
-              await doGrantRevoke({
-                grants: [{ email: permEmail, accessLevel }],
-                revokes: [],
-              });
+              if (accessLevel === "owner") {
+                const selfEmail = ensure(
+                  appCtx.selfInfo?.email,
+                  "Must be logged in to transfer ownership"
+                );
+                const confirmed = await reactConfirm({
+                  title: "Transfer ownership",
+                  message: (
+                    <>
+                      You will lose owner status and become an editor. Transfer
+                      ownership of{" "}
+                      <strong>{resource.resource.name}</strong> to {permEmail}?
+                    </>
+                  ),
+                });
+                if (!confirmed) {
+                  throw new Error("Ownership transfer cancelled");
+                }
+                await doGrantRevoke({
+                  // Order matters: the new owner must be promoted before the
+                  // current owner self-demotes, since the server processes
+                  // grants sequentially and the actor must still be an owner to
+                  // grant owner.
+                  grants: [
+                    { email: permEmail, accessLevel: "owner" },
+                    { email: selfEmail, accessLevel: "editor" },
+                  ],
+                  revokes: [],
+                });
+              } else {
+                await doGrantRevoke({
+                  grants: [{ email: permEmail, accessLevel }],
+                  revokes: [],
+                });
+              }
             }}
             onRevoke={async () => {
               await doGrantRevoke({
