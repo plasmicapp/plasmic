@@ -31,8 +31,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@plasmicapp/prepass": "1.0.28",
-    "@plasmicapp/query": "0.1.87",
+    "@plasmicapp/prepass": "workspace:*",
+    "@plasmicapp/query": "workspace:*",
     "cross-port-killer": "1.4.0",
     "cross-spawn": "^7.0.3",
     "get-port": "^7.0.0",

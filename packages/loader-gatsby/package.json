@@ -37,7 +37,6 @@
     "build:index": "node ../../build.mjs src/index.ts --no-esm",
     "build:gatsby-node": "node ../../build.mjs src/gatsby-node.ts --no-esm",
     "build:gatsby-ssr": "node ../../build.mjs src/gatsby-ssr.ts --no-esm",
-    "yalcp": "yalc publish --push",
     "prepublishOnly": "npm run build",
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
@@ -60,9 +59,9 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/loader-core": "2.0.5",
-    "@plasmicapp/loader-react": "2.0.20",
-    "@plasmicapp/watcher": "1.0.87",
+    "@plasmicapp/loader-core": "workspace:*",
+    "@plasmicapp/loader-react": "workspace:*",
+    "@plasmicapp/watcher": "workspace:*",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

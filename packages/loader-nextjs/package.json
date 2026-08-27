@@ -56,7 +56,6 @@
     "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
     "build:edge": "node ../../build.mjs ./src/edge.ts --no-esm",
     "build:react-server": "node ../../build.mjs ./src/react-server.tsx",
-    "yalcp": "yalc publish --push",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "lint": "eslint",
@@ -76,10 +75,10 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/loader-core": "2.0.5",
-    "@plasmicapp/loader-edge": "1.0.82",
-    "@plasmicapp/loader-react": "2.0.20",
-    "@plasmicapp/watcher": "1.0.87",
+    "@plasmicapp/loader-core": "workspace:*",
+    "@plasmicapp/loader-edge": "workspace:*",
+    "@plasmicapp/loader-react": "workspace:*",
+    "@plasmicapp/watcher": "workspace:*",
     "server-only": "0.0.1"
   },
   "devDependencies": {

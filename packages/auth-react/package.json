@@ -44,9 +44,9 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/auth-api": "0.0.20",
+    "@plasmicapp/auth-api": "workspace:*",
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
-    "@plasmicapp/query": "0.1.87"
+    "@plasmicapp/query": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

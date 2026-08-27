@@ -42,13 +42,13 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
-    "@plasmicapp/query": "0.1.87",
+    "@plasmicapp/host": "workspace:*",
+    "@plasmicapp/query": "workspace:*",
     "@types/node": "^17.0.45",
     "@types/react": "^18"
   },
   "dependencies": {
-    "@plasmicpkgs/cms": "0.0.38",
+    "@plasmicpkgs/cms": "workspace:*",
     "dayjs": "^1.10.7"
   },
   "peerDependencies": {

@@ -28,7 +28,6 @@
     "build": "pnpm build:types && pnpm build:index",
     "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
-    "yalcp": "yalc publish --push",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "lint": "eslint",
@@ -46,10 +45,10 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/loader-splits": "1.0.76"
+    "@plasmicapp/loader-splits": "workspace:*"
   },
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "2.0.5",
+    "@plasmicapp/loader-fetcher": "workspace:*",
     "@vitest/coverage-v8": "4.1.10",
     "vite": "8.1.5",
     "vitest": "4.1.10"

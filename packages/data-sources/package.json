@@ -50,9 +50,9 @@
     "vitest": "4.1.10"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.25",
-    "@plasmicapp/host": "2.0.17",
-    "@plasmicapp/query": "0.1.87",
+    "@plasmicapp/data-sources-context": "workspace:*",
+    "@plasmicapp/host": "workspace:*",
+    "@plasmicapp/query": "workspace:*",
     "fast-stringify": "^2.0.0"
   },
   "peerDependencies": {

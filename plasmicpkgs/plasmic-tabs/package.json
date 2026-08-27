@@ -65,7 +65,7 @@
     "tslib": "^2.3.1"
   },
   "dependencies": {
-    "@plasmicapp/host": "2.0.17",
+    "@plasmicapp/host": "workspace:*",
     "constate": "^3.3.2"
   }
 }

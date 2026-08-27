@@ -25,10 +25,10 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.258"
+    "@plasmicpkgs/commerce": "workspace:*"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
+    "@plasmicapp/host": "workspace:*",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^14.18.63",
     "@types/react": "^18",

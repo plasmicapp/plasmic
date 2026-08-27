@@ -28,7 +28,6 @@
     "build": "pnpm build:types && pnpm build:index",
     "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
-    "yalcp": "yalc publish --push",
     "test": "vitest run",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
@@ -50,7 +49,7 @@
     "vitest": "4.1.10"
   },
   "dependencies": {
-    "@plasmicapp/loader-fetcher": "2.0.5"
+    "@plasmicapp/loader-fetcher": "workspace:*"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

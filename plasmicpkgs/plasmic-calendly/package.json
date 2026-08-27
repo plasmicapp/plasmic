@@ -41,7 +41,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
+    "@plasmicapp/host": "workspace:*",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "husky": "^7.0.4",

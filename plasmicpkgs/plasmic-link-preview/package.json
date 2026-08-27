@@ -35,8 +35,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "1.0.26",
-    "@plasmicapp/host": "2.0.17",
+    "@plasmicapp/data-sources": "workspace:*",
+    "@plasmicapp/host": "workspace:*",
     "@types/node": "^14.18.63",
     "@types/react": "^18",
     "tsdx": "^0.14.1",

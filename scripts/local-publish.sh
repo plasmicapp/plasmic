@@ -27,10 +27,5 @@ pnpm "${filter[@]}" --no-bail exec sh -c \
 # Build (pnpm runs the dependency graph topologically)
 pnpm "${filter[@]}" run build
 
-# Finally, publish, skipping the build step. Skip private packages.
-export PREPARE_NO_BUILD=true
-pnpm "${filter[@]}" exec sh -c \
-  "node -e 'process.exit(require(\"./package.json\").private ? 0 : 1)' \
-   || npm publish --ignore-scripts --registry=$registry"
-
-unset PREPARE_NO_BUILD
+# --force, otherwise pnpm skips versions already in the registry
+pnpm "${filter[@]}" publish --force --ignore-scripts --no-git-checks --registry=$registry

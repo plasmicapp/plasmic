@@ -41,7 +41,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
+    "@plasmicapp/host": "workspace:*",
     "@types/dlv": "^1.1.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -22,7 +22,7 @@ This repo contains:
 
 For hacking on code components or `plasmicpkgs`, see specific additional instructions further down.
 
-`packages/` and `plasmicpkgs/` are a `pnpm` workspace (see `pnpm-workspace.yaml`), `lerna` is used for versioning and publishing.
+`packages/` and `plasmicpkgs/` are a `pnpm` workspace (see `pnpm-workspace.yaml`). `lerna` is used for versioning, and `pnpm publish` for publishing. Workspace dependencies use `workspace:*`, which `pnpm publish` rewrites to an exact version at pack time.
 
 In general, we follow the "fork-and-pull" Git workflow.
 
@@ -48,7 +48,7 @@ To get studio running locally, please follow the [getting started guide](docs/co
 
 To configure the platform locally follow the instructions in [getting started guide](docs/contributing/platform/00-getting-started.md).
 
-Internally we use [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up a local npm registry that you can publish your test packages to.
+Use [Verdaccio](https://verdaccio.org/) to test package publishing and npm/Yarn consumers. For pnpm consumers, use the faster local workflow below.
 
 ```
 pnpm add -g verdaccio
@@ -104,6 +104,27 @@ npm --registry=http://localhost:4873 adduser
 
 ### Development workflow
 
+#### Fast local iteration in a pnpm app
+
+The project under devlepment must use pnpm 11 or newer and depend on the linked package. Pass the consumer's workspace root, not a workspace package directory.
+
+```bash
+# Set up and build the package's production workspace dependencies.
+pnpm local-link:setup @plasmicapp/loader-nextjs ~/test-host-app
+
+# Rebuild after making changes.
+pnpm local-link:build @plasmicapp/loader-nextjs
+
+# Restore registry dependencies when finished.
+pnpm local-link:teardown ~/test-host-app
+```
+
+Restart after rebuilding. You may need to delete framework caches like `.next/` and `.cache/`.
+
+Run teardown before deleting the consumer's `node_modules`. Avoid raw `pnpm link`: it may resolve React and other peer dependencies from this monorepo instead of the consumer.
+
+#### Running standalone package source
+
 For standalone applications like the CLI, you can do this:
 
 ```bash
@@ -118,7 +139,9 @@ pnpm --filter "@plasmicapp/cli..." run build
 node -r esbuild-register src/index.ts -h
 ```
 
-If you need the package installed in another npm project to test it, like say a Next.js project, you'll need to publish to your local verdaccio. This is the case for most packages in this repo, which are libraries meant to be used elsewhere.
+#### Registry-faithful testing with Verdaccio
+
+Use Verdaccio for published-package behavior, npm/Yarn consumers, and loader E2E.
 
 ```bash
 # Step 1.

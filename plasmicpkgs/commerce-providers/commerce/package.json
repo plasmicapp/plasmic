@@ -25,8 +25,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
-    "@plasmicapp/query": "0.1.87",
+    "@plasmicapp/host": "workspace:*",
+    "@plasmicapp/query": "workspace:*",
     "@types/debounce": "^1.2.4",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.debounce": "^4.0.7",

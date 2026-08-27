@@ -28,7 +28,6 @@
     "build": "pnpm build:types && pnpm build:index",
     "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
-    "yalcp": "yalc publish --push",
     "test": "vitest run",
     "lint": "eslint",
     "prepublishOnly": "npm run build",

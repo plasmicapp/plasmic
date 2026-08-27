@@ -37,7 +37,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
+    "@plasmicapp/host": "workspace:*",
     "@react-awesome-query-builder/core": "^6.6.15",
     "@types/json-logic-js": "^2.0.8",
     "@types/qs": "^6.9.7",

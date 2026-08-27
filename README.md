@@ -237,8 +237,9 @@ and these specify ranges rather than exact versions--this is to offer some flexi
 
 Note: exact versioning does not imply that every package increments versions for every release.
 Packages are only incremented if they or their dependencies have changed.
-Incrementing versions, including those referenced in `dependencies` and `devDependencies`, is done automatically when our deployment scripts run `lerna version patch --exact...`,
+Incrementing versions is done automatically when our deployment scripts run `lerna version patch --exact...`,
 which detects whether a package has changed since its last git-tagged release.
+Internal `dependencies` and `devDependencies` are declared as `workspace:*`, which `pnpm publish` replaces with the exact version at pack time.
 
 ## Contributing 🚀
 

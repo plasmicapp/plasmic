@@ -48,12 +48,12 @@
     }
   ],
   "dependencies": {
-    "@plasmicpkgs/strapi": "0.0.36",
+    "@plasmicpkgs/strapi": "workspace:*",
     "change-case": "^4.1.2"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.17",
-    "@plasmicapp/query": "0.1.87",
+    "@plasmicapp/host": "workspace:*",
+    "@plasmicapp/query": "workspace:*",
     "@types/dlv": "^1.1.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",

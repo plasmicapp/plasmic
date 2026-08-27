@@ -30,7 +30,7 @@
     "@types/react": "^18"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.87",
+    "@plasmicapp/query": "workspace:*",
     "@plasmicapp/react-ssr-prepass": "^2.0.9"
   },
   "peerDependencies": {
