@@ -30,7 +30,6 @@ import {
 } from "@/wab/shared/svg-utils";
 import { notification } from "antd";
 import * as downscale from "downscale";
-import { fileTypeFromBlob } from "file-type-browser";
 import $ from "jquery";
 import { isString } from "lodash";
 import isFunction from "lodash/isFunction";
@@ -377,6 +376,7 @@ export const getUploadedFile = (
 
 async function getFileType(buffer: ArrayBuffer) {
   const blob = new Blob([buffer]);
+  const { fileTypeFromBlob } = await import("file-type-browser");
   let fileType = await fileTypeFromBlob(blob);
   if ((!fileType || fileType?.mime === "application/xml") && isSVG(buffer)) {
     fileType = {

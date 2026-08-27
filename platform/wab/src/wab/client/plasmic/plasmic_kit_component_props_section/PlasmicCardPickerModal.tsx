@@ -160,7 +160,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
                 role={"img"}
               />
             }
-            type={"clear"}
+            type={["clear"]}
           >
             <div
               data-plasmic-name={"text"}
@@ -187,7 +187,7 @@ function PlasmicCardPickerModal__RenderFunc(props: {
                 role={"img"}
               />
             }
-            type={"primary"}
+            type={["primary"]}
           >
             {"Save"}
           </Button>
@@ -373,8 +373,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCardPickerModal__VariantsArgs;
     args?: PlasmicCardPickerModal__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCardPickerModal__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCardPickerModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCardPickerModal__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

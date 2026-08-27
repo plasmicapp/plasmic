@@ -158,6 +158,8 @@ export default defineConfig({
       // (the workspace has both 3.5.1 and 3.7.1), so the plugin registers
       // itself on an instance the app never sees.
       jquery: "./node_modules/jquery",
+      // data-urls.ts only falls back to xmldom when there is no window.
+      "@xmldom/xmldom": false,
       ...(buildEnv === "production"
         ? {}
         : {
@@ -178,6 +180,12 @@ export default defineConfig({
     sourceMap: {
       js: isProd ? "source-map" : "cheap-module-source-map",
       css: true,
+    },
+  },
+  performance: {
+    chunkSplit: {
+      strategy: "split-by-experience",
+      override: { maxSize: 1_000_000 },
     },
   },
   plugins: [pluginReact(), pluginSass()],

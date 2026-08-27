@@ -35,7 +35,6 @@ const config: KnipConfig = {
         "prismjs",
 
         // used by react-icons
-        "font-awesome",
         "@fortawesome/.+",
 
         // below deps are not verified to actually be needed

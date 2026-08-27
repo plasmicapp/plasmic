@@ -3,7 +3,6 @@
 @import "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; /* plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss */
 @import "../q_4_text_mixins_product/plasmic_q_4_text_mixins_product.css"; /* plasmic-import: sDniSX4oPUZFyk2sXXb3nh/projectcss */
 @import "../react_aria/plasmic.css"; /* plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss */
-@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500&display=swap");
 
 .plasmic_default_styles {
   --mixin-qP3g6Hd5AdC_text-decoration-line: none;
@@ -244,6 +243,22 @@
   font-size: inherit;
   font-style: inherit;
   font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+:where(.b) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+:where(.__wab_expr_html_text b) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
   color: inherit;
   text-transform: inherit;
 }

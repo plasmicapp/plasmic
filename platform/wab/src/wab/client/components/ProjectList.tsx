@@ -14,7 +14,6 @@ import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import { ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
 
 interface ProjectListProps extends DefaultProjectListProps {
   workspaces?: boolean;
@@ -43,14 +42,6 @@ function ProjectList(props: ProjectListProps) {
     <Spinner />
   ) : (
     <>
-      {/* @ts-ignore */}
-      <Helmet>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bungee&display=swap"
-          rel="stylesheet"
-        />
-      </Helmet>
-
       <PlasmicProjectList
         {...rest}
         mode={DEVFLAGS.demo ? "demo" : undefined}

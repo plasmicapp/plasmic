@@ -53,15 +53,15 @@ export const PlasmicCardPickerItem__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicCardPickerItem__ArgsType = {
+  image?: React.ReactNode;
   title?: React.ReactNode;
   controls?: React.ReactNode;
-  image?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicCardPickerItem__ArgsType;
 export const PlasmicCardPickerItem__ArgProps = new Array<ArgPropType>(
+  "image",
   "title",
-  "controls",
-  "image"
+  "controls"
 );
 
 export type PlasmicCardPickerItem__OverridesType = {
@@ -69,9 +69,9 @@ export type PlasmicCardPickerItem__OverridesType = {
 };
 
 export interface DefaultCardPickerItemProps {
+  image?: React.ReactNode;
   title?: React.ReactNode;
   controls?: React.ReactNode;
-  image?: React.ReactNode;
   isSelected?: SingleBooleanChoiceArg<"isSelected">;
   large?: SingleBooleanChoiceArg<"large">;
   className?: string;
@@ -238,8 +238,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCardPickerItem__VariantsArgs;
     args?: PlasmicCardPickerItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCardPickerItem__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCardPickerItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCardPickerItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

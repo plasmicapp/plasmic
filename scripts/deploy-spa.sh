@@ -23,7 +23,7 @@ trap 'rm -rf "$STAGE"' EXIT
 cp -al ./. "$STAGE/"
 rm -rf "$STAGE"/index.html "$STAGE"/favicon.ico "$STAGE"/robots.txt \
   "$STAGE"/*.worker.js* "$STAGE"/static/host.html "$STAGE"/static/popup.html \
-  "$STAGE"/static/img "$STAGE"/static/font-awesome \
+  "$STAGE"/static/img \
   "$STAGE"/static/css/normalize.css "$STAGE"/static/js/getlibs.js \
   "$STAGE"/static/js/preamble.js "$STAGE"/static/js/loader-hydrate.js* \
   "$STAGE"/static/js/studio.js
@@ -32,7 +32,7 @@ echo "Deploying to root..."
 (cd "$STAGE" && gcloud storage cp -r --quiet ./ "gs://$GCS_BUCKET/" --cache-control "$IMMUTABLE")
 
 # Assets whose names are stable across deployments.
-gcloud storage cp -r --quiet ./static/img ./static/font-awesome \
+gcloud storage cp -r --quiet ./static/img \
   "gs://$GCS_BUCKET/static/" --cache-control "$SHORT"
 gcloud storage cp --quiet ./static/css/normalize.css \
   "gs://$GCS_BUCKET/static/css/" --cache-control "$SHORT"

@@ -1,4 +1,5 @@
 import { EllipseControl } from "@/wab/client/components/EllipseControl";
+import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-utils";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
@@ -38,11 +39,7 @@ import RepeatGridIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Repeat
 import RepeatHIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RepeatH";
 import PaintBucketFillIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PaintBucketFill";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import {
-  isTokenRef,
-  replaceAllTokenRefs,
-  tryParseTokenRef,
-} from "@/wab/commons/StyleToken";
+import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import {
@@ -71,13 +68,7 @@ import {
   mkImageAssetRef,
   tryParseImageAssetRef,
 } from "@/wab/shared/core/image-assets";
-import {
-  TokenValueResolver,
-  siteFinalColorTokens,
-  siteFinalStyleTokensAllDeps,
-} from "@/wab/shared/core/site-style-tokens";
-import { allMixins } from "@/wab/shared/core/sites";
-import { CssVarResolver } from "@/wab/shared/core/styles";
+import { siteFinalColorTokens } from "@/wab/shared/core/site-style-tokens";
 import * as css from "@/wab/shared/css";
 import { parseCss } from "@/wab/shared/css";
 import {
@@ -85,45 +76,13 @@ import {
   PERCENTAGE_UNITS,
 } from "@/wab/shared/css/types";
 import { isStandardSide, oppSides } from "@/wab/shared/geom";
-import { Site, isKnownImageAsset } from "@/wab/shared/model/classes";
+import { isKnownImageAsset } from "@/wab/shared/model/classes";
 import { userImgUrl } from "@/wab/shared/urls";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import { basename } from "path";
 import React, { useState } from "react";
-
-export const resolvedBackgroundImageCss = (
-  bgImg: BackgroundLayer["image"],
-  clientTokenResolver: TokenValueResolver,
-  site: Site,
-  vsh?: VariantedStylesHelper
-) => {
-  let cssValue = bgImg.showCss();
-
-  // First try resolving with client token resolver.
-  // Client token resolver is needed for registered style tokens that have a selector.
-  cssValue = replaceAllTokenRefs(cssValue, (tokenId) => {
-    const token = siteFinalColorTokens(site, {
-      includeDeps: "all",
-    }).find((t) => t.uuid === tokenId);
-    if (token) {
-      return clientTokenResolver(token, vsh);
-    } else {
-      return undefined;
-    }
-  });
-
-  const resolver = new CssVarResolver(
-    siteFinalStyleTokensAllDeps(site),
-    allMixins(site, { includeDeps: "all" }),
-    site.imageAssets,
-    site.activeTheme,
-    {},
-    vsh
-  );
-  return resolver.resolveTokenRefs(cssValue);
-};
 
 function mkEmptyLayer() {
   return new BackgroundLayer({ image: new NoneBackground() });

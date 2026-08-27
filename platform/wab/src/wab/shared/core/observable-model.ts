@@ -52,7 +52,6 @@ import {
 import { Dictionary, memoize, once } from "lodash";
 import type { IObservableArray, Lambda } from "mobx";
 import type { IAtom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
-import moment from "moment";
 import { Err, Ok, Result, err, ok } from "neverthrow";
 import defaultReact from "react";
 
@@ -1597,9 +1596,9 @@ export class ChangeRecorder implements IChangeRecorder {
     if (this.observedCompsCache.size <= 5) {
       return;
     }
-    const allowedLastTime = moment(new Date())
-      .subtract(this.observedCompsCache.size > 20 ? 5 : 10, "minute")
-      .toDate();
+    const allowedLastTime = new Date(
+      Date.now() - (this.observedCompsCache.size > 20 ? 5 : 10) * 60_000
+    );
     this.observedCompsCache.forEach((date, comp, map) => {
       if (this.componentsInContext.includes(comp)) {
         return;

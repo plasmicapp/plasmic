@@ -1,5 +1,5 @@
-import { xGroupBy } from "@/wab/shared/common";
 import type { DataSource } from "@/wab/server/entities/Entities";
+import { xGroupBy } from "@/wab/shared/common";
 import {
   DataSourceMeta,
   FilterArgMeta,
@@ -13,8 +13,11 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { capitalizeFirst } from "@/wab/shared/strs";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import SqlString from "sqlstring";
+
+dayjs.extend(customParseFormat);
 
 export interface PostgresDataSource extends DataSource {
   source: "postgres";
@@ -387,8 +390,8 @@ export const QueryBuilderPostgresConfig = {
             sqlFormatValue: (val, _, wgtDef) => {
               // If it's not a string, it's a dynamic value and we should keep it
               if (typeof val === "string") {
-                const dateVal = moment(val, wgtDef.valueFormat);
-                if (dateVal.toString() === "Invalid date") {
+                const dateVal = dayjs(val, wgtDef.valueFormat, true);
+                if (!dateVal.isValid()) {
                   return val;
                 }
                 return SqlString.escape(dateVal.format(wgtDef.valueFormat));
@@ -410,8 +413,8 @@ export const QueryBuilderPostgresConfig = {
             sqlFormatValue: (val, _, wgtDef) => {
               // If it's not a string, it's a dynamic value and we should keep it
               if (typeof val === "string") {
-                const dateVal = moment(val, wgtDef.valueFormat);
-                if (dateVal.toString() === "Invalid date") {
+                const dateVal = dayjs(val, wgtDef.valueFormat, true);
+                if (!dateVal.isValid()) {
                   return val;
                 }
                 return SqlString.escape(dateVal.format(wgtDef.valueFormat));

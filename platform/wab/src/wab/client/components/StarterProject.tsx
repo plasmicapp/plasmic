@@ -16,6 +16,7 @@ import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Tooltip } from "antd";
 import L from "lodash";
 import React, { ReactNode } from "react";
+import { Helmet } from "react-helmet";
 
 interface StarterProjectProps {
   name: string;
@@ -52,6 +53,13 @@ function StarterProject(props: StarterProjectProps) {
   const name = props.name;
   const decoratedName = name.includes("Plasmic Levels") ? (
     <div className={"flex-row"}>
+      {/* @ts-ignore */}
+      <Helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bungee&display=swap"
+          rel="stylesheet"
+        />
+      </Helmet>
       {interleave(
         name
           .split("Plasmic Levels")

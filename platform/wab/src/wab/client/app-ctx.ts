@@ -3,7 +3,6 @@ import { Api, setUser } from "@/wab/client/api";
 import { Router, isHostFrame } from "@/wab/client/cli-routes";
 import { getClientDevFlagOverrides } from "@/wab/client/client-dev-flags";
 import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
-import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { App } from "@/wab/client/components/top-view";
 import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
@@ -254,6 +253,10 @@ export class AppComponent<
 
 export class AppOps extends AppComponent {
   async renameSite(siteId: string, name: string) {
+    // Lazy since PricingModal reaches the whole pricing UI, and this the only use in app-ctx.
+    const { maybeShowPaywall } = await import(
+      "@/wab/client/components/modals/PricingModal"
+    );
     await maybeShowPaywall(
       this.appCtx(),
       async () => await this.api().setSiteInfo(siteId, { name })

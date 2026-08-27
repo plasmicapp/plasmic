@@ -13,13 +13,7 @@ import {
   isProjectPath,
   Router,
 } from "@/wab/client/cli-routes";
-import AllProjectsPage from "@/wab/client/components/dashboard/AllProjectsPage";
-import MyPlayground from "@/wab/client/components/dashboard/MyPlayground";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
-import SettingsPage from "@/wab/client/components/dashboard/SettingsPage";
-import TeamPage from "@/wab/client/components/dashboard/TeamPage";
-import TeamSettingsPage from "@/wab/client/components/dashboard/TeamSettingsPage";
-import WorkspacePage from "@/wab/client/components/dashboard/WorkspacePage";
 import { IntroSplash } from "@/wab/client/components/modals/IntroSplash";
 import {
   NormalLayout,
@@ -33,12 +27,8 @@ import {
   SsoLoginForm,
 } from "@/wab/client/components/pages/AuthForm";
 import { EmailVerification } from "@/wab/client/components/pages/EmailVerification";
-import { FromStarterTemplate } from "@/wab/client/components/pages/FromStarterTemplate";
 import { GithubCallback } from "@/wab/client/components/pages/GithubCallback";
-import { ImportProjectsFromProd } from "@/wab/client/components/pages/ImportProjectFromProd";
-import { InitTokenPage } from "@/wab/client/components/pages/InitTokenPage";
 import { SurveyForm } from "@/wab/client/components/pages/SurveyForm";
-import { TeamCreation } from "@/wab/client/components/pages/TeamCreation";
 import PromoBanner from "@/wab/client/components/PromoBanner";
 import { AppView } from "@/wab/client/components/top-view";
 import * as widgets from "@/wab/client/components/widgets";
@@ -65,11 +55,41 @@ import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
 import { APP_ROUTES, SEARCH_PROMPT } from "@/wab/shared/route/app-routes";
 import * as React from "react";
 
-const LazyTeamAnalytics = React.lazy(() => import("./analytics/TeamAnalytics"));
-const LazyAdminPage = React.lazy(() => import("./pages/admin/AdminPage"));
-const LazyViewInitializer = React.lazy(
-  () => import("./studio/view-initializer")
-);
+type LazyPage = React.LazyExoticComponent<React.ComponentType<any>>;
+
+// Keep every page rendered by LoggedInContainer in this registry, the type
+// constraint rejects eager components. Layouts and other shared route chrome
+// remain regular imports.
+const LoggedInPages = {
+  AdminPage: React.lazy(() => import("./pages/admin/AdminPage")),
+  AllProjectsPage: React.lazy(() => import("./dashboard/AllProjectsPage")),
+  CmsRoot: React.lazy(() => import("./cms/CmsRoot")),
+  FromStarterTemplate: React.lazy(() =>
+    import("./pages/FromStarterTemplate").then((m) => ({
+      default: m.FromStarterTemplate,
+    }))
+  ),
+  ImportProjectsFromProd: React.lazy(() =>
+    import("./pages/ImportProjectFromProd").then((m) => ({
+      default: m.ImportProjectsFromProd,
+    }))
+  ),
+  InitTokenPage: React.lazy(() =>
+    import("./pages/InitTokenPage").then((m) => ({
+      default: m.InitTokenPage,
+    }))
+  ),
+  MyPlayground: React.lazy(() => import("./dashboard/MyPlayground")),
+  SettingsPage: React.lazy(() => import("./dashboard/SettingsPage")),
+  TeamAnalytics: React.lazy(() => import("./analytics/TeamAnalytics")),
+  TeamCreation: React.lazy(() =>
+    import("./pages/TeamCreation").then((m) => ({ default: m.TeamCreation }))
+  ),
+  TeamPage: React.lazy(() => import("./dashboard/TeamPage")),
+  TeamSettingsPage: React.lazy(() => import("./dashboard/TeamSettingsPage")),
+  ViewInitializer: React.lazy(() => import("./studio/view-initializer")),
+  WorkspacePage: React.lazy(() => import("./dashboard/WorkspacePage")),
+} satisfies Record<string, LazyPage>;
 
 interface LoggedInContainerProps {
   onRefreshUi: () => void;
@@ -104,7 +124,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
     route: APP_ROUTES.project,
     render: ({ projectId }) => {
       return (
-        <LazyViewInitializer
+        <LoggedInPages.ViewInitializer
           appCtx={appCtx}
           onRefreshUi={onRefreshUi}
           projectId={projectId}
@@ -152,7 +172,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   starterTag
                 );
                 return (
-                  <FromStarterTemplate
+                  <LoggedInPages.FromStarterTemplate
                     appCtx={appCtx}
                     {...starter}
                     path={currentLocation.pathname}
@@ -170,7 +190,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                 const version =
                   new URLSearchParams(search).get("version") ?? undefined; // gets the query param "version" from the URL
                 return (
-                  <FromStarterTemplate
+                  <LoggedInPages.FromStarterTemplate
                     appCtx={appCtx}
                     baseProjectId={baseProjectId}
                     path={pathname}
@@ -198,7 +218,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
               route: APP_ROUTES.orgCreation,
               render: () => (
                 <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
-                  <TeamCreation />
+                  <LoggedInPages.TeamCreation />
                 </NormalNonAuthLayout>
               ),
             }),
@@ -257,17 +277,17 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                           switchCase({
                             exact: true,
                             route: APP_ROUTES.allProjects,
-                            render: () => <AllProjectsPage />,
+                            render: () => <LoggedInPages.AllProjectsPage />,
                           }),
                           switchCase({
                             exact: true,
                             route: APP_ROUTES.playground,
-                            render: () => <MyPlayground />,
+                            render: () => <LoggedInPages.MyPlayground />,
                           }),
                           switchCase({
                             route: APP_ROUTES.workspace,
                             render: ({ workspaceId }) => (
-                              <WorkspacePage
+                              <LoggedInPages.WorkspacePage
                                 key={workspaceId}
                                 workspaceId={workspaceId}
                               />
@@ -291,18 +311,16 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                             exact: true,
                             route: APP_ROUTES.org,
                             render: ({ teamId }) => (
-                              <TeamPage key={teamId} teamId={teamId} />
+                              <LoggedInPages.TeamPage
+                                key={teamId}
+                                teamId={teamId}
+                              />
                             ),
                           }),
                           switchCase({
                             route: APP_ROUTES.cmsRoot,
                             render: ({ databaseId }) => (
-                              <widgets.ObserverLoadable
-                                loader={() => import("./cms/CmsRoot")}
-                                contents={(CmsRoot) => (
-                                  <CmsRoot.default databaseId={databaseId} />
-                                )}
-                              />
+                              <LoggedInPages.CmsRoot databaseId={databaseId} />
                             ),
                           }),
                           switchCase({
@@ -371,7 +389,11 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                                   />
                                 );
                               }
-                              return <TeamSettingsPage teamId={teamId} />;
+                              return (
+                                <LoggedInPages.TeamSettingsPage
+                                  teamId={teamId}
+                                />
+                              );
                             },
                           }),
                           switchCase({
@@ -397,7 +419,9 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                           switchCase({
                             exact: true,
                             route: APP_ROUTES.settings,
-                            render: () => <SettingsPage appCtx={appCtx} />,
+                            render: () => (
+                              <LoggedInPages.SettingsPage appCtx={appCtx} />
+                            ),
                           }),
                           switchCase<{}>({
                             exact: true,
@@ -408,7 +432,9 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                                 appCtx.appConfig
                               ) ? (
                                 <NormalLayout appCtx={appCtx}>
-                                  <LazyAdminPage nonAuthCtx={nonAuthCtx} />
+                                  <LoggedInPages.AdminPage
+                                    nonAuthCtx={nonAuthCtx}
+                                  />
                                 </NormalLayout>
                               ) : (
                                 <Redirect to="/" />
@@ -423,7 +449,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                                 appCtx.appConfig
                               ) ? (
                                 <NormalLayout appCtx={appCtx}>
-                                  <ImportProjectsFromProd
+                                  <LoggedInPages.ImportProjectsFromProd
                                     nonAuthCtx={nonAuthCtx}
                                   />
                                 </NormalLayout>
@@ -456,7 +482,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                             exact: true,
                             route: APP_ROUTES.plasmicInit,
                             render: ({ initToken }) => (
-                              <InitTokenPage
+                              <LoggedInPages.InitTokenPage
                                 appCtx={appCtx}
                                 initToken={initToken}
                               />
@@ -480,7 +506,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                             exact: true,
                             route: APP_ROUTES.orgAnalytics,
                             render: ({ teamId }) => (
-                              <LazyTeamAnalytics teamId={teamId} />
+                              <LoggedInPages.TeamAnalytics teamId={teamId} />
                             ),
                           }),
                           switchDefault({ render: () => null }),

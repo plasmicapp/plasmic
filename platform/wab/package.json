@@ -270,7 +270,6 @@
     "fast-stringify": "2.0.0",
     "file-type": "^16.5.4",
     "file-type-browser": "^1.0.0",
-    "font-awesome": "^4.7.0",
     "get-port": "^7.2.0",
     "glob": "^7.1.6",
     "gpt3-tokenizer": "^1.1.5",

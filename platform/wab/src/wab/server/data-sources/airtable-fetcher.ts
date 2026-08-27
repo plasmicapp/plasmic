@@ -21,9 +21,9 @@ import {
   FiltersLogic,
   LabeledValue,
   RawPagination,
-  buildQueryBuilderConfig,
   fillPagination,
 } from "@/wab/shared/data-sources-meta/data-sources";
+import { buildQueryBuilderConfig } from "@/wab/shared/data-sources/to-sql";
 import { CrudSorting } from "@pankod/refine-core";
 import {
   DataSourceSchema,

@@ -1,5 +1,5 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-section";
+import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-utils";
 import {
   TplNodeIconWrapper,
   createNodeIcon,

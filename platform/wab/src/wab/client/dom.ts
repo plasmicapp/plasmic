@@ -8,7 +8,6 @@ import {
   tuple,
 } from "@/wab/shared/common";
 import { Box, ClientRect, Pt } from "@/wab/shared/geom";
-import * as Immutable from "immutable";
 import $ from "jquery";
 
 export interface NodeAndOffset {
@@ -64,14 +63,13 @@ export function* ancestors(x: JQuery, excludeSelf = false) {
  **/
 
 export function* bfs($elt: JQuery, excludeSelf = false) {
-  const q = Immutable.List<[any[], any[]]>().asMutable();
-  q.push(tuple([], [$elt]));
-  while (!q.isEmpty()) {
+  const q: [any[], any[]][] = [tuple([], [$elt])];
+  let qIndex = 0;
+  while (qIndex < q.length) {
     const [stack, xs] = ensure(
-      q.first(),
+      q[qIndex++],
       "Nonempty queue must have first element"
     );
-    q.shift();
     for (const x of [...xs]) {
       if (!($elt === x && excludeSelf)) {
         yield x;

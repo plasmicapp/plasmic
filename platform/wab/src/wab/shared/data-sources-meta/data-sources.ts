@@ -1,11 +1,11 @@
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import { assert, ensure, ensureString, mkUuid } from "@/wab/shared/common";
 import {
+  ExprCtx,
   asCode,
   clone,
-  ExprCtx,
   stripParensAndMaybeConvertToIife,
 } from "@/wab/shared/core/exprs";
-import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { substitutePlaceholder } from "@/wab/shared/dynamic-bindings";
 import {
@@ -13,17 +13,17 @@ import {
   DataSourceOpExpr,
   DataSourceTemplate,
   Expr,
-  isKnownTemplatedString,
   ObjectPath,
   QueryInvalidationExpr,
   TemplatedString,
+  isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import {
   DataSourceSchema,
   Pagination,
   TableSchema,
 } from "@plasmicapp/data-sources";
-import { AntdConfig, Field, JsonTree } from "@react-awesome-query-builder/antd";
+import type { Field, JsonTree } from "@react-awesome-query-builder/antd";
 import type {
   JsonLogicAnd,
   JsonLogicDoubleNegation,
@@ -39,7 +39,7 @@ import type {
   JsonLogicStrictNotEqual,
   JsonLogicVar,
 } from "json-logic-js";
-import { isString, mapValues, merge } from "lodash";
+import { isString, mapValues } from "lodash";
 import { z } from "zod";
 
 export const ALL_QUERIES = { value: "plasmic_refresh_all", label: "All" };
@@ -467,13 +467,6 @@ export function coerceArgValueToString(
   } else {
     return `${value}`;
   }
-}
-
-export function buildQueryBuilderConfig(config: any, fields: any) {
-  return {
-    ...merge({}, AntdConfig, config),
-    fields: fields,
-  };
 }
 
 export function mkDataSourceOpExpr({

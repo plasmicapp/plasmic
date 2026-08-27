@@ -30,14 +30,10 @@ type GoogFontVariant =
   | "900italic";
 
 export interface GoogFontMeta {
-  kind: string;
   family: string;
   category: string;
   variants: GoogFontVariant[];
   subsets: string[];
-  version: string;
-  lastModified: string;
-  files: Record<string, string>;
 }
 
 let _googFontsMeta: GoogFontsMeta;

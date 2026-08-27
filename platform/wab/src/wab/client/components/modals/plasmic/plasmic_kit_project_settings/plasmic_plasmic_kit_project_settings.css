@@ -3,7 +3,6 @@
 @import "../../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; /* plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss */
 @import "../../../../plasmic/q_4_text_mixins_product/plasmic_q_4_text_mixins_product.css"; /* plasmic-import: sDniSX4oPUZFyk2sXXb3nh/projectcss */
 @import "../../../../plasmic/react_aria/plasmic.css"; /* plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss */
-@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&family=IBM+Plex+Mono%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&display=swap");
 
 .plasmic_tokens_fpbcKyXdMTvY59T4C5fjcC {
   --token-0vHxN11ixM: rgb(228, 230, 235);

@@ -12,6 +12,9 @@
   "images": {
     "scheme": "files"
   },
+  "fontOpts": {
+    "scheme": "none"
+  },
   "srcDir": "./src",
   "defaultPlasmicDir": "./wab/client/plasmic",
   "projects": [

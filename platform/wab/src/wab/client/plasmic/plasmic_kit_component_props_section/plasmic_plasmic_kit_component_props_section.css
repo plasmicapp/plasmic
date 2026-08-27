@@ -2,15 +2,15 @@
 @import "../plasmic_kit_icons/plasmic_q_4_icons.css"; /* plasmic-import: oT38tGyqov9SPWHpf3Y2Rf/projectcss */
 @import "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; /* plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss */
 @import "../q_4_text_mixins_product/plasmic_q_4_text_mixins_product.css"; /* plasmic-import: sDniSX4oPUZFyk2sXXb3nh/projectcss */
-@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500&display=swap");
+@import "../react_aria/plasmic.css"; /* plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss */
 
 .plasmic_default_styles {
   --mixin-qP3g6Hd5AdC_text-decoration-line: none;
-  --mixin-qP3g6Hd5AdC_text-overflow: clip;
   --mixin-qP3g6Hd5AdC_font-family: "Inter", sans-serif;
   --mixin-qP3g6Hd5AdC_color: var(--token-0IloF6TmFvF);
   --mixin-qP3g6Hd5AdC_font-size: 12px;
   --mixin-qP3g6Hd5AdC_white-space: pre-wrap;
+  --mixin-qP3g6Hd5AdC_line-height: 1.5;
   --mixin-2zEfljePq9P_color: var(--token-VUsIDivgUss);
   --mixin-2zEfljePq9P_white-space: pre-wrap;
   --mixin-EEKi5Tu2fbK_white-space: pre-wrap;
@@ -254,6 +254,22 @@
   text-transform: inherit;
 }
 
+:where(.b) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+:where(.__wab_expr_html_text b) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
 :where(.i) {
   font-family: inherit;
   line-height: inherit;
@@ -433,6 +449,7 @@
   font-family: var(--mixin-qP3g6Hd5AdC_font-family);
   font-size: var(--mixin-qP3g6Hd5AdC_font-size);
   color: var(--mixin-qP3g6Hd5AdC_color);
+  line-height: var(--mixin-qP3g6Hd5AdC_line-height);
   white-space: var(--mixin-qP3g6Hd5AdC_white-space);
 }
 

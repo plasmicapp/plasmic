@@ -13,7 +13,7 @@
   padding: 0px;
 }
 .rootisSelected {
-  border-color: var(--token-qP8a3gYPq7fd);
+  border: 1px solid var(--token-mwrqWBxg1aja);
 }
 .rootlarge {
   width: 360px;
@@ -82,9 +82,7 @@
   top: -5px;
   right: -5px;
   left: -5px;
-  width: auto;
-  height: auto;
   outline: none;
   border-radius: 8px;
-  border: 2px dashed var(--token-qP8a3gYPq7fd);
+  border: 2px dashed var(--token-WqsKGtAj1ZMI);
 }

@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700&display=swap");
-
 .plasmic_tokens_28e27syQUKgfkErJT9mxWA {
   --plsmc-standard-width: 800px;
   --plsmc-wide-width: 1280px;
@@ -318,6 +316,22 @@
   font-size: inherit;
   font-style: inherit;
   font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+:where(.b) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+:where(.__wab_expr_html_text b) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
   color: inherit;
   text-transform: inherit;
 }

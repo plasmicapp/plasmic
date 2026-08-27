@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inconsolata%3Aital%2Cwght%400%2C400&display=swap");
-
 .plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv {
   --token-9jh0BkCENS: #fdfdfc;
   --plasmic-token-sand-1: var(--token-9jh0BkCENS);
@@ -1272,6 +1270,22 @@
   font-size: inherit;
   font-style: inherit;
   font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+:where(.b) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+:where(.__wab_expr_html_text b) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
   color: inherit;
   text-transform: inherit;
 }

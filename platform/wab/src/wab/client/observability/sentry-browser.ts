@@ -3,7 +3,6 @@ import {
   shouldIgnoreError,
 } from "@/wab/client/ErrorNotifications";
 import { AppCtx } from "@/wab/client/app-ctx";
-import { PostHogAnalytics } from "@/wab/client/observability/posthog-browser";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UserError } from "@/wab/shared/UserError";
 import { CustomError, hackyCast, withoutFalsy } from "@/wab/shared/common";
@@ -12,7 +11,7 @@ import { getMaximumTier } from "@/wab/shared/pricing/pricing-utils";
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 import { onReactionError } from "mobx";
-import { posthog } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 export function initSentryBrowser(opts: {
   production: boolean;
@@ -20,7 +19,7 @@ export function initSentryBrowser(opts: {
   dsn: string;
   orgId: string;
   projId: number;
-  posthogAnalytics: PostHogAnalytics;
+  posthog?: PostHog;
 }) {
   if (!opts.production) {
     return;
@@ -28,14 +27,15 @@ export function initSentryBrowser(opts: {
   Sentry.init({
     dsn: opts.dsn,
     release: opts.commitHash,
-    integrations: [
+    integrations: withoutFalsy([
       new Integrations.Dedupe(),
-      new posthog.SentryIntegration(
-        opts.posthogAnalytics.ph,
-        opts.orgId,
-        opts.projId
-      ),
-    ],
+      opts.posthog &&
+        new opts.posthog.SentryIntegration(
+          opts.posthog,
+          opts.orgId,
+          opts.projId
+        ),
+    ]),
     ignoreErrors: ERROR_PATTERNS_TO_IGNORE,
     beforeSend(event, hint) {
       if (

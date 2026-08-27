@@ -209,12 +209,12 @@ function PlasmicTopBar__RenderFunc(props: {
     $refs,
   });
 
-  const [isN26417541Hover, triggerN26417541HoverProps] = useTrigger(
+  const [isN3650307Hover, triggerN3650307HoverProps] = useTrigger(
     "useHover",
     {}
   );
   const triggers = {
-    hover_26417541: isN26417541Hover,
+    hover_3650307: isN3650307Hover,
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -274,7 +274,7 @@ function PlasmicTopBar__RenderFunc(props: {
           >
             <PlasmicIcon__
               PlasmicIconType={
-                triggers.hover_26417541 ? MarkFullColorIcon : MarkIcon
+                triggers.hover_3650307 ? MarkFullColorIcon : MarkIcon
               }
               className={classNames("all", sty.svg__jQrU5, {
                 [sty.svgmode_preview__jQrU5QMfAz]: hasVariant(
@@ -284,7 +284,7 @@ function PlasmicTopBar__RenderFunc(props: {
                 ),
               })}
               role={"img"}
-              data-plasmic-trigger-props={[triggerN26417541HoverProps]}
+              data-plasmic-trigger-props={[triggerN3650307HoverProps]}
             />
           </PlasmicLink__>
         </div>
@@ -893,8 +893,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTopBar__VariantsArgs;
     args?: PlasmicTopBar__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicTopBar__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicTopBar__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicTopBar__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

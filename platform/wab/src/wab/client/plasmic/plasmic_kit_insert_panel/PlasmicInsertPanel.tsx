@@ -44,7 +44,7 @@ import HStackBlockIcon from "../plasmic_kit/PlasmicIcon__HStackBlock"; // plasmi
 import ImageBlockIcon from "../plasmic_kit/PlasmicIcon__ImageBlock"; // plasmic-import: Sta1tgTjp-AlG/icon
 import TextBlockIcon from "../plasmic_kit/PlasmicIcon__TextBlock"; // plasmic-import: nzc8B7oWFfsYG/icon
 import VStackBlockIcon from "../plasmic_kit/PlasmicIcon__VStackBlock"; // plasmic-import: DTUk351ydDQGv/icon
-import IconIcon from "../plasmic_kit_design_system/PlasmicIcon__Icon"; // plasmic-import: mZMZr0AmTY/icon
+import IconSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__IconSvg"; // plasmic-import: iSl915wHU/icon
 import StoreIcon from "./icons/PlasmicIcon__Store"; // plasmic-import: wbxAqhnU_B/icon
 
 createPlasmicElementProxy;
@@ -171,7 +171,7 @@ function PlasmicInsertPanel__RenderFunc(props: {
         <QuickInsertItem
           className={classNames("__wab_instance", sty.quickInsertItem__m1Xj6)}
           icon={
-            <IconIcon
+            <IconSvgIcon
               className={classNames("all", sty.svg__nvHjv)}
               role={"img"}
             />
@@ -1385,8 +1385,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicInsertPanel__VariantsArgs;
     args?: PlasmicInsertPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicInsertPanel__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicInsertPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicInsertPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

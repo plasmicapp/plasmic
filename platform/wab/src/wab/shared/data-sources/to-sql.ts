@@ -3,15 +3,23 @@ import {
   DATA_SOURCE_QUERY_BUILDER_CONFIG,
   GenericDataSource,
 } from "@/wab/shared/data-sources-meta/data-source-registry";
-import {
-  buildQueryBuilderConfig,
-  Filters,
-} from "@/wab/shared/data-sources-meta/data-sources";
+import { Filters } from "@/wab/shared/data-sources-meta/data-sources";
 import {
   getDynamicStringSegments,
   isDynamicValue,
 } from "@/wab/shared/dynamic-bindings";
-import { Utils as QbUtils } from "@react-awesome-query-builder/antd";
+import {
+  AntdConfig,
+  Utils as QbUtils,
+} from "@react-awesome-query-builder/antd";
+import { merge } from "lodash";
+
+export function buildQueryBuilderConfig(config: any, fields: any) {
+  return {
+    ...merge({}, AntdConfig, config),
+    fields: fields,
+  };
+}
 
 export function buildSqlStringForFilterTemplateArg(
   source: GenericDataSource,
