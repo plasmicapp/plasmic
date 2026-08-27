@@ -34,7 +34,7 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "dependencies": {
-    "qs": "^6.11.0"
+    "qs": "^6.15.3"
   },
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",

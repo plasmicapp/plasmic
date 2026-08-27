@@ -44,9 +44,6 @@
       "limit": "10 KB"
     }
   ],
-  "devDependencies": {
-    "@types/socket.io-client": "^3.0.0"
-  },
   "dependencies": {
     "socket.io-client": "^4.1.2"
   },
