@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.25
         version: 0.1.25(react@18.3.1)
       '@plasmicapp/react-web':
-        specifier: ^1.0.33
-        version: 1.0.33(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.34
+        version: 1.0.34(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -203,8 +203,8 @@ packages:
     resolution: {integrity: sha512-/qdJx92s6cEhyS7dwaJjm+GB6+klputltx/BwX3XftYznqqLOi60PWgnP7uzQ9Uj5bM/YsiwPps/Coso4XBeyw==}
     engines: {node: '>=10'}
 
-  '@plasmicapp/auth-react@0.0.32':
-    resolution: {integrity: sha512-FG6vQvPRmtp9R9G3pFSXk7mkJN8sv3DmMDiUHkmFugPK8j1i21tld6bqavO7BFyS9EmITVVv2x2z0fdzvIOmVg==}
+  '@plasmicapp/auth-react@0.0.33':
+    resolution: {integrity: sha512-qHQCnxFYyaKXCd8bVFgAmT1NbNUkNgrbjwz6678rD0bypTxKaZ+0XvKaPu8krp0ELEAgXXQaif1JBQA4Dh2WGA==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16.8.0'
@@ -215,14 +215,14 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  '@plasmicapp/data-sources@1.0.26':
-    resolution: {integrity: sha512-fpr0jKlltiDEOSTtAEzK9kBM/NPjm1k+ObS1N5nIKIq9JCpwS8hqA5EA6+fSjDtK0COAt4CsCt9mvTPHQ5iODA==}
+  '@plasmicapp/data-sources@1.0.27':
+    resolution: {integrity: sha512-75DefZJ/ObzhaNdFTlul/gchL4mIcKtISnrMtIAoFiJGYzSM/oh8cWeQfuu/RvgjqBfIvEpuL4+4svuJebh1lw==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=18.0.0'
 
-  '@plasmicapp/host@2.0.17':
-    resolution: {integrity: sha512-WQMkK5xCuPvkngK0lxrBv5si38TqNdKbVJyMqFHwFv61YMTPUt44yjwD43RbuBbXBgg0nI2LAwc49B7ch/zd/g==}
+  '@plasmicapp/host@2.0.18':
+    resolution: {integrity: sha512-NquSex8VSie44ZkPBhyznEsKjFb0RHkB9PyLJa5OILlWXctpwA+Jr8uIEFPlNnWylweFOGVT/9JjUMayGoX1Aw==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -230,12 +230,12 @@ packages:
   '@plasmicapp/isomorphic-unfetch@1.0.3':
     resolution: {integrity: sha512-cJtPOCf2/FWlFB42Q/n0MK/C47NSZr+YQJbCvQwvyjOrOgOQ4gJ/+gkr4avpMa7UPMa8qLovDAuaR+5k+hMlZQ==}
 
-  '@plasmicapp/loader-splits@1.0.76':
-    resolution: {integrity: sha512-fzFdT4hmB51Qv2fHxdMLO9oKRi5E5YqzXjAZtUXm9sl4ehRZHP5S9YiOU7ZWjhqphktsoT4x5yJXvYplJsyOjw==}
+  '@plasmicapp/loader-splits@1.0.77':
+    resolution: {integrity: sha512-O5Eeyp38huGrIPaP8cc5K7FF3tDo6M/qsAVp/5tCMwdxYYYEiOJ09t6Zhj1Ei7we/5XpNE04bBfaFRPqe1Hn/A==}
     engines: {node: '>=18'}
 
-  '@plasmicapp/prepass@1.0.28':
-    resolution: {integrity: sha512-8RBCWR+b05wi7alMOaUWC8sO6fSnph1kRqBd2XMZCWrgYG3tfGhgfXrvwNR2SOUs8WgMozsHRyeXccmAJf/8Gg==}
+  '@plasmicapp/prepass@1.0.29':
+    resolution: {integrity: sha512-Dg2Pq6yv0IbQMDVN2hB0qEOuO7WSiO5Qyhe9muFYSra3CgcQQKY+IkEIeFDqYsL5dbYwXzxwMI+1AG5wKDAM+w==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8.0'
@@ -252,8 +252,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@plasmicapp/react-web@1.0.33':
-    resolution: {integrity: sha512-p2nSXWbfBaV32S1kFLpCpYKOk1tlqOoHRU4J58XKLx5efoVOqRi5IuDpsmHWths48waRciO2mqLc8PBOnVkcmw==}
+  '@plasmicapp/react-web@1.0.34':
+    resolution: {integrity: sha512-e53bhgynS/RdsKJPk+AcUt3paUcdpYHbHnDhRdWe7DlL9Qo2ieVnNFXFdlsnGvP5SmGfwp5QoRUyJWKmGIPLsA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1744,7 +1744,7 @@ snapshots:
     dependencies:
       '@plasmicapp/isomorphic-unfetch': 1.0.3
 
-  '@plasmicapp/auth-react@0.0.32(react@18.3.1)':
+  '@plasmicapp/auth-react@0.0.33(react@18.3.1)':
     dependencies:
       '@plasmicapp/auth-api': 0.0.20
       '@plasmicapp/isomorphic-unfetch': 1.0.3
@@ -1755,17 +1755,17 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/data-sources@1.0.26(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/data-sources@1.0.27(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/data-sources-context': 0.1.25(react@18.3.1)
-      '@plasmicapp/host': 2.0.17(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      '@plasmicapp/host': 2.0.18(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
       fast-stringify: 2.0.0
       react: 18.3.1
     transitivePeerDependencies:
       - react-dom
 
-  '@plasmicapp/host@2.0.17(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/host@2.0.18(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/query': 0.1.87(react@18.3.1)
       csstype: 3.2.3
@@ -1777,11 +1777,11 @@ snapshots:
     dependencies:
       unfetch: 4.2.0
 
-  '@plasmicapp/loader-splits@1.0.76':
+  '@plasmicapp/loader-splits@1.0.77':
     dependencies:
       json-logic-js: 2.0.5
 
-  '@plasmicapp/prepass@1.0.28(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/prepass@1.0.29(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/query': 0.1.87(react@18.3.1)
       '@plasmicapp/react-ssr-prepass': 2.0.9(react@18.3.1)
@@ -1797,14 +1797,14 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/react-web@1.0.33(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/react-web@1.0.34(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@plasmicapp/auth-react': 0.0.32(react@18.3.1)
-      '@plasmicapp/data-sources': 1.0.26(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      '@plasmicapp/auth-react': 0.0.33(react@18.3.1)
+      '@plasmicapp/data-sources': 1.0.27(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@plasmicapp/data-sources-context': 0.1.25(react@18.3.1)
-      '@plasmicapp/host': 2.0.17(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
-      '@plasmicapp/loader-splits': 1.0.76
-      '@plasmicapp/prepass': 1.0.28(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      '@plasmicapp/host': 2.0.18(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      '@plasmicapp/loader-splits': 1.0.77
+      '@plasmicapp/prepass': 1.0.29(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
       '@react-aria/checkbox': 3.17.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@react-aria/focus': 3.22.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
