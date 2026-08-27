@@ -71,6 +71,13 @@ services:
       - POSTGRES_USER=wab
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
+      # tty/stdin_open below make stdin.isTTY true inside the container, but
+      # this service runs detached with nothing attached to answer a prompt.
+      # Without CI=true, both Node 24's bundled corepack (before its first
+      # `pnpm ...` download) and pnpm itself (confirmModulesPurge, when the
+      # copied-in node_modules don't match the lockfile) block forever on an
+      # unanswerable interactive Y/n confirmation.
+      - CI=true
     tty: true
     stdin_open: true
 

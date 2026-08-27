@@ -1,15 +1,21 @@
 {
   "type": "postgres",
-  "host": "localhost",
+  "host": "plasmic-db",
   "username": "wab",
   "database": "wab",
   "password": "SEKRET",
   "synchronize": false,
   "dropSchema": false,
   "logging": false,
-  "entities": ["src/wab/server/entities/**/*.ts"],
-  "migrations": ["src/wab/server/migrations/**/*.ts"],
-  "subscribers": ["src/wab/server/subscribers/**/*.ts"],
+  "entities": [
+    "src/wab/server/entities/**/*.ts"
+  ],
+  "migrations": [
+    "src/wab/server/migrations/**/*.ts"
+  ],
+  "subscribers": [
+    "src/wab/server/subscribers/**/*.ts"
+  ],
   "cli": {
     "entitiesDir": "src/wab/server/entities",
     "migrationsDir": "src/wab/server/migrations",
