@@ -35,7 +35,6 @@ import {
   kebabCase,
   mapKeys,
   mapValues,
-  memoize,
   uniq,
 } from "lodash";
 import memoizeOne from "memoize-one";
@@ -44,8 +43,22 @@ import { CSSProperties } from "react";
 // see visibility-serialize-utils.ts
 export const PLASMIC_DISPLAY_NONE = "plasmic-display-none";
 
+// Native Map memo: these run on every RuleSet access, and lodash's memoize
+// hash-cache lookups showed up in codegen profiles.
+function memoizeProp(fn: (prop: string) => string) {
+  const cache = new Map<string, string>();
+  return (prop: string) => {
+    let res = cache.get(prop);
+    if (res === undefined) {
+      res = fn(prop);
+      cache.set(prop, res);
+    }
+    return res;
+  };
+}
+
 /** Transforms "fontStyle" into "font-style". Keep leading - if specified. */
-export const normProp = memoize((prop: string) => {
+export const normProp = memoizeProp((prop: string) => {
   const kebabProp = kebabCase(prop);
   if (prop.startsWith("-")) {
     return `-${kebabProp}`;
@@ -54,7 +67,7 @@ export const normProp = memoize((prop: string) => {
 });
 
 /** Transforms "font-style" into "fontStyle" */
-export const camelProp = memoize((prop: string) => camelCase(prop));
+export const camelProp = memoizeProp((prop: string) => camelCase(prop));
 
 // Filling up CssInitials with missing values
 const browserCssInitialsOverrides = {

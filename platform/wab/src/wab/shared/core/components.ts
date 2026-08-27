@@ -30,6 +30,7 @@ import {
   mkVariant,
   mkVariantSetting,
   splitVariantCombo,
+  variantComboKey,
   variantGroupToLinkedPropType,
 } from "@/wab/shared/Variants";
 import {
@@ -1192,10 +1193,7 @@ export function extractComponent({
       // merge these two VariantSettings, but for now we're just picking one
       // arbitrarily :-p
       clonedTpl.vsettings = L.uniqBy(clonedTpl.vsettings, (vs) =>
-        vs.variants
-          .map((v) => v.uuid)
-          .sort()
-          .join("-")
+        variantComboKey(vs.variants)
       );
     } else {
       // Directly promote to non-private
@@ -1342,11 +1340,7 @@ export function extractComponent({
         (v) => !isBaseVariant(v) && !isStyleOrCodeComponentVariant(v)
       )
     ),
-    (combo) =>
-      combo
-        .map((v) => v.uuid)
-        .sort()
-        .join("-")
+    variantComboKey
   );
   // pipe the variant settings for component non style variants
   allUsedOldVariantCombo.forEach((oldVariantCombo) => {

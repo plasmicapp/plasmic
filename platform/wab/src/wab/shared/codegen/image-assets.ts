@@ -3,7 +3,6 @@ import {
   RuleSetHelpers,
   readonlyRSH,
 } from "@/wab/shared/RuleSetHelpers";
-import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import possibleStandardNames from "@/wab/shared/codegen/react-attrs";
 import { makeAssetIdFileName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { ImportAliasesMap } from "@/wab/shared/codegen/react-p/types";
@@ -163,6 +162,7 @@ export function collectUsedPictureAssetsForTpl(
     | {
         includeRuleSets: true;
         expandMixins: boolean;
+        allAssetsDict?: Readonly<{ [uuid: string]: ImageAsset }>;
       }
 ) {
   if (isTplPicture(tpl)) {
@@ -178,7 +178,9 @@ export function collectUsedPictureAssetsForTpl(
   }
 
   if (opts.includeRuleSets) {
-    const allAssetsDict = siteToAllImageAssetsDict(site);
+    const allAssetsDict =
+      opts.allAssetsDict ??
+      L.keyBy(allImageAssets(site, { includeDeps: "all" }), "uuid");
     for (const vs of tpl.vsettings) {
       const rulesets = opts.expandMixins ? expandRuleSets([vs.rs]) : [vs.rs];
       for (const rs of rulesets) {

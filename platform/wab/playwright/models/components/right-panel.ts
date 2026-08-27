@@ -885,6 +885,31 @@ export class RightPanel extends BaseModel {
 
     await this.hostUrlInput.clear();
     await this.hostUrlInput.fill(plasmicHost);
+
+    await expect
+      .poll(
+        async () => {
+          const response = await this.page
+            .context()
+            .request.get(plasmicHost, {
+              failOnStatusCode: false,
+              timeout: 10000,
+            })
+            .catch(() => undefined);
+          if (!response) {
+            return false;
+          }
+          const isReady = response.ok();
+          await response.dispose();
+          return isReady;
+        },
+        {
+          message: `Waiting for custom app host at ${plasmicHost}`,
+          timeout: 120000,
+        }
+      )
+      .toBe(true);
+
     await this.hostConfirmButton.click();
 
     const hostFrame = this.page.locator(
@@ -893,7 +918,7 @@ export class RightPanel extends BaseModel {
       }/${page}"]`
     );
 
-    await hostFrame.waitFor({ timeout: 60000 });
+    await hostFrame.waitFor({ timeout: 120000 });
   }
 
   async setWidth(value: string) {

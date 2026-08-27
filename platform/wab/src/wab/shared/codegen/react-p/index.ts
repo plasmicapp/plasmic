@@ -16,10 +16,7 @@ import {
   isStandaloneVariantGroup,
   isStyleVariant,
 } from "@/wab/shared/Variants";
-import {
-  allCustomFunctions,
-  componentToReferenced,
-} from "@/wab/shared/cached-selectors";
+import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
@@ -48,7 +45,7 @@ import {
   shouldWrapWithUsePlasmicAuth,
 } from "@/wab/shared/codegen/react-p/auth";
 import {
-  makeCssClassName,
+  getCssClassName,
   makeSerializedClassNameRef,
   serializeClassNames,
   serializeClassNamesCall,
@@ -267,15 +264,10 @@ import {
 } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import {
-  siteFinalStyleTokens,
-  siteFinalStyleTokensAllDeps,
-} from "@/wab/shared/core/site-style-tokens";
+import { siteFinalStyleTokens } from "@/wab/shared/core/site-style-tokens";
 import {
   CssProjectDependencies,
-  allImageAssets,
   allImportedStyleTokensWithProjectInfo,
-  allMixins,
 } from "@/wab/shared/core/sites";
 import {
   getComponentStateOnChangePropNames,
@@ -414,9 +406,14 @@ export function exportProjectConfig(
     "targetEnv" | "platform" | "stylesOpts"
   >,
   indirect = false,
-  scheme: CodegenScheme = "blackbox"
+  scheme: CodegenScheme = "blackbox",
+  siteGenHelper = new SiteGenHelper(site, false)
 ): ProjectConfig {
-  const fontUsages = extractUsedFontsFromComponents(site, site.components);
+  const fontUsages = extractUsedFontsFromComponents(
+    site,
+    site.components,
+    siteGenHelper.makeTokenRefResolver()
+  );
 
   const fontsCss =
     exportOpts?.fontOpts?.scheme === "none" ? "" : makeCssImports(fontUsages);
@@ -430,9 +427,9 @@ export function exportProjectConfig(
       : undefined;
 
   const resolver = new CssVarResolver(
-    siteFinalStyleTokensAllDeps(site),
-    allMixins(site, { includeDeps: "all" }),
-    allImageAssets(site, { includeDeps: "all" }),
+    siteGenHelper.allStyleTokensAndOverrides(),
+    siteGenHelper.allMixins(),
+    siteGenHelper.allImageAssets(),
     site.activeTheme,
     {
       useCssVariables: true,
@@ -485,7 +482,6 @@ export function exportProjectConfig(
     .join("\n");
 
   const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
-  const siteGenHelper = new SiteGenHelper(site, false);
 
   const cssTokenVarsRules = makeCssTokenVarsRuleSets(
     site,
@@ -590,7 +586,8 @@ ${animationsBlocks.varDecls}
       projectId,
       getCssProjectDependencies(site),
       projectModuleBundle,
-      exportOpts
+      exportOpts,
+      siteGenHelper
     );
     dataTokensBundle = makeDataTokensBundle(site, projectId, exportOpts);
   }
@@ -602,7 +599,8 @@ ${animationsBlocks.varDecls}
     {
       projectModuleBundle,
     },
-    exportOpts
+    exportOpts,
+    siteGenHelper
   );
 
   const cssRulesBody = `
@@ -654,15 +652,16 @@ function getCssProjectDependencies(site: Site): CssProjectDependencies {
 }
 
 export function computeSerializerSiteContext(
-  site: Site
+  site: Site,
+  siteGenHelper = new SiteGenHelper(site, false)
 ): SerializerSiteContext {
   return {
     projectFlags: getProjectFlags(site),
     cssProjectDependencies: getCssProjectDependencies(site),
     cssVarResolver: new CssVarResolver(
-      siteFinalStyleTokensAllDeps(site),
-      allMixins(site, { includeDeps: "all" }),
-      allImageAssets(site, { includeDeps: "all" }),
+      siteGenHelper.allStyleTokensAndOverrides(),
+      siteGenHelper.allMixins(),
+      siteGenHelper.allImageAssets(),
       site.activeTheme
     ),
     customFunctionToOwnerSite: new Map(
@@ -746,7 +745,9 @@ export function exportReactPresentational(
     "triggers"
   );
 
-  const referencedComponents = componentToReferenced(component);
+  const referencedComponents = [
+    ...componentGenHelper.siteHelper.componentToReferenced(component),
+  ];
   // Also tack on subcomponents of this component, so Plasmic* always
   // have them imported
   for (const subComp of component.subComps) {
@@ -3160,12 +3161,9 @@ function serializeCodeComponentHelperRegistry(
 }
 
 function makeCodegenRuleNamer(ctx: SerializerBaseContext) {
-  const { component, nodeNamer } = ctx;
+  const { component } = ctx;
   const classNamer = (tpl: TplNode, vs: VariantSetting) =>
-    makeCssClassName(component, tpl, vs, nodeNamer, {
-      targetEnv: ctx.exportOpts.targetEnv,
-      useSimpleClassname: ctx.exportOpts.stylesOpts.scheme === "css-modules",
-    });
+    getCssClassName(ctx, tpl, vs);
   return makePseudoElementAwareRuleNamer(
     makePseudoClassAwareRuleNamer(component, makeBaseRuleNamer(classNamer))
   );
@@ -3324,9 +3322,13 @@ function conditionalComponentArgs(
           !arg.param.type.noDeref
         ) {
           const token = arg.expr.token;
+          const siteHelper = ctx.componentGenHelper.siteHelper;
           const conditionals = buildConditionalDerefTokenValueArg(
             ctx.site,
-            toFinalToken(token, ctx.site)
+            siteHelper.allStyleTokensAndOverridesDict()[token.uuid] ??
+              toFinalToken(token, ctx.site),
+            siteHelper.allStyleTokensAndOverridesDict(),
+            siteHelper.makeTokenValueResolver()
           );
           entry.push([
             toCode(
@@ -3409,7 +3411,12 @@ function conditionalComponentArgs(
           [toCode(className), [getBaseVariant(component)]],
         ];
       } else if (isKnownDefaultStylesPropType(p.type)) {
-        param2variant[varName] = buildConditionalDefaultStylesPropArg(ctx.site);
+        const siteHelper = ctx.componentGenHelper.siteHelper;
+        param2variant[varName] = buildConditionalDefaultStylesPropArg(
+          ctx.site,
+          siteHelper.allStyleTokensAndOverridesDict(),
+          siteHelper.makeTokenRefResolver()
+        );
       }
     });
   }

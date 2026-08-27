@@ -1,3 +1,4 @@
+import { SiteGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { makeComponentAliases } from "@/wab/shared/codegen/react-p";
 import {
   makeGlobalVariantComboChecker,
@@ -42,7 +43,8 @@ export function makeGlobalContextBundle(
   imports: {
     projectModuleBundle: ProjectModuleBundle | undefined;
   },
-  opts: Partial<ExportOpts>
+  opts: Partial<ExportOpts>,
+  siteGenHelper?: SiteGenHelper
 ) {
   if (site.globalContexts.length === 0) {
     return undefined;
@@ -102,7 +104,11 @@ export function makeGlobalContextBundle(
         param.exportType !== ParamExportType.ToolsOnly
       ) {
         if (isKnownDefaultStylesPropType(param.type)) {
-          const conditionals = buildConditionalDefaultStylesPropArg(site);
+          const conditionals = buildConditionalDefaultStylesPropArg(
+            site,
+            siteGenHelper?.allStyleTokensAndOverridesDict(),
+            siteGenHelper?.makeTokenRefResolver()
+          );
           serializedExpr = joinVariantVals(
             conditionals.map(([expr, combo]) => [
               getRawCode(expr, exprCtx),
@@ -119,7 +125,11 @@ export function makeGlobalContextBundle(
           ) {
             const conditionals = buildConditionalDerefTokenValueArg(
               site,
-              toFinalToken(maybeArg.expr.token, site)
+              siteGenHelper?.allStyleTokensAndOverridesDict()[
+                maybeArg.expr.token.uuid
+              ] ?? toFinalToken(maybeArg.expr.token, site),
+              siteGenHelper?.allStyleTokensAndOverridesDict(),
+              siteGenHelper?.makeTokenValueResolver()
             );
             serializedExpr = joinVariantVals(
               conditionals.map(([expr, combo]) => [

@@ -924,9 +924,9 @@ export class EffectiveVariantSetting {
 export function getEffectiveVariantSetting(
   tpl: TplNode,
   activeVariants: VariantCombo,
-  sorter?: VariantComboSorter
+  sorter?: VariantComboSorter,
+  component = $$$(tpl).tryGetOwningComponent()
 ) {
-  const component = $$$(tpl).tryGetOwningComponent();
   if (component) {
     const site = getOwnerSite(component);
     const vsettings = sortedVariantSettingStack(

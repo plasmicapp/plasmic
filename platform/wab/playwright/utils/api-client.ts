@@ -213,6 +213,7 @@ export class ApiClient {
           "x-plasmic-api-user": "user2@example.com",
           "x-plasmic-api-token": await this.getApiToken(),
         },
+        timeout: 60000,
       }
     );
 

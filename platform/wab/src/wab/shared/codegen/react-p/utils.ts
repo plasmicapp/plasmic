@@ -38,7 +38,12 @@ import {
 } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { makeTokenValueResolver } from "@/wab/shared/core/site-style-tokens";
+import {
+  TokenRefResolver,
+  TokenValueResolver,
+  makeTokenRefResolver,
+  makeTokenValueResolver,
+} from "@/wab/shared/core/site-style-tokens";
 import {
   getRelevantVariantCombosForTheme,
   getRelevantVariantCombosForToken,
@@ -493,13 +498,17 @@ export function serializedKeyValueForObject(key: string, val: string): string {
 }
 
 export function buildConditionalDefaultStylesPropArg(
-  site: Site
+  site: Site,
+  allTokens?: Readonly<{
+    [uuid: string]: FinalToken<StyleToken>;
+  }>,
+  tokenRefResolver: TokenRefResolver = makeTokenRefResolver(site)
 ): [Expr, VariantCombo][] {
-  const combos = getRelevantVariantCombosForTheme(site);
+  const combos = getRelevantVariantCombosForTheme(site, allTokens);
   return [
-    [codeLit(makeDefaultStyleValuesDict(site, [])), []],
+    [codeLit(makeDefaultStyleValuesDict(site, [], tokenRefResolver)), []],
     ...(combos.map((combo) => [
-      codeLit(makeDefaultStyleValuesDict(site, combo)),
+      codeLit(makeDefaultStyleValuesDict(site, combo, tokenRefResolver)),
       combo,
     ]) as [Expr, VariantCombo][]),
   ];
@@ -507,10 +516,13 @@ export function buildConditionalDefaultStylesPropArg(
 
 export function buildConditionalDerefTokenValueArg(
   site: Site,
-  token: FinalToken<StyleToken>
+  token: FinalToken<StyleToken>,
+  allTokens?: Readonly<{
+    [uuid: string]: FinalToken<StyleToken>;
+  }>,
+  resolver: TokenValueResolver = makeTokenValueResolver(site)
 ): [Expr, VariantCombo][] {
-  const combos = getRelevantVariantCombosForToken(site, token);
-  const resolver = makeTokenValueResolver(site);
+  const combos = getRelevantVariantCombosForToken(site, token, allTokens);
 
   const getTokenValue = (combo: VariantCombo) => {
     const vsh = new VariantedStylesHelper(site, combo);

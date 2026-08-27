@@ -37,6 +37,7 @@ export function exportSiteComponents(
     isPlasmicHosted: boolean;
     forceAllCsr: boolean;
     appAuthProvider?: AppAuthProvider;
+    siteGenHelper?: SiteGenHelper;
   }
 ) {
   const {
@@ -52,8 +53,8 @@ export function exportSiteComponents(
     appAuthProvider,
   } = opts;
 
-  const siteGenHelper = new SiteGenHelper(site, false);
-  const siteCtx = computeSerializerSiteContext(site);
+  const siteGenHelper = opts.siteGenHelper ?? new SiteGenHelper(site, false);
+  const siteCtx = computeSerializerSiteContext(site, siteGenHelper);
 
   const cssVarResolver = new CssVarResolver(
     siteGenHelper.allStyleTokensAndOverrides(),
@@ -147,7 +148,11 @@ export function exportSiteComponents(
   const globalVariantBundles = [...globalVariantGroups].map((vg) => {
     return exportGlobalVariantGroup(vg, componentExportOpts);
   });
-  const tokens = exportStyleTokens(projectConfig.projectId, site);
+  const tokens = exportStyleTokens(
+    projectConfig.projectId,
+    site,
+    siteGenHelper.makeTokenValueResolver()
+  );
   const iconAssets = site.imageAssets
     .filter((x) => x.type === ImageAssetType.Icon && x.dataUri)
     .map((x) => {

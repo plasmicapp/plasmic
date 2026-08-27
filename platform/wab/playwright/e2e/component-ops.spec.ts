@@ -197,7 +197,7 @@ test.describe("component-ops - tricky operations", () => {
     await page.keyboard.insertText("--->Hello!");
     await page.keyboard.press("Escape");
 
-    await page.waitForTimeout(500);
+    await models.studio.waitAllEval();
 
     await compCFrame.locator("body").click();
 

@@ -1,5 +1,6 @@
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { isValidComboForToken } from "@/wab/shared/Variants";
+import { SiteGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   makeCssClassNameForVariantCombo,
   serializeGlobalCssClass,
@@ -46,7 +47,8 @@ export function makeStyleTokensProviderBundle(
   projectId: ProjectId,
   cssProjectDependencies: CssProjectDependencies,
   projectModuleBundle: ProjectModuleBundle,
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  siteGenHelper?: SiteGenHelper
 ): StyleTokensProviderBundle {
   const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
 
@@ -111,7 +113,8 @@ export function makeStyleTokensProviderBundle(
       site,
       projectId,
       cssProjectDependencies,
-      exportOpts
+      exportOpts,
+      siteGenHelper
     )};
   
     export const ${makeUseStyleTokensName()} = ${makeCreateUseStyleTokensName()}(
@@ -159,7 +162,8 @@ function projectStyleTokenData(
   site: Site,
   projectId: ProjectId,
   cssProjectDependencies: CssProjectDependencies,
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  siteGenHelper?: SiteGenHelper
 ) {
   const baseClassNames = [
     // project plasmic_tokens
@@ -170,10 +174,12 @@ function projectStyleTokenData(
     ),
   ].map(serializeGlobalCssClass);
 
-  const contextGlobalVariantCombos =
+  const contextGlobalVariantCombos = (
+    siteGenHelper?.contextGlobalVariantsWithVariantedTokens() ??
     getContextGlobalVariantsWithVariantedTokens(
       siteFinalStyleTokensAllDeps(site)
-    ).map((v) => [v]);
+    )
+  ).map((v) => [v]);
   const sorter = makeGlobalVariantComboSorter(site);
 
   const globalVariantDataEntries = sortedVariantCombos(

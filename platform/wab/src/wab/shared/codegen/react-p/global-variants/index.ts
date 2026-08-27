@@ -122,9 +122,7 @@ export function getUsedGlobalVariantGroups(
       siteGenHelper.allStyleTokensAndOverridesDict()
     ),
     // These global variants are not necessarily used by the component, but they contribute to varianted values of style tokens, which may be used within the component's slots, so we still include them.
-    ...getContextGlobalVariantsWithVariantedTokens(
-      siteGenHelper.allStyleTokensAndOverrides()
-    ),
+    ...siteGenHelper.contextGlobalVariantsWithVariantedTokens(),
   ]);
 }
 

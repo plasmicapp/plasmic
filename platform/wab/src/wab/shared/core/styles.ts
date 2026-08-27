@@ -19,7 +19,12 @@ import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
-import { RSH, RuleSetHelpers, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
+import {
+  RSH,
+  ReadonlyIRuleSetHelpersX,
+  RuleSetHelpers,
+  readonlyRSH,
+} from "@/wab/shared/RuleSetHelpers";
 import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -656,7 +661,7 @@ function deriveCssRuleSetStyles(
     }
   }
 
-  Object.entries(makeLayoutAwareRuleSet(rs, forBaseVariant).values).forEach(
+  Object.entries(ctx.makeLayoutAwareRuleSet(rs, forBaseVariant).values).forEach(
     ([name, val]) => {
       if (!isStylePropApplicable(tpl, name)) {
         return;
@@ -882,77 +887,61 @@ function appendSizeStyles(
   }
 }
 
+const BORDER_RADIUS_PROPS = standardCorners.map((s) => `border-${s}-radius`);
+const PADDING_PROPS = standardSides.map((s) => `padding-${s}`);
+const MARGIN_PROPS = standardSides.map((s) => `margin-${s}`);
+const BORDER_PROPS = ["width", "style", "color"];
+const BORDER_SIDE_PROPS = BORDER_PROPS.map((prop) =>
+  standardSides.map((s) => `border-${s}-${prop}`)
+);
+const BORDER_SHORTHANDS = [
+  "border",
+  ...standardSides.map((s) => `border-${s}`),
+].map(
+  (shorthand) =>
+    [shorthand, BORDER_PROPS.map((p) => `${shorthand}-${p}`)] as const
+);
+
 export function preferShorthand(m: Map<string, string>): Map<string, string> {
   const res = new Map(m);
 
   const useShorthand = (allProps: string[], shorthandProp: string) => {
-    if (
-      allProps.every(
-        (s) =>
-          m.has(s) &&
-          !ensure(
-            m.get(s),
-            () => `Expected ${s} value, but got ${m.get(s)}`
-          ).endsWith("!important")
-      )
-    ) {
-      res.set(
-        shorthandProp,
-        showCssShorthand(
-          allProps.map((key) =>
-            ensure(
-              m.get(key),
-              () => `Expected ${key} value, but got ${m.get(key)}`
-            )
-          )
-        )
-      );
-      allProps.forEach((key) => res.delete(key));
+    const vals: string[] = [];
+    for (const prop of allProps) {
+      const val = m.get(prop);
+      if (val === undefined || val.endsWith("!important")) {
+        return;
+      }
+      vals.push(val);
+    }
+    res.set(shorthandProp, showCssShorthand(vals));
+    for (const prop of allProps) {
+      res.delete(prop);
     }
   };
 
-  useShorthand(
-    standardCorners.map((s) => `border-${s}-radius`),
-    "border-radius"
-  );
-  useShorthand(
-    standardSides.map((s) => `padding-${s}`),
-    "padding"
-  );
-  useShorthand(
-    standardSides.map((s) => `margin-${s}`),
-    "margin"
-  );
+  useShorthand(BORDER_RADIUS_PROPS, "border-radius");
+  useShorthand(PADDING_PROPS, "padding");
+  useShorthand(MARGIN_PROPS, "margin");
 
-  // border
-  const borderProps = ["width", "style", "color"];
-  for (const prop of borderProps) {
-    const keys = standardSides
-      .map((s) => `border-${s}-${prop}`)
-      .filter((s) => m.has(s));
-    const vals = keys.map((s) =>
-      ensure(m.get(s), () => `Expected ${s} value, but got ${m.get(s)}`)
-    );
-    if (
-      keys.length === standardSides.length &&
-      vals.every((v) => v === vals[0])
-    ) {
-      res.set(`border-${prop}`, vals[0]);
-      keys.forEach((s) => res.delete(s));
+  for (let i = 0; i < BORDER_PROPS.length; i++) {
+    const keys = BORDER_SIDE_PROPS[i];
+    const first = m.get(keys[0]);
+    if (first !== undefined && keys.every((k) => m.get(k) === first)) {
+      res.set(`border-${BORDER_PROPS[i]}`, first);
+      for (const k of keys) {
+        res.delete(k);
+      }
     }
   }
 
-  for (const side of ["", ...standardSides]) {
-    const shorthand = side ? `border-${side}` : "border";
+  for (const [shorthand, keys] of BORDER_SHORTHANDS) {
     // These keys might not exist in `m` if created by the previous loop
-    if (borderProps.every((p) => res.has(`${shorthand}-${p}`))) {
-      res.set(
-        shorthand,
-        withoutNils(borderProps.map((s) => res.get(`${shorthand}-${s}`))).join(
-          " "
-        )
-      );
-      borderProps.forEach((s) => res.delete(`${shorthand}-${s}`));
+    if (keys.every((k) => res.has(k))) {
+      res.set(shorthand, keys.map((k) => res.get(k)).join(" "));
+      for (const k of keys) {
+        res.delete(k);
+      }
     }
   }
 
@@ -974,11 +963,13 @@ function showStyles(m: Map<string, string>) {
   if (m.size === 0) {
     return undefined;
   }
-  return `\
-  ${[...preferShorthand(m).entries()]
-    .map(([k, v]) => `${k}: ${v};`)
-    .join("\n")}\
-  `;
+  let res = "  ";
+  let first = true;
+  for (const [k, v] of preferShorthand(m)) {
+    res += first ? `${k}: ${v};` : `\n${k}: ${v};`;
+    first = false;
+  }
+  return res + "  ";
 }
 
 /**
@@ -2669,13 +2660,16 @@ export function createRuleSetMerger(
 }
 
 export class RuleSetMerger {
+  private exps: ReadonlyIRuleSetHelpersX[];
   constructor(
     private rulesets: DeepReadonlyArray<RuleSet>,
     private tplTag: TplNode
-  ) {}
+  ) {
+    this.exps = rulesets.map((rs) => readonlyRSH(rs, tplTag));
+  }
 
   has(prop: string): boolean {
-    return this.rulesets.some((rs) => readonlyRSH(rs, this.tplTag).has(prop));
+    return this.exps.some((exp) => exp.has(prop));
   }
 
   get(prop: string): string {
@@ -2688,8 +2682,8 @@ export class RuleSetMerger {
   }
 
   getRaw(prop: string): string | undefined {
-    for (const rs of this.rulesets.slice().reverse()) {
-      const exp = readonlyRSH(rs, this.tplTag);
+    for (let i = this.exps.length - 1; i >= 0; i--) {
+      const exp = this.exps[i];
       if (exp.has(prop)) {
         return exp.getRaw(prop);
       }
@@ -2698,7 +2692,7 @@ export class RuleSetMerger {
   }
 
   getAll(prop: string): string[] {
-    return this.rulesets.map((rs) => readonlyRSH(rs, this.tplTag).get(prop));
+    return this.exps.map((exp) => exp.get(prop));
   }
 
   props() {
@@ -3148,10 +3142,31 @@ export function cssPropsToRuleSet(props: CSSProperties) {
   });
 }
 
+const derivedBackgroundStyles = new Map<
+  string,
+  { background: string; clip?: string }
+>();
+
 export function deriveBackgroundStyles(
   stylesMap: Map<string, string>,
   backgroundCssValue: string
 ) {
+  let derived = derivedBackgroundStyles.get(backgroundCssValue);
+  if (!derived) {
+    derived = deriveBackgroundStylesUncached(backgroundCssValue);
+    if (derivedBackgroundStyles.size >= 5000) {
+      derivedBackgroundStyles.clear();
+    }
+    derivedBackgroundStyles.set(backgroundCssValue, derived);
+  }
+  stylesMap.set("background", derived.background);
+  if (derived.clip) {
+    stylesMap.set("background-clip", derived.clip);
+    stylesMap.set("-webkit-background-clip", derived.clip);
+  }
+}
+
+function deriveBackgroundStylesUncached(backgroundCssValue: string) {
   const vals: string[] = splitCssValue("background", backgroundCssValue);
   const lastLayer: BackgroundLayer = parseCss(vals[vals.length - 1], {
     startRule: "backgroundLayer",
@@ -3160,7 +3175,7 @@ export function deriveBackgroundStyles(
   // If last layer is ColorFill, turn it into background-color.
   lastLayer.preferBackgroundColorOverColorFill = true;
   vals[vals.length - 1] = lastLayer.showCss();
-  stylesMap.set("background", css.showCssValues("background", vals));
+  const background = css.showCssValues("background", vals);
 
   if (vals.some((val) => val.includes(bgClipTextTag))) {
     const layers: BackgroundLayer[] = [
@@ -3174,16 +3189,16 @@ export function deriveBackgroundStyles(
     ];
     // "background-clip: text" must be set globally, separated and after
     // the background shorthand.
-    const clipValues = layers
+    const clip = layers
       .map((l) =>
         l.clip === bgClipTextTag
           ? "text"
           : l.clip || css.getCssInitial("background-clip", "div")
       )
       .join(", ");
-    stylesMap.set("background-clip", clipValues);
-    stylesMap.set("-webkit-background-clip", clipValues);
+    return { background, clip };
   }
+  return { background };
 }
 
 const DEFAULT_STYLES_CODE_COMPONENT_STYLE_PROPS = [
@@ -3202,7 +3217,8 @@ const DEFAULT_STYLES_CODE_COMPONENT_STYLE_PROPS = [
  */
 export function makeDefaultStyleValuesDict(
   site: Site,
-  activeGlobalVariants: Variant[]
+  activeGlobalVariants: Variant[],
+  resolver = makeTokenRefResolver(site)
 ) {
   const theme = site.activeTheme;
   if (!theme) {
@@ -3211,7 +3227,6 @@ export function makeDefaultStyleValuesDict(
   const vsh = new VariantedStylesHelper(site, activeGlobalVariants);
   const mergedRs = vsh.getActiveVariantedRuleSet(theme.defaultStyle);
   const exp = new RuleSetHelpers(mergedRs, "div");
-  const resolver = makeTokenRefResolver(site);
   return Object.fromEntries(
     DEFAULT_STYLES_CODE_COMPONENT_STYLE_PROPS.map((prop) => {
       const value = exp.get(prop);
@@ -3223,13 +3238,14 @@ export function makeDefaultStyleValuesDict(
 
 export function getRelevantVariantCombosForToken(
   site: Site,
-  token: FinalToken<StyleToken>
+  token: FinalToken<StyleToken>,
+  allTokens: Readonly<{
+    [uuid: string]: FinalToken<StyleToken>;
+  }> = siteFinalStyleTokensAllDepsDict(site)
 ) {
   const addCombo = (combo: VariantCombo) =>
     map.set(variantComboKey(combo), combo);
   const map = new Map<string, VariantCombo>();
-
-  const allTokens = siteFinalStyleTokensAllDepsDict(site);
 
   const traverseToken = (t: FinalToken<StyleToken>) => {
     for (const vv of t.variantedValues) {
@@ -3245,7 +3261,12 @@ export function getRelevantVariantCombosForToken(
   return Array.from(map.values());
 }
 
-export function getRelevantVariantCombosForTheme(site: Site) {
+export function getRelevantVariantCombosForTheme(
+  site: Site,
+  allTokens: Readonly<{
+    [uuid: string]: FinalToken<StyleToken>;
+  }> = siteFinalStyleTokensAllDepsDict(site)
+) {
   if (!site.activeTheme) {
     return [];
   }
@@ -3253,12 +3274,11 @@ export function getRelevantVariantCombosForTheme(site: Site) {
     map.set(variantComboKey(combo), combo);
   const map = new Map<string, VariantCombo>();
 
-  const allTokens = siteFinalStyleTokensAllDepsDict(site);
   const checkValue = (value: string) => {
     const maybeToken = tryParseTokenRef(value, allTokens);
     if (maybeToken) {
-      getRelevantVariantCombosForToken(site, maybeToken).forEach((combo) =>
-        addCombo(combo)
+      getRelevantVariantCombosForToken(site, maybeToken, allTokens).forEach(
+        (combo) => addCombo(combo)
       );
     }
   };

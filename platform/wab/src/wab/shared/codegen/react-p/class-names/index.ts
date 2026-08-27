@@ -1,3 +1,4 @@
+import { DeepMap } from "@/wab/commons/deep-map";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   VariantGroupType,
@@ -6,7 +7,6 @@ import {
   isCodeComponentVariant,
   isStandaloneVariantGroup,
 } from "@/wab/shared/Variants";
-import { getContextGlobalVariantsWithVariantedTokens } from "@/wab/shared/codegen/react-p/global-variants";
 import {
   NodeNamer,
   getExportedComponentName,
@@ -181,6 +181,24 @@ export function makeCssClassName(
   );
 }
 
+export function getCssClassName(
+  ctx: SerializerBaseContext,
+  node: TplNode,
+  vs: VariantSetting
+): JsIdentifier {
+  const map = (ctx.cache.cssClassName ??= new DeepMap<JsIdentifier>());
+  const entry = map.entry([node, vs]);
+  if (!entry.exists()) {
+    entry.set(
+      makeCssClassName(ctx.component, node, vs, ctx.nodeNamer, {
+        targetEnv: ctx.exportOpts.targetEnv,
+        useSimpleClassname: ctx.exportOpts.stylesOpts.scheme === "css-modules",
+      })
+    );
+  }
+  return entry.get();
+}
+
 function shouldReferenceByClassName(vs: VariantSetting) {
   // If there are variants in the combo that are not base rule variants, like
   // :hover, then we don't need to reference this VariantSetting by name
@@ -204,7 +222,7 @@ export function serializeClassNames(
   orderedVsettings: VariantSetting[],
   additionalClassExpr?: string[]
 ) {
-  const { component, nodeNamer, variantComboChecker } = ctx;
+  const { component, variantComboChecker } = ctx;
   const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
   const unconditionalClassExprs: string[] = [];
   const conditionalClassExprs: [string, string][] = [];
@@ -262,10 +280,7 @@ export function serializeClassNames(
     if (!shouldReferenceByClassName(vs)) {
       continue;
     }
-    const generatedClass = makeCssClassName(component, node, vs, nodeNamer, {
-      targetEnv: ctx.exportOpts.targetEnv,
-      useSimpleClassname: useCssModules,
-    });
+    const generatedClass = getCssClassName(ctx, node, vs);
     if (isBaseVariant(vs.variants)) {
       unconditionalClassExprs.push(
         useCssModules ? `sty.${generatedClass}` : jsLiteral(generatedClass)
@@ -357,10 +372,9 @@ export function serializeComponentRootResetClasses(
 
     // Context global variants require className to render their CSS changes.
     // Screen variants are rendered through media query
-    const contextGlobalVariantCombos =
-      getContextGlobalVariantsWithVariantedTokens(
-        ctx.componentGenHelper.siteHelper.allStyleTokensAndOverrides()
-      ).map((v) => [v]);
+    const contextGlobalVariantCombos = ctx.componentGenHelper.siteHelper
+      .contextGlobalVariantsWithVariantedTokens()
+      .map((v) => [v]);
 
     if (contextGlobalVariantCombos.length > 0) {
       const sorter = makeGlobalVariantComboSorter(ctx.site);

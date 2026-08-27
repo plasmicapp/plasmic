@@ -465,13 +465,9 @@ export class StudioModel extends BaseModel {
   }
 
   async waitAllEval() {
-    await this.page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        const win = window as any;
-        win.dbg.studioCtx.awaitEval().then(() => {
-          resolve();
-        });
-      });
+    await this.frame.locator("body").evaluate(async () => {
+      const win = window as any;
+      await win.dbg.studioCtx.awaitEval();
     });
   }
 

@@ -52,11 +52,13 @@ async function waitForVariantFrame(
 }
 
 async function addRegisteredVariantFromVariantsTab(
-  page: Page,
   models: PageModels,
   variantName: string,
   { expectNewFrame = true }: { expectNewFrame?: boolean } = {}
 ): Promise<FrameLocator | null> {
+  const variantSelectorButton = models.studio.frame.locator(
+    '[data-test-id="variant-selector-button"]'
+  );
   const action = async () => {
     const registeredVariantsSection = models.studio.frame
       .locator('[data-test-class="variants-section"]')
@@ -64,9 +66,12 @@ async function addRegisteredVariantFromVariantsTab(
     await registeredVariantsSection
       .locator('[data-test-class="add-variant-button"]')
       .click();
-    await page.waitForTimeout(500);
-    await page.keyboard.type(variantName);
-    await page.keyboard.press("Enter");
+    await variantSelectorButton.waitFor({ state: "visible", timeout: 15000 });
+
+    const selectorInput = variantSelectorButton.locator("..").locator("input");
+    await selectorInput.fill(variantName);
+    await selectorInput.press("Enter");
+    await expect(variantSelectorButton).toBeEnabled({ timeout: 15000 });
   };
 
   let frame: FrameLocator | null = null;
@@ -76,12 +81,7 @@ async function addRegisteredVariantFromVariantsTab(
     await action();
   }
 
-  const variantSelectorButton = models.studio.frame.locator(
-    '[data-test-id="variant-selector-button"]'
-  );
-  await variantSelectorButton.waitFor({ state: "visible", timeout: 5000 });
   await variantSelectorButton.click();
-  await page.waitForTimeout(500);
 
   await expectVariantPresent(models, variantName);
 
@@ -239,26 +239,26 @@ test.describe("registered variants", () => {
     await expectVariantAbsent(models, "Hovered");
 
     const hoverFrame = await addRegisteredVariantFromVariantsTab(
-      page,
       models,
       "Hovered"
     );
+    if (!hoverFrame) {
+      throw new Error("Expected a new variant frame to be created");
+    }
 
     await expectVariantPresent(models, "Hovered");
 
     await models.studio.leftPanel.selectTreeNode(["Aria Button"]);
-    await page.waitForTimeout(500);
+    await hoverFrame.getByText("Button", { exact: true }).first().click();
     await page.keyboard.press("Enter");
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(500);
 
-    const editingElem = hoverFrame!.locator(".__wab_editing").first();
-    await editingElem.waitFor({ state: "attached", timeout: 10000 });
+    const editingElem = hoverFrame.locator(".__wab_editing").first();
+    await editingElem.waitFor({ state: "visible", timeout: 15000 });
 
     const contentEditable = editingElem
       .locator('[contenteditable="true"]')
       .first();
-    await contentEditable.waitFor({ state: "attached", timeout: 5000 });
+    await contentEditable.waitFor({ state: "visible", timeout: 15000 });
     await page.waitForTimeout(500);
 
     await page.keyboard.press(`${modifierKey}+a`);
@@ -364,7 +364,6 @@ test.describe("registered variants", () => {
     await expectVariantAbsent(models, "Hovered");
 
     const hoverFrame = await addRegisteredVariantFromVariantsTab(
-      page,
       models,
       "Hovered"
     );
@@ -498,7 +497,7 @@ test.describe("registered variants", () => {
 
     await expectVariantAbsent(models, "Disabled");
 
-    await addRegisteredVariantFromVariantsTab(page, models, "Disabled", {
+    await addRegisteredVariantFromVariantsTab(models, "Disabled", {
       expectNewFrame: false,
     });
     await expectVariantPresent(models, "Disabled");

@@ -56,10 +56,10 @@ export interface TheoTokensOutput {
 
 export function exportStyleTokens(
   projectId: string,
-  site: Site
+  site: Site,
+  resolver = makeTokenValueResolver(site)
 ): TheoTokensOutput {
   const tokens = siteFinalStyleTokens(site);
-  const resolver = makeTokenValueResolver(site);
   return {
     props: tokens.map((token) =>
       serializeStyleToken(token, { projectId }, resolver)

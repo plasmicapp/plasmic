@@ -28,8 +28,25 @@ export async function loadDepPackages(
     dontMigrateBundle?: boolean;
   }
 ) {
+  const loadBundle = opts?.dontMigrateBundle
+    ? async (pkg: PkgVersion) => parseBundle(pkg)
+    : getMigratedBundle;
+  return (
+    await loadDepPackagesWithBundles(dbMgr, bundle, loadBundle, opts)
+  ).map(({ pkg }) => pkg);
+}
+
+async function loadDepPackagesWithBundles<T extends UnsafeBundle>(
+  dbMgr: MigrationDbMgr,
+  bundle: UnsafeBundle | UnsafeBundle[],
+  loadBundle: (pkg: PkgVersion) => Promise<T>,
+  opts?: {
+    extendTokens?: boolean;
+  }
+) {
   const deps: string[] = [];
   const loadedPkgs: Record<string, PkgVersion> = {};
+  const loadedBundles: Record<string, T> = {};
   const pkg2DirectDeps: Record<string, string[]> = {};
   let bundlesToCheck = Array.isArray(bundle) ? [...bundle] : [bundle];
   while (bundlesToCheck.length > 0) {
@@ -53,16 +70,18 @@ export async function loadDepPackages(
     bundlesToCheck = [];
     for (const [id, depPkg] of strictZip(newDeps, depPkgs)) {
       loadedPkgs[id] = depPkg;
-      const pkgBundle = opts?.dontMigrateBundle
-        ? parseBundle(depPkg)
-        : await getMigratedBundle(depPkg);
+      const pkgBundle = await loadBundle(depPkg);
+      loadedBundles[id] = pkgBundle;
       bundlesToCheck.push(pkgBundle);
       pkg2DirectDeps[id] = pkgBundle.deps;
     }
   }
 
   const orderedDeps = flattenDeps(pkg2DirectDeps);
-  return orderedDeps.map((id) => loadedPkgs[id]);
+  return orderedDeps.map((id) => ({
+    pkg: loadedPkgs[id],
+    bundle: loadedBundles[id],
+  }));
 }
 
 /**
@@ -148,10 +167,13 @@ export async function unbundleWithDeps(
   bundle: Bundle
 ) {
   logger().info(`Unbundling with deps ${id}`);
-  const depPkgs = await loadDepPackages(dbMgr, bundle);
-  for (const depPkg of depPkgs) {
-    const depBundle = await getMigratedBundle(depPkg);
-    bundler.unbundle(depBundle, depPkg.id);
+  const deps = await loadDepPackagesWithBundles(
+    dbMgr,
+    bundle,
+    getMigratedBundle
+  );
+  for (const { pkg, bundle: depBundle } of deps) {
+    bundler.unbundle(depBundle, pkg.id);
   }
   return bundler.unbundle(bundle, id);
 }

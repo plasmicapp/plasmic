@@ -1006,7 +1006,7 @@ export const isTplSlotVisible = keyedComputedFn(
   },
   {
     keyFn: (component, tpl, variants) =>
-      `${component.uuid}-${tpl.uuid}-${variants.map((v) => v.uuid).join(";")}`,
+      `${component.uuid}-${tpl.uuid}-${variantComboKey(variants)}`,
     name: "isTplSlotVisible",
   }
 );

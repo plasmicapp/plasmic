@@ -6,7 +6,10 @@ import { isTypographyNode } from "@/wab/shared/SlotUtils";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { assert, ensure } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
+import {
+  TokenRefResolver,
+  makeTokenRefResolver,
+} from "@/wab/shared/core/site-style-tokens";
 import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import { fontWeightNumber } from "@/wab/shared/css";
 import { GoogleFontInstallSpec, getFontSpec } from "@/wab/shared/fonts";
@@ -32,7 +35,8 @@ export interface FontVariant {
 
 export function extractUsedFontsFromComponents(
   site: Site,
-  components: Component[]
+  components: Component[],
+  tokenResolver: TokenRefResolver = makeTokenRefResolver(site)
 ) {
   // Basically, for any piece of text, its style is influenced by the default
   // theme style, as well as any ancestor slots.  Ideally, we would look at
@@ -44,8 +48,6 @@ export function extractUsedFontsFromComponents(
 
   const usage: Record<string, FontUsage> = {};
   const theme = site.activeTheme;
-
-  const tokenResolver = makeTokenRefResolver(site);
 
   const families = new Set<string>();
   const weights = new Set<number>([400]);

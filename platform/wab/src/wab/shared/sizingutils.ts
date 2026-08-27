@@ -13,6 +13,7 @@ import {
   getGlobalVariants,
   isBaseVariant,
   tryGetBaseVariantSetting,
+  variantComboKey,
 } from "@/wab/shared/Variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { assert, ensure, replaceObj } from "@/wab/shared/common";
@@ -44,12 +45,7 @@ import {
   getEffectiveVariantSetting,
   getTplComponentActiveVariantsByVs,
 } from "@/wab/shared/effective-variant-setting";
-import {
-  makeExpProxy,
-  makeExpandedExp,
-  makeReadonlyExpProxy,
-  makeReadonlyExpandedExp,
-} from "@/wab/shared/exprs";
+import { makeExpProxy, makeExpandedExp } from "@/wab/shared/exprs";
 import {
   ContainerLayoutType,
   getRshContainerType,
@@ -313,15 +309,20 @@ export function isExplicitPercentage(val: string) {
 }
 
 export function makeSizeAwareExpProxy(exp: IRuleSetHelpersX, tpl: TplNode) {
-  const isInstance = isTplComponent(tpl);
+  const ro = new ReadonlySizeAwareExp(exp, tpl);
   return makeExpProxy(
     exp,
     Object.assign(
-      {},
-      makeReadonlySizeAwareExpProxy(exp, tpl),
+      {
+        has: (prop: string) => ro.has(prop),
+        get: (prop: string) => ro.get(prop),
+        getRaw: (prop: string) => ro.getRaw(prop),
+        props: () => ro.props(),
+        getDefault: (prop: string) => ro.getDefault(prop),
+      },
       makeExpandedExp({
         set: (prop: string, val: string) => {
-          if (isInstance && (prop === "width" || prop === "height")) {
+          if (ro.isInstance && (prop === "width" || prop === "height")) {
             if (val === "auto") {
               // We translate "auto" to "default"
               val = "default";
@@ -334,28 +335,42 @@ export function makeSizeAwareExpProxy(exp: IRuleSetHelpersX, tpl: TplNode) {
   );
 }
 
+// Codegen creates one per tpl, variant setting), RuleSetMerger has one per ruleset.
+class ReadonlySizeAwareExp implements ReadonlyIRuleSetHelpersX {
+  readonly isInstance: boolean;
+  constructor(
+    private readonly exp: ReadonlyIRuleSetHelpersX,
+    private readonly tpl: TplNode
+  ) {
+    this.isInstance = isTplComponent(tpl);
+  }
+  has(prop: string) {
+    return this.exp.has(prop);
+  }
+  getRaw(prop: string) {
+    return this.exp.getRaw(prop);
+  }
+  props() {
+    return this.exp.props();
+  }
+  getDefault(prop: string) {
+    if (this.isInstance && (prop === "width" || prop === "height")) {
+      // We return "default" for default width/height for TplComponent,
+      // instead of the usual default of "auto"
+      return "default";
+    }
+    return getCssDefault(prop, isTplTag(this.tpl) ? this.tpl.tag : undefined);
+  }
+  get(prop: string) {
+    return this.getRaw(prop) || this.getDefault(prop);
+  }
+}
+
 export function makeReadonlySizeAwareExpProxy(
   exp: ReadonlyIRuleSetHelpersX,
   tpl: TplNode
-) {
-  const isInstance = isTplComponent(tpl);
-  return makeReadonlyExpProxy(
-    exp,
-    makeReadonlyExpandedExp({
-      getRaw: (prop: string) => {
-        return exp.getRaw(prop);
-      },
-      getDefault: (prop: string) => {
-        if (isInstance && (prop === "width" || prop === "height")) {
-          // We return "default" for default width/height for TplComponent,
-          // instead of the usual default of "auto"
-          return "default";
-        } else {
-          return getCssDefault(prop, isTplTag(tpl) ? tpl.tag : undefined);
-        }
-      },
-    })
-  );
+): ReadonlyIRuleSetHelpersX {
+  return new ReadonlySizeAwareExp(exp, tpl);
 }
 
 /**
@@ -374,7 +389,7 @@ export function getTplComponentDefaultSize(
     effectiveVs
   );
   const activeGlobalVariants = getGlobalVariants(variantCombo);
-  return getComponentDefaultSize(component, [
+  return compHelper.siteHelper.getComponentDefaultSize(component, [
     ...activeComponentVariants,
     ...activeGlobalVariants,
   ]);
@@ -502,10 +517,7 @@ export const getComponentDefaultSize = keyedComputedFn(
   getComponentDefaultSize_,
   {
     keyFn: (comp, activeVariants) =>
-      `${comp.uuid}-${activeVariants
-        .map((v) => v.uuid)
-        .sort()
-        .join("-")}`,
+      `${comp.uuid}-${variantComboKey(activeVariants)}`,
   }
 );
 

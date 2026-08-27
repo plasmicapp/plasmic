@@ -1,5 +1,4 @@
 import { ProjectId } from "@/wab/shared/ApiSchema";
-import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
   ComponentGenHelper,
   SiteGenHelper,
@@ -64,9 +63,6 @@ import {
   isCodeComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
-import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
-import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
   isTplComponent,
   isTplSlot,
@@ -170,12 +166,7 @@ export function exportReactPlain(
     s3ImageLinks: {},
     projectFlags,
     forceAllCsr: false,
-    cssVarResolver: new CssVarResolver(
-      siteFinalStyleTokensAllDeps(site),
-      allMixins(site, { includeDeps: "all" }),
-      allImageAssets(site, { includeDeps: "all" }),
-      site.activeTheme
-    ),
+    cssVarResolver: siteCtx.cssVarResolver,
     usesComponentLevelQueries:
       component.dataQueries.filter((q) => !!q.op).length > 0,
     usesDataSourceInteraction: hasDataSourceInteractions(component),
@@ -212,7 +203,7 @@ export function exportReactPlain(
     `;
   }
 
-  const referencedComponents = componentToReferenced(component);
+  const referencedComponents = [...siteHelper.componentToReferenced(component)];
   const referencedImports = generateReferencedImports(
     referencedComponents,
     opts,

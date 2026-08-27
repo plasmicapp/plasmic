@@ -11,7 +11,7 @@ import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-uti
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
-import { componentToReferenced } from "@/wab/shared/cached-selectors";
+import { SiteGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   IconAssetExport,
   PictureAssetExport,
@@ -230,6 +230,8 @@ export async function doGenCode(
     // we send down urls to the cli, and let cli do the fetching.
   }
 
+  const siteGenHelper = new SiteGenHelper(site, false);
+
   const projectConfig = await withSpan(
     "loader-export-project-config",
     async () =>
@@ -242,7 +244,8 @@ export async function doGenCode(
         version,
         exportOpts,
         indirect,
-        opts.scheme
+        opts.scheme,
+        siteGenHelper
       ),
     `Project ${projectId}`
   );
@@ -287,6 +290,7 @@ export async function doGenCode(
       isPlasmicHosted,
       forceAllCsr,
       appAuthProvider,
+      siteGenHelper,
     });
 
     // Register that project has been synced
@@ -337,7 +341,7 @@ export async function doGenCode(
       output,
       site,
       checksums: newChecksums,
-      componentDeps: getComponentDeps(site, appAuthProvider),
+      componentDeps: getComponentDeps(site, siteGenHelper, appAuthProvider),
       componentRefs,
     };
   } catch (error) {
@@ -364,10 +368,14 @@ export async function doGenCode(
   }
 }
 
-function getComponentDeps(site: Site, appAuthProvider?: string) {
+function getComponentDeps(
+  site: Site,
+  siteGenHelper: SiteGenHelper,
+  appAuthProvider?: string
+) {
   const componentDeps: Record<string, string[]> = Object.fromEntries(
     allComponents(site).map((c) => {
-      let depComps = componentToReferenced(c);
+      let depComps = siteGenHelper.componentToReferenced(c);
 
       // A super component always references its subcomponents,
       // so say a Select always pulls in Select.Option, even if
