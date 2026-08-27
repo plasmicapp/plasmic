@@ -82,8 +82,8 @@ function removeMissingFilesFromLock(
         knownProjects[project.projectId].icons.map((icons) => [icons.id, icons])
       );
 
-      project.fileLocks = project.fileLocks.filter((lock) => {
-        switch (lock.type) {
+      project.fileLocks = project.fileLocks.filter((fileLock) => {
+        switch (fileLock.type) {
           default:
             return false;
           case "projectCss":
@@ -92,11 +92,11 @@ function removeMissingFilesFromLock(
             return knownGlobalVariants[project.projectId];
           case "cssRules":
           case "renderModule":
-            return knownComponents[lock.assetId];
+            return knownComponents[fileLock.assetId];
           case "image":
-            return knownImages[lock.assetId];
+            return knownImages[fileLock.assetId];
           case "icon":
-            return knownIcons[lock.assetId];
+            return knownIcons[fileLock.assetId];
           case "globalContexts":
             return knownProjects[project.projectId].globalContextsFilePath;
           case "splitsProvider":
@@ -176,7 +176,9 @@ async function attemptToRestoreFilePath(
       "Please add this file or update your plasmic.json by removing or changing this path and try again."
     );
   }
-  return answer;
+  // Paths in plasmic.json must be relative to srcDir
+  const newPath = path.relative(context.absoluteSrcDir, answer);
+  return newPath;
 }
 
 async function resolveMissingFilesInConfig(
@@ -333,7 +335,9 @@ export async function getContext(
     skipInit?: boolean;
   } = {}
 ): Promise<PlasmicContext> {
-  if (!args.baseDir) args.baseDir = process.cwd();
+  if (!args.baseDir) {
+    args.baseDir = process.cwd();
+  }
   const auth = enableSkipAuth
     ? await getCurrentOrDefaultAuth(args)
     : await getOrInitAuth(args);
@@ -359,8 +363,10 @@ export async function getContext(
     args.config || findConfigFile(args.baseDir, { traverseParents: true });
 
   if (!configFile) {
-    await maybeRunPlasmicInit(args, "plasmic.json", enableSkipAuth);
-    configFile = findConfigFile(args.baseDir, { traverseParents: true });
+    if (!skipInit) {
+      await maybeRunPlasmicInit(args, "plasmic.json", enableSkipAuth);
+      configFile = findConfigFile(args.baseDir, { traverseParents: true });
+    }
     if (!configFile) {
       const err = new HandledError(
         "No plasmic.json file found. Please run `plasmic init` first."
