@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/nextjs-app-router",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "(DEPRECATED) Helpers for extracting Plasmic query data under the Next.js App Router.",
   "homepage": "https://www.plasmic.app",
   "repository": {

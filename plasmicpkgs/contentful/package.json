@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/contentful",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "Custom functions for querying Contentful content from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",

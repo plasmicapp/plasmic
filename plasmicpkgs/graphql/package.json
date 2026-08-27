@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/graphql",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "description": "Custom functions for running GraphQL queries from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",

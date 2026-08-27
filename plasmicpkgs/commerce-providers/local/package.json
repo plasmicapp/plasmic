@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-local",
-  "version": "0.0.259",
+  "version": "0.0.260",
   "description": "Local mock data provider for Plasmic commerce components.",
   "homepage": "https://www.plasmic.app",
   "repository": {

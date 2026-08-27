@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/dnd-kit",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "Plasmic code components for building sortable drag-and-drop lists with dnd-kit.",
   "homepage": "https://www.plasmic.app",
   "repository": {

@@ -1,5 +1,5 @@
 {
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Low-level fetcher for downloading Plasmic project bundles from the Plasmic API.",
   "homepage": "https://www.plasmic.app",
   "repository": {

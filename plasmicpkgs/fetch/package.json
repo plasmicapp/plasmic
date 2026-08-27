@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/fetch",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "Custom function for making HTTP requests from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",

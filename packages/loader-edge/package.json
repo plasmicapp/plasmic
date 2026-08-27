@@ -1,5 +1,5 @@
 {
-  "version": "1.0.82",
+  "version": "1.0.83",
   "description": "Edge-runtime helpers for applying Plasmic A/B tests and content splits in middleware.",
   "homepage": "https://www.plasmic.app",
   "repository": {

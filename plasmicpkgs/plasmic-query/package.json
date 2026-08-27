@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-query",
-  "version": "0.0.279",
+  "version": "0.0.280",
   "description": "Plasmic components and registration calls for data fetching",
   "homepage": "https://www.plasmic.app",
   "repository": {

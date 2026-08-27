@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-chartjs-2",
-  "version": "1.0.170",
+  "version": "1.0.171",
   "description": "Plasmic code components for rendering Chart.js charts via react-chartjs-2.",
   "homepage": "https://www.plasmic.app",
   "repository": {

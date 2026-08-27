@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-swell",
-  "version": "0.0.268",
+  "version": "0.0.269",
   "description": "Swell provider for Plasmic commerce components.",
   "homepage": "https://www.plasmic.app",
   "repository": {

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/cms",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "Custom functions for querying Plasmic CMS content from Plasmic data queries.",
   "homepage": "https://www.plasmic.app",
   "license": "MIT",
