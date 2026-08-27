@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 function read_json_object_field() {
   file=$1
   key=$2
