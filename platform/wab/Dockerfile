@@ -26,7 +26,7 @@ ENV PLAYWRIGHT_DOWNLOAD_HOST=https://playwright-akamai.azureedge.net
 # make + bubblewrap for wab codegen and the runtime code-eval sandbox;
 # build-base/g++/gcc/python3/libc-dev to compile native addons (bcrypt, sharp,
 # @swc/core, ...) during pnpm install.
-RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc libc-dev
+RUN apk add --no-cache make~=4 bubblewrap~=0.12 python3 build-base bash g++ gcc libc-dev
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -88,7 +88,7 @@ FROM node:24.16.0-alpine AS runner
 
 # make + bubblewrap for the runtime code-eval sandbox; toolchain kept so native
 # addons that resolve a prebuilt binary at load time still have their deps.
-RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc libc-dev
+RUN apk add --no-cache make~=4 bubblewrap~=0.12 python3 build-base bash g++ gcc libc-dev
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"

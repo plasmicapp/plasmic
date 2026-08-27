@@ -5,7 +5,7 @@ ARG RENDERER_PORT=3010
 ENV RENDERER_PORT=${RENDERER_PORT}
 
 # System setup
-RUN apk add --no-cache bubblewrap~=0.11 bash~=5 make~=4 python3 g++ libseccomp-dev
+RUN apk add --no-cache bubblewrap~=0.12 bash~=5 make~=4 python3 g++ libseccomp-dev
 SHELL ["/bin/bash","-o", "pipefail","-l","-c"]
 
 # Keep corepack's cache world-readable and bake the pnpm dist in, so the
