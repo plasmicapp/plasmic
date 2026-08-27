@@ -291,16 +291,17 @@ import {
 } from "@/wab/server/util/pruneCache";
 import { createWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+import { ApiError } from "@/wab/shared/ApiErrors/ApiError";
 import {
   AuthError,
   NotFoundError,
-  isApiError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
 import { CAPTCHA_TOKEN_HEADER } from "@/wab/shared/ApiSchema";
 import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import { Bundler } from "@/wab/shared/bundler";
 import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
+import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
@@ -421,28 +422,21 @@ function addSentryError(app: express.Application, config: Config) {
     return;
   }
 
-  /** Returns true if response code is internal server error */
-  const defaultShouldHandleError = (error: any): boolean => {
-    const status = getStatusCodeFromResponse(transformErrors(error));
-    return status >= 500;
-  };
-
-  const shouldHandleError = (error) => {
-    if (shouldIgnoreErrorByMessage(error.message || "")) {
-      return false;
-    }
-    if (isStampedIgnoreError(error)) {
-      return false;
-    }
-    if (error["request"]?.headers?.["user-agent"]?.startsWith("octokit")) {
-      // Errors from Octokit (GitHub client) should always be logged,
-      // even if status code < 500.
-      return true;
-    }
-    return defaultShouldHandleError(error);
-  };
-
-  app.use(Sentry.Handlers.errorHandler({ shouldHandleError }));
+  app.use(
+    Sentry.Handlers.errorHandler({
+      shouldHandleError: (error) => {
+        if (shouldIgnoreErrorByMessage(error.message || "")) {
+          return false;
+        }
+        if (isStampedIgnoreError(error)) {
+          return false;
+        }
+        // Report iff the client gets an internal server error
+        const response = toErrorResponse(error);
+        return !response || response.statusCode >= 500;
+      },
+    })
+  );
 }
 
 export function addLoggingMiddleware(app: express.Application) {
@@ -1872,17 +1866,40 @@ function addEndErrorHandlers(app: express.Application) {
           logError(origErr, "Tried to edit closed response");
           return;
         }
-        const err = isApiError(origErr) ? origErr : transformErrors(origErr);
-        if (isApiError(err)) {
-          res
-            .status(err.statusCode)
-            .json({ error: { ...err, message: err.message } });
+        const response = toErrorResponse(origErr);
+        if (response) {
+          res.status(response.statusCode).json({ error: response.body });
         } else {
           res.status(500).json({ error: { message: "Internal Server Error" } });
         }
       }
     )
   );
+}
+
+/**
+ * Returns the response to send for errors that are meant to reach the client
+ * with a specific status code. Everything else is an internal server error.
+ */
+function toErrorResponse(
+  origErr: Error
+): { statusCode: number; body: object } | undefined {
+  const err = origErr instanceof ApiError ? origErr : transformErrors(origErr);
+  if (err instanceof ApiError) {
+    return {
+      statusCode: err.statusCode,
+      body: { ...err, message: err.message },
+    };
+  }
+  if (err instanceof DataSourceError && err.statusCode) {
+    // Data source fetchers forward the status of a failed query (e.g. 400 for
+    // a bad SQL query). Without a statusCode, it's an internal failure.
+    return {
+      statusCode: err.statusCode,
+      body: { ...err, message: err.message },
+    };
+  }
+  return undefined;
 }
 
 function addNotFoundHandler(app: express.Application) {

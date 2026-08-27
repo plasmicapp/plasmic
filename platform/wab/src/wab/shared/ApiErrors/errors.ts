@@ -1,12 +1,8 @@
+import { ApiError } from "@/wab/shared/ApiErrors/ApiError";
 import {
   UniqueViolationError,
   isUniqueViolationError,
 } from "@/wab/shared/ApiErrors/cms-errors";
-
-export abstract class ApiError extends Error {
-  name = "ApiError";
-  statusCode = 400;
-}
 
 export class UnauthorizedError extends ApiError {
   name = "UnauthorizedError";
@@ -111,15 +107,6 @@ export class LoaderEsbuildFatalError extends Error {
   name = "LoaderEsbuildFatalError";
 }
 
-/**
- * We can't simply use instanceof ApiError, since our build pipeline doesn't
- * handle extending Error correctly. class extends Error works fine with
- * instanceof in normal ES6, but not in our TS compiles.
- */
-export function isApiError(err: Error): err is ApiError {
-  return !!(err as any).statusCode;
-}
-
 const errorNameRegistry = {
   UnauthorizedError,
   ForbiddenError,
@@ -135,12 +122,15 @@ const errorNameRegistry = {
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,
   PreconditionFailedError,
+  LoaderBundlingError,
+  LoaderDeprecatedVersionError,
 };
 
 /**
- * We can't simply use instanceof DbMgrError, since our build pipeline doesn't
- * handle extending Error correctly. class extends Error works fine with
- * instanceof in normal ES6, but not in our TS compiles.
+ * Reconstructs ApiErrors from errors that have lost their prototype: errors
+ * parsed from a JSON response on the client, and errors thrown in worker
+ * threads (workerpool copies the error's own properties, including `name`,
+ * onto a plain Error). Also maps a few known non-ApiErrors to ApiErrors.
  */
 export function transformErrors(err: Error): Error {
   if (

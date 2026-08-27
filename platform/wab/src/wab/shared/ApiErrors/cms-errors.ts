@@ -1,8 +1,9 @@
+import { ApiError } from "@/wab/shared/ApiErrors/ApiError";
 import { UniqueFieldCheck } from "@/wab/shared/ApiSchema";
 
-export class UniqueViolationError extends Error {
-  readonly name = "unique-violation";
-  readonly statusCode = 409;
+export class UniqueViolationError extends ApiError {
+  name = "unique-violation";
+  statusCode = 409;
   constructor(public readonly violations: UniqueFieldCheck[]) {
     super();
   }

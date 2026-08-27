@@ -17,6 +17,7 @@ import {
 } from "@/wab/shared/data-sources-meta/airtable-meta";
 import { DATA_SOURCE_QUERY_BUILDER_CONFIG } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
+  DataSourceError,
   Filters,
   FiltersLogic,
   LabeledValue,
@@ -209,16 +210,13 @@ export class AirtableFetcher {
         this.tokenData.accessToken
       );
       if (data.error) {
-        const error = new Error(data.error.message);
-        (error as any).statusCode = statusCode;
-        throw error;
+        throw new DataSourceError(data.error.message, statusCode);
       }
       if (data.errors) {
-        const error = new Error(
-          data.errors.map((err) => err.message).join(",")
+        throw new DataSourceError(
+          data.errors.map((err) => err.message).join(","),
+          statusCode
         );
-        (error as any).statusCode = statusCode;
-        throw error;
       }
       const dataSourceSchema: DataSourceSchema = {
         tables: (data.tables as any[]).map<TableSchema>((table) => ({
