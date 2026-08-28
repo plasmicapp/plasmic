@@ -3,7 +3,6 @@
  * - This is the only place where we query Stripe on whether the subscription is still valid (e.g. expired, cancelled, etc)
  * - If it's invalid, let's just treat the subscription as cancelled and upsell them again.
  */
-import { DevFlagsType } from "@/wab/shared/devflags";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Team } from "@/wab/server/entities/Entities";
 import {
@@ -12,6 +11,7 @@ import {
   PaywallDescription,
   TeamId,
 } from "@/wab/shared/ApiSchema";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { SiteFeature, TaggedResourceId } from "@/wab/shared/perms";
 import { Request } from "express-serve-static-core";
 import moment from "moment/moment";
@@ -59,7 +59,7 @@ export async function checkAndResetTeamTrial(
 ) {}
 
 export const stripe = new Stripe("BAD_KEY", {
-  apiVersion: "2020-08-27",
+  apiVersion: "2026-08-26.dahlia",
 });
 
 export function mkStripeCustomerData(

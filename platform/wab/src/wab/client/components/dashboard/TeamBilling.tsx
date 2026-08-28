@@ -17,6 +17,7 @@ import {
   ApiFeatureTier,
   ApiTeam,
   BillingFrequency,
+  Subscription,
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import {
@@ -32,14 +33,13 @@ import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
-import Stripe from "stripe";
 
 interface TeamBillingProps extends DefaultTeamBillingProps {
   appCtx: AppCtx;
   team: ApiTeam;
   members: TeamMember[];
   availFeatureTiers: ApiFeatureTier[];
-  subscription?: Stripe.Subscription;
+  subscription?: Subscription;
   onChange: () => Promise<void>;
   disabled?: boolean;
 }
@@ -62,7 +62,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
 
   // Figure out the current plan we're on
   const subStatus = team
-    ? getSubscriptionStatus(team, availFeatureTiers, subscription)
+    ? getSubscriptionStatus(team, subscription)
     : undefined;
 
   const billingError =

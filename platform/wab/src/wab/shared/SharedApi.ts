@@ -162,6 +162,7 @@ import {
   SetSiteInfoReq,
   SetSubdomainForProjectRequest,
   SetSubdomainForProjectResponse,
+  SetupIntent,
   SignUpRequest,
   SignUpResponse,
   StartFreeTrialResponse,
@@ -208,7 +209,6 @@ import { UiConfig } from "@/wab/shared/ui-config-utils";
 import { executePlasmicDataOp } from "@plasmicapp/data-sources";
 import L, { pick, uniq } from "lodash";
 import semver from "semver";
-import Stripe from "stripe";
 
 export interface SiteInfo {
   createdAt: string | Date;
@@ -1064,7 +1064,7 @@ export abstract class SharedApi {
     return this.delete(`/billing/subscription/${teamId}`, { reason });
   }
 
-  async createSetupIntent(teamId: TeamId): Promise<Stripe.SetupIntent> {
+  async createSetupIntent(teamId: TeamId): Promise<SetupIntent> {
     return this.post(`/billing/setup-intent/${teamId}`);
   }
 

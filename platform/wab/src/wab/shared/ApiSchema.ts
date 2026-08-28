@@ -785,6 +785,16 @@ export interface ListFeatureTiersResponse {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AddFeatureTierResponse {}
 
+export type SetupIntent = {
+  clientSecret: string | null;
+};
+
+export interface Subscription {
+  id: string;
+  status: Stripe.Subscription.Status;
+  defaultPaymentMethodId: string | null;
+}
+
 export interface SubscriptionIntentRequest {
   // Which team is signing up?
   teamId: TeamId;
@@ -801,17 +811,17 @@ export type SubscriptionIntentResponse = MakeADT<
   {
     // See https://stripe.com/docs/billing/subscriptions/elements
     success: {
-      subscription: Stripe.Subscription;
+      subscription: Subscription;
       featureTier: ApiFeatureTier;
       clientSecret: string;
     };
     needPayment: {
-      subscription: Stripe.Subscription;
+      subscription: Subscription;
       featureTier: ApiFeatureTier;
       clientSecret: string;
     };
     alreadyExists: {
-      subscription: Stripe.Subscription;
+      subscription: Subscription;
       featureTier: ApiFeatureTier;
     };
   }
@@ -822,7 +832,7 @@ export type StartFreeTrialResponse = MakeADT<
   {
     success: object;
     alreadyExists: {
-      subscription: Stripe.Subscription;
+      subscription: Subscription;
       featureTier: ApiFeatureTier;
     };
   }
@@ -831,7 +841,7 @@ export type StartFreeTrialResponse = MakeADT<
 export type GetSubscriptionResponse = MakeADT<
   "type",
   {
-    success: { subscription: Stripe.Subscription };
+    success: { subscription: Subscription };
     notFound: object;
   }
 >;

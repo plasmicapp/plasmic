@@ -85,7 +85,7 @@ function UpsellCreditCardForm(
     // This is a new subscription. Let's try to confirm it with the credit card.
     const pendingSetupIntent = await appCtx.api.createSetupIntent(team.id);
     const clientSecret = ensure(
-      pendingSetupIntent.client_secret,
+      pendingSetupIntent.clientSecret,
       "missing client secret"
     );
     const ensureStripe = ensure(stripe, "Stripe not loaded yet");
@@ -113,7 +113,9 @@ function UpsellCreditCardForm(
     }
 
     // Save as default payment method for all future upgrades
-    const paymentMethodId = result.setupIntent.payment_method;
+    const paymentMethod = result.setupIntent.payment_method;
+    const paymentMethodId =
+      typeof paymentMethod === "string" ? paymentMethod : paymentMethod?.id;
     if (paymentMethodId) {
       await appCtx.api.updatePaymentMethod(team.id, paymentMethodId);
     }

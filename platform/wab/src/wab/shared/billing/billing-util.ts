@@ -3,10 +3,10 @@ import {
   ApiTeam,
   BillingFrequency,
   StripePriceId,
+  Subscription,
 } from "@/wab/shared/ApiSchema";
-import { assert, assertNever } from "@/wab/shared/common";
+import { assert } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import Stripe from "stripe";
 import { MakeADT } from "ts-adt/MakeADT";
 
 export type SubscriptionStatus = MakeADT<
@@ -27,8 +27,7 @@ export type SubscriptionStatus = MakeADT<
  */
 export function getSubscriptionStatus(
   team: ApiTeam,
-  availFeatureTiers: ApiFeatureTier[],
-  subscription?: Stripe.Subscription
+  subscription?: Subscription
 ): SubscriptionStatus {
   const freeTier = DEVFLAGS.freeTier;
 
@@ -85,34 +84,6 @@ export function getSubscriptionStatus(
   // Passed all the checks!
   return { type: "valid", tier: team.featureTier };
 }
-
-/**
- * Exhaustive type check for Stripe subscription status,
- * so that we can detect when Stripe API changes
- * TODO:
- * Right now we just allow anything other than canceled or incomplete subs
- * to be valid, and require manual checking Stripe dashboard for unpaid bills
- * @param sub
- * @returns boolean
- */
-export const isValidSubscriptionStatus = (
-  sub: Stripe.Subscription
-): boolean => {
-  const state = sub.status;
-  if (state === "active" || state === "past_due" || state === "unpaid") {
-    return true;
-  } else if (
-    state === "canceled" ||
-    state === "incomplete" ||
-    state === "incomplete_expired"
-  ) {
-    return false;
-  } else if (state === "trialing") {
-    return !!sub.default_payment_method;
-  } else {
-    assertNever(state);
-  }
-};
 
 export function calculateBill(
   tier: ApiFeatureTier,

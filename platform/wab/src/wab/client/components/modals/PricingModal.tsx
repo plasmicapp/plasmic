@@ -380,7 +380,9 @@ function UpsellForm(
       }
 
       // Save as default payment method for all future upgrades
-      const paymentMethodId = intent.payment_method;
+      const paymentMethod = intent.payment_method;
+      const paymentMethodId =
+        typeof paymentMethod === "string" ? paymentMethod : paymentMethod?.id;
       if (paymentMethodId) {
         await appCtx.api.updatePaymentMethod(ensureTeam.id, paymentMethodId);
       }
