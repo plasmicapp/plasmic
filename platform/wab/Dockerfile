@@ -47,7 +47,11 @@ WORKDIR /platform
 # stage carries the store.
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY patches/ ./patches/
-RUN pnpm fetch
+# The npmrc secret (registry + short-lived auth token for the Artifact Registry
+# npm mirror) is mounted only for the duration of each install RUN, never baked
+# into a layer. Optional: a plain local `docker build` without the secret falls
+# back to the default public registry.
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc pnpm fetch
 
 # Copy the whole workspace (node_modules, build outputs and generated files are
 # excluded via .dockerignore). pnpm needs every workspace member's package.json
@@ -57,7 +61,8 @@ COPY . .
 
 # --prefer-offline (not --offline) since the fetch above normally covers everything,
 # but partial cache restore must degrade into a refetch, not hard failure.
-RUN pnpm install --frozen-lockfile --prefer-offline
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
+    pnpm install --frozen-lockfile --prefer-offline
 
 # Build loader-bundle-env's internal_pkgs and loader-html-hydrate. wab's server
 # consumes their built output from the sibling directories at runtime.
@@ -77,7 +82,8 @@ RUN mkdir -p src/wab/gen && make
 # sibling-dir resolution (../loader-bundle-env/node_modules); see
 # https://github.com/pnpm/pnpm/issues/9283
 WORKDIR /platform
-RUN rm -rf node_modules wab/node_modules loader-bundle-env/node_modules \
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
+    rm -rf node_modules wab/node_modules loader-bundle-env/node_modules \
       loader-html-hydrate/node_modules canvas-packages/node_modules \
     && pnpm install --frozen-lockfile --prefer-offline --prod \
       --filter "wab..." --filter "loader-bundle-env..." \
