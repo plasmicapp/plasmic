@@ -16,6 +16,11 @@ export const antdTheme: ThemeConfig = {
     fontSize: 12,
     lineHeight: 1.5,
   },
+  components: {
+    Modal: {
+      wireframe: true,
+    },
+  },
 };
 
 export function AntdConfigProvider({

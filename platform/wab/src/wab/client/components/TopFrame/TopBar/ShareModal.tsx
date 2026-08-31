@@ -28,7 +28,7 @@ export const ShareModal = observer(function ShareModal({
     <Modal
       onCancel={() => setShowShareModal(false)}
       open={showShareModal}
-      footer={false}
+      footer={null}
       closable={false}
       maskClosable={true}
       width={500}
