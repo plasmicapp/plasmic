@@ -1,0 +1,97 @@
+!**/.gitkeep
+**/Dockerfile
+# Auto-generated
+**/.git/
+
+# wab/create-react-app:
+create-react-app/
+create-react-app-new/
+
+**/.delivery/
+
+# Static assets from Jenkins:
+static-*.tgz
+
+# pnpm store used by local development (see .pnpm-store in the worktree root)
+**/.pnpm-store/
+
+# platform/ packages that are not part of the wab backend image and not members
+# of its pnpm workspace (each is its own pnpm root). Excluded to keep the build
+# context small.
+figma-plugin-plasmic-exporter/
+figma-plugin-web/
+host-test/
+hosting/
+img-optimizer/
+integration-tests/
+live-frame/
+loader-tests/
+react-renderer/
+react-web-bundle/
+sub/
+
+# Generated (paths are relative to the platform/ build context)
+.git/
+wab/deps/chrome/
+wab/src/wab/gen/
+wab/public/static/img/*.svg
+wab/public/static/img/icons/*.svg
+wab/build/
+wab/src/wab/shared/model/classes.ts
+wab/src/wab/shared/model/classes-metas.ts
+wab/server/.cachedev-build/
+**/dev-build
+wab/src/wab/styles/_tokens.sass
+wab/src/wab/styles/_tokens.ts
+wab/src/wab/styles/css-variables.scss
+wab/src/wab/styles/css-variables.ts
+**/yarn-error.log
+**/cypress/videos
+**/.cache
+**/package-lock.json
+**/localhost-key.pem
+**/localhost.pem
+**/import-graph.json
+**/import-chains.png
+**/import-chains.dot
+**/.env
+
+# Code coverage
+**/coverage/
+**/cc-test-reporter
+
+**/to-import-into-substack.csv
+
+
+**/**/*.swp
+**/**/.idea/libraries/Generated_files.xml
+**/**/.idea/sqldialects.xml
+**/**/.idea/workspace.xml
+# Local .terraform directories
+**/**/.terraform/*
+**/**/.vscode/
+**/**/api/temp
+**/**/api/tsc
+**/*.pyc
+# .tfstate files
+**/*.tfstate
+**/*.tfstate.*
+**/.DS_Store
+**/.cache
+**/.cache-loader/
+**/.direnv
+**/.env
+**/.eslintcache
+**/.idea
+**/.ipynb_checkpoints/
+**/.venv/
+.direnv/
+# Typedoc output
+platform/sub/typedoc-*/
+platform/sub/typedoc.json
+platform/sub/typedoc.json.gz
+platform/sub/typedoc/
+**/bower_components/
+**/node_modules/
+**/storybook-static/
+**/.nx/

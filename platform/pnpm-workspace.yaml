@@ -1,0 +1,263 @@
+packages:
+  - analytics-rproxy
+  - mini-cache
+  - wab
+  - canvas-packages
+  - loader-bundle-env
+  - loader-bundle-env/internal_pkgs/*
+  - loader-html-hydrate
+
+injectWorkspacePackages: true
+
+# upgrade-internal installs @plasmicapp/* and @plasmicpkgs/* minutes after the release
+# pipeline publishes them, so pnpm's 24h default quarantine fails every release.
+minimumReleaseAge: 0
+
+catalog:
+  "@nats-io/jetstream": 3.3.1
+  "@nats-io/kv": 3.3.1
+  "@nats-io/nats-core": 3.3.1
+  "@nats-io/transport-node": 3.3.1
+
+# Merged from the per-package "resolutions" of wab, canvas-packages and
+# loader-bundle-env. pnpm overrides are workspace-global, so where
+# canvas-packages and loader-bundle-env disagreed on the legacy antd v4 pin
+# (4.19.5 vs 4.19.3) we unify on the newer 4.19.5. The trailing block pins the
+# packages that carry version-specific patches (see patchedDependencies) so a
+# fresh resolve can't drift off the patched version and silently drop the fix.
+#
+# NB: the @react-aria/focus and @react-aria/overlays pins unify canvas-packages
+# DOWN from 3.21.5/3.31.2 (a routine bump in #2660) to the versions wab's
+# patches target, since per-importer versions of transitive deps aren't
+# expressible with pnpm overrides. canvas-packages' package.json declares the
+# same pins so the manifest matches what actually installs. If these are ever
+# upgraded, rebase patches/@react-aria__*.patch onto the new dist output.
+overrides:
+  react-aria-components: 1.9.0
+  sha.js: ^2.4.12
+  retry-request: ^8.0.2
+  # vitest allows vite 6-8; pin it to the vite wab already declares, so the
+  # workspace keeps a single vite copy.
+  "vitest>vite": ^6.4.2
+  "@plasmicpkgs/antd>antd": 4.19.5
+  "@plasmicpkgs/react-slick>antd": 4.19.5
+  "@plasmicpkgs/antd5>antd": 5.12.8
+  "@ant-design/pro-components>antd": 5.12.8
+  "@ant-design/pro-table>antd": 5.12.8
+  "@ant-design/pro-list>antd": 5.12.8
+  # antd 5 was frozen at 5.12.5 (loader-bundle-env) / 5.12.8 (canvas-packages);
+  # a fresh resolve floats to 5.29.x whose Table renders an extra leading
+  # column, breaking RichTable. Also pins wab's ^5.12.7 to the same copy.
+  "antd@^5": 5.12.8
+  rc-util: ^5.44.4
+  lottie-web: ">=5.13.0"
+  passport-oauth2: 1.8.0
+  "@octokit/app": 16.1.2
+  "@octokit/auth-unauthenticated": 7.0.3
+  "@octokit/webhooks-methods": 6.0.0
+  "@react-aria/focus": 3.20.3
+  "@react-aria/overlays": 3.27.1
+  react-slick: 0.28.1
+  # Type-bearing transitives that wab's old yarn.lock had frozen at older
+  # versions; a fresh resolve drifts them and breaks wab's typecheck
+  # (AriaPositionProps.placement, underscore.string named imports). Pinned to
+  # the yarn-frozen versions; direct pins can't reach these because pnpm
+  # resolves each dependent's copy independently.
+  "@react-types/overlays": 3.8.15
+  "@react-types/shared": 3.32.1
+  "@types/underscore": 1.10.24
+  # One @types/react identity across the graph. Transitives declaring
+  # @types/react@* would otherwise resolve a second, newer copy, and every
+  # JSX prop bag crossing the two copies fails to typecheck.
+  "@types/react@^18": 18.3.18
+  "@types/react-dom@^18": 18.3.5
+  # Unify the 4.x express types on the version wab's yarn.lock had frozen;
+  # otherwise @types/express resolves its own newer copy and every
+  # Request/Response in wab has two incompatible type identities.
+  "@types/express-serve-static-core@^4": 4.17.35
+  # react-aria, react-stately, tiptap and prosemirror families pinned to the
+  # versions wab's and loader-bundle-env's yarn.locks had frozen (wab's where
+  # they disagreed on patch level). A fresh resolve floated all of them by
+  # several minors, which changed loader bundle output (tiptap mention attrs,
+  # react-aria popover behavior). canvas-packages moves to the same family,
+  # which also makes it consistent with the pinned @react-aria/focus/overlays.
+  "@internationalized/date": 3.10.0
+  "@internationalized/message": 3.1.8
+  "@internationalized/number": 3.6.5
+  "@internationalized/string": 3.2.7
+  "@react-aria/breadcrumbs": 3.5.24
+  "@react-aria/button": 3.13.1
+  "@react-aria/calendar": 3.8.1
+  "@react-aria/checkbox": 3.15.5
+  "@react-aria/color": 3.0.7
+  "@react-aria/combobox": 3.12.3
+  "@react-aria/datepicker": 3.14.3
+  "@react-aria/dialog": 3.5.25
+  "@react-aria/disclosure": 3.0.5
+  "@react-aria/dnd": 3.9.3
+  "@react-aria/gridlist": 3.13.0
+  "@react-aria/i18n": 3.12.13
+  "@react-aria/interactions": 3.25.6
+  "@react-aria/label": 3.7.18
+  "@react-aria/landmark": 3.0.3
+  "@react-aria/link": 3.8.1
+  "@react-aria/listbox": 3.14.4
+  "@react-aria/live-announcer": 3.4.2
+  "@react-aria/menu": 3.18.3
+  "@react-aria/meter": 3.4.23
+  "@react-aria/numberfield": 3.11.14
+  "@react-aria/progress": 3.4.23
+  "@react-aria/radio": 3.11.3
+  "@react-aria/searchfield": 3.8.4
+  "@react-aria/select": 3.15.5
+  "@react-aria/selection": 3.24.1
+  "@react-aria/separator": 3.4.9
+  "@react-aria/slider": 3.7.19
+  "@react-aria/ssr": 3.9.10
+  "@react-aria/switch": 3.7.3
+  "@react-aria/table": 3.17.3
+  "@react-aria/tabs": 3.10.3
+  "@react-aria/tag": 3.6.0
+  "@react-aria/textfield": 3.17.3
+  "@react-aria/toast": 3.0.3
+  "@react-aria/tooltip": 3.8.3
+  "@react-aria/tree": 3.0.3
+  "@react-aria/utils": 3.31.0
+  "@react-aria/virtualizer": 4.1.10
+  "@react-aria/visually-hidden": 3.8.23
+  "@react-stately/calendar": 3.8.1
+  "@react-stately/checkbox": 3.6.14
+  "@react-stately/collections": 3.12.8
+  "@react-stately/color": 3.8.5
+  "@react-stately/combobox": 3.10.5
+  "@react-stately/data": 3.13.0
+  "@react-stately/datepicker": 3.14.1
+  "@react-stately/disclosure": 3.0.4
+  "@react-stately/dnd": 3.5.4
+  "@react-stately/flags": 3.1.2
+  "@react-stately/form": 3.1.4
+  "@react-stately/grid": 3.11.6
+  "@react-stately/layout": 4.5.1
+  "@react-stately/list": 3.12.2
+  "@react-stately/menu": 3.9.4
+  "@react-stately/numberfield": 3.9.12
+  "@react-stately/overlays": 3.6.16
+  "@react-stately/radio": 3.10.13
+  "@react-stately/searchfield": 3.5.12
+  "@react-stately/select": 3.6.13
+  "@react-stately/selection": 3.20.6
+  "@react-stately/slider": 3.6.4
+  "@react-stately/table": 3.15.1
+  "@react-stately/tabs": 3.8.2
+  "@react-stately/toast": 3.1.0
+  "@react-stately/toggle": 3.8.4
+  "@react-stately/tooltip": 3.5.4
+  "@react-stately/tree": 3.8.10
+  "@react-stately/utils": 3.10.8
+  "@react-stately/virtualizer": 4.4.4
+  "@react-types/button": 3.12.1
+  "@react-types/combobox": 3.13.5
+  "@react-types/form": 3.7.16
+  "@react-types/grid": 3.3.6
+  "@react-types/searchfield": 3.6.2
+  "@react-types/table": 3.13.4
+  "@tiptap/core": 2.1.13
+  "@tiptap/extension-bold": 2.1.13
+  "@tiptap/extension-bubble-menu": 2.1.13
+  "@tiptap/extension-code": 2.1.13
+  "@tiptap/extension-document": 2.1.13
+  "@tiptap/extension-floating-menu": 2.1.13
+  "@tiptap/extension-italic": 2.1.13
+  "@tiptap/extension-link": 2.1.13
+  "@tiptap/extension-mention": 2.1.13
+  "@tiptap/extension-paragraph": 2.1.13
+  "@tiptap/extension-strike": 2.1.13
+  "@tiptap/extension-text": 2.1.13
+  "@tiptap/extension-underline": 2.1.13
+  "@tiptap/pm": 2.1.13
+  "@tiptap/react": 2.1.13
+  "@tiptap/suggestion": 2.1.13
+  "prosemirror-changeset": 2.2.1
+  "prosemirror-commands": 1.5.2
+  "prosemirror-dropcursor": 1.8.1
+  "prosemirror-gapcursor": 1.3.2
+  "prosemirror-history": 1.3.2
+  "prosemirror-inputrules": 1.3.0
+  "prosemirror-keymap": 1.2.2
+  "prosemirror-markdown": 1.12.0
+  "prosemirror-menu": 1.2.4
+  "prosemirror-model": 1.19.4
+  "prosemirror-schema-basic": 1.2.2
+  "prosemirror-schema-list": 1.3.0
+  "prosemirror-state": 1.4.3
+  "prosemirror-tables": 1.3.5
+  "prosemirror-trailing-node": 2.0.7
+  "prosemirror-transform": 1.8.0
+  "prosemirror-view": 1.32.7
+  "react-aria": 3.40.0
+  "react-stately": 3.38.0
+  "@react-aria/form": 3.0.16
+  "@react-aria/grid": 3.14.0
+  "@react-aria/spinbutton": 3.6.15
+  "@react-aria/toggle": 3.11.3
+  "@react-types/breadcrumbs": 3.7.13
+  "@react-types/calendar": 3.7.1
+  "@react-types/checkbox": 3.9.4
+  "@react-types/color": 3.0.5
+  "@react-types/datepicker": 3.12.1
+  "@react-types/dialog": 3.5.18
+  "@react-types/link": 3.6.1
+  "@react-types/listbox": 3.7.0
+  "@react-types/menu": 3.10.1
+  "@react-types/meter": 3.4.9
+  "@react-types/numberfield": 3.8.11
+  "@react-types/progress": 3.5.12
+  "@react-types/radio": 3.8.9
+  "@react-types/select": 3.9.12
+  "@react-types/slider": 3.7.11
+  "@react-types/switch": 3.5.11
+  "@react-types/tabs": 3.3.15
+  "@react-types/textfield": 3.12.2
+  "@react-types/tooltip": 3.4.17
+
+patchedDependencies:
+  # Versionless key on purpose: apply to ANY resolved teeny-request version so a
+  # transitive upgrade (e.g. to v10) can't silently drop the patch. If a future
+  # version changes build/src/agents.js enough that the hunk no longer applies,
+  # `pnpm install` fails loudly instead of regressing.
+  teeny-request: patches/teeny-request.patch
+  # Migrated from wab/patches and loader-bundle-env/patches (patch-package
+  # format). Version-pinned keys paired with the overrides above so the patch
+  # always targets the exact resolved version.
+  passport-oauth2@1.8.0: patches/passport-oauth2.patch
+  "@octokit/app@16.1.2": patches/@octokit__app.patch
+  "@octokit/auth-unauthenticated@7.0.3": patches/@octokit__auth-unauthenticated.patch
+  "@octokit/webhooks-methods@6.0.0": patches/@octokit__webhooks-methods.patch
+  "@react-aria/focus@3.20.3": patches/@react-aria__focus.patch
+  "@react-aria/overlays@3.27.1": patches/@react-aria__overlays.patch
+  react-slick@0.28.1: patches/react-slick.patch
+  # Version-pinned to wab's exact "history" dependency. Not added to overrides:
+  # other importers may resolve history@4 transitively and must stay untouched.
+  history@5.3.0: patches/history.patch
+
+# Which dependencies may run install/build scripts. Explicit true/false for
+# every package pnpm flagged during the yarn -> pnpm migration so `pnpm install`
+# never re-prompts. Native addons that must compile/link -> true; packages whose
+# only "build" is a donation notice or an unused artifact -> false.
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": true
+  bcrypt: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  "@fortawesome/fontawesome-common-types": false
+  "@fortawesome/fontawesome-free": false
+  "@fortawesome/fontawesome-svg-core": false
+  "@fortawesome/free-regular-svg-icons": false
+  "@fortawesome/free-solid-svg-icons": false
+  "@pankod/refine-core": false
+  aws-sdk: false
+  core-js: false
+  core-js-pure: false
+  msw: false

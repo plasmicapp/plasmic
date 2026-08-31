@@ -1,0 +1,26 @@
+diff --git a/package.json b/package.json
+index 9aa0b5a..6c2f4b5 100644
+--- a/package.json
++++ b/package.json
+@@ -37,15 +37,18 @@
+     ".": {
+       "node": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-node/index.js"
++        "import": "./dist-node/index.js",
++        "default": "./dist-node/index.js"
+       },
+       "browser": {
+         "types": "./dist-types/web.d.ts",
+-        "import": "./dist-web/index.js"
++        "import": "./dist-web/index.js",
++        "default": "./dist-web/index.js"
+       },
+       "default": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-node/index.js"
++        "import": "./dist-node/index.js",
++        "default": "./dist-node/index.js"
+       }
+     }
+   },

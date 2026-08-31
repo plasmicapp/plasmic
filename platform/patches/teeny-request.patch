@@ -1,0 +1,17 @@
+diff --git a/build/src/agents.js b/build/src/agents.js
+index 07c0e440139208740e1aeed01f3836e7c8e25d08..56edc5f70bd9b89701dc202103600cafc99884cd 100644
+--- a/build/src/agents.js
++++ b/build/src/agents.js
+@@ -80,7 +80,11 @@ function getAgent(uri, reqOpts) {
+         if (!exports.pool.has(key)) {
+             // tslint:disable-next-line variable-name
+             const Agent = isHttp ? http_1.Agent : https_1.Agent;
+-            exports.pool.set(key, new Agent({ ...poolOptions, keepAlive: true }));
++            // PATCH (plasmic): cap idle keep-alive socket lifetime below the GCS
++            // GFE's ~240s idle timeout, so the client closes idle sockets before
++            // the server does. Without this, reusing a server-closed socket throws
++            // ECONNRESET ("socket hang up"). See pnpm patch teeny-request.
++            exports.pool.set(key, new Agent({ ...poolOptions, keepAlive: true, timeout: 60000 }));
+         }
+     }
+     return exports.pool.get(key);
