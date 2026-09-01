@@ -137,17 +137,17 @@ export const ComponentTab = observer(function ComponentTab(props: {
                         (!appConfig.rscRelease ||
                           appConfig.enableDataQueries) && (
                           <>
-                            <ComponentDataQueriesSection
-                              component={component}
-                              viewCtx={viewCtx}
-                              isDeprecated={appConfig.serverQueries}
-                            />
                             {studioCtx.appCtx.appConfig.serverQueries && (
                               <ServerQueriesSection
                                 component={component}
                                 viewCtx={viewCtx}
                               />
                             )}
+                            <ComponentDataQueriesSection
+                              component={component}
+                              viewCtx={viewCtx}
+                              isDeprecated={appConfig.serverQueries}
+                            />
                           </>
                         )}
                       {canEdit(PublicStyleSection.States) && (

@@ -15,7 +15,7 @@ import {
   isPrivateState,
   StateVariableType,
 } from "@/wab/shared/core/states";
-import { VARIABLE_LOWER } from "@/wab/shared/Labels";
+import { CONFIGURE_ACTION, DELETE_ACTION } from "@/wab/shared/Labels";
 import { Component, isKnownTplSlot, State } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import React from "react";
@@ -42,7 +42,7 @@ function useVariableMenu({
   builder.genSection(undefined, (push) => {
     push(
       <Menu.Item key="edit-state" onClick={() => showVariableConfigModal()}>
-        Configure {VARIABLE_LOWER}
+        {CONFIGURE_ACTION}
       </Menu.Item>
     );
     push(
@@ -65,7 +65,7 @@ function useVariableMenu({
     if (canDeleteState(component, state)) {
       push(
         <Menu.Item key="remove-state" onClick={() => onRemove?.()}>
-          Delete {VARIABLE_LOWER}
+          {DELETE_ACTION}
         </Menu.Item>
       );
     }

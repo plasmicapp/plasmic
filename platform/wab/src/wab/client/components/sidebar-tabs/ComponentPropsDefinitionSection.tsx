@@ -21,6 +21,8 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   COMPONENT_PROP_LOWER,
   COMPONENT_PROP_PLURAL_CAP,
+  CONFIGURE_ACTION,
+  DELETE_ACTION,
 } from "@/wab/shared/Labels";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -401,7 +403,7 @@ function makeParamMenu(
   return (
     <Menu>
       <Menu.Item onClick={() => opts.onConfigureParam()}>
-        Configure {COMPONENT_PROP_LOWER}
+        {CONFIGURE_ACTION}
       </Menu.Item>
       {canChangeParamExportType(component, param) && (
         <Menu.SubMenu title="Set code export type to">
@@ -448,7 +450,7 @@ function makeParamMenu(
             });
           }}
         >
-          Delete {COMPONENT_PROP_LOWER}
+          {DELETE_ACTION}
         </Menu.Item>
       )}
     </Menu>

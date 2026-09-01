@@ -709,7 +709,9 @@ export class RightPanel extends BaseModel {
       .getByText(propName, { exact: true })
       .first()
       .click({ button: "right" });
-    await this.frame.getByText("Configure prop").click();
+    await this.frame
+      .locator(".ant-dropdown-menu-item", { hasText: /^\s*Configure\s*$/ })
+      .click();
   }
 
   async removePropValue(propName: string) {

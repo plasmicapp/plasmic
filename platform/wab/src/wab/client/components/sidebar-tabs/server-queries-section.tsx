@@ -22,6 +22,9 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
+  CONFIGURE_ACTION,
+  DELETE_ACTION,
+  DUPLICATE_ACTION,
   SERVER_QUERY_LOWER,
   SERVER_QUERY_PLURAL_CAP,
 } from "@/wab/shared/Labels";
@@ -97,7 +100,7 @@ const ServerQueryRow = observer(
       return (
         <Menu>
           <Menu.Item onClick={() => openServerQueryModal()}>
-            Configure {SERVER_QUERY_LOWER}
+            {CONFIGURE_ACTION}
           </Menu.Item>
           <Menu.Item
             onClick={() =>
@@ -111,7 +114,7 @@ const ServerQueryRow = observer(
               )
             }
           >
-            Duplicate {SERVER_QUERY_LOWER}
+            {DUPLICATE_ACTION}
           </Menu.Item>
           <Menu.Divider />
           <Menu.Item
@@ -119,7 +122,7 @@ const ServerQueryRow = observer(
               studioCtx.siteOps().removeComponentServerQuery(component, query)
             }
           >
-            Remove {SERVER_QUERY_LOWER}
+            {DELETE_ACTION}
           </Menu.Item>
         </Menu>
       );

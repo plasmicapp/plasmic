@@ -49,6 +49,13 @@ export const COMPONENT_PROP_PLURAL_LOWER =
  */
 export const RESET_CAP = "Remove";
 
+// Standard action labels for resources
+export const CREATE_ACTION = "Create";
+export const CONFIGURE_ACTION = "Configure";
+export const DUPLICATE_ACTION = "Duplicate";
+export const RENAME_ACTION = "Rename";
+export const DELETE_ACTION = "Delete";
+
 export const CONTAINER_LOWER = "box";
 export const STACK_LOWER = "stack";
 

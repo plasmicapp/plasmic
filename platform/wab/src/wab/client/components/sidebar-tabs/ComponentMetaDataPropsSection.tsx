@@ -17,6 +17,7 @@ import {
   addOrEditComponentMetadata,
   removeComponentMetadata,
 } from "@/wab/shared/core/components";
+import { DELETE_ACTION } from "@/wab/shared/Labels";
 import { Component } from "@/wab/shared/model/classes";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
@@ -276,7 +277,7 @@ function makeMetadataMenu(
           })
         }
       >
-        Delete metadata
+        {DELETE_ACTION}
       </Menu.Item>
     </Menu>
   );

@@ -5,7 +5,7 @@ import {
   useDataSourceOpExprBottomModal,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
-import { IconLinkButton } from "@/wab/client/components/widgets";
+import { IconLinkButton, LinkButton } from "@/wab/client/components/widgets";
 import {
   DataQueriesDeprecatedTooltip,
   DataQueriesTooltip,
@@ -19,6 +19,7 @@ import {
   makeLegacyQueryMigrationPrompt,
 } from "@/wab/client/copilot/query-migration";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { SparklesSvgIcon } from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg";
 import {
   RightTabKey,
   StudioCtx,
@@ -26,7 +27,12 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { DATA_QUERY_LOWER, DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
+import {
+  CONFIGURE_ACTION,
+  DATA_QUERY_LOWER,
+  DATA_QUERY_PLURAL_CAP,
+  DELETE_ACTION,
+} from "@/wab/shared/Labels";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { getTplComponentFetchers } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -136,7 +142,7 @@ const DataQueryRow = observer(
       return (
         <Menu>
           <Menu.Item onClick={() => openDataSourceModal()}>
-            Configure {DATA_QUERY_LOWER}
+            {CONFIGURE_ACTION}
           </Menu.Item>
           {showMigrateItem && (
             <Menu.Item
@@ -153,7 +159,10 @@ const DataQueryRow = observer(
                 )
               }
             >
-              Migrate with Copilot
+              <span className="inline-flex flex-vcenter gap-xsm">
+                <SparklesSvgIcon />
+                Migrate
+              </span>
             </Menu.Item>
           )}
           <Menu.Divider />
@@ -162,7 +171,7 @@ const DataQueryRow = observer(
               studioCtx.siteOps().removeComponentQuery(component, query)
             }
           >
-            Remove {DATA_QUERY_LOWER}
+            {DELETE_ACTION}
           </Menu.Item>
         </Menu>
       );
@@ -236,6 +245,11 @@ function ComponentQueriesSection_(props: {
 
   const componentType = isPageComponent(component) ? "page" : "component";
 
+  const showMigrate =
+    isDeprecated &&
+    studioCtx.chatCopilotEnabled() &&
+    component.dataQueries.length > 0;
+
   const handleAddDataQuery = () => {
     spawn(
       studioCtx.change(() => {
@@ -246,23 +260,11 @@ function ComponentQueriesSection_(props: {
     );
   };
 
-  const makeLegacyQueriesMenu = () => (
-    <Menu>
-      <Menu.Item
-        onClick={() =>
-          startQueryMigrationChat(
-            studioCtx,
-            makeAllLegacyQueriesMigrationPrompt(
-              component,
-              component.dataQueries
-            )
-          )
-        }
-      >
-        Migrate all queries with Copilot
-      </Menu.Item>
-    </Menu>
-  );
+  const handleMigrateAll = () =>
+    startQueryMigrationChat(
+      studioCtx,
+      makeAllLegacyQueriesMigrationPrompt(component, component.dataQueries)
+    );
 
   return (
     <SidebarSection
@@ -270,7 +272,11 @@ function ComponentQueriesSection_(props: {
       title={
         <LabelWithDetailedTooltip
           tooltip={
-            isDeprecated ? DataQueriesDeprecatedTooltip : DataQueriesTooltip
+            isDeprecated ? (
+              <DataQueriesDeprecatedTooltip showMigrate={showMigrate} />
+            ) : (
+              DataQueriesTooltip
+            )
           }
         >
           {DATA_QUERY_PLURAL_CAP}
@@ -279,21 +285,25 @@ function ComponentQueriesSection_(props: {
       }
       emptyBody={component.dataQueries.length === 0 && tplFetchers.length === 0}
       zeroBodyPadding
-      makeHeaderMenu={
-        isDeprecated &&
-        studioCtx.chatCopilotEnabled() &&
-        component.dataQueries.length > 0
-          ? makeLegacyQueriesMenu
-          : undefined
-      }
       controls={
-        <IconLinkButton
-          id="data-queries-add-btn"
-          tooltip={`Add ${DATA_QUERY_LOWER} to ${componentType}`}
-          onClick={handleAddDataQuery}
-        >
-          <Icon icon={PlusIcon} />
-        </IconLinkButton>
+        <div className="inline-flex flex-vcenter gap-m">
+          {showMigrate && (
+            <LinkButton
+              className="inline-flex flex-vcenter gap-xsm"
+              onClick={handleMigrateAll}
+            >
+              <SparklesSvgIcon />
+              Migrate all
+            </LinkButton>
+          )}
+          <IconLinkButton
+            id="data-queries-add-btn"
+            tooltip={`Add ${DATA_QUERY_LOWER} to ${componentType}`}
+            onClick={handleAddDataQuery}
+          >
+            <Icon icon={PlusIcon} />
+          </IconLinkButton>
+        </div>
       }
     >
       {component.dataQueries.map((query) => (

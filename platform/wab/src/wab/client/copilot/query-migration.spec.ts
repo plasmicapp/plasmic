@@ -2,8 +2,14 @@ import {
   makeAllLegacyQueriesMigrationPrompt,
   makeLegacyQueryMigrationPrompt,
 } from "@/wab/client/copilot/query-migration";
+import { ComponentType } from "@/wab/shared/core/components";
 
-const component = { name: "Users", uuid: "component-1" };
+const component = {
+  name: "Users",
+  uuid: "component-1",
+  type: ComponentType.Plain,
+};
+const page = { name: "Home", uuid: "page-1", type: ComponentType.Page };
 const firstQuery = { name: "Get Users", uuid: "query-1" };
 const secondQuery = { name: "Get Teams", uuid: "query-2" };
 
@@ -14,9 +20,23 @@ describe("legacy query migration prompts", () => {
     expect(prompt).toContain('"Get Users"');
     expect(prompt).toContain("uuid query-1");
     expect(prompt).toContain("$queries.getUsers");
-    expect(prompt).toContain("uuid component-1");
     expect(prompt).toContain("Migrate only that query");
     expect(prompt).not.toContain("query-2");
+  });
+
+  it("mentions the owning component so it lands as a chip", () => {
+    expect(makeLegacyQueryMigrationPrompt(component, firstQuery)).toContain(
+      "@<component:component-1|Users>"
+    );
+    expect(
+      makeAllLegacyQueriesMigrationPrompt(component, [firstQuery])
+    ).toContain("@<component:component-1|Users>");
+  });
+
+  it("mentions a page with the page kind", () => {
+    expect(makeLegacyQueryMigrationPrompt(page, firstQuery)).toContain(
+      "@<page:page-1|Home>"
+    );
   });
 
   it("names every legacy query being migrated in an all-query migration", () => {

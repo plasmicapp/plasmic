@@ -33,6 +33,11 @@
     padding-right: 20px;
     display: flex;
     justify-content: space-between;
+
+    // Disallow shrinking the menu title content to ensure it renders on one line.
+    > .ant-dropdown-menu-title-content {
+      flex-shrink: 0;
+    }
   }
 
   .ant-dropdown-menu-item:hover,

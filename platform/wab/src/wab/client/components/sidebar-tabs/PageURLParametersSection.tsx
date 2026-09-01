@@ -18,6 +18,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import { mkSectionUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { valueAsString } from "@/wab/commons/values";
+import { DELETE_ACTION } from "@/wab/shared/Labels";
 import {
   ensure,
   maybe,
@@ -120,7 +121,7 @@ function URLParameterRow(props: {
       menu={
         props.onRemove && (
           <Menu>
-            <Menu.Item onClick={props.onRemove}>Remove URL parameter</Menu.Item>
+            <Menu.Item onClick={props.onRemove}>{DELETE_ACTION}</Menu.Item>
           </Menu>
         )
       }
