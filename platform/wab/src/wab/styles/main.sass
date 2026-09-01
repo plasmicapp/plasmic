@@ -3310,17 +3310,24 @@ $invalid-arg-color: #faad14
 
 .style__assets__item__settings
   display: inline-block
-  cursor: pointer
 
 .style__assets__item__preview__container
   display: block
   padding-left: 20px
 
 .style__assets__typography__preview
+  // Shield the preview from Studio styles; MixinPreview then layers Plasmic's
+  // own tag resets on top of the reverted browser defaults
+  all: initial
+  *
+    all: revert
+
+  display: block
   background-color: white
   max-width: 100%
-  max-height: 80px
+  max-height: 200px
   overflow: auto
+  cursor: pointer
 
 .completions
   display: flex

@@ -628,3 +628,17 @@ Pass this into \`ensurePlasmicAppUser()\` to get a user token, and thus be able 
     </StandardMarkdown>
   );
 }
+
+export function StylePreviewTooltip() {
+  return (
+    <div>
+      <p className={"tooltip-title"}>Preview</p>
+      <p>
+        This is how text will look on your site. Styles you define layer on top
+        of the base default styles and Plasmic's CSS resets, just like on your
+        published pages; anything you leave unset falls back to those. Click the
+        preview text to edit.
+      </p>
+    </div>
+  );
+}
