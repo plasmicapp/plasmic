@@ -22,10 +22,6 @@ import React from "react";
 
 const errorMessageCounters = new Map<string, number>();
 
-function mungeErrorMsg(msg: string) {
-  return DEVFLAGS.mungeErrorMessages[msg] ?? msg;
-}
-
 // Note that sometimes you will see double errors, due to React rethrowing
 // errors and/or mobx rethrowing errors.  I don't fully understand the mechanics
 // (there is some magic that React does across execution contexts) but this only
@@ -66,7 +62,7 @@ export function showError(
     type: info.type,
     key: info.title,
     message: info.title + occurrences,
-    description: description ?? mungeErrorMsg(info.description),
+    description: description ?? info.description,
     duration: info.type === "warning" ? 10 : 0,
     onClose: () => {
       errorMessageCounters.delete(title);

@@ -57,6 +57,11 @@ export class AuthError extends ApiError {
   statusCode = 403;
 }
 
+export class CaptchaError extends ApiError {
+  name = "CaptchaError";
+  statusCode = 403;
+}
+
 export class PreconditionFailedError extends ApiError {
   name = "PreconditionFailedError";
   statusCode = 412;
@@ -115,6 +120,7 @@ const errorNameRegistry = {
   SchemaMismatchError,
   StaleCliError,
   AuthError,
+  CaptchaError,
   UnknownReferencesError,
   BundleTypeError,
   EntityNotFound: NotFoundError,

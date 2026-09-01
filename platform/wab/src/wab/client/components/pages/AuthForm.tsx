@@ -10,6 +10,7 @@ import { IntakeFlowForm } from "@/wab/client/components/pages/IntakeFlowForm";
 import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { Redirect } from "@/wab/client/route/Redirect";
+import { CaptchaError } from "@/wab/shared/ApiErrors/errors";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { mkUuid, spawnWrapper } from "@/wab/shared/common";
 import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
@@ -139,11 +140,19 @@ export function useAuthForm({
         }
       }
     } catch (err) {
-      setFormFeedback({
-        type: "error",
-        content: "Unexpected error occurred logging in.",
-      });
-      throw err;
+      if (err instanceof CaptchaError) {
+        setFormFeedback({
+          type: "error",
+          content:
+            "Browser verification failed. Please try again. Contact us if you are human and this issue persists.",
+        });
+      } else {
+        setFormFeedback({
+          type: "error",
+          content: "Unexpected error occurred logging in.",
+        });
+        throw err;
+      }
     } finally {
       setSubmitting(false);
     }
@@ -447,11 +456,19 @@ export function ForgotPasswordForm() {
                 content: "Success! Check your email for instructions.",
               });
             } catch (err) {
-              setFeedback({
-                type: "error",
-                content: "Unexpected error occurred. Please try again.",
-              });
-              throw err;
+              if (err instanceof CaptchaError) {
+                setFeedback({
+                  type: "error",
+                  content:
+                    "Browser verification failed. Please try again. Contact us if you are human and this issue persists.",
+                });
+              } else {
+                setFeedback({
+                  type: "error",
+                  content: "Unexpected error occurred. Please try again.",
+                });
+                throw err;
+              }
             } finally {
               setSubmitting(false);
             }

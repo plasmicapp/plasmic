@@ -14,6 +14,7 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { useLocation } from "@/wab/client/route/HistoryProvider";
 import { trackEvent } from "@/wab/client/tracking";
+import { CaptchaError } from "@/wab/shared/ApiErrors/errors";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
@@ -504,10 +505,17 @@ export function AppEmailVerification(props: {
                       }
                       showEmailSentNotification();
                     } catch (err) {
-                      notification.error({
-                        message: "Failed to send email. Please try again.",
-                      });
-                      throw err;
+                      if (err instanceof CaptchaError) {
+                        notification.error({
+                          message:
+                            "Browser verification failed. Please try again. Contact us if you are human and this issue persists.",
+                        });
+                      } else {
+                        notification.error({
+                          message: "Failed to send email. Please try again.",
+                        });
+                        throw err;
+                      }
                     }
                   }}
                 >
@@ -572,11 +580,19 @@ export function AppForgotPasswordForm({
                 content: "Success! Check your email for instructions.",
               });
             } catch (err) {
-              setFeedback({
-                type: "error",
-                content: "Unexpected error occurred. Please try again.",
-              });
-              throw err;
+              if (err instanceof CaptchaError) {
+                setFeedback({
+                  type: "error",
+                  content:
+                    "Browser verification failed. Please try again. Contact us if you are human and this issue persists.",
+                });
+              } else {
+                setFeedback({
+                  type: "error",
+                  content: "Unexpected error occurred. Please try again.",
+                });
+                throw err;
+              }
             } finally {
               setSubmitting(false);
             }

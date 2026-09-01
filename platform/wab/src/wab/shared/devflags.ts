@@ -434,10 +434,6 @@ const DEFAULT_DEVFLAGS = {
   showFullPreviewWarning: true,
   starterSections: [] as StarterSectionConfig[],
   hiddenQuickstartPlatforms: ensureType<string[]>([]),
-  mungeErrorMessages: {
-    "AuthError: CSRF token mismatch":
-      "Your login session has expired. Please reload to log in again.",
-  },
   showCopilot: true,
   allowHtmlPaste: false,
   enableUiCopilot: false,
