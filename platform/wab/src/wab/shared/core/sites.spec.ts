@@ -1,10 +1,24 @@
+import { Bundler } from "@/wab/shared/bundler";
+import { assert, mkShortId } from "@/wab/shared/common";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { mkParam } from "@/wab/shared/core/lang";
 import {
   allGlobalVariantGroups,
+  cloneSite,
   createDefaultTheme,
+  createSite as createSiteWithDefaults,
 } from "@/wab/shared/core/sites";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
 import {
+  ComponentServerQuery,
+  CustomFunction,
+  CustomFunctionExpr,
+  FunctionArg,
   GlobalVariantGroup,
+  ImageAsset,
+  ImageAssetRef,
+  isKnownCustomFunctionExpr,
+  isKnownImageAssetRef,
   ProjectDependency,
   Site,
   SiteParams,
@@ -219,5 +233,77 @@ describe("allGlobalVariantGroups", () => {
       expect(result).not.toContain(transitiveScreenGroup);
       expect(result).not.toContain(depInactiveScreenGroup);
     });
+  });
+});
+
+describe("cloneSite", () => {
+  test("does not retain source-project refs from custom-function server queries", () => {
+    const functionParam = typeFactory.arg("image", typeFactory.img(), "Image");
+    const customFunction = new CustomFunction({
+      defaultExport: false,
+      importName: "fetchData",
+      importPath: "./custom-functions",
+      displayName: "Fetch data",
+      namespace: null,
+      params: [functionParam],
+      isQuery: true,
+      isMutation: false,
+    });
+    const imageAsset = new ImageAsset({
+      uuid: mkShortId(),
+      name: "Image",
+      type: "picture",
+      dataUri: null,
+      width: null,
+      height: null,
+      aspectRatio: null,
+    });
+    const component = mkComponent({
+      name: "Page",
+      type: ComponentType.Page,
+      tplTree: mkTplTagX("div"),
+    });
+    component.serverQueries.push(
+      new ComponentServerQuery({
+        uuid: mkShortId(),
+        name: "query",
+        op: new CustomFunctionExpr({
+          func: customFunction,
+          args: [
+            new FunctionArg({
+              uuid: mkShortId(),
+              argType: functionParam,
+              expr: new ImageAssetRef({ asset: imageAsset }),
+            }),
+          ],
+        }),
+      })
+    );
+    const sourceSite = createSiteWithDefaults({
+      components: [component],
+      customFunctions: [customFunction],
+      imageAssets: [imageAsset],
+    });
+    const bundler = new Bundler();
+    bundler.bundle(sourceSite, "source-project", "1");
+
+    const clonedSite = cloneSite(sourceSite);
+    const clonedBundle = bundler.bundle(clonedSite, "", "1");
+
+    expect(clonedBundle.deps).not.toContain("source-project");
+    const clonedFunction = clonedSite.customFunctions[0];
+    const clonedOp = clonedSite.components[0].serverQueries[0].op;
+    assert(
+      isKnownCustomFunctionExpr(clonedOp),
+      "Expected the cloned server query to call a custom function"
+    );
+    expect(clonedOp.func).toBe(clonedFunction);
+    expect(clonedOp.args[0].argType).toBe(clonedFunction.params[0]);
+    expect(clonedFunction.params[0].displayName).toBe("Image");
+    assert(
+      isKnownImageAssetRef(clonedOp.args[0].expr),
+      "Expected the cloned custom-function argument to reference an image asset"
+    );
+    expect(clonedOp.args[0].expr.asset).toBe(clonedSite.imageAssets[0]);
   });
 });

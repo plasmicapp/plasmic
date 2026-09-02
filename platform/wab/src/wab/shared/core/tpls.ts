@@ -1611,7 +1611,13 @@ export function cloneType<T extends Type>(type_: T): T {
         allowRootWrapper: tt.allowRootWrapper,
       })
     )
-    .when(ArgType, (t) => typeFactory[t.name](t.argName, cloneType(t.type)))
+    .when(ArgType, (t) =>
+      typeFactory[t.name](
+        t.argName,
+        cloneType(t.type),
+        t.displayName ?? undefined
+      )
+    )
     .when(FunctionType, (t) => typeFactory[t.name](...t.params.map(cloneType)))
     .when(RenderableType, (t) =>
       typeFactory[t.name]({

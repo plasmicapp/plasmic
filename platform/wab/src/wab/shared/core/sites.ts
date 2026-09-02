@@ -86,6 +86,7 @@ import {
 import { cloneToken } from "@/wab/shared/core/tokens";
 import {
   clone,
+  cloneType,
   findExprsInComponent,
   findExprsInNode,
   findVariantSettingsUnderTpl,
@@ -466,7 +467,7 @@ export function cloneCustomFunction(
     importPath: customFunction.importPath,
     displayName: customFunction.displayName,
     namespace: customFunction.namespace,
-    params: [],
+    params: customFunction.params.map((param) => cloneType(param)),
     isQuery: customFunction.isQuery,
     isMutation: customFunction.isMutation,
   });
@@ -629,6 +630,17 @@ export function cloneSite(fromSite: Site) {
   const oldToNewAsset = new Map<ImageAsset, ImageAsset>(
     strictZip(fromSite.imageAssets, site.imageAssets)
   );
+  const allLocalAssets = new Set(fromSite.imageAssets);
+  const getNewImageAsset = (asset: ImageAsset) => {
+    if (allLocalAssets.has(asset)) {
+      return ensure(oldToNewAsset.get(asset), "should exist in oldToNewAsset");
+    } else {
+      return asset;
+    }
+  };
+  const oldToNewCustomFunction = new Map<CustomFunction, CustomFunction>(
+    strictZip(fromSite.customFunctions, site.customFunctions)
+  );
 
   const getNewMaybeTokenRefValue = (value: string) => {
     return replaceAllTokenRefs(value, (tokenId) => {
@@ -788,13 +800,16 @@ export function cloneSite(fromSite: Site) {
     )
   );
   const oldToNewArgType = new Map<ArgType, ArgType>(
-    withoutNils(
-      [...oldToNewParam.entries()].map(([param1, param2]) =>
-        isKnownFunctionType(param1.type) && isKnownFunctionType(param2.type)
-          ? ([param1.type, param2.type] as const)
-          : null
-      )
-    ).flatMap(([func1, func2]) => strictZip(func1.params, func2.params))
+    [
+      ...withoutNils(
+        [...oldToNewParam.entries()].map(([param1, param2]) =>
+          isKnownFunctionType(param1.type) && isKnownFunctionType(param2.type)
+            ? ([param1.type, param2.type] as const)
+            : null
+        )
+      ),
+      ...oldToNewCustomFunction,
+    ].flatMap(([func1, func2]) => strictZip(func1.params, func2.params))
   );
 
   const fixQueryRef = (queryRef: QueryRef) => {
@@ -911,15 +926,21 @@ export function cloneSite(fromSite: Site) {
       .when(FunctionExpr, (functionExpr) =>
         fixGlobalRefForExpr(functionExpr.bodyExpr)
       )
-      .when(CustomFunctionExpr, (customFunctionExpr) =>
-        customFunctionExpr.args.forEach((arg) => fixGlobalRefForExpr(arg))
-      )
+      .when(CustomFunctionExpr, (customFunctionExpr) => {
+        customFunctionExpr.func =
+          oldToNewCustomFunction.get(customFunctionExpr.func) ??
+          customFunctionExpr.func;
+        customFunctionExpr.args.forEach((arg) => fixGlobalRefForExpr(arg));
+      })
       .when([RenderExpr, VirtualRenderExpr], () => {})
       .result();
   };
 
   site.components.forEach((component) => {
     component.dataQueries.forEach(
+      (query) => query.op && fixGlobalRefForExpr(query.op)
+    );
+    component.serverQueries.forEach(
       (query) => query.op && fixGlobalRefForExpr(query.op)
     );
   });
@@ -930,15 +951,6 @@ export function cloneSite(fromSite: Site) {
       (c) => !allOldLocalComponents.has(c)
     )
   );
-
-  const allLocalAssets = new Set(fromSite.imageAssets);
-  const getNewImageAsset = (asset: ImageAsset) => {
-    if (allLocalAssets.has(asset)) {
-      return ensure(oldToNewAsset.get(asset), "should exist in oldToNewAsset");
-    } else {
-      return asset;
-    }
-  };
 
   const fixLocalVsAndTpl = (
     ctx: string,
