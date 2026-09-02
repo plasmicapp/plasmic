@@ -10088,6 +10088,16 @@ export class DbMgr implements MigrationDbMgr {
       "post comment"
     );
     const { id, body, threadId } = data;
+    ensureFound<CommentThread>(
+      await this.commentThreads().findOne({
+        where: {
+          id: threadId,
+          projectId,
+          branchId: branchId ?? IsNull(),
+        },
+      }),
+      `Comment thread with id ${threadId}`
+    );
     if (!isUuidV4(id) && !isShortUuidV4(id)) {
       throw new BadRequestError(
         "Invalid UUID format: 'id' must be a valid UUID."
@@ -10206,9 +10216,16 @@ export class DbMgr implements MigrationDbMgr {
     { projectId, branchId }: ProjectAndBranchId,
     commentId: CommentId
   ): Promise<Comment> {
-    const comment = await findExactlyOne(this.comments(), {
-      id: commentId,
-    });
+    const qb = this.comments()
+      .createQueryBuilder("comment")
+      .innerJoin("comment.commentThread", "thread")
+      .where("comment.id = :commentId", { commentId })
+      .andWhere("thread.projectId = :projectId", { projectId });
+    whereEqOrNull(qb, "thread.branchId", { branchId }, true);
+    const comment = ensureFound<Comment>(
+      await qb.getOne(),
+      `Comment with id ${commentId}`
+    );
     if (!this.isUserIdSelf(comment.createdById ?? undefined)) {
       await this.checkProjectBranchPerms(
         { projectId, branchId },
@@ -10258,6 +10275,8 @@ export class DbMgr implements MigrationDbMgr {
       await this.commentThreads().findOne({
         where: {
           id: threadId,
+          projectId,
+          branchId: branchId ?? IsNull(),
           ...excludeDeleted(),
         },
       }),

@@ -3,6 +3,7 @@ import {
   ANON_USER,
   DbMgr,
   normalActor,
+  NotFoundError,
   SkipSafeDelete,
 } from "@/wab/server/db/DbMgr";
 import {
@@ -12,11 +13,19 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
+import { withBranch } from "@/wab/server/test/branching-utils";
 import { ApiCmsQuery, FilterClause } from "@/wab/shared/api/cms";
-import { CmsMetaType, CmsTableId } from "@/wab/shared/ApiSchema";
+import {
+  CmsMetaType,
+  CmsTableId,
+  CommentId,
+  CommentThreadId,
+  ProjectAndBranchId,
+} from "@/wab/shared/ApiSchema";
 import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
+import * as uuid from "uuid";
 
 describe("DbMgr.CMS", () => {
   it("can duplicate the database", () =>
@@ -1811,5 +1820,146 @@ describe("DbMgr.project revisions", () => {
       expect(reverted.data).toEqual(initialRev.data);
       expect(reverted.revision).toEqual(rev2.revision + 1);
     });
+  });
+});
+
+describe("DbMgr.comments", () => {
+  function postRootComment(db: DbMgr, projectAndBranchId: ProjectAndBranchId) {
+    return db.postRootCommentInProject(projectAndBranchId, {
+      commentThreadId: uuid.v4() as CommentThreadId,
+      commentId: uuid.v4() as CommentId,
+      location: { subject: { uuid: "", iid: "" }, variants: [] },
+      body: "comment text",
+    });
+  }
+
+  async function otherProjectId(db: DbMgr) {
+    const { workspace } = await getTeamAndWorkspace(db);
+    const { project } = await db.createProject({
+      name: "My Other Project",
+      workspaceId: workspace.id,
+    });
+    return project.id;
+  }
+
+  describe("postCommentInThread", () => {
+    it("works", () =>
+      withDb(async (_sudo, _users, [db1], project) => {
+        const rootComment = await postRootComment(db1(), {
+          projectId: project.id,
+        });
+        const threadId = rootComment.commentThreadId as CommentThreadId;
+
+        const comment = await db1().postCommentInThread(
+          { projectId: project.id },
+          { id: uuid.v4() as CommentId, threadId, body: "reply text" }
+        );
+
+        expect(comment.commentThreadId).toEqual(threadId);
+      }));
+
+    it("throws NotFoundError if project or branch is wrong", () =>
+      withBranch(async (branch, _helpers, _sudo, _users, [db1], project) => {
+        const rootComment = await postRootComment(db1(), {
+          projectId: project.id,
+        });
+        const threadId = rootComment.commentThreadId as CommentThreadId;
+
+        await expect(
+          db1().postCommentInThread(
+            { projectId: await otherProjectId(db1()) },
+            { id: uuid.v4() as CommentId, threadId, body: "reply text" }
+          )
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          db1().postCommentInThread(
+            { projectId: project.id, branchId: branch.id },
+            { id: uuid.v4() as CommentId, threadId, body: "reply text" }
+          )
+        ).rejects.toThrow(NotFoundError);
+      }));
+  });
+
+  describe("deleteCommentInProject", () => {
+    it("works", () =>
+      withDb(async (_sudo, _users, [db1], project) => {
+        const rootComment = await postRootComment(db1(), {
+          projectId: project.id,
+        });
+
+        const deleted = await db1().deleteCommentInProject(
+          { projectId: project.id },
+          rootComment.id
+        );
+
+        expect(deleted.deletedAt).toBeTruthy();
+        expect(
+          await db1().getThreadsForProject({ projectId: project.id })
+        ).toMatchObject([]);
+      }));
+
+    it("throws NotFoundError if project or branch is wrong", () =>
+      withBranch(async (branch, _helpers, _sudo, _users, [db1], project) => {
+        const rootComment = await postRootComment(db1(), {
+          projectId: project.id,
+        });
+
+        await expect(
+          db1().deleteCommentInProject(
+            { projectId: await otherProjectId(db1()) },
+            rootComment.id
+          )
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          db1().deleteCommentInProject(
+            { projectId: project.id, branchId: branch.id },
+            rootComment.id
+          )
+        ).rejects.toThrow(NotFoundError);
+      }));
+  });
+
+  describe("deleteThreadInProject", () => {
+    it("works", () =>
+      withDb(async (_sudo, _users, [db1], project) => {
+        const rootComment = await postRootComment(db1(), {
+          projectId: project.id,
+        });
+        const threadId = rootComment.commentThreadId as CommentThreadId;
+
+        const deleted = await db1().deleteThreadInProject(
+          { projectId: project.id },
+          threadId
+        );
+
+        expect(deleted.deletedAt).toBeTruthy();
+        expect(
+          await db1().getThreadsForProject({ projectId: project.id })
+        ).toMatchObject([]);
+      }));
+
+    it("throws NotFoundError if project or branch is wrong", () =>
+      withBranch(async (branch, _helpers, _sudo, _users, [db1], project) => {
+        const rootComment = await postRootComment(db1(), {
+          projectId: project.id,
+        });
+        const threadId = rootComment.commentThreadId as CommentThreadId;
+
+        await expect(
+          db1().deleteThreadInProject(
+            { projectId: await otherProjectId(db1()) },
+            threadId
+          )
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          db1().deleteThreadInProject(
+            { projectId: project.id, branchId: branch.id },
+            threadId
+          )
+        ).rejects.toThrow(NotFoundError);
+      }));
   });
 });
