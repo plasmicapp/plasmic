@@ -47,7 +47,7 @@ import S3 from "aws-sdk/clients/s3";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
-import { isString } from "lodash";
+import { isString, pickBy } from "lodash";
 import path from "path";
 
 /**
@@ -613,6 +613,7 @@ export async function genLoaderHtmlBundleSandboxed(
   args: Parameters<typeof genLoaderHtmlBundle>[0]
 ) {
   return withSpan("genLoaderHtmlBundleSandboxed", async () => {
+    const profilerService = process.env.GCLOUD_PROFILER_SERVICE;
     const cmd = [
       "node",
       "-r",
@@ -620,6 +621,20 @@ export async function genLoaderHtmlBundleSandboxed(
       "src/wab/server/loader/gen-html-bundle.ts",
     ];
     const payload = JSON.stringify(args);
+    const profilerEnv = profilerService
+      ? { GCLOUD_PROFILER_SERVICE: `${profilerService}-bwrap-worker` }
+      : {};
+    // The env the OTel auto-instrumentation and Cloud Profiler need. Already
+    // allowlisted here, so the sandbox never sees the rest of process.env.
+    const sandboxEnv = {
+      ...pickBy(
+        process.env,
+        (value, key) =>
+          value !== undefined &&
+          (key === "NODE_OPTIONS" || key.startsWith("OTEL_"))
+      ),
+      ...profilerEnv,
+    };
 
     // prettier-ignore
     const bwrapArgs = [
@@ -638,11 +653,10 @@ export async function genLoaderHtmlBundleSandboxed(
       "--ro-bind-try", "/otel-auto-instrumentation-nodejs", "/otel-auto-instrumentation-nodejs",
     ];
 
-    // Allowlist the env the OTel auto-instrumentation needs, plus the trace
-    // carrier. Pushed as discrete --setenv triples because values like
-    // NODE_OPTIONS and OTEL_RESOURCE_ATTRIBUTES can contain spaces.
-    for (const [k, v] of Object.entries(process.env)) {
-      if (v !== undefined && (k === "NODE_OPTIONS" || k.startsWith("OTEL_"))) {
+    // Pushed as discrete --setenv triples because values like NODE_OPTIONS and
+    // OTEL_RESOURCE_ATTRIBUTES can contain spaces.
+    for (const [k, v] of Object.entries(sandboxEnv)) {
+      if (v !== undefined) {
         bwrapArgs.push("--setenv", k, v);
       }
     }
@@ -662,7 +676,10 @@ export async function genLoaderHtmlBundleSandboxed(
 
     const { stdout, stderr, exitCode } =
       process.env.DISABLE_BWRAP === "1"
-        ? await execa(cmd[0], [...cmd.slice(1), payload], { reject: false })
+        ? await execa(cmd[0], [...cmd.slice(1), payload], {
+            reject: false,
+            env: { ...process.env, ...profilerEnv },
+          })
         : await execa("bwrap", bwrapArgs, { reject: false });
     if (stderr.trim().length > 0 && exitCode === 0) {
       logger().error(

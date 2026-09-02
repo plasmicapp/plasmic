@@ -179,6 +179,7 @@
     "@fortawesome/react-fontawesome": "0.1.13",
     "@godaddy/terminus": "^4.12.1",
     "@google-cloud/bigquery": "8.1.1",
+    "@google-cloud/profiler": "8.0.1",
     "@google-cloud/recaptcha-enterprise": "7.0.0",
     "@graphiql/plugin-explorer": "3.2.3",
     "@graphiql/react": "0.26.2",

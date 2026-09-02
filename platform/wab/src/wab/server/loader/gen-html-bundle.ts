@@ -1,4 +1,5 @@
 import { pickTraceCarrier } from "@/wab/server/util/apm-util";
+import { maybeStartGoogleCloudProfiler } from "@/wab/server/util/profiler";
 import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
 import { context, propagation } from "@opentelemetry/api";
 import {
@@ -116,14 +117,16 @@ async function main(argv = process.argv) {
     console.error = () => {};
     console.info = () => {};
     console.debug = () => {};
+    // Start the profiler before generation so it captures the work.
+    await maybeStartGoogleCloudProfiler("bwrap");
     const args = JSON.parse(argv[2]);
     const { html } = await context.with(
       propagation.extract(context.active(), pickTraceCarrier(process.env)),
       () => genLoaderHtmlBundle(args)
     );
-    // Node will wait for the contents to finish writing before exiting, so we don't need to wait on a callback.
-    // This is actually safer and simpler than, say, using fs.writeSync(), which does a partial write and requires retrying.
-    process.stdout.write(html);
+    // The profiler keeps a long-poll open and can't be stopped, so force-exit
+    // once stdout is flushed to avoid leaving the subprocess alive.
+    process.stdout.write(html, () => process.exit(0));
   } catch (e) {
     process.stderr.write("" + e.stack);
     process.exit(1);

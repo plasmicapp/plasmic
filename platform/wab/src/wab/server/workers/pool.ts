@@ -47,12 +47,28 @@ class WorkerPoolWrapper {
 
 export function createWorkerPool(config: Config) {
   const loaderPool = createPool(path.join(__dirname, "worker.js"), {
-    workerType: "thread",
+    workerType: "process",
     maxWorkers: config.loaderWorkerPoolSize,
+    forkOpts: {
+      env: {
+        ...process.env,
+        ...(process.env.GCLOUD_PROFILER_SERVICE && {
+          GCLOUD_PROFILER_SERVICE: `${process.env.GCLOUD_PROFILER_SERVICE}-loader-worker`,
+        }),
+      },
+    },
   });
   const genericPool = createPool(path.join(__dirname, "worker.js"), {
-    workerType: "thread",
+    workerType: "process",
     maxWorkers: config.genericWorkerPoolSize,
+    forkOpts: {
+      env: {
+        ...process.env,
+        ...(process.env.GCLOUD_PROFILER_SERVICE && {
+          GCLOUD_PROFILER_SERVICE: `${process.env.GCLOUD_PROFILER_SERVICE}-generic-worker`,
+        }),
+      },
+    },
   });
   trackWorkerPool("loader", loaderPool);
   trackWorkerPool("generic", genericPool);

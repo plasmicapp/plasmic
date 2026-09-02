@@ -339,7 +339,6 @@ export async function doGenCode(
     });
     return {
       output,
-      site,
       checksums: newChecksums,
       componentDeps: getComponentDeps(site, siteGenHelper, appAuthProvider),
       componentRefs,
