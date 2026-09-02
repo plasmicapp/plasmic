@@ -36,5 +36,5 @@
     "node-gyp": "^11.5.0",
     "typescript": "6.0.3"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.10.0"
 }

@@ -14,5 +14,5 @@
   "dependencies": {
     "playwright-ctrf-json-reporter": "^0.0.29"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.10.0"
 }

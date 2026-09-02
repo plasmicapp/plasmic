@@ -71,6 +71,10 @@ overrides:
   # JSX prop bag crossing the two copies fails to typecheck.
   "@types/react@^18": 18.3.18
   "@types/react-dom@^18": 18.3.5
+  # @jest/core declares a broad @types/node dependency and otherwise floats to
+  # a newer patch than wab's direct pin. jest-config also treats @types/node as
+  # an optional peer, so the mismatch creates duplicate jest-config snapshots.
+  "@jest/core@29.7.0>@types/node": 24.12.2
   # Unify the 4.x express types on the version wab's yarn.lock had frozen;
   # otherwise @types/express resolves its own newer copy and every
   # Request/Response in wab has two incompatible type identities.

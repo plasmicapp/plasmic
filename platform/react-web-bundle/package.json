@@ -25,5 +25,5 @@
     "rollup-plugin-terser": "^6.1.0",
     "typescript": "6.0.3"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.10.0"
 }

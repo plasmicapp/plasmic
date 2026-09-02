@@ -31,5 +31,5 @@
     "playwright-ctrf-json-reporter": "^0.0.29",
     "tmp": "^0.2.1"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.10.0"
 }

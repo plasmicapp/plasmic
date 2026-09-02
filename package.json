@@ -42,7 +42,7 @@
     "upgrade-internal": "bash scripts/upgrade-internal.bash",
     "msw:update": "msw init ./msw --save=false"
   },
-  "packageManager": "pnpm@11.8.0",
+  "packageManager": "pnpm@11.10.0",
   "devDependencies": {
     "@microsoft/api-extractor": "7.38.2",
     "@testing-library/react": "16.2.0",

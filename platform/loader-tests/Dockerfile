@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/playwright:v1.60.0-noble
 
 WORKDIR /app
-RUN npm install -g pnpm@11.8.0
+RUN npm install -g pnpm@11.10.0
 COPY . /app
 RUN pnpm install --frozen-lockfile
 
