@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress",
-  "version": "0.0.188",
+  "version": "0.0.189",
   "description": "Plasmic code components for fetching and rendering WordPress posts and pages.",
   "homepage": "https://www.plasmic.app",
   "repository": {

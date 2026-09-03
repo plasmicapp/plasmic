@@ -1,5 +1,5 @@
 {
-  "version": "1.0.77",
+  "version": "1.0.78",
   "description": "Utilities for running Plasmic A/B tests, feature flags, and audience segmentation.",
   "homepage": "https://www.plasmic.app",
   "repository": {

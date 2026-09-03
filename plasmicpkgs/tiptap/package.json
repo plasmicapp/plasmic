@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/tiptap",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "Plasmic code components for the Tiptap rich text editor.",
   "homepage": "https://www.plasmic.app",
   "repository": {

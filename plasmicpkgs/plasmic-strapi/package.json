@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-strapi",
-  "version": "0.1.219",
+  "version": "0.1.220",
   "description": "Plasmic code components for fetching and rendering Strapi content.",
   "homepage": "https://www.plasmic.app",
   "repository": {
