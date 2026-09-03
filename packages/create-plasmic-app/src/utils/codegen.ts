@@ -31,8 +31,12 @@ export async function runCodegenSync(opts: {
     ? `${projectId}:${projectApiToken}`
     : projectId;
 
+  // Pin the manager during CLI initialization, before it installs required packages
+  // and could guess from an unrelated ancestor lockfile.
   await spawnOrFail(
-    `${packageManagerExec(packageManager)} plasmic sync --yes -p ${project}`,
+    `${packageManagerExec(
+      packageManager
+    )} plasmic sync --yes --package-manager=${packageManager} -p ${project}`,
     projectPath
   );
 

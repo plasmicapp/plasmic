@@ -49,6 +49,12 @@ yargs
     describe: "Automatic yes to prompts.",
     default: false,
   })
+  .option("package-manager", {
+    type: "string",
+    choices: ["npm", "yarn", "yarn2", "pnpm"],
+    describe: "Package manager to record when initializing plasmic.json.",
+    hidden: true,
+  })
   .command<InitArgs>(
     "init",
     "Initializes Plasmic for a project.",
@@ -357,4 +363,5 @@ export interface CommonArgs {
   auth?: string;
   config?: string;
   yes?: boolean;
+  packageManager?: "npm" | "yarn" | "yarn2" | "pnpm";
 }

@@ -70,7 +70,10 @@ export async function initPlasmic(
     opts.config || path.join(opts.baseDir, CONFIG_FILE_NAME);
 
   const answers = await deriveInitAnswers(opts);
-  const initConfig = createInitConfig(answers);
+  const initConfig = createInitConfig({
+    ...answers,
+    packageManager: opts.packageManager,
+  });
   await writeConfig(newConfigFile, initConfig);
 
   if (!process.env.QUIET) {
@@ -86,7 +89,9 @@ export async function initPlasmic(
   }
 }
 
-function createInitConfig(opts: Omit<InitArgs, "baseDir">): PlasmicConfig {
+export function createInitConfig(
+  opts: Omit<InitArgs, "baseDir">
+): PlasmicConfig {
   return fillDefaults({
     srcDir: opts.srcDir,
     defaultPlasmicDir: opts.plasmicDir,
@@ -123,6 +128,7 @@ function createInitConfig(opts: Omit<InitArgs, "baseDir">): PlasmicConfig {
       ...(opts.imagesScheme && { publicUrlPrefix: opts.imagesPublicUrlPrefix }),
     },
     ...(opts.platform && { platform: opts.platform }),
+    ...(opts.packageManager && { packageManager: opts.packageManager }),
     cliVersion: getCliVersion(),
   });
 }
