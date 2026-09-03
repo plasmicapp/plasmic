@@ -1,6 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { kebabCase, startCase } from "lodash";
-import { testIds } from "../../src/wab/client/test-helpers/test-ids";
+import { testIds } from "../../src/wab/client/test-ids";
 import { PageModels, test } from "../fixtures/test";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 

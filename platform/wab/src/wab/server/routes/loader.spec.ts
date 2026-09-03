@@ -1,12 +1,15 @@
 /** @vitest-environment node */
+import { PublicApiTester } from "@/wab/server/__testonly__/api-tester";
+import {
+  createBackend,
+  createDatabase,
+} from "@/wab/server/__testonly__/backend-util";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
 import { _testonly } from "@/wab/server/routes/loader";
-import { PublicApiTester } from "@/wab/server/test/api-tester";
-import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import { Bundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/shared/core/sites";
 

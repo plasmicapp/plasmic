@@ -4,7 +4,7 @@ import {
   SsrfTestServers,
   startInternalTestServer,
   TestServer,
-} from "@/wab/server/testonly/test-server";
+} from "@/wab/server/__testonly__/test-server";
 import { fetchUntrusted, UnsafeUrlError } from "@/wab/server/util/url";
 
 describe("fetchUntrusted", () => {

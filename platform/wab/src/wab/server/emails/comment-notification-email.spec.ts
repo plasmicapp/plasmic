@@ -7,23 +7,23 @@ vi.spyOn(React, "useLayoutEffect").mockImplementation(React.useEffect);
 (globalThis as any).WritableStream = WritableStream;
 // END
 
+import { getTeamAndWorkspace } from "@/wab/server/__testonly__/backend-util";
+import {
+  createNotification,
+  createNotificationsByProject,
+  withEndUserNotificationSetup,
+} from "@/wab/server/__testonly__/comments-util";
+import { setupEmailTest } from "@/wab/server/emails/__testonly__/email-test-util";
 import {
   getThreadUrl,
   Notification,
   sendUserNotificationEmail,
 } from "@/wab/server/emails/comment-notification-email";
-import { setupEmailTest } from "@/wab/server/emails/test/email-test-util";
 import {
   Comment,
   CommentReaction,
   CommentThreadHistory,
 } from "@/wab/server/entities/Entities";
-import { getTeamAndWorkspace } from "@/wab/server/test/backend-util";
-import {
-  createNotification,
-  createNotificationsByProject,
-  withEndUserNotificationSetup,
-} from "@/wab/server/test/comments-util";
 import {
   CommentId,
   CommentReactionId,

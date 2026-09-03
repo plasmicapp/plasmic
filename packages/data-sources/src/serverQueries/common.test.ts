@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { asyncFunc, asyncFuncCalls } from "./__testonly__/test-common";
 import {
   StatefulQueryResult,
   createDollarQueries,
@@ -11,7 +12,6 @@ import {
   wrapPlasmicQueriesForMetadata,
   wrapPlasmicQueriesWithFallbacks,
 } from "./common";
-import { asyncFunc, asyncFuncCalls } from "./testonly/test-common";
 import { PlasmicQueryResult } from "./types";
 
 describe("StatefulQueryResult", () => {

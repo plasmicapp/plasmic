@@ -1,4 +1,13 @@
 /** @vitest-environment node */
+import {
+  PublicApiTester,
+  SharedApiTester,
+  expectStatus,
+} from "@/wab/server/__testonly__/api-tester";
+import {
+  createBackend,
+  createDatabase,
+} from "@/wab/server/__testonly__/backend-util";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import {
@@ -7,12 +16,6 @@ import {
   CmsTable,
   User,
 } from "@/wab/server/entities/Entities";
-import {
-  PublicApiTester,
-  SharedApiTester,
-  expectStatus,
-} from "@/wab/server/test/api-tester";
-import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import { CmsMetaType } from "@/wab/shared/ApiSchema";
 
 describe("CMS public routes", () => {

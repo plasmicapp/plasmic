@@ -48,7 +48,7 @@ import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIc
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useModelUiActionHandler } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { testIds } from "@/wab/client/test-ids";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {

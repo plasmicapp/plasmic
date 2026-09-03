@@ -5,13 +5,13 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { _testonly } from "./client";
-import { executePlasmicQueries } from "./server";
 import {
   TestComponent,
   TestProvider,
   createTestTree,
-} from "./testonly/test-queries";
+} from "./__testonly__/test-queries";
+import { _testonly } from "./client";
+import { executePlasmicQueries } from "./server";
 
 const { GLOBAL_CACHE } = _testonly;
 

@@ -1,0 +1,457 @@
+import {
+  mkCustomCodeOp,
+  mkCustomFunctionExpr,
+  mkServerQuery,
+} from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
+import {
+  ExprCtx,
+  asCode,
+  code,
+  codeLit,
+  convertHrefExprToCodeExpr,
+  customCode,
+  deserCompositeExpr,
+  deserCompositeExprMaybe,
+  getCodeExpressionWithFallback,
+  serCompositeExprMaybe,
+  tryExtractJson,
+} from "@/wab/shared/core/exprs";
+import { createSite } from "@/wab/shared/core/sites";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import {
+  Component,
+  CompositeExpr,
+  CustomCode,
+  ObjectPath,
+  PageHref,
+  QueryInvalidationExpr,
+  QueryRef,
+  TemplatedString,
+} from "@/wab/shared/model/classes";
+
+describe("asCode", () => {
+  const exprCtxFixture: ExprCtx = {
+    component: null,
+    inStudio: true,
+    projectFlags: getProjectFlags(createSite()),
+  };
+
+  it("works for TemplatedString with only CustomCode fallback", () => {
+    const wrongExpr = '"test".not.possible';
+    const testValue = "`${'eval'}Value`";
+    const templatedString = new TemplatedString({
+      text: [customCode(wrongExpr, customCode(testValue))],
+    });
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
+  });
+
+  it("works for TemplatedString with only IIFE", () => {
+    const testValue = "const test = 'evalValue';\ntest";
+    const templatedString = new TemplatedString({
+      text: [customCode(testValue)],
+    });
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
+  });
+
+  it("works for TemplatedString with only CustomCode", () => {
+    const testValue = "`${'eval'}Value`";
+    const templatedString = new TemplatedString({
+      text: [customCode(testValue)],
+    });
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
+  });
+
+  it("works for TemplatedString with only text", () => {
+    const testValue = "evalValue";
+    const templatedString = new TemplatedString({
+      text: [testValue],
+    });
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
+  });
+
+  it("works for TemplatedString with IIFE, CustomCode and text", () => {
+    const textValue = "evalValue",
+      codeValue = "`${'eval'}Value`",
+      iifeValue = "const test = 'evalValue';\ntest";
+    const templatedString = new TemplatedString({
+      text: [
+        textValue,
+        ", ",
+        customCode(codeValue),
+        ", ",
+        customCode(iifeValue),
+      ],
+    });
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue, evalValue, evalValue");
+  });
+
+  it("works for CompositeExpr", () => {
+    const currentCode = asCode(
+      new CompositeExpr({
+        hostLiteral: '{"fields": [{}, {"value": null}, {"value": null}]}',
+        substitutions: {
+          '["fields"][1]["value"]': code("42"),
+          '["fields"][2]["value"]': code("42"),
+        },
+      }),
+      exprCtxFixture
+    ).code;
+    const currentEval = eval(currentCode);
+    expect(currentEval).toEqual({
+      fields: [{}, { value: 42 }, { value: 42 }],
+    });
+
+    const legacyCode = asCode(
+      new CompositeExpr({
+        hostLiteral: '{"fields": [{}, {"value": null}, {"value": null}]}',
+        substitutions: {
+          "fields.1.value": code("42"),
+          "fields.2.value": code("42"),
+        },
+      }),
+      exprCtxFixture
+    ).code;
+    const legacyEval = eval(legacyCode);
+    expect(legacyCode).toEqual(currentCode);
+    expect(legacyEval).toEqual(currentEval);
+  });
+
+  it("returns stringified undefined for missing CustomFunctionExpr args", () => {
+    const expr = mkCustomFunctionExpr(
+      "testFunc",
+      ["presentArg", "missing1", "missing2"],
+      [{ name: "presentArg", code: "1 + 1" }]
+    );
+
+    const { code: generatedCode } = asCode(expr, exprCtxFixture);
+
+    expect(generatedCode).toEqual(`$$.testFunc((
+      1 + 1
+    ),undefined,undefined)`);
+  });
+
+  it("serializes a custom-function server query invalidation to its function id", () => {
+    const query = mkServerQuery(
+      "My Query",
+      mkCustomFunctionExpr("refreshFn", [], [])
+    );
+    const expr = new QueryInvalidationExpr({
+      invalidationQueries: [new QueryRef({ ref: query })],
+      invalidationKeys: undefined,
+    });
+
+    const { code: generatedCode } = asCode(expr, exprCtxFixture);
+
+    expect(generatedCode).toEqual(`["refreshFn"]`);
+    expect(eval(generatedCode)).toEqual(["refreshFn"]);
+  });
+
+  it("serializes a custom-code server query invalidation to its custom-code:<uuid> id", () => {
+    const query = mkServerQuery("My Query", mkCustomCodeOp("$props.foo"));
+    const expr = new QueryInvalidationExpr({
+      invalidationQueries: [new QueryRef({ ref: query })],
+      invalidationKeys: undefined,
+    });
+
+    const { code: generatedCode } = asCode(expr, exprCtxFixture);
+
+    // Must match makeCustomCodeQueryKey (`custom-code:<uuid>`) so the invalidation token
+    // matches the `$q.$.custom-code:<uuid>.$.<args>` SWR cache key (see matchesQueryCacheKey).
+    expect(generatedCode).toEqual(`["custom-code:${query.uuid}"]`);
+    expect(eval(generatedCode)).toEqual([`custom-code:${query.uuid}`]);
+  });
+});
+
+describe("tryExtractJson", () => {
+  it("extracts simple object from CompositeExpr with static values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"darkMode": null, "fontSize": null}',
+      substitutions: {
+        darkMode: codeLit(false),
+        fontSize: codeLit(13),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toEqual({ darkMode: false, fontSize: 13 });
+  });
+
+  it("extracts nested object from CompositeExpr with static values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"config": null}',
+      substitutions: {
+        config: new CompositeExpr({
+          hostLiteral: '{"theme": null, "size": null}',
+          substitutions: {
+            theme: codeLit("dark"),
+            size: codeLit(16),
+          },
+        }),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toEqual({ config: { theme: "dark", size: 16 } });
+  });
+
+  it("returns undefined for CompositeExpr with dynamic values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"value": null}',
+      substitutions: {
+        value: customCode("someVariable"),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined for CompositeExpr with mixed static and dynamic values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"static": null, "dynamic": null}',
+      substitutions: {
+        static: codeLit(42),
+        dynamic: customCode("someVariable"),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toBeUndefined();
+  });
+});
+
+describe("serCompositeExprMaybe/deserCompositeExprMaybe/deserCompositeExpr", () => {
+  it("serializes literal values to CustomCode", () => {
+    [
+      undefined,
+      null,
+      false,
+      true,
+      42,
+      "hello",
+      [],
+      [1, 2, 3, "four", null],
+      {},
+      { foo: "bar", baz: 123, qux: undefined },
+      { and: [{ "==": [{ var: "name" }, "John"] }] },
+      {
+        and: [
+          { "==": [{ var: "name" }, "John"] },
+          { ">=": [{ var: "age" }, 30] },
+        ],
+      },
+    ].forEach((x) => {
+      const serialized = serCompositeExprMaybe(x);
+      expect(serialized).toBeInstanceOf(CustomCode);
+      expect(tryExtractJson(serialized)).toEqual(x);
+    });
+  });
+
+  it("serializes and deserializes values with expressions to CompositeExpr", () => {
+    [
+      [1, code("1+1"), 3, null],
+      { name: "John", age: codeLit(42), status: undefined },
+      { and: [{ "==": [{ var: "bar" }, code("$dynamicValue")] }] },
+      {
+        and: [
+          {
+            "==": [
+              { var: "id" },
+              new ObjectPath({ path: ["user", "id"], fallback: undefined }),
+            ],
+          },
+        ],
+      },
+      { foo: { bar: codeLit(123) }, "foo.bar": codeLit(456) },
+    ].forEach((x) => {
+      const serialized = serCompositeExprMaybe(x);
+      expect(serialized).toBeInstanceOf(CompositeExpr);
+      expect(deserCompositeExpr(serialized as CompositeExpr)).toEqual(x);
+      expect(deserCompositeExprMaybe(serialized)).toEqual(x);
+    });
+  });
+
+  describe("serCompositeExprMaybe", () => {
+    it("passes through Expr values", () => {
+      const value = code("1+1");
+      expect(serCompositeExprMaybe(value)).toBe(value);
+    });
+  });
+
+  describe("deserCompositeExprMaybe", () => {
+    it("passes through non-CompositeExpr values", () => {
+      const simpleValue = { foo: "bar" };
+      expect(deserCompositeExprMaybe(simpleValue)).toBe(simpleValue);
+
+      const customCodeValue = code("42");
+      expect(deserCompositeExprMaybe(customCodeValue)).toBe(customCodeValue);
+    });
+  });
+
+  describe("implementation", () => {
+    it("current serialization format", () => {
+      const code1 = codeLit(1);
+      const code2 = codeLit(2);
+      const code3 = codeLit(3);
+      const value = [
+        {
+          foo: { bar: code1 },
+          "foo.bar": code2,
+        },
+        { ".'\"`": code3 },
+      ];
+      const composite = serCompositeExprMaybe(value);
+      expect(composite).toMatchObject({
+        hostLiteral: '[{"foo":{"bar":null},"foo.bar":null},{".\'\\"`":null}]',
+        substitutions: {
+          '[0]["foo"]["bar"]': code1,
+          '[0]["foo.bar"]': code2,
+          '[1][".\'\\"`"]': code3,
+        },
+      });
+      expect(deserCompositeExpr(composite as CompositeExpr)).toEqual(value);
+    });
+
+    // The substitutions keys used to be in the format `key1.key2`,
+    // but this does not work when string indexes have dots in them.
+    // We still need to support this for old CompositeExpr serializations.
+    it("legacy serialization format", () => {
+      const code1 = codeLit(1);
+      const code2 = codeLit(2);
+      const composite = new CompositeExpr({
+        hostLiteral: '[{"foo":{"bar":null},"foo.bar":null},{".\'\\"`":null}]',
+        substitutions: {
+          "0.foo.bar": code1,
+          "1..'\"`": code2,
+        },
+      });
+      expect(deserCompositeExpr(composite)).toEqual([
+        {
+          foo: { bar: code1 }, // ambiguous
+          "foo.bar": null, // ambiguous
+        },
+        {
+          ".'\"`": null, // not expressible
+          "": {
+            "'\"`": code2, // creates new key instead
+          },
+        },
+      ]);
+    });
+  });
+});
+
+describe("convertHrefExprToCodeExpr", () => {
+  const site = createSite();
+  const owner = null as unknown as Component;
+
+  const makePageHref = (
+    props: Partial<PageHref> & { path: string }
+  ): PageHref => {
+    const { query, params, fragment, path, encode } = props;
+    return {
+      typeTag: "PageHref",
+      uid: 1,
+      query: query ?? {},
+      params: params ?? {},
+      fragment,
+      encode: encode ?? false,
+      page: {
+        pageMeta: { path },
+      } as Component,
+    } as PageHref;
+  };
+
+  const stateVal = (path: string[]) => new ObjectPath({ path, fallback: null });
+
+  const evalCode = (expr: CustomCode | null, $state?: any) =>
+    // eslint-disable-next-line no-new-func
+    new Function("$state", `return ${expr!.code};`)($state);
+
+  it("converts a param-less PageHref to a static string literal", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({ path: "/mypage" })
+    );
+    expect(result?.code).toEqual('"/mypage"');
+  });
+
+  it("preserves encoding of param values", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/blog/[slug]",
+        params: { slug: stateVal(["$state", "slug"]) },
+        encode: true,
+      })
+    );
+    expect(evalCode(result, { slug: "a/b" })).toEqual("/blog/a%2Fb");
+  });
+
+  it("encodes each segment of a catchall param value", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/blog/[...slug]",
+        params: { "...slug": stateVal(["$state", "slug"]) },
+        encode: true,
+      })
+    );
+    expect(evalCode(result, { slug: "a b/c" })).toEqual("/blog/a%20b/c");
+    expect(evalCode(result, { slug: ["a b", "c/d"] })).toEqual(
+      "/blog/a%20b/c%2Fd"
+    );
+  });
+
+  it("leaves legacy non-encoded PageHrefs raw", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/blog/[slug]",
+        params: { slug: stateVal(["$state", "slug"]) },
+        encode: false,
+      })
+    );
+    expect(evalCode(result, { slug: "a/b" })).toEqual("/blog/a/b");
+  });
+
+  it("preserves query and fragment", () => {
+    const result = convertHrefExprToCodeExpr(
+      site,
+      owner,
+      makePageHref({
+        path: "/mypage",
+        query: { q: stateVal(["$state", "q"]) },
+        fragment: stateVal(["$state", "frag"]),
+        encode: true,
+      })
+    );
+    expect(evalCode(result, { q: "1 2", frag: "frag" })).toEqual(
+      "/mypage?q=1%202#frag"
+    );
+  });
+});

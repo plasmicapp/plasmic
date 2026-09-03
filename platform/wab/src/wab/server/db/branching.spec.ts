@@ -1,8 +1,7 @@
-import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {
   createDatabase,
   getTeamAndWorkspace,
-} from "@/wab/server/test/backend-util";
+} from "@/wab/server/__testonly__/backend-util";
 import {
   basicSite,
   bundler,
@@ -12,7 +11,8 @@ import {
   setupMainAndBranch,
   withBranch,
   withTokens,
-} from "@/wab/server/test/branching-utils";
+} from "@/wab/server/__testonly__/branching-utils";
+import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {
   BranchId,
   MainBranchId,

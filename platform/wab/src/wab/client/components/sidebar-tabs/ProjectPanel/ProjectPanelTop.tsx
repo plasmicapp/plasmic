@@ -17,7 +17,7 @@ import {
   calculateNextVersionKey,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { testIds } from "@/wab/client/test-ids";
 import {
   ApiBranch,
   BranchId,

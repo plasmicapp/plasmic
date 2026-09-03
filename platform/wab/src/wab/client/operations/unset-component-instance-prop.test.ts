@@ -1,0 +1,52 @@
+import { setupComponentWithInstance } from "@/wab/client/operations/__testonly__/utils";
+import { setComponentInstanceProp } from "@/wab/client/operations/set-component-instance-prop";
+import { unsetComponentInstanceProp } from "@/wab/client/operations/unset-component-instance-prop";
+import { assert } from "@/wab/shared/common";
+
+describe("unsetComponentInstanceProp", () => {
+  it("unsets a set prop", () => {
+    const { instance, getArg, opts } = setupComponentWithInstance();
+
+    setComponentInstanceProp(instance, "label", "Buy", opts);
+    const result = unsetComponentInstanceProp(instance, "label", opts);
+
+    expect(result.isOk()).toBe(true);
+    expect(getArg(instance, "label")).toBeUndefined();
+  });
+
+  it("unsets a variant group selection", () => {
+    const { instance, getArg, opts } = setupComponentWithInstance();
+
+    setComponentInstanceProp(instance, "size", "small", opts);
+    const result = unsetComponentInstanceProp(instance, "size", opts);
+
+    expect(result.isOk()).toBe(true);
+    expect(getArg(instance, "size")).toBeUndefined();
+  });
+
+  it("is a no-op on an already-unset prop", () => {
+    const { instance, opts } = setupComponentWithInstance();
+
+    const result = unsetComponentInstanceProp(instance, "label", opts);
+
+    expect(result.isOk()).toBe(true);
+  });
+
+  it("errors on an unknown prop", () => {
+    const { instance, opts } = setupComponentWithInstance();
+
+    const result = unsetComponentInstanceProp(instance, "nope", opts);
+
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain(`has no prop "nope"`);
+  });
+
+  it("errors on a slot prop", () => {
+    const { instance, opts } = setupComponentWithInstance();
+
+    const result = unsetComponentInstanceProp(instance, "children", opts);
+
+    assert(result.isErr(), "expected error");
+    expect(result.error.message).toContain("slot");
+  });
+});

@@ -6,9 +6,6 @@ import { usePlasmicDataConfig } from "@plasmicapp/query";
 import { act, getByText, render, renderHook } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { _testonly, usePlasmicQueries } from "./client";
-import { StatefulQueryResult } from "./common";
-import { makeQueryCacheKey } from "./makeQueryCacheKey";
 import {
   asyncFunc,
   asyncFuncCalls,
@@ -16,7 +13,7 @@ import {
   expectQueryRejected,
   expectQueryResolved,
   findAsyncFuncCall,
-} from "./testonly/test-common";
+} from "./__testonly__/test-common";
 import {
   TestComponent,
   TestProvider,
@@ -28,7 +25,10 @@ import {
   runResolveTest,
   runResolveZeroTest,
   testPermutations,
-} from "./testonly/test-queries";
+} from "./__testonly__/test-queries";
+import { _testonly, usePlasmicQueries } from "./client";
+import { StatefulQueryResult } from "./common";
+import { makeQueryCacheKey } from "./makeQueryCacheKey";
 import { QueryComponentNode } from "./types";
 
 const { GLOBAL_CACHE } = _testonly;

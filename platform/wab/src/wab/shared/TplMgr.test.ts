@@ -1,0 +1,470 @@
+import { mkArenaFrame, mkMixedArena } from "@/wab/shared/Arenas";
+import { TplMgr, ensureBaseVariant, uniquePagePath } from "@/wab/shared/TplMgr";
+import { mkVariantSetting } from "@/wab/shared/Variants";
+import {
+  mkComponentWithQueries,
+  mkCustomCodeOp,
+  mkCustomFunctionExpr,
+  mkServerQuery,
+} from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
+import {
+  ComponentType,
+  PageComponent,
+  mkComponent,
+} from "@/wab/shared/core/components";
+import { mkVar } from "@/wab/shared/core/lang";
+import { createSite } from "@/wab/shared/core/sites";
+import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
+import { ScreenSizeSpec } from "@/wab/shared/css-size";
+import {
+  Arg,
+  ComponentServerQuery,
+  CustomCode,
+  ObjectPath,
+  QueryInvalidationExpr,
+  QueryRef,
+  TplComponent,
+  VarRef,
+  VariantGroup,
+  VariantsRef,
+  ensureKnownTplTag,
+} from "@/wab/shared/model/classes";
+
+describe("uniquePagePath", () => {
+  it("works", () => {
+    // Part 1: no prefix.
+
+    expect(uniquePagePath("/", ["/blah"])).toBe("/");
+    expect(uniquePagePath("/", ["/"])).toBe("/new-page");
+    expect(uniquePagePath("/", ["/", "/new-page"])).toBe("/new-page-2");
+    expect(uniquePagePath("/", ["/", "/new-page", "/new-page-2"])).toBe(
+      "/new-page-3"
+    );
+
+    expect(
+      uniquePagePath("/[a]/[b]", ["/", "/foo/bar", "/[a]", "/[a]/[b]/[c]"])
+    ).toBe("/[a]/[b]");
+    expect(uniquePagePath("/[a]/[b]", ["/[x]/[y]"])).toBe("/new-page/[a]/[b]");
+    expect(uniquePagePath("/[a]/[b]", ["/[a]/[b]", "/new-page/[a]/[b]"])).toBe(
+      "/new-page-2/[a]/[b]"
+    );
+    expect(
+      uniquePagePath("/[a]/[b]", [
+        "/[a]/[b]",
+        "/new-page/[a]/[b]",
+        "/new-page-2/[a]/[b]",
+      ])
+    ).toBe("/new-page-3/[a]/[b]");
+
+    // Part 2: there is prefix.
+
+    // No-changes.
+
+    expect(
+      uniquePagePath("/pre/[pre]/part/[a]/[b]", [
+        "/pre/[pre]/part",
+        "/pre/[pre]/part/foo/bar",
+        "/pre/[pre]/part/[a]",
+        "/pre/[pre]/part/[a]/[b]/[c]",
+      ])
+    ).toBe("/pre/[pre]/part/[a]/[b]");
+    expect(
+      uniquePagePath("/pre/[pre]/part", [
+        "/pre/[pre]",
+        "/pre/[pre]/[a]",
+        "/pre/[pre]/part/foo/bar",
+        "/pre/[pre]/part/[a]",
+        "/pre/[pre]/part/[a]/[b]/[c]",
+      ])
+    ).toBe("/pre/[pre]/part");
+
+    // Changes.
+
+    for (const suffix of ["", "/[a]/[b]"]) {
+      expect(
+        uniquePagePath(`/pre/[pre]/part${suffix}`, [
+          suffix ? "/pre/[p]/part/[x]/[y]" : "/pre/[p]/part",
+        ])
+      ).toBe(`/pre/[pre]/part-2${suffix}`);
+      expect(
+        uniquePagePath(`/pre/[pre]/part${suffix}`, [
+          `/pre/[pre]/part${suffix}`,
+          `/pre/[pre]/part-2${suffix}`,
+        ])
+      ).toBe(`/pre/[pre]/part-3${suffix}`);
+    }
+  });
+});
+
+describe("TplMgr", () => {
+  describe("tryRemoveVariant", () => {
+    const site = createSite();
+    const mgr = new TplMgr({ site: site });
+
+    const screenV1 = mgr.createScreenVariant({
+      name: "mobile",
+      spec: new ScreenSizeSpec(undefined, 500),
+    });
+
+    const component = mkComponent({
+      tplTree: mkTplTagX("div", {}),
+      type: ComponentType.Plain,
+    });
+    mgr.attachComponent(component);
+    const groupSingle = mgr.createVariantGroup({ component: component });
+    const singleV1 = mgr.createVariant(component, groupSingle);
+    const singleV2 = mgr.createVariant(component, groupSingle);
+
+    const groupMulti = mgr.createVariantGroup({ component: component });
+    groupMulti.multi = true;
+    const multiV1 = mgr.createVariant(component, groupMulti);
+    const multiV2 = mgr.createVariant(component, groupMulti);
+    const multiV3 = mgr.createVariant(component, groupMulti);
+
+    const componentRoot = ensureKnownTplTag(component.tplTree);
+    let vs1, vs2, vs3, vs4, vs5;
+    componentRoot.vsettings.push(
+      (vs1 = mkVariantSetting({ variants: [singleV1] }))
+    );
+    componentRoot.vsettings.push(
+      (vs2 = mkVariantSetting({ variants: [singleV2] }))
+    );
+    componentRoot.vsettings.push(
+      (vs3 = mkVariantSetting({ variants: [multiV1] }))
+    );
+    componentRoot.vsettings.push(
+      (vs4 = mkVariantSetting({ variants: [multiV2] }))
+    );
+    componentRoot.vsettings.push(
+      (vs5 = mkVariantSetting({ variants: [multiV2, screenV1] }))
+    );
+
+    const rootComponent = mkComponent({
+      tplTree: mkTplTagX("div", {}),
+      type: ComponentType.Plain,
+    });
+    mgr.attachComponent(rootComponent);
+    const root = ensureKnownTplTag(rootComponent.tplTree);
+
+    const tpl1 = mkTplComponentX({
+      component,
+      baseVariant: ensureBaseVariant(rootComponent),
+      args: [
+        new Arg({
+          param: groupSingle.param,
+          expr: new VariantsRef({ variants: [singleV1] }),
+        }),
+        new Arg({
+          param: groupMulti.param,
+          expr: new VariantsRef({ variants: [multiV2] }),
+        }),
+      ],
+    });
+    root.children.push(tpl1);
+
+    const tpl2 = mkTplComponentX({
+      component,
+      baseVariant: ensureBaseVariant(rootComponent),
+      args: [
+        new Arg({
+          param: groupSingle.param,
+          expr: new VariantsRef({ variants: [singleV2] }),
+        }),
+        new Arg({
+          param: groupMulti.param,
+          expr: new VariantsRef({ variants: [multiV1, multiV2, multiV3] }),
+        }),
+      ],
+    });
+    root.children.push(tpl2);
+
+    const getArg = (tpl: TplComponent, group: VariantGroup) => {
+      return tpl.vsettings[0].args.find((a) => a.param === group.param);
+    };
+
+    it("removes from single group", () => {
+      mgr.tryRemoveVariant(singleV1, component);
+      const arg1 = getArg(tpl1, groupSingle);
+      expect(arg1).toBe(undefined);
+      const arg2 = getArg(tpl2, groupSingle);
+      expect((arg2?.expr as VariantsRef).variants).toEqual([singleV2]);
+
+      expect(groupSingle.variants).toEqual([singleV2]);
+
+      expect(
+        componentRoot.vsettings.find((vs) => vs.variants.includes(singleV1))
+      ).toBeUndefined();
+      expect(componentRoot.vsettings).not.toContain(vs1);
+      expect(componentRoot.vsettings).toContain(vs2);
+    });
+
+    it("removes from multi group", () => {
+      mgr.tryRemoveVariant(multiV2, component);
+      const arg1 = getArg(tpl1, groupMulti);
+      expect((arg1!.expr as VariantsRef).variants).toEqual([]);
+      const arg2 = getArg(tpl2, groupMulti);
+      expect((arg2!.expr as VariantsRef).variants).toEqual([multiV1, multiV3]);
+      expect(groupMulti.variants).toEqual([multiV1, multiV3]);
+
+      expect(
+        componentRoot.vsettings.find((vs) => vs.variants.includes(multiV2))
+      ).toBeUndefined();
+      expect(componentRoot.vsettings).toContain(vs3);
+      expect(componentRoot.vsettings).not.toContain(vs4);
+      expect(componentRoot.vsettings).not.toContain(vs5);
+    });
+  });
+});
+
+describe("TplMgr.updateVariantGroupMulti", () => {
+  const setup = (groupMulti: boolean) => {
+    const site = createSite();
+    const mgr = new TplMgr({ site: site });
+
+    const referencedComponent = mkComponent({
+      tplTree: mkTplTagX("div", {}),
+      type: ComponentType.Plain,
+    });
+    mgr.attachComponent(referencedComponent);
+
+    const group = mgr.createVariantGroup({ component: referencedComponent });
+    group.multi = groupMulti;
+    const variant1 = mgr.createVariant(referencedComponent, group);
+    const variant2 = mgr.createVariant(referencedComponent, group);
+
+    const containingComponent = mkComponent({
+      tplTree: mkTplTagX("div", {}),
+      type: ComponentType.Plain,
+    });
+    mgr.attachComponent(containingComponent);
+    const containingRoot = ensureKnownTplTag(containingComponent.tplTree);
+
+    const addTpl = (expr: Arg["expr"]) => {
+      const tpl = mkTplComponentX({
+        component: referencedComponent,
+        baseVariant: ensureBaseVariant(containingComponent),
+        args: [
+          new Arg({
+            param: group.param,
+            expr,
+          }),
+        ],
+      });
+      containingRoot.children.push(tpl);
+      return tpl;
+    };
+
+    const getArg = (tpl: TplComponent) => {
+      return tpl.vsettings[0].args.find((a) => a.param === group.param);
+    };
+
+    const addFrame = () => {
+      const frame = mkArenaFrame({
+        site,
+        name: "Test frame",
+        component: containingComponent,
+        width: 100,
+        height: 100,
+        targetVariants: [ensureBaseVariant(containingComponent)],
+        pinnedVariants: {
+          [variant1.uuid]: true,
+          [variant2.uuid]: true,
+        },
+      });
+      site.arenas.push(mkMixedArena("Test arena", [frame]));
+      return frame;
+    };
+
+    return {
+      mgr,
+      group,
+      variant1,
+      variant2,
+      addTpl,
+      getArg,
+      addFrame,
+    };
+  };
+
+  it("trims VariantsRef to at most one variant when converting multi to single", () => {
+    const { mgr, group, variant1, variant2, addTpl, getArg } = setup(true);
+    const tpl = addTpl(new VariantsRef({ variants: [variant1, variant2] }));
+
+    expect(mgr.updateVariantGroupMulti(group, false)).toBeUndefined();
+
+    const arg = getArg(tpl);
+    expect((arg?.expr as VariantsRef).variants).toEqual([variant1]);
+    expect(group.multi).toBe(false);
+  });
+
+  it("keeps existing VariantsRef list when converting single to multi", () => {
+    const { mgr, group, variant1, variant2, addTpl, getArg } = setup(false);
+    const tpl = addTpl(new VariantsRef({ variants: [variant1, variant2] }));
+
+    expect(mgr.updateVariantGroupMulti(group, true)).toBeUndefined();
+
+    const arg = getArg(tpl);
+    expect((arg?.expr as VariantsRef).variants).toEqual([variant1, variant2]);
+    expect(group.multi).toBe(true);
+  });
+
+  it("allows single to multi while preserving a dynamic expression", () => {
+    const { mgr, group, addTpl, getArg } = setup(false);
+    const dynamicExpr = new ObjectPath({
+      path: ["$ctx", "activeVariant"],
+      fallback: null,
+    });
+    const tpl = addTpl(dynamicExpr);
+
+    expect(mgr.updateVariantGroupMulti(group, true)).toBeUndefined();
+
+    const arg = getArg(tpl);
+    expect(arg?.expr).toBe(dynamicExpr);
+    expect(group.multi).toBe(true);
+  });
+
+  it("refuses multi to single atomically when a dynamic expression exists", () => {
+    const { mgr, group, variant1, variant2, addTpl, getArg, addFrame } =
+      setup(true);
+    const validTpl = addTpl(
+      new VariantsRef({ variants: [variant1, variant2] })
+    );
+    const dynamicExpr = new CustomCode({
+      code: "$props.activeVariant",
+      fallback: null,
+    });
+    const dynamicTpl = addTpl(dynamicExpr);
+    const frame = addFrame();
+    const initialPins = { ...frame.pinnedVariants };
+
+    const result = mgr.updateVariantGroupMulti(group, false);
+
+    expect(result).toEqual({
+      tpl: dynamicTpl,
+      arg: getArg(dynamicTpl),
+    });
+    expect(group.multi).toBe(true);
+    expect((getArg(validTpl)?.expr as VariantsRef).variants).toEqual([
+      variant1,
+      variant2,
+    ]);
+    expect(getArg(dynamicTpl)?.expr).toBe(dynamicExpr);
+    expect(frame.pinnedVariants).toEqual(initialPins);
+  });
+
+  it("skips a linked VarRef and still converts multi to single", () => {
+    const { mgr, group, addTpl, getArg } = setup(true);
+    const linkedExpr = new VarRef({ variable: mkVar("linkedProp") });
+    const tpl = addTpl(linkedExpr);
+
+    expect(mgr.updateVariantGroupMulti(group, false)).toBeUndefined();
+
+    // The VarRef is preserved as-is and the group is converted.
+    expect(getArg(tpl)?.expr).toBe(linkedExpr);
+    expect(group.multi).toBe(false);
+  });
+});
+
+describe("TplMgr.removeComponentServerQuery", () => {
+  function setup(
+    queries: ComponentServerQuery[],
+    anchor: ComponentServerQuery
+  ) {
+    const site = createSite();
+    const mgr = new TplMgr({ site });
+    const component = mkComponentWithQueries(...queries);
+    mgr.attachComponent(component);
+
+    const expr = new QueryInvalidationExpr({
+      invalidationQueries: [new QueryRef({ ref: anchor })],
+      invalidationKeys: null,
+    });
+    const root = ensureKnownTplTag(component.tplTree);
+    const vs = mkVariantSetting({ variants: [ensureBaseVariant(component)] });
+    vs.attrs["onClick"] = expr;
+    root.vsettings.push(vs);
+
+    return { mgr, component, expr };
+  }
+
+  it("re-anchors function-level invalidations to a surviving query with the same function id", () => {
+    const q1 = mkServerQuery("query 1", mkCustomFunctionExpr("refreshFn"));
+    const q2 = mkServerQuery("query 2", mkCustomFunctionExpr("refreshFn"));
+    const { mgr, component, expr } = setup([q1, q2], q1);
+
+    mgr.removeComponentServerQuery(component, q1);
+    expect(component.serverQueries).toEqual([q2]);
+    expect(expr.invalidationQueries).toHaveLength(1);
+    expect((expr.invalidationQueries[0] as QueryRef).ref).toBe(q2);
+
+    // No query with the same function id remains, so the ref is dropped.
+    mgr.removeComponentServerQuery(component, q2);
+    expect(expr.invalidationQueries).toHaveLength(0);
+  });
+
+  it("does not re-anchor to a query with a different function id", () => {
+    const q1 = mkServerQuery("query 1", mkCustomFunctionExpr("refreshFn"));
+    const q2 = mkServerQuery("query 2", mkCustomFunctionExpr("otherFn"));
+    const { mgr, component, expr } = setup([q1, q2], q1);
+
+    mgr.removeComponentServerQuery(component, q1);
+    expect(expr.invalidationQueries).toHaveLength(0);
+  });
+
+  it("drops invalidations for removed custom-code queries", () => {
+    const q1 = mkServerQuery("query 1", mkCustomCodeOp("$props.foo"));
+    const q2 = mkServerQuery("query 2", mkCustomCodeOp("$props.foo"));
+    const { mgr, component, expr } = setup([q1, q2], q1);
+
+    mgr.removeComponentServerQuery(component, q1);
+    expect(expr.invalidationQueries).toHaveLength(0);
+  });
+});
+
+describe("TplMgr.changePagePath", () => {
+  function mkPage(path: string) {
+    const site = createSite();
+    const mgr = new TplMgr({ site });
+    const page = mgr.addComponent({
+      type: ComponentType.Page,
+      name: "Page",
+      pageMeta: { path },
+    }) as PageComponent;
+    return { mgr, page };
+  }
+
+  it("keeps pageMeta.params in path order when params are added", () => {
+    const { mgr, page } = mkPage("/[a]/[b]");
+    page.pageMeta.params.a = "aValue";
+    page.pageMeta.params.b = "bValue";
+
+    mgr.changePagePath(page, "/[c]/[a]/[b]");
+
+    expect(Object.keys(page.pageMeta.params)).toEqual(["c", "a", "b"]);
+    expect(page.pageMeta.params).toEqual({
+      c: "value",
+      a: "aValue",
+      b: "bValue",
+    });
+  });
+
+  it("reorders and drops params to match the new path", () => {
+    const { mgr, page } = mkPage("/[a]/[b]/[c]");
+    page.pageMeta.params.a = "aValue";
+    page.pageMeta.params.b = "bValue";
+    page.pageMeta.params.c = "cValue";
+
+    mgr.changePagePath(page, "/[c]/[a]");
+
+    expect(Object.keys(page.pageMeta.params)).toEqual(["c", "a"]);
+    expect(page.pageMeta.params).toEqual({ c: "cValue", a: "aValue" });
+  });
+
+  it("keeps the catchall prefix in param keys", () => {
+    const { mgr, page } = mkPage("/[a]");
+
+    mgr.changePagePath(page, "/[a]/[[...rest]]");
+
+    expect(Object.keys(page.pageMeta.params)).toEqual(["a", "...rest"]);
+  });
+});

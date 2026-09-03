@@ -1,13 +1,13 @@
+import {
+  createNotification,
+  createNotificationsByUser,
+  withEndUserNotificationSetup,
+} from "@/wab/server/__testonly__/comments-util";
 import { DbMgr, SkipSafeDelete } from "@/wab/server/db/DbMgr";
 import {
   NotificationsByUser,
   processUnnotifiedCommentsNotifications,
 } from "@/wab/server/scripts/send-comments-notifications";
-import {
-  createNotification,
-  createNotificationsByUser,
-  withEndUserNotificationSetup,
-} from "@/wab/server/test/comments-util";
 import {
   CommentId,
   CommentReactionId,

@@ -60,7 +60,7 @@ import {
   providesStudioCtx,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { testIds } from "@/wab/client/test-ids";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { valueAsString } from "@/wab/commons/values";
 import { ArenaType, isArenaType } from "@/wab/shared/ApiSchema";

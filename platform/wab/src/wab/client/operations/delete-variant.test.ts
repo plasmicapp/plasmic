@@ -1,0 +1,92 @@
+import { fakeStudioCtx } from "@/wab/client/__testonly__/fake-init-ctx";
+import { createVariant } from "@/wab/client/operations/create-variant";
+import { deleteVariant } from "@/wab/client/operations/delete-variant";
+import { VariantOptionsType } from "@/wab/shared/TplMgr";
+import { ensureVariantSetting, getBaseVariant } from "@/wab/shared/Variants";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { assert } from "@/wab/shared/common";
+import { ComponentType } from "@/wab/shared/core/components";
+import { customCode } from "@/wab/shared/core/exprs";
+import { TplTag } from "@/wab/shared/model/classes";
+
+describe("deleteVariant", () => {
+  function setup() {
+    const { studioCtx } = fakeStudioCtx();
+    const tplMgr = studioCtx.tplMgr();
+    const component = studioCtx.addComponent("Comp", {
+      type: ComponentType.Plain,
+    });
+    const group = tplMgr.createVariantGroup({
+      component,
+      name: "size",
+      optionsType: VariantOptionsType.singleChoice,
+    });
+    const created = createVariant({
+      component,
+      tplMgr,
+      variantGroup: group,
+      name: "small",
+    });
+    assert(created.isOk(), "variant setup failed");
+    return { studioCtx, tplMgr, component, group, variant: created.value };
+  }
+
+  it("deletes a variant from its group", async () => {
+    const { studioCtx, tplMgr, component, group, variant } = setup();
+    expect(group.variants).toContain(variant);
+
+    const result = await deleteVariant(
+      variant,
+      component,
+      studioCtx.site,
+      studioCtx,
+      tplMgr
+    );
+
+    assert(result.isOk(), "expected success");
+    expect(group.variants).not.toContain(variant);
+    expect(result.value.length).toBeGreaterThan(0);
+  });
+
+  it("refuses to delete the base variant", async () => {
+    const { studioCtx, tplMgr, component } = setup();
+
+    const result = await deleteVariant(
+      getBaseVariant(component),
+      component,
+      studioCtx.site,
+      studioCtx,
+      tplMgr
+    );
+
+    expect(result.isErr()).toBe(true);
+  });
+
+  it("errors with references when the variant group is used in the component", async () => {
+    const { studioCtx, tplMgr, component, group, variant } = setup();
+
+    // Reference the variant group's state in the component tree.
+    const root = component.tplTree as TplTag;
+    const baseVs = ensureVariantSetting(root, [getBaseVariant(component)]);
+    baseVs.dataCond = customCode(
+      `$state.${toVarName(group.param.variable.name)}`
+    );
+
+    const result = await deleteVariant(
+      variant,
+      component,
+      studioCtx.site,
+      studioCtx,
+      tplMgr
+    );
+
+    assert(result.isErr(), "expected error");
+    assert(
+      result.error.variantGroupRefs != null,
+      "expected variant group refs"
+    );
+    expect(result.error.variantGroupRefs.length).toBeGreaterThan(0);
+    // Variant is left untouched.
+    expect(group.variants).toContain(variant);
+  });
+});

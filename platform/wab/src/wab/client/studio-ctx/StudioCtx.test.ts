@@ -1,5 +1,5 @@
+import { fakeStudioCtx } from "@/wab/client/__testonly__/fake-init-ctx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import {
   ApiTeam,
   FeatureTierId,
@@ -7,11 +7,11 @@ import {
   TeamId,
 } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { generateSiteFromBundle } from "@/wab/shared/tests/site-tests-utils";
 
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 

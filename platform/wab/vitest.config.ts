@@ -104,7 +104,7 @@ export default defineConfig({
     ],
     globals: true,
     silent: "passed-only",
-    setupFiles: ["./src/wab/client/test/setupTests.js"],
+    setupFiles: ["./src/wab/client/__testonly__/setupTests.js"],
     coverage: {
       include: ["src/**/*.{js,jsx,ts,tsx}"],
       exclude: ["src/**/*.d.ts"],

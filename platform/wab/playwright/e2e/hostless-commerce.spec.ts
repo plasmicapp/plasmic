@@ -2,7 +2,7 @@ import { BrowserContext, expect, FrameLocator, Page } from "@playwright/test";
 import {
   cartCookie,
   localCommerceData,
-} from "../../src/wab/client/test-helpers/test-commerce";
+} from "../../src/wab/client/__testonly__/test-commerce";
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { PageModels, test } from "../fixtures/test";
 import { goToProject } from "../utils/studio-utils";

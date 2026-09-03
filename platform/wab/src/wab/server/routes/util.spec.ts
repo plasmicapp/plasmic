@@ -1,3 +1,4 @@
+import { createDatabase } from "@/wab/server/__testonly__/backend-util";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { GenericKeyValue } from "@/wab/server/entities/Entities";
 import {
@@ -5,7 +6,6 @@ import {
   rollbackTransaction,
   startTransaction,
 } from "@/wab/server/routes/util";
-import { createDatabase } from "@/wab/server/test/backend-util";
 import { Request } from "express";
 import { Connection } from "typeorm";
 import { IsolationLevel } from "typeorm/driver/types/IsolationLevel";

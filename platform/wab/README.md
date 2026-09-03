@@ -34,5 +34,45 @@ These have special meanings:
 
 ```
 internal/                    # Plasmic-internal-only code that is not synced publicly
-test/                        # code that may only be used in tests
+enterprise/                  # Plasmic-internal-and-enterprise code that is not synced publicly
+__testonly__/                # code only used by tests (see "Testing" below)
+__snapshots__/               # snapshots written by the test runner (see "Testing" below)
 ```
+
+## Testing
+
+### Test directory structure
+
+Colocate tests next to the code they test:
+
+```
+src/wab/shared/core/
+├── module.ts
+├── module.test.ts           # unit test, needs nothing outside the process
+├── module.spec.ts           # integration or e2e test, needs a running service such as Postgres
+├── __snapshots__/           # snapshots written by the test runner, one per test file
+│   └── module.test.ts.snap
+└── __testonly__/            # code only used by tests, validated by ESLint rule
+    ├── mocks.ts
+    └── fixtures.ts
+```
+
+### Exposing internals with `_testonly`
+
+When a test needs a function or value that a module should not otherwise
+export, gather those internals in a single `_testonly` export at the bottom of
+the module instead of exporting them individually:
+
+```ts
+export function publicFunction() {
+  return internalFunction();
+}
+
+function internalFunction() { ... }
+
+export const _testonly = { internalFunction };
+```
+
+The test imports `_testonly` and reaches the internals through it. Only test
+files may reference `_testonly`; production code must use the module's real
+exports.

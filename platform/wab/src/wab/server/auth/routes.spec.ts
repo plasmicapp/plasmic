@@ -1,7 +1,10 @@
 /** @vitest-environment node */
+import { SharedApiTester } from "@/wab/server/__testonly__/api-tester";
+import {
+  createBackend,
+  createDatabase,
+} from "@/wab/server/__testonly__/backend-util";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
-import { SharedApiTester } from "@/wab/server/test/api-tester";
-import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import {
   BadRequestError,
   PreconditionFailedError,

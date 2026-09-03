@@ -16,7 +16,6 @@ import {
   VariantSetting,
 } from "@/wab/shared/model/classes";
 import {
-  VariantCombo,
   getBaseVariant,
   getOrderedScreenVariants,
   isBaseVariant,
@@ -26,6 +25,7 @@ import {
   isScreenVariant,
   isScreenVariantGroup,
   isStyleVariant,
+  VariantCombo,
 } from "@/wab/shared/Variants";
 import L from "lodash";
 
@@ -66,7 +66,7 @@ export function sortedVariantSettings(
  * - [primary] is an ancestor combo of [primary, small]
  * - [primary, :hover] is an ancestor combo of [primary, small, :hover:active]
  */
-// TODO: Test this in variant-sort.spec.ts. Also update it to registered variants
+// TODO: Test this in variant-sort.test.ts. Also update it to registered variants
 export function isAncestorCombo(
   combo: VariantCombo,
   maybeAncestorCombo: VariantCombo
@@ -325,4 +325,3 @@ function getSelectorRank(selector: string) {
   const index = SELECTOR_RANK.indexOf(normed);
   return index >= 0 ? index : -1;
 }
-

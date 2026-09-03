@@ -1,9 +1,12 @@
 /** @vitest-environment node */
+import { SharedApiTester } from "@/wab/server/__testonly__/api-tester";
+import {
+  createBackend,
+  createDatabase,
+} from "@/wab/server/__testonly__/backend-util";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { CmsRow, CmsTable, User } from "@/wab/server/entities/Entities";
-import { SharedApiTester } from "@/wab/server/test/api-tester";
-import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { CmsMetaType, CmsRowId } from "@/wab/shared/ApiSchema";

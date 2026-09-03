@@ -1,3 +1,4 @@
+import { withDb } from "@/wab/server/__testonly__/backend-util";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   EndUser,
@@ -12,7 +13,6 @@ import {
   getUserRoleForApp,
   getUsersWithGroups,
 } from "@/wab/server/routes/end-user";
-import { withDb } from "@/wab/server/test/backend-util";
 import { Connection } from "typeorm";
 
 async function setupEndUsers(mgr: DbMgr) {
