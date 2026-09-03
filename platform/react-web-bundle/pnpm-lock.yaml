@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.25
         version: 0.1.25(react@18.3.1)
       '@plasmicapp/react-web':
-        specifier: ^1.0.34
-        version: 1.0.34(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.35
+        version: 1.0.35(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -215,8 +215,8 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  '@plasmicapp/data-sources@1.0.27':
-    resolution: {integrity: sha512-75DefZJ/ObzhaNdFTlul/gchL4mIcKtISnrMtIAoFiJGYzSM/oh8cWeQfuu/RvgjqBfIvEpuL4+4svuJebh1lw==}
+  '@plasmicapp/data-sources@1.0.28':
+    resolution: {integrity: sha512-5pq3WnnYfIudnwaCY5+0TkyaW3zyB4nPB6ybFvwJv+fDq8Zf6rXXVtwZtgv/mcTULp7M6c8nDojy5OrXtqf43A==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=18.0.0'
@@ -230,8 +230,8 @@ packages:
   '@plasmicapp/isomorphic-unfetch@1.0.3':
     resolution: {integrity: sha512-cJtPOCf2/FWlFB42Q/n0MK/C47NSZr+YQJbCvQwvyjOrOgOQ4gJ/+gkr4avpMa7UPMa8qLovDAuaR+5k+hMlZQ==}
 
-  '@plasmicapp/loader-splits@1.0.77':
-    resolution: {integrity: sha512-O5Eeyp38huGrIPaP8cc5K7FF3tDo6M/qsAVp/5tCMwdxYYYEiOJ09t6Zhj1Ei7we/5XpNE04bBfaFRPqe1Hn/A==}
+  '@plasmicapp/loader-splits@1.0.78':
+    resolution: {integrity: sha512-RRR4KMizSMqsl2ebh15ZWMl9KdBDxntr4IHe5tcXJScHn+sCNW/Y079RcglNL0GBj0NyiWAcfLixRyi0Jk7cUw==}
     engines: {node: '>=18'}
 
   '@plasmicapp/prepass@1.0.29':
@@ -252,8 +252,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@plasmicapp/react-web@1.0.34':
-    resolution: {integrity: sha512-e53bhgynS/RdsKJPk+AcUt3paUcdpYHbHnDhRdWe7DlL9Qo2ieVnNFXFdlsnGvP5SmGfwp5QoRUyJWKmGIPLsA==}
+  '@plasmicapp/react-web@1.0.35':
+    resolution: {integrity: sha512-PkBIBEQ2Nww9Cb5LY1H1lgqpt8sxt29HPTYpdSvhMVwxCQCtpG8oJ1wg7iqwOKHT2eHVbw88pDfVUODNZ3k3lQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1755,7 +1755,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/data-sources@1.0.27(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/data-sources@1.0.28(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/data-sources-context': 0.1.25(react@18.3.1)
       '@plasmicapp/host': 2.0.18(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
@@ -1777,7 +1777,7 @@ snapshots:
     dependencies:
       unfetch: 4.2.0
 
-  '@plasmicapp/loader-splits@1.0.77':
+  '@plasmicapp/loader-splits@1.0.78':
     dependencies:
       json-logic-js: 2.0.5
 
@@ -1797,13 +1797,13 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/react-web@1.0.34(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/react-web@1.0.35(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/auth-react': 0.0.33(react@18.3.1)
-      '@plasmicapp/data-sources': 1.0.27(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      '@plasmicapp/data-sources': 1.0.28(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@plasmicapp/data-sources-context': 0.1.25(react@18.3.1)
       '@plasmicapp/host': 2.0.18(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
-      '@plasmicapp/loader-splits': 1.0.77
+      '@plasmicapp/loader-splits': 1.0.78
       '@plasmicapp/prepass': 1.0.29(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
       '@react-aria/checkbox': 3.17.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
