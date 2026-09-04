@@ -44,6 +44,7 @@ import {
   makePlumeComponentMeta,
 } from "@/wab/shared/code-components/code-components";
 import {
+  ensureJsIdentifier,
   paramToVarName,
   toClassName,
   toVarName,
@@ -190,6 +191,7 @@ import {
 } from "@/wab/shared/refactoring";
 import { naturalSort } from "@/wab/shared/sort";
 import { smartHumanize } from "@/wab/shared/strs";
+import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import {
   TplVisibility,
   clearTplVisibility,
@@ -2392,11 +2394,19 @@ export function getCodeComponentHelperImportName(
   if (helpers.importPath.length === 0) {
     return toClassName("Comp" + component.uuid);
   }
-  const importName = helpers.importName;
   if (helpers.defaultExport) {
-    return toClassName(importName);
+    return toClassName(helpers.importName);
   }
-  return importName;
+  return ensureJsIdentifier(helpers.importName);
+}
+
+// The symbol the registered module is expected to export. Might not be a
+// valid JS identifier since it comes from cc registration.
+export function getCodeComponentExportName(component: CodeComponent) {
+  const importName = component.codeComponentMeta.importName ?? component.name;
+  return component.codeComponentMeta.defaultExport
+    ? toClassName(importName)
+    : importName;
 }
 
 export function getCodeComponentImportName(component: CodeComponent) {
@@ -2404,11 +2414,8 @@ export function getCodeComponentImportName(component: CodeComponent) {
     // The import symbol will be used only internally
     return toClassName("Comp" + component.uuid);
   }
-  const importName = component.codeComponentMeta.importName ?? component.name;
-  if (component.codeComponentMeta.defaultExport) {
-    return toClassName(importName);
-  }
-  return importName;
+  const exportName = getCodeComponentExportName(component);
+  return isValidJsIdentifier(exportName) ? exportName : toClassName(exportName);
 }
 
 export function getSuperComponents(comp: Component) {

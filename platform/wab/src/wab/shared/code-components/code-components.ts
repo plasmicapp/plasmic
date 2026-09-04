@@ -55,7 +55,7 @@ import {
   CodeComponent,
   ComponentType,
   PlumeComponent,
-  getCodeComponentImportName,
+  getCodeComponentExportName,
   getComponentDisplayName,
   getDefaultComponent,
   getDependencyComponents,
@@ -1650,10 +1650,9 @@ function checkWhitespacesInImportNames(
 ): Result<void, never> {
   const badComponents = ctx.site.components
     .filter(isCodeComponent)
-    .filter((c) => {
-      const importName = getCodeComponentImportName(c);
-      return importName.length === 0 || !isValidJsIdentifier(importName);
-    });
+    // Empty paths use component substitution rather than an external export.
+    .filter((c) => c.codeComponentMeta.importPath.length > 0)
+    .filter((c) => !isValidJsIdentifier(getCodeComponentExportName(c)));
   if (badComponents.length > 0) {
     fns.onInvalidComponentImportNames(
       badComponents.map((c) => getComponentDisplayName(c))

@@ -9,6 +9,7 @@ import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import { md5 } from "@/wab/server/util/hash";
 import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-util";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { SiteGenHelper } from "@/wab/shared/codegen/codegen-helpers";
@@ -22,7 +23,11 @@ import {
   exportProjectConfig,
   exportStyleConfig,
 } from "@/wab/shared/codegen/react-p";
-import { exportSiteComponents } from "@/wab/shared/codegen/react-p/gen-site-bundle";
+import {
+  exportSiteComponents,
+  getCodeComponentsUsedByExport,
+  getSiteComponentsToExport,
+} from "@/wab/shared/codegen/react-p/gen-site-bundle";
 import {
   ActiveSplit,
   exportActiveSplitsConfig,
@@ -41,6 +46,9 @@ import { GlobalVariantConfig } from "@/wab/shared/codegen/variants";
 import { UnexpectedTypeError, ensure, withoutNils } from "@/wab/shared/common";
 import {
   CodeComponentConfig,
+  getCodeComponentExportName,
+  getComponentDisplayName,
+  isCodeComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
@@ -51,6 +59,7 @@ import { asDataUrl } from "@/wab/shared/data-urls";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
 import { Site } from "@/wab/shared/model/classes";
+import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import { context, propagation } from "@opentelemetry/api";
 import S3 from "aws-sdk/clients/s3";
 import fs from "fs";
@@ -174,6 +183,34 @@ export async function doGenCode(
   // TODO: We need to populate some weak maps in tpls.ts mapping component
   // root to components, so that things like getTplOwnerComponent() will work.
   deepTrackComponents(site);
+
+  if (exportOpts.targetEnv === "codegen") {
+    // CLI codegen imports the exact symbol exported by the user's module.
+    // Loader targets use generated stubs and component substitution, so they
+    // can normalize their internal bindings instead.
+    const codeComponents = componentIdOrNames
+      ? getCodeComponentsUsedByExport(
+          site,
+          getSiteComponentsToExport(site, {
+            componentIdOrNames,
+            componentExportOpts: exportOpts,
+            includePages: !indirect,
+          })
+        )
+      : site.components.filter(isCodeComponent);
+    const invalidNames = codeComponents
+      // Empty paths use component substitution rather than an external export.
+      .filter((c) => c.codeComponentMeta.importPath.length > 0)
+      .filter((c) => !isValidJsIdentifier(getCodeComponentExportName(c)))
+      .map(getComponentDisplayName);
+    if (invalidNames.length > 0) {
+      throw new BadRequestError(
+        `These code components have names that are invalid JavaScript identifiers: ${invalidNames.join(
+          ", "
+        )}. Set a valid meta.name or meta.importName for them.`
+      );
+    }
+  }
 
   const s3ImageLinks = Object.fromEntries(
     site.imageAssets

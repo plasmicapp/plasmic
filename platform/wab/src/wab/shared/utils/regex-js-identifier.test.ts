@@ -26,6 +26,7 @@ describe("isValidJsIdentifier", () => {
     expect(isValidJsIdentifier("return")).toBe(false);
     expect(isValidJsIdentifier("function")).toBe(false);
     expect(isValidJsIdentifier("class")).toBe(false);
+    expect(isValidJsIdentifier("await")).toBe(false);
   });
 
   it("should return true for a valid variable name with multiple underscores or dollar signs", () => {

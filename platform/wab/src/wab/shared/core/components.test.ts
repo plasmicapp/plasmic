@@ -8,10 +8,13 @@ import {
   isStyleVariant,
   mkVariantSetting,
 } from "@/wab/shared/Variants";
+import { toClassName } from "@/wab/shared/codegen/util";
 import { mkShortId, tuple } from "@/wab/shared/common";
 import {
+  CodeComponent,
   ComponentType,
   extractComponent,
+  getCodeComponentImportName,
   getFolderComponentDisplayName,
   mkComponent,
 } from "@/wab/shared/core/components";
@@ -20,6 +23,7 @@ import { createSite } from "@/wab/shared/core/sites";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { CanvasEnv } from "@/wab/shared/eval";
 import {
+  CodeComponentMeta,
   ComponentDataQuery,
   ComponentServerQuery,
   RuleSet,
@@ -519,5 +523,52 @@ describe("getFolderComponentDisplayName", () => {
   it("should handle paths with only slashes", () => {
     const result = getFolderComponentDisplayName(makeComponentWithName("////"));
     expect(result).toEqual("////");
+  });
+});
+
+describe("getCodeComponentImportName", () => {
+  function mkCodeComponent(meta: Partial<CodeComponentMeta>) {
+    return mkComponent({
+      name: "Home - Here - 1",
+      type: ComponentType.Code,
+      tplTree: mkTplTagX("div"),
+      codeComponentMeta: {
+        importPath: "./components",
+        importName: null,
+        defaultExport: false,
+        ...meta,
+      } as CodeComponentMeta,
+    }) as CodeComponent;
+  }
+
+  it("normalizes names that are not valid JS identifiers", () => {
+    expect(getCodeComponentImportName(mkCodeComponent({}))).toBe("HomeHere1");
+    expect(
+      getCodeComponentImportName(
+        mkCodeComponent({ importName: "my-component" })
+      )
+    ).toBe("MyComponent");
+    expect(
+      getCodeComponentImportName(mkCodeComponent({ importName: "1 - Home" }))
+    ).toBe("_1Home");
+    expect(
+      getCodeComponentImportName(mkCodeComponent({ importName: "await" }))
+    ).toBe("Await");
+  });
+
+  it("uses an internal name for substitution-only components", () => {
+    const component = mkCodeComponent({
+      importPath: "",
+      importName: "invalid component name",
+    });
+    expect(getCodeComponentImportName(component)).toBe(
+      toClassName(`Comp${component.uuid}`)
+    );
+  });
+
+  it("leaves valid names alone", () => {
+    expect(
+      getCodeComponentImportName(mkCodeComponent({ importName: "HomeHere" }))
+    ).toBe("HomeHere");
   });
 });

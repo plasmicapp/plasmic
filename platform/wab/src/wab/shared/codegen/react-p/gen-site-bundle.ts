@@ -1,4 +1,5 @@
 import { AppAuthProvider } from "@/wab/shared/ApiSchema";
+import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import {
   ComponentGenHelper,
   SiteGenHelper,
@@ -13,6 +14,7 @@ import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
 import {
+  CodeComponent,
   exportCodeComponentConfig,
   isCodeComponent,
   isFrameComponent,
@@ -23,6 +25,72 @@ import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { Component, Site } from "@/wab/shared/model/classes";
 import { computeSerializerSiteContext, exportReactPresentational } from ".";
+
+export function getSiteComponentsToExport(
+  site: Site,
+  opts: {
+    componentIdOrNames?: readonly string[];
+    componentExportOpts: Pick<
+      ExportOpts,
+      "codeComponentStubs" | "hostLessComponentsConfig"
+    >;
+    includePages: boolean;
+  }
+) {
+  const { componentIdOrNames, componentExportOpts, includePages } = opts;
+
+  // When componentIdOrNames is not specified, don't sync components whose
+  // name start with "_".
+  const includeComponent = (c: Component) => {
+    if (isFrameComponent(c)) {
+      return false;
+    }
+    if (isCodeComponent(c)) {
+      if (isHostLessCodeComponent(c)) {
+        return componentExportOpts.hostLessComponentsConfig === "stub";
+      } else if (!componentExportOpts.codeComponentStubs) {
+        return false;
+      }
+    }
+    if (!includePages && isPageComponent(c)) {
+      return false;
+    }
+    if (isPageComponent(c) && c.name.startsWith("_")) {
+      return false;
+    }
+    if (componentIdOrNames) {
+      return (
+        componentIdOrNames.includes(c.uuid) ||
+        componentIdOrNames.includes(c.name)
+      );
+    }
+
+    return true;
+  };
+
+  return site.components.filter(includeComponent);
+}
+
+/** Code components whose imports can be emitted for the selected components. */
+export function getCodeComponentsUsedByExport(
+  site: Site,
+  components: readonly Component[]
+): CodeComponent[] {
+  const usedComponents = new Set<Component>(
+    site.globalContexts.map((tpl) => tpl.component)
+  );
+  for (const component of components) {
+    for (const referencedComponent of componentToDeepReferenced(
+      component,
+      true
+    )) {
+      usedComponents.add(referencedComponent);
+    }
+  }
+  return site.components
+    .filter(isCodeComponent)
+    .filter((component) => usedComponents.has(component));
+}
 
 export function exportSiteComponents(
   site: Site,
@@ -69,36 +137,11 @@ export function exportSiteComponents(
     }
   );
 
-  // When componentIdOrNames is not specified, we don't sync component whose
-  // name starts with "_".
-  const includeComponent = (c: Component) => {
-    if (isFrameComponent(c)) {
-      return false;
-    }
-    if (isCodeComponent(c)) {
-      if (isHostLessCodeComponent(c)) {
-        return componentExportOpts.hostLessComponentsConfig === "stub";
-      } else if (!opts.componentExportOpts.codeComponentStubs) {
-        return false;
-      }
-    }
-    if (!includePages && isPageComponent(c)) {
-      return false;
-    }
-    if (isPageComponent(c) && c.name.startsWith("_")) {
-      return false;
-    }
-    if (componentIdOrNames) {
-      return (
-        componentIdOrNames.includes(c.uuid) ||
-        componentIdOrNames.includes(c.name)
-      );
-    }
-
-    return true;
-  };
-
-  const components = site.components.filter(includeComponent);
+  const components = getSiteComponentsToExport(site, {
+    componentIdOrNames,
+    componentExportOpts,
+    includePages,
+  });
 
   const genComponentBundle = (component: Component) => {
     const componentGenHelper = new ComponentGenHelper(

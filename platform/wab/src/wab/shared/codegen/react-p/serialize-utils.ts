@@ -513,21 +513,17 @@ export function getSkeletonModuleFileName(
   return `${getExportedComponentName(component)}.tsx`;
 }
 
+// This is public, it names the prop that overrides the global context in
+// GlobalContextsProviderProps and in loader's globalContextsProps.
 export function makeGlobalContextPropName(
   comp: Component,
   aliases?: Map<Component, string>
 ) {
-  let componentName: string;
-  if (aliases?.get(comp)) {
-    componentName = aliases.get(comp)!;
-  } else {
-    componentName =
-      comp.codeComponentMeta?.importName ??
-      toJsIdentifier(comp.name, { capitalizeFirst: true });
-    if (comp.codeComponentMeta?.defaultExport) {
-      componentName = toClassName(componentName);
-    }
-  }
+  const componentName =
+    aliases?.get(comp) ??
+    (isCodeComponent(comp)
+      ? getCodeComponentImportName(comp)
+      : toJsIdentifier(comp.name, { capitalizeFirst: true }));
   return `${lowerFirst(componentName)}Props`;
 }
 

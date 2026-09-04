@@ -48,8 +48,9 @@ import { createHash } from "crypto";
  * 20 - style token overrides
  * 21 - cached outputs with appDir=true include removed imports
  * 22 - placeholder render modules and css are no longer emitted for non-hostless code components
+ * 23 - normalize invalid code component identifiers in loader output
  */
-export const LOADER_CACHE_BUST = "22";
+export const LOADER_CACHE_BUST = "23";
 
 /**
  * This represents the version of the loader API wire format; should reflect the

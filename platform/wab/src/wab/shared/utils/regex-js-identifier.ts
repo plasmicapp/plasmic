@@ -37,6 +37,7 @@ export function isValidJsIdentifier(name: string): name is JsIdentifier {
  */
 const reservedKeywords = new Set([
   "arguments", // not a keyword, but cannot be declared as identifier in strict mode
+  "await", // cannot be used as a binding identifier in a module
   "break",
   "case",
   "catch",
