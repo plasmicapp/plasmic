@@ -7685,8 +7685,8 @@ packages:
   '@rive-app/canvas@2.42.0':
     resolution: {integrity: sha512-ByXG7i8PZGFhPDUA9tkjEbB/C1cjs775IxFdPrWiQDN/WYMU6MirI2x0kGjHHwdfUKuG2HSkWEUI5SBeZm/hEA==}
 
-  '@rive-app/react-canvas@4.34.0':
-    resolution: {integrity: sha512-6Gu7HKPYjzgxIb0VVH0kzTU7PwBCiPaVsncCW/9YQY/OwNgHohL+4JmHdCa3srFn9bOR/FxlOGqhrlIkB4wnmA==}
+  '@rive-app/react-canvas@4.34.1':
+    resolution: {integrity: sha512-1eDiD1ECxf0+wxEWyT98/6BjRvyMPsn5pNeNdw7AJq2S+uQiduKOZLD00PcWlu2RS+VU0I9DXGPES5icUgBaaA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
 
@@ -26211,7 +26211,7 @@ snapshots:
   '@plasmicpkgs/rive@0.0.47(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@rive-app/react-canvas': 4.34.0(react@18.3.1)
+      '@rive-app/react-canvas': 4.34.1(react@18.3.1)
       react: 18.3.1
 
   '@plasmicpkgs/strapi@0.0.39(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
@@ -28798,7 +28798,7 @@ snapshots:
 
   '@rive-app/canvas@2.42.0': {}
 
-  '@rive-app/react-canvas@4.34.0(react@18.3.1)':
+  '@rive-app/react-canvas@4.34.1(react@18.3.1)':
     dependencies:
       '@rive-app/canvas': 2.42.0
       react: 18.3.1

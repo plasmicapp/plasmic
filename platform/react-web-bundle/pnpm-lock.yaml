@@ -1296,8 +1296,8 @@ packages:
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
-  react-aria@3.52.0:
-    resolution: {integrity: sha512-eGU8GOqT6Stn4Se/X3esz0Wum6TqSwQJBbK3jSLJIbFAS7XkvpICCVwmqZQG1/siXuCgB9DBRq9CttI+K9HPTA==}
+  react-aria@3.52.1:
+    resolution: {integrity: sha512-fdZZruC9/x/joCg0mhKGs5aHpwrXLCSZ4GOJmhhYyiE0ffyEsk9MLFt9LCOCF9tn8ErTD+UDQP4oDUSlZkmpCg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -1837,14 +1837,14 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/focus@3.22.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/interactions@3.28.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
@@ -1852,63 +1852,63 @@ snapshots:
       '@react-types/shared': 3.36.1(react@18.3.1)
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/listbox@3.16.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/menu@3.22.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/overlays@3.32.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/select@3.18.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/separator@3.5.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/ssr@3.10.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/switch@3.8.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/visually-hidden@3.9.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.23
       react: 18.3.1
-      react-aria: 3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+      react-aria: 3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-stately/collections@3.13.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
@@ -2983,7 +2983,7 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  react-aria@3.52.0(react-dom@19.2.8(react@18.3.1))(react@18.3.1):
+  react-aria@3.52.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1):
     dependencies:
       '@internationalized/date': 3.12.4
       '@internationalized/number': 3.6.8
