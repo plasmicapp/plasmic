@@ -370,7 +370,6 @@ import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import {
   APP_ROUTES,
-  SEARCH_PARAM_COPILOT_CHAT,
   SEARCH_PROMPT,
   mkProjectLocation,
 } from "@/wab/shared/route/app-routes";
@@ -2091,13 +2090,6 @@ export class StudioCtx extends WithDbCtx {
     replace?: boolean;
     stopWatching?: boolean;
   }) {
-    // Preserve copilot_chat param across arena switches
-    const currentSearchParams = new URLSearchParams(
-      this.appCtx.history.location.search
-    );
-    const copilotChat =
-      currentSearchParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true";
-
     const branchName = branch?.name || MainBranchId;
     const branchVersion = pkgVersionInfoMeta?.version || latestTag;
     if (arena) {
@@ -2122,7 +2114,6 @@ export class StudioCtx extends WithDbCtx {
         slug,
         replace,
         stopWatching,
-        copilotChat,
       });
     } else {
       // Arena could be null/undefined if the project has no arenas (i.e. 0 pages/components)
@@ -2136,7 +2127,6 @@ export class StudioCtx extends WithDbCtx {
         slug: undefined,
         replace,
         stopWatching,
-        copilotChat,
       });
     }
   }
@@ -2156,7 +2146,6 @@ export class StudioCtx extends WithDbCtx {
     slug,
     replace = false,
     stopWatching = true,
-    copilotChat,
   }: {
     branchName: string;
     branchVersion: string;
@@ -2167,7 +2156,6 @@ export class StudioCtx extends WithDbCtx {
     slug: string | undefined;
     replace?: boolean;
     stopWatching?: boolean;
-    copilotChat?: boolean;
   }) {
     if (stopWatching) {
       this.setWatchPlayerId(null);
@@ -2182,7 +2170,7 @@ export class StudioCtx extends WithDbCtx {
       arenaType,
       arenaUuidOrNameOrPath: arenaUuidOrName,
       threadId,
-      copilotChat,
+      copilotChat: this.isCopilotChatOpen,
     });
 
     if (replace) {
@@ -2213,6 +2201,7 @@ export class StudioCtx extends WithDbCtx {
 
   private async handleRouteChange(location: Location) {
     const match = parseProjectLocation(location);
+    this._isCopilotChatOpen.set(!!match?.copilotChat);
     if (match) {
       const {
         branchName,
@@ -3100,6 +3089,12 @@ export class StudioCtx extends WithDbCtx {
     return this._showUiCopilot.get();
   }
 
+  private _isCopilotChatOpen = observable.box(false);
+
+  get isCopilotChatOpen() {
+    return this._isCopilotChatOpen.get();
+  }
+
   copilotStarterPrompt = "";
 
   openUiCopilotDialog(isOpen: boolean) {
@@ -3523,21 +3518,24 @@ export class StudioCtx extends WithDbCtx {
   // Copilot
   //
   uiCopilotEnabled(): boolean {
+    if (this.appCtx.appConfig.enableChatCopilot) {
+      return false;
+    }
+
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
-      // enableUiCopilot flag is false by default and overridden for plasmic users only,
-      // we will enable it when we decide to release this feature to all user
       this.appCtx.appConfig.enableUiCopilot ||
       (!!team && checkIsOrgOnPaidTierOrTrial(team))
     );
   }
 
-  chatCopilotEnabled() {
-    return (
-      // enableUiCopilot flag is false by default and overridden for plasmic users only,
-      // we will enable it when we decide to release this feature to all user
-      this.appCtx.appConfig.enableChatCopilot
-    );
+  chatCopilotEnabled(): boolean {
+    if (!this.appCtx.appConfig.enableChatCopilot) {
+      return false;
+    }
+
+    const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
+    return !!team && checkIsOrgOnPaidTierOrTrial(team);
   }
 
   //
@@ -7991,7 +7989,7 @@ export function checkIsOrgOnFreeTierOrTrial(team?: ApiTeam) {
   );
 }
 
-export function checkIsOrgOnPaidTierOrTrial(team: ApiTeam): boolean {
+function checkIsOrgOnPaidTierOrTrial(team: ApiTeam): boolean {
   return !!(team.featureTierId && team.stripeCustomerId) || team.onTrial;
 }
 

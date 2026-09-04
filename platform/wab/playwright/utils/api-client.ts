@@ -84,6 +84,45 @@ export class ApiClient {
     await this.request.delete(`${this.baseUrl}/api/v1/projects/${projectId}`);
   }
 
+  /**
+   * Creates a team on a free trial and returns its default workspace, for
+   * tests that need a project whose team passes paid/trial feature gates.
+   */
+  async setupTeamOnTrial(
+    name: string
+  ): Promise<{ teamId: string; workspaceId: string }> {
+    const csrf = await this.getCsrf();
+    const teamRes = await this.request.post(`${this.baseUrl}/api/v1/teams`, {
+      data: { name: `[playwright] ${name}` },
+      headers: { "X-CSRF-Token": csrf },
+    });
+    if (!teamRes.ok()) {
+      throw new Error(`Failed to create team: ${await teamRes.text()}`);
+    }
+    const teamId = (await teamRes.json()).team.id;
+
+    const trialRes = await this.request.post(
+      `${this.baseUrl}/api/v1/teams/${teamId}/trial`,
+      { headers: { "X-CSRF-Token": csrf } }
+    );
+    if (!trialRes.ok()) {
+      throw new Error(`Failed to start team trial: ${await trialRes.text()}`);
+    }
+
+    const workspacesRes = await this.request.get(
+      `${this.baseUrl}/api/v1/teams/${teamId}/workspaces`
+    );
+    const workspaceId = (await workspacesRes.json()).workspaces[0].id;
+    return { teamId, workspaceId };
+  }
+
+  async removeTeam(teamId: string) {
+    const csrf = await this.getCsrf();
+    await this.request.delete(`${this.baseUrl}/api/v1/teams/${teamId}`, {
+      headers: { "X-CSRF-Token": csrf },
+    });
+  }
+
   async importProjectFromTemplate(bundle: any) {
     if (!this.token) {
       throw Error("X-CSRF-Token is not set");

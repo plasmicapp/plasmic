@@ -181,6 +181,22 @@ describe("mkProjectLocation/parseProjectLocation", () => {
         search: "?comment=THREAD_ID",
       }
     );
+    expectMkParse(
+      {
+        projectId: "PROJECT_ID",
+        slug: undefined,
+        branchName: "main",
+        branchVersion: "latest",
+        branchRevision: undefined,
+        arenaType: undefined,
+        arenaUuidOrNameOrPath: undefined,
+        copilotChat: true,
+      },
+      {
+        pathname: "/projects/PROJECT_ID",
+        search: "?copilot_chat=true",
+      }
+    );
   });
   it("parses preview locations", () => {
     expect(
@@ -222,6 +238,15 @@ describe("mkProjectLocation/parseProjectLocation", () => {
       isPreview: true,
       projectId: "PROJECT_ID",
       slug: undefined,
+    });
+    expect(
+      parseProjectLocation({
+        pathname: "/projects/PROJECT_ID/preview/ARENA_UUID",
+        search: "?copilot_chat=true",
+      })
+    ).toMatchObject({
+      isPreview: true,
+      copilotChat: true,
     });
   });
 });

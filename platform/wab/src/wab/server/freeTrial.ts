@@ -4,7 +4,7 @@ import { Team } from "@/wab/server/entities/Entities";
 // https://linear.app/plasmic/issue/PLA-10654
 export function isTeamOnFreeTrial(team: Team): boolean {
   return !!(
-    team.featureTier &&
+    team.featureTierId &&
     !team.stripeSubscriptionId &&
     team.trialStartDate
   );

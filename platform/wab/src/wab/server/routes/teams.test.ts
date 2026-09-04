@@ -28,6 +28,7 @@ describe("mkApiTeam", () => {
       featureTier: {
         name: "Starter",
       },
+      featureTierId: "starter-tier-id",
       trialStartDate: new Date(),
     } as Team;
     const apiTeam = mkApiTeam(team);

@@ -90,6 +90,7 @@ import {
   WorkspaceAuthConfig,
   WorkspaceUser,
 } from "@/wab/server/entities/Entities";
+import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { CompatRequest } from "@/wab/server/routes/util";
@@ -6047,13 +6048,24 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(perm);
   }
 
-  async useCopilotAndCheckRateLimit() {
+  async useCopilotAndCheckRateLimit(opts?: { checkTeamHasPlan?: ProjectId }) {
     if (this.actor.type === "SuperUser") {
       return;
     }
     const COPILOT_DAILY_RATE_LIMIT = 100;
     this.checkNormalUser();
     const userId = ensure(this.tryGetNormalActorId(), "Must have an user id");
+    if (opts?.checkTeamHasPlan) {
+      const team = await this.getTeamByProjectId(opts.checkTeamHasPlan);
+      if (
+        !team ||
+        !team.featureTierId ||
+        (!team.stripeCustomerId && !isTeamOnFreeTrial(team))
+      ) {
+        throw new ForbiddenError();
+      }
+    }
+
     const yesterday = new Date();
     yesterday.setHours(yesterday.getHours() - 24);
     const todayCount = await this.copilotUsages().count({

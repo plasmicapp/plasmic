@@ -462,11 +462,21 @@ function _TopBar({ preview }: TopBarProps) {
           },
         }}
         aiButton={{
-          wrap: studioCtx.uiCopilotEnabled() ? undefined : () => null,
+          wrap:
+            studioCtx.chatCopilotEnabled() || studioCtx.uiCopilotEnabled()
+              ? undefined
+              : () => null,
           props: {
-            active: studioCtx.showUiCopilot,
-            onClick: () =>
-              studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot),
+            active: studioCtx.chatCopilotEnabled()
+              ? studioCtx.isCopilotChatOpen
+              : studioCtx.showUiCopilot,
+            onClick: () => {
+              if (studioCtx.chatCopilotEnabled()) {
+                spawn(topFrameApi.toggleCopilotChat());
+              } else {
+                studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
+              }
+            },
           },
         }}
         // TODO: We are currently not showing the live popout button on
