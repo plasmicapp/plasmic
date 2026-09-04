@@ -8,7 +8,7 @@ export function LabelWithDetailedTooltip(props: {
   return (
     <div className={"flex flex-vcenter"}>
       {props.children}
-      <div className={"ml-xsm inline-block"}>
+      <div className={"LabelWithDetailedTooltip__InfoIcon ml-xsm inline-block"}>
         <InfoTooltip tooltip={props.tooltip} />
       </div>
     </div>

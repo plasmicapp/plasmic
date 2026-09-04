@@ -144,6 +144,7 @@ export const ComponentPropsDefinitionSection = observer(
           }
           zeroBodyPadding
           emptyBody={!slotParams.length && !realParams.length}
+          emptyDescription="Customize each instance of this component."
           data-test-id="props-section"
         >
           {realParams.length > 0 && (

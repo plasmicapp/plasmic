@@ -290,6 +290,7 @@ function ServerQueriesSection_(props: {
         </LabelWithDetailedTooltip>
       }
       emptyBody={component.serverQueries.length === 0}
+      emptyDescription="Fetch data from external sources."
       zeroBodyPadding
       controls={
         otherComponentsWithQueries.length > 0 ? (

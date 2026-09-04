@@ -268,6 +268,7 @@ export const PageURLParametersSection = observer(
         }
         zeroBodyPadding
         emptyBody={paramMetas.length === 0}
+        emptyDescription="Use values from the URL in this page."
         isHeaderActive={true}
       >
         <div className="vlist-gap-m">

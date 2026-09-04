@@ -165,6 +165,7 @@ interface SidebarSectionProps
     | ((renderMaybeCollapsibleRows: MaybeCollapsibleRowsRenderer) => ReactNode);
   tooltip?: ReactNode;
   emptyBody?: boolean;
+  emptyDescription?: ReactNode;
   zeroBodyPadding?: boolean;
   zeroHeaderPadding?: boolean;
   noBottomPadding?: boolean;
@@ -203,6 +204,7 @@ export function SidebarSection_(
     controls,
     children,
     emptyBody = false,
+    emptyDescription,
     zeroBodyPadding,
     zeroHeaderPadding,
     noBottomPadding,
@@ -230,14 +232,17 @@ export function SidebarSection_(
 ) {
   const hasHeader = title || controls;
   const [expanded, setExpanded] = React.useState(defaultExpanded ?? true);
-  const hasBodyContent = !isEmptyReactNode(children as any) && !emptyBody;
+  const showEmptyDescription =
+    emptyBody && !isEmptyReactNode(emptyDescription as any);
+  const hasBodyContent =
+    showEmptyDescription || (!isEmptyReactNode(children as any) && !emptyBody);
   const showBodyContent = expanded && hasBodyContent;
 
   useEffect(() => {
-    // If hasBodyContent is changed to true or false, then expand / collapse
-    // to show / hide the content
+    // Re-open when the first item replaces the empty description, and keep the
+    // section visibility in sync when all body content disappears.
     setExpanded(hasBodyContent);
-  }, [hasBodyContent]);
+  }, [hasBodyContent, emptyBody]);
 
   const {
     isFullyCollapsed,
@@ -340,8 +345,9 @@ export function SidebarSection_(
           className={cn({
             SidebarSection__Body: true,
             [styles.bodyScrollable]: scrollable,
-            SidebarSection__Body__EmptyBody: emptyBody,
-            SidebarSection__Body__ZeroBodyPadding: zeroBodyPadding,
+            SidebarSection__Body__EmptyBody: emptyBody && !showEmptyDescription,
+            SidebarSection__Body__ZeroBodyPadding:
+              zeroBodyPadding && !showEmptyDescription,
             SidebarSection__Body__NoBottomPadding:
               noBottomPadding ||
               (fullyCollapsible && hasExtraContent && isFullyCollapsed.current),
@@ -352,7 +358,19 @@ export function SidebarSection_(
           }}
         >
           <SidebarSectionContext.Provider value={{ isExpanded: showMore }}>
-            <Observer>{() => <>{renderableChildren}</>}</Observer>
+            <Observer>
+              {() => (
+                <>
+                  {showEmptyDescription ? (
+                    <div className={cn(styles.emptyDescription, "dimfg")}>
+                      {emptyDescription}
+                    </div>
+                  ) : (
+                    renderableChildren
+                  )}
+                </>
+              )}
+            </Observer>
             {hasCollapsibleContent && (
               <ChevronToggle
                 expanded={showMore}

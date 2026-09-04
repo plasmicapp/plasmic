@@ -70,6 +70,19 @@
   font-size: 12px;
   font-weight: 600;
   color: $sand12;
+
+  :global(.LabelWithDetailedTooltip__InfoIcon) {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+  }
+}
+
+.headerRoot:hover {
+  .headerTitle :global(.LabelWithDetailedTooltip__InfoIcon) {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .headerTitleActive {
@@ -105,6 +118,15 @@
   position: relative;
   overflow: auto;
   padding-bottom: 0 !important;
+}
+
+.emptyDescription {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 16px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .collapsingToggle {

@@ -284,6 +284,7 @@ function ComponentQueriesSection_(props: {
         </LabelWithDetailedTooltip>
       }
       emptyBody={component.dataQueries.length === 0 && tplFetchers.length === 0}
+      emptyDescription="Fetch data from an integration."
       zeroBodyPadding
       controls={
         <div className="inline-flex flex-vcenter gap-m">
