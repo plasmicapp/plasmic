@@ -47,7 +47,18 @@ describe("SliderWrapper", () => {
     expect(typeof ref.current!.slickPause).toBe("function");
   });
 
-  it("suppresses autoplay in canvas mode", () => {
+  it("renders with autoplay enabled outside canvas mode", () => {
+    inCanvas = false;
+    const { container } = render(
+      <SliderWrapper sliderScopeClassName="slider-test" autoplay>
+        <div>Slide 1</div>
+        <div>Slide 2</div>
+      </SliderWrapper>
+    );
+    expect(container.querySelector(".slick-slider")).not.toBeNull();
+  });
+
+  it("renders without autoplay in canvas mode", () => {
     inCanvas = true;
     const { container } = render(
       <SliderWrapper sliderScopeClassName="slider-test" autoplay>
@@ -55,8 +66,6 @@ describe("SliderWrapper", () => {
         <div>Slide 2</div>
       </SliderWrapper>
     );
-
-    const slider = container.querySelector(".slick-slider");
-    expect(slider).not.toBeNull();
+    expect(container.querySelector(".slick-slider")).not.toBeNull();
   });
 });
