@@ -5,7 +5,7 @@ import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { arrayMoveIndex } from "@/wab/shared/collections";
-import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/shared/common";
+import { cx, ensure, tuple } from "@/wab/shared/common";
 import { Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
 import Downshift, {
@@ -171,9 +171,7 @@ class _XMultiSelect<Item> extends React.Component<
                   open={downshift.isOpen && renderOptions.length > 0}
                   // We compartmentalize the Ant dropdown menu item padding style tweaks into .xselect.
                   // Don't want to globally affect all Ant dropdown menus.
-                  getPopupContainer={() =>
-                    ensureHTMLElt(document.querySelector(".xselect"))
-                  }
+                  overlayClassName="xselect"
                   overlay={
                     <Menu
                       className={"ant-select-dropdown-menu"}
