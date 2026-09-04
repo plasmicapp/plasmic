@@ -38,7 +38,6 @@ import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-event
 import { Stated } from "@/wab/commons/components/Stated";
 import { ANIMATIONS_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
 import { spawn, unexpected } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { BASE_URL } from "@/wab/shared/discourse/config";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import {
@@ -141,7 +140,7 @@ Help
           tabKey: "dataTokens",
           icon: <DataTokenIcon />,
           label: "Data tokens",
-          cond: studioCtx.showDataTokens() && canViewTab("dataTokens"),
+          cond: canViewTab("dataTokens"),
         },
         mixins: {
           type: "item",
@@ -155,7 +154,7 @@ Help
           tabKey: "animationSequences",
           icon: <KeyframesIcon />,
           label: ANIMATIONS_CAP,
-          cond: DEVFLAGS.showAnimations && canViewTab("animationSequences"),
+          cond: canViewTab("animationSequences"),
         },
         components: {
           type: "item",
@@ -219,11 +218,7 @@ Help
           tabKey: "splits",
           icon: <SplitSvgIcon />,
           label: "Split content",
-          cond:
-            isLoggedIn &&
-            DEVFLAGS.splits &&
-            canViewTab("splits") &&
-            !isWhiteLabelUser,
+          cond: isLoggedIn && canViewTab("splits") && !isWhiteLabelUser,
         },
         imports: {
           type: "item",
@@ -277,7 +272,7 @@ Help
       tabKey: "lint",
       icon: <WarningTrianglesvgIcon />,
       label: "Issues detected",
-      cond: DEVFLAGS.linting && canViewTab("lint"),
+      cond: canViewTab("lint"),
     },
     ...(contentEditorMode
       ? {

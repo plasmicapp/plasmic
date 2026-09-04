@@ -83,9 +83,6 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
                         }),
                     projectId: studioCtx.siteInfo.id,
                     goal: prompt,
-                    ...(studioCtx.appCtx.appConfig.copilotClaude
-                      ? { useClaude: true }
-                      : {}),
                   })
                   .then((x) => {
                     const res: CopilotResponseData = JSON.parse(x.response);

@@ -280,8 +280,8 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                   message: (
                     <>
                       You will lose owner status and become an editor. Transfer
-                      ownership of{" "}
-                      <strong>{resource.resource.name}</strong> to {permEmail}?
+                      ownership of <strong>{resource.resource.name}</strong> to{" "}
+                      {permEmail}?
                     </>
                   ),
                 });
@@ -336,9 +336,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
           <Select.Option value="commenter">{commenterTooltip}</Select.Option>,
           <Select.Option
             value="content"
-            style={{
-              display: appCtx.appConfig.contentOnly ? undefined : "none",
-            }}
             isDisabled={
               !tier.contentRole ||
               ownAccessLevelRank < accessLevelRank("content")
@@ -354,9 +351,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
           </Select.Option>,
           <Select.Option
             value="designer"
-            style={{
-              display: appCtx.appConfig.contentOnly ? undefined : "none",
-            }}
             isDisabled={
               !tier.designerRole ||
               ownAccessLevelRank < accessLevelRank("designer")
@@ -390,13 +384,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                 <Select.Option value="commenter">
                   {commenterTooltip}
                 </Select.Option>,
-                <Select.Option
-                  value="content"
-                  style={{
-                    display: appCtx.appConfig.contentOnly ? undefined : "none",
-                  }}
-                  isDisabled={!tier.contentRole}
-                >
+                <Select.Option value="content" isDisabled={!tier.contentRole}>
                   {tier.contentRole ? (
                     contentCreatorTooltip
                   ) : (
@@ -405,13 +393,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                     </TextWithInfo>
                   )}
                 </Select.Option>,
-                <Select.Option
-                  value="designer"
-                  style={{
-                    display: appCtx.appConfig.contentOnly ? undefined : "none",
-                  }}
-                  isDisabled={!tier.designerRole}
-                >
+                <Select.Option value="designer" isDisabled={!tier.designerRole}>
                   {tier.designerRole ? (
                     designerTooltip
                   ) : (

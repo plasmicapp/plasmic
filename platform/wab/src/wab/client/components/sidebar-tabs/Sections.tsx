@@ -108,7 +108,6 @@ import {
   resolvesToCodeComponent,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
-import { DevFlagsType } from "@/wab/shared/devflags";
 import { isGridTag } from "@/wab/shared/grid-utils";
 import { isTagListContainer } from "@/wab/shared/html";
 import {
@@ -339,13 +338,6 @@ const styleSections = new Set([
   Section.ComponentStyleProps,
   Section.ComponentMergedSlotTypography,
 ]);
-
-const isSectionActive = (section: Section, devflags: DevFlagsType) => {
-  if (section === Section.SlotSettings) {
-    return devflags.focusable;
-  }
-  return true;
-};
 
 const htmlTagsWithAttributes = new Set([
   "a",
@@ -1091,17 +1083,13 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   }
 
   pushIfNew(Section.CustomBehaviors);
-  if (viewCtx.appCtx.appConfig.focusable) {
-    pushIfNew(Section.SlotSettings);
-  }
+  pushIfNew(Section.SlotSettings);
 
   pushIfNew(Section.ComponentMergedSlotText);
   pushIfNew(Section.ComponentMergedSlotTypography);
   pushIfNew(Section.ComponentMergedSlotProps);
 
-  const activeSections = Object.values(Section).filter((section) =>
-    isSectionActive(section as Section, viewCtx.appCtx.appConfig)
-  );
+  const activeSections = Object.values(Section);
   assert(
     orderedSections.size === activeSections.length,
     () =>

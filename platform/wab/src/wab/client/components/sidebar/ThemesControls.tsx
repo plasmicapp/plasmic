@@ -1,8 +1,7 @@
 import PlasmicLeftThemesPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftThemesPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, withoutNils } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { uniq } from "lodash";
 import { observer } from "mobx-react";
@@ -54,7 +53,6 @@ export const DefaultStylesPanel = observer(function DefaultStylesPanel() {
           },
         },
       }}
-      noLayout={!DEVFLAGS.pageLayout}
       notOwnedBySite={!!activeTheme && !site.themes.includes(activeTheme)}
     />
   );

@@ -814,10 +814,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     !readOnly && !referencedParam && !disabledDynamicValue && !disabled;
 
   const canSuggestDataTokens =
-    allowDynamicValue &&
-    !isCustomCode &&
-    !isTemplatedStringWithDynamicParts &&
-    studioCtx.showDataTokens();
+    allowDynamicValue && !isCustomCode && !isTemplatedStringWithDynamicParts;
 
   const showDynamicValueButton =
     allowDynamicValue &&
@@ -865,8 +862,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
       readOnly ||
       !allowDynamicValue ||
       isCustomCode ||
-      isTemplatedStringWithDynamicParts ||
-      !studioCtx.showDataTokens()
+      isTemplatedStringWithDynamicParts
     ) {
       return null;
     }

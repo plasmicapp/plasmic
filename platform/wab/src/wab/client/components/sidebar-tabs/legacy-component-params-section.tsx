@@ -119,34 +119,33 @@ export const LegacyComponentParamsSection = observer(
             </>
           ) : null}
 
-          {studioCtx.appCtx.appConfig.focusable &&
-            isReusableComponent(component) && (
-              <div className="SidebarSectionListItem justify-between">
-                <div className="labeled-item__label">
-                  <LabelWithDetailedTooltip
-                    tooltip={() =>
-                      "User of the studio must select this component element first before selecting any of its slot contents. Useful for components like Button, where the user is much more likely to intend to select the Button itself than its label."
-                    }
-                  >
-                    Selected before slot contents
-                  </LabelWithDetailedTooltip>
-                </div>
-                <BoolPropEditor
-                  onChange={(val) => {
-                    spawn(
-                      COMMANDS.component.settings.setTrapFocus.execute(
-                        studioCtx,
-                        { value: val },
-                        {
-                          component,
-                        }
-                      )
-                    );
-                  }}
-                  value={component.trapsFocus}
-                />
+          {isReusableComponent(component) && (
+            <div className="SidebarSectionListItem justify-between">
+              <div className="labeled-item__label">
+                <LabelWithDetailedTooltip
+                  tooltip={() =>
+                    "User of the studio must select this component element first before selecting any of its slot contents. Useful for components like Button, where the user is much more likely to intend to select the Button itself than its label."
+                  }
+                >
+                  Selected before slot contents
+                </LabelWithDetailedTooltip>
               </div>
-            )}
+              <BoolPropEditor
+                onChange={(val) => {
+                  spawn(
+                    COMMANDS.component.settings.setTrapFocus.execute(
+                      studioCtx,
+                      { value: val },
+                      {
+                        component,
+                      }
+                    )
+                  );
+                }}
+                value={component.trapsFocus}
+              />
+            </div>
+          )}
 
           {!metaDataOnly &&
             component.variantGroups.length > 0 &&

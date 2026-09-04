@@ -25,7 +25,6 @@ import {
   getComponentDisplayName,
   getPageOrComponentLabel,
 } from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { LintIssue, LintIssueType } from "@/wab/shared/linting/lint-types";
 import { lintUnprotectedDataQueries } from "@/wab/shared/linting/lint-unprotected-data-queries";
 import { lintSite } from "@/wab/shared/linting/lint-utils";
@@ -47,7 +46,7 @@ function LeftLintIssuesPanel_(
       root={{ ref }}
       {...props}
       description={{ wrap: () => null }}
-      content={DEVFLAGS.linting ? <SiteIssuesList /> : null}
+      content={<SiteIssuesList />}
     />
   );
 }

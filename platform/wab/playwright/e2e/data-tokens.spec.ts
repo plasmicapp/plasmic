@@ -93,10 +93,7 @@ test.describe("data token usages", () => {
           npmPkg: ["@plasmicpkgs/strapi"],
         },
       });
-      await goToProject(
-        page,
-        `/projects/${projectId}?dataTokens=true&plexus=true&serverQueries=true`
-      );
+      await goToProject(page, `/projects/${projectId}?plexus=true`);
     });
 
     test("Data tokens can be created and used in dynamic values", async ({
@@ -142,7 +139,7 @@ test.describe("data token usages", () => {
     }) => {
       const setupProject = async (name: string) => {
         const newId = await apiClient.setupNewProject({ name });
-        await goToProject(page, `/projects/${newId}?dataTokens=true`);
+        await goToProject(page, `/projects/${newId}`);
         await models.studio.createNewPage(`${name} Page`);
         await waitForFrameToLoad(page);
         return newId;
@@ -180,7 +177,7 @@ test.describe("data token usages", () => {
       await models.studio.leftPanel.createNewDataToken(depCCode);
       await models.studio.publishVersion("Data Tokens C");
 
-      await goToProject(page, `/projects/${projectId}?dataTokens=true`);
+      await goToProject(page, `/projects/${projectId}`);
       const mainString: TestDataToken = {
         name: "Main String",
         type: "string",
@@ -626,10 +623,7 @@ test.describe("data token usages", () => {
       });
 
       projectId = await apiClient.setupProjectFromTemplate("data-tokens");
-      await goToProject(
-        page,
-        `/projects/${projectId}?dataTokens=true&serverQueries=true`
-      );
+      await goToProject(page, `/projects/${projectId}`);
     });
 
     test("should flatten data token usages when the data token is deleted", async ({

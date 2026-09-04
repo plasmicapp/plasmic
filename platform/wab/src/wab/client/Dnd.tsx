@@ -38,7 +38,6 @@ import {
   ClientCantAddChildMsg,
   renderCantAddMsg,
 } from "@/wab/client/messages/parenting-msgs";
-import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import {
   StudioCtx,
   cssPropsForInvertTransform,
@@ -223,8 +222,6 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
     return null;
   }
 
-  const $doc = vc.canvasCtx.$doc();
-
   return (
     <div
       className={classNames({
@@ -242,12 +239,11 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
       }}
     >
       <div
-        className={`${classNames({
+        className={classNames({
           "dnd__container-tag": true,
           "node-outline-tag": true,
           "dnd__container-tag--error": ins.type === "ErrorInsertion",
         })}
-          ${computeNodeOutlineTagLayoutClass($doc, containerRect).join(" ")}`}
       >
         {createContainerIcon(containerVal)}
         {tagContent(containerVal)}

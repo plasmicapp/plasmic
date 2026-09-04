@@ -67,8 +67,7 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
 
   let actions: TplTextOps["actions"] = {};
   if (!isDisabled && targetVs) {
-    const canUseDataTokens =
-      isKnownRawText(targetVsText) && viewCtx.studioCtx.showDataTokens();
+    const canUseDataTokens = isKnownRawText(targetVsText);
     actions = {
       edit: () => {
         viewCtx.change(() => {

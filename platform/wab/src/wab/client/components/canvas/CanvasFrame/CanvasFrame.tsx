@@ -759,9 +759,7 @@ export const CanvasFrame = observer(function CanvasFrame({
           studioCtx.showCommentsOverlay && (
             <CanvasCommentMarkers arena={arena} arenaFrame={arenaFrame} />
           )}
-        {studioCtx.appCtx.appConfig.warningsInCanvas && (
-          <CanvasActions arena={arena} arenaFrame={arenaFrame} />
-        )}
+        <CanvasActions arena={arena} arenaFrame={arenaFrame} />
       </div>
     </div>
   );

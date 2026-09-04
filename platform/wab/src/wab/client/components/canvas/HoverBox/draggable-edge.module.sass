@@ -11,8 +11,6 @@ $margin_color: $orange8
   &:hover
     // On hover, reveal all the edges and areas this is
     // responsible for
-    .knob
-      opacity: 1
     .edgeAreaFill
       opacity: 0.75
 
@@ -45,8 +43,6 @@ $margin_color: $orange8
 
 .edgeHandle.isDraggedEdge, .edgeHandle:hover
   .edge
-    opacity: 1
-  .knob
     opacity: 1
 
 .edgeLabel
@@ -94,29 +90,6 @@ $margin_color: $orange8
 .edgeAreaShown
   .edgeAreaFill
     opacity: 1
-
-$knob_length: 5px
-$knob_offset: 5px
-
-.knob
-  position: absolute
-  z-index: 1
-  border-radius: 2px
-  opacity: 0
-  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out
-  pointer-events: none
-  width: 16px
-  height: 6px
-  transform-origin: 50% 50%
-  &.isDraggedKnob
-    opacity: 1
-
-  &.knobHoriz
-    left: 50%
-    transform: translate(-50%, 0)
-  &.knobVert
-    top: 50%
-    transform: translate(0, -50%)
 
 .knob2
   position: absolute
@@ -169,11 +142,6 @@ $knob_offset: 5px
     background-color: rgba($padding_color,1)
   .edgeAreaFill
     background-color: rgba($padding_color,0.2)
-  .knob
-    color: $padding_color
-  .edgeHandle:hover, .edgeHandle.isDraggedEdge
-    .knob > path
-      fill: $padding_color
 
 .margin
   --drag-edge-color: #{rgba($margin_color,1)}
@@ -183,11 +151,6 @@ $knob_offset: 5px
     background-color: rgba($margin_color,1)
   .edgeAreaFill
     background-color: rgba($margin_color,0.2)
-  .knob
-    color: $margin_color
-  .edgeHandle:hover, .edgeHandle.isDraggedEdge
-    .knob > path
-      fill: $margin_color
 
 .size.edgeHandle
   .edge
@@ -200,29 +163,6 @@ $knob_offset: 5px
 
 $square_size: 8px
 $square_border_radius: 2px
-
-.square
-  position: absolute
-  pointer-events: none
-  z-index: 1
-  width: $square_size
-  height: $square_size
-  background: white
-  border: 1px solid var(--selectionControlsColor)
-  border-radius: $square_border_radius
-
-  &.squareTop
-    left: calc(50% - 4px)
-    top: calc(-1 * $square_size / 2)
-  &.squareBottom
-    left: calc(50% - 4px)
-    bottom: calc(-1 * $square_size / 2)
-  &.squareLeft
-    top: calc(50% - 4px)
-    left: calc(-1 * $square_size / 2)
-  &.squareRight
-    top: calc(50% - 4px)
-    right: calc(-1 * $square_size / 2)
 
 .square2
   position: absolute

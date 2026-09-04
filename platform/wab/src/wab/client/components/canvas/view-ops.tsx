@@ -209,7 +209,6 @@ import {
   computeDefinedIndicator,
   getTargetBlockingCombo,
 } from "@/wab/shared/defined-indicator";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   EffectiveVariantSetting,
   adaptEffectiveVariantSetting,
@@ -1281,9 +1280,7 @@ export class ViewOps {
     }
     this.viewCtx().setEditingTextContext({
       val: textValNode,
-      targetVs: DEVFLAGS.unconditionalEdits
-        ? variantTplMgr.ensureBaseVariantSetting(textValNode.tpl)
-        : variantTplMgr.ensureCurrentVariantSetting(textValNode.tpl),
+      targetVs: variantTplMgr.ensureCurrentVariantSetting(textValNode.tpl),
       draftText: maybe(textValNode.text, (text) =>
         ensureInstance(text, RawText, RawTextLike)
       ),
@@ -2047,8 +2044,7 @@ export class ViewOps {
       } else {
         await this.tryDelete({
           tpl: copied,
-          forceDelete: DEVFLAGS.unconditionalEdits,
-          skipCommentsConfirmation: !DEVFLAGS.unconditionalEdits,
+          skipCommentsConfirmation: true,
         });
       }
     }

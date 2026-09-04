@@ -1,4 +1,4 @@
-import { useAppCtx, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
 import { useCodegenType } from "@/wab/client/hooks/useCodegenType";
 import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CircleSvg";
 import PlasmicCodeButton from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicCodeButton";
@@ -17,7 +17,6 @@ import { useLocalStorage } from "react-use";
 
 export const CodeButton = observer(function CodeButton() {
   const studioCtx = useStudioCtx();
-  const appCtx = useAppCtx();
   const topFrameApi = useTopFrameApi();
 
   const artboardComponent = studioCtx.focusedViewCtx()?.component;
@@ -51,11 +50,9 @@ export const CodeButton = observer(function CodeButton() {
 
   // Quick and dirty way of disabling the red dot on Plasmic Levels.
   const isPlasmicLevels = studioCtx.siteInfo.name.includes("Plasmic Levels");
-  const enableCircles =
-    !isPlasmicLevels && !appCtx.appConfig.hideSyncStatusIndicator;
   const projectWasNeverSyncedOrImported =
     studioCtx.siteInfo.latestRevisionSynced === 0;
-  const redCircle = enableCircles && projectWasNeverSyncedOrImported;
+  const redCircle = !isPlasmicLevels && projectWasNeverSyncedOrImported;
 
   function showQuickstarts() {
     if (!isPlasmicLevels) {

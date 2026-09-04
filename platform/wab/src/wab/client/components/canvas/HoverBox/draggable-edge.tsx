@@ -1,11 +1,6 @@
 import sty from "@/wab/client/components/canvas/HoverBox/draggable-edge.module.sass";
-import EdgeHandleDownwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleDownward";
-import EdgeHandleLeftwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleLeftward";
-import EdgeHandleRightwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleRightward";
-import EdgeHandleUpwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleUpward";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { cx } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   oppSide,
   Side,
@@ -34,8 +29,8 @@ const MIN_INNER_SPACE_FOR_PADDING_EDGE = 20;
 const MIN_INNER_SPACE_FOR_MARGIN_EDGE = 0;
 const MIN_INNER_SPACE_FOR_PADDING_HOVER_LABEL = 0;
 const MIN_INNER_SPACE_FOR_MARGIN_HOVER_LABEL = 0;
-const KNOB_WIDTH = DEVFLAGS.spacingVisualizer202209 ? 12 : 16;
-const KNOB_HEIGHT = DEVFLAGS.spacingVisualizer202209 ? 3 : 6;
+const KNOB_WIDTH = 12;
+const KNOB_HEIGHT = 3;
 const LABEL_SLACK_SPACE = 10;
 const RESIZE_SQUARE_SIZE = 8;
 const RESIZE_SQUARE_KNOB_OFFSET = 1;
@@ -59,8 +54,6 @@ interface DragState {
  * @param props.isAutoSized if specified, then the element is auto-sized in this axis
  * @param props.draggedSide currently-dragged side, if any
  * @param props.draggedEdge currently-dragged edge type, if any
- * @param props.isAffectedSide whether this side is "affected" by current dragging, by
- *   the user holding down alt or shift modifier keys
  */
 export function SpaceEdgeControls(props: {
   side: Side;
@@ -81,7 +74,6 @@ export function SpaceEdgeControls(props: {
   sizePxValue: number | null;
   draggedSide?: Side;
   draggedEdgeType?: SpaceEdgeType;
-  isAffectedSide?: boolean;
   zoom: number;
   childAlign?: ContainerChildAlignment;
   isAutoSized?: boolean;
@@ -107,7 +99,6 @@ export function SpaceEdgeControls(props: {
     marginPxValue,
     draggedEdgeType,
     draggedSide,
-    isAffectedSide,
     onHover,
     zoom,
     sizePxValue,
@@ -119,7 +110,6 @@ export function SpaceEdgeControls(props: {
     showSquare,
     disabledDnd,
   } = props;
-  const shouldShowResizeSquare = DEVFLAGS.spacingVisualizer202209 && showSquare;
   const rootRef = React.useRef<HTMLDivElement>(null);
   const marginScreenValue = (marginPxValue ?? 0) * zoom;
   const innerSpace =
@@ -153,11 +143,6 @@ export function SpaceEdgeControls(props: {
           side={side}
           edgeType="margin"
           label={<>Margin: {marginLabel}</>}
-          showArea={
-            DEVFLAGS.spacingArea ||
-            (showMeasurements && marginPxValue > 0) ||
-            (draggedEdgeType === "margin" && isAffectedSide)
-          }
           showLabel={
             (showMeasurements && marginPxValue > 0 && innerSpace > 100) ||
             (draggedEdgeType === "margin" && draggedSide === side)
@@ -173,7 +158,7 @@ export function SpaceEdgeControls(props: {
           isSomeDragging={!!draggedSide}
           isDragging={draggedSide === side && draggedEdgeType === "margin"}
           innerSpace={innerSpace}
-          shouldOffsetKnob={shouldShowResizeSquare}
+          shouldOffsetKnob={showSquare}
           disabledDnd={disabledDnd || disabledMarginDragging}
         />
       )}
@@ -182,11 +167,6 @@ export function SpaceEdgeControls(props: {
           side={side}
           edgeType="padding"
           label={<>Padding: {paddingLabel}</>}
-          showArea={
-            DEVFLAGS.spacingArea ||
-            (showMeasurements && paddingPxValue > 0) ||
-            (draggedEdgeType === "padding" && isAffectedSide)
-          }
           showLabel={
             (showMeasurements && paddingPxValue > 0 && innerSpace > 100) ||
             (draggedEdgeType === "padding" && draggedSide === side)
@@ -202,7 +182,7 @@ export function SpaceEdgeControls(props: {
           isSomeDragging={!!draggedSide}
           isDragging={draggedSide === side && draggedEdgeType === "padding"}
           innerSpace={innerSpace}
-          shouldOffsetKnob={shouldShowResizeSquare}
+          shouldOffsetKnob={showSquare}
           disabledDnd={disabledDnd || disabledPaddingDragging}
         />
       )}
@@ -249,7 +229,7 @@ export function SpaceEdgeControls(props: {
               boxEdgePosition={marginScreenValue}
               // There is no offset for the sizing draggable edge from the hoverbox edge
               valuePositionOffset={0}
-              showSquare={shouldShowResizeSquare}
+              showSquare={showSquare}
             />
           );
         })()}
@@ -322,7 +302,6 @@ export function SpaceEdgeArea(props: {
   side: Side;
   edgeType: SpaceEdgeType;
   label?: React.ReactNode;
-  showArea?: boolean;
   showLabel?: boolean;
   value: number;
   onDragStart: (side: Side, edgeType: SpaceEdgeType) => void;
@@ -348,7 +327,6 @@ export function SpaceEdgeArea(props: {
     edgeType,
     value,
     label,
-    showArea,
     showLabel,
     onDragStart,
     onDrag,
@@ -375,10 +353,9 @@ export function SpaceEdgeArea(props: {
   const orientation = sideEdgeToOrient(side);
   return (
     <div
-      className={cx(sty.edgeArea, {
+      className={cx(sty.edgeArea, sty.edgeAreaShown, {
         [sty.padding]: edgeType === "padding",
         [sty.margin]: edgeType === "margin",
-        [sty.edgeAreaShown]: showArea,
         [sty.isHidden]:
           (edgeType === "padding" &&
             innerSpace < MIN_INNER_SPACE_FOR_PADDING_EDGE) ||
@@ -394,9 +371,6 @@ export function SpaceEdgeArea(props: {
           value * zoom,
       }}
     >
-      {!DEVFLAGS.spacingVisualizer202209 && (
-        <div className={sty.edgeAreaFill} />
-      )}
       {!disabledDnd && (
         <DraggableEdge
           showArea={true}
@@ -567,7 +541,8 @@ export function DraggableEdge(props: {
 
   // isFlush is true if the draggable edge is "flush" against the hoverbox
   // edge just to the left or the right.  That happens in two cases:
-  let isFlush =
+  const isFlush =
+    edgeType !== "size" &&
     placement !== "edge" &&
     // When placed inside the hoverbox and growing outward, the draggable
     // edge is always flush against the inside of the hoverbox
@@ -578,10 +553,6 @@ export function DraggableEdge(props: {
       // If the valuePositionOffset -- distance from hoverbox edge -- is too small,
       // then the draggable edge is also just flush against the hoverbox
       valuePositionOffset < thickness / 2);
-
-  if (DEVFLAGS.spacingVisualizer202209 && edgeType === "size") {
-    isFlush = false;
-  }
 
   return (
     <XDraggable
@@ -615,9 +586,7 @@ export function DraggableEdge(props: {
         onMouseEnter={() => onHover?.(true)}
         onMouseLeave={() => onHover?.(false)}
       >
-        {DEVFLAGS.spacingVisualizer202209 && showArea && (
-          <div className={cx(sty.edgeAreaFill, sty.interactive)} />
-        )}
+        {showArea && <div className={cx(sty.edgeAreaFill, sty.interactive)} />}
 
         <div
           className={cx(sty.edgeHandle, className, {
@@ -693,90 +662,42 @@ export function DraggableEdge(props: {
           />
           {showKnob &&
             (() => {
-              if (DEVFLAGS.spacingVisualizer202209) {
-                let knobOffset = 0;
-                if (shouldOffsetKnob) {
-                  knobOffset =
-                    value < KNOB_AT_ZERO_OFFSET ? KNOB_AT_ZERO_OFFSET : 0;
-                }
-
-                return (
-                  <div
-                    className={cx(sty.knob2, {
-                      [sty.knobHoriz]: orientation === "horiz",
-                      [sty.knobVert]: orientation === "vert",
-                    })}
-                    style={{
-                      [orientation === "vert" ? "width" : "height"]:
-                        KNOB_HEIGHT,
-                      [orientation === "horiz" ? "width" : "height"]:
-                        KNOB_WIDTH,
-                      [placement === "outside" ? oppSide(side) : side]:
-                        knobOffset + (isFlush ? 0 : thickness / 2),
-                    }}
-                  />
-                );
+              let knobOffset = 0;
+              if (shouldOffsetKnob) {
+                knobOffset =
+                  value < KNOB_AT_ZERO_OFFSET ? KNOB_AT_ZERO_OFFSET : 0;
               }
 
-              const KnobClass = getEdgeHandleIcon(side, growDirection);
               return (
-                <KnobClass
-                  className={cx(sty.knob, {
+                <div
+                  className={cx(sty.knob2, {
                     [sty.knobHoriz]: orientation === "horiz",
                     [sty.knobVert]: orientation === "vert",
                   })}
                   style={{
                     [orientation === "vert" ? "width" : "height"]: KNOB_HEIGHT,
                     [orientation === "horiz" ? "width" : "height"]: KNOB_WIDTH,
-                    [placement === "outside" ? oppSide(side) : side]: isFlush
-                      ? 0
-                      : thickness / 2,
+                    [placement === "outside" ? oppSide(side) : side]:
+                      knobOffset + (isFlush ? 0 : thickness / 2),
                   }}
                 />
               );
             })()}
 
-          {showSquare &&
-            (() => {
-              return (
-                <div
-                  className={cx(
-                    DEVFLAGS.spacingVisualizer202209 ? sty.square2 : sty.square,
-                    {
-                      [sty.squareTop]: side === "top",
-                      [sty.squareBottom]: side === "bottom",
-                      [sty.squareLeft]: side === "left",
-                      [sty.squareRight]: side === "right",
-                    }
-                  )}
-                />
-              );
-            })()}
+          {showSquare && (
+            <div
+              className={cx(sty.square2, {
+                [sty.squareTop]: side === "top",
+                [sty.squareBottom]: side === "bottom",
+                [sty.squareLeft]: side === "left",
+                [sty.squareRight]: side === "right",
+              })}
+            />
+          )}
         </div>
       </div>
     </XDraggable>
   );
-}
-
-function getEdgeHandleIcon(side: Side, growDirection: "inward" | "outward") {
-  if (
-    (side === "top" && growDirection === "outward") ||
-    (side === "bottom" && growDirection === "inward")
-  ) {
-    return EdgeHandleUpwardIcon;
-  } else if (
-    (side === "top" && growDirection === "inward") ||
-    (side === "bottom" && growDirection === "outward")
-  ) {
-    return EdgeHandleDownwardIcon;
-  } else if (
-    (side === "left" && growDirection === "outward") ||
-    (side === "right" && growDirection === "inward")
-  ) {
-    return EdgeHandleLeftwardIcon;
-  } else {
-    return EdgeHandleRightwardIcon;
-  }
 }
 
 function deriveDragMode(event: React.MouseEvent): EdgeDragMode {

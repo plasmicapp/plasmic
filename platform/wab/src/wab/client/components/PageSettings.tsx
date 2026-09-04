@@ -69,7 +69,6 @@ const ImageAssetPickerWithDynamicValue = observer(
   }) {
     const sc = useStudioCtx();
     const pageMeta = page.pageMeta;
-    const allowDynamicValue = sc.appCtx.appConfig.serverQueries;
 
     const [isDataPickerVisible, setIsDataPickerVisible] = React.useState(false);
 
@@ -126,7 +125,7 @@ const ImageAssetPickerWithDynamicValue = observer(
             Clear image
           </Menu.Item>
         )}
-        {!isDynamic && allowDynamicValue && (
+        {!isDynamic && (
           <Menu.Item
             key={"openGraphImageDynamic"}
             onClick={switchToDynamicValue}
@@ -140,7 +139,7 @@ const ImageAssetPickerWithDynamicValue = observer(
     return (
       <ContextMenuIndicator
         menu={contextMenu}
-        showDynamicValueButton={!isDynamic && allowDynamicValue}
+        showDynamicValueButton={!isDynamic}
         onIndicatorClickDefault={switchToDynamicValue}
         className="qb-custom-widget"
         fullWidth={true}
@@ -218,9 +217,6 @@ const PageSettings = observer(function PageSettings({
   const sc = useStudioCtx();
   const pageMeta = page.pageMeta;
   const [route, setRoute] = React.useState(pageMeta.path);
-  const disableDynamicValue = !sc.appCtx.appConfig.serverQueries
-    ? true
-    : undefined;
 
   const title = React.useMemo(
     () => convertPageMetaStringToExpr(page.pageMeta?.title),
@@ -297,7 +293,6 @@ const PageSettings = observer(function PageSettings({
               viewCtx={viewCtx}
               tpl={page.tplTree as TplTag}
               disableLinkToProp={true}
-              disableDynamicValue={disableDynamicValue}
               env={pageMetaEnv}
             />
           }
@@ -318,7 +313,6 @@ const PageSettings = observer(function PageSettings({
               viewCtx={viewCtx}
               tpl={page.tplTree as TplTag}
               disableLinkToProp={true}
-              disableDynamicValue={disableDynamicValue}
               env={pageMetaEnv}
             />
           }
@@ -338,7 +332,6 @@ const PageSettings = observer(function PageSettings({
               viewCtx={viewCtx}
               tpl={page.tplTree as TplTag}
               disableLinkToProp={true}
-              disableDynamicValue={disableDynamicValue}
               env={pageMetaEnv}
             />
           }

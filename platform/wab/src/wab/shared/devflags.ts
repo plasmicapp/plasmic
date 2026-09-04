@@ -312,7 +312,6 @@ const DEFAULT_DEVFLAGS = {
   },
   content: true,
   contentEditorMode: false,
-  codegenHost: process.env.CODEGEN_HOST || "https://codegen.plasmic.app",
   codegenOriginHost:
     process.env.CODEGEN_ORIGIN_HOST ||
     process.env.CODEGEN_HOST ||
@@ -321,7 +320,6 @@ const DEFAULT_DEVFLAGS = {
   defaultHostUrl:
     process.env.REACT_APP_DEFAULT_HOST_URL ||
     "https://host.plasmicdev.com/static/host.html",
-  dynamicPages: true,
   enablePlasmicHosting: true,
   // Used to invalidate etag cacheing mechanism altogether
   disableETagCaching: false,
@@ -363,6 +361,8 @@ const DEFAULT_DEVFLAGS = {
     analytics: false,
     monthlyViews: 50000,
   }),
+  // Whether new teams automatically start a free trial of freeTrialTierName.
+  // Requires that feature tier to exist in the database.
   freeTrial: false,
   freeTrialTierName: "Team",
   freeTrialDays: 15,
@@ -424,18 +424,13 @@ const DEFAULT_DEVFLAGS = {
   // Turns on PlasmicImg for all
   usePlasmicImg: false,
   usePlasmicTranslation: false,
-  showPlasmicImgModal: false,
   imgOptimizerHost: "https://img.plasmic.app",
-  introYoutubeId: "K_YzFBd7b2I",
-  noFlipTags: true,
   revisionNum: undefined,
   secretApiTokenTeams: ["teamId"],
-  selectInserted: true,
   showFullPreviewWarning: true,
   starterSections: [] as StarterSectionConfig[],
   hiddenQuickstartPlatforms: ensureType<string[]>([]),
   showCopilot: true,
-  allowHtmlPaste: false,
   enableUiCopilot: false,
   enableChatCopilot: false,
   uiCopilotModelProviderOpts: {
@@ -463,20 +458,9 @@ const DEFAULT_DEVFLAGS = {
   writeApiSizeLimit: 70000000, // 70MB
   writeApiExcludedProjectIds: [] as string[],
 
-  // Disabled by default
-  posthog: true,
-  copilotClaude: false,
   codePreview: false,
   demo: false,
-  enableReactDevTools: false, // used in studio.js
   hideBlankStarter: false,
-  hideSyncStatusIndicator: false,
-  interactiveCanvas: true,
-  importedTokenOverrides: false,
-  insert2022Q4: true,
-  sso: false,
-  paywalls: false,
-  showIntroSplash: false,
   skipInvariants: false,
   uncatchErrors: false,
   // Prefers loading state over expression fallback
@@ -484,34 +468,17 @@ const DEFAULT_DEVFLAGS = {
   showHiddenHostLessComponents: false,
   ccStubs: false,
   fnStubs: false,
-  workspaces: false,
   noObserve: false,
   plexus: false,
-  incrementalObservables: false,
-  spacing: true,
-  spacingArea: true,
   setHostLessProject: false,
   plasmicHostingSubdomainSuffix: "plasmic.run",
-  splits: true,
-  refActions: false,
-  multiSelect: false,
-  pageLayout: false,
-  mainContentSlots: false,
   insertTemplatesIntoMainContentSlots: false,
-  simplifiedScreenVariants: false,
   hostUrl: "",
   globalTrustedHosts: ["https://example123.fake"],
-  warningsInCanvas: false,
   previewSteps: false,
 
   // Permanently disabled, just internal tools/scripts.
   allowPlasmicTeamEdits: false,
-
-  // variant experiments
-  variants: false,
-  unconditionalEdits: false,
-  ephemeralRecording: false,
-  framerTargeting: true,
 
   // debugging user projects
   debug: false, // turns on other debug flags in `normalizeDevFlags`
@@ -522,26 +489,17 @@ const DEFAULT_DEVFLAGS = {
   githubClientId: "Iv1.8a4a47b0b0d4bf88",
   githubAppName: "plasmic-app",
 
-  // change simplified defaults
+  // Apply default styles (padding, sizing, stack layout) to inserted elements
+  // and new component/page roots, and give new page roots a content layout.
+  // On in prod; the e2e suite still encodes the off behavior, so this stays a
+  // flag until those specs are updated.
   simplifiedLayout: false,
 
-  imageControls: false,
-
-  componentThumbnails: false,
-
-  // Enables the margin and padding spacing visualizer improvements
-  spacingVisualizer202209: true,
-  gapControls: false,
-  contentOnly: false,
-  ancestorsBoxes: true,
   branching: false,
   disableBranching: false,
   branchingTeamIds: [] as TeamId[],
   commitsOnBranches: false,
   serverPublishProjectIds: [] as ProjectId[],
-  focusable: false,
-  envPanel: false,
-  linting: false,
 
   // Number of arenas to keep in memory
   liveArenas: 6,
@@ -593,31 +551,19 @@ const DEFAULT_DEVFLAGS = {
 
   newProjectModal: false,
 
-  authUsersTab: false,
-
   /*
   Template tours should map projectId to tourId, this way when a user creates a new project
   by cloning a template, we can show them the tour for that template.
   */
   templateTours: {} as Record<string, string>,
 
-  autoOpen: false,
-  autoOpen2: false,
   cmsUniqueFields: false,
-  // Enable new data queries.
-  serverQueries: false,
-  // Disable auth and backend integrations for new projects
-  rscRelease: false,
-  // Overrides rscRelease to allow using integrations in a project.
+  // Allows using auth and backend integrations in a project.
   enableDataQueries: false,
   // Disable the public copilot interaction
   disablePublicCopilot: false,
-  // Show Animation sequences tab and animation section in Design tab
-  showAnimations: false,
   // Preset animations importable project id
   presetAnimationsProjectId: "",
-  // Show Data Tokens tab in Left Pane
-  dataTokens: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -626,17 +572,11 @@ export type DevFlagsType = typeof DEFAULT_DEVFLAGS;
 export const DEVFLAGS = cloneDeep(DEFAULT_DEVFLAGS);
 
 function normalizeDevFlags(flags: DevFlagsType) {
-  if (flags.variants) {
-    flags.unconditionalEdits = true;
-    flags.ephemeralRecording = true;
-  }
-
   if (flags.debug) {
     flags.autoSave = false;
     flags.ccStubs = true;
     flags.fnStubs = true;
     flags.logToConsole = true;
-    flags.enableReactDevTools = true;
   }
 }
 
@@ -667,38 +607,15 @@ export function applyDevFlagOverridesToTarget(
 
 export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
   mergeSane(target, {
-    ancestorsBoxes: true,
-    multiSelect: true,
-    insert2022Q4: true,
     plexus: true,
-    incrementalObservables: true,
     branching: true,
-    pageLayout: true,
-    refActions: true,
     logToConsole: true,
-    focusable: true,
-    envPanel: true,
-    interactiveCanvas: true,
-    importedTokenOverrides: true,
     hiddenDataSources: [] as string[],
-    serverQueries: true,
-    mainContentSlots: true,
     insertTemplatesIntoMainContentSlots: true,
-    simplifiedScreenVariants: true,
-    posthog: true,
-    linting: true,
-    componentThumbnails: false,
-    authUsersTab: true,
-    warningsInCanvas: true,
     previewSteps: true,
-    autoOpen: true,
-    autoOpen2: true,
-    allowHtmlPaste: true,
     enableUiCopilot: true,
     enableChatCopilot: true,
     cmsUniqueFields: true,
-    showAnimations: true,
-    dataTokens: true,
   } as Partial<DevFlagsType>);
 }
 

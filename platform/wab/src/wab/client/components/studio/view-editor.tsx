@@ -1942,11 +1942,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                         )}
                         <PlayerBoxes />
                         {!studioCtx.isInteractiveMode && <CloneBoxes />}
-                        {!studioCtx.isInteractiveMode &&
-                          (DEVFLAGS.ancestorsBoxes ||
-                            studioCtx.appCtx.appConfig.ancestorsBoxes) && (
-                            <PreselectBoxes />
-                          )}
+                        {!studioCtx.isInteractiveMode && <PreselectBoxes />}
                         {!studioCtx.isInteractiveMode && (
                           <HoverBoxes studioCtx={studioCtx} />
                         )}

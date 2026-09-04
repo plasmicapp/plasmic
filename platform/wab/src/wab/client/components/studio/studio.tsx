@@ -46,11 +46,7 @@ export class Studio extends React.Component<StudioProps, {}> {
     spawn(getReactWebBundle());
     spawn(getLiveFrameClientJs());
     spawn(maybeConvertToHostLessProject(studioCtx));
-    if (
-      !appConfig.usePlasmicImg &&
-      appConfig.showPlasmicImgModal &&
-      studioCtx.canEditProject()
-    ) {
+    if (!appConfig.usePlasmicImg && studioCtx.canEditProject()) {
       const id = mkShortId();
       notification.info({
         key: id,

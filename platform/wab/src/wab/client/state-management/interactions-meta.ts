@@ -450,7 +450,6 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       );
     },
     getDefaultArgs: () => ({}),
-    hidden: ({ flags }) => !flags.serverQueries,
   },
   navigation: {
     displayName: "Go to page",
@@ -501,7 +500,6 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
   },
   invokeRefAction: {
     displayName: "Run element action",
-    hidden: () => !DEVFLAGS.refActions,
     parameters: {
       tplRef: {
         displayName: "Element",

@@ -38,9 +38,7 @@ function getPastedTpl(pageTplTree: TplNode) {
 
 describe("WebImporter", () => {
   beforeEach(() => {
-    const studioCtxDeps = fakeStudioCtx({
-      devFlagOverrides: { allowHtmlPaste: true },
-    });
+    const studioCtxDeps = fakeStudioCtx();
     studioCtx = studioCtxDeps.studioCtx;
     api = studioCtxDeps.api;
 

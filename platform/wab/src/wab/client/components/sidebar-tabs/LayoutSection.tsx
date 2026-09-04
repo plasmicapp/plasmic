@@ -15,7 +15,6 @@ import GridIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Grid";
 import ArrowDownIcon from "@/wab/client/plasmic/plasmic_kit_style_controls/icons/PlasmicIcon__ArrowDown";
 import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit_style_controls/icons/PlasmicIcon__ArrowRight";
 import WildcardIcon from "@/wab/client/plasmic/plasmic_kit_style_controls/icons/PlasmicIcon__Wildcard";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ContainerLayoutType,
   ensureContainerType,
@@ -40,9 +39,7 @@ export const LayoutSection = observer(function LayoutSection_(
   const hasDisplay = styling.exp().has("display");
   const containerType = getRshContainerType(styling.exp());
   const makeMenu =
-    DEVFLAGS.pageLayout &&
-    props.allowConvert &&
-    props.expsProvider instanceof TplExpsProvider
+    props.allowConvert && props.expsProvider instanceof TplExpsProvider
       ? (builder: MenuBuilder) => {
           builder.genSection("Convert to...", (push) => {
             if (

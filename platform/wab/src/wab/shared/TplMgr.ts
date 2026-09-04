@@ -1458,7 +1458,10 @@ export class TplMgr {
       if (type === ComponentType.Page) {
         rsh.set("width", "stretch");
         rsh.set("height", "stretch");
-        if (DEVFLAGS.pageLayout) {
+        // Content layout relies on the sizing defaults simplifiedLayout adds
+        // to inserted elements; without them, text inserted into a page
+        // collapses to zero width.
+        if (DEVFLAGS.simplifiedLayout) {
           rsh.merge(CONTENT_LAYOUT_INITIALS);
         }
       } else if (type === ComponentType.Frame) {
@@ -1519,7 +1522,7 @@ export class TplMgr {
       this.ensureDedicatedArena(comp, originalComp, originalComponentSite);
     }
 
-    ensureComponentsObserved([component]);
+    ensureComponentsObserved([component, ...getSubComponents(component)]);
 
     if (isContextCodeComponent(component)) {
       this.site().globalContexts.push(

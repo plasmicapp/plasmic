@@ -128,18 +128,15 @@ export const PageTab = observer(function PageTab(props: {
                       )}
                       {canEdit(PublicStyleSection.DataQueries) && (
                         <>
-                          {appConfig.serverQueries && (
-                            <ServerQueriesSection
-                              component={page}
-                              viewCtx={viewCtx}
-                            />
-                          )}
-                          {(!appConfig.rscRelease ||
-                            appConfig.enableDataQueries) && (
+                          <ServerQueriesSection
+                            component={page}
+                            viewCtx={viewCtx}
+                          />
+                          {appConfig.enableDataQueries && (
                             <ComponentDataQueriesSection
                               component={page}
                               viewCtx={viewCtx}
-                              isDeprecated={appConfig.serverQueries}
+                              isDeprecated
                             />
                           )}
                         </>

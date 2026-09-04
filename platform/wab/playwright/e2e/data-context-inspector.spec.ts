@@ -14,7 +14,7 @@ test.describe("data-context-inspector", () => {
     await page
       .context()
       .grantPermissions(["clipboard-read", "clipboard-write"]);
-    await goToProject(page, `/projects/${projectId}?envPanel=true`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

@@ -91,9 +91,7 @@ class StudioInitializer_ extends React.Component<
       );
     }
 
-    if (appCtx.appConfig.incrementalObservables) {
-      makeGlobalObservable();
-    }
+    makeGlobalObservable();
     const studioCtx = await initStudioCtx(appCtx, projectId, onRefreshUi);
     const previewCtx = new PreviewCtx(hostFrameCtx, studioCtx);
 

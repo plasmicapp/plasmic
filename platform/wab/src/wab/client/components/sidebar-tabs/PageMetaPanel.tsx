@@ -34,9 +34,6 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
 }) {
   const { page, viewCtx } = props;
   const sc = useStudioCtx();
-  const disableDynamicValue = !sc.appCtx.appConfig.serverQueries
-    ? true
-    : undefined;
 
   const titleExpr = React.useMemo(
     () => convertPageMetaStringToExpr(page.pageMeta?.title),
@@ -69,7 +66,6 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
         viewCtx={viewCtx}
         tpl={page.tplTree as TplTag}
         disableLinkToProp={true}
-        disableDynamicValue={disableDynamicValue}
       />
     </SidebarSection>
   );

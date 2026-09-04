@@ -56,7 +56,7 @@ function ProjectList(props: ProjectListProps) {
               project={project}
               perms={projectsData.perms}
               onUpdate={updateProjectsData as () => Promise<void>}
-              workspaces={workspaces || DEVFLAGS.workspaces}
+              workspaces={workspaces}
               matcher={matcher}
               showWorkspace={true}
             />

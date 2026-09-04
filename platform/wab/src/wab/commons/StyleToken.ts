@@ -26,7 +26,6 @@ import {
   NUMBER_LENGTH_PERCENTAGE_UNITS,
   NUMBER_UNITS,
 } from "@/wab/shared/css/types";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Mixin,
   Site,
@@ -96,10 +95,9 @@ export function isStyleTokenEditable(
   vsh: VariantedStylesHelper | undefined,
   uiConfig: UiConfig
 ): token is MutableToken<StyleToken> | OverrideableToken<StyleToken> {
-  const canOverride =
-    (token.isRegistered
-      ? canOverrideRegisteredTokens(uiConfig)
-      : canOverrideImportedTokens(uiConfig)) && DEVFLAGS.importedTokenOverrides;
+  const canOverride = token.isRegistered
+    ? canOverrideRegisteredTokens(uiConfig)
+    : canOverrideImportedTokens(uiConfig);
   return (
     (token instanceof MutableToken ||
       (token instanceof OverrideableToken && canOverride)) &&

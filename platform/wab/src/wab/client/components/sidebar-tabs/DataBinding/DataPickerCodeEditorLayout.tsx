@@ -99,13 +99,7 @@ function DataPickerCodeEditorLayout_(
           renderInspector(runCodeContext.stepValue)
         )
       }
-      envPanel={
-        hideEnvPanel || !studioCtx.appCtx.appConfig.envPanel
-          ? "hidden"
-          : !showEnv
-          ? "collapsed"
-          : undefined
-      }
+      envPanel={hideEnvPanel ? "hidden" : !showEnv ? "collapsed" : undefined}
       env={<DataInspector data={completionData} editorRef={editorRef} />}
       envToggleButton={{
         onClick: () => setShowEnv(!showEnv),

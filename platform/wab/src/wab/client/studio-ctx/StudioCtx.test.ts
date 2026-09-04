@@ -10,8 +10,12 @@ import { getArenaFrames } from "@/wab/shared/Arenas";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
+import { mkSlot, mkTplTag } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { typeFactory } from "@/wab/shared/model/model-util";
 
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 
@@ -205,5 +209,44 @@ describe("background arenas", () => {
     } finally {
       DEVFLAGS.liveArenas = savedLiveArenas;
     }
+  });
+});
+
+describe("attachComponent", () => {
+  afterEach(() => {
+    delete (window as any).studioCtx;
+  });
+
+  it("observes sub components attached during a change", async () => {
+    const { studioCtx } = fakeStudioCtx();
+    (window as any).studioCtx = studioCtx;
+
+    const select = mkComponent({
+      name: "Select",
+      tplTree: mkTplTag("div"),
+      type: ComponentType.Plain,
+    });
+    const children = mkParam({
+      name: "children",
+      type: typeFactory.renderable(),
+      exportType: ParamExportType.External,
+      paramType: "slot",
+    });
+    const option = mkComponent({
+      name: "Option",
+      params: [children],
+      tplTree: mkTplTag("div", mkSlot(children)),
+      type: ComponentType.Plain,
+      superComp: select,
+    });
+
+    await studioCtx.changeUnsafe(() => {
+      studioCtx.tplMgr().attachComponent(select);
+    });
+
+    expect(studioCtx.site.components).toEqual(
+      expect.arrayContaining([select, option])
+    );
+    expect(studioCtx.observeComponents([select, option])).toBe(false);
   });
 });

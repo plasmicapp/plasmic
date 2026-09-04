@@ -17,10 +17,6 @@ export async function pasteFromWebImporter(
   text,
   { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
 ): Promise<PasteResult> {
-  if (!studioCtx.appCtx.appConfig.allowHtmlPaste) {
-    return { handled: false };
-  }
-
   const htmlString = text.trim();
   if (!htmlString.startsWith("<")) {
     return { handled: false };

@@ -6,8 +6,6 @@ import {
   HoverBoxTarget,
   HoverBoxViewProps,
 } from "@/wab/client/components/canvas/HoverBox/computeHoverBoxViewStates";
-import { GapCanvasControls } from "@/wab/client/components/canvas/HoverBox/Controls/GapCanvasControls";
-import { ImageCanvasControls } from "@/wab/client/components/canvas/HoverBox/Controls/ImageCanvasControls";
 import {
   EdgeDragMode,
   getAffectedSides,
@@ -69,19 +67,16 @@ import {
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isTplColumns,
-  isTplImage,
   isTplNodeNamable,
   isTplTextBlock,
 } from "@/wab/shared/core/tpls";
 import {
-  isScrollableVal,
   ValComponent,
   ValNode,
   ValSlot,
   ValTag,
 } from "@/wab/shared/core/val-nodes";
 import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/css-size";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Corner,
   isAxisSide,
@@ -361,9 +356,6 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
   );
 
   const resizable = getObjResizability(controlledObj, viewCtx);
-  const selectable = viewCtx?.focusedSelectable();
-  const isScrollable =
-    selectable instanceof ValTag && isScrollableVal(selectable);
 
   const cssProps = cssPropsForInvertTransform(studioCtx.zoom, state);
 
@@ -450,12 +442,10 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
       : false;
 
   const shouldShowSideControls =
-    ((!DEVFLAGS.spacing && (resizable.width || resizable.height)) ||
-      (DEVFLAGS.spacing &&
-        ((state?.edgeControls.top.length ?? 0) > 0 ||
-          (state?.edgeControls.right.length ?? 0) > 0 ||
-          (state?.edgeControls.bottom.length ?? 0) > 0 ||
-          (state?.edgeControls.left.length ?? 0) > 0))) &&
+    ((state?.edgeControls.top.length ?? 0) > 0 ||
+      (state?.edgeControls.right.length ?? 0) > 0 ||
+      (state?.edgeControls.bottom.length ?? 0) > 0 ||
+      (state?.edgeControls.left.length ?? 0) > 0) &&
     !(controlledSpacingObj instanceof ValSlot) &&
     !isLocked &&
     !isMultiSelection &&
@@ -494,8 +484,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
           >
             {
               <>
-                {DEVFLAGS.spacingVisualizer202209 &&
-                  shouldShowSideControls &&
+                {shouldShowSideControls &&
                   (() => {
                     const anyEdge = state?.edgeControls.top;
                     const allowPadding = anyEdge?.includes("padding") ?? false;
@@ -525,7 +514,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                     >
                       <div
                         ref={hoverTagRef}
-                        className={cn("node-outline-tag", state?.tagPosClasses)}
+                        className="node-outline-tag"
                         onClick={onClickNameTag}
                       >
                         {state?.tagName && (
@@ -555,22 +544,20 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                   <div
                     className="HoverBox__Resizers"
                     style={
-                      DEVFLAGS.spacingVisualizer202209
-                        ? ({
-                            "--selected-element-margin-top": `${
-                              (state?.marginPx?.top ?? 0) * studioCtx.zoom
-                            }px`,
-                            "--selected-element-margin-bottom": `${
-                              (state?.marginPx?.bottom ?? 0) * studioCtx.zoom
-                            }px`,
-                            "--selected-element-margin-left": `${
-                              (state?.marginPx?.left ?? 0) * studioCtx.zoom
-                            }px`,
-                            "--selected-element-margin-right": `${
-                              (state?.marginPx?.right ?? 0) * studioCtx.zoom
-                            }px`,
-                          } as React.CSSProperties)
-                        : undefined
+                      {
+                        "--selected-element-margin-top": `${
+                          (state?.marginPx?.top ?? 0) * studioCtx.zoom
+                        }px`,
+                        "--selected-element-margin-bottom": `${
+                          (state?.marginPx?.bottom ?? 0) * studioCtx.zoom
+                        }px`,
+                        "--selected-element-margin-left": `${
+                          (state?.marginPx?.left ?? 0) * studioCtx.zoom
+                        }px`,
+                        "--selected-element-margin-right": `${
+                          (state?.marginPx?.right ?? 0) * studioCtx.zoom
+                        }px`,
+                      } as React.CSSProperties
                     }
                   >
                     {shouldShowSideControls &&
@@ -620,7 +607,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                             studioCtx,
                             Section.Spacing
                           );
-                          return DEVFLAGS.spacing ? (
+                          return (
                             <SpaceEdgeControls
                               side={side}
                               paddingLabel={
@@ -661,13 +648,6 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                               draggedSide={spacingDragState?.side}
                               draggedEdgeType={spacingDragState?.edgeType}
                               zoom={studioCtx.zoom}
-                              isAffectedSide={
-                                !!spacingDragState &&
-                                getAffectedSides(
-                                  spacingDragState.side,
-                                  spacingDragState.mode
-                                ).includes(side)
-                              }
                               isAutoSized={
                                 sideToOrient(side) === "horiz"
                                   ? state?.autoWidth
@@ -908,29 +888,6 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                               showSquare={!canShowCornerResizers && allowSizing}
                               disabledDnd={disabledDnd}
                             />
-                          ) : (
-                            ((isVertical && resizable.width) ||
-                              (isHorizontal && resizable.height)) && (
-                              <XDraggable
-                                key={side}
-                                onStart={(_e) => startResize(side)}
-                                onDrag={(e) => dragResize(side, e)}
-                                onStop={async () => stopResize()}
-                              >
-                                <div
-                                  onDoubleClick={() => clearSize(side)}
-                                  className={cn({
-                                    HoverBox__Resizer: true,
-                                    HoverBox__Resizer__Scrollable: isScrollable,
-                                    [`HoverBox__Resizer__${styleCase(side)}`]:
-                                      true,
-                                    [`HoverBox__Resizer__${
-                                      isVertical ? "Vertical" : "Horizontal"
-                                    }`]: true,
-                                  })}
-                                />
-                              </XDraggable>
-                            )
                           );
                         },
                       })}
@@ -963,19 +920,6 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                   controlledTpl &&
                   isTplColumns(controlledTpl) && (
                     <ResponsiveColumnsCanvasControls
-                      viewCtx={viewCtx}
-                      tpl={controlledTpl}
-                    />
-                  )}
-                {DEVFLAGS.gapControls && state && viewCtx && (
-                  <GapCanvasControls viewCtx={viewCtx} />
-                )}
-                {DEVFLAGS.imageControls &&
-                  state &&
-                  viewCtx &&
-                  controlledTpl &&
-                  isTplImage(controlledTpl) && (
-                    <ImageCanvasControls
                       viewCtx={viewCtx}
                       tpl={controlledTpl}
                     />

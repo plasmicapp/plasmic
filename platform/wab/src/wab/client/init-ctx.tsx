@@ -89,11 +89,10 @@ export async function loadSiteDbCtx(
   appCtx.appConfig = getProjectFlags(site, appCtx.appConfig);
   spawn(checkDepPkgHosts(appCtx, siteInfo, depPkgVersions));
 
-  // Enable data queries after RSC release if any components already use them.
+  // Enable data queries if any components already use them.
   // Occurs after applyPlasmicUserDevFlagOverrides, so skip if already enabled
   if (!appCtx.appConfig.enableDataQueries) {
-    appCtx.appConfig.enableDataQueries =
-      !appCtx.appConfig.rscRelease || !!findAllDataSourceOpExpr(site).length;
+    appCtx.appConfig.enableDataQueries = !!findAllDataSourceOpExpr(site).length;
   }
 
   (window as any).dbg.site = site;

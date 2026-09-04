@@ -22,10 +22,7 @@ test.describe("data token suggestions popover", () => {
         npmPkg: ["@plasmicpkgs/strapi"],
       },
     });
-    await goToProject(
-      page,
-      `/projects/${projectId}?dataTokens=true&plexus=true&serverQueries=true`
-    );
+    await goToProject(page, `/projects/${projectId}?plexus=true`);
   });
 
   /** A suggestion row in the popover, matched by its token name. */

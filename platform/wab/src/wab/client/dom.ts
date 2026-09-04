@@ -323,17 +323,6 @@ export function getElementBoundCssProps(node: HTMLElement) {
   };
 }
 
-export function getMarginRect(node: HTMLElement): DOMRect {
-  const { margin, border } = getElementBoundCssProps(node);
-  const rect = getElementBounds(node);
-  return new DOMRect(
-    rect.left,
-    rect.top,
-    rect.width + margin.left + margin.right + border.left + border.right,
-    rect.height + margin.top + margin.bottom + border.top + border.bottom
-  );
-}
-
 export function getContentOnlyRect(
   elt: JQuery<HTMLElement>,
   opts: {

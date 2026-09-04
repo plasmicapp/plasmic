@@ -9,10 +9,9 @@ import {
 } from "@/wab/client/components/studio/GlobalCssVariables";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { hasLayoutBox } from "@/wab/client/dom";
-import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import {
-  cssPropsForInvertTransform,
   StudioCtx,
+  cssPropsForInvertTransform,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -20,9 +19,9 @@ import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import { maybe } from "@/wab/shared/common";
 import {
-  makeSelectableFullKey,
-  Selectable,
   SQ,
+  Selectable,
+  makeSelectableFullKey,
 } from "@/wab/shared/core/selection";
 import { isTplTagOrComponent, isTplVariantable } from "@/wab/shared/core/tpls";
 import cn from "classnames";
@@ -157,19 +156,9 @@ function PreselectBoxInner(props: {
     shouldShowHoverTag && isTplTagOrComponent(tpl)
       ? viewCtx.effectiveCurrentVariantSetting(tpl)
       : undefined;
-  const boxInFrame = shouldShowHoverTag
-    ? recomputeBounds($element!)
-    : undefined;
   const tagName = shouldShowHoverTag
     ? summarizeFocusObj(selectable, viewCtx, effectiveVariantSetting)
     : undefined;
-  const tagPosClasses =
-    shouldShowHoverTag && boxInFrame
-      ? computeNodeOutlineTagLayoutClass(
-          viewCtx.canvasCtx.$doc(),
-          boxInFrame.posRect()
-        )
-      : [];
   const tagIcon =
     shouldShowHoverTag && createNodeIcon(tpl!, effectiveVariantSetting);
 
@@ -203,10 +192,7 @@ function PreselectBoxInner(props: {
           className={styles.hoverBoxTagContainer}
           style={{ left: `${leftOffset}px` }}
         >
-          <div
-            ref={hoverTagRef}
-            className={cn("node-outline-tag", tagPosClasses)}
-          >
+          <div ref={hoverTagRef} className="node-outline-tag">
             {tagName && (
               <EditableNodeLabel
                 studioCtx={studioCtx}

@@ -26,7 +26,6 @@ import {
   readonlyRSH,
 } from "@/wab/shared/RuleSetHelpers";
 import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   VariantCombo,
@@ -105,7 +104,6 @@ import {
   CONTENT_LAYOUT_STANDARD_WIDTH_PROP,
   CONTENT_LAYOUT_VIEWPORT_GAP_PROP,
   CONTENT_LAYOUT_WIDE_WIDTH_PROP,
-  GAP_PROPS,
   TPL_COMPONENT_PROPS,
   componentRootResetProps,
   getAllDefinedStyles,
@@ -129,7 +127,6 @@ import {
   isTplSlot,
   isTplTag,
   isTplTextBlock,
-  tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
 import * as css from "@/wab/shared/css";
 import {
@@ -188,7 +185,6 @@ import {
   isKnownStyleScopeClassNamePropType,
   isKnownStyleToken,
   isKnownStyleTokenRef,
-  isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import {
   deriveSizeStyleValue,
@@ -1137,42 +1133,6 @@ function maybeRule(
         ${content}
       }`
     : undefined;
-}
-
-function tagHasGapStyle(tpl: TplNode) {
-  if (!isKnownTplTag(tpl)) {
-    return false;
-  }
-
-  const component = $$$(tpl).tryGetOwningComponent();
-  if (!component) {
-    return false;
-  }
-
-  const site = tryGetOwnerSite(component);
-  if (!site?.activeTheme) {
-    return false;
-  }
-
-  const tagStyles = site.activeTheme.styles.find(
-    (s) => s.selector.split(":")[0] === tpl.tag
-  );
-  if (!tagStyles) {
-    return false;
-  }
-
-  return GAP_PROPS.some((p) => p in tagStyles.style.rs.values);
-}
-
-export function hasGapStyle(tpl: TplNode) {
-  return (
-    tagHasGapStyle(tpl) ||
-    tpl.vsettings
-      .flatMap((vs) => expandRuleSets([vs.rs]))
-      .some((rs) => {
-        return GAP_PROPS.some((p) => p in rs.values);
-      })
-  );
 }
 
 function hasOutlineStyle(m: Map<string, string>) {

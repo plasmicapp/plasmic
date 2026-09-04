@@ -4,7 +4,6 @@ import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import "@/wab/client/components/canvas/slate";
 import { ViewOps } from "@/wab/client/components/canvas/view-ops";
 import { makeClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
-import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { DevCliSvrEvaluator } from "@/wab/client/cseval";
 import { WithDbCtx } from "@/wab/client/db";
 import { Fiber } from "@/wab/client/react-global-hook/fiber";
@@ -95,7 +94,6 @@ import {
   tplFromSelectable,
 } from "@/wab/shared/core/vals";
 import { isDraggableSize } from "@/wab/shared/css-size";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import { Pt, rectsIntersect } from "@/wab/shared/geom";
 import {
@@ -715,18 +713,6 @@ export class ViewCtx extends WithDbCtx {
           // unless the new selection is the new pasted node, but in that case
           // the "paste" method sets this flag after selecting the new node
           this.enforcePastingAsSibling = false;
-
-          if (DEVFLAGS.ephemeralRecording && this._focusedTpls) {
-            const vcontroller = makeVariantsController(this.studioCtx);
-            if (
-              vcontroller &&
-              !isBaseVariant(vcontroller.getTargetedVariants())
-            ) {
-              this.change(() =>
-                vcontroller.onToggleTargetingOfActiveVariants()
-              );
-            }
-          }
         }
       )
     );
@@ -833,8 +819,7 @@ export class ViewCtx extends WithDbCtx {
     anchorCloneKey = this.focusedCloneKey(),
     opts: { appendToMultiSelection?: boolean; noRestoreRightTab?: boolean } = {}
   ) {
-    opts.appendToMultiSelection =
-      this.appCtx.appConfig.multiSelect && !!opts.appendToMultiSelection;
+    opts.appendToMultiSelection = !!opts.appendToMultiSelection;
 
     mobx.runInAction(() => {
       if (x != null) {
@@ -1175,8 +1160,7 @@ export class ViewCtx extends WithDbCtx {
     anchorCloneKey?: string,
     opts: { appendToMultiSelection?: boolean; noRestoreRightTab?: boolean } = {}
   ) {
-    opts.appendToMultiSelection =
-      this.appCtx.appConfig.multiSelect && !!opts.appendToMultiSelection;
+    opts.appendToMultiSelection = !!opts.appendToMultiSelection;
 
     mobx.runInAction(() => {
       const {

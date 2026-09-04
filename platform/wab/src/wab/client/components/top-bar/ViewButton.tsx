@@ -7,7 +7,6 @@ import {
 } from "@/wab/client/components/menu-builder";
 import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import HidePlaceholderIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__HidePlaceholder";
 import ShowPlaceholderIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ShowPlaceholder";
 import Refresh2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Refresh2Svg";
@@ -45,7 +44,6 @@ const contentCreatorModeHelp = (
 
 const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
   const studioCtx = useStudioCtx();
-  const appCtx = useAppCtx();
   const vc = studioCtx.focusedViewCtx();
   const showSlotPlaceholder = studioCtx.showSlotPlaceholder();
   const showContainerPlaceholder = studioCtx.showContainerPlaceholder();
@@ -108,28 +106,23 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
               selections from other users
             </Menu.Item>
           );
-          if (
-            DEVFLAGS.ancestorsBoxes ||
-            studioCtx.appCtx.appConfig.ancestorsBoxes
-          ) {
-            push(
-              <Menu.Item
-                onClick={async () => studioCtx.toggleShowAncestorsHoverBoxes()}
-                key="toggle-show-ancestors-hover-boxes"
-              >
-                <Icon
-                  className="dimfg mr-sm"
-                  icon={
-                    showSlotPlaceholder
-                      ? HidePlaceholderIcon
-                      : ShowPlaceholderIcon
-                  }
-                />
-                {showAncestorsHoverBoxes ? "Hide " : "Show "} container outlines
-                when hovering
-              </Menu.Item>
-            );
-          }
+          push(
+            <Menu.Item
+              onClick={async () => studioCtx.toggleShowAncestorsHoverBoxes()}
+              key="toggle-show-ancestors-hover-boxes"
+            >
+              <Icon
+                className="dimfg mr-sm"
+                icon={
+                  showSlotPlaceholder
+                    ? HidePlaceholderIcon
+                    : ShowPlaceholderIcon
+                }
+              />
+              {showAncestorsHoverBoxes ? "Hide " : "Show "} container outlines
+              when hovering
+            </Menu.Item>
+          );
 
           if (vc) {
             const isOutlineMode = vc.canvasCtx.isOutlineMode();
@@ -165,17 +158,15 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
             );
           }
 
-          if (appCtx.appConfig.autoOpen) {
-            const isAutoOpenMode = studioCtx.isAutoOpenMode;
-            push(
-              <Menu.Item
-                onClick={() => studioCtx.toggleAutoOpenMode()}
-                key="toggle-auto-open-mode"
-              >
-                {isAutoOpenMode ? "Turn off " : "Turn on "} auto-open mode
-              </Menu.Item>
-            );
-          }
+          const isAutoOpenMode = studioCtx.isAutoOpenMode;
+          push(
+            <Menu.Item
+              onClick={() => studioCtx.toggleAutoOpenMode()}
+              key="toggle-auto-open-mode"
+            >
+              {isAutoOpenMode ? "Turn off " : "Turn on "} auto-open mode
+            </Menu.Item>
+          );
 
           if (studioCtx.showComments()) {
             const showCommentsOverlay = studioCtx.showCommentsOverlay;

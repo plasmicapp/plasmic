@@ -8,7 +8,6 @@ import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { hasLayoutBox } from "@/wab/client/dom";
 import { COMPONENT_ICON, PAGE_ICON } from "@/wab/client/icons";
-import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
@@ -70,7 +69,6 @@ export interface HoverBoxViewDisplayProps {
   position: string;
   top: number;
   left: number;
-  tagPosClasses: Array<string>;
   tagName: string;
   tagUid?: number;
   tagIcon?: React.ReactNode;
@@ -169,7 +167,6 @@ export function computeHoverBoxViewState(vc: ViewCtx, target: HoverBoxTarget) {
         height: getFrameHeight(target),
         top: scalerRect.top,
         left: scalerRect.left,
-        tagPosClasses: [],
         tagUid: target.uid,
         tagName: studioCtx.tplMgr().describeArenaFrame(target),
         tagIcon: isFrameComponent(component)
@@ -209,10 +206,6 @@ export function computeHoverBoxViewState(vc: ViewCtx, target: HoverBoxTarget) {
     displayProps: {
       position: "absolute",
       ...boxInScaler.posRect(),
-      tagPosClasses: computeNodeOutlineTagLayoutClass(
-        vc.canvasCtx.$doc(),
-        boxInFrame.posRect()
-      ),
       isRepeated: !!effectiveVariantSetting?.dataRep,
       tagName: summarizeFocusObj(focusObj, vc, effectiveVariantSetting),
       tagIcon: createNodeIcon(tplOrSlot, effectiveVariantSetting),

@@ -18,7 +18,6 @@ import {
   getComponentArenaBaseFrame,
   isCustomComponentFrame,
 } from "@/wab/shared/component-arenas";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -141,7 +140,7 @@ export class CustomVariantsController implements VariantsController {
       isScreenVariant(v)
     );
     this.pinManager.clearAll();
-    if (DEVFLAGS.simplifiedScreenVariants && clearedScreenVariants) {
+    if (clearedScreenVariants) {
       // If we're removing screen variants, reset to base (desktop) screen size.
       this.maybeResizeFrame(undefined);
     }
@@ -171,11 +170,7 @@ export class CustomVariantsController implements VariantsController {
   onToggleVariant(variant: Variant) {
     const pinManager = this.pinManager;
     // If we're removing a screen variant, remove all screen variants / return to base.
-    if (
-      DEVFLAGS.simplifiedScreenVariants &&
-      isScreenVariant(variant) &&
-      this.isActive(variant)
-    ) {
+    if (isScreenVariant(variant) && this.isActive(variant)) {
       for (const sibling of variant.parent?.variants ?? []) {
         pinManager.deactivateVariant(sibling);
       }

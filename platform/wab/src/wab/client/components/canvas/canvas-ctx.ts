@@ -17,7 +17,6 @@ import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
 import { ENV } from "@/wab/client/env";
 import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
-import { reduceImageSize } from "@/wab/client/image/transform";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
@@ -59,8 +58,6 @@ let gCanvasCtxIndex = 0;
  * We are generous here because we don't want to timeout too early
  */
 const CANVAS_CTX_TIMEOUT_PERIOD = 3 * 60 * 1000; // 3 minutes
-
-const MAX_THUMBNAIL_SIZE = 120;
 
 export class CanvasCtx {
   /**
@@ -104,27 +101,6 @@ export class CanvasCtx {
     this._$viewport = $viewport;
     this._name = name;
     this._keyAdjustment = null;
-  }
-
-  async getThumbnail(): Promise<string> {
-    const domNode = this.$eltForTplRoot()[0];
-    if (!domNode) {
-      return "";
-    }
-    const { width, height } = reduceImageSize(
-      domNode.clientWidth,
-      domNode.clientHeight,
-      MAX_THUMBNAIL_SIZE,
-      MAX_THUMBNAIL_SIZE
-    );
-    return this.Sub.createThumbnail(domNode, {
-      filter: (node) =>
-        node.tagName !== "SOURCE" &&
-        !node.classList?.contains("__wab_placeholder"),
-      includeQueryParams: true,
-      canvasWidth: width,
-      canvasHeight: height,
-    });
   }
 
   private _updatingCcRegistryCount = observable.box(0);

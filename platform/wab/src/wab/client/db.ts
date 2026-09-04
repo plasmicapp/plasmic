@@ -157,9 +157,6 @@ export class DbCtx {
     components: Component[],
     componentContext?: ComponentContext
   ) {
-    if (!this.appCtx.appConfig.incrementalObservables) {
-      return false;
-    }
     return this.recorder.maybeObserveComponents(
       uniqBy(components, "uuid"),
       componentContext
@@ -167,7 +164,6 @@ export class DbCtx {
   }
 
   private createRecorder(site: Site) {
-    const incrementalObservables = this.appCtx.appConfig.incrementalObservables;
     return new ChangeRecorder({
       inst: site,
       _instUtil: instUtil,
@@ -196,10 +192,8 @@ export class DbCtx {
           (addr) => addr.uuid !== this.siteInfo.id
         ),
       visitNodeListener: undefined,
-      skipInitialObserveFields: incrementalObservables
-        ? [meta.getFieldByName("Component", "tplTree")]
-        : undefined,
-      incremental: incrementalObservables,
+      skipInitialObserveFields: [meta.getFieldByName("Component", "tplTree")],
+      incremental: true,
     });
   }
 }

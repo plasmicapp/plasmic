@@ -13,27 +13,19 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
   const allDevFlags = {
     ...initialFlags,
 
-    // auto-open.spec.ts
-    autoOpen: true,
-    autoOpen2: true,
-
-    // component-props.spec.ts
-    // The Issues tab content is gated behind this flag.
-    linting: true,
-
-    // imported-token-overrides.spec.ts
-    importedTokenOverrides: true,
-
     // data-rep.spec.ts, http.spec.ts, postgres.spec.ts,
     // state-management-dependent.spec.ts, dynamic-initial-value.spec.ts
     plexus: false,
 
+    // data-sources/*, dynamic-pages.spec.ts, forms/schema.spec.ts,
+    // hostless-commerce.spec.ts — the legacy integrations UI is only shown
+    // when this is on (or the project already uses a data source).
+    enableDataQueries: true,
+
     branching: true,
 
-    // copilot-mentions.spec.ts — the mentions UI is gated behind this,
-    // and shift-click multi-select behind `multiSelect`.
+    // copilot-mentions.spec.ts — the mentions UI is gated behind this.
     enableChatCopilot: true,
-    multiSelect: true,
     // Backstop behind the `noCopilotApi` fixture: if a request ever escapes,
     // it must not reach a real model. Deliberately invalid.
     chatCopilotModelProviderOpts: {

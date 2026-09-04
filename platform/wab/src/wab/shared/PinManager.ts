@@ -18,7 +18,6 @@ import {
   xOmit,
 } from "@/wab/shared/common";
 import { getStateVarName } from "@/wab/shared/core/states";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ArenaFrame,
   Component,
@@ -602,7 +601,7 @@ export function withoutIrrelevantScreenVariants({
   targetedVariants: Variant[];
 }) {
   const screenVariantGroup = site.activeScreenVariantGroup;
-  if (screenVariantGroup && DEVFLAGS.simplifiedScreenVariants) {
+  if (screenVariantGroup) {
     const ordered = getOrderedScreenVariants(site, screenVariantGroup).filter(
       (v) => activeVariants.includes(v)
     );

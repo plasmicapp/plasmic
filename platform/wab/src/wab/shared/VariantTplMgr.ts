@@ -80,7 +80,6 @@ import {
   DefinedIndicatorType,
   computeDefinedIndicator,
 } from "@/wab/shared/defined-indicator";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   EffectiveVariantSetting,
   adaptEffectiveVariantSetting,
@@ -303,11 +302,7 @@ export class VariantTplMgr {
 
     let targetCombo = currentCombo;
 
-    if (
-      DEVFLAGS.framerTargeting &&
-      !opts.forVisibility &&
-      !isBaseVariant(currentCombo)
-    ) {
+    if (!opts.forVisibility && !isBaseVariant(currentCombo)) {
       // In framer-style targeting, if we're targeting a variant that is the only visible
       // variant, then we target the base instead. The exception is forVisibility, where
       // we'd need to target the currentCombo if we want to switch visibility on and off

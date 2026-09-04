@@ -2821,13 +2821,6 @@ function determineAutoOpenState(
           };
         }
 
-        if (!ctx.projectFlags.autoOpen2) {
-          return {
-            rendered: false,
-            autoOpened: false,
-          };
-        }
-
         return {
           rendered: autoOpenInfo.isSelected,
           autoOpened: autoOpenInfo.isSelected,
@@ -2837,7 +2830,7 @@ function determineAutoOpenState(
       case TplVisibility.DisplayNone: {
         const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
         // Auto Open is not yet supported for TplComponents / images with Visibility.DisplayNone
-        if (!ctx.projectFlags.autoOpen2 || isTplComponent(node)) {
+        if (isTplComponent(node)) {
           return {
             rendered: true,
             autoOpened: false,

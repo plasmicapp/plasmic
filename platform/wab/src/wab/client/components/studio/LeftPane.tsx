@@ -38,7 +38,6 @@ import { cx, ensure, spawn, switchType } from "@/wab/shared/common";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { extractComponentUsages } from "@/wab/shared/core/sites";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Component, DataToken, StyleToken } from "@/wab/shared/model/classes";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import L from "lodash";
@@ -192,11 +191,9 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                   {wrapTab("responsiveness", <ResponsivenessPanel />)}
                   {wrapTab("outline", <OutlineTab />)}
                   {wrapTab("tokens", <LeftGeneralTokensPanel />)}
-                  {studioCtx.showDataTokens() &&
-                    wrapTab("dataTokens", <LeftGeneralDataTokensPanel />)}
+                  {wrapTab("dataTokens", <LeftGeneralDataTokensPanel />)}
                   {wrapTab("mixins", <MixinsPanel />)}
-                  {DEVFLAGS.showAnimations &&
-                    wrapTab("animationSequences", <AnimationSequencesPanel />)}
+                  {wrapTab("animationSequences", <AnimationSequencesPanel />)}
                   {wrapTab("components", <LeftComponentsPanel />)}
                   {wrapTab("expressions", <LeftExprsSearchPanel />)}
                   {wrapTab("themes", <DefaultStylesPanel />)}

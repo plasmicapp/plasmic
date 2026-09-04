@@ -435,7 +435,6 @@ import isEqual from "lodash/isEqual";
 import orderBy from "lodash/orderBy";
 import {
   IObservableValue,
-  ObservableMap,
   autorun,
   flow,
   makeObservable,
@@ -644,7 +643,6 @@ export enum RightTabKey {
   component = "component",
 }
 
-const THUMBNAIL_DURATION = 1000 * 60 * 5; // 5 minutes to recompute thumbnail
 const RECENT_ARENAS_LIMIT = 5;
 
 export class StudioCtx extends WithDbCtx {
@@ -868,35 +866,6 @@ export class StudioCtx extends WithDbCtx {
       }).dispose,
       autorun(
         async () => {
-          const arenaFrames = getArenaFrames(this.previousArena);
-          if (!isKnownComponentArena(this.previousArena)) {
-            return;
-          }
-          if (arenaFrames.length === 0) {
-            return;
-          }
-          const arenaFrame = arenaFrames[0];
-          const viewCtx = this.tryGetViewCtxForFrame(arenaFrame);
-          if (!viewCtx || !isPlainComponent(viewCtx.component)) {
-            return;
-          }
-          const currentComponent = viewCtx.currentComponent();
-
-          if (!this.hasCachedThumbnail(currentComponent.uuid)) {
-            try {
-              const thumbnail = await viewCtx.canvasCtx.getThumbnail();
-              this.saveThumbnail(currentComponent.uuid, thumbnail);
-            } catch (e) {
-              debugger;
-            }
-          }
-        },
-        {
-          name: "StudioCtx.setComponentThumbnails",
-        }
-      ),
-      autorun(
-        async () => {
           const projectName = this.siteInfo.name;
           const branch = this.dbCtx().branchInfo;
           const branchName = branch ? branch.name : MainBranchId;
@@ -974,43 +943,37 @@ export class StudioCtx extends WithDbCtx {
         },
         { name: "StudioCtx.fixRecentArenas" }
       ),
-      ...(this.appCtx.appConfig.incrementalObservables
-        ? [
-            autorun(
-              () => {
-                const currentArena = this.currentArena;
-                if (!currentArena) {
-                  return;
-                }
-                const componentsToObserve = isDedicatedArena(currentArena)
-                  ? [currentArena.component]
-                  : currentArena.children.map(
-                      (child) => child.container.component
-                    );
-                this.dbCtx().maybeObserveComponents(
-                  componentsToObserve,
-                  ComponentContext.Arena
-                );
-              },
-              { name: "StudioCtx.observeCurrentArena" }
-            ),
-            autorun(
-              () => {
-                const currentViewCtxComponent =
-                  this.focusedViewCtx()?.currentComponent();
-                if (!currentViewCtxComponent) {
-                  return;
-                }
-                const componentsToObserve = [currentViewCtxComponent];
-                this.dbCtx().maybeObserveComponents(
-                  componentsToObserve,
-                  ComponentContext.View
-                );
-              },
-              { name: "StudioCtx.observeCurrentViewCtx" }
-            ),
-          ]
-        : []),
+      autorun(
+        () => {
+          const currentArena = this.currentArena;
+          if (!currentArena) {
+            return;
+          }
+          const componentsToObserve = isDedicatedArena(currentArena)
+            ? [currentArena.component]
+            : currentArena.children.map((child) => child.container.component);
+          this.dbCtx().maybeObserveComponents(
+            componentsToObserve,
+            ComponentContext.Arena
+          );
+        },
+        { name: "StudioCtx.observeCurrentArena" }
+      ),
+      autorun(
+        () => {
+          const currentViewCtxComponent =
+            this.focusedViewCtx()?.currentComponent();
+          if (!currentViewCtxComponent) {
+            return;
+          }
+          const componentsToObserve = [currentViewCtxComponent];
+          this.dbCtx().maybeObserveComponents(
+            componentsToObserve,
+            ComponentContext.View
+          );
+        },
+        { name: "StudioCtx.observeCurrentViewCtx" }
+      ),
       autorun(() => {
         if (!isHostLessPackage(this.site)) {
           this.updatePkgsList(usedHostLessPkgs(this.site));
@@ -1401,9 +1364,6 @@ export class StudioCtx extends WithDbCtx {
     f: () => Result<T, E>,
     opts: StudioChangeOpts = {}
   ): Promise<Result<T, E>> {
-    if (!this.appCtx.appConfig.incrementalObservables) {
-      return this._change(f, opts);
-    }
     const changedComponents = c();
     this.dbCtx().maybeObserveComponents(changedComponents);
     return this._change(f, opts);
@@ -3559,10 +3519,6 @@ export class StudioCtx extends WithDbCtx {
     );
   }
 
-  showDataTokens() {
-    return this.appCtx.appConfig.dataTokens;
-  }
-
   //
   // Copilot
   //
@@ -3618,9 +3574,7 @@ export class StudioCtx extends WithDbCtx {
   showInlineAddDrawer = () => this._showInlineAddDrawer.get();
   setShowInlineAddDrawer = (show: boolean) => {
     this._showInlineAddDrawer.set(show);
-    if (this.appCtx.appConfig.insert2022Q4) {
-      this._showAddDrawer.set(show);
-    }
+    this._showAddDrawer.set(show);
   };
 
   //
@@ -3780,30 +3734,6 @@ export class StudioCtx extends WithDbCtx {
       this._contentEditorMode.set(false);
     }
   }
-
-  // Component thumbnail management
-
-  private _thumbnailsCache: ObservableMap<string, [string, number]> =
-    observable.map(new Map());
-
-  saveThumbnail = (componentUuid: string, thumbnail: string) => {
-    this._thumbnailsCache.set(componentUuid, [thumbnail, Date.now()]);
-  };
-
-  getCachedThumbnail = (componentUuid: string) => {
-    return this._thumbnailsCache.get(componentUuid)?.[0];
-  };
-
-  hasCachedThumbnail = (componentUuid: string) => {
-    const cachedThumbnail = this._thumbnailsCache.get(componentUuid);
-    if (
-      !cachedThumbnail ||
-      Date.now() - cachedThumbnail[1] > THUMBNAIL_DURATION
-    ) {
-      return false;
-    }
-    return true;
-  };
 
   //
   // Managing the Variants switcher drawer
@@ -5362,11 +5292,9 @@ export class StudioCtx extends WithDbCtx {
       TplNode | SlotSelection | undefined,
       InsertRelLoc[]
     ] => {
-      if (this.appCtx.appConfig.mainContentSlots) {
-        const sel = maybe(vc.focusedTpl(), tryGetMainContentSlotTarget);
-        if (sel) {
-          return [sel, [InsertRelLoc.append]];
-        }
+      const sel = maybe(vc.focusedTpl(), tryGetMainContentSlotTarget);
+      if (sel) {
+        return [sel, [InsertRelLoc.append]];
       }
       // This is a hacky way to identify that the item is an insertable template.
       if (
@@ -6153,16 +6081,14 @@ export class StudioCtx extends WithDbCtx {
           map[addr.iid][field] = bundle.map[addr.iid][field];
         }
       }
-      if (this.appCtx.appConfig.incrementalObservables) {
-        change.path?.forEach((path) => {
-          if (classes.isKnownComponent(path.inst) && path.field === "tplTree") {
-            const compAddr = this.bundler().addrOf(path.inst);
-            if (compAddr) {
-              modifiedComponentIids.add(compAddr.iid);
-            }
+      change.path?.forEach((path) => {
+        if (classes.isKnownComponent(path.inst) && path.field === "tplTree") {
+          const compAddr = this.bundler().addrOf(path.inst);
+          if (compAddr) {
+            modifiedComponentIids.add(compAddr.iid);
           }
-        });
-      }
+        }
+      });
     });
 
     // Deleted Iids
@@ -6942,21 +6868,17 @@ export class StudioCtx extends WithDbCtx {
       try {
         this._isRefreshing = true;
 
-        if (this.appCtx.appConfig.incrementalObservables) {
-          this.dbCtx().maybeObserveComponents(
-            withoutNils(
-              modifiedComponentIids.map((c) => {
-                const compInst = this.bundler().objByAddr({
-                  uuid: projectId,
-                  iid: c,
-                });
-                return classes.isKnownComponent(compInst)
-                  ? compInst
-                  : undefined;
-              })
-            )
-          );
-        }
+        this.dbCtx().maybeObserveComponents(
+          withoutNils(
+            modifiedComponentIids.map((c) => {
+              const compInst = this.bundler().objByAddr({
+                uuid: projectId,
+                iid: c,
+              });
+              return classes.isKnownComponent(compInst) ? compInst : undefined;
+            })
+          )
+        );
 
         const undoAndRecord = (changes: RecordedChanges) =>
           this.recorder.withRecording(() => undoChanges(changes.changes));

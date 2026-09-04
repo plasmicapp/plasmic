@@ -177,10 +177,7 @@ test.describe("server queries", () => {
     projectId = await apiClient.setupNewProject({
       name: "custom-code-server-queries",
     });
-    await goToProject(
-      page,
-      `/projects/${projectId}?serverQueries=true&dataTokens=true`
-    );
+    await goToProject(page, `/projects/${projectId}`);
 
     const serverQueryModal = models.studio.serverQueryBottomModal;
     const previewResult = serverQueryModal.locator(".code-preview-inner");
@@ -387,7 +384,7 @@ test.describe("server queries", () => {
         npmPkg: ["@plasmicpkgs/fetch"],
       },
     });
-    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await goToProject(page, `/projects/${projectId}`);
 
     await generateMocks(page);
 
@@ -512,7 +509,7 @@ test.describe("server queries", () => {
         npmPkg: ["@plasmicpkgs/graphql"],
       },
     });
-    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await goToProject(page, `/projects/${projectId}`);
 
     const GRAPHQL_MOCK_URL = "https://mock-graphql-for-server-queries.test";
     const receivedMethods: string[] = [];
@@ -675,7 +672,7 @@ test.describe("server queries", () => {
       .context()
       .grantPermissions(["clipboard-read", "clipboard-write"]);
     await generateMocks(page);
-    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await goToProject(page, `/projects/${projectId}`);
 
     await models.studio.leftPanel.createNewPage("Await Page");
 
@@ -792,7 +789,7 @@ test.describe("server queries – advanced", () => {
         npmPkg: ["@plasmicpkgs/fetch"],
       },
     });
-    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await goToProject(page, `/projects/${projectId}`);
     await generateAdvancedMocks(page);
 
     // Mock for the dependent query in ItemCard
@@ -874,7 +871,7 @@ test.describe("server queries – advanced", () => {
         npmPkg: ["@plasmicpkgs/fetch"],
       },
     });
-    await goToProject(page, `/projects/${projectId}?serverQueries=true`);
+    await goToProject(page, `/projects/${projectId}`);
     await generateAdvancedMocks(page);
 
     await models.studio.leftPanel.createNewPage("Advanced Page");

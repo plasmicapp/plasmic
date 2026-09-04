@@ -144,7 +144,6 @@ import {
   canInsertAlias,
   canInsertHostlessPackage,
 } from "@/wab/shared/ui-config-utils";
-import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
@@ -1464,14 +1463,7 @@ export function buildAddItemGroups({
               isComponentHiddenFromContentEditor(c, studioCtx)
             )
         )
-      ).map((comp) => ({
-        ...createAddTplComponent(comp),
-        // TODO: improve placeholder image!
-        previewImageUrl: studioCtx.appCtx.appConfig.componentThumbnails
-          ? studioCtx.getCachedThumbnail(comp.uuid) ?? placeholderImgUrl()
-          : undefined,
-        isCompact: studioCtx.appCtx.appConfig.componentThumbnails,
-      })),
+      ).map((comp) => createAddTplComponent(comp)),
     },
     {
       sectionKey: "components",
@@ -1490,14 +1482,7 @@ export function buildAddItemGroups({
               isComponentHiddenFromContentEditor(c, studioCtx)
             )
         )
-      ).map((comp) => ({
-        ...createAddTplComponent(comp),
-        // TODO: improve placeholder image!
-        previewImageUrl: studioCtx.appCtx.appConfig.componentThumbnails
-          ? studioCtx.getCachedThumbnail(comp.uuid) ?? placeholderImgUrl()
-          : undefined,
-        isCompact: studioCtx.appCtx.appConfig.componentThumbnails,
-      })),
+      ).map((comp) => createAddTplComponent(comp)),
     },
 
     // Code components groups

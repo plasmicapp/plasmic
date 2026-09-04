@@ -3,7 +3,6 @@ import { Matcher } from "@/wab/client/components/view-common";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import Select from "@/wab/client/components/widgets/Select";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultTeamMemberListProps,
   PlasmicTeamMemberList,
@@ -46,7 +45,6 @@ function TeamMemberList_(
     tier,
     ...rest
   } = props;
-  const appCtx = useAppCtx();
 
   // Shared Modal
   const [sharedModal, setSharedModal] = React.useState(false);
@@ -109,19 +107,8 @@ function TeamMemberList_(
             <Select.Option value="all">All Roles</Select.Option>,
             <Select.Option value="owner">Owners</Select.Option>,
             <Select.Option value="editor">Developers</Select.Option>,
-            ...(appCtx.appConfig.contentOnly ||
-            perms.some(
-              (perm) =>
-                perm.accessLevel === "designer" ||
-                perm.accessLevel === "content"
-            )
-              ? [
-                  <Select.Option value="designer">Designers</Select.Option>,
-                  <Select.Option value="content">
-                    Content Creators
-                  </Select.Option>,
-                ]
-              : []),
+            <Select.Option value="designer">Designers</Select.Option>,
+            <Select.Option value="content">Content Creators</Select.Option>,
             ...(perms.some((perm) => perm.accessLevel === "commenter")
               ? [<Select.Option value="commenter">Commenters</Select.Option>]
               : []),

@@ -127,13 +127,7 @@ function TeamMemberListItem_(
             Owner
           </Select.Option>,
           <Select.Option value="editor">{developerTooltip}</Select.Option>,
-          <Select.Option
-            value="content"
-            style={{
-              display: appCtx.appConfig.contentOnly ? undefined : "none",
-            }}
-            isDisabled={!tier.contentRole}
-          >
+          <Select.Option value="content" isDisabled={!tier.contentRole}>
             {tier.contentRole ? (
               contentCreatorTooltip
             ) : (
@@ -142,13 +136,7 @@ function TeamMemberListItem_(
               </TextWithInfo>
             )}
           </Select.Option>,
-          <Select.Option
-            value="designer"
-            style={{
-              display: appCtx.appConfig.contentOnly ? undefined : "none",
-            }}
-            isDisabled={!tier.designerRole}
-          >
+          <Select.Option value="designer" isDisabled={!tier.designerRole}>
             {tier.designerRole ? (
               designerTooltip
             ) : (

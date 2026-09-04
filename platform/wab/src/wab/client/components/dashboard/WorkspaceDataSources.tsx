@@ -37,8 +37,7 @@ function WorkspaceDataSources_(
   ref: HTMLElementRefOf<"div">
 ) {
   const [isEditing, setIsEditing] = React.useState<"new" | ApiDataSource>();
-  const allowNewDataSources =
-    appCtx.appConfig.enableDataQueries || !appCtx.appConfig.rscRelease;
+  const allowNewDataSources = appCtx.appConfig.enableDataQueries;
 
   const showIntegrations = allowNewDataSources || !!dataSources.length;
   return (

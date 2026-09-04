@@ -14,7 +14,6 @@ import {
   Router,
 } from "@/wab/client/cli-routes";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
-import { IntroSplash } from "@/wab/client/components/modals/IntroSplash";
 import {
   NormalLayout,
   NormalNonAuthLayout,
@@ -145,7 +144,6 @@ function LoggedInContainer(props: LoggedInContainerProps) {
         )
       }
     >
-      <IntroSplash />
       {!selfInfo ? (
         // Not logged in users
         <Switch
