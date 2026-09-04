@@ -3,25 +3,6 @@
 import { describe, expect, it, vi } from "vitest";
 import React, { createRef } from "react";
 import { render } from "@testing-library/react";
-
-// react-slick uses enquire.js which requires matchMedia.
-// This must be set up before react-slick is imported.
-vi.hoisted(() => {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: (query: string) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => {},
-    }),
-  });
-});
-
 import { SliderWrapper, SliderMethods } from "../index";
 
 let inCanvas = false;
