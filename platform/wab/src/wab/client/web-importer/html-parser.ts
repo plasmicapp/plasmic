@@ -292,12 +292,15 @@ function computeStylesFromWIRules(rules: WIRule[]) {
 }
 
 /**
+ * Sanitizes one declaration into the (camelCase) styles the importer writes;
+ * an empty result means the prop is ignored.
+ *
  * The underlying value parsers (peg-based parseCss, CssTransforms, css-tree etc)
  * could throw on values they can't handle; and a throw here is an expected domain failure,
  * so it's converted into an `invalid-style-declaration` Err for the caller to
  * drop-and-report rather than crashing the whole import.
  */
-function fixCSSValue(
+export function fixCSSValue(
   key: string,
   value: string
 ): Result<Record<string, string>, WIError> {
@@ -327,10 +330,6 @@ function fixCSSValueUnsafe(key: string, value: string): Record<string, string> {
 
   const fixedKey = getFixedKey();
 
-  if (ignoredStyles.has(fixedKey)) {
-    return {};
-  }
-
   function getFixedValue() {
     if (value.startsWith("env(")) {
       const envTerms = value.slice(4, -1).split(/\s*,\s*/);
@@ -354,8 +353,9 @@ function fixCSSValueUnsafe(key: string, value: string): Record<string, string> {
 
   const fixedValue = getFixedValue();
 
+  // Parse before ignoring so a malformed value is reported either way.
   const valueNode = cssParse(fixedValue, { context: "value" });
-  if (valueNode.type !== "Value") {
+  if (ignoredStyles.has(fixedKey) || valueNode.type !== "Value") {
     return {};
   }
 
@@ -632,12 +632,19 @@ export function processUnsanitizedStyles(
   safe: WISafeStyles;
   unsafe: WIUnsafeStyles;
   errors: WIError[];
+  ignored: string[];
 } {
   const newStyles: Record<string, string> = {};
   const errors: WIError[] = [];
+  const ignored: string[] = [];
   for (const [key, value] of Object.entries(unsanitizedStyles)) {
     fixCSSValue(key, value).match(
-      (fixedStyles) => Object.assign(newStyles, fixedStyles),
+      (fixedStyles) => {
+        if (Object.keys(fixedStyles).length === 0) {
+          ignored.push(key);
+        }
+        Object.assign(newStyles, fixedStyles);
+      },
       (error) => errors.push(error)
     );
   }
@@ -655,7 +662,7 @@ export function processUnsanitizedStyles(
     Object.assign(newStyles, expandedGapProperties);
   }
 
-  return { ...splitStylesBySafety(newStyles), errors };
+  return { ...splitStylesBySafety(newStyles), errors, ignored };
 }
 
 function hasLayoutStyleKeys(variantSettings: WIVariantSettings[]): boolean {
@@ -1299,4 +1306,4 @@ export async function parseHtmlToWebImporterTree(
   });
 }
 
-export const _testOnlyUtils = { fixCSSValue, renameTokenVarNameToUuid };
+export const _testOnlyUtils = { renameTokenVarNameToUuid };

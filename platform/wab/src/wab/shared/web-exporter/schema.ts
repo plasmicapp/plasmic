@@ -55,12 +55,21 @@ export function readResultSchema() {
     componentSchema(),
     elementSchema(),
     tokenSchema(),
+    mixinSchema(),
     animationSchema(),
+    themeSchema(),
     dataContextSchema(),
     invalidResourceSchema(),
   ]);
 }
 export type ReadResultJson = z.infer<ReturnType<typeof readResultSchema>>;
+
+export function themeResultSchema() {
+  return z.discriminatedUnion("__type", [
+    themeSchema(),
+    invalidResourceSchema(),
+  ]);
+}
 
 export function componentResultSchema() {
   return z.discriminatedUnion("__type", [
@@ -72,6 +81,13 @@ export function componentResultSchema() {
 export function tokenResultSchema() {
   return z.discriminatedUnion("__type", [
     tokenSchema(),
+    invalidResourceSchema(),
+  ]);
+}
+
+export function mixinResultSchema() {
+  return z.discriminatedUnion("__type", [
+    mixinSchema(),
     invalidResourceSchema(),
   ]);
 }
@@ -103,10 +119,18 @@ export function projectSchema() {
       .array(tokenSchema())
       .optional()
       .describe("Style tokens (own + imported), when requested."),
+    mixins: z
+      .array(mixinSchema())
+      .optional()
+      .describe("Mixins / style presets (own + imported), when requested."),
     animations: z
       .array(animationSummarySchema())
       .optional()
       .describe("Animation sequences (own + imported), when requested."),
+    themes: z
+      .array(themeSchema())
+      .optional()
+      .describe("Themes / default styles (active or all), when requested."),
     dataQueryFunctions: dataQueryFunctionsSchema()
       .optional()
       .describe(
@@ -728,6 +752,93 @@ export type VariantedValueJson = z.infer<
   ReturnType<typeof variantedValueSchema>
 >;
 
+function mixinSchema() {
+  return z.object({
+    __type: z.literal("Mixin"),
+    name: z.string().describe("Mixin name."),
+    uuid: z.string().describe("Mixin UUID."),
+    fromProject: z
+      .string()
+      .optional()
+      .describe("Imported project id, present only for imported mixins."),
+    styles: z
+      .record(z.string(), z.string())
+      .describe("Base CSS properties, keyed by CSS property name."),
+    preview: z
+      .string()
+      .optional()
+      .describe("Sample content shown in the mixin's preview swatch."),
+    variantedStyles: z
+      .array(variantedStyleSchema())
+      .optional()
+      .describe("Per-global-variant style overrides."),
+  });
+}
+export type MixinJson = z.infer<ReturnType<typeof mixinSchema>>;
+
+export function themeSchema() {
+  return z.object({
+    __type: z.literal("Theme"),
+    uuid: z.string().describe("Theme UUID."),
+    active: z
+      .boolean()
+      .optional()
+      .describe(
+        "True for the project's currently active theme; at most one theme is active."
+      ),
+    fromProject: z
+      .string()
+      .optional()
+      .describe(
+        "Imported project id, present only for imported themes. Imported themes can be activated but not edited."
+      ),
+    styles: z
+      .array(themeStyleSchema())
+      .describe(
+        'Default style entries: the base typography entry (selector "") plus per-tag entries (e.g. "h1", "a:hover").'
+      ),
+  });
+}
+export type ThemeJson = z.infer<ReturnType<typeof themeSchema>>;
+
+export function themeStyleSchema() {
+  return z.object({
+    __type: z.literal("ThemeStyle"),
+    selector: z
+      .string()
+      .describe(
+        'What this entry styles: "" for base typography (all text), an HTML tag (e.g. "h1"), or a tag plus pseudo-class (e.g. "a:hover").'
+      ),
+    styles: z
+      .record(z.string(), z.string())
+      .describe("Base CSS property values."),
+    variantedStyles: z
+      .array(variantedStyleSchema())
+      .optional()
+      .describe(
+        "Per-global-variant style overrides (e.g. per screen breakpoint)."
+      ),
+  });
+}
+export type ThemeStyleJson = z.infer<ReturnType<typeof themeStyleSchema>>;
+
+export function variantedStyleSchema() {
+  return z.object({
+    __type: z.literal("VariantedStyle"),
+    variantUuids: z
+      .array(z.string())
+      .describe(
+        "Global-variant UUIDs whose combination these styles apply to (order-independent)."
+      ),
+    styles: z
+      .record(z.string(), z.string())
+      .describe("CSS property values for this variant combination."),
+  });
+}
+export type VariantedStyleJson = z.infer<
+  ReturnType<typeof variantedStyleSchema>
+>;
+
 export function animationSchema() {
   return z.object({
     __type: z.literal("Animation"),
@@ -760,6 +871,7 @@ export function invalidResourceSchema() {
       .enum([
         "Component",
         "Token",
+        "Mixin",
         "Element",
         "Variant",
         "VariantedValue",
@@ -769,6 +881,8 @@ export function invalidResourceSchema() {
         "State",
         "Interaction",
         "DataContext",
+        "Theme",
+        "ThemeStyle",
       ])
       .describe(
         "Kind of resource that could not be found (matches its __type)."

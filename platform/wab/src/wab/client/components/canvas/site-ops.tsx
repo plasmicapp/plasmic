@@ -15,7 +15,10 @@ import {
 } from "@/wab/client/dom-utils";
 import { deleteComponent } from "@/wab/client/operations/delete-component";
 import { deleteComponentState } from "@/wab/client/operations/delete-component-state";
-import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
+import {
+  deleteResourcesWithUsages,
+  type DeleteResourcesOpts,
+} from "@/wab/client/operations/delete-resources";
 import { deleteStyleToken } from "@/wab/client/operations/delete-style-token";
 import { deleteVariant } from "@/wab/client/operations/delete-variant";
 import { deleteVariantGroup } from "@/wab/client/operations/delete-variant-group";
@@ -1299,8 +1302,7 @@ export class SiteOps {
       component,
       this.site,
       this.studioCtx,
-      this.tplMgr,
-      { behaviour: "confirm-if-referenced" }
+      this.tplMgr
     );
 
     if (result.isErr() && !result.error.cancelled) {
@@ -1691,15 +1693,7 @@ export class SiteOps {
     );
   }
 
-  async tryDeleteTokens(
-    tokens: StyleToken[],
-    opts?: {
-      behaviour?:
-        | "confirm-if-referenced"
-        | "delete-if-referenced"
-        | "error-if-referenced";
-    }
-  ) {
+  async tryDeleteTokens(tokens: StyleToken[], opts?: DeleteResourcesOpts) {
     const resourcesWithUsage = tokens.map((token) => {
       const [usages, summary] = extractTokenUsages(this.site, token);
       return {
@@ -1714,7 +1708,7 @@ export class SiteOps {
       resourcesWithUsage,
       (token) => deleteStyleToken({ site: this.site, token }),
       {
-        behaviour: opts?.behaviour,
+        ...opts,
         deleteLabel: TOKEN_LOWER,
       }
     );
@@ -1753,7 +1747,7 @@ export class SiteOps {
     );
   }
 
-  async tryDeleteMixins(mixins: Mixin[]) {
+  async tryDeleteMixins(mixins: Mixin[], opts?: DeleteResourcesOpts) {
     const resourcesWithUsage = mixins.map((mixin) => {
       const [usages, summary] = extractMixinUsages(this.site, mixin);
       return {
@@ -1772,6 +1766,7 @@ export class SiteOps {
         arrayRemove(this.site.mixins, mixin);
       },
       {
+        ...opts,
         deleteLabel: MIXIN_LOWER,
       }
     );
@@ -1779,12 +1774,7 @@ export class SiteOps {
 
   async tryDeleteAnimationSequences(
     animationSequences: AnimationSequence[],
-    opts?: {
-      behaviour?:
-        | "confirm-if-referenced"
-        | "delete-if-referenced"
-        | "error-if-referenced";
-    }
+    opts?: DeleteResourcesOpts
   ) {
     const resourcesWithUsage = animationSequences.map((animSeq) => {
       const [usages, summary] = extractAnimationSequenceUsages(
@@ -1809,7 +1799,7 @@ export class SiteOps {
         arrayRemove(this.site.animationSequences, animSeq);
       },
       {
-        behaviour: opts?.behaviour,
+        ...opts,
         deleteLabel: ANIMATION_SEQUENCES_LOWER,
       }
     );

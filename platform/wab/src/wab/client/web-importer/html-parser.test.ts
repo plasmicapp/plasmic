@@ -3,6 +3,7 @@ import { translationTable } from "@/wab/client/web-importer/constants";
 import { WIError } from "@/wab/client/web-importer/errors";
 import {
   _testOnlyUtils,
+  fixCSSValue as fixCSSValueResult,
   parseHtmlToWebImporterTree,
   processUnsanitizedStyles,
 } from "@/wab/client/web-importer/html-parser";
@@ -21,7 +22,7 @@ import path from "path";
 const parseHtml = async (html: string, site: Site) =>
   (await parseHtmlToWebImporterTree(html, site))._unsafeUnwrap();
 const fixCSSValue = (key: string, value: string) =>
-  _testOnlyUtils.fixCSSValue(key, value)._unsafeUnwrap();
+  fixCSSValueResult(key, value)._unsafeUnwrap();
 const renameTokenVarNameToUuid = (value: string, site: Site) =>
   _testOnlyUtils.renameTokenVarNameToUuid(value, site, []);
 
@@ -1477,6 +1478,7 @@ describe("processUnsanitizedStyles", () => {
       safe: { background: `url("${url}")` },
       unsafe: {},
       errors: [],
+      ignored: [],
     });
   });
 
@@ -1492,8 +1494,26 @@ describe("processUnsanitizedStyles", () => {
         safe: {},
         unsafe: { background: `url("${url}")` },
         errors: [],
+        ignored: [],
       });
     }
+  });
+
+  it("reports declarations that yield no style as ignored", () => {
+    expect(
+      processUnsanitizedStyles({
+        transition: "all 0.2s ease",
+        "pointer-events": "none",
+        flex: "rgb(0, 0, 0)",
+        color: "",
+        "font-size": "24px",
+      })
+    ).toEqual({
+      safe: { fontSize: "24px" },
+      unsafe: {},
+      errors: [],
+      ignored: ["transition", "pointer-events", "flex", "color"],
+    });
   });
 
   it("validates url() targets regardless of the function name casing", () => {
@@ -1503,6 +1523,7 @@ describe("processUnsanitizedStyles", () => {
       safe: {},
       unsafe: { cursor: "URL(/bad.cur), pointer" },
       errors: [],
+      ignored: [],
     });
 
     expect(
@@ -1513,6 +1534,7 @@ describe("processUnsanitizedStyles", () => {
       safe: { cursor: "Url(https://example.com/ok.cur), pointer" },
       unsafe: {},
       errors: [],
+      ignored: [],
     });
   });
 });
@@ -1871,7 +1893,7 @@ describe("error reporting", () => {
   });
 
   it("returns Err from fixCSSValue for unparseable values", () => {
-    const result = _testOnlyUtils.fixCSSValue("background-color", "5px");
+    const result = fixCSSValueResult("background-color", "5px");
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr()).toMatchObject({
       code: "invalid-style-declaration",

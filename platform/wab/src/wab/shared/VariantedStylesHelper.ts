@@ -198,10 +198,9 @@ export class VariantedStylesHelper {
       : variantedRs?.rs;
 
     if (!value) {
-      delete ensure(
-        activeRuleSet,
-        "Active rule set must already exist if deleting values"
-      ).values[prop];
+      if (activeRuleSet) {
+        new RuleSetHelpers(activeRuleSet, "").clear(prop);
+      }
     } else {
       if (!activeRuleSet) {
         mixin.variantedRs.push(
@@ -219,7 +218,7 @@ export class VariantedStylesHelper {
         );
       }
       const rs = activeRuleSet ?? last(mixin.variantedRs).rs;
-      rs.values[prop] = value;
+      new RuleSetHelpers(rs, "").set(prop, value);
     }
   }
 

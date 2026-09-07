@@ -6,25 +6,34 @@ import {
 } from "@/wab/shared/core/site-style-tokens";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
+import { getSelectableThemes } from "@/wab/shared/core/theme-styles";
+import { BASE_THEMABLE_TAG } from "@/wab/shared/html";
 import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import {
   AnimationSequence,
   Component,
+  Mixin,
   Site,
   StyleToken,
   StyleTokenOverride,
+  Theme,
 } from "@/wab/shared/model/classes";
+import { getStylesFromRuleSet } from "@/wab/shared/web-exporter/component-exporter";
 import {
   type AnimationJson,
   type AnimationSummaryJson,
   type ComponentSummaryJson,
   type DataQueryFunctionsJson,
   type GlobalVariantGroupJson,
+  type MixinJson,
   type ProjectJson,
   type ScreenBreakpointJson,
+  type ThemeJson,
+  type ThemeStyleJson,
   type TokenJson,
   type TokenValuesJson,
+  type VariantedStyleJson,
   type VariantedValueJson,
 } from "@/wab/shared/web-exporter/schema";
 
@@ -45,7 +54,9 @@ export function buildProjectResource(
     screenBreakpoints?: boolean;
     globalVariants?: boolean;
     tokens?: boolean;
+    mixins?: boolean;
     animations?: boolean;
+    themes?: "active" | "all";
   }
 ): ProjectJson {
   let components: ComponentSummaryJson[] | undefined;
@@ -143,6 +154,18 @@ export function buildProjectResource(
     );
   }
 
+  let mixins: MixinJson[] | undefined;
+  if (opts.mixins) {
+    mixins = [
+      ...site.mixins.map((mixin) => buildMixinResource(mixin)),
+      ...site.projectDependencies.flatMap((dep) =>
+        dep.site.mixins.map((mixin) =>
+          buildMixinResource(mixin, { fromProject: dep.projectId })
+        )
+      ),
+    ];
+  }
+
   let animations: AnimationSummaryJson[] | undefined;
   if (opts.animations) {
     const toAnimationSummary = (
@@ -164,6 +187,29 @@ export function buildProjectResource(
     ];
   }
 
+  let themes: ThemeJson[] | undefined;
+  if (opts.themes) {
+    const selectable = getSelectableThemes(site);
+    const included =
+      opts.themes === "all"
+        ? [...selectable]
+        : selectable.filter((st) => st.theme === site.activeTheme);
+    // Legacy projects can have an active theme in neither site.themes nor a
+    // dependency.
+    if (
+      site.activeTheme &&
+      !included.some((st) => st.theme === site.activeTheme)
+    ) {
+      included.push({ theme: site.activeTheme });
+    }
+    themes = included.map(({ theme, fromProject }) =>
+      buildThemeResource(theme, {
+        active: theme === site.activeTheme,
+        fromProject,
+      })
+    );
+  }
+
   return {
     __type: "Project",
     id: opts.projectId,
@@ -171,13 +217,43 @@ export function buildProjectResource(
     ...(screenBreakpoints ? { screenBreakpoints } : {}),
     ...(globalVariantGroups ? { globalVariantGroups } : {}),
     ...(tokens ? { tokens } : {}),
+    ...(mixins ? { mixins } : {}),
     ...(animations ? { animations } : {}),
+    ...(themes ? { themes } : {}),
     ...(customFunctions ? { dataQueryFunctions: customFunctions } : {}),
     importedProjects: site.projectDependencies.map((dep) => ({
       __type: "ImportedProject",
       id: dep.projectId,
       name: dep.name,
     })),
+  };
+}
+
+export function buildThemeResource(
+  theme: Theme,
+  opts: { active?: boolean; fromProject?: string } = {}
+): ThemeJson {
+  const toThemeStyleModel = (
+    selector: string,
+    mixin: Mixin
+  ): ThemeStyleJson => {
+    const variantedStyles = buildVariantedStylesModel(mixin);
+    return {
+      __type: "ThemeStyle",
+      selector,
+      styles: getStylesFromRuleSet(mixin.rs),
+      ...(variantedStyles.length > 0 ? { variantedStyles } : {}),
+    };
+  };
+  return {
+    __type: "Theme",
+    uuid: theme.defaultStyle.uuid,
+    ...(opts.active ? { active: true } : {}),
+    ...(opts.fromProject ? { fromProject: opts.fromProject } : {}),
+    styles: [
+      toThemeStyleModel(BASE_THEMABLE_TAG, theme.defaultStyle),
+      ...theme.styles.map((ts) => toThemeStyleModel(ts.selector, ts.style)),
+    ],
   };
 }
 
@@ -249,6 +325,32 @@ function buildVariantedValuesModel(
     }
     return value;
   });
+}
+
+export function buildMixinResource(
+  mixin: Mixin,
+  opts: { fromProject?: string } = {}
+): MixinJson {
+  const variantedStyles = buildVariantedStylesModel(mixin);
+  return {
+    __type: "Mixin",
+    name: mixin.name,
+    uuid: mixin.uuid,
+    ...(opts.fromProject ? { fromProject: opts.fromProject } : {}),
+    styles: getStylesFromRuleSet(mixin.rs),
+    ...(mixin.preview ? { preview: mixin.preview } : {}),
+    ...(variantedStyles.length > 0 ? { variantedStyles } : {}),
+  };
+}
+
+function buildVariantedStylesModel(mixin: Mixin): VariantedStyleJson[] {
+  return mixin.variantedRs.map(
+    (vRs): VariantedStyleJson => ({
+      __type: "VariantedStyle",
+      variantUuids: vRs.variants.map((v) => v.uuid),
+      styles: getStylesFromRuleSet(vRs.rs),
+    })
+  );
 }
 
 /** Build the canonical JSON model for an animation sequence. */

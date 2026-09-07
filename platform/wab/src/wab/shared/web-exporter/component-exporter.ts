@@ -253,10 +253,17 @@ function getVisibilityAttrs(
   }
 }
 
+function getMixinAttrs(vs: VariantSetting): Record<string, string> {
+  return vs.rs.mixins.length > 0
+    ? { "data-mixins": vs.rs.mixins.map((m) => m.uuid).join(" ") }
+    : {};
+}
+
 /**
- * Serializes repetition + visibility bindings as `data-*` attributes so they survive
- * read -> insertHtml (mirrors html-to-tpl's parsing):
+ * Serializes repetition + mixin + visibility bindings as `data-*` attributes
+ * (mirrors html-to-tpl's parsing):
  * - Repetition (base-vs only): `data-repeat` / `data-repeat-item` / `data-repeat-index`.
+ * - Mixins (the given vs): see getMixinAttrs.
  * - Visibility (the given vs): see getVisibilityAttrs.
  */
 function getStructuralBindingAttrs(
@@ -278,7 +285,7 @@ function getStructuralBindingAttrs(
     }
   }
 
-  return { ...attrs, ...getVisibilityAttrs(vs) };
+  return { ...attrs, ...getMixinAttrs(vs), ...getVisibilityAttrs(vs) };
 }
 
 /** Serializes a styles record to a style attribute value. */
@@ -512,6 +519,7 @@ function getTplOverrides(
     const styles = getStylesFromVariantSetting(vs, tpl);
     const attrs = {
       ...getAttrsFromVariantSetting(vs),
+      ...getMixinAttrs(vs),
       ...getVisibilityAttrs(vs, { explicitVisible: true }),
     };
 

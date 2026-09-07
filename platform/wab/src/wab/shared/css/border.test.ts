@@ -1,8 +1,8 @@
-import { _testOnlyUtils } from "@/wab/client/web-importer/html-parser";
+import { fixCSSValue as fixCSSValueResult } from "@/wab/client/web-importer/html-parser";
 import { parseBorderShorthand } from "@/wab/shared/css/border";
 import { Value, parse } from "css-tree";
 const fixCSSValue = (key: string, value: string) =>
-  _testOnlyUtils.fixCSSValue(key, value)._unsafeUnwrap();
+  fixCSSValueResult(key, value)._unsafeUnwrap();
 
 function getTestValueNode(testValue: string) {
   const testValueNode = parse(testValue, { context: "value" }) as Value;

@@ -9,15 +9,16 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicDefaultStylesPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isScreenVariant } from "@/wab/shared/Variants";
-import { ensure, mkShortId } from "@/wab/shared/common";
-import { getApplicableSelectors, mkRuleSet } from "@/wab/shared/core/styles";
+import { ensure } from "@/wab/shared/common";
+import { getApplicableSelectors } from "@/wab/shared/core/styles";
+import { ensureThemeStyleMixin } from "@/wab/shared/core/theme-styles";
 import {
   BASE_THEMABLE_TAG,
   THEMABLE_TAGS,
   ThemableTag,
   tagDisplayLabel,
 } from "@/wab/shared/html";
-import { Mixin, ThemeStyle, Variant } from "@/wab/shared/model/classes";
+import { Mixin, Variant } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
@@ -58,6 +59,18 @@ const DefaultStylesPanel = observer(
         return;
       }
 
+      // A pseudo-class left over from the previous tag (a:visited -> h1) would
+      // create an invalid entry.
+      if (
+        pseudoClass &&
+        !getApplicableSelectors(tag, true, false).some(
+          (op) => op.cssSelector === pseudoClass
+        )
+      ) {
+        setPseudoClass("");
+        return;
+      }
+
       const selector = `${tag}${pseudoClass}`;
       const existing = activeTheme.styles.find((m) => m.selector === selector);
       if (existing) {
@@ -66,21 +79,7 @@ const DefaultStylesPanel = observer(
       }
 
       await studioCtx.change<never>(() => {
-        const newMixin = new Mixin({
-          name: `Default "${selector}"`,
-          rs: mkRuleSet({}),
-          preview: undefined,
-          uuid: mkShortId(),
-          forTheme: true,
-          variantedRs: [],
-        });
-        activeTheme.styles.push(
-          new ThemeStyle({
-            selector,
-            style: newMixin,
-          })
-        );
-        setMixin(newMixin);
+        setMixin(ensureThemeStyleMixin(activeTheme, selector));
         return ok();
       });
     }, [activeTheme, tag, pseudoClass]);

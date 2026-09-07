@@ -5,6 +5,7 @@ import {
   readAndSanitizeSvgXmlAsImage,
   ResizableImage,
 } from "@/wab/client/dom-utils";
+import { applySanitizedTplStyles } from "@/wab/client/operations/set-tpl-styles";
 import {
   WIError,
   WIImportFailedError,
@@ -48,9 +49,9 @@ import {
 import { nodeMarkerText } from "@/wab/shared/core/rich-text-util";
 import {
   allAnimationSequences,
+  allMixins,
   getResponsiveStrategy,
 } from "@/wab/shared/core/sites";
-import { validateStylesForTpl } from "@/wab/shared/core/style-props-tpl";
 import {
   mkRuleSet,
   tryGetAnimationSequenceUuidFromCssVar,
@@ -105,7 +106,6 @@ import {
   wabToTsType,
 } from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
@@ -176,6 +176,7 @@ export async function htmlToTpl(
     tplVariantSettingsData,
     tplRepeatData,
     tplVisibilityData,
+    tplMixinsData,
   } = await wiTreeToTpl(wiTree, { site, vtm, appCtx, errors });
 
   if (tpls.length === 0) {
@@ -319,6 +320,28 @@ export async function htmlToTpl(
         }
       }
 
+      // Apply data-mixins onto the base variant setting. The mixins are
+      // appended rather than applied with vtm.applyMixin, so the element's
+      // own styles from the HTML keep outranking them.
+      if (tplMixinsData.size > 0) {
+        const siteMixins = allMixins(site, { includeDeps: "direct" });
+        for (const [tplNode, uuids] of tplMixinsData.entries()) {
+          const rs = vtm.ensureBaseVariantSetting(tplNode).rs;
+          for (const uuid of uuids) {
+            const mixin = siteMixins.find((m) => m.uuid === uuid);
+            if (!mixin) {
+              htmlToTplErrors.push({
+                code: "unknown-mixin",
+                tpl: tplRef(tplNode),
+                mixin: uuid,
+              });
+            } else if (!rs.mixins.includes(mixin)) {
+              rs.mixins.push(mixin);
+            }
+          }
+        }
+      }
+
       // if we have any image/svg tpls we need to create their respective assets and update their attrs accordingly
       for (const [assetTpl, assetData] of tplImageAssetMap) {
         const { asset } = finalizeOpts.tplMgr.getOrCreateImageAsset(
@@ -357,6 +380,7 @@ export const htmlAttrsIgnoredByTpl = new Set([
   "data-repeat-index", // repetition index local-var name
   "data-visible-if", // dynamic visibility condition (dataCond)
   "data-visibility", // static visibility state (displayNone / notRendered)
+  "data-mixins", // applied mixin uuids (rs.mixins)
 ]);
 
 /** Matches both lowercase HTML (`onclick`) and camelCase React (`onClick`). */
@@ -446,27 +470,21 @@ function applyVariantStyles(
   htmlToTplErrors: WIError[]
 ) {
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
-  // Only styles Studio allows on this tpl may enter the RuleSet; the rest are
-  // dropped and reported in errors.
-  const { valid, invalid } = validateStylesForTpl(
-    safeStyles,
+  const { invalid } = applySanitizedTplStyles({
     tpl,
-    vtm.effectiveRsh(tpl, variantCombo),
-    ccRegistry
-  );
-  RSH(vs.rs, tpl).merge(valid);
-  const invalidProps = Object.keys(invalid);
-  if (invalidProps.length > 0) {
+    vs,
+    effectiveRsh: vtm.effectiveRsh(tpl, variantCombo),
+    ccRegistry,
+    safe: safeStyles,
+    unsafe: unsafeStyles,
+  });
+  if (invalid.length > 0) {
     htmlToTplErrors.push({
       code: "styles-not-applicable",
       tpl: tplRef(tpl),
-      props: invalidProps,
+      props: invalid,
       variantDesc: toVariantComboKey(variantCombo),
     });
-  }
-
-  if (Object.keys(unsafeStyles).length > 0) {
-    vs.attrs["style"] = code(JSON.stringify(unsafeStyles));
   }
 
   vs.rs.animations = animations;
@@ -521,10 +539,18 @@ async function wiTreeToTpl(
     }
   >();
   const tplVariantSettingsData = new Map<TplNode, TplVariantSettingsData[]>();
-  // Repetition (data-repeat) and visibility (data-visibility / data-visible-if),
-  // are both applied in finalize.
+  // Repetition (data-repeat), visibility (data-visibility / data-visible-if)
+  // and mixins (data-mixins) are all applied in finalize.
   const tplRepeatData = new Map<TplNode, TplRepeatData>();
   const tplVisibilityData = new Map<TplNode, TplVisibilityData>();
+  const tplMixinsData = new Map<TplNode, string[]>();
+
+  function collectMixins(node: WIBase, tpl: TplNode) {
+    const uuids = node.attrs["data-mixins"]?.split(/\s+/).filter(Boolean);
+    if (uuids && uuids.length > 0) {
+      tplMixinsData.set(tpl, uuids);
+    }
+  }
 
   function collectDataRepeat(node: WIBase, tpl: TplNode) {
     const collectionStr = node.attrs["data-repeat"];
@@ -560,10 +586,11 @@ async function wiTreeToTpl(
     }
   }
 
-  /** Collect repetition + visibility bindings authored via `data-*` attributes. */
+  /** Collect repetition, visibility and mixin bindings authored via `data-*` attributes. */
   function collectStructuralBindings(node: WIBase, tpl: TplNode) {
     collectDataRepeat(node, tpl);
     collectVisibility(node, tpl);
+    collectMixins(node, tpl);
   }
 
   function collectWIVariantData(
@@ -934,6 +961,7 @@ async function wiTreeToTpl(
     tplVariantSettingsData,
     tplRepeatData,
     tplVisibilityData,
+    tplMixinsData,
   };
 }
 

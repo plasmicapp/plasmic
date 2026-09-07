@@ -1,4 +1,7 @@
-import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
+import {
+  deleteResourcesWithUsages,
+  type DeleteResourcesOpts,
+} from "@/wab/client/operations/delete-resources";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import type { TplMgr } from "@/wab/shared/TplMgr";
@@ -42,7 +45,6 @@ export type DeleteVariantResult = Result<string[], DeleteVariantError>;
  *
  * @param variant - The variant to delete
  * @param component - The component containing the variant
- * @param opts - Deletion options with behaviour ("confirm-if-referenced", "delete-if-referenced", "error-if-referenced")
  * @returns Promise<DeleteVariantResult> indicating success or detailed error
  */
 export async function deleteVariant(
@@ -51,12 +53,7 @@ export async function deleteVariant(
   site: Site,
   studioCtx: StudioCtx,
   tplMgr: TplMgr,
-  opts?: {
-    behaviour?:
-      | "confirm-if-referenced"
-      | "delete-if-referenced"
-      | "error-if-referenced";
-  }
+  opts?: DeleteResourcesOpts
 ): Promise<DeleteVariantResult> {
   if (isBaseVariant(variant)) {
     return err({ message: "Cannot delete the base variant." });
@@ -103,7 +100,7 @@ export async function deleteVariant(
       studioCtx.pruneInvalidViewCtxs();
     },
     {
-      behaviour: opts?.behaviour ?? "confirm-if-referenced",
+      ...opts,
       deleteLabel: `variant ${makeVariantName({ variant, site })}`,
     }
   );

@@ -85,6 +85,7 @@ export type WIError =
       selector?: string;
     }
   | { code: "unknown-animation"; animation: string }
+  | { code: "unknown-mixin"; tpl: WITplRef; mixin: string }
   | {
       code: "svg-size-fallback";
       path: string;
@@ -160,6 +161,8 @@ export function formatWIError(error: WIError): string {
         : `Skipped invalid @keyframes "${error.sequence}".`;
     case "unknown-animation":
       return `Dropped animation "${error.animation}": no matching animation sequence in this project.`;
+    case "unknown-mixin":
+      return `Dropped mixin "${error.mixin}" on ${error.tpl.type} uuid=${error.tpl.uuid}: no matching mixin in this project or its direct imports.`;
     case "svg-size-fallback":
       return `SVG${pathAt(
         error.path

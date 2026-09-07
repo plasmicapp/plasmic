@@ -457,6 +457,42 @@ export function hasNonScreenGlobalVariant(variantCombo: Variant[]) {
   return variantCombo.some((v) => !isScreenVariant(v));
 }
 
+/**
+ * Styles under these combos would be unreachable: CSS gets one media query
+ * per rule, and single-choice variants are never active together.
+ */
+export function validateGlobalVariantCombo(
+  variants: Variant[]
+): { ok: true } | { ok: false; error: string } {
+  const screenVariants = [...new Set(variants)].filter((v) =>
+    isScreenVariant(v)
+  );
+  if (screenVariants.length > 1) {
+    return {
+      ok: false,
+      error: `At most one screen breakpoint can be targeted per varianted style (got ${screenVariants
+        .map((v) => `"${v.name}"`)
+        .join(", ")}).`,
+    };
+  }
+  const seenByGroup = new Map<VariantGroup, Variant>();
+  for (const variant of variants) {
+    const group = variant.parent;
+    if (!group || group.multi || isStandaloneVariantGroup(group)) {
+      continue;
+    }
+    const prev = seenByGroup.get(group);
+    if (prev && prev !== variant) {
+      return {
+        ok: false,
+        error: `Variants "${prev.name}" and "${variant.name}" are from the same single-choice group and cannot be combined in one variant target.`,
+      };
+    }
+    seenByGroup.set(group, variant);
+  }
+  return { ok: true };
+}
+
 export function getPartitionedScreenVariants(site: Site, width: number) {
   const active: Variant[] = [];
   const inactive: Variant[] = [];

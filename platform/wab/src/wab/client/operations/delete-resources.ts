@@ -53,26 +53,23 @@ export type DeleteResourcesResult<R extends DeletableResource> = Result<
   DeleteResourcesError
 >;
 
+export type DeleteBehaviour =
+  | "confirm-if-referenced"
+  | "delete-if-referenced"
+  | "error-if-referenced";
+
+export interface DeleteResourcesOpts {
+  behaviour?: DeleteBehaviour;
+}
 /**
  * Generic resource deletion utility that handles changeObserved coordination,
  * optional confirmation dialogs, and structured error/success reporting.
- *
- * @param behaviour Deletion behavior:
- *   - "confirm-if-referenced" - show confirmation dialog if there are usages (for UI, default)
- *   - "delete-if-referenced" - delete even if referenced, no dialog (for copilot tools)
- *   - "error-if-referenced" - return error if referenced, don't delete (for copilot blocks)
  */
 export async function deleteResourcesWithUsages<R extends DeletableResource>(
   studioCtx: StudioCtx,
   resourcesWithUsage: ResourceWithUsage<R>[],
   onDelete: (resource: R) => void,
-  opts: {
-    behaviour?:
-      | "confirm-if-referenced"
-      | "delete-if-referenced"
-      | "error-if-referenced";
-    deleteLabel: string;
-  }
+  opts: DeleteResourcesOpts & { deleteLabel: string }
 ): Promise<DeleteResourcesResult<R>> {
   const messages: string[] = [];
   const errors: string[] = [];

@@ -1,4 +1,7 @@
-import { deleteResourcesWithUsages } from "@/wab/client/operations/delete-resources";
+import {
+  deleteResourcesWithUsages,
+  type DeleteResourcesOpts,
+} from "@/wab/client/operations/delete-resources";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import type { TplMgr } from "@/wab/shared/TplMgr";
 import {
@@ -55,7 +58,6 @@ export type DeleteVariantGroupResult = Result<
  * @param site - The site
  * @param studioCtx - StudioCtx for change tracking
  * @param tplMgr - TplMgr for cleanup
- * @param opts - Deletion options with behaviour ("confirm-if-referenced", "delete-if-referenced", "error-if-referenced")
  * @returns Promise<DeleteVariantGroupResult> indicating success or detailed error
  */
 export async function deleteVariantGroup(
@@ -64,12 +66,7 @@ export async function deleteVariantGroup(
   site: Site,
   studioCtx: StudioCtx,
   tplMgr: TplMgr,
-  opts?: {
-    behaviour?:
-      | "confirm-if-referenced"
-      | "delete-if-referenced"
-      | "error-if-referenced";
-  }
+  opts?: DeleteResourcesOpts
 ): Promise<DeleteVariantGroupResult> {
   if (component) {
     // Check if variant group is referenced in the component
@@ -135,7 +132,7 @@ export async function deleteVariantGroup(
       studioCtx.pruneInvalidViewCtxs();
     },
     {
-      behaviour: opts?.behaviour ?? "confirm-if-referenced",
+      ...opts,
       deleteLabel: `variant group ${group.param.variable.name}`,
     }
   );

@@ -1,8 +1,8 @@
-import { _testOnlyUtils } from "@/wab/client/web-importer/html-parser";
+import { fixCSSValue as fixCSSValueResult } from "@/wab/client/web-importer/html-parser";
 import { parseFlexShorthand } from "@/wab/shared/css/flex";
 import { Value, parse } from "css-tree";
 const fixCSSValue = (key: string, value: string) =>
-  _testOnlyUtils.fixCSSValue(key, value)._unsafeUnwrap();
+  fixCSSValueResult(key, value)._unsafeUnwrap();
 
 function getTestValueNode(testValue: string) {
   const testValueNode = parse(testValue, { context: "value" }) as Value;
