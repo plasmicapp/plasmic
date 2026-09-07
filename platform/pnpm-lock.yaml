@@ -269,8 +269,8 @@ importers:
         specifier: ^2.0.183
         version: 2.0.183(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
-        specifier: ^0.0.372
-        version: 0.0.372(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.373
+        version: 0.0.373(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/cms':
         specifier: ^0.0.40
         version: 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -684,8 +684,8 @@ importers:
         specifier: ^2.0.183
         version: 2.0.183(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
-        specifier: ^0.0.372
-        version: 0.0.372(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.373
+        version: 0.0.373(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/cms':
         specifier: ^0.0.40
         version: 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -1152,8 +1152,8 @@ importers:
         specifier: ^1.0.36
         version: 1.0.36(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
-        specifier: ^0.0.372
-        version: 0.0.372(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.373
+        version: 0.0.373(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/commerce-local':
         specifier: ^0.0.260
         version: 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)
@@ -5423,8 +5423,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/antd5@0.0.372':
-    resolution: {integrity: sha512-bbsj2ErErHi4bXX6AoO6V3zpqk0TJAVPJ0+Vgjd9WovaX10upabhpoLyk3XtZ70ngCkJZQhLZUPDLA9UaOMt0A==}
+  '@plasmicpkgs/antd5@0.0.373':
+    resolution: {integrity: sha512-q8pWlFG+I3bhlhR3s1/I5RSUm6SIyDDMku/41nRJCHA6eQIf7h3ZjLRW2GO2EyqBxXQzmDCgp7paugLHu13teA==}
     peerDependencies:
       '@plasmicapp/data-sources': '>=0.1.0'
       '@plasmicapp/host': '>=1.0.0'
@@ -25765,7 +25765,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/antd5@0.0.372(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/antd5@0.0.373(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/data-sources': 1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -25782,7 +25782,7 @@ snapshots:
       - moment
       - react-dom
 
-  '@plasmicpkgs/antd5@0.0.372(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/antd5@0.0.373(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/data-sources': 1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
