@@ -11,7 +11,7 @@ import {
   uploadProject,
   waitUntilServerUp,
 } from "../../utils";
-export type CodegenPlatform = "nextjs" | "react" | "tanstack";
+export type CodegenPlatform = "nextjs" | "react" | "tanstack" | "gatsby";
 
 export interface CodegenTestContext {
   projectId: string;
@@ -174,9 +174,9 @@ function getStartCommand(platform: CodegenPlatform, port: number): string {
     case "nextjs":
       npmScriptName = "start";
       break;
-    // case "gatsby":
-    //   npmScriptName = "serve";
-    //   break;
+    case "gatsby":
+      npmScriptName = "serve";
+      break;
     case "react":
     case "tanstack":
       npmScriptName = "preview";

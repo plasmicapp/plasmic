@@ -15,10 +15,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.372",
-    "@plasmicapp/host": "^2.0.17",
-    "@plasmicapp/react-web": "^1.0.32",
-    "gatsby": "^5.14.6",
+    "@plasmicapp/cli": "^0.1.377",
+    "@plasmicapp/host": "^2.0.18",
+    "@plasmicapp/react-web": "^1.0.35",
+    "gatsby": "^5.16.1",
     "gatsby-plugin-react-helmet": "^6.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

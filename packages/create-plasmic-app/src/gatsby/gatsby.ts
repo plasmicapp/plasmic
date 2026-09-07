@@ -63,6 +63,10 @@ export const gatsbyStrategy: CPAStrategy = {
     }
   },
   installDeps: async ({ projectPath, scheme, jsOrTs, packageManager }) => {
+    const installedGatsby = await installUpgrade("gatsby@5", {
+      workingDir: projectPath,
+      packageManager,
+    });
     const installedHelmet = await installUpgrade("react-helmet", {
       workingDir: projectPath,
       packageManager,
@@ -81,7 +85,12 @@ export const gatsbyStrategy: CPAStrategy = {
         packageManager,
       }
     );
-    if (!installedHelmet || !installedHelmetPlugin || !installedHelmetTypes) {
+    if (
+      !installedGatsby ||
+      !installedHelmet ||
+      !installedHelmetPlugin ||
+      !installedHelmetTypes
+    ) {
       return false;
     }
 

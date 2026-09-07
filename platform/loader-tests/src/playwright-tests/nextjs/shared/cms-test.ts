@@ -6,6 +6,7 @@ interface TestOpts {
 }
 
 export async function testHomeRoute(page: Page, host: string, opts: TestOpts) {
+  const fetches = trackClientFetches(page);
   await page.goto(`${host}/home`);
 
   await expect(page.getByText("First blog post")).toBeVisible();
@@ -20,6 +21,10 @@ export async function testHomeRoute(page: Page, host: string, opts: TestOpts) {
 
   if (opts.checkTitle) {
     await expect(page).toHaveTitle("Home  |  My Amazing Website");
+  }
+
+  if (opts.checkSSR) {
+    fetches.assertNone();
   }
 }
 

@@ -131,7 +131,7 @@
   "gatsbyConfig": {
     "pagesDir": "../pages"
   },
-  "cliVersion": "0.1.372",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.372/dist/plasmic.schema.json",
-  "packageManager": "npm"
+  "packageManager": "npm",
+  "cliVersion": "0.1.377",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.377/dist/plasmic.schema.json"
 }

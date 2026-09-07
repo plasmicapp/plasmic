@@ -158,7 +158,7 @@ export function trackClientFetches(page: Page) {
       if (opts?.matching) {
         filtered = filtered.filter((f) => opts.matching!.test(f.url));
       }
-      const exclude = opts?.exclude ?? /\/_next\/|[?&]_rsc=/;
+      const exclude = opts?.exclude ?? /\/_next\/|[?&]_rsc=|\/page-data\//;
       filtered = filtered.filter((f) => !exclude.test(f.url));
       expect(
         filtered,
