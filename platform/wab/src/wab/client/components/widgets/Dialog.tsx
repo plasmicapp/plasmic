@@ -3,6 +3,7 @@
 import {
   DefaultDialogProps,
   PlasmicDialog,
+  PlasmicDialog__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicDialog";
 import * as React from "react";
 
@@ -19,7 +20,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultDialogProps altogether and have
 // total control over the props for your component.
-export type DialogProps = DefaultDialogProps;
+export type DialogProps = DefaultDialogProps &
+  Pick<PlasmicDialog__OverridesType, "scrollableContent">;
 
 export function Dialog(props: DialogProps) {
   // Use PlasmicDialog to render this component as it was

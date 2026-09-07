@@ -31,5 +31,6 @@
 }
 .messagetype_assistant {
   background: none;
+  border-radius: 0px;
   padding: 0px;
 }

@@ -34,6 +34,7 @@ import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2
 import sty from "./PlasmicCopilotChatDialog.module.css"; // plasmic-import: zXJ41ZVTz7ne/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import ArrowDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowDownSvg"; // plasmic-import: G2ToiXzCf/icon
 import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
 
 createPlasmicElementProxy;
@@ -54,6 +55,7 @@ export type PlasmicCopilotChatDialog__OverridesType = {
   text?: Flex__<"div">;
   closeBtn?: Flex__<typeof IconButton>;
   chatContent?: Flex__<"div">;
+  scrollToBottomButton?: Flex__<typeof IconButton>;
   copilotPromptInput?: Flex__<typeof CopilotPromptInput>;
 };
 
@@ -101,11 +103,29 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
       content={
-        <div
-          data-plasmic-name={"chatContent"}
-          data-plasmic-override={overrides.chatContent}
-          className={classNames("all", sty.chatContent)}
-        />
+        <React.Fragment>
+          <div
+            data-plasmic-name={"chatContent"}
+            data-plasmic-override={overrides.chatContent}
+            className={classNames("all", sty.chatContent)}
+          />
+
+          <div className={classNames("all", sty.freeBox__ajijo)}>
+            <IconButton
+              data-plasmic-name={"scrollToBottomButton"}
+              data-plasmic-override={overrides.scrollToBottomButton}
+              className={classNames("__wab_instance", sty.scrollToBottomButton)}
+              shadow={"extraSmall"}
+              size={"medium"}
+              type={["round"]}
+            >
+              <ArrowDownSvgIcon
+                className={classNames("all", sty.svg__crum7)}
+                role={"img"}
+              />
+            </IconButton>
+          </div>
+        </React.Fragment>
       }
       footer={
         <div className={classNames("all", sty.freeBox__ecH)}>
@@ -165,12 +185,14 @@ const PlasmicDescendants = {
     "text",
     "closeBtn",
     "chatContent",
+    "scrollToBottomButton",
     "copilotPromptInput",
   ],
   dialogHeader: ["dialogHeader", "text", "closeBtn"],
   text: ["text"],
   closeBtn: ["closeBtn"],
   chatContent: ["chatContent"],
+  scrollToBottomButton: ["scrollToBottomButton"],
   copilotPromptInput: ["copilotPromptInput"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -182,6 +204,7 @@ type NodeDefaultElementType = {
   text: "div";
   closeBtn: typeof IconButton;
   chatContent: "div";
+  scrollToBottomButton: typeof IconButton;
   copilotPromptInput: typeof CopilotPromptInput;
 };
 
@@ -196,8 +219,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotChatDialog__VariantsArgs;
     args?: PlasmicCopilotChatDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopilotChatDialog__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCopilotChatDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCopilotChatDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -250,6 +272,7 @@ export const PlasmicCopilotChatDialog = Object.assign(
     text: makeNodeComponent("text"),
     closeBtn: makeNodeComponent("closeBtn"),
     chatContent: makeNodeComponent("chatContent"),
+    scrollToBottomButton: makeNodeComponent("scrollToBottomButton"),
     copilotPromptInput: makeNodeComponent("copilotPromptInput"),
 
     // Metadata about props expected for PlasmicCopilotChatDialog

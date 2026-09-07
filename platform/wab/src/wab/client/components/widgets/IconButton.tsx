@@ -17,6 +17,7 @@ type IconButtonProps = Omit<React.ComponentProps<"button">, "type"> & {
   withBackgroundHover?: PlasmicIconButton__VariantsArgs["withBackgroundHover"];
   withRedBackgroundHover?: PlasmicIconButton__VariantsArgs["withRedBackgroundHover"];
   withGreenBackgroundHover?: PlasmicIconButton__VariantsArgs["withGreenBackgroundHover"];
+  shadow?: PlasmicIconButton__VariantsArgs["shadow"];
   className?: string;
   tooltip?: React.ReactNode;
   tooltipPlacement?: TooltipPlacement;
@@ -49,6 +50,7 @@ export const IconButton = React.forwardRef(function (
     withBackgroundHover,
     withRedBackgroundHover,
     withGreenBackgroundHover,
+    shadow,
     rel,
     hoverText,
     ...restProps
@@ -65,6 +67,7 @@ export const IconButton = React.forwardRef(function (
         withBackgroundHover,
         withRedBackgroundHover,
         withGreenBackgroundHover,
+        shadow,
       }}
       children={children}
       args={{ hoverText }}

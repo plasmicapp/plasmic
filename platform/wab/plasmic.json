@@ -12,9 +12,6 @@
   "images": {
     "scheme": "files"
   },
-  "fontOpts": {
-    "scheme": "none"
-  },
   "srcDir": "./src",
   "defaultPlasmicDir": "./wab/client/plasmic",
   "projects": [
@@ -11558,10 +11555,13 @@
   },
   "wrapPagesWithGlobalContexts": true,
   "preserveJsImportExtensions": false,
+  "fontOpts": {
+    "scheme": "none"
+  },
   "tokens": {
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.372",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.372/dist/plasmic.schema.json"
+  "cliVersion": "0.1.377",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.377/dist/plasmic.schema.json"
 }

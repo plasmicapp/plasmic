@@ -69,6 +69,7 @@ export type PlasmicIconButton__VariantMembers = {
   withGreenBackgroundHover: "withGreenBackgroundHover";
   withDropdown: "withDropdown";
   isLoading: "isLoading";
+  shadow: "extraSmall" | "small" | "medium";
 };
 export type PlasmicIconButton__VariantsArgs = {
   disabled?: SingleBooleanChoiceArg<"disabled">;
@@ -98,6 +99,7 @@ export type PlasmicIconButton__VariantsArgs = {
   withGreenBackgroundHover?: SingleBooleanChoiceArg<"withGreenBackgroundHover">;
   withDropdown?: SingleBooleanChoiceArg<"withDropdown">;
   isLoading?: SingleBooleanChoiceArg<"isLoading">;
+  shadow?: SingleChoiceArg<"extraSmall" | "small" | "medium">;
 };
 type VariantPropType = keyof PlasmicIconButton__VariantsArgs;
 export const PlasmicIconButton__VariantProps = new Array<VariantPropType>(
@@ -110,7 +112,8 @@ export const PlasmicIconButton__VariantProps = new Array<VariantPropType>(
   "withRedBackgroundHover",
   "withGreenBackgroundHover",
   "withDropdown",
-  "isLoading"
+  "isLoading",
+  "shadow"
 );
 
 export type PlasmicIconButton__ArgsType = {
@@ -161,6 +164,7 @@ export interface DefaultIconButtonProps {
   withGreenBackgroundHover?: SingleBooleanChoiceArg<"withGreenBackgroundHover">;
   withDropdown?: SingleBooleanChoiceArg<"withDropdown">;
   isLoading?: SingleBooleanChoiceArg<"isLoading">;
+  shadow?: SingleChoiceArg<"extraSmall" | "small" | "medium">;
   className?: string;
 }
 
@@ -260,6 +264,12 @@ function PlasmicIconButton__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isLoading,
       },
+      {
+        path: "shadow",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.shadow,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -312,6 +322,13 @@ function PlasmicIconButton__RenderFunc(props: {
             hasVariant($state, "type", "dividedRight") &&
             hasVariant($state, "isActive", "isActive"),
           [sty.rootisLoading]: hasVariant($state, "isLoading", "isLoading"),
+          [sty.rootshadow_extraSmall]: hasVariant(
+            $state,
+            "shadow",
+            "extraSmall"
+          ),
+          [sty.rootshadow_medium]: hasVariant($state, "shadow", "medium"),
+          [sty.rootshadow_small]: hasVariant($state, "shadow", "small"),
           [sty.rootshowAlert]: hasVariant($state, "showAlert", "showAlert"),
           [sty.rootsize_large]: hasVariant($state, "size", "large"),
           [sty.rootsize_medium]: hasVariant($state, "size", "medium"),
@@ -360,6 +377,9 @@ function PlasmicIconButton__RenderFunc(props: {
             hasVariant($state, "type", "round") &&
             hasVariant($state, "type", "roundClear"),
           [sty.roottype_round]: hasVariant($state, "type", "round"),
+          [sty.roottype_round_shadow_extraSmall]:
+            hasVariant($state, "type", "round") &&
+            hasVariant($state, "shadow", "extraSmall"),
           [sty.roottype_seamless]: hasVariant($state, "type", "seamless"),
           [sty.roottype_secondary]: hasVariant($state, "type", "secondary"),
           [sty.roottype_stepUp]: hasVariant($state, "type", "stepUp"),
@@ -663,6 +683,13 @@ function PlasmicIconButton__RenderFunc(props: {
           className={classNames("all", sty.svg, {
             [sty.svgisActive]: hasVariant($state, "isActive", "isActive"),
             [sty.svgisLoading]: hasVariant($state, "isLoading", "isLoading"),
+            [sty.svgshadow_extraSmall]: hasVariant(
+              $state,
+              "shadow",
+              "extraSmall"
+            ),
+            [sty.svgshadow_medium]: hasVariant($state, "shadow", "medium"),
+            [sty.svgshadow_small]: hasVariant($state, "shadow", "small"),
             [sty.svgshowAlert]: hasVariant($state, "showAlert", "showAlert"),
             [sty.svgtype_purple]: hasVariant($state, "type", "purple"),
           })}
@@ -696,8 +723,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicIconButton__VariantsArgs;
     args?: PlasmicIconButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicIconButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicIconButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicIconButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
