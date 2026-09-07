@@ -3535,7 +3535,10 @@ export class StudioCtx extends WithDbCtx {
     }
 
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
-    return !!team && checkIsOrgOnPaidTierOrTrial(team);
+    return (
+      isAdminTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig) ||
+      (!!team && checkIsOrgOnPaidTierOrTrial(team))
+    );
   }
 
   //
