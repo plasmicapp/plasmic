@@ -3,12 +3,12 @@ name: plasmic-designer
 description: Build and modify Plasmic Studio designs using copilot tools via Chrome DevTools MCP. First argument should be a project ID, followed by the design request. Use this skill whenever the user mentions Plasmic, Plasmic Studio, visual web builder, or asks to design, build, edit, or modify UI components, pages, sections, or layouts inside a Plasmic project. Also trigger when the user references a Plasmic project ID, wants to add/remove/restyle elements in a visual editor, or asks about Plasmic component props, variants, slots, or tokens — even if they don't say "Plasmic" explicitly but describe visual design work that implies it.
 allowed-tools: mcp__chrome-devtools__evaluate_script mcp__chrome-devtools__navigate_page mcp__chrome-devtools__take_screenshot mcp__chrome-devtools__list_pages
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # Plasmic Designer
 
-Skill Version: 1.3.0
+Skill Version: 1.3.1
 
 Control Plasmic Studio through Chrome DevTools MCP to build and modify production-ready interfaces.
 
@@ -52,7 +52,7 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
 
    - `model` — Model name as known to the agent (e.g. `claude-opus-4-7`, `anthropic/claude-sonnet-4-6`, `gpt-5.3-codex`).
    - `client` — AI client/CLI invoking the tool (e.g. `claude-code`, `claude-code@1.x`, `opencode`, `cursor`, `cline`).
-   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.2.0`, `unknown`).
+   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.3.1`, `unknown`).
    - `outputFormat` — Preferred format for tool output, `"json"` or `"xml"`.
 
    Pass `"unknown"` for any required string field you cannot reliably identify.
@@ -82,11 +82,18 @@ interface CopilotToolMeta {
 }
 ```
 
-Read it once with `evaluate_script` (return the object directly; `evaluate_script` serializes it for you), and treat each tool's `inputSchema` as authoritative for field names, required fields, enums, and nesting, and its `outputSchema` for what a result contains:
+Read a compact tool catalog once with `evaluate_script`. Omit schemas from this initial result because they are much larger:
 
 ```javascript
-() => window.PLASMIC_AI_TOOLS._meta;
+() =>
+  Object.fromEntries(
+    Object.entries(window.PLASMIC_AI_TOOLS._meta).map(
+      ([name, { title, description }]) => [name, { title, description }]
+    )
+  );
 ```
+
+Before using a tool, inspect its `inputSchema` and treat it as authoritative for field names, required fields, enums, and nesting, for example `() => window.PLASMIC_AI_TOOLS._meta.read.inputSchema`. Inspect only the relevant `outputSchema` when its result shape matters.
 
 Call a tool with an async arrow function (tools return Promises), passing one input object that conforms to its schema:
 
@@ -113,34 +120,9 @@ Call `read` before any mutation to get project structure and the UUIDs every oth
 
 ## Legacy Data Query Migration
 
-Only when asked. Legacy `$queries` run server-side via Plasmic's integration proxy, which
-applies its credentials, default headers, and role checks. New `$q` queries run
-`plasmic.fetch` from wherever the page renders, so none of that carries over. Migrate only
-the query the request names; for a component-wide request, assess every `legacyDataQueries`
-entry.
-
-1. **Read** the component (`legacyDataQueries`, `dataQueries`) and `project.customFunctions`.
-   For a query's types and values, read just its path:
-   `read({ dataContext: [{ componentUuid, paths: ["$queries.<name>"] }] })`.
-2. **Skip** any entry with `migratable: false` (report its `migrationBlockers`) or one a
-   `dataQueries` entry already replaces — likely when `references: 0`.
-3. **Create** the replacement with `createDataQuery`, bound to the Fetch custom function from
-   `project.customFunctions`, with the legacy op's `baseUrl` + path + params as its `opts.url`.
-   Carry over all legacy op args — a GraphQL op becomes `"method": "POST"` with
-   `"body": { "query": …, "variables": … }`, and the op's own `headers` arg becomes `opts.headers`.
-   Custom code only when no function fits. Keep dynamic parts as inline `{{ }}` rather than
-   the preview values you read, and never invent an endpoint, credential, header, or result.
-4. **Repoint** references with `migrateDataQuery`, deriving `subPathRewrites` from
-   `paths: ["$queries.<old>.data", "$q.<new>.data"]`. Verify with `paths: ["$q.<new>"]`.
-
-Report one line per query (migrated, or skipped and why), plus anything `migrateDataQuery`
-couldn't rewrite and the manual deletion of the legacy query.
+Only when asked, read `references/query-migration.md` before migrating. Migrate only the named query; for a component-wide request, assess every `legacyDataQueries` entry.
 
 ## Components & Variants
-
-### Targeting
-
-Mutation tools require a `componentUuid` (from `read` results). They accept an optional `variantUuids` array — when omitted, changes apply to the base variant.
 
 ### Reusing Existing Components
 
@@ -176,14 +158,6 @@ Text, attributes, and component props can be bound to runtime data — `$props`,
 - Repetition: `data-repeat="{{ $q.myQuery.data }}"` in `insertHtml`, or `repeat: { collection: "..." }` in `changeElement`; bind the subtree with `{{ currentItem.* }}`.
 - Visibility: `data-visible-if="{{ ... }}"` / `data-visibility="displayNone"`, or `visibility: { showIf: "..." }` in `changeElement`.
 - A prop wired to the enclosing component's prop reads back as `{{ $props.<name> }}`, and a link-to-page destination as its URL with dynamic parts inlined (e.g. `/products/{{ $state.slug }}`).
-
-## Interactions
-
-An element's event handler is an ordered list of interaction steps, surfaced by `read` under component `interactions` rather than in the element's props/attrs (a handler forwarded from a prop as `{{ $props.<name> }}`). Manage them with `createElementInteractions`, `changeElementInteractions`, and `deleteElementInteractions`.
-
-- `eventName` is a DOM event prop for tags (e.g. `onClick`) or the name of a function-typed prop for component instances (e.g. `On click`). Use the exact name `read` reports.
-- Prefer structured actions (`updateVariable`, `updateVariant`) over `customFunction` when one fits. Steps whose action kind is outside the writable action schema (e.g. navigation) are still listed by `read`, but can only be renamed or deleted.
-- Run-code bodies see `$state`, `$props`, `$ctx`, `$refs`, `$queries` / `$q` and the event args; later steps read earlier results as `$steps.<stepName>`.
 
 ## HTML Code Guidelines
 

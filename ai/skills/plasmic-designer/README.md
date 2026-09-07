@@ -222,7 +222,8 @@ plasmic-designer/
 ├── README.md
 └── references/
     ├── design-guidelines.md
-    └── html-constraints.md
+    ├── html-constraints.md
+    └── query-migration.md
 ```
 
 No other setup is needed — the CLI discovers skills automatically on start.
