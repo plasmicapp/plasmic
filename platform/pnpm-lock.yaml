@@ -260,8 +260,8 @@ importers:
         specifier: ^8.4.1
         version: 8.4.1
       '@plasmicapp/react-web':
-        specifier: ^1.0.35
-        version: 1.0.35(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.36
+        version: 1.0.36(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/airtable':
         specifier: ^0.0.275
         version: 0.0.275(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -675,8 +675,8 @@ importers:
         specifier: ^2.0.9
         version: 2.0.9(react@18.3.1)
       '@plasmicapp/react-web':
-        specifier: ^1.0.35
-        version: 1.0.35(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.36
+        version: 1.0.36(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/airtable':
         specifier: ^0.0.275
         version: 0.0.275(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1149,8 +1149,8 @@ importers:
         specifier: ^0.1.87
         version: 0.1.87(react@18.3.1)
       '@plasmicapp/react-web':
-        specifier: ^1.0.35
-        version: 1.0.35(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.36
+        version: 1.0.36(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
         specifier: ^0.0.372
         version: 0.0.372(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5409,8 +5409,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@plasmicapp/react-web@1.0.35':
-    resolution: {integrity: sha512-PkBIBEQ2Nww9Cb5LY1H1lgqpt8sxt29HPTYpdSvhMVwxCQCtpG8oJ1wg7iqwOKHT2eHVbw88pDfVUODNZ3k3lQ==}
+  '@plasmicapp/react-web@1.0.36':
+    resolution: {integrity: sha512-rAIL3jnK4ftL7uu+VWhcmCAiAuvKsxZQTYMaknM6P1gKAEcOSOMkkqJc6FnTTdq8bu84tFyj2VgRRlgGxfkTBQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -25722,7 +25722,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/react-web@1.0.35(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/react-web@1.0.36(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/auth-react': 0.0.33(react@18.3.1)
       '@plasmicapp/data-sources': 1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

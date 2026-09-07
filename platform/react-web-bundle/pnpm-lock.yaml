@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.25
         version: 0.1.25(react@18.3.1)
       '@plasmicapp/react-web':
-        specifier: ^1.0.35
-        version: 1.0.35(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.36
+        version: 1.0.36(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -252,8 +252,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@plasmicapp/react-web@1.0.35':
-    resolution: {integrity: sha512-PkBIBEQ2Nww9Cb5LY1H1lgqpt8sxt29HPTYpdSvhMVwxCQCtpG8oJ1wg7iqwOKHT2eHVbw88pDfVUODNZ3k3lQ==}
+  '@plasmicapp/react-web@1.0.36':
+    resolution: {integrity: sha512-rAIL3jnK4ftL7uu+VWhcmCAiAuvKsxZQTYMaknM6P1gKAEcOSOMkkqJc6FnTTdq8bu84tFyj2VgRRlgGxfkTBQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1797,7 +1797,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@plasmicapp/react-web@1.0.35(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/react-web@1.0.36(@types/react@16.14.69)(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/auth-react': 0.0.33(react@18.3.1)
       '@plasmicapp/data-sources': 1.0.28(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
