@@ -13,6 +13,7 @@ import {
   useCopilot,
 } from "@/wab/client/components/copilot/useCopilot";
 import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
+import { useAutoFocus } from "@/wab/client/hooks/useAutoFocus";
 import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
 import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
 import {
@@ -58,16 +59,11 @@ function CopilotPromptDialog<Response>({
   const studioCtx = useStudioCtx();
   const appCtx = studioCtx.appCtx;
 
-  const promptInputRef: React.Ref<HTMLTextAreaElement> =
-    React.useRef<HTMLTextAreaElement>(null);
+  const promptInputRef = React.useRef<HTMLTextAreaElement>(null);
   const applyBtnRef: React.Ref<HTMLDivElement> =
     React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    if (dialogOpen && promptInputRef.current) {
-      promptInputRef.current.focus();
-    }
-  }, [dialogOpen, promptInputRef.current]);
+  useAutoFocus(dialogOpen && promptInputRef);
 
   const {
     response,

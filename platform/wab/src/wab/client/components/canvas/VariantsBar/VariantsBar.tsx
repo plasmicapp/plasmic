@@ -8,6 +8,7 @@ import VariantsDrawer from "@/wab/client/components/canvas/VariantsBar/VariantsD
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { frameToClientRect } from "@/wab/client/coords";
 import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
+import { useAutoFocus } from "@/wab/client/hooks/useAutoFocus";
 import PlasmicVariantsBar from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsBar";
 import { StudioCtx, usePlasmicCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -361,11 +362,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
     studioCtx.setShowVariantsDrawer(visible);
   };
 
-  useLayoutEffect(() => {
-    if (studioCtx.showVariantsDrawer) {
-      defer(() => searchInputRef.current?.focus());
-    }
-  }, [studioCtx.showVariantsDrawer]);
+  useAutoFocus(studioCtx.showVariantsDrawer && searchInputRef);
 
   const handleClearVariants = () => {
     variantsController?.onClearVariants();

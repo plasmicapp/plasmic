@@ -1,6 +1,7 @@
 import VariantBadge from "@/wab/client/components/canvas/VariantsBar/VariantBadge";
 import VariantsDrawer from "@/wab/client/components/canvas/VariantsBar/VariantsDrawer";
 import styles from "@/wab/client/components/variants/VariantComboPicker.module.scss";
+import { useAutoFocus } from "@/wab/client/hooks/useAutoFocus";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import { PinStateManager } from "@/wab/shared/PinManager";
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
@@ -8,7 +9,6 @@ import { Component, Site, Variant } from "@/wab/shared/model/classes";
 import { Dropdown } from "antd";
 import { observer } from "mobx-react";
 import React, { useLayoutEffect, useRef, useState } from "react";
-import defer = setTimeout;
 
 interface VariantComboPickerProps {
   site: Site;
@@ -71,11 +71,7 @@ function VariantComboPicker_({
     onChange(machine.selectedVariants(newState));
   };
 
-  useLayoutEffect(() => {
-    if (showDropdown) {
-      defer(() => inputRef.current?.focus());
-    }
-  }, [showDropdown]);
+  useAutoFocus(showDropdown && inputRef);
 
   if (autoFocus) {
     useLayoutEffect(() => {

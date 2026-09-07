@@ -14,6 +14,7 @@ import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DimTokenSpinnerRef } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import { useAutoFocus } from "@/wab/client/hooks/useAutoFocus";
 import BorderAllIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderAll";
 import BorderRadiusAllIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderRadiusAll";
 import BorderRadiusSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderRadiusSide";
@@ -37,7 +38,6 @@ import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import defer = setTimeout;
 
 enum BorderType {
   Line,
@@ -143,6 +143,7 @@ function BorderRadiusSection_(props: {
   const exp = expsProvider.mergedExp();
   const targetExp = expsProvider.maybeTargetExp();
   const [open, setOpen] = React.useState(false);
+  useAutoFocus(open && inputRef);
 
   const hasBorderRadiusProps = borderRadiusStyleProps.some((prop) =>
     exp.has(prop)
@@ -164,7 +165,6 @@ function BorderRadiusSection_(props: {
       });
       setOpen(false);
     } else {
-      defer(() => inputRef.current?.focus());
       setOpen(true);
     }
   };
