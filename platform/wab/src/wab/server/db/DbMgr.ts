@@ -90,7 +90,7 @@ import {
   WorkspaceAuthConfig,
   WorkspaceUser,
 } from "@/wab/server/entities/Entities";
-import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
+import { isPaidTeam, isTeamOnFreeTrial } from "@/wab/server/freeTrial";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { CompatRequest } from "@/wab/server/routes/util";
@@ -542,6 +542,12 @@ interface ForcedAccessLevel {
 
 type Resource = Project | Workspace | Team | CmsDatabase;
 
+interface ChangeTeamOwnerOptions {
+  allowUnpaidTransfer?: boolean;
+}
+
+const FREE_TRIAL_ONCE_MESSAGE = `Free trials are only available once per account.`;
+
 function isForcedAccessLevel(x: any): x is ForcedAccessLevel {
   return !!x?.force;
 }
@@ -801,6 +807,15 @@ export class DbMgr implements MigrationDbMgr {
   private checkNormalUser() {
     checkPermissions(this.actor.type === "NormalUser", "Must be a normal user");
     return this.actor.userId;
+  }
+
+  // Serializes the unpaid-organization check with the write that follows it.
+  private async lockUserRow(userId: UserId): Promise<void> {
+    await this.users()
+      .createQueryBuilder("user")
+      .setLock("pessimistic_write")
+      .where("user.id = :userId", { userId })
+      .getOne();
   }
 
   private checkTeamApiUser() {
@@ -1168,6 +1183,55 @@ export class DbMgr implements MigrationDbMgr {
     return this._queryTeams(where, false).getMany();
   }
 
+  async checkCanCreateTeam(): Promise<void> {
+    await this.checkUnpaidTeamLimit(
+      this.checkNormalUser(),
+      undefined,
+      "creating another"
+    );
+  }
+
+  // An owner gets at most one live unpaid organization. `exceptTeamId` is
+  // the team about to become one.
+  private async checkUnpaidTeamLimit(
+    ownerId: UserId,
+    exceptTeamId: TeamId | undefined,
+    action: string
+  ): Promise<void> {
+    await this.lockUserRow(ownerId);
+    const qb = this._queryTeams({
+      createdById: ownerId,
+      personalTeamOwnerId: IsNull(),
+    });
+    if (exceptTeamId) {
+      qb.andWhere("t.id <> :exceptTeamId", { exceptTeamId });
+    }
+    checkPermissions(
+      (await qb.getMany()).every((team) => isPaidTeam(team)),
+      `You can only have one unpaid ${ORGANIZATION_LOWER}. Upgrade or delete your existing ${ORGANIZATION_LOWER} before ${action}.`
+    );
+  }
+
+  private async checkTeamCanBecomeUnpaid(
+    team: Team,
+    action: string
+  ): Promise<void> {
+    if (
+      this.actor.type !== "SuperUser" &&
+      !team.personalTeamOwnerId &&
+      team.createdById
+    ) {
+      await this.checkUnpaidTeamLimit(team.createdById, team.id, action);
+    }
+  }
+
+  async checkCanCancelSubscription(teamId: TeamId): Promise<void> {
+    const team = await this.getTeamById(teamId);
+    if (isPaidTeam(team)) {
+      await this.checkTeamCanBecomeUnpaid(team, "canceling this subscription");
+    }
+  }
+
   async createTeam(
     name: string,
     opts?: {
@@ -1277,6 +1341,9 @@ export class DbMgr implements MigrationDbMgr {
     }
     if (fields.defaultAccessLevel) {
       ensureGrantableAccessLevel(fields.defaultAccessLevel);
+      if (fields.defaultAccessLevel === "owner") {
+        throw new BadRequestError("Ownership can only be granted by transfer");
+      }
     }
     const team = await this.getTeamById(id);
     if (fields.uiConfig) {
@@ -1321,6 +1388,38 @@ export class DbMgr implements MigrationDbMgr {
     return !!team.whiteLabelName || !!parentTeam?.whiteLabelName;
   }
 
+  async canStartFreeTrial(teamId: TeamId): Promise<boolean> {
+    if (this.actor.type === "SuperUser") {
+      return true;
+    }
+    const team = await this.getTeamById(teamId);
+    if (
+      this.actor.type !== "NormalUser" ||
+      !team.createdById ||
+      team.trialStartDate
+    ) {
+      return false;
+    }
+    await this.checkUserPerms(team.createdById, "read", "get");
+    const owner = ensureFound<User>(
+      await this.users().findOne({
+        select: ["id", "freeTrialStartedAt"],
+        where: { id: team.createdById, ...excludeDeleted() },
+      }),
+      `User with ID ${team.createdById}`
+    );
+    return !owner.freeTrialStartedAt;
+  }
+
+  async checkFreeTrialEligibility(teamId: TeamId): Promise<void> {
+    // @todo replace with admin role
+    await this.checkTeamPerms(teamId, "editor", "start trial");
+    checkPermissions(
+      await this.canStartFreeTrial(teamId),
+      FREE_TRIAL_ONCE_MESSAGE
+    );
+  }
+
   async startFreeTrial({
     teamId,
     featureTierName,
@@ -1328,8 +1427,7 @@ export class DbMgr implements MigrationDbMgr {
     teamId: TeamId;
     featureTierName: string;
   }): Promise<Team> {
-    // @todo replace with admin role
-    await this.checkTeamPerms(teamId, "editor", "start trial", true);
+    await this.checkFreeTrialEligibility(teamId);
     const tiersList = await this.listCurrentFeatureTiers([featureTierName]);
     assert(tiersList.length > 0, "Free trial tier name invalid");
     const featureTier = tiersList[0];
@@ -1337,6 +1435,20 @@ export class DbMgr implements MigrationDbMgr {
     const seats = featureTier.maxUsers;
 
     const trialStartDate = new Date();
+    if (this.actor.type === "NormalUser") {
+      const team = await this.getTeamById(teamId);
+      const ownerId = ensure(
+        team.createdById,
+        "A team must have an owner to start a free trial"
+      );
+      const claim = await this.users()
+        .createQueryBuilder()
+        .update()
+        .set({ ...this.stampUpdate(), freeTrialStartedAt: trialStartDate })
+        .where('id = :ownerId and "freeTrialStartedAt" is null', { ownerId })
+        .execute();
+      checkPermissions(claim.affected === 1, FREE_TRIAL_ONCE_MESSAGE);
+    }
     return await this.sudo().sudoUpdateTeam({
       id: teamId,
       seats,
@@ -1436,6 +1548,10 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   async restoreTeam(id: TeamId) {
+    const team = await this.getTeamById(id, true);
+    if (!isPaidTeam(team)) {
+      await this.checkTeamCanBecomeUnpaid(team, "restoring another");
+    }
     return this._restoreResource({ type: "team", id });
   }
 
@@ -1544,7 +1660,12 @@ export class DbMgr implements MigrationDbMgr {
     });
     const members = await this.getEffectiveUsersForTeam(teamId, true);
     const memberCount = members.length;
-    return { projectCount, workspaceCount, memberCount };
+    return {
+      projectCount,
+      workspaceCount,
+      memberCount,
+      canStartFreeTrial: await this.canStartFreeTrial(teamId),
+    };
   }
 
   async getTeamMembers(teamId: TeamId): Promise<TeamMember[]> {
@@ -2412,6 +2533,13 @@ export class DbMgr implements MigrationDbMgr {
     if (fields.teamId) {
       await this.checkTeamPerms(ws.teamId, "editor", "move workspace");
       await this.checkTeamPerms(fields.teamId, "editor", "move workspace");
+      // Deleted projects count too, restoring one puts it in the new team.
+      if ((await this.projects().count({ where: { workspaceId } })) > 0) {
+        await this.checkCanTransferToTeam(
+          ws.teamId,
+          await this.getTeamById(fields.teamId)
+        );
+      }
       fields["team"] = { id: fields.teamId };
     }
     Object.assign(ws, this.stampUpdate(), fields);
@@ -2706,6 +2834,24 @@ export class DbMgr implements MigrationDbMgr {
     await this._assignResourceOwner({ type: "project", id: projectId }, userId);
   }
 
+  private async checkCanTransferToTeam(
+    sourceTeamId: TeamId | undefined,
+    destinationTeam: Team
+  ): Promise<void> {
+    if (
+      destinationTeam.personalTeamOwnerId ||
+      sourceTeamId === destinationTeam.id ||
+      this.actor.type === "SuperUser" ||
+      (await this.isTeamWhiteLabel(destinationTeam))
+    ) {
+      return;
+    }
+    checkPermissions(
+      isPaidTeam(destinationTeam),
+      `Projects can only be transferred to a paid ${ORGANIZATION_LOWER}. Upgrade the destination ${ORGANIZATION_LOWER} before moving projects into it.`
+    );
+  }
+
   async updateProject(
     { id, ...fields }: { id: string } & Partial<UpdatableProjectFields>,
     regenerateSecretApiToken = false
@@ -2740,6 +2886,13 @@ export class DbMgr implements MigrationDbMgr {
           fields.workspaceId,
           "editor",
           "move project"
+        );
+        const destinationWorkspace = await this.getWorkspaceById(
+          fields.workspaceId
+        );
+        await this.checkCanTransferToTeam(
+          project.workspace?.teamId,
+          destinationWorkspace.team
         );
       }
       fields["workspace"] = { id: fields.workspaceId };
@@ -2854,41 +3007,75 @@ export class DbMgr implements MigrationDbMgr {
       .getMany();
   }
 
-  async changeTeamOwner(teamId: TeamId, newOwner: string) {
-    const teamOwner = await this.getTeamOwners(teamId);
-    if (teamOwner.length === 0 || teamOwner[0].id === newOwner) {
-      return;
-    }
-
-    const teamPerms = await this.getPermissionsForTeams([teamId]);
+  async changeTeamOwner(
+    teamId: TeamId,
+    newOwner: UserId,
+    { allowUnpaidTransfer = false }: ChangeTeamOwnerOptions = {}
+  ): Promise<void> {
+    await this.teams()
+      .createQueryBuilder("team")
+      .setLock("pessimistic_write")
+      .where("team.id = :teamId", { teamId })
+      .getOne();
+    await this._checkResourcesPerms(
+      { type: "team", ids: [teamId] },
+      "owner",
+      "transfer ownership"
+    );
+    const team = await this.getTeamById(teamId);
+    const newOwnerUser = await this.getUserById(newOwner);
+    const teamPerms = await this.permissions().find({
+      where: { teamId, ...excludeDeleted() },
+    });
+    const ownerPerms = teamPerms.filter((perm) => perm.accessLevel === "owner");
     const newOwnerPermission = teamPerms.find(
       (perm) => perm.userId === newOwner
     );
-    const currentOwnerPermission = teamPerms.find(
-      (perm) => perm.userId === teamOwner[0].id
-    );
-    if (!newOwnerPermission || !currentOwnerPermission) {
+    const ownershipIsConsistent =
+      team.createdById === newOwner &&
+      newOwnerPermission?.accessLevel === "owner" &&
+      ownerPerms.every((perm) => perm.userId === newOwner);
+    if (ownershipIsConsistent) {
       return;
     }
 
-    await this.teams()
-      .createQueryBuilder()
-      .update()
-      .set({ createdById: newOwner })
-      .where(`id = '${teamId}'`)
-      .execute();
-    await this.permissions()
-      .createQueryBuilder()
-      .update()
-      .set({ accessLevel: "editor" })
-      .where(`id = '${currentOwnerPermission.id}'`)
-      .execute();
-    await this.permissions()
-      .createQueryBuilder()
-      .update()
-      .set({ accessLevel: "owner" })
-      .where(`id = '${newOwnerPermission.id}'`)
-      .execute();
+    const isOwnershipChange =
+      (!!team.createdById && team.createdById !== newOwner) ||
+      ownerPerms.some((perm) => perm.userId !== newOwner);
+    if (isOwnershipChange && !isPaidTeam(team)) {
+      checkPermissions(
+        allowUnpaidTransfer,
+        `Cannot transfer an unpaid ${ORGANIZATION_LOWER}.`
+      );
+      this.checkSuperUser();
+    }
+
+    const permissionsToSave = ownerPerms.filter(
+      (perm) => perm.id !== newOwnerPermission?.id
+    );
+    for (const ownerPermission of permissionsToSave) {
+      mergeSane(ownerPermission, this.stampUpdate(), {
+        accessLevel: "editor",
+      });
+    }
+    const nextOwnerPermission =
+      newOwnerPermission ??
+      this.permissions().create({
+        ...this.stampNew(),
+        teamId,
+        userId: newOwnerUser.id,
+        accessLevel: "owner",
+      });
+    mergeSane(nextOwnerPermission, this.stampUpdate(), {
+      accessLevel: "owner",
+    });
+    permissionsToSave.push(nextOwnerPermission);
+
+    if (team.createdById !== newOwner) {
+      mergeSane(team, this.stampUpdate(), { createdById: newOwner });
+      await this.entMgr.save(team);
+    }
+    await this.entMgr.save(permissionsToSave);
   }
 
   async upgradePersonalTeam(teamId: TeamId) {
@@ -5464,6 +5651,13 @@ export class DbMgr implements MigrationDbMgr {
     userId: UserId
   ) {
     this.checkSuperUser();
+    if (taggedResourceId.type === "team") {
+      await this.changeTeamOwner(taggedResourceId.id, userId, {
+        allowUnpaidTransfer: true,
+      });
+      return;
+    }
+
     const user = await this.getUserById(userId);
     const perms = await this.getPermissionsForResources(
       pluralizeResourceId(taggedResourceId),
@@ -5876,6 +6070,24 @@ export class DbMgr implements MigrationDbMgr {
     const levelToGrant = isForcedAccessLevel(rawLevelToGrant)
       ? rawLevelToGrant.force
       : ensureGrantableAccessLevel(rawLevelToGrant);
+
+    if (taggedResourceIds.type === "team" && levelToGrant === "owner") {
+      const user = await this.tryGetUserByEmail(email);
+      if (!user && grantExistingUsersOnly) {
+        throw new GrantUserNotFoundError();
+      }
+      checkPermissions(
+        !!user,
+        `Team ownership can only be transferred to a registered user.`
+      );
+      for (const teamId of taggedResourceIds.ids) {
+        await this.changeTeamOwner(teamId, user.id, {
+          allowUnpaidTransfer: isForcedAccessLevel(rawLevelToGrant),
+        });
+      }
+      return { created: false };
+    }
+
     return this.grantResourcesPermission(
       taggedResourceIds,
       email,
@@ -5917,6 +6129,19 @@ export class DbMgr implements MigrationDbMgr {
       ownerPerms,
       actorResourceLevels
     );
+
+    if (taggedResourceIds.type === "team" && levelToGrant !== "owner") {
+      const directOwnerPerms = userPerms.filter(
+        (perm) =>
+          perm.accessLevel === "owner" &&
+          !!perm.teamId &&
+          taggedResourceIds.ids.includes(perm.teamId)
+      );
+      checkPermissions(
+        directOwnerPerms.length === 0,
+        `Team owners must transfer ownership instead of changing their role.`
+      );
+    }
 
     let createdPerm = false;
 
@@ -10875,17 +11100,17 @@ export class DbMgr implements MigrationDbMgr {
   }) {
     this.checkSuperUser();
 
-    let discourseOrg = await this.getDiscourseInfoByTeamId(fields.teamId);
-    if (discourseOrg) {
-      assignAllowEmpty(discourseOrg, this.stampUpdate(), fields);
+    let discourseInfo = await this.getDiscourseInfoByTeamId(fields.teamId);
+    if (discourseInfo) {
+      assignAllowEmpty(discourseInfo, this.stampUpdate(), fields);
     } else {
-      discourseOrg = this.discourseInfos().create({
+      discourseInfo = this.discourseInfos().create({
         ...this.stampNew(),
         ...fields,
       });
     }
-    await this.entMgr.save(discourseOrg);
-    return discourseOrg;
+    await this.entMgr.save(discourseInfo);
+    return discourseInfo;
   }
 
   async getDiscourseInfoByTeamId(

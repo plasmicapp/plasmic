@@ -3525,7 +3525,7 @@ export class StudioCtx extends WithDbCtx {
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       this.appCtx.appConfig.enableUiCopilot ||
-      (!!team && checkIsOrgOnPaidTierOrTrial(team))
+      (!!team && checkIsTeamOnPaidTierOrTrial(team))
     );
   }
 
@@ -3537,7 +3537,7 @@ export class StudioCtx extends WithDbCtx {
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       isAdminTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig) ||
-      (!!team && checkIsOrgOnPaidTierOrTrial(team))
+      (!!team && checkIsTeamOnPaidTierOrTrial(team))
     );
   }
 
@@ -7983,16 +7983,7 @@ export function isUserProjectEditor(
   return checkAccessLevelRank(user, project, perms, "editor");
 }
 
-export function checkIsOrgOnFreeTierOrTrial(team?: ApiTeam) {
-  return (
-    !team ||
-    !team.featureTierId ||
-    team.featureTierId === DEVFLAGS.freeTier.id ||
-    team.onTrial
-  );
-}
-
-function checkIsOrgOnPaidTierOrTrial(team: ApiTeam): boolean {
+function checkIsTeamOnPaidTierOrTrial(team: ApiTeam): boolean {
   return !!(team.featureTierId && team.stripeCustomerId) || team.onTrial;
 }
 

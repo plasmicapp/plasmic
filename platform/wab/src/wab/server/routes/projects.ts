@@ -37,9 +37,11 @@ import "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 
+import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
 import {
+  checkStripeSubscription,
   maybeTriggerPaywall,
   passPaywall,
 } from "@/wab/server/routes/team-plans";
@@ -1677,6 +1679,11 @@ export async function updateProject(req: Request, res: Response) {
 
   const { commit, rollback } = await startTransaction(req, async () => {
     const mgr = userDbMgr(req);
+    if (data.workspaceId) {
+      // Refresh Stripe state to verify the move is to a paid team.
+      const destination = await mgr.getWorkspaceById(data.workspaceId);
+      await checkStripeSubscription(req, getEntitledTeam(destination.team));
+    }
     const project = await mgr.updateProject(
       {
         id: projectId,

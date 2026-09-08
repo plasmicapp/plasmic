@@ -145,6 +145,7 @@ export interface ApiTeamMeta {
   projectCount: number;
   workspaceCount: number;
   memberCount: number;
+  canStartFreeTrial: boolean;
 }
 
 export interface ApiTeamDiscourseInfo {

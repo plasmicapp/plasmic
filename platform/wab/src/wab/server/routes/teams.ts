@@ -2,11 +2,12 @@ import { ForbiddenError, checkPermissions } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
-import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
+import { getEntitledTeam, isTeamOnFreeTrial } from "@/wab/server/freeTrial";
 import { customCreateTeam } from "@/wab/server/routes/custom-routes";
 import { mkApiProject } from "@/wab/server/routes/projects";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
+  checkStripeSubscription,
   maybeTriggerPaywall,
   passPaywall,
   resetStripeCustomer,
@@ -138,19 +139,27 @@ export async function createTeam(req: Request, res: Response) {
     ? (await superMgr.getPromotionCodeById(promotionCode.id))?.trialDays
     : undefined;
 
-  const team = await userMgr.createTeam(teamName, { extendedFreeTrial });
+  // Refresh cached Stripe state before counting unpaid organizations.
+  for (const ownedTeam of await userMgr.getAffiliatedTeams()) {
+    if (ownedTeam.createdById === getUser(req).id) {
+      await checkStripeSubscription(req, getEntitledTeam(ownedTeam));
+    }
+  }
+  await userMgr.checkCanCreateTeam();
+  let team = await userMgr.createTeam(teamName, { extendedFreeTrial });
   await userMgr.updateUser({
     id: getUser(req).id,
     needsTeamCreationPrompt: false,
   });
-  const apiTeam = mkApiTeam(team);
 
-  if (req.devflags.freeTrial) {
+  if (req.devflags.freeTrial && (await userMgr.canStartFreeTrial(team.id))) {
     await userMgr.startFreeTrial({
       teamId: team.id,
       featureTierName: req.devflags.freeTrialTierName,
     });
+    team = await userMgr.getTeamById(team.id);
   }
+  const apiTeam = mkApiTeam(team);
 
   // Automatically create a new workspace in the new team.
   await userMgr.createWorkspace({
@@ -262,6 +271,13 @@ export async function changeResourcePermissions(req: Request, res: Response) {
             : taggedResourceId.type === "workspace"
             ? createWorkspaceUrl(host, id)
             : createTeamUrl(host, id);
+        if (
+          taggedResourceId.type === "team" &&
+          toGrant.some((grant) => grant.accessLevel === "owner")
+        ) {
+          // Refresh Stripe state since ownership transfer requires a paid team.
+          await checkStripeSubscription(req, getEntitledTeam(resource as Team));
+        }
 
         for (const { email, accessLevel } of toGrant) {
           await mgr.grantResourcesPermissionByEmail(
@@ -281,7 +297,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           // Note: we intentionally do not check whether this is a new permission or
           // not. We always re-send share emails if the user re-requested sharing with
           // a user!
-          // Skip emailing the actor about their own role change (e.g., self-demotion during ownership transfer)
+          // Skip emailing the actor about their own role change
           if (email !== getUser(req).email) {
             emailsToSend.push({
               email: email,

@@ -819,30 +819,31 @@ describe("updateCommitGraphForProject concurrency (PLA-13087)", () => {
     con = dbCon;
     cleanupDb = cleanup;
 
-    // Create a project using a non-transactional EntityManager, so the starting state is
-    // visible to the concurrent transactions below.
-    const setupDb = new DbMgr(con.createEntityManager(), SUPER_USER);
-    const user = await setupDb.createUser({
-      email: "commitgraph-race@test.com",
-      firstName: "Race",
-      lastName: "Test",
-      password: "!53kr3tz!",
-      needsIntroSplash: false,
-      needsSurvey: false,
-      needsTeamCreationPrompt: false,
-    });
-    await setupDb.markEmailAsVerified(user);
-    const userDb = new DbMgr(con.createEntityManager(), normalActor(user.id));
-    const { workspace } = await getTeamAndWorkspace(userDb);
-    const { project } = await userDb.createProject({
-      name: "commitgraph race project",
-      workspaceId: workspace.id,
-    });
-    projectId = project.id as ProjectId;
+    // Commit the fixtures before the concurrent transactions read them.
+    await con.transaction(async (em) => {
+      const setupDb = new DbMgr(em, SUPER_USER);
+      const user = await setupDb.createUser({
+        email: "commitgraph-race@test.com",
+        firstName: "Race",
+        lastName: "Test",
+        password: "!53kr3tz!",
+        needsIntroSplash: false,
+        needsSurvey: false,
+        needsTeamCreationPrompt: false,
+      });
+      await setupDb.markEmailAsVerified(user);
+      const userDb = new DbMgr(em, normalActor(user.id));
+      const { workspace } = await getTeamAndWorkspace(userDb);
+      const { project } = await userDb.createProject({
+        name: "commitgraph race project",
+        workspaceId: workspace.id,
+      });
+      projectId = project.id as ProjectId;
 
-    // Initialize the commit graph up so concurrent updates below use the read-modify-write
-    // path, not than the initial create path (which takes its own locks).
-    await setupDb.getCommitGraphForProject(projectId);
+      // Initialize the commit graph up so concurrent updates below use the read-modify-write
+      // path, not than the initial create path (which takes its own locks).
+      await setupDb.getCommitGraphForProject(projectId);
+    });
   });
 
   afterAll(async () => {

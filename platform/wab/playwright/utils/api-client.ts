@@ -84,43 +84,31 @@ export class ApiClient {
     await this.request.delete(`${this.baseUrl}/api/v1/projects/${projectId}`);
   }
 
-  /**
-   * Creates a team on a free trial and returns its default workspace, for
-   * tests that need a project whose team passes paid/trial feature gates.
-   */
-  async setupTeamOnTrial(
-    name: string
-  ): Promise<{ teamId: string; workspaceId: string }> {
+  // A user gets one unpaid team and one trial, so the seeded team is reused.
+  async setupTrialWorkspace(): Promise<string> {
     const csrf = await this.getCsrf();
-    const teamRes = await this.request.post(`${this.baseUrl}/api/v1/teams`, {
-      data: { name: `[playwright] ${name}` },
-      headers: { "X-CSRF-Token": csrf },
-    });
-    if (!teamRes.ok()) {
-      throw new Error(`Failed to create team: ${await teamRes.text()}`);
-    }
-    const teamId = (await teamRes.json()).team.id;
-
-    const trialRes = await this.request.post(
-      `${this.baseUrl}/api/v1/teams/${teamId}/trial`,
-      { headers: { "X-CSRF-Token": csrf } }
+    const teamsRes = await this.request.get(`${this.baseUrl}/api/v1/teams`);
+    const team = (await teamsRes.json()).teams.find(
+      (t) => t.name === "Plasmic's First Organization"
     );
-    if (!trialRes.ok()) {
-      throw new Error(`Failed to start team trial: ${await trialRes.text()}`);
+    if (!team) {
+      throw new Error("Seeded team not found");
+    }
+
+    if (!team.onTrial) {
+      const trialRes = await this.request.post(
+        `${this.baseUrl}/api/v1/teams/${team.id}/trial`,
+        { headers: { "X-CSRF-Token": csrf } }
+      );
+      if (!trialRes.ok()) {
+        throw new Error(`Failed to start team trial: ${await trialRes.text()}`);
+      }
     }
 
     const workspacesRes = await this.request.get(
-      `${this.baseUrl}/api/v1/teams/${teamId}/workspaces`
+      `${this.baseUrl}/api/v1/teams/${team.id}/workspaces`
     );
-    const workspaceId = (await workspacesRes.json()).workspaces[0].id;
-    return { teamId, workspaceId };
-  }
-
-  async removeTeam(teamId: string) {
-    const csrf = await this.getCsrf();
-    await this.request.delete(`${this.baseUrl}/api/v1/teams/${teamId}`, {
-      headers: { "X-CSRF-Token": csrf },
-    });
+    return (await workspacesRes.json()).workspaces[0].id;
   }
 
   async importProjectFromTemplate(bundle: any) {

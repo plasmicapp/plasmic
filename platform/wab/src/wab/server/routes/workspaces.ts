@@ -1,6 +1,8 @@
 import { Workspace } from "@/wab/server/entities/Entities";
+import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { doSafelyDeleteProject } from "@/wab/server/routes/projects";
 import {
+  checkStripeSubscription,
   maybeTriggerPaywall,
   passPaywall,
 } from "@/wab/server/routes/team-plans";
@@ -137,6 +139,11 @@ export async function updateWorkspace(req: Request, res: Response) {
   const { commit, rollback } = await startTransaction(req, async () => {
     const userMgr = userDbMgr(req);
     const args = req.body as UpdateWorkspaceRequest;
+    if (args.teamId) {
+      // Refresh Stripe state to verify the move is to a paid team.
+      const destination = await userMgr.getTeamById(args.teamId);
+      await checkStripeSubscription(req, getEntitledTeam(destination));
+    }
     const workspace = await userMgr.updateWorkspace({
       workspaceId: req.params.workspaceId as WorkspaceId,
       ...args,

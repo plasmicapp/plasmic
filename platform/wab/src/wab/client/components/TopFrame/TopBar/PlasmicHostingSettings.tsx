@@ -16,9 +16,9 @@ import {
   DefaultPlasmicHostingSettingsProps,
   PlasmicPlasmicHostingSettings,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPlasmicHostingSettings";
-import { checkIsOrgOnFreeTierOrTrial } from "@/wab/client/studio-ctx/StudioCtx";
 import useDebounce from "@/wab/commons/components/use-debounce";
 import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
+import { checkIsTeamOnFreeTierOrTrial } from "@/wab/shared/billing/billing-util";
 import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import {
@@ -115,7 +115,7 @@ function PlasmicHostingSettings_(
   const api = appCtx.api;
   const projectId = project.id;
   const projectTeam = appCtx.teams.find((team) => team.id === project.teamId);
-  const isOrgOnFreeTierOrTrial = checkIsOrgOnFreeTierOrTrial(projectTeam);
+  const isTeamOnFreeTierOrTrial = checkIsTeamOnFreeTierOrTrial(projectTeam);
 
   const { data: domainsResult } = useGetDomainsForProject(projectId);
   const { data: hostingSettings, mutate: mutateHostingSettings } =
@@ -409,10 +409,10 @@ function PlasmicHostingSettings_(
             })()
           );
         },
-        isDisabled: isOrgOnFreeTierOrTrial,
+        isDisabled: isTeamOnFreeTierOrTrial,
       }}
       paidFeaturesInfoText={
-        !isOrgOnFreeTierOrTrial
+        !isTeamOnFreeTierOrTrial
           ? {
               render: () => null,
             }
@@ -462,7 +462,7 @@ function PlasmicHostingSettings_(
               );
             }}
             accept={".ico,.jpg,.jpeg,.png,.svg,.gif"}
-            isDisabled={isOrgOnFreeTierOrTrial}
+            isDisabled={isTeamOnFreeTierOrTrial}
           >
             <div className="flex gap-sm dimfg p-sm">
               <FaUpload />

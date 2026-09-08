@@ -11,9 +11,11 @@ import {
   PlasmicTeamSettings,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettings";
 import { GrantRevokeRequest, TeamId } from "@/wab/shared/ApiSchema";
+import { checkIsTeamOnFreeTierOrTrial } from "@/wab/shared/billing/billing-util";
 import { ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
@@ -32,6 +34,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
     // needs to fetch subscription before team, because getSubscription will check the subscription status
     const subscriptionResp = await appCtx.api.getSubscription(teamId);
     const team = await appCtx.api.getTeam(teamId);
+    const { meta } = await appCtx.api.getTeamMeta(teamId);
     const featureTiers = await appCtx.api.listCurrentFeatureTiers();
     const subscription =
       subscriptionResp.type === "success"
@@ -45,6 +48,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
       ...featureTiers,
       ...subscription,
       isWhiteLabeled,
+      canStartFreeTrial: meta.canStartFreeTrial,
     };
   }, [appCtx, teamId, selfInfo]);
 
@@ -119,6 +123,17 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
           }
 
           if (hasOwnership && role === "owner") {
+            if (
+              checkIsTeamOnFreeTierOrTrial({
+                featureTierId: team.featureTier?.id ?? null,
+                onTrial: team.onTrial,
+              })
+            ) {
+              notification.error({
+                message: `Upgrade this ${ORGANIZATION_LOWER} before transferring ownership.`,
+              });
+              return;
+            }
             // Confirm user is trying to transfer "owner" to another member.
             const confirm = await reactConfirm({
               title: `Transfer ownership`,
@@ -134,18 +149,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
             }
 
             await grantRevoke({
-              grants: [
-                // Order matters: target must be promoted to "owner" before the actor is
-                // demoted to "editor". The server processes grants sequentially; reversing
-                // the order would cause the second grant to fail because the actor would
-                // no longer have owner-level access.
-                { email, accessLevel: "owner", teamId: team.id },
-                {
-                  email: selfInfo.email,
-                  accessLevel: "editor",
-                  teamId: team.id,
-                },
-              ],
+              grants: [{ email, accessLevel: "owner", teamId: team.id }],
               revokes: [],
             });
           } else {
@@ -183,6 +187,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
               members,
               availFeatureTiers,
               subscription,
+              canStartFreeTrial: data.canStartFreeTrial,
               onChange: () => {
                 refetchData();
               },

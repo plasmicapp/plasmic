@@ -1068,8 +1068,16 @@ export abstract class SharedApi {
     return this.post(`/billing/setup-intent/${teamId}`);
   }
 
-  async changeTeamOwner(teamId: string, newOwner: string): Promise<{}> {
-    return this.post(`/admin/change-team-owner`, { teamId, newOwner });
+  async changeTeamOwner(
+    teamId: string,
+    newOwner: string,
+    { allowUnpaidTransfer = false }: { allowUnpaidTransfer?: boolean } = {}
+  ): Promise<{}> {
+    return this.post(`/admin/change-team-owner`, {
+      teamId,
+      newOwner,
+      allowUnpaidTransfer,
+    });
   }
 
   async upgradePersonalTeam(teamId: string): Promise<{}> {

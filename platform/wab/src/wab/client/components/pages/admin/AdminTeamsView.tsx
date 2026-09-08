@@ -686,7 +686,9 @@ function Members({ team, perms, refetch }: TeamProps) {
             return (
               <Button
                 onClick={async () => {
-                  await nonAuthCtx.api.changeTeamOwner(team.id, userId);
+                  await nonAuthCtx.api.changeTeamOwner(team.id, userId, {
+                    allowUnpaidTransfer: true,
+                  });
                   refetch();
                 }}
               >

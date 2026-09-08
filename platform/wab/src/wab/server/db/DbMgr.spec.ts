@@ -7,28 +7,35 @@ import { seedTestDb } from "@/wab/server/db/DbInit";
 import {
   ANON_USER,
   DbMgr,
-  normalActor,
   NotFoundError,
   SkipSafeDelete,
+  normalActor,
 } from "@/wab/server/db/DbMgr";
+import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import {
   CmsRow,
   FeatureTier,
   Team,
   User,
 } from "@/wab/server/entities/Entities";
-import { ApiCmsQuery, FilterClause } from "@/wab/shared/api/cms";
+import { createTeam as createTeamRoute } from "@/wab/server/routes/teams";
 import {
   CmsMetaType,
   CmsTableId,
   CommentId,
   CommentThreadId,
   ProjectAndBranchId,
+  StripeSubscriptionId,
+  WorkspaceId,
 } from "@/wab/shared/ApiSchema";
-import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { AccessLevel } from "@/wab/shared/EntUtil";
+import { ApiCmsQuery, FilterClause } from "@/wab/shared/api/cms";
+import { ensure, filterMapTruthy } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
 import * as uuid from "uuid";
+import { mock } from "vitest-mock-extended";
 
 describe("DbMgr.CMS", () => {
   it("can duplicate the database", () =>
@@ -1464,12 +1471,9 @@ describe("DbMgr", () => {
         ).toReject();
       }));
 
-    it("owners can demote other owners, but cannot leave a resource owner-less", () =>
+    it("owners can demote other project and workspace owners, but cannot leave a resource owner-less", () =>
       withDb(async (sudo, [user1, user2, user3], [db1, db2, db3], project) => {
         const { team, workspace } = await getTeamAndWorkspace(db1());
-
-        // Set user2 as owner of team
-        await db1().grantTeamPermissionByEmail(team.id, user2.email, "owner");
 
         // Owner can demote another owner
         await db1().grantProjectPermissionByEmail(
@@ -1482,7 +1486,6 @@ describe("DbMgr", () => {
           user2.email,
           "editor"
         );
-        await db1().grantTeamPermissionByEmail(team.id, user2.email, "editor");
 
         // Owner cannot demote themselves if they are the last owner
         await expect(
@@ -1490,20 +1493,40 @@ describe("DbMgr", () => {
         ).toReject();
       }));
 
-    it("owner can transfer ownership via 2-phase promote then self-demote", () =>
-      withDb(async (sudo, [user1, user2], [db1, db2], project) => {
+    it("cannot make owner the default team access level", () =>
+      withDb(async (_sudo, _users, [db1]) => {
         const { team } = await getTeamAndWorkspace(db1());
+        await expect(
+          db1().updateTeam({ id: team.id, defaultAccessLevel: "owner" })
+        ).rejects.toThrow("Ownership can only be granted by transfer");
+      }));
+
+    it("owner can transfer paid team ownership in one operation", () =>
+      withDb(async (sudo, [user1, user2], [db1, db2], project, em) => {
+        const { team } = await getTeamAndWorkspace(db1());
+        const { teamFt } = await seedTestFeatureTiers(em);
+        const subscriptionId = "sub_team_transfer" as StripeSubscriptionId;
+        await sudo.sudoUpdateTeam({
+          id: team.id,
+          featureTierId: teamFt.id,
+          stripeSubscriptionId: subscriptionId,
+        });
 
         // Cannot self-demote when last owner
         await expect(
           db1().grantTeamPermissionByEmail(team.id, user1.email, "editor")
         ).toReject();
 
-        // Phase 1: promote user2 to owner
         await db1().grantTeamPermissionByEmail(team.id, user2.email, "owner");
 
-        // Phase 2: self-demote is now safe since user2 is also an owner
-        await db1().grantTeamPermissionByEmail(team.id, user1.email, "editor");
+        expect((await sudo.getTeamById(team.id)).createdById).toBe(user2.id);
+        const teamPerms = await sudo.getPermissionsForTeams([team.id]);
+        expect(
+          teamPerms.filter((perm) => perm.accessLevel === "owner")
+        ).toMatchObject([{ userId: user2.id }]);
+        expect(
+          teamPerms.find((perm) => perm.userId === user1.id)?.accessLevel
+        ).toBe("editor");
 
         // user2 is now the sole owner and cannot self-demote
         await expect(
@@ -1736,7 +1759,7 @@ describe("DbMgr.user", () => {
       // matches getUserById
       const userDbMgr = new DbMgr(em, normalActor(user.id));
       const getUser = await userDbMgr.getUserById(user.id);
-      expect(getUser).toEqual(user);
+      expect(getUser).toEqual(L.omit(user, "freeTrialStartedAt"));
 
       // creates 2 teams: personal team and organization
       const teams = await userDbMgr.getAffiliatedTeams();
@@ -1783,6 +1806,480 @@ describe("DbMgr.user", () => {
       );
     });
   });
+});
+
+describe("DbMgr organization entitlements", () => {
+  it("limits users to one unpaid organization", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      const { teamFt } = await seedTestFeatureTiers(em);
+      const limitedUser = await sudo.createUser({
+        email: "limited-orgs@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const limitedMgr = new DbMgr(em, normalActor(limitedUser.id));
+      const firstTeam = await limitedMgr.createTeam("First org");
+      const checkCanCreateTeam = () => limitedMgr.checkCanCreateTeam();
+
+      await expect(checkCanCreateTeam()).rejects.toThrow(
+        "You can only have one unpaid organization"
+      );
+
+      await limitedMgr.startFreeTrial({
+        teamId: firstTeam.id,
+        featureTierName: "Team",
+      });
+      await expect(checkCanCreateTeam()).rejects.toThrow(
+        "You can only have one unpaid organization"
+      );
+
+      await sudo.sudoUpdateTeam({
+        id: firstTeam.id,
+        featureTierId: teamFt.id,
+        stripeSubscriptionId: "sub_paid" as StripeSubscriptionId,
+      });
+      await expect(checkCanCreateTeam()).resolves.toBeUndefined();
+    }));
+
+  it("blocks canceling a subscription next to an unpaid organization", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      const { teamFt } = await seedTestFeatureTiers(em);
+      const user = await sudo.createUser({
+        email: "cancel-orgs@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const mgr = new DbMgr(em, normalActor(user.id));
+      const paidTeam = await mgr.createTeam("Paid org");
+      await sudo.sudoUpdateTeam({
+        id: paidTeam.id,
+        featureTierId: teamFt.id,
+        stripeSubscriptionId: "sub_paid" as StripeSubscriptionId,
+      });
+      const freeTeam = await mgr.createTeam("Free org");
+
+      await expect(mgr.checkCanCancelSubscription(paidTeam.id)).rejects.toThrow(
+        "You can only have one unpaid organization"
+      );
+      await expect(
+        mgr.checkCanCancelSubscription(freeTeam.id)
+      ).resolves.toBeUndefined();
+
+      await mgr.deleteTeam(freeTeam.id);
+      await expect(
+        mgr.checkCanCancelSubscription(paidTeam.id)
+      ).resolves.toBeUndefined();
+    }));
+
+  it("treats provisioned tiers and children of paid organizations as paid", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      const { enterpriseFt } = await seedTestFeatureTiers(em);
+      const user = await sudo.createUser({
+        email: "provisioned-orgs@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const mgr = new DbMgr(em, normalActor(user.id));
+      const parent = await mgr.createTeam("Enterprise");
+      await sudo.sudoUpdateTeam({
+        id: parent.id,
+        featureTierId: enterpriseFt.id,
+      });
+      const child = await mgr.createTeam("Enterprise child");
+      await sudo.sudoUpdateTeam({ id: child.id, parentTeamId: parent.id });
+
+      await expect(mgr.checkCanCreateTeam()).resolves.toBeUndefined();
+
+      await sudo.sudoUpdateTeam({ id: parent.id, trialStartDate: new Date() });
+      await expect(mgr.checkCanCreateTeam()).rejects.toThrow(
+        "You can only have one unpaid organization"
+      );
+    }));
+
+  it("blocks restoring an unpaid organization next to another unpaid organization", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      const { teamFt } = await seedTestFeatureTiers(em);
+      const user = await sudo.createUser({
+        email: "restore-orgs@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const mgr = new DbMgr(em, normalActor(user.id));
+      const firstTeam = await mgr.createTeam("First org");
+      await mgr.deleteTeam(firstTeam.id);
+      const secondTeam = await mgr.createTeam("Second org");
+
+      await expect(mgr.restoreTeam(firstTeam.id)).rejects.toThrow(
+        "You can only have one unpaid organization"
+      );
+
+      await sudo.sudoUpdateTeam({
+        id: secondTeam.id,
+        featureTierId: teamFt.id,
+        stripeSubscriptionId: "sub_paid" as StripeSubscriptionId,
+      });
+      await expect(mgr.restoreTeam(firstTeam.id)).resolves.toBeUndefined();
+    }));
+
+  it("returns a complete feature tier when creating a team with an automatic trial", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      await seedTestFeatureTiers(em);
+      const owner = await sudo.createUser({
+        email: "automatic-trial@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      await sudo.markEmailAsVerified(owner);
+      const req = Object.assign(mock<Request>(), {
+        user: owner,
+        txMgr: em,
+        timingStore: undefined,
+        body: { name: "Automatic trial org" },
+        cookies: {},
+        headers: {},
+        devflags: { ...DEVFLAGS, freeTrial: true, freeTrialTierName: "Team" },
+        analytics: mock<Request["analytics"]>(),
+      });
+      const res = mock<Response>();
+
+      await createTeamRoute(req, res);
+
+      const [tier] = await sudo.listCurrentFeatureTiers(["Team"]);
+      expect(res.json).toHaveBeenCalledWith({
+        team: expect.objectContaining({
+          onTrial: true,
+          featureTier: expect.objectContaining({
+            id: tier.id,
+            name: tier.name,
+            maxUsers: tier.maxUsers,
+            monthlyBasePrice: tier.monthlyBasePrice,
+          }),
+        }),
+      });
+    }));
+
+  it("allows one free trial per owner", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      await seedTestFeatureTiers(em);
+      const trialUser = await sudo.createUser({
+        email: "trial-user@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const trialMgr = new DbMgr(em, normalActor(trialUser.id));
+      const firstTeam = await trialMgr.createTeam("Trial org");
+
+      expect(await trialMgr.canStartFreeTrial(firstTeam.id)).toBe(true);
+      await trialMgr.startFreeTrial({
+        teamId: firstTeam.id,
+        featureTierName: "Team",
+      });
+      const secondTeam = await trialMgr.createTeam("Second org");
+
+      expect(await trialMgr.canStartFreeTrial(secondTeam.id)).toBe(false);
+      await expect(
+        trialMgr.startFreeTrial({
+          teamId: secondTeam.id,
+          featureTierName: "Team",
+        })
+      ).rejects.toThrow("Free trials are only available once");
+    }));
+
+  it("keys free-trial eligibility to the organization owner", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      await seedTestFeatureTiers(em);
+      const owner = await sudo.createUser({
+        email: "trial-owner@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const editor = await sudo.createUser({
+        email: "trial-editor@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const ownerMgr = new DbMgr(em, normalActor(owner.id));
+      const editorMgr = new DbMgr(em, normalActor(editor.id));
+      const firstTeam = await ownerMgr.createTeam("First org");
+      await ownerMgr.startFreeTrial({
+        teamId: firstTeam.id,
+        featureTierName: "Team",
+      });
+      const secondTeam = await ownerMgr.createTeam("Second org");
+      await ownerMgr.grantTeamPermissionByEmail(
+        secondTeam.id,
+        editor.email,
+        "editor"
+      );
+
+      expect(await editorMgr.canStartFreeTrial(secondTeam.id)).toBe(false);
+      expect(await editorMgr.getUserById(owner.id)).not.toHaveProperty(
+        "freeTrialStartedAt"
+      );
+      const members = await editorMgr.getTeamMembers(secondTeam.id);
+      expect(JSON.stringify(members)).toContain(owner.email);
+      expect(JSON.stringify(members)).not.toContain("freeTrialStartedAt");
+      const perms = await editorMgr.getPermissionsForTeams([secondTeam.id]);
+      expect(JSON.stringify(perms)).not.toContain("freeTrialStartedAt");
+      await expect(
+        editorMgr.startFreeTrial({
+          teamId: secondTeam.id,
+          featureTierName: "Team",
+        })
+      ).rejects.toThrow("Free trials are only available once");
+    }));
+
+  it("allows a superuser to reset a team trial without clearing the owner's claim", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      await seedTestFeatureTiers(em);
+      const owner = await sudo.createUser({
+        email: "trial-reset@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const ownerMgr = new DbMgr(em, normalActor(owner.id));
+      const team = await ownerMgr.createTeam("Trial org");
+      await ownerMgr.startFreeTrial({
+        teamId: team.id,
+        featureTierName: "Team",
+      });
+      const getTrialClaim = async () =>
+        ensure(
+          await em.getRepository(User).findOne({
+            select: ["id", "freeTrialStartedAt"],
+            where: { id: owner.id },
+          }),
+          "Trial owner must exist"
+        ).freeTrialStartedAt;
+      const firstTrialClaim = await getTrialClaim();
+      expect(firstTrialClaim).toBeInstanceOf(Date);
+
+      await sudo.sudoUpdateTeam({ id: team.id, trialStartDate: null });
+      await expect(
+        sudo.startFreeTrial({
+          teamId: team.id,
+          featureTierName: "Team",
+        })
+      ).resolves.toMatchObject({ id: team.id });
+      expect(await getTrialClaim()).toEqual(firstTrialClaim);
+    }));
+
+  it("blocks unpaid organization transfers without a superuser override", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      const owner = await sudo.createUser({
+        email: "unpaid-org-owner@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const newOwner = await sudo.createUser({
+        email: "unpaid-org-new-owner@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const ownerMgr = new DbMgr(em, normalActor(owner.id));
+      const team = await ownerMgr.createTeam("Unpaid org");
+      await ownerMgr.grantTeamPermissionByEmail(
+        team.id,
+        newOwner.email,
+        "editor"
+      );
+
+      await expect(sudo.changeTeamOwner(team.id, newOwner.id)).rejects.toThrow(
+        "Cannot transfer an unpaid organization."
+      );
+      await expect(
+        ownerMgr.grantTeamPermissionByEmail(team.id, newOwner.email, "owner")
+      ).rejects.toThrow("Cannot transfer an unpaid organization.");
+      await expect(
+        ownerMgr.changeTeamOwner(team.id, newOwner.id, {
+          allowUnpaidTransfer: true,
+        })
+      ).rejects.toThrow("Must be Super User");
+
+      await expect(
+        sudo.changeTeamOwner(team.id, newOwner.id, {
+          allowUnpaidTransfer: true,
+        })
+      ).resolves.toBeUndefined();
+      expect((await sudo.getTeamById(team.id)).createdById).toBe(newOwner.id);
+      const teamPerms = await sudo.getPermissionsForTeams([team.id]);
+      expect(
+        teamPerms.filter((perm) => perm.accessLevel === "owner")
+      ).toMatchObject([{ userId: newOwner.id }]);
+
+      const newOwnerMgr = new DbMgr(em, normalActor(newOwner.id));
+      await expect(newOwnerMgr.checkCanCreateTeam()).rejects.toThrow(
+        "You can only have one unpaid organization"
+      );
+    }));
+
+  it("allows paid organization transfers without an override", () =>
+    withDb(async (sudo, _users, _dbs, _project, em) => {
+      const owner = await sudo.createUser({
+        email: "paid-org-owner@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const newOwner = await sudo.createUser({
+        email: "paid-org-new-owner@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const ownerMgr = new DbMgr(em, normalActor(owner.id));
+      const { teamFt } = await seedTestFeatureTiers(em);
+      const team = await ownerMgr.createTeam("Paid org");
+      await ownerMgr.grantTeamPermissionByEmail(
+        team.id,
+        newOwner.email,
+        "editor"
+      );
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: teamFt.id,
+        stripeSubscriptionId: "sub_paid_transfer" as StripeSubscriptionId,
+      });
+      await expect(
+        sudo.changeTeamOwner(team.id, newOwner.id)
+      ).resolves.toBeUndefined();
+      expect((await sudo.getTeamById(team.id)).createdById).toBe(newOwner.id);
+    }));
+});
+
+describe("DbMgr project transfers", () => {
+  it("blocks transfers to free and trial organizations but allows paid organizations", () =>
+    withDb(async (sudo, _users, [db1], project, em) => {
+      const { team: sourceTeam } = await getTeamAndWorkspace(db1());
+      const sameTeamWorkspace = await db1().createWorkspace({
+        name: "Same organization",
+        description: "",
+        teamId: sourceTeam.id,
+      });
+
+      await expect(
+        db1().updateProject({
+          id: project.id,
+          workspaceId: sameTeamWorkspace.id,
+        })
+      ).resolves.toMatchObject({ workspaceId: sameTeamWorkspace.id });
+
+      const destinationTeam = await db1().createTeam("Destination");
+      const destinationWorkspace = await db1().createWorkspace({
+        name: "Destination workspace",
+        description: "",
+        teamId: destinationTeam.id,
+      });
+      const transferProject = () =>
+        db1().updateProject({
+          id: project.id,
+          workspaceId: destinationWorkspace.id,
+        });
+
+      await expect(transferProject()).rejects.toThrow(
+        "Projects can only be transferred to a paid organization"
+      );
+
+      const { teamFt } = await seedTestFeatureTiers(em);
+      await sudo.sudoUpdateTeam({
+        id: destinationTeam.id,
+        featureTierId: teamFt.id,
+        trialStartDate: new Date(),
+      });
+      await expect(transferProject()).rejects.toThrow(
+        "Projects can only be transferred to a paid organization"
+      );
+
+      await sudo.sudoUpdateTeam({
+        id: destinationTeam.id,
+        stripeSubscriptionId: "sub_paid" as StripeSubscriptionId,
+      });
+      await expect(transferProject()).resolves.toMatchObject({
+        workspaceId: destinationWorkspace.id,
+      });
+    }));
+
+  it("allows transfers into a child of a paid organization", () =>
+    withDb(async (sudo, _users, [db1], project, em) => {
+      const { enterpriseFt } = await seedTestFeatureTiers(em);
+      const newOwner = await sudo.createUser({
+        email: "child-org-new-owner@example.com",
+        needsTeamCreationPrompt: true,
+      });
+      const parent = await db1().createTeam("Enterprise");
+      await sudo.sudoUpdateTeam({
+        id: parent.id,
+        featureTierId: enterpriseFt.id,
+      });
+      const child = await db1().createTeam("Enterprise child");
+      await sudo.sudoUpdateTeam({ id: child.id, parentTeamId: parent.id });
+      const childWorkspace = await db1().createWorkspace({
+        name: "Child workspace",
+        description: "",
+        teamId: child.id,
+      });
+
+      await expect(
+        db1().updateProject({ id: project.id, workspaceId: childWorkspace.id })
+      ).resolves.toMatchObject({ workspaceId: childWorkspace.id });
+      await expect(
+        sudo.changeTeamOwner(child.id, newOwner.id)
+      ).resolves.toBeUndefined();
+    }));
+
+  it("blocks moving a workspace with projects to an unpaid organization", () =>
+    withDb(async (sudo, _users, [db1], project, em) => {
+      const { workspace } = await getTeamAndWorkspace(db1());
+      await db1().updateProject({ id: project.id, workspaceId: workspace.id });
+      const emptyWorkspace = await db1().createWorkspace({
+        name: "Empty",
+        description: "",
+        teamId: workspace.teamId,
+      });
+      const destinationTeam = await db1().createTeam("Destination");
+      const moveWorkspace = (workspaceId: WorkspaceId) =>
+        db1().updateWorkspace({ workspaceId, teamId: destinationTeam.id });
+
+      await expect(moveWorkspace(emptyWorkspace.id)).resolves.toMatchObject({
+        teamId: destinationTeam.id,
+      });
+      await expect(moveWorkspace(workspace.id)).rejects.toThrow(
+        "Projects can only be transferred to a paid organization"
+      );
+
+      const { teamFt } = await seedTestFeatureTiers(em);
+      await sudo.sudoUpdateTeam({
+        id: destinationTeam.id,
+        featureTierId: teamFt.id,
+        stripeSubscriptionId: "sub_paid" as StripeSubscriptionId,
+      });
+      await expect(moveWorkspace(workspace.id)).resolves.toMatchObject({
+        teamId: destinationTeam.id,
+      });
+    }));
+
+  it("allows superusers to transfer projects to free organizations", () =>
+    withDb(async (sudo, _users, [db1], project) => {
+      const freeTeam = await db1().createTeam("Free destination");
+      const freeWorkspace = await db1().createWorkspace({
+        name: "Free workspace",
+        description: "",
+        teamId: freeTeam.id,
+      });
+      await expect(
+        sudo.updateProject({
+          id: project.id,
+          workspaceId: freeWorkspace.id,
+        })
+      ).resolves.toMatchObject({ workspaceId: freeWorkspace.id });
+    }));
+
+  it("allows transfers to white-label child organizations", () =>
+    withDb(async (sudo, _users, [db1], project) => {
+      const rootTeam = await db1().createTeam("White-label root");
+      await sudo.updateTeamWhiteLabelName(rootTeam.id, "test-white-label");
+      const destinationTeam = await sudo.sudoUpdateTeam({
+        id: (await db1().createTeam("White-label child")).id,
+        parentTeamId: rootTeam.id,
+      });
+      const destinationWorkspace = await db1().createWorkspace({
+        name: "White-label workspace",
+        description: "",
+        teamId: destinationTeam.id,
+      });
+
+      await expect(
+        db1().updateProject({
+          id: project.id,
+          workspaceId: destinationWorkspace.id,
+        })
+      ).resolves.toMatchObject({ workspaceId: destinationWorkspace.id });
+    }));
 });
 
 describe("DbMgr.project revisions", () => {

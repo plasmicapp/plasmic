@@ -22,6 +22,17 @@ export type SubscriptionStatus = MakeADT<
   }
 >;
 
+export function checkIsTeamOnFreeTierOrTrial(
+  team?: Pick<ApiTeam, "featureTierId" | "onTrial">
+) {
+  return (
+    !team ||
+    !team.featureTierId ||
+    team.featureTierId === DEVFLAGS.freeTier.id ||
+    team.onTrial
+  );
+}
+
 /**
  * Given a team and Stripe subscription, determine the status of my account
  */

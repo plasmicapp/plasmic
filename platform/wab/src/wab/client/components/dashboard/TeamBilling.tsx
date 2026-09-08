@@ -40,6 +40,7 @@ interface TeamBillingProps extends DefaultTeamBillingProps {
   members: TeamMember[];
   availFeatureTiers: ApiFeatureTier[];
   subscription?: Subscription;
+  canStartFreeTrial: boolean;
   onChange: () => Promise<void>;
   disabled?: boolean;
 }
@@ -51,6 +52,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     members,
     availFeatureTiers,
     subscription,
+    canStartFreeTrial,
     onChange,
     disabled,
     ...rest
@@ -188,7 +190,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         availableTiers: availFeatureTiers,
         currentFeatureTier:
           subStatus?.type === "valid" ? subStatus.tier : subStatus?.freeTier,
-        canStartFreeTrial: !team.trialStartDate,
+        canStartFreeTrial,
         onSelectFeatureTier: upsell,
         onStartFreeTrial: startFreeTrial,
         isFreeTrialTeam: team.onTrial,

@@ -76,7 +76,7 @@ export async function seedTestDb(em: EntityManager) {
     em
   );
 
-  const enterpriseOrg = await seedTeam(
+  const enterpriseTeam = await seedTeam(
     em,
     user1,
     "Test Enterprise Org",
@@ -87,14 +87,14 @@ export async function seedTestDb(em: EntityManager) {
     user1,
     "Test Enterprise Child Org A",
     enterpriseFt,
-    enterpriseOrg
+    enterpriseTeam
   );
   await seedTeam(
     em,
     user1,
     "Test Enterprise Child Org B",
     enterpriseFt,
-    enterpriseOrg
+    enterpriseTeam
   );
   await seedTeam(em, user1, "Test Scale Org", teamFt);
   await seedTeam(em, user2, "Test Pro Org", proFt);

@@ -12,16 +12,13 @@ const SECOND_ELEMENT_NAME = "MentionsFooter";
  */
 test.describe("copilot mentions", () => {
   let projectId: string;
-  let teamId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
     // Chat copilot is only enabled for projects on a paid/trial team, so the
     // project can't live in the default personal workspace.
-    const team = await apiClient.setupTeamOnTrial("copilot-mentions");
-    teamId = team.teamId;
     projectId = await apiClient.setupNewProject({
       name: "copilot-mentions",
-      workspaceId: team.workspaceId,
+      workspaceId: await apiClient.setupTrialWorkspace(),
     });
     await goToProject(page, `/projects/${projectId}`);
   });
@@ -32,7 +29,6 @@ test.describe("copilot mentions", () => {
       "user2@example.com",
       "!53kr3tz!"
     );
-    await apiClient.removeTeam(teamId);
   });
 
   /** A page with one named element, so the canvas has something to mention. */

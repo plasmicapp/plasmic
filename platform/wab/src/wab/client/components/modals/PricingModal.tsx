@@ -450,7 +450,7 @@ function UpsellForm(
             onSelectFeatureTier={async (newTier: ApiFeatureTier) =>
               setTier(newTier)
             }
-            canStartFreeTrial={!team.trialStartDate}
+            canStartFreeTrial={!!teamMeta?.canStartFreeTrial}
             onStartFreeTrial={startFreeTrial}
             isFreeTrialTeam={team?.onTrial}
             hideLegacyTier={true}

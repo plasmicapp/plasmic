@@ -87,8 +87,13 @@ export async function changeTeamOwner(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const teamId = req.body.teamId;
   const newOwner = req.body.newOwner;
+  const allowUnpaidTransfer = req.body.allowUnpaidTransfer === true;
 
-  await (teamId && newOwner && mgr.changeTeamOwner(teamId, newOwner));
+  await (teamId &&
+    newOwner &&
+    mgr.changeTeamOwner(teamId, newOwner, {
+      allowUnpaidTransfer,
+    }));
   res.json({});
 }
 
