@@ -4,7 +4,9 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "author": "",
   "license": "ISC",
@@ -12,14 +14,9 @@
     "execa": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.29.2",
-    "@babel/preset-typescript": "^7.28.5",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^14.14.28",
-    "@types/tmp": "^0.2.0",
-    "jest": "^27.2.0",
-    "tmp": "^0.2.1",
-    "typescript": "6.0.3"
+    "@types/node": "24.12.2",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
   },
   "packageManager": "pnpm@11.10.0"
 }

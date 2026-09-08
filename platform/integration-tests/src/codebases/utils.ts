@@ -1,53 +1,58 @@
 import execa from "execa";
-import tmp from "tmp";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 
 export async function runCommand(
   command: string,
-  opts: { dir?: string; env?: Record<string, string> } = {}
+  opts: {
+    dir?: string;
+    env?: Record<string, string>;
+    signal?: AbortSignal;
+  } = {}
 ) {
-  if (!opts.dir) {
-    opts.dir = process.cwd();
-  }
-  if (!opts.env) {
-    opts.env = {};
-  }
-  return execa.command(command, {
-    cwd: opts.dir,
+  opts.signal?.throwIfAborted();
+  const child = execa.command(command, {
+    cwd: opts.dir ?? process.cwd(),
     env: {
       ...process.env,
       npm_config_yes: "1",
       ...opts.env,
     },
-    stdio: "inherit",
+    stdin: "ignore",
+    stdout: "inherit",
+    stderr: "inherit",
+    // Give the command and its descendants their own process group on CI/Linux
+    // and macOS, so a timed-out scaffold cannot keep installing in a deleted app.
+    detached: process.platform !== "win32",
   });
-}
-
-export function syncProject(dir: string, authDir?: string) {
-  const params = [
-    "sync",
-    "--yes",
-    "--projects=jrK3EHVDvsuNrYohN5Dhrt",
-    authDir ? `--auth=${authDir}` : "",
-  ].join(" ");
-  return runCommand(`npx plasmic ${params}`, {
-    dir,
-  });
-}
-
-export function buildProject(
-  dir: string,
-  envAuth: { [key: string]: string } = {}
-) {
-  return runCommand("npm run build", {
-    dir,
-    env: {
-      ...envAuth,
-    },
-  });
+  const abort = () => {
+    if (process.platform !== "win32" && child.pid) {
+      try {
+        process.kill(-child.pid, "SIGKILL");
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ESRCH") {
+          throw error;
+        }
+      }
+    } else {
+      child.kill("SIGKILL");
+    }
+  };
+  opts.signal?.addEventListener("abort", abort, { once: true });
+  try {
+    return await child;
+  } finally {
+    opts.signal?.removeEventListener("abort", abort);
+  }
 }
 
 export type TmpDir = { name: string; removeCallback: () => void };
 
 export function getTempDir() {
-  return tmp.dirSync({ unsafeCleanup: true });
+  const name = mkdtempSync(path.join(tmpdir(), "plasmic-integration-"));
+  return {
+    name,
+    removeCallback: () => rmSync(name, { recursive: true, force: true }),
+  };
 }

@@ -1,7 +1,8 @@
 FROM node:24.4.0
 
-# Set the working directory
-WORKDIR /app
+# The published CLI searches ancestors for an `app` directory to detect the
+# Next.js App Router. A top-level /app would misclassify Pages Router fixtures.
+WORKDIR /integration-tests
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -13,10 +14,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git && \
-    npm install -g @plasmicapp/cli@latest create-plasmic-app@latest && \
+    corepack install -g pnpm@11.10.0 && \
     pnpm install --frozen-lockfile && \
     pnpm store prune && \
-    apt-get purge -y --auto-remove git && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the rest of the application code
