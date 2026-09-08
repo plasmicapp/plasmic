@@ -57,7 +57,7 @@ overrides:
   "@octokit/webhooks-methods": 6.0.0
   "@react-aria/focus": 3.20.3
   "@react-aria/overlays": 3.27.1
-  react-slick: 0.28.1
+  react-slick: 0.31.0
   # Type-bearing transitives that wab's old yarn.lock had frozen at older
   # versions; a fresh resolve drifts them and breaks wab's typecheck
   # (AriaPositionProps.placement, underscore.string named imports). Pinned to
@@ -239,7 +239,7 @@ patchedDependencies:
   "@octokit/webhooks-methods@6.0.0": patches/@octokit__webhooks-methods.patch
   "@react-aria/focus@3.20.3": patches/@react-aria__focus.patch
   "@react-aria/overlays@3.27.1": patches/@react-aria__overlays.patch
-  react-slick@0.28.1: patches/react-slick.patch
+  react-slick@0.31.0: patches/react-slick.patch
   # Version-pinned to wab's exact "history" dependency. Not added to overrides:
   # other importers may resolve history@4 transitively and must stay untouched.
   history@5.3.0: patches/history.patch

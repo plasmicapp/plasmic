@@ -250,7 +250,7 @@
     "css-initials": "^0.3.1",
     "css-tree": "^3.2.1",
     "css.escape": "^1.5.1",
-    "dayjs": "1.11.21",
+    "dayjs": "1.11.23",
     "debug": "2.6.9",
     "dom-align": "^1.12.4",
     "dotenv": "8.2.0",

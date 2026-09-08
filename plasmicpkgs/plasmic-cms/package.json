@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@plasmicpkgs/cms": "workspace:*",
-    "dayjs": "^1.10.7"
+    "dayjs": "^1.11.23"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

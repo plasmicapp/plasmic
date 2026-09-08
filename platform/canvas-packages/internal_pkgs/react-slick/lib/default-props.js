@@ -1,30 +1,21 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = void 0;
-
 var _react = _interopRequireDefault(require("react"));
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var defaultProps = {
   accessibility: true,
   adaptiveHeight: false,
   afterChange: null,
   appendDots: function appendDots(dots) {
-    return /*#__PURE__*/ _react["default"].createElement(
-      "ul",
-      {
-        style: {
-          display: "block",
-        },
-      },
-      dots
-    );
+    return /*#__PURE__*/_react["default"].createElement("ul", {
+      style: {
+        display: "block"
+      }
+    }, dots);
   },
   arrows: true,
   autoplay: false,
@@ -35,7 +26,7 @@ var defaultProps = {
   className: "",
   cssEase: "ease",
   customPaging: function customPaging(i) {
-    return /*#__PURE__*/ _react["default"].createElement("button", null, i + 1);
+    return /*#__PURE__*/_react["default"].createElement("button", null, i + 1);
   },
   dots: false,
   dotsClass: "slick-dots",
@@ -73,7 +64,9 @@ var defaultProps = {
   useTransform: true,
   variableWidth: false,
   vertical: false,
+  verticalSwiping: false,
   waitForAnimate: true,
+  asNavFor: null,
+  unslick: false
 };
-var _default = defaultProps;
-exports["default"] = _default;
+var _default = exports["default"] = defaultProps;

@@ -83,7 +83,7 @@
     "@plasmicpkgs/luxon-parser": "^3.4.4",
     "classnames": "^2.3.2",
     "csv-writer-browser": "^1.0.0",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.23",
     "fast-stringify": "^2.0.0",
     "lodash": "^4.17.21"
   }

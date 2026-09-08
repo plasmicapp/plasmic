@@ -1,6 +1,6 @@
 {
   "name": "react-slick",
-  "version": "0.28.1",
+  "version": "0.31.0",
   "description": " React port of slick carousel",
   "main": "./lib",
   "files": [
@@ -25,10 +25,9 @@
   "devDependencies": {},
   "peerDependencies": {
     "@plasmicapp/host": "^1.0.0",
-    "react": "^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0",
-    "react-dom": "^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0",
+    "react": "^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "classnames": "^2.2.5",
-    "enquire.js": "^2.1.6",
     "json2mq": "^0.2.0",
     "lodash.debounce": "^4.0.8",
     "resize-observer-polyfill": "^1.5.0"

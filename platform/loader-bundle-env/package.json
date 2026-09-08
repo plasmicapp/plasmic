@@ -75,7 +75,7 @@
     "chart.js": "^4.5.1",
     "copy-to-clipboard": "^3.3.3",
     "date-fns": "2.28.0",
-    "dayjs": "^1.11.20",
+    "dayjs": "^1.11.23",
     "enquire-js": "workspace:enquire.js@*",
     "fast-stringify": "^2.0.0",
     "framer-motion": "^7.6.1",

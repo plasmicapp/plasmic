@@ -17,9 +17,11 @@ const installedReactSlickDir = path.dirname(
   })
 );
 const reactSlickDependencyAliases = Object.fromEntries(
-  ["enquire.js", "json2mq", "lodash.debounce"].map((dependency) => [
+  ["json2mq", "lodash.debounce"].map((dependency) => [
     dependency,
-    require.resolve(dependency, { paths: [installedReactSlickDir] }),
+    require.resolve(dependency, {
+      paths: [installedReactSlickDir, __dirname],
+    }),
   ])
 );
 

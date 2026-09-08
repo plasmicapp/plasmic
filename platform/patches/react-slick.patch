@@ -1,11 +1,11 @@
 diff --git a/lib/inner-slider.js b/lib/inner-slider.js
-index ab9c65f..e569d1d 100644
+index fb00e035042d805c5bcbfbc806c5671786c70b34..01d4f6848b58283478f2dd8d5fda5c880f1d334d 100644
 --- a/lib/inner-slider.js
 +++ b/lib/inner-slider.js
-@@ -59,6 +59,29 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
-
- function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+@@ -33,6 +33,25 @@ function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? O
+ function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 +// We will be ignoring width changes in react-slick because of the following issue:
 +// https://github.com/akiran/react-slick/issues/2368
 +//
@@ -13,11 +13,9 @@ index ab9c65f..e569d1d 100644
 +// inner properties based on it. This is buggy and causes the slider to change speed.
 +// https://stackoverflow.com/questions/17328742/mobile-chrome-fires-resize-event-on-scroll
 +let __globalOuterWidth;
-+
 +function __hasChangedWidth() {
 +  if (typeof window !== 'undefined') {
 +    const width = window.outerWidth;
-+
 +    if (width !== __globalOuterWidth) {
 +      __globalOuterWidth = width;
 +      return true;
@@ -25,16 +23,14 @@ index ab9c65f..e569d1d 100644
 +      return false;
 +    }
 +  }
-+
 +  return false;
 +}
-+
- var InnerSlider = /*#__PURE__*/function (_React$Component) {
+ var InnerSlider = exports.InnerSlider = /*#__PURE__*/function (_React$Component) {
    _inherits(InnerSlider, _React$Component);
-
-@@ -142,9 +165,9 @@ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+   var _super = _createSuper(InnerSlider);
+@@ -94,9 +113,9 @@ var InnerSlider = exports.InnerSlider = /*#__PURE__*/function (_React$Component)
+         slide.onblur = _this.props.pauseOnFocus ? _this.onSlideBlur : null;
        });
-
        if (window.addEventListener) {
 -        window.addEventListener("resize", _this.onWindowResized);
 +        window.addEventListener("resize", _this.wrappedOnWindowResized);
@@ -43,10 +39,10 @@ index ab9c65f..e569d1d 100644
 +        window.attachEvent("onresize", _this.wrappedOnWindowResized);
        }
      });
-
-@@ -166,9 +189,9 @@ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+     _defineProperty(_assertThisInitialized(_this), "componentWillUnmount", function () {
+@@ -113,9 +132,9 @@ var InnerSlider = exports.InnerSlider = /*#__PURE__*/function (_React$Component)
+         _this.callbackTimers = [];
        }
-
        if (window.addEventListener) {
 -        window.removeEventListener("resize", _this.onWindowResized);
 +        window.removeEventListener("resize", _this.wrappedOnWindowResized);
@@ -54,19 +50,36 @@ index ab9c65f..e569d1d 100644
 -        window.detachEvent("onresize", _this.onWindowResized);
 +        window.detachEvent("onresize", _this.wrappedOnWindowResized);
        }
-
        if (_this.autoplayTimer) {
-@@ -237,6 +260,13 @@ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+         clearInterval(_this.autoplayTimer);
+@@ -169,6 +188,12 @@ var InnerSlider = exports.InnerSlider = /*#__PURE__*/function (_React$Component)
+       }, 50);
        _this.debouncedResize();
      });
-
 +    _defineProperty(_assertThisInitialized(_this), "wrappedOnWindowResized", function (setTrackStyle) {
 +      if (!__hasChangedWidth()) {
 +        return;
 +      }
 +      _this.onWindowResized(setTrackStyle);
 +    });
-+
      _defineProperty(_assertThisInitialized(_this), "resizeWindow", function () {
        var setTrackStyle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-       var isTrackMounted = Boolean(_this.track && _this.track.node); // prevent warning: setting state on unmounted component (server side rendering)
+       var isTrackMounted = Boolean(_this.track && _this.track.node);
+diff --git a/lib/slider.js b/lib/slider.js
+index 240a7c3abe2fb755942631557dd3d7dce2536d8e..221a0b10e1c3d7fed5afd3f22144706b8f348c87 100644
+--- a/lib/slider.js
++++ b/lib/slider.js
+@@ -71,6 +71,13 @@ var Slider = exports["default"] = /*#__PURE__*/function (_React$Component) {
+         }
+       };
+       mql.addListener(listener);
++      // react-slick 0.30 replaced enquire.js with matchMedia. enquire ran the
++      // handler on register when the query already matched; addListener does
++      // not, so the initial breakpoint was never applied until the first resize
++      // crossed one. Assess once here to restore the pre-0.30 behavior.
++      if (mql.matches) {
++        handler();
++      }
+       this._responsiveMediaHandlers.push({
+         mql: mql,
+         query: query,

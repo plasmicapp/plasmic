@@ -1,210 +1,91 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
+exports.checkSpecKeys = exports.checkNavigable = exports.changeSlide = exports.canUseDOM = exports.canGoNext = void 0;
 exports.clamp = clamp;
-exports.canUseDOM =
-  exports.slidesOnLeft =
-  exports.slidesOnRight =
-  exports.siblingDirection =
-  exports.getTotalSlides =
-  exports.getPostClones =
-  exports.getPreClones =
-  exports.getTrackLeft =
-  exports.getTrackAnimateCSS =
-  exports.getTrackCSS =
-  exports.checkSpecKeys =
-  exports.getSlideCount =
-  exports.checkNavigable =
-  exports.getNavigableIndexes =
-  exports.swipeEnd =
-  exports.swipeMove =
-  exports.swipeStart =
-  exports.keyHandler =
-  exports.changeSlide =
-  exports.slideHandler =
-  exports.initializedState =
-  exports.extractObject =
-  exports.canGoNext =
-  exports.getSwipeDirection =
-  exports.getHeight =
-  exports.getWidth =
-  exports.lazySlidesOnRight =
-  exports.lazySlidesOnLeft =
-  exports.lazyEndIndex =
-  exports.lazyStartIndex =
-  exports.getRequiredLazySlides =
-  exports.getOnDemandLazySlides =
-  exports.safePreventDefault =
-    void 0;
-
+exports.extractObject = void 0;
+exports.filterSettings = filterSettings;
+exports.validSettings = exports.swipeStart = exports.swipeMove = exports.swipeEnd = exports.slidesOnRight = exports.slidesOnLeft = exports.slideHandler = exports.siblingDirection = exports.safePreventDefault = exports.lazyStartIndex = exports.lazySlidesOnRight = exports.lazySlidesOnLeft = exports.lazyEndIndex = exports.keyHandler = exports.initializedState = exports.getWidth = exports.getTrackLeft = exports.getTrackCSS = exports.getTrackAnimateCSS = exports.getTotalSlides = exports.getSwipeDirection = exports.getSlideCount = exports.getRequiredLazySlides = exports.getPreClones = exports.getPostClones = exports.getOnDemandLazySlides = exports.getNavigableIndexes = exports.getHeight = void 0;
 var _react = _interopRequireDefault(require("react"));
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly)
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    keys.push.apply(keys, symbols);
-  }
-  return keys;
-}
-
-function _objectSpread(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(
-          target,
-          key,
-          Object.getOwnPropertyDescriptor(source, key)
-        );
-      });
-    }
-  }
-  return target;
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true,
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-
+var _defaultProps = _interopRequireDefault(require("../default-props"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function clamp(number, lowerBound, upperBound) {
   return Math.max(lowerBound, Math.min(number, upperBound));
 }
-
-var safePreventDefault = function safePreventDefault(event) {
+var safePreventDefault = exports.safePreventDefault = function safePreventDefault(event) {
   var passiveEvents = ["onTouchStart", "onTouchMove", "onWheel"];
-
   if (!passiveEvents.includes(event._reactName)) {
     event.preventDefault();
   }
 };
-
-exports.safePreventDefault = safePreventDefault;
-
-var getOnDemandLazySlides = function getOnDemandLazySlides(spec) {
+var getOnDemandLazySlides = exports.getOnDemandLazySlides = function getOnDemandLazySlides(spec) {
   var onDemandSlides = [];
   var startIndex = lazyStartIndex(spec);
   var endIndex = lazyEndIndex(spec);
-
   for (var slideIndex = startIndex; slideIndex < endIndex; slideIndex++) {
     if (spec.lazyLoadedList.indexOf(slideIndex) < 0) {
       onDemandSlides.push(slideIndex);
     }
   }
-
   return onDemandSlides;
-}; // return list of slides that need to be present
+};
 
-exports.getOnDemandLazySlides = getOnDemandLazySlides;
-
-var getRequiredLazySlides = function getRequiredLazySlides(spec) {
+// return list of slides that need to be present
+var getRequiredLazySlides = exports.getRequiredLazySlides = function getRequiredLazySlides(spec) {
   var requiredSlides = [];
   var startIndex = lazyStartIndex(spec);
   var endIndex = lazyEndIndex(spec);
-
   for (var slideIndex = startIndex; slideIndex < endIndex; slideIndex++) {
     requiredSlides.push(slideIndex);
   }
-
   return requiredSlides;
-}; // startIndex that needs to be present
+};
 
-exports.getRequiredLazySlides = getRequiredLazySlides;
-
-var lazyStartIndex = function lazyStartIndex(spec) {
+// startIndex that needs to be present
+var lazyStartIndex = exports.lazyStartIndex = function lazyStartIndex(spec) {
   return spec.currentSlide - lazySlidesOnLeft(spec);
 };
-
-exports.lazyStartIndex = lazyStartIndex;
-
-var lazyEndIndex = function lazyEndIndex(spec) {
+var lazyEndIndex = exports.lazyEndIndex = function lazyEndIndex(spec) {
   return spec.currentSlide + lazySlidesOnRight(spec);
 };
-
-exports.lazyEndIndex = lazyEndIndex;
-
-var lazySlidesOnLeft = function lazySlidesOnLeft(spec) {
-  return spec.centerMode
-    ? Math.floor(spec.slidesToShow / 2) +
-        (parseInt(spec.centerPadding) > 0 ? 1 : 0)
-    : 0;
+var lazySlidesOnLeft = exports.lazySlidesOnLeft = function lazySlidesOnLeft(spec) {
+  return spec.centerMode ? Math.floor(spec.slidesToShow / 2) + (parseInt(spec.centerPadding) > 0 ? 1 : 0) : 0;
+};
+var lazySlidesOnRight = exports.lazySlidesOnRight = function lazySlidesOnRight(spec) {
+  return spec.centerMode ? Math.floor((spec.slidesToShow - 1) / 2) + 1 + (parseInt(spec.centerPadding) > 0 ? 1 : 0) : spec.slidesToShow;
 };
 
-exports.lazySlidesOnLeft = lazySlidesOnLeft;
-
-var lazySlidesOnRight = function lazySlidesOnRight(spec) {
-  return spec.centerMode
-    ? Math.floor((spec.slidesToShow - 1) / 2) +
-        1 +
-        (parseInt(spec.centerPadding) > 0 ? 1 : 0)
-    : spec.slidesToShow;
-}; // get width of an element
-
-exports.lazySlidesOnRight = lazySlidesOnRight;
-
-var getWidth = function getWidth(elem) {
-  return (elem && elem.offsetWidth) || 0;
+// get width of an element
+var getWidth = exports.getWidth = function getWidth(elem) {
+  return elem && elem.offsetWidth || 0;
 };
-
-exports.getWidth = getWidth;
-
-var getHeight = function getHeight(elem) {
-  return (elem && elem.offsetHeight) || 0;
+var getHeight = exports.getHeight = function getHeight(elem) {
+  return elem && elem.offsetHeight || 0;
 };
-
-exports.getHeight = getHeight;
-
-var getSwipeDirection = function getSwipeDirection(touchObject) {
-  var verticalSwiping =
-    arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+var getSwipeDirection = exports.getSwipeDirection = function getSwipeDirection(touchObject) {
+  var verticalSwiping = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var xDist, yDist, r, swipeAngle;
   xDist = touchObject.startX - touchObject.curX;
   yDist = touchObject.startY - touchObject.curY;
   r = Math.atan2(yDist, xDist);
-  swipeAngle = Math.round((r * 180) / Math.PI);
-
+  swipeAngle = Math.round(r * 180 / Math.PI);
   if (swipeAngle < 0) {
     swipeAngle = 360 - Math.abs(swipeAngle);
   }
-
-  if (
-    (swipeAngle <= 45 && swipeAngle >= 0) ||
-    (swipeAngle <= 360 && swipeAngle >= 315)
-  ) {
+  if (swipeAngle <= 45 && swipeAngle >= 0 || swipeAngle <= 360 && swipeAngle >= 315) {
     return "left";
   }
-
   if (swipeAngle >= 135 && swipeAngle <= 225) {
     return "right";
   }
-
   if (verticalSwiping === true) {
     if (swipeAngle >= 35 && swipeAngle <= 135) {
       return "up";
@@ -212,87 +93,60 @@ var getSwipeDirection = function getSwipeDirection(touchObject) {
       return "down";
     }
   }
-
   return "vertical";
-}; // whether or not we can go next
+};
 
-exports.getSwipeDirection = getSwipeDirection;
-
-var canGoNext = function canGoNext(spec) {
+// whether or not we can go next
+var canGoNext = exports.canGoNext = function canGoNext(spec) {
   var canGo = true;
-
   if (!spec.infinite) {
     if (spec.centerMode && spec.currentSlide >= spec.slideCount - 1) {
       canGo = false;
-    } else if (
-      spec.slideCount <= spec.slidesToShow ||
-      spec.currentSlide >= spec.slideCount - spec.slidesToShow
-    ) {
+    } else if (spec.slideCount <= spec.slidesToShow || spec.currentSlide >= spec.slideCount - spec.slidesToShow) {
       canGo = false;
     }
   }
-
   return canGo;
-}; // given an object and a list of keys, return new object with given keys
+};
 
-exports.canGoNext = canGoNext;
-
-var extractObject = function extractObject(spec, keys) {
+// given an object and a list of keys, return new object with given keys
+var extractObject = exports.extractObject = function extractObject(spec, keys) {
   var newObject = {};
   keys.forEach(function (key) {
-    return (newObject[key] = spec[key]);
+    return newObject[key] = spec[key];
   });
   return newObject;
-}; // get initialized state
+};
 
-exports.extractObject = extractObject;
-
-var initializedState = function initializedState(spec) {
+// get initialized state
+var initializedState = exports.initializedState = function initializedState(spec) {
   // spec also contains listRef, trackRef
   var slideCount = _react["default"].Children.count(spec.children);
-
   var listNode = spec.listRef;
   var listWidth = Math.ceil(getWidth(listNode));
   var trackNode = spec.trackRef && spec.trackRef.node;
   var trackWidth = Math.ceil(getWidth(trackNode));
   var slideWidth;
-
   if (!spec.vertical) {
     var centerPaddingAdj = spec.centerMode && parseInt(spec.centerPadding) * 2;
-
-    if (
-      typeof spec.centerPadding === "string" &&
-      spec.centerPadding.slice(-1) === "%"
-    ) {
+    if (typeof spec.centerPadding === "string" && spec.centerPadding.slice(-1) === "%") {
       centerPaddingAdj *= listWidth / 100;
     }
-
     slideWidth = Math.ceil((listWidth - centerPaddingAdj) / spec.slidesToShow);
   } else {
     slideWidth = listWidth;
   }
-
-  var slideHeight =
-    listNode && getHeight(listNode.querySelector('[data-index="0"]'));
+  var slideHeight = listNode && getHeight(listNode.querySelector('[data-index="0"]'));
   var listHeight = slideHeight * spec.slidesToShow;
-  var currentSlide =
-    spec.currentSlide === undefined ? spec.initialSlide : spec.currentSlide;
-
+  var currentSlide = spec.currentSlide === undefined ? spec.initialSlide : spec.currentSlide;
   if (spec.rtl && spec.currentSlide === undefined) {
     currentSlide = slideCount - 1 - spec.initialSlide;
   }
-
   var lazyLoadedList = spec.lazyLoadedList || [];
-  var slidesToLoad = getOnDemandLazySlides(
-    _objectSpread(
-      _objectSpread({}, spec),
-      {},
-      {
-        currentSlide: currentSlide,
-        lazyLoadedList: lazyLoadedList,
-      }
-    )
-  );
+  var slidesToLoad = getOnDemandLazySlides(_objectSpread(_objectSpread({}, spec), {}, {
+    currentSlide: currentSlide,
+    lazyLoadedList: lazyLoadedList
+  }));
   lazyLoadedList = lazyLoadedList.concat(slidesToLoad);
   var state = {
     slideCount: slideCount,
@@ -302,19 +156,14 @@ var initializedState = function initializedState(spec) {
     currentSlide: currentSlide,
     slideHeight: slideHeight,
     listHeight: listHeight,
-    lazyLoadedList: lazyLoadedList,
+    lazyLoadedList: lazyLoadedList
   };
-
   if (spec.autoplaying === null && spec.autoplay) {
     state["autoplaying"] = "playing";
   }
-
   return state;
 };
-
-exports.initializedState = initializedState;
-
-var slideHandler = function slideHandler(spec) {
+var slideHandler = exports.slideHandler = function slideHandler(spec) {
   var waitForAnimate = spec.waitForAnimate,
     animating = spec.animating,
     fade = spec.fade,
@@ -336,38 +185,31 @@ var slideHandler = function slideHandler(spec) {
   var state = {},
     nextState = {};
   var targetSlide = infinite ? index : clamp(index, 0, slideCount - 1);
-
   if (fade) {
     if (!infinite && (index < 0 || index >= slideCount)) return {};
-
     if (index < 0) {
       animationSlide = index + slideCount;
     } else if (index >= slideCount) {
       animationSlide = index - slideCount;
     }
-
     if (lazyLoad && lazyLoadedList.indexOf(animationSlide) < 0) {
       lazyLoadedList = lazyLoadedList.concat(animationSlide);
     }
-
     state = {
       animating: true,
       currentSlide: animationSlide,
       lazyLoadedList: lazyLoadedList,
-      targetSlide: animationSlide,
+      targetSlide: animationSlide
     };
     nextState = {
       animating: false,
-      targetSlide: animationSlide,
+      targetSlide: animationSlide
     };
   } else {
     finalSlide = animationSlide;
-
     if (animationSlide < 0) {
       finalSlide = animationSlide + slideCount;
-      if (!infinite) finalSlide = 0;
-      else if (slideCount % slidesToScroll !== 0)
-        finalSlide = slideCount - (slideCount % slidesToScroll);
+      if (!infinite) finalSlide = 0;else if (slideCount % slidesToScroll !== 0) finalSlide = slideCount - slideCount % slidesToScroll;
     } else if (!canGoNext(spec) && animationSlide > currentSlide) {
       animationSlide = finalSlide = currentSlide;
     } else if (centerMode && animationSlide >= slideCount) {
@@ -375,110 +217,62 @@ var slideHandler = function slideHandler(spec) {
       finalSlide = infinite ? 0 : slideCount - 1;
     } else if (animationSlide >= slideCount) {
       finalSlide = animationSlide - slideCount;
-      if (!infinite) finalSlide = slideCount - slidesToShow;
-      else if (slideCount % slidesToScroll !== 0) finalSlide = 0;
+      if (!infinite) finalSlide = slideCount - slidesToShow;else if (slideCount % slidesToScroll !== 0) finalSlide = 0;
     }
-
     if (!infinite && animationSlide + slidesToShow >= slideCount) {
       finalSlide = slideCount - slidesToShow;
     }
-
-    animationLeft = getTrackLeft(
-      _objectSpread(
-        _objectSpread({}, spec),
-        {},
-        {
-          slideIndex: animationSlide,
-        }
-      )
-    );
-    finalLeft = getTrackLeft(
-      _objectSpread(
-        _objectSpread({}, spec),
-        {},
-        {
-          slideIndex: finalSlide,
-        }
-      )
-    );
-
+    animationLeft = getTrackLeft(_objectSpread(_objectSpread({}, spec), {}, {
+      slideIndex: animationSlide
+    }));
+    finalLeft = getTrackLeft(_objectSpread(_objectSpread({}, spec), {}, {
+      slideIndex: finalSlide
+    }));
     if (!infinite) {
       if (animationLeft === finalLeft) animationSlide = finalSlide;
       animationLeft = finalLeft;
     }
-
     if (lazyLoad) {
-      lazyLoadedList = lazyLoadedList.concat(
-        getOnDemandLazySlides(
-          _objectSpread(
-            _objectSpread({}, spec),
-            {},
-            {
-              currentSlide: animationSlide,
-            }
-          )
-        )
-      );
+      lazyLoadedList = lazyLoadedList.concat(getOnDemandLazySlides(_objectSpread(_objectSpread({}, spec), {}, {
+        currentSlide: animationSlide
+      })));
     }
-
     if (!useCSS) {
       state = {
         currentSlide: finalSlide,
-        trackStyle: getTrackCSS(
-          _objectSpread(
-            _objectSpread({}, spec),
-            {},
-            {
-              left: finalLeft,
-            }
-          )
-        ),
+        trackStyle: getTrackCSS(_objectSpread(_objectSpread({}, spec), {}, {
+          left: finalLeft
+        })),
         lazyLoadedList: lazyLoadedList,
-        targetSlide: targetSlide,
+        targetSlide: targetSlide
       };
     } else {
       state = {
         animating: true,
         currentSlide: finalSlide,
-        trackStyle: getTrackAnimateCSS(
-          _objectSpread(
-            _objectSpread({}, spec),
-            {},
-            {
-              left: animationLeft,
-            }
-          )
-        ),
+        trackStyle: getTrackAnimateCSS(_objectSpread(_objectSpread({}, spec), {}, {
+          left: animationLeft
+        })),
         lazyLoadedList: lazyLoadedList,
-        targetSlide: targetSlide,
+        targetSlide: targetSlide
       };
       nextState = {
         animating: false,
         currentSlide: finalSlide,
-        trackStyle: getTrackCSS(
-          _objectSpread(
-            _objectSpread({}, spec),
-            {},
-            {
-              left: finalLeft,
-            }
-          )
-        ),
+        trackStyle: getTrackCSS(_objectSpread(_objectSpread({}, spec), {}, {
+          left: finalLeft
+        })),
         swipeLeft: null,
-        targetSlide: targetSlide,
+        targetSlide: targetSlide
       };
     }
   }
-
   return {
     state: state,
-    nextState: nextState,
+    nextState: nextState
   };
 };
-
-exports.slideHandler = slideHandler;
-
-var changeSlide = function changeSlide(spec, options) {
+var changeSlide = exports.changeSlide = function changeSlide(spec, options) {
   var indexOffset, previousInt, slideOffset, unevenOffset, targetSlide;
   var slidesToScroll = spec.slidesToScroll,
     slidesToShow = spec.slidesToShow,
@@ -489,29 +283,22 @@ var changeSlide = function changeSlide(spec, options) {
     infinite = spec.infinite;
   unevenOffset = slideCount % slidesToScroll !== 0;
   indexOffset = unevenOffset ? 0 : (slideCount - currentSlide) % slidesToScroll;
-
   if (options.message === "previous") {
-    slideOffset =
-      indexOffset === 0 ? slidesToScroll : slidesToShow - indexOffset;
+    slideOffset = indexOffset === 0 ? slidesToScroll : slidesToShow - indexOffset;
     targetSlide = currentSlide - slideOffset;
-
     if (lazyLoad && !infinite) {
       previousInt = currentSlide - slideOffset;
       targetSlide = previousInt === -1 ? slideCount - 1 : previousInt;
     }
-
     if (!infinite) {
       targetSlide = previousTargetSlide - slidesToScroll;
     }
   } else if (options.message === "next") {
     slideOffset = indexOffset === 0 ? slidesToScroll : indexOffset;
     targetSlide = currentSlide + slideOffset;
-
     if (lazyLoad && !infinite) {
-      targetSlide =
-        ((currentSlide + slidesToScroll) % slideCount) + indexOffset;
+      targetSlide = (currentSlide + slidesToScroll) % slideCount + indexOffset;
     }
-
     if (!infinite) {
       targetSlide = previousTargetSlide + slidesToScroll;
     }
@@ -521,18 +308,10 @@ var changeSlide = function changeSlide(spec, options) {
   } else if (options.message === "children") {
     // Click on the slides
     targetSlide = options.index;
-
     if (infinite) {
-      var direction = siblingDirection(
-        _objectSpread(
-          _objectSpread({}, spec),
-          {},
-          {
-            targetSlide: targetSlide,
-          }
-        )
-      );
-
+      var direction = siblingDirection(_objectSpread(_objectSpread({}, spec), {}, {
+        targetSlide: targetSlide
+      }));
       if (targetSlide > options.currentSlide && direction === "left") {
         targetSlide = targetSlide - slideCount;
       } else if (targetSlide < options.currentSlide && direction === "right") {
@@ -542,39 +321,28 @@ var changeSlide = function changeSlide(spec, options) {
   } else if (options.message === "index") {
     targetSlide = Number(options.index);
   }
-
   return targetSlide;
 };
-
-exports.changeSlide = changeSlide;
-
-var keyHandler = function keyHandler(e, accessibility, rtl) {
-  if (e.target.tagName.match("TEXTAREA|INPUT|SELECT") || !accessibility)
-    return "";
+var keyHandler = exports.keyHandler = function keyHandler(e, accessibility, rtl) {
+  if (e.target.tagName.match("TEXTAREA|INPUT|SELECT") || !accessibility) return "";
   if (e.keyCode === 37) return rtl ? "next" : "previous";
   if (e.keyCode === 39) return rtl ? "previous" : "next";
   return "";
 };
-
-exports.keyHandler = keyHandler;
-
-var swipeStart = function swipeStart(e, swipe, draggable) {
+var swipeStart = exports.swipeStart = function swipeStart(e, swipe, draggable) {
   e.target.tagName === "IMG" && safePreventDefault(e);
-  if (!swipe || (!draggable && e.type.indexOf("mouse") !== -1)) return "";
+  if (!swipe || !draggable && e.type.indexOf("mouse") !== -1) return "";
   return {
     dragging: true,
     touchObject: {
       startX: e.touches ? e.touches[0].pageX : e.clientX,
       startY: e.touches ? e.touches[0].pageY : e.clientY,
       curX: e.touches ? e.touches[0].pageX : e.clientX,
-      curY: e.touches ? e.touches[0].pageY : e.clientY,
-    },
+      curY: e.touches ? e.touches[0].pageY : e.clientY
+    }
   };
 };
-
-exports.swipeStart = swipeStart;
-
-var swipeMove = function swipeMove(e, spec) {
+var swipeMove = exports.swipeMove = function swipeMove(e, spec) {
   // spec also contains, trackRef and slideIndex
   var scrolling = spec.scrolling,
     animating = spec.animating,
@@ -603,51 +371,32 @@ var swipeMove = function swipeMove(e, spec) {
   var curLeft = getTrackLeft(spec);
   touchObject.curX = e.touches ? e.touches[0].pageX : e.clientX;
   touchObject.curY = e.touches ? e.touches[0].pageY : e.clientY;
-  touchObject.swipeLength = Math.round(
-    Math.sqrt(Math.pow(touchObject.curX - touchObject.startX, 2))
-  );
-  var verticalSwipeLength = Math.round(
-    Math.sqrt(Math.pow(touchObject.curY - touchObject.startY, 2))
-  );
-
+  touchObject.swipeLength = Math.round(Math.sqrt(Math.pow(touchObject.curX - touchObject.startX, 2)));
+  var verticalSwipeLength = Math.round(Math.sqrt(Math.pow(touchObject.curY - touchObject.startY, 2)));
   if (!verticalSwiping && !swiping && verticalSwipeLength > 10) {
     return {
-      scrolling: true,
+      scrolling: true
     };
   }
-
   if (verticalSwiping) touchObject.swipeLength = verticalSwipeLength;
-  var positionOffset =
-    (!rtl ? 1 : -1) * (touchObject.curX > touchObject.startX ? 1 : -1);
-  if (verticalSwiping)
-    positionOffset = touchObject.curY > touchObject.startY ? 1 : -1;
+  var positionOffset = (!rtl ? 1 : -1) * (touchObject.curX > touchObject.startX ? 1 : -1);
+  if (verticalSwiping) positionOffset = touchObject.curY > touchObject.startY ? 1 : -1;
   var dotCount = Math.ceil(slideCount / slidesToScroll);
   var swipeDirection = getSwipeDirection(spec.touchObject, verticalSwiping);
   var touchSwipeLength = touchObject.swipeLength;
-
   if (!infinite) {
-    if (
-      (currentSlide === 0 &&
-        (swipeDirection === "right" || swipeDirection === "down")) ||
-      (currentSlide + 1 >= dotCount &&
-        (swipeDirection === "left" || swipeDirection === "up")) ||
-      (!canGoNext(spec) &&
-        (swipeDirection === "left" || swipeDirection === "up"))
-    ) {
+    if (currentSlide === 0 && (swipeDirection === "right" || swipeDirection === "down") || currentSlide + 1 >= dotCount && (swipeDirection === "left" || swipeDirection === "up") || !canGoNext(spec) && (swipeDirection === "left" || swipeDirection === "up")) {
       touchSwipeLength = touchObject.swipeLength * edgeFriction;
-
       if (edgeDragged === false && onEdge) {
         onEdge(swipeDirection);
         state["edgeDragged"] = true;
       }
     }
   }
-
   if (!swiped && swipeEvent) {
     swipeEvent(swipeDirection);
     state["swiped"] = true;
   }
-
   if (!vertical) {
     if (!rtl) {
       swipeLeft = curLeft + touchSwipeLength * positionOffset;
@@ -655,50 +404,28 @@ var swipeMove = function swipeMove(e, spec) {
       swipeLeft = curLeft - touchSwipeLength * positionOffset;
     }
   } else {
-    swipeLeft =
-      curLeft + touchSwipeLength * (listHeight / listWidth) * positionOffset;
+    swipeLeft = curLeft + touchSwipeLength * (listHeight / listWidth) * positionOffset;
   }
-
   if (verticalSwiping) {
     swipeLeft = curLeft + touchSwipeLength * positionOffset;
   }
-
-  state = _objectSpread(
-    _objectSpread({}, state),
-    {},
-    {
-      touchObject: touchObject,
-      swipeLeft: swipeLeft,
-      trackStyle: getTrackCSS(
-        _objectSpread(
-          _objectSpread({}, spec),
-          {},
-          {
-            left: swipeLeft,
-          }
-        )
-      ),
-    }
-  );
-
-  if (
-    Math.abs(touchObject.curX - touchObject.startX) <
-    Math.abs(touchObject.curY - touchObject.startY) * 0.8
-  ) {
+  state = _objectSpread(_objectSpread({}, state), {}, {
+    touchObject: touchObject,
+    swipeLeft: swipeLeft,
+    trackStyle: getTrackCSS(_objectSpread(_objectSpread({}, spec), {}, {
+      left: swipeLeft
+    }))
+  });
+  if (Math.abs(touchObject.curX - touchObject.startX) < Math.abs(touchObject.curY - touchObject.startY) * 0.8) {
     return state;
   }
-
   if (touchObject.swipeLength > 10) {
     state["swiping"] = true;
     safePreventDefault(e);
   }
-
   return state;
 };
-
-exports.swipeMove = swipeMove;
-
-var swipeEnd = function swipeEnd(e, spec) {
+var swipeEnd = exports.swipeEnd = function swipeEnd(e, spec) {
   var dragging = spec.dragging,
     swipe = spec.swipe,
     touchObject = spec.touchObject,
@@ -712,17 +439,13 @@ var swipeEnd = function swipeEnd(e, spec) {
     targetSlide = spec.targetSlide,
     currentSlide = spec.currentSlide,
     infinite = spec.infinite;
-
   if (!dragging) {
     if (swipe) safePreventDefault(e);
     return {};
   }
-
-  var minSwipe = verticalSwiping
-    ? listHeight / touchThreshold
-    : listWidth / touchThreshold;
-  var swipeDirection = getSwipeDirection(touchObject, verticalSwiping); // reset the state of touch related state variables.
-
+  var minSwipe = verticalSwiping ? listHeight / touchThreshold : listWidth / touchThreshold;
+  var swipeDirection = getSwipeDirection(touchObject, verticalSwiping);
+  // reset the state of touch related state variables.
   var state = {
     dragging: false,
     edgeDragged: false,
@@ -730,27 +453,21 @@ var swipeEnd = function swipeEnd(e, spec) {
     swiping: false,
     swiped: false,
     swipeLeft: null,
-    touchObject: {},
+    touchObject: {}
   };
-
   if (scrolling) {
     return state;
   }
-
   if (!touchObject.swipeLength) {
     return state;
   }
-
   if (touchObject.swipeLength > minSwipe) {
     safePreventDefault(e);
-
     if (onSwipe) {
       onSwipe(swipeDirection);
     }
-
     var slideCount, newSlide;
     var activeSlide = infinite ? currentSlide : targetSlide;
-
     switch (swipeDirection) {
       case "left":
       case "up":
@@ -758,59 +475,40 @@ var swipeEnd = function swipeEnd(e, spec) {
         slideCount = swipeToSlide ? checkNavigable(spec, newSlide) : newSlide;
         state["currentDirection"] = 0;
         break;
-
       case "right":
       case "down":
         newSlide = activeSlide - getSlideCount(spec);
         slideCount = swipeToSlide ? checkNavigable(spec, newSlide) : newSlide;
         state["currentDirection"] = 1;
         break;
-
       default:
         slideCount = activeSlide;
     }
-
     state["triggerSlideHandler"] = slideCount;
   } else {
     // Adjust the track back to it's original position.
     var currentLeft = getTrackLeft(spec);
-    state["trackStyle"] = getTrackAnimateCSS(
-      _objectSpread(
-        _objectSpread({}, spec),
-        {},
-        {
-          left: currentLeft,
-        }
-      )
-    );
+    state["trackStyle"] = getTrackAnimateCSS(_objectSpread(_objectSpread({}, spec), {}, {
+      left: currentLeft
+    }));
   }
-
   return state;
 };
-
-exports.swipeEnd = swipeEnd;
-
-var getNavigableIndexes = function getNavigableIndexes(spec) {
+var getNavigableIndexes = exports.getNavigableIndexes = function getNavigableIndexes(spec) {
   var max = spec.infinite ? spec.slideCount * 2 : spec.slideCount;
   var breakpoint = spec.infinite ? spec.slidesToShow * -1 : 0;
   var counter = spec.infinite ? spec.slidesToShow * -1 : 0;
   var indexes = [];
-
   while (breakpoint < max) {
     indexes.push(breakpoint);
     breakpoint = counter + spec.slidesToScroll;
     counter += Math.min(spec.slidesToScroll, spec.slidesToShow);
   }
-
   return indexes;
 };
-
-exports.getNavigableIndexes = getNavigableIndexes;
-
-var checkNavigable = function checkNavigable(spec, index) {
+var checkNavigable = exports.checkNavigable = function checkNavigable(spec, index) {
   var navigables = getNavigableIndexes(spec);
   var prevNavigable = 0;
-
   if (index > navigables[navigables.length - 1]) {
     index = navigables[navigables.length - 1];
   } else {
@@ -819,34 +517,20 @@ var checkNavigable = function checkNavigable(spec, index) {
         index = prevNavigable;
         break;
       }
-
       prevNavigable = navigables[n];
     }
   }
-
   return index;
 };
-
-exports.checkNavigable = checkNavigable;
-
-var getSlideCount = function getSlideCount(spec) {
-  var centerOffset = spec.centerMode
-    ? spec.slideWidth * Math.floor(spec.slidesToShow / 2)
-    : 0;
-
+var getSlideCount = exports.getSlideCount = function getSlideCount(spec) {
+  var centerOffset = spec.centerMode ? spec.slideWidth * Math.floor(spec.slidesToShow / 2) : 0;
   if (spec.swipeToSlide) {
     var swipedSlide;
     var slickList = spec.listRef;
-    var slides =
-      (slickList.querySelectorAll &&
-        slickList.querySelectorAll(".slick-slide")) ||
-      [];
+    var slides = slickList.querySelectorAll && slickList.querySelectorAll(".slick-slide") || [];
     Array.from(slides).every(function (slide) {
       if (!spec.vertical) {
-        if (
-          slide.offsetLeft - centerOffset + getWidth(slide) / 2 >
-          spec.swipeLeft * -1
-        ) {
+        if (slide.offsetLeft - centerOffset + getWidth(slide) / 2 > spec.swipeLeft * -1) {
           swipedSlide = slide;
           return false;
         }
@@ -856,80 +540,46 @@ var getSlideCount = function getSlideCount(spec) {
           return false;
         }
       }
-
       return true;
     });
-
     if (!swipedSlide) {
       return 0;
     }
-
-    var currentIndex =
-      spec.rtl === true
-        ? spec.slideCount - spec.currentSlide
-        : spec.currentSlide;
-    var slidesTraversed =
-      Math.abs(swipedSlide.dataset.index - currentIndex) || 1;
+    var currentIndex = spec.rtl === true ? spec.slideCount - spec.currentSlide : spec.currentSlide;
+    var slidesTraversed = Math.abs(swipedSlide.dataset.index - currentIndex) || 1;
     return slidesTraversed;
   } else {
     return spec.slidesToScroll;
   }
 };
-
-exports.getSlideCount = getSlideCount;
-
-var checkSpecKeys = function checkSpecKeys(spec, keysArray) {
+var checkSpecKeys = exports.checkSpecKeys = function checkSpecKeys(spec, keysArray) {
   return keysArray.reduce(function (value, key) {
     return value && spec.hasOwnProperty(key);
-  }, true)
-    ? null
-    : console.error("Keys Missing:", spec);
+  }, true) ? null : console.error("Keys Missing:", spec);
 };
-
-exports.checkSpecKeys = checkSpecKeys;
-
-var getTrackCSS = function getTrackCSS(spec) {
-  checkSpecKeys(spec, [
-    "left",
-    "variableWidth",
-    "slideCount",
-    "slidesToShow",
-    "slideWidth",
-  ]);
+var getTrackCSS = exports.getTrackCSS = function getTrackCSS(spec) {
+  checkSpecKeys(spec, ["left", "variableWidth", "slideCount", "slidesToShow", "slideWidth"]);
   var trackWidth, trackHeight;
-  var trackChildren = spec.slideCount + 2 * spec.slidesToShow;
-
   if (!spec.vertical) {
     trackWidth = getTotalSlides(spec) * spec.slideWidth;
   } else {
+    var trackChildren = spec.unslick ? spec.slideCount : spec.slideCount + 2 * spec.slidesToShow;
     trackHeight = trackChildren * spec.slideHeight;
   }
-
   var style = {
     opacity: 1,
     transition: "",
-    WebkitTransition: "",
+    WebkitTransition: ""
   };
-
   if (spec.useTransform) {
-    var WebkitTransform = !spec.vertical
-      ? "translate3d(" + spec.left + "px, 0px, 0px)"
-      : "translate3d(0px, " + spec.left + "px, 0px)";
-    var transform = !spec.vertical
-      ? "translate3d(" + spec.left + "px, 0px, 0px)"
-      : "translate3d(0px, " + spec.left + "px, 0px)";
-    var msTransform = !spec.vertical
-      ? "translateX(" + spec.left + "px)"
-      : "translateY(" + spec.left + "px)";
-    style = _objectSpread(
-      _objectSpread({}, style),
-      {},
-      {
-        WebkitTransform: WebkitTransform,
-        transform: transform,
-        msTransform: msTransform,
-      }
-    );
+    var WebkitTransform = !spec.vertical ? "translate3d(" + spec.left + "px, 0px, 0px)" : "translate3d(0px, " + spec.left + "px, 0px)";
+    var transform = !spec.vertical ? "translate3d(" + spec.left + "px, 0px, 0px)" : "translate3d(0px, " + spec.left + "px, 0px)";
+    var msTransform = !spec.vertical ? "translateX(" + spec.left + "px)" : "translateY(" + spec.left + "px)";
+    style = _objectSpread(_objectSpread({}, style), {}, {
+      WebkitTransform: WebkitTransform,
+      transform: transform,
+      msTransform: msTransform
+    });
   } else {
     if (spec.vertical) {
       style["top"] = spec.left;
@@ -937,14 +587,13 @@ var getTrackCSS = function getTrackCSS(spec) {
       style["left"] = spec.left;
     }
   }
-
-  if (spec.fade)
-    style = {
-      opacity: 1,
-    };
+  if (spec.fade) style = {
+    opacity: 1
+  };
   if (trackWidth) style.width = trackWidth;
-  if (trackHeight) style.height = trackHeight; // Fallback for IE8
+  if (trackHeight) style.height = trackHeight;
 
+  // Fallback for IE8
   if (window && !window.addEventListener && window.attachEvent) {
     if (!spec.vertical) {
       style.marginLeft = spec.left + "px";
@@ -952,27 +601,14 @@ var getTrackCSS = function getTrackCSS(spec) {
       style.marginTop = spec.left + "px";
     }
   }
-
   return style;
 };
-
-exports.getTrackCSS = getTrackCSS;
-
-var getTrackAnimateCSS = function getTrackAnimateCSS(spec) {
-  checkSpecKeys(spec, [
-    "left",
-    "variableWidth",
-    "slideCount",
-    "slidesToShow",
-    "slideWidth",
-    "speed",
-    "cssEase",
-  ]);
-  var style = getTrackCSS(spec); // useCSS is true by default so it can be undefined
-
+var getTrackAnimateCSS = exports.getTrackAnimateCSS = function getTrackAnimateCSS(spec) {
+  checkSpecKeys(spec, ["left", "variableWidth", "slideCount", "slidesToShow", "slideWidth", "speed", "cssEase"]);
+  var style = getTrackCSS(spec);
+  // useCSS is true by default so it can be undefined
   if (spec.useTransform) {
-    style.WebkitTransition =
-      "-webkit-transform " + spec.speed + "ms " + spec.cssEase;
+    style.WebkitTransition = "-webkit-transform " + spec.speed + "ms " + spec.cssEase;
     style.transition = "transform " + spec.speed + "ms " + spec.cssEase;
   } else {
     if (spec.vertical) {
@@ -981,30 +617,13 @@ var getTrackAnimateCSS = function getTrackAnimateCSS(spec) {
       style.transition = "left " + spec.speed + "ms " + spec.cssEase;
     }
   }
-
   return style;
 };
-
-exports.getTrackAnimateCSS = getTrackAnimateCSS;
-
-var getTrackLeft = function getTrackLeft(spec) {
+var getTrackLeft = exports.getTrackLeft = function getTrackLeft(spec) {
   if (spec.unslick) {
     return 0;
   }
-
-  checkSpecKeys(spec, [
-    "slideIndex",
-    "trackRef",
-    "infinite",
-    "centerMode",
-    "slideCount",
-    "slidesToShow",
-    "slidesToScroll",
-    "slideWidth",
-    "listWidth",
-    "variableWidth",
-    "slideHeight",
-  ]);
+  checkSpecKeys(spec, ["slideIndex", "trackRef", "infinite", "centerMode", "slideCount", "slidesToShow", "slidesToScroll", "slideWidth", "listWidth", "variableWidth", "slideHeight"]);
   var slideIndex = spec.slideIndex,
     trackRef = spec.trackRef,
     infinite = spec.infinite,
@@ -1022,138 +641,93 @@ var getTrackLeft = function getTrackLeft(spec) {
   var targetLeft;
   var targetSlide;
   var verticalOffset = 0;
-
   if (fade || spec.slideCount === 1) {
     return 0;
   }
-
   var slidesToOffset = 0;
-
   if (infinite) {
     slidesToOffset = -getPreClones(spec); // bring active slide to the beginning of visual area
     // if next scroll doesn't have enough children, just reach till the end of original slides instead of shifting slidesToScroll children
-
-    if (
-      slideCount % slidesToScroll !== 0 &&
-      slideIndex + slidesToScroll > slideCount
-    ) {
-      slidesToOffset = -(slideIndex > slideCount
-        ? slidesToShow - (slideIndex - slideCount)
-        : slideCount % slidesToScroll);
-    } // shift current slide to center of the frame
-
+    if (slideCount % slidesToScroll !== 0 && slideIndex + slidesToScroll > slideCount) {
+      slidesToOffset = -(slideIndex > slideCount ? slidesToShow - (slideIndex - slideCount) : slideCount % slidesToScroll);
+    }
+    // shift current slide to center of the frame
     if (centerMode) {
       slidesToOffset += parseInt(slidesToShow / 2);
     }
   } else {
-    if (
-      slideCount % slidesToScroll !== 0 &&
-      slideIndex + slidesToScroll > slideCount
-    ) {
-      slidesToOffset = slidesToShow - (slideCount % slidesToScroll);
+    if (slideCount % slidesToScroll !== 0 && slideIndex + slidesToScroll > slideCount) {
+      slidesToOffset = slidesToShow - slideCount % slidesToScroll;
     }
-
     if (centerMode) {
       slidesToOffset = parseInt(slidesToShow / 2);
     }
   }
-
   slideOffset = slidesToOffset * slideWidth;
   verticalOffset = slidesToOffset * slideHeight;
-
   if (!vertical) {
     targetLeft = slideIndex * slideWidth * -1 + slideOffset;
   } else {
     targetLeft = slideIndex * slideHeight * -1 + verticalOffset;
   }
-
   if (variableWidth === true) {
     var targetSlideIndex;
     var trackElem = trackRef && trackRef.node;
     targetSlideIndex = slideIndex + getPreClones(spec);
     targetSlide = trackElem && trackElem.childNodes[targetSlideIndex];
     targetLeft = targetSlide ? targetSlide.offsetLeft * -1 : 0;
-
     if (centerMode === true) {
-      targetSlideIndex = infinite
-        ? slideIndex + getPreClones(spec)
-        : slideIndex;
+      targetSlideIndex = infinite ? slideIndex + getPreClones(spec) : slideIndex;
       targetSlide = trackElem && trackElem.children[targetSlideIndex];
       targetLeft = 0;
-
       for (var slide = 0; slide < targetSlideIndex; slide++) {
-        targetLeft -=
-          trackElem &&
-          trackElem.children[slide] &&
-          trackElem.children[slide].offsetWidth;
+        targetLeft -= trackElem && trackElem.children[slide] && trackElem.children[slide].offsetWidth;
       }
-
       targetLeft -= parseInt(spec.centerPadding);
       targetLeft += targetSlide && (listWidth - targetSlide.offsetWidth) / 2;
     }
   }
-
   return targetLeft;
 };
-
-exports.getTrackLeft = getTrackLeft;
-
-var getPreClones = function getPreClones(spec) {
+var getPreClones = exports.getPreClones = function getPreClones(spec) {
   if (spec.unslick || !spec.infinite) {
     return 0;
   }
-
   if (spec.variableWidth) {
     return spec.slideCount;
   }
-
   return spec.slidesToShow + (spec.centerMode ? 1 : 0);
 };
-
-exports.getPreClones = getPreClones;
-
-var getPostClones = function getPostClones(spec) {
+var getPostClones = exports.getPostClones = function getPostClones(spec) {
   if (spec.unslick || !spec.infinite) {
     return 0;
   }
-
-  return spec.slideCount;
+  if (spec.variableWidth) {
+    return spec.slideCount;
+  }
+  return spec.slidesToShow + (spec.centerMode ? 1 : 0);
 };
-
-exports.getPostClones = getPostClones;
-
-var getTotalSlides = function getTotalSlides(spec) {
-  return spec.slideCount === 1
-    ? 1
-    : getPreClones(spec) + spec.slideCount + getPostClones(spec);
+var getTotalSlides = exports.getTotalSlides = function getTotalSlides(spec) {
+  return spec.slideCount === 1 ? 1 : getPreClones(spec) + spec.slideCount + getPostClones(spec);
 };
-
-exports.getTotalSlides = getTotalSlides;
-
-var siblingDirection = function siblingDirection(spec) {
+var siblingDirection = exports.siblingDirection = function siblingDirection(spec) {
   if (spec.targetSlide > spec.currentSlide) {
     if (spec.targetSlide > spec.currentSlide + slidesOnRight(spec)) {
       return "left";
     }
-
     return "right";
   } else {
     if (spec.targetSlide < spec.currentSlide - slidesOnLeft(spec)) {
       return "right";
     }
-
     return "left";
   }
 };
-
-exports.siblingDirection = siblingDirection;
-
-var slidesOnRight = function slidesOnRight(_ref) {
+var slidesOnRight = exports.slidesOnRight = function slidesOnRight(_ref) {
   var slidesToShow = _ref.slidesToShow,
     centerMode = _ref.centerMode,
     rtl = _ref.rtl,
     centerPadding = _ref.centerPadding;
-
   // returns no of slides on the right of active slide
   if (centerMode) {
     var right = (slidesToShow - 1) / 2 + 1;
@@ -1161,22 +735,16 @@ var slidesOnRight = function slidesOnRight(_ref) {
     if (rtl && slidesToShow % 2 === 0) right += 1;
     return right;
   }
-
   if (rtl) {
     return 0;
   }
-
   return slidesToShow - 1;
 };
-
-exports.slidesOnRight = slidesOnRight;
-
-var slidesOnLeft = function slidesOnLeft(_ref2) {
+var slidesOnLeft = exports.slidesOnLeft = function slidesOnLeft(_ref2) {
   var slidesToShow = _ref2.slidesToShow,
     centerMode = _ref2.centerMode,
     rtl = _ref2.rtl,
     centerPadding = _ref2.centerPadding;
-
   // returns no of slides on the left of active slide
   if (centerMode) {
     var left = (slidesToShow - 1) / 2 + 1;
@@ -1184,22 +752,20 @@ var slidesOnLeft = function slidesOnLeft(_ref2) {
     if (!rtl && slidesToShow % 2 === 0) left += 1;
     return left;
   }
-
   if (rtl) {
     return slidesToShow - 1;
   }
-
   return 0;
 };
-
-exports.slidesOnLeft = slidesOnLeft;
-
-var canUseDOM = function canUseDOM() {
-  return !!(
-    typeof window !== "undefined" &&
-    window.document &&
-    window.document.createElement
-  );
+var canUseDOM = exports.canUseDOM = function canUseDOM() {
+  return !!(typeof window !== "undefined" && window.document && window.document.createElement);
 };
-
-exports.canUseDOM = canUseDOM;
+var validSettings = exports.validSettings = Object.keys(_defaultProps["default"]);
+function filterSettings(settings) {
+  return validSettings.reduce(function (acc, settingName) {
+    if (settings.hasOwnProperty(settingName)) {
+      acc[settingName] = settings[settingName];
+    }
+    return acc;
+  }, {});
+}

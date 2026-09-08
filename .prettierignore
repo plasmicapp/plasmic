@@ -15,6 +15,7 @@ storybook-static/
 /packages/react-web/lib/**
 /packages/**/api/
 /plasmicpkgs/**/api/
+/platform/canvas-packages/internal_pkgs/
 /platform/wab/deps/
 /platform/wab/public/static/
 

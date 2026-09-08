@@ -1,15 +1,9 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = void 0;
-
 var _slider = _interopRequireDefault(require("./slider"));
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-var _default = _slider["default"];
-exports["default"] = _default;
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
+var _default = exports["default"] = _slider["default"];

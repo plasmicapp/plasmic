@@ -42,7 +42,7 @@
     "tslib": "^2.2.0"
   },
   "dependencies": {
-    "react-parallax-tilt": "^1.5.74"
+    "react-parallax-tilt": "^1.7.341"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

@@ -6,7 +6,6 @@ import * as React from "react";
 
 import clsx from "clsx";
 
-import { Side } from "@radix-ui/react-popper";
 import { Registerable, registerComponentHelper } from "./reg-util";
 import {
   Animated,
@@ -92,6 +91,9 @@ export const DialogContent = React.forwardRef<
   );
 });
 DialogContent.displayName = "PlasmicRadixDialogContent";
+
+// Mirrors SIDE_OPTIONS from @radix-ui/react-popper, which does not export the type.
+type Side = "top" | "right" | "bottom" | "left";
 
 function getDefaultSheetAnims(side: Side = "right") {
   return (

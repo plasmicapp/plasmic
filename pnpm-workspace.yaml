@@ -25,9 +25,9 @@ overrides:
   # typescript-json-schema bundles its compiler and pins to typescript ~5.9.3.
   # The repo 5.2.2 override above otherwise forces a resolution outside that range.
   "typescript-json-schema>typescript": "5.9.3"
+  dayjs: 1.11.23
   "picomatch@2": "2.3.1"
   "antd@5": "5.12.8"
-  "@radix-ui/react-popper": "1.1.3"
   "lottie-web": ">=5.13.0"
   # storybook-addon-mock@5 declares its @storybook/* shim deps as ^8.0.8, which a
   # fresh pnpm resolve bumps to 8.6.x while we pin storybook core at 8.5.5. The

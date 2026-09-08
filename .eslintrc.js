@@ -155,6 +155,7 @@ module.exports = {
     "examples/",
     "internal/",
     "packages/host/src/type-utils.ts",
+    "platform/canvas-packages/internal_pkgs/",
     "platform/wab/create-react-app-new/",
     "platform/wab/deps/",
     "platform/wab/public/static/",

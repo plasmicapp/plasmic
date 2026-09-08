@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = void 0;
 var initialState = {
@@ -29,11 +29,10 @@ var initialState = {
     startX: 0,
     startY: 0,
     curX: 0,
-    curY: 0,
+    curY: 0
   },
   trackStyle: {},
   trackWidth: 0,
-  targetSlide: 0,
+  targetSlide: 0
 };
-var _default = initialState;
-exports["default"] = _default;
+var _default = exports["default"] = initialState;

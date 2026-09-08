@@ -46,7 +46,7 @@
     "debounce": "^1.2.1",
     "js-cookie": "^3.0.1",
     "lodash.debounce": "^4.0.8",
-    "react-hook-form": "^7.28.0",
+    "react-hook-form": "^7.86.0",
     "swr": "^1.2.2"
   }
 }
