@@ -310,7 +310,6 @@ const VariantsBarInner = observer(function VariantsBarInner_({
     viewCtx,
     contained,
   });
-  const preventDismissingRef = useRef(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const component = viewCtx.currentComponent();
   const groupToSuperComp =
@@ -358,8 +357,13 @@ const VariantsBarInner = observer(function VariantsBarInner_({
     );
   };
 
-  const handleDropdownVisibleChange = (visible) => {
-    studioCtx.setShowVariantsDrawer(visible);
+  const toggleDrawerProps = {
+    onMouseDown: (e: React.MouseEvent) => {
+      e.preventDefault(); // prevent focus, keep focus on VariantDrawer's search input
+    },
+    onClick: () => {
+      studioCtx.setShowVariantsDrawer(!studioCtx.showVariantsDrawer);
+    },
   };
 
   useAutoFocus(studioCtx.showVariantsDrawer && searchInputRef);
@@ -395,29 +399,14 @@ const VariantsBarInner = observer(function VariantsBarInner_({
                 className: showPanel ? styles.absolute : styles.hidden,
               }
         }
-        dropdownTrigger={{
-          onMouseDown: () => {
-            preventDismissingRef.current = true;
-            defer(() => {
-              preventDismissingRef.current = false;
-            });
-          },
-        }}
-        emptyListMessage={{
-          children: "Edit variants",
-          onMouseDown: () =>
-            studioCtx.showVariantsDrawer
-              ? studioCtx.setShowVariantsDrawer(false)
-              : setTimeout(() => studioCtx.setShowVariantsDrawer(true)),
-        }}
+        emptyListMessage={{ children: "Edit variants", ...toggleDrawerProps }}
         chevronDownIcon={{
           wrap: (chevronDownIcon) => (
             <Dropdown
               transitionName=""
-              trigger={["click"]}
+              trigger={[]}
               placement={"bottomLeft"}
               open={studioCtx.showVariantsDrawer}
-              onVisibleChange={handleDropdownVisibleChange}
               overlay={() => (
                 <VariantsDrawer
                   component={component}
@@ -430,15 +419,14 @@ const VariantsBarInner = observer(function VariantsBarInner_({
                     isDedicatedArena(studioCtx.currentArena) &&
                     !!spotlightInfo.shouldRender
                   }
-                  onDismiss={() => {
-                    if (!preventDismissingRef.current) {
-                      studioCtx.setShowVariantsDrawer(false);
-                    }
-                  }}
+                  onDismiss={() => studioCtx.setShowVariantsDrawer(false)}
                 />
               )}
             >
-              <div data-test-id="variants-bar-dropdown-trigger">
+              <div
+                data-test-id="variants-bar-dropdown-trigger"
+                {...toggleDrawerProps}
+              >
                 {chevronDownIcon}
               </div>
             </Dropdown>
