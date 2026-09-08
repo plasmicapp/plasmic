@@ -269,29 +269,29 @@ importers:
         specifier: ^2.0.183
         version: 2.0.183(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
-        specifier: ^0.0.374
-        version: 0.0.374(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.375
+        version: 0.0.375(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/cms':
         specifier: ^0.0.40
         version: 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@plasmicpkgs/commerce':
-        specifier: ^0.0.259
-        version: 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
-      '@plasmicpkgs/commerce-commercetools':
-        specifier: ^0.0.209
-        version: 0.0.209(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
-      '@plasmicpkgs/commerce-local':
         specifier: ^0.0.260
         version: 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce-commercetools':
+        specifier: ^0.0.210
+        version: 0.0.210(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce-local':
+        specifier: ^0.0.261
+        version: 0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-saleor':
-        specifier: ^0.0.223
-        version: 0.0.223(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.224
+        version: 0.0.224(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-shopify':
-        specifier: ^0.0.269
-        version: 0.0.269(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.270
+        version: 0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-swell':
-        specifier: ^0.0.269
-        version: 0.0.269(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.270
+        version: 0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/contentful':
         specifier: ^0.0.34
         version: 0.0.34(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -314,8 +314,8 @@ importers:
         specifier: ^0.0.91
         version: 0.0.91(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(framer-motion@7.10.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-cms':
-        specifier: ^0.0.331
-        version: 0.0.331(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.332
+        version: 0.0.332(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-content-stack':
         specifier: ^0.0.216
         version: 0.0.216(react@18.3.1)
@@ -338,14 +338,14 @@ importers:
         specifier: ^0.0.280
         version: 0.0.280(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-rich-components':
-        specifier: ^1.0.273
-        version: 1.0.273(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.274
+        version: 1.0.274(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-sanity-io':
         specifier: ^1.0.241
         version: 1.0.241(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-strapi':
-        specifier: ^0.1.220
-        version: 0.1.220(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^0.1.221
+        version: 0.1.221(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-tabs':
         specifier: ^0.0.102
         version: 0.0.102(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -356,8 +356,8 @@ importers:
         specifier: ^0.0.178
         version: 0.0.178(react@18.3.1)
       '@plasmicpkgs/radix-ui':
-        specifier: ^0.0.119
-        version: 0.0.119(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.120
+        version: 0.0.120(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
         specifier: ^0.0.198
         version: 0.0.198(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -368,8 +368,8 @@ importers:
         specifier: ^1.0.171
         version: 1.0.171(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(chart.js@4.5.1)(react-chartjs-2@5.3.1(chart.js@4.5.1)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-parallax-tilt':
-        specifier: ^0.0.261
-        version: 0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.262
+        version: 0.0.262(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-quill':
         specifier: ^1.0.124
         version: 1.0.124(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -377,8 +377,8 @@ importers:
         specifier: ^0.0.270
         version: 0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-slick':
-        specifier: ^0.0.282
-        version: 0.0.282(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.283
+        version: 0.0.283(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-twitter-widgets':
         specifier: ^0.0.259
         version: 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -386,11 +386,11 @@ importers:
         specifier: ^7.13.265
         version: 7.13.265(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/rive':
-        specifier: ^0.0.47
-        version: 0.0.47(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.48
+        version: 0.0.48(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/strapi':
-        specifier: ^0.0.39
-        version: 0.0.39(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: ^0.0.40
+        version: 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@plasmicpkgs/tiptap':
         specifier: ^0.0.53
         version: 0.0.53(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -687,29 +687,29 @@ importers:
         specifier: ^2.0.183
         version: 2.0.183(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
-        specifier: ^0.0.374
-        version: 0.0.374(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.375
+        version: 0.0.375(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/cms':
         specifier: ^0.0.40
         version: 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@plasmicpkgs/commerce':
-        specifier: ^0.0.259
-        version: 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
-      '@plasmicpkgs/commerce-commercetools':
-        specifier: ^0.0.209
-        version: 0.0.209(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
-      '@plasmicpkgs/commerce-local':
         specifier: ^0.0.260
         version: 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce-commercetools':
+        specifier: ^0.0.210
+        version: 0.0.210(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce-local':
+        specifier: ^0.0.261
+        version: 0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-saleor':
-        specifier: ^0.0.223
-        version: 0.0.223(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.224
+        version: 0.0.224(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-shopify':
-        specifier: ^0.0.269
-        version: 0.0.269(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.270
+        version: 0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-swell':
-        specifier: ^0.0.269
-        version: 0.0.269(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.270
+        version: 0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/contentful':
         specifier: ^0.0.34
         version: 0.0.34(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -732,8 +732,8 @@ importers:
         specifier: ^0.0.91
         version: 0.0.91(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(framer-motion@7.10.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-cms':
-        specifier: ^0.0.331
-        version: 0.0.331(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.332
+        version: 0.0.332(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-content-stack':
         specifier: ^0.0.216
         version: 0.0.216(react@18.3.1)
@@ -756,14 +756,14 @@ importers:
         specifier: ^0.0.280
         version: 0.0.280(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-rich-components':
-        specifier: ^1.0.273
-        version: 1.0.273(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.274
+        version: 1.0.274(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-sanity-io':
         specifier: ^1.0.241
         version: 1.0.241(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-strapi':
-        specifier: ^0.1.220
-        version: 0.1.220(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^0.1.221
+        version: 0.1.221(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-tabs':
         specifier: ^0.0.102
         version: 0.0.102(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -774,8 +774,8 @@ importers:
         specifier: ^0.0.178
         version: 0.0.178(react@18.3.1)
       '@plasmicpkgs/radix-ui':
-        specifier: ^0.0.119
-        version: 0.0.119(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.120
+        version: 0.0.120(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
         specifier: ^0.0.198
         version: 0.0.198(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -786,8 +786,8 @@ importers:
         specifier: ^1.0.171
         version: 1.0.171(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(chart.js@4.5.1)(react-chartjs-2@5.3.1(chart.js@4.5.1)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-parallax-tilt':
-        specifier: ^0.0.261
-        version: 0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.262
+        version: 0.0.262(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-quill':
         specifier: ^1.0.124
         version: 1.0.124(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -795,8 +795,8 @@ importers:
         specifier: ^0.0.270
         version: 0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-slick':
-        specifier: ^0.0.282
-        version: 0.0.282(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.283
+        version: 0.0.283(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-twitter-widgets':
         specifier: ^0.0.259
         version: 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -804,11 +804,11 @@ importers:
         specifier: ^7.13.265
         version: 7.13.265(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/rive':
-        specifier: ^0.0.47
-        version: 0.0.47(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.48
+        version: 0.0.48(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/strapi':
-        specifier: ^0.0.39
-        version: 0.0.39(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: ^0.0.40
+        version: 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@plasmicpkgs/tiptap':
         specifier: ^0.0.53
         version: 0.0.53(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1155,11 +1155,11 @@ importers:
         specifier: ^1.0.37
         version: 1.0.37(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
-        specifier: ^0.0.374
-        version: 0.0.374(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.375
+        version: 0.0.375(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/commerce-local':
-        specifier: ^0.0.260
-        version: 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)
+        specifier: ^0.0.261
+        version: 0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)
       '@plasmicpkgs/plasmic-basic-components':
         specifier: ^0.0.290
         version: 0.0.290(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5426,8 +5426,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/antd5@0.0.374':
-    resolution: {integrity: sha512-9fMSZxR11yBl3J4KrM6IfbbzfzXGyUXvRvJLhCDF29aFPw6O+fstujdse9amYzFBoKAZpFREbnZjj34CztBkDA==}
+  '@plasmicpkgs/antd5@0.0.375':
+    resolution: {integrity: sha512-HFFnePo9jsg5snEzK2SCVOZ2SWTHBwHExTNmRbdbDfwgfypd84XoIg8xSEoyCBjayPhtabHPS5wYg8BtbQjyMQ==}
     peerDependencies:
       '@plasmicapp/data-sources': '>=0.1.0'
       '@plasmicapp/host': '>=1.0.0'
@@ -5445,39 +5445,39 @@ packages:
     peerDependencies:
       '@plasmicapp/host': '>=1.0.211'
 
-  '@plasmicpkgs/commerce-commercetools@0.0.209':
-    resolution: {integrity: sha512-aK1eXHuBjdfm5w+lRyS5Gi9JugbKJdHkQJ3uk5KXG2dw5Nvb6QLjjLeXXo5aCUbv3BGrl3L1slQaqomwdi8jxA==}
+  '@plasmicpkgs/commerce-commercetools@0.0.210':
+    resolution: {integrity: sha512-uV12RsdOKQ36zzlOekemRn3xpv6Fi7uSGyu9TJwHxm4SygDVskFtpeafTKg96sWnqzvCmIDOPkeJrypk9Zc6vA==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       '@plasmicapp/query': '>=0.1.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-local@0.0.260':
-    resolution: {integrity: sha512-4qumY93WIoglzgfPSHDwsok9SBxN44Ntxsd3HFtfdmDIp0JifzdGdqqRwBS5E4ddHiGID9+cdXrJHm6X7qhZBQ==}
+  '@plasmicpkgs/commerce-local@0.0.261':
+    resolution: {integrity: sha512-wSAw3651bIGSz/jj8kjuovh1HCZNdzqykGQbbCKEPas1wo/mo6fbPb/aurvYp0b2q6HYek1bLGi8HC48YzOY/Q==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-saleor@0.0.223':
-    resolution: {integrity: sha512-pLNSFKZLC5HTLlesH7ymojML81vLVta1xp0A996fbes6o9u/LpQfxpeDjWV+jDKod6Y2nA7vntCfVjTp4dscQw==}
+  '@plasmicpkgs/commerce-saleor@0.0.224':
+    resolution: {integrity: sha512-HW2UNMLeD6utsLw+Qdvh//C3uNBix9nxila0q0RTxlVbsyQ1a8iujcTrFZh57agpmLE/Qz3Vju9wgvA5Ufn9eQ==}
     peerDependencies:
       next: ^12
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-shopify@0.0.269':
-    resolution: {integrity: sha512-PcpR9VvcwYp2SM5yLZGh1x/iE8jIm9YCBJgLRQLCy+bMboZcSTTKfxYB0jw/tDgW6ojMwQ+er92vPaBUHtiZKg==}
+  '@plasmicpkgs/commerce-shopify@0.0.270':
+    resolution: {integrity: sha512-9EP018OXBxgt12QNdRQv1iARW+hmW/aIKOrDwgsz7KFxCWwOPlyTfTvBod/JVYbtKAYMgmsnZJiMRZHHsG2+Cg==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-swell@0.0.269':
-    resolution: {integrity: sha512-kq37jSMsWdIuTVu2oMEJnojLSQJwY3kyTnfUEgiOqPd5J7DDTTk4S911oBJJGilLLX3jNEhpacKB18XumN6cNQ==}
+  '@plasmicpkgs/commerce-swell@0.0.270':
+    resolution: {integrity: sha512-Jyw+0R0zzUh+4hHn9AFu2mDSbNY1NNhD/rV2VGL7y0pXc3W4LCJ0yg6CANuqOiNoJ5YsZszoEk0UypJlIG2cXQ==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce@0.0.259':
-    resolution: {integrity: sha512-DPKRyjq7nkuV2F9ljCViTzX0Smjt03yDK8oa3hMx+eLyioOJCgKQZc+S+kY/MvdcCbWCxIUr+0A/Cn30rTT9gg==}
+  '@plasmicpkgs/commerce@0.0.260':
+    resolution: {integrity: sha512-SWVjyyW6jRw2ahOWWq0/Udv8AqJUr39WkryYZZ1FhPHHa+h5Y/2wgmwhUlstKltjp2KVbH84VXOeFb/6GV7UUA==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       '@plasmicapp/query': '>=0.1.0'
@@ -5531,8 +5531,8 @@ packages:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16'
 
-  '@plasmicpkgs/plasmic-cms@0.0.331':
-    resolution: {integrity: sha512-hhY4cXwVZJCkX9XQBxuJwMgs+T9BckKTol4RKqzxVyRiK77lq02flsf6///HrHnHJ7cpF3tUltmHud2kFw9wnw==}
+  '@plasmicpkgs/plasmic-cms@0.0.332':
+    resolution: {integrity: sha512-qT4pzypEAbCyz5CaRaY2FoRQmAezKiuSMEWw+1Y/4yR1a/SNEGviEIm4j0KbTGeJ/jnffZljL/Iq7PIMKGkL8A==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       '@plasmicapp/query': '>=0.1.0'
@@ -5587,8 +5587,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/plasmic-rich-components@1.0.273':
-    resolution: {integrity: sha512-EEc39/4qCoiqpfIz6DtN1629JmSYETZYrg/85ZHW0GQK/fmi8n9TjejoVWoKVyZxAYQiqyhxswy1E7sg0JtENQ==}
+  '@plasmicpkgs/plasmic-rich-components@1.0.274':
+    resolution: {integrity: sha512-1OheXhYdK7k/NZMDxXsOB2tXusiVb6V1CP5JJy+lTj768uFiS+dk9Lu9w/LyFujeC5cTUJvKCOXmnRhlmCwRFg==}
     peerDependencies:
       '@ant-design/icons': '>=5.0.0'
       '@ant-design/pro-components': 2.6.4
@@ -5604,8 +5604,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/plasmic-strapi@0.1.220':
-    resolution: {integrity: sha512-HHVInQiqHwGvjbGthR6M/82S/5dK6w/E87GKrjInfvvGox+T4lxjPahyYIVu2qv4s81CGJAILUq+mRTrRJcfGA==}
+  '@plasmicpkgs/plasmic-strapi@0.1.221':
+    resolution: {integrity: sha512-uVFbwOn/rj0Xm3hzpJhBE2ssJLJEeMjjFJDBnb87OwB9HUimd4ynORRxX3uaG1HecGUfHU4ShB0SVA8b4X7dPQ==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -5627,8 +5627,8 @@ packages:
       '@plasmicapp/query': '>=0.1.0'
       react: '>=16'
 
-  '@plasmicpkgs/radix-ui@0.0.119':
-    resolution: {integrity: sha512-nHC/iTCi/th9hX1otTZ6DmdzXRkkwGkQsGBJSPc+g4k0//58UIW5qRzkIHCPCnaqihXAtZovEj9vqw4ROtQ2vw==}
+  '@plasmicpkgs/radix-ui@0.0.120':
+    resolution: {integrity: sha512-ZZ6fNPPJGeDVKEMTjyysAmfactyrQNo9UhI140rTNHml5fiZBjuuJKUoEUvPKf+CiS61UrqgNZHN610d7cRCnQ==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -5656,8 +5656,8 @@ packages:
       react-chartjs-2: '>=5.2.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/react-parallax-tilt@0.0.261':
-    resolution: {integrity: sha512-CBkZGweSAAMUQpqTxG+xosvZLUQRNEIHICqWQ+P9gwh2DZQET1v0nnKszs4ZLwgabY8CvDpGcur+P4etirr6Tg==}
+  '@plasmicpkgs/react-parallax-tilt@0.0.262':
+    resolution: {integrity: sha512-WcOj84Px+V65rj0pSWYeAS/SjM20GsRsEwnn4jjWe34DkjAzjhZLhbwmt5IzTUMu6S36bqBuLqt3ydiSzfxhVw==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -5677,8 +5677,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/react-slick@0.0.282':
-    resolution: {integrity: sha512-EJYjYOTi8oTdfSGAKYSPGKEstUZQtg/RqzkV7IZl1joz9J//+S7Y7S8TiBBwSIt2opt7IffmZ4x4vU0fkp8YWA==}
+  '@plasmicpkgs/react-slick@0.0.283':
+    resolution: {integrity: sha512-yEwO10h7MncC4UFTcbbnWlnkKEZWfZkELSevWvmlZ4tsss5Gr7LKMXfq+73a5SmyrdmzvrbB8ouI9wrcuYQ9nw==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -5698,14 +5698,14 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/rive@0.0.47':
-    resolution: {integrity: sha512-DJ8OM9yCFtw031K/mpZX3+64yObh4TtC+xAleGLByQMrJ8fdOQFUesDflgFzEEA7sH5b9RVojUXX4zYoN8oAkQ==}
+  '@plasmicpkgs/rive@0.0.48':
+    resolution: {integrity: sha512-4akfirckKHSCD3zlAhDjgoxfcbAeREjEghRFNzSt9YxTn0eF5T2wzW1Qg3SxP58p4a/uUCh4GXOdFhDjZiCbWg==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
 
-  '@plasmicpkgs/strapi@0.0.39':
-    resolution: {integrity: sha512-PjKHnih+CA+2d4o/kvL8Ewnq//CrcMHzkr++16XsSL9N1cl30Oo9DaJ7gaAX1+LkusA6/UxzkcO7pzsvew/RIA==}
+  '@plasmicpkgs/strapi@0.0.40':
+    resolution: {integrity: sha512-mLPFxXp/cr+pSqy4D532vmxomZZyvXXq0JlBh3zd+ch1/n0cf47Ed2UkvBZhvBXW/LLs+6nX2PDre/KxVTpdDg==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.211'
 
@@ -25768,7 +25768,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/antd5@0.0.374(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/antd5@0.0.375(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/data-sources': 1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -25785,7 +25785,7 @@ snapshots:
       - moment
       - react-dom
 
-  '@plasmicpkgs/antd5@0.0.374(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/antd5@0.0.375(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/data-sources': 1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -25814,16 +25814,15 @@ snapshots:
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  '@plasmicpkgs/commerce-commercetools@0.0.209(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-commercetools@0.0.210(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@commercetools/platform-sdk': 2.8.0
       '@commercetools/sdk-client-v2': 2.5.0
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
-      '@plasmicpkgs/commerce': 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce': 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       debounce: 2.2.0
       js-cookie: 3.0.5
-      qs: 6.16.0
       react: 18.3.1
     transitivePeerDependencies:
       - '@types/node-fetch'
@@ -25831,10 +25830,10 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-local@0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)':
+  '@plasmicpkgs/commerce-local@0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@plasmicpkgs/commerce': 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)
+      '@plasmicpkgs/commerce': 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)
       react: 18.3.1
     transitivePeerDependencies:
       - '@plasmicapp/query'
@@ -25842,10 +25841,10 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-local@0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-local@0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@plasmicpkgs/commerce': 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce': 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       react: 18.3.1
     transitivePeerDependencies:
       - '@plasmicapp/query'
@@ -25853,9 +25852,9 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-saleor@0.0.223(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-saleor@0.0.224(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
-      '@plasmicpkgs/commerce': 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce': 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       debounce: 1.2.1
       js-cookie: 3.0.5
       next: 12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0)
@@ -25867,10 +25866,10 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-shopify@0.0.269(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-shopify@0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@plasmicpkgs/commerce': 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce': 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       debounce: 1.2.1
       js-cookie: 3.0.5
       react: 18.3.1
@@ -25880,10 +25879,10 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-swell@0.0.269(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-swell@0.0.270(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@plasmicpkgs/commerce': 0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+      '@plasmicpkgs/commerce': 0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       debounce: 1.2.1
       js-cookie: 3.0.5
       react: 18.3.1
@@ -25894,7 +25893,7 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce@0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)':
+  '@plasmicpkgs/commerce@0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@2.7.0)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
@@ -25910,7 +25909,7 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce@0.0.259(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce@0.0.260(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
@@ -25977,7 +25976,7 @@ snapshots:
       - framer-motion
       - react-dom
 
-  '@plasmicpkgs/plasmic-cms@0.0.331(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/plasmic-cms@0.0.332(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.87(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.87(react@18.3.1)
@@ -26038,7 +26037,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/plasmic-rich-components@1.0.273(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/plasmic-rich-components@1.0.274(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@ant-design/icons': 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ant-design/pro-components': 2.6.4(antd@5.12.8(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -26055,7 +26054,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/plasmic-rich-components@1.0.273(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/plasmic-rich-components@1.0.274(@ant-design/icons@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@ant-design/pro-components@2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/data-sources@1.0.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@ant-design/icons': 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ant-design/pro-components': 2.6.4(antd@5.12.8(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -26081,9 +26080,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/plasmic-strapi@0.1.220(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/plasmic-strapi@0.1.221(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@plasmicpkgs/strapi': 0.0.39(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+      '@plasmicpkgs/strapi': 0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       change-case: 4.1.2
       react: 18.3.1
     transitivePeerDependencies:
@@ -26110,14 +26109,13 @@ snapshots:
       dlv: 1.1.3
       react: 18.3.1
 
-  '@plasmicpkgs/radix-ui@0.0.119(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/radix-ui@0.0.120(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-dialog': 1.1.23(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-dropdown-menu': 2.1.24(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-popover': 1.1.23(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-popper': 1.3.7(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slot': 1.3.3(@types/react@18.3.18)(react@18.3.1)
       '@radix-ui/react-tooltip': 1.2.16(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       class-variance-authority: 0.7.1
@@ -26162,7 +26160,7 @@ snapshots:
       react-chartjs-2: 5.3.1(chart.js@4.5.1)(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/react-parallax-tilt@0.0.261(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/react-parallax-tilt@0.0.262(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
@@ -26184,7 +26182,7 @@ snapshots:
       react-scroll-parallax: 3.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       resize-observer-polyfill: 1.5.1
 
-  '@plasmicpkgs/react-slick@0.0.282(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/react-slick@0.0.283(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@seznam/compose-react-refs': 1.0.6
@@ -26211,13 +26209,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@plasmicpkgs/rive@0.0.47(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/rive@0.0.48(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@rive-app/react-canvas': 4.34.1(react@18.3.1)
       react: 18.3.1
 
-  '@plasmicpkgs/strapi@0.0.39(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@plasmicpkgs/strapi@0.0.40(@plasmicapp/host@2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@plasmicapp/host': 2.0.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       qs: 6.16.0
