@@ -1,5 +1,9 @@
 # Developing Plasmic Studio: third-party system integrations
 
+## Figma import
+
+See [Figma plugin setup](03-figma.md).
+
 ## Plasmic hosting on Vercel
 
 To be able to locallly access a plasmic hosted project in dev environment it's required to have the `hosting` application running (`pm2-dev.config.js` has a configuration to run it locally with the proper environment variables).
