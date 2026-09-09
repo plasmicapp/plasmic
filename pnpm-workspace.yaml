@@ -125,10 +125,12 @@ allowBuilds:
   gatsby: true
   gatsby-cli: true
   lmdb: true
-  msgpackr-extract: true
+  # only used in Gatsby loader, fall back to JS decoder instead of compiling from scratch
+  msgpackr-extract: false
   msw: true
   nx: true
-  sharp: true
+  # dev-only transitive (gatsby-sharp, next), don't build in CI/CD
+  sharp: false
   unrs-resolver: true
 
 shamefullyHoist: true
