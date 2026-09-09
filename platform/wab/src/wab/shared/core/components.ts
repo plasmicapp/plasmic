@@ -860,8 +860,9 @@ export function cloneComponent(
         fixExprRefs(paramExpr);
       }
     } else if (isKnownFunctionArg(expr) && !isKnownStrongFunctionArg(expr)) {
+      // Custom function argument types belong to the function, not this component.
       expr.argType = ensureKnownArgType(
-        ensure(oldToNewType.get(expr.argType), "All arg types should be mapped")
+        oldToNewType.get(expr.argType) ?? expr.argType
       );
     } else if (isKnownTplRef(expr)) {
       expr.tpl = ensure(
