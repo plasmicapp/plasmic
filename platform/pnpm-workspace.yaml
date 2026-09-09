@@ -14,10 +14,19 @@ injectWorkspacePackages: true
 minimumReleaseAge: 0
 
 catalog:
+  "@godaddy/terminus": 4.12.1
+  "@hono/node-server": ^1.14.0
   "@nats-io/jetstream": 3.3.1
   "@nats-io/kv": 3.3.1
   "@nats-io/nats-core": 3.3.1
   "@nats-io/transport-node": 3.3.1
+  "@sentry/node": ^10.20.0
+  esbuild: ^0.25
+  hono: ^4.7.6
+  tsx: ^4
+  typescript: 6.0.3
+  vite: 6.4.2
+  vitest: 4.1.10
 
 # Merged from the per-package "resolutions" of wab, canvas-packages and
 # loader-bundle-env. pnpm overrides are workspace-global, so where
@@ -38,7 +47,7 @@ overrides:
   retry-request: ^8.0.2
   # vitest allows vite 6-8; pin it to the vite wab already declares, so the
   # workspace keeps a single vite copy.
-  "vitest>vite": ^6.4.2
+  "vitest>vite": "catalog:"
   "@plasmicpkgs/antd>antd": 4.19.5
   "@plasmicpkgs/react-slick>antd": 4.19.5
   "@plasmicpkgs/antd5>antd": 5.12.8

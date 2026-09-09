@@ -49,9 +49,9 @@
   },
   "devDependencies": {
     "@plasmicapp/loader-fetcher": "workspace:*",
-    "@vitest/coverage-v8": "4.1.10",
-    "vite": "8.1.5",
-    "vitest": "4.1.10"
+    "@vitest/coverage-v8": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "publishConfig": {
     "access": "public"

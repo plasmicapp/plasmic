@@ -1,6 +1,6 @@
+/* eslint-disable no-shadow -- Story fixtures intentionally reuse generated state and component names. */
 import { StoryFn } from "@storybook/react";
-import { expect, waitFor } from "@storybook/test";
-import { userEvent, within } from "@storybook/testing-library";
+import { expect, userEvent, waitFor, within } from "@storybook/test";
 import React from "react";
 import {
   $StateSpec,

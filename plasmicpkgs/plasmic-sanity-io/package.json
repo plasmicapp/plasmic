@@ -35,12 +35,12 @@
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
     "@plasmicapp/query": "workspace:*",
-    "@types/dlv": "^1.1.5",
+    "@types/dlv": "catalog:",
     "@types/node": "^17.0.45",
-    "@types/react": "^18",
-    "tslib": "^2.3.1",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "@types/react": "catalog:",
+    "tslib": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
   },
   "dependencies": {
     "@sanity/client": "^6.2.0",

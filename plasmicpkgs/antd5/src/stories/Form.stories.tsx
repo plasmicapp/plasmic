@@ -1,12 +1,7 @@
 import { DataCtxReader, PlasmicCanvasContext } from "@plasmicapp/host";
 import { generateOnMutateForSpec, useDollarState } from "@plasmicapp/react-web";
 import { StoryFn } from "@storybook/react";
-import { expect } from "@storybook/test";
-import {
-  queryByAttribute,
-  userEvent,
-  within,
-} from "@storybook/testing-library";
+import { expect, queryByAttribute, userEvent, within } from "@storybook/test";
 import { Button, Checkbox, Input, InputNumber } from "antd";
 import TextArea, { TextAreaRef } from "antd/es/input/TextArea";
 import { FormListOperation, Select } from "antd/lib";
@@ -565,9 +560,9 @@ const _InternalFormCtx: StoryFn = (args: any) => {
           />
           <Button
             onClick={() => {
-              setFormItems((formItems) => {
-                formItems[+selectedFormItem].name = renameInput;
-                return [...formItems];
+              setFormItems((updatedFormItems) => {
+                updatedFormItems[+selectedFormItem].name = renameInput;
+                return [...updatedFormItems];
               });
               // updating the field registration doesn't cause a re-render in the parent component
               // so we need to force a re-render to get latest registered fields
@@ -588,10 +583,10 @@ const _InternalFormCtx: StoryFn = (args: any) => {
           </select>
           <Button
             onClick={() => {
-              setFormItems((formItems) => {
-                formItems[+selectedFormItem].hidden =
+              setFormItems((updatedFormItems) => {
+                updatedFormItems[+selectedFormItem].hidden =
                   fieldVisibility === "invisible";
-                return [...formItems];
+                return [...updatedFormItems];
               });
               setRenameInput("");
             }}
@@ -762,8 +757,8 @@ const _SchemaForms: StoryFn = () => {
         />
         <Button
           onClick={() => {
-            setDataFields((dataFields) => [
-              ...dataFields,
+            setDataFields((updatedDataFields) => [
+              ...updatedDataFields,
               {
                 inputType: InputType.Text,
                 name: newFieldName,
@@ -1408,7 +1403,7 @@ TestFormRefActions.args = {};
 TestFormRefActions.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
-  let expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
+  const expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
   expectedFormItems.push({
     label: "Validate Field",
     name: "validateField",
@@ -1426,7 +1421,7 @@ TestFormRefActions.play = async ({ canvasElement }) => {
   // can clear fields
   await userEvent.click(canvas.getByText("Clear fields"));
   await sleep(100);
-  let newExpectedFormItems = deepClone(expectedFormItems);
+  const newExpectedFormItems = deepClone(expectedFormItems);
   newExpectedFormItems.forEach(
     (formItem) => (formItem.initialValue = undefined)
   );
@@ -1575,7 +1570,7 @@ FormStateIsMutable.args = {};
 FormStateIsMutable.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
-  let expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
+  const expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
   await checkFormItems(canvasElement, expectedFormItems);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
     getFormItemsValue(expectedFormItems)

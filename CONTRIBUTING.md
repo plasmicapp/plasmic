@@ -24,6 +24,8 @@ For hacking on code components or `plasmicpkgs`, see specific additional instruc
 
 `packages/` and `plasmicpkgs/` are a `pnpm` workspace (see `pnpm-workspace.yaml`). `lerna` is used for versioning, and `pnpm publish` for publishing. Workspace dependencies use `workspace:*`, which `pnpm publish` rewrites to an exact version at pack time.
 
+Shared dependency versions belong in the workspace's `pnpm-workspace.yaml` catalog and should be referenced with `catalog:`. Keep peer dependency ranges explicit, and use overrides only to constrain transitive dependencies. The root and `platform/` are separate pnpm workspaces with separate catalogs and lockfiles.
+
 In general, we follow the "fork-and-pull" Git workflow.
 
 1. Fork the repo on GitHub
@@ -106,7 +108,7 @@ npm --registry=http://localhost:4873 adduser
 
 #### Fast local iteration in a pnpm app
 
-The project under devlepment must use pnpm 11 or newer and depend on the linked package. Pass the consumer's workspace root, not a workspace package directory.
+The project under development must use pnpm 11 or newer and depend on the linked package. Pass the consumer's workspace root, not a workspace package directory.
 
 ```bash
 # Set up and build the package's production workspace dependencies.
@@ -223,10 +225,10 @@ So a typical `package.json` might look like this:
 ```json
 {
   "devDependencies": {
-    "@plasmicapp/data-sources": "1.0.21",
-    "@plasmicapp/host": "2.0.12",
-    "tslib": "^2.2.0",
-    "typescript": "^5.7.3"
+    "@plasmicapp/data-sources": "workspace:*",
+    "@plasmicapp/host": "workspace:*",
+    "tslib": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/data-sources": ">=1.0.0",

@@ -56,15 +56,15 @@
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@types/lodash": "^4.17.25",
+    "@types/lodash": "catalog:",
     "@types/node": "^20.19.43",
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "antd": "^5.4.0",
     "glob": "^8.1.0",
     "rollup": "^3.26.2",
-    "rollup-plugin-esbuild": "^5.0.0",
-    "tslib": "^2.2.0",
-    "typescript": "^5.2.2"
+    "rollup-plugin-esbuild": "catalog:",
+    "tslib": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@ant-design/icons": ">=5.0.0",

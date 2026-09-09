@@ -1,5 +1,6 @@
 {
   "name": "enquire.js",
+  "private": true,
   "version": "2.1.6",
   "main": "./src",
   "description": "Awesome Media Queries in JavaScript",

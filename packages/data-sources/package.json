@@ -43,11 +43,11 @@
     }
   ],
   "devDependencies": {
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "jsdom": "28.1.0",
     "react": "^18.3.1",
-    "vite": "8.1.5",
-    "vitest": "4.1.10"
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "dependencies": {
     "@plasmicapp/data-sources-context": "workspace:*",

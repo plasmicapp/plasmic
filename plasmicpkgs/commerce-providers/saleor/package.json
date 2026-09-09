@@ -35,15 +35,15 @@
   },
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
-    "@types/debounce": "^1.2.4",
-    "@types/js-cookie": "^3.0.6",
+    "@types/debounce": "catalog:",
+    "@types/js-cookie": "catalog:",
     "@types/node": "^17.0.45",
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "next": "^12.3.7",
     "prettier": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsdx": "^0.14.1"
+    "tsdx": "catalog:"
   },
   "publishConfig": {
     "access": "public"

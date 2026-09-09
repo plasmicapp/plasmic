@@ -47,15 +47,15 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@types/node": "^14.18.63",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.26.2",
-    "rollup-plugin-esbuild": "^5.0.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.6.2",
-    "typescript": "^5.2.2"
+    "rollup-plugin-esbuild": "catalog:",
+    "tsdx": "catalog:",
+    "tslib": "catalog:",
+    "typescript": "catalog:"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.1"

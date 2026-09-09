@@ -1,7 +1,9 @@
-import { useCheckbox as useAriaCheckbox } from "@react-aria/checkbox";
+import {
+  useCheckbox as useAriaCheckbox,
+  type AriaCheckboxProps,
+} from "@react-aria/checkbox";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
-import { AriaCheckboxProps } from "@react-types/checkbox";
 import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
@@ -9,13 +11,13 @@ import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import {
   AnyPlasmicClass,
-  mergeVariantToggles,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
   VariantDef,
+  mergeVariantToggles,
 } from "../plume-utils";
-import { getStyleProps, StyleProps } from "../props-utils";
+import { StyleProps, getStyleProps } from "../props-utils";
 
 export type CheckboxRef = React.Ref<CheckboxRefValue>;
 export interface CheckboxRefValue extends CheckboxState {
@@ -110,12 +112,12 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
       props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
-      wrapChildren: (children: React.ReactNode) => (
+      wrapChildren: (renderedChildren: React.ReactNode) => (
         <>
           <VisuallyHidden>
             <input {...inputProps} ref={inputRef} />
           </VisuallyHidden>
-          {children}
+          {renderedChildren}
         </>
       ),
     },

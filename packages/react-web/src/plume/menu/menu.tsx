@@ -1,6 +1,5 @@
-import { useMenu as useAriaMenu } from "@react-aria/menu";
+import { useMenu as useAriaMenu, type AriaMenuProps } from "@react-aria/menu";
 import { useTreeState } from "@react-stately/tree";
-import { AriaMenuProps } from "@react-types/menu";
 import { AriaLabelingProps, DOMProps } from "@react-types/shared";
 import * as React from "react";
 import { pick } from "../../common";
@@ -14,13 +13,13 @@ import {
 } from "../collection-utils";
 import {
   AnyPlasmicClass,
-  noOutline,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
   VariantDef,
+  noOutline,
 } from "../plume-utils";
-import { getStyleProps, StyleProps } from "../props-utils";
+import { StyleProps, getStyleProps } from "../props-utils";
 import { TriggeredOverlayContext } from "../triggered-overlay/context";
 import { MenuContext } from "./context";
 
@@ -112,10 +111,10 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
     menuListRef
   );
 
-  const contextValue = React.useMemo(() => ({ state, menuProps: props }), [
-    state,
-    props,
-  ]);
+  const contextValue = React.useMemo(
+    () => ({ state, menuProps: props }),
+    [state, props]
+  );
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),

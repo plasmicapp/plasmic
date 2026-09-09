@@ -37,9 +37,9 @@
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
     "@types/node": "^17.0.45",
-    "@types/react": "^18",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "@types/react": "catalog:",
+    "tsdx": "catalog:",
+    "tslib": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

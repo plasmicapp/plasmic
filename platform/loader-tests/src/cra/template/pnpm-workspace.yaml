@@ -1,0 +1,13 @@
+# Standalone pnpm root, copied with the template so allowBuilds applies on install.
+packages: []
+
+overrides:
+  # react-scripts 4 pins @babel/core 7.12.3, but its ^10.0.0 range now
+  # resolves to babel-preset-react-app 10.1.0, which requires Babel 7.16+.
+  "react-scripts@4.0.3>babel-preset-react-app": 10.0.0
+
+allowBuilds:
+  core-js: true
+  core-js-pure: true
+  ejs: false
+  es5-ext: true

@@ -4,15 +4,124 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@babel/core':
+      specifier: ^7.29.0
+      version: 7.29.7
+    '@babel/generator':
+      specifier: ^7.29.8
+      version: 7.29.8
+    '@babel/parser':
+      specifier: ^7.29.8
+      version: 7.29.8
+    '@babel/preset-env':
+      specifier: ^7.29.2
+      version: 7.29.7
+    '@babel/preset-react':
+      specifier: ^7.28.5
+      version: 7.29.7
+    '@babel/preset-typescript':
+      specifier: ^7.28.5
+      version: 7.29.7
+    '@babel/traverse':
+      specifier: ^7.29.8
+      version: 7.29.8
+    '@babel/types':
+      specifier: ^7.29.8
+      version: 7.29.8
+    '@react-awesome-query-builder/core':
+      specifier: ^6.6.15
+      version: 6.6.15
+    '@storybook/addon-essentials':
+      specifier: 8.5.5
+      version: 8.5.5
+    '@storybook/addon-interactions':
+      specifier: 8.5.5
+      version: 8.5.5
+    '@storybook/addon-links':
+      specifier: 8.5.5
+      version: 8.5.5
+    '@storybook/react':
+      specifier: 8.5.5
+      version: 8.5.5
+    '@storybook/react-webpack5':
+      specifier: 8.5.5
+      version: 8.5.5
+    '@storybook/test':
+      specifier: 8.5.5
+      version: 8.5.5
+    '@testing-library/react':
+      specifier: 16.2.0
+      version: 16.2.0
+    '@types/debounce':
+      specifier: ^1.2.4
+      version: 1.2.4
+    '@types/dlv':
+      specifier: ^1.1.5
+      version: 1.1.5
+    '@types/findup-sync':
+      specifier: ^2.0.2
+      version: 2.0.2
+    '@types/glob':
+      specifier: ^7.2.0
+      version: 7.2.0
+    '@types/js-cookie':
+      specifier: ^3.0.6
+      version: 3.0.6
+    '@types/lodash':
+      specifier: ^4.17.25
+      version: 4.17.25
+    '@types/react':
+      specifier: 18.3.27
+      version: 18.3.27
+    '@types/react-dom':
+      specifier: 18.3.7
+      version: 18.3.7
+    '@types/semver':
+      specifier: ^7.8.0
+      version: 7.8.0
+    '@vitest/coverage-v8':
+      specifier: 4.1.10
+      version: 4.1.10
+    rollup-plugin-dts:
+      specifier: ^5.3.0
+      version: 5.3.1
+    rollup-plugin-esbuild:
+      specifier: ^5.0.0
+      version: 5.0.0
+    rollup-plugin-replace-imports:
+      specifier: ^1.0.0
+      version: 1.0.0
+    rollup-plugin-typescript2:
+      specifier: ^0.37.0
+      version: 0.37.0
+    storybook:
+      specifier: 8.5.5
+      version: 8.5.5
+    tsdx:
+      specifier: ^0.14.1
+      version: 0.14.1
+    tslib:
+      specifier: ^2.6.2
+      version: 2.8.1
+    tsup:
+      specifier: ^7.2.0
+      version: 7.3.0
+    tsx:
+      specifier: ^4.23.11
+      version: 4.23.11
+    vite:
+      specifier: 8.1.5
+      version: 8.1.5
+    vitest:
+      specifier: 4.1.10
+      version: 4.1.10
+
 overrides:
   eslint: ^8.55.0
   jest: 29.7.0
   sha.js: ^2.4.12
-  '@babel/core': ^7.29.0
-  '@babel/types': ^7.29.8
-  '@babel/traverse': ^7.29.8
-  '@babel/generator': ^7.29.8
-  '@babel/parser': ^7.29.8
   '@babel/helpers': ^7.29.0
   '@types/minimatch': 3.0.5
   typescript: 5.2.2
@@ -44,34 +153,31 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(size-limit@11.2.0)
       '@storybook/addon-essentials':
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(@types/react@19.2.17)(storybook@8.5.5(prettier@2.8.8))
       '@storybook/addon-interactions':
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(storybook@8.5.5(prettier@2.8.8))
       '@storybook/addon-links':
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))
       '@storybook/addon-webpack5-compiler-swc':
         specifier: 2.1.0
         version: 2.1.0(@swc/helpers@0.5.23)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.22))
       '@storybook/react':
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
       '@storybook/react-webpack5':
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(@storybook/test@8.5.5(storybook@8.5.5(prettier@2.8.8)))(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.5(prettier@2.8.8))(typescript@5.2.2)
       '@storybook/test':
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(storybook@8.5.5(prettier@2.8.8))
       '@storybook/test-runner':
         specifier: 0.21.0
         version: 0.21.0(@swc/helpers@0.5.23)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(storybook@8.5.5(prettier@2.8.8))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
-      '@storybook/testing-library':
-        specifier: 0.2.2
-        version: 0.2.2
       '@testing-library/react':
-        specifier: 16.2.0
+        specifier: 'catalog:'
         version: 16.2.0(@testing-library/dom@10.4.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@typescript-eslint/eslint-plugin':
         specifier: 6.21.0
@@ -143,7 +249,7 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0
       storybook:
-        specifier: 8.5.5
+        specifier: 'catalog:'
         version: 8.5.5(prettier@2.8.8)
       storybook-addon-mock:
         specifier: 5.0.0
@@ -155,17 +261,17 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0(typescript@5.2.2)
       tsx:
-        specifier: ^4.23.11
+        specifier: 'catalog:'
         version: 4.23.11
       typescript:
         specifier: 5.2.2
         version: 5.2.2
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/auth-api:
     dependencies:
@@ -191,22 +297,22 @@ importers:
   packages/cli:
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: 'catalog:'
         version: 7.29.7
       '@babel/generator':
-        specifier: ^7.29.8
+        specifier: 'catalog:'
         version: 7.29.8
       '@babel/parser':
-        specifier: ^7.29.8
+        specifier: 'catalog:'
         version: 7.29.8
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/traverse':
-        specifier: ^7.29.8
+        specifier: 'catalog:'
         version: 7.29.8
       '@babel/types':
-        specifier: ^7.29.8
+        specifier: 'catalog:'
         version: 7.29.8
       '@sentry/node':
         specifier: ^5.19.2
@@ -227,16 +333,16 @@ importers:
         specifier: ^3.11.6
         version: 3.11.6
       '@types/findup-sync':
-        specifier: ^2.0.2
+        specifier: 'catalog:'
         version: 2.0.2
       '@types/glob':
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.2.0
       '@types/inquirer':
         specifier: ^6.5.0
         version: 6.5.0
       '@types/lodash':
-        specifier: ^4.17.25
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/node':
         specifier: ^22
@@ -245,7 +351,7 @@ importers:
         specifier: ^1.0.1
         version: 1.0.7
       '@types/semver':
-        specifier: ^7.8.0
+        specifier: 'catalog:'
         version: 7.8.0
       '@types/tmp':
         specifier: ^0.2.6
@@ -320,7 +426,7 @@ importers:
         specifier: ^0.2.5
         version: 0.2.7
       tsx:
-        specifier: ^4.23.11
+        specifier: 'catalog:'
         version: 4.23.11
       typescript:
         specifier: 5.2.2
@@ -338,10 +444,10 @@ importers:
         specifier: ^8.3.1
         version: 8.3.2
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@22.20.0)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
       winston:
         specifier: ^3.19.0
@@ -393,7 +499,7 @@ importers:
         version: 16.2.2
     devDependencies:
       '@types/glob':
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.2.0
       '@types/inquirer':
         specifier: ^8.2.13
@@ -402,13 +508,13 @@ importers:
         specifier: ^26.0.24
         version: 26.0.24
       '@types/lodash':
-        specifier: ^4.17.25
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/semver':
-        specifier: ^7.8.0
+        specifier: 'catalog:'
         version: 7.8.0
       '@types/update-notifier':
         specifier: ^5.1.0
@@ -420,7 +526,7 @@ importers:
         specifier: ^16.0.11
         version: 16.0.11
       tsx:
-        specifier: ^4.23.11
+        specifier: 'catalog:'
         version: 4.23.11
 
   packages/data-sources:
@@ -439,7 +545,7 @@ importers:
         version: 2.0.0
     devDependencies:
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       jsdom:
         specifier: 28.1.0
@@ -448,19 +554,19 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/data-sources-context:
     devDependencies:
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -491,19 +597,16 @@ importers:
         specifier: ^15.1.0
         version: 15.3.1(rollup@3.30.0)
       '@testing-library/react':
-        specifier: ^14.0.0
-        version: 14.3.1(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@types/classnames':
-        specifier: ^2.3.4
-        version: 2.3.4
+        specifier: 'catalog:'
+        version: 16.2.0(@testing-library/dom@10.4.0)(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/node':
         specifier: ^20.19.43
         version: 20.19.43
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       jsdom:
         specifier: 28.1.0
@@ -521,16 +624,16 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1
       rollup-plugin-dts:
-        specifier: ^5.3.0
+        specifier: 'catalog:'
         version: 5.3.1(rollup@3.30.0)(typescript@5.2.2)
       rollup-plugin-typescript2:
-        specifier: ^0.37.0
+        specifier: 'catalog:'
         version: 0.37.0(rollup@3.30.0)(typescript@5.2.2)
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@20.19.43)(typescript@5.2.2))(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/loader-core:
@@ -543,10 +646,10 @@ importers:
         specifier: ^20.19.43
         version: 20.19.43
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@20.19.43)(typescript@5.2.2))(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/loader-edge:
@@ -559,14 +662,14 @@ importers:
         specifier: workspace:*
         version: link:../loader-fetcher
       '@vitest/coverage-v8':
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(vitest@4.1.10)
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/loader-fetcher:
     devDependencies:
@@ -577,10 +680,10 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@20.19.43)(typescript@5.2.2))(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/loader-gatsby:
@@ -605,10 +708,10 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@types/lodash':
-        specifier: ^4.17.25
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@19.2.17)
       gatsby:
         specifier: ^5.11.0
@@ -633,13 +736,13 @@ importers:
         version: 0.0.1
     devDependencies:
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       '@vitest/coverage-v8':
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(vitest@4.1.10)
       next:
         specifier: ^14
@@ -651,11 +754,11 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/loader-react:
     dependencies:
@@ -694,13 +797,13 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       '@vitest/coverage-v8':
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(vitest@4.1.10)
       react:
         specifier: 18.3.1
@@ -709,10 +812,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@22.20.0)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/loader-splits:
@@ -728,14 +831,14 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       '@vitest/coverage-v8':
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(vitest@4.1.10)
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/nextjs-app-router:
     dependencies:
@@ -771,7 +874,7 @@ importers:
         specifier: ^20.19.43
         version: 20.19.43
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/yargs':
         specifier: ^17.0.35
@@ -802,7 +905,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
 
   packages/query:
@@ -812,10 +915,10 @@ importers:
         version: 1.3.0(react@18.3.1)
     devDependencies:
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -915,16 +1018,16 @@ importers:
         version: 1.13.2(@types/react@18.3.27)(react@18.3.1)
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: 'catalog:'
         version: 7.29.7
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@react-types/overlays':
         specifier: ^3.8.15
@@ -944,20 +1047,17 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^15.1.0
         version: 15.3.1(rollup@3.30.0)
-      '@types/classnames':
-        specifier: ^2.3.4
-        version: 2.3.4
       '@types/clone':
         specifier: ^2.1.4
         version: 2.1.4
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -969,17 +1069,17 @@ importers:
         specifier: ^3.26.1
         version: 3.30.0
       rollup-plugin-dts:
-        specifier: ^5.3.0
+        specifier: 'catalog:'
         version: 5.3.1(rollup@3.30.0)(typescript@5.2.2)
       rollup-plugin-typescript2:
-        specifier: ^0.37.0
+        specifier: 'catalog:'
         version: 0.37.0(rollup@3.30.0)(typescript@5.2.2)
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   packages/react-web-runtime:
     devDependencies:
@@ -996,7 +1096,7 @@ importers:
         specifier: ^5.0.4
         version: 5.0.7(rollup@4.62.2)
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       react:
         specifier: 18.3.1
@@ -1008,7 +1108,7 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2(rollup@4.62.2)
       rollup-plugin-typescript2:
-        specifier: ^0.37.0
+        specifier: 'catalog:'
         version: 0.37.0(rollup@4.62.2)(typescript@5.2.2)
 
   packages/watcher:
@@ -1094,13 +1194,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/antd:
@@ -1122,13 +1222,13 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0(rollup@3.30.0)
       '@types/glob':
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.2.0
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       glob:
         specifier: ^7.1.3
@@ -1149,10 +1249,10 @@ importers:
         specifier: ^3.10.1
         version: 3.30.0
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(esbuild@0.28.2)(rollup@3.30.0)
       rollup-plugin-replace-imports:
-        specifier: ^1.0.0
+        specifier: 'catalog:'
         version: 1.0.0
       typescript:
         specifier: 5.2.2
@@ -1177,13 +1277,13 @@ importers:
         version: 4.18.1
     devDependencies:
       '@babel/preset-env':
-        specifier: ^7.22.15
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.22.15
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.22.15
+        specifier: 'catalog:'
         version: 7.29.7(@babel/core@7.29.7)
       '@plasmicapp/data-sources':
         specifier: workspace:*
@@ -1207,16 +1307,16 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0(rollup@3.30.0)
       '@types/lodash':
-        specifier: ^4.17.25
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       glob:
         specifier: ^8.1.0
@@ -1237,19 +1337,19 @@ importers:
         specifier: ^3.10.1
         version: 3.30.0
       rollup-plugin-dts:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.3.1(rollup@3.30.0)(typescript@5.2.2)
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(esbuild@0.28.2)(rollup@3.30.0)
       rollup-plugin-replace-imports:
-        specifier: ^1.0.0
+        specifier: 'catalog:'
         version: 1.0.0
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@14.18.63)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@14.18.63)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@14.18.63)(typescript@5.2.2))(vite@8.1.5(@types/node@14.18.63)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   plasmicpkgs/chakra-ui:
@@ -1274,10 +1374,10 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -1289,13 +1389,13 @@ importers:
         specifier: ^3.26.2
         version: 3.30.0
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(esbuild@0.28.2)(rollup@3.30.0)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.6.2
+        specifier: 'catalog:'
         version: 2.8.1
       typescript:
         specifier: 5.2.2
@@ -1307,7 +1407,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
-        specifier: ^6.6.15
+        specifier: 'catalog:'
         version: 6.6.15
       '@types/json-logic-js':
         specifier: ^2.0.8
@@ -1316,10 +1416,10 @@ importers:
         specifier: ^17.0.45
         version: 17.0.45
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@17.0.45)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@17.0.45)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@17.0.45)(typescript@5.2.2))(vite@8.1.5(@types/node@17.0.45)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   plasmicpkgs/commerce-providers/commerce:
@@ -1350,10 +1450,10 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/query
       '@types/debounce':
-        specifier: ^1.2.4
+        specifier: 'catalog:'
         version: 1.2.4
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/lodash.debounce':
         specifier: ^4.0.7
@@ -1362,7 +1462,7 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       react:
         specifier: 18.3.1
@@ -1371,7 +1471,7 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
 
   plasmicpkgs/commerce-providers/commercetools:
@@ -1399,16 +1499,16 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/query
       '@types/debounce':
-        specifier: ^1.2.4
+        specifier: 'catalog:'
         version: 1.2.4
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       react:
         specifier: 18.3.1
@@ -1417,7 +1517,7 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
 
   plasmicpkgs/commerce-providers/local:
@@ -1430,13 +1530,13 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/host
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       js-cookie:
         specifier: ^3.0.1
@@ -1448,7 +1548,7 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
 
   plasmicpkgs/commerce-providers/saleor:
@@ -1467,16 +1567,16 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/host
       '@types/debounce':
-        specifier: ^1.2.4
+        specifier: 'catalog:'
         version: 1.2.4
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/node':
         specifier: ^17.0.45
         version: 17.0.45
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       next:
         specifier: ^12.3.7
@@ -1491,7 +1591,7 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@17.0.45)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@17.0.45)(typescript@5.2.2))
 
   plasmicpkgs/commerce-providers/shopify:
@@ -1513,16 +1613,16 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/host
       '@types/debounce':
-        specifier: ^1.2.4
+        specifier: 'catalog:'
         version: 1.2.4
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       nock:
         specifier: 14.0.17
@@ -1534,13 +1634,13 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@14.18.63)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
+        specifier: 'catalog:'
         version: 4.1.10(@types/node@14.18.63)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@14.18.63)(typescript@5.2.2))(vite@8.1.5(@types/node@14.18.63)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   plasmicpkgs/commerce-providers/swell:
@@ -1562,16 +1662,16 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/host
       '@types/debounce':
-        specifier: ^1.2.4
+        specifier: 'catalog:'
         version: 1.2.4
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/node':
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       react:
         specifier: 18.3.1
@@ -1580,7 +1680,7 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
 
   plasmicpkgs/contentful:
@@ -1589,7 +1689,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
-        specifier: ^6.6.15
+        specifier: 'catalog:'
         version: 6.6.15
       '@types/json-logic-js':
         specifier: ^2.0.8
@@ -1598,11 +1698,11 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   plasmicpkgs/dnd-kit:
     dependencies:
@@ -1623,14 +1723,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1638,10 +1735,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/fetch:
@@ -1672,13 +1769,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/google-maps:
@@ -1691,14 +1788,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1706,10 +1800,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/graphql:
@@ -1740,10 +1834,10 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       '@types/resize-observer-browser':
         specifier: ^0.1.7
@@ -1755,10 +1849,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/lottie-react:
@@ -1780,13 +1874,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/mailchimp:
@@ -1795,14 +1889,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1810,10 +1901,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-basic-components:
@@ -1828,10 +1919,10 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -1840,10 +1931,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-calendly:
@@ -1859,14 +1950,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1874,10 +1962,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-cms:
@@ -1905,7 +1993,7 @@ importers:
         specifier: ^17.0.45
         version: 17.0.45
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
 
   plasmicpkgs/plasmic-content-stack:
@@ -1927,17 +2015,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/query
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1945,10 +2030,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
       tsup:
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.3.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(postcss@8.5.22)(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))(typescript@5.2.2)
       typescript:
         specifier: 5.2.2
@@ -1979,13 +2064,13 @@ importers:
         specifier: workspace:*
         version: link:../contentful
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -2013,13 +2098,13 @@ importers:
         specifier: ^17.0.45
         version: 17.0.45
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@17.0.45)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@17.0.45)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-eventbrite:
@@ -2038,14 +2123,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2053,10 +2135,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-giphy:
@@ -2078,14 +2160,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2093,10 +2172,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-graphcms:
@@ -2112,17 +2191,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/query
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2130,10 +2206,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-hubspot:
@@ -2146,14 +2222,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2161,10 +2234,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-intercom:
@@ -2177,14 +2250,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2192,10 +2262,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-link-preview:
@@ -2220,13 +2290,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-nav:
@@ -2245,13 +2315,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-pigeon-maps:
@@ -2270,17 +2340,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2288,10 +2355,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-query:
@@ -2313,13 +2380,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-rich-components:
@@ -2374,13 +2441,13 @@ importers:
         specifier: ^15.1.0
         version: 15.3.1(rollup@3.30.0)
       '@types/lodash':
-        specifier: ^4.17.25
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/node':
         specifier: ^20.19.43
         version: 20.19.43
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       antd:
         specifier: 5.12.8
@@ -2392,10 +2459,10 @@ importers:
         specifier: ^3.26.2
         version: 3.30.0
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(esbuild@0.28.2)(rollup@3.30.0)
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
       typescript:
         specifier: 5.2.2
@@ -2429,19 +2496,19 @@ importers:
         specifier: workspace:*
         version: link:../../packages/query
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/node':
         specifier: ^17.0.45
         version: 17.0.45
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
       tsup:
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.3.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(postcss@8.5.22)(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@17.0.45)(typescript@5.2.2))(typescript@5.2.2)
       typescript:
         specifier: 5.2.2
@@ -2457,17 +2524,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2475,10 +2539,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-strapi:
@@ -2497,13 +2561,13 @@ importers:
         specifier: workspace:*
         version: link:../../packages/query
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       react:
         specifier: 18.3.1
@@ -2525,14 +2589,11 @@ importers:
         version: 3.3.3(react@18.3.1)
     devDependencies:
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2540,10 +2601,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-typeform:
@@ -2559,14 +2620,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2574,16 +2632,16 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-wordpress:
     dependencies:
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       dlv:
         specifier: ^1.1.3
@@ -2599,14 +2657,11 @@ importers:
         specifier: workspace:*
         version: link:../wordpress
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2627,17 +2682,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/query
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2645,16 +2697,16 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/plasmic-yotpo:
     dependencies:
       '@types/lodash':
-        specifier: ^4.17.24
+        specifier: 'catalog:'
         version: 4.17.25
       change-case:
         specifier: ^4.1.2
@@ -2673,17 +2725,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/query
       '@types/dlv':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2691,10 +2740,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/radix-ui:
@@ -2786,10 +2835,10 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0(rollup@3.30.0)
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       glob:
         specifier: ^8.1.0
@@ -2804,17 +2853,17 @@ importers:
         specifier: ^3.10.1
         version: 3.30.0
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(esbuild@0.28.2)(rollup@3.30.0)
       typescript:
         specifier: 5.2.2
         version: 5.2.2
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   plasmicpkgs/react-audio-player:
     dependencies:
@@ -2829,14 +2878,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -2844,10 +2890,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
       tsup:
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.3.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(postcss@8.5.22)(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))(typescript@5.2.2)
       typescript:
         specifier: 5.2.2
@@ -2875,13 +2921,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-chartjs-2:
@@ -2903,7 +2949,7 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       chart.js:
         specifier: ^4.2.1
@@ -2912,10 +2958,10 @@ importers:
         specifier: ^5.2.0
         version: 5.3.1(chart.js@4.5.1)(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-parallax-tilt:
@@ -2937,13 +2983,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-quill:
@@ -2965,13 +3011,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-scroll-parallax:
@@ -2996,13 +3042,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-slick:
@@ -3030,16 +3076,16 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-slick':
         specifier: ^0.23.7
         version: 0.23.13
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-twitter-widgets:
@@ -3061,13 +3107,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/react-youtube:
@@ -3089,16 +3135,16 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/youtube-player':
         specifier: ^5.5.6
         version: 5.5.11
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/rive:
@@ -3117,13 +3163,13 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/spotify:
@@ -3136,14 +3182,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
-      husky:
-        specifier: ^7.0.4
-        version: 7.0.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -3151,10 +3194,10 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@24.13.3)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@5.2.2))
       tslib:
-        specifier: ^2.3.1
+        specifier: 'catalog:'
         version: 2.8.1
 
   plasmicpkgs/strapi:
@@ -3167,7 +3210,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
-        specifier: ^6.6.15
+        specifier: 'catalog:'
         version: 6.6.15
       '@types/json-logic-js':
         specifier: ^2.0.8
@@ -3179,11 +3222,11 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   plasmicpkgs/tiptap:
     dependencies:
@@ -3255,10 +3298,10 @@ importers:
         specifier: ^14.18.63
         version: 14.18.63
       '@types/react':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.27
       '@types/react-dom':
-        specifier: ^18
+        specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.27)
       glob:
         specifier: ^8.1.0
@@ -3273,13 +3316,13 @@ importers:
         specifier: ^3.10.1
         version: 3.30.0
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(esbuild@0.28.2)(rollup@3.30.0)
       tsdx:
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
       tslib:
-        specifier: ^2.2.0
+        specifier: 'catalog:'
         version: 2.8.1
       typescript:
         specifier: 5.2.2
@@ -3304,7 +3347,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/host
       '@react-awesome-query-builder/core':
-        specifier: ^6.6.15
+        specifier: 'catalog:'
         version: 6.6.15
       '@types/json-logic-js':
         specifier: ^2.0.8
@@ -3313,11 +3356,11 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
       vite:
-        specifier: 8.1.5
-        version: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+        specifier: 'catalog:'
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       vitest:
-        specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
 packages:
 
@@ -3504,7 +3547,7 @@ packages:
     resolution: {integrity: sha512-zxt+UJTOMKvUt3yOg+D58MLuz334pHp93qifMFcjIIO+9hN6t+ufw2gi7vDPMpxvfnHRR+3VVXvIjineCcgyXw==}
     engines: {node: ^10.13.0 || ^12.13.0 || >=14.0.0}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.11.0
       eslint: ^8.55.0
 
   '@babel/generator@7.29.8':
@@ -3523,23 +3566,23 @@ packages:
     resolution: {integrity: sha512-IY3ZD9Tmooqr3TUhc3DUWxiuo8xx1DWLhd5M7hQ+ZWJamqM2BbalrBJb2MisSLoYorOj75U03qULCxQTY9r3hg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/helper-create-regexp-features-plugin@7.29.7':
     resolution: {integrity: sha512-907Uymvqgg1dwUA+7IGwFAOSYzQOuzPXKNJ1yxzwPffzkYFg2q2eHi1fIOs6sXkG9NbIUMunnUlkYsfRFNvomg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/helper-define-polyfill-provider@0.0.3':
     resolution: {integrity: sha512-dULDd/APiP4JowYDAMosecKOi/1v+UId99qhBGiO3myM29KtAVKS/R3x3OJJNBR0FeYB1BcYb2dCwkhqvxWXXQ==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.4.0-0
 
   '@babel/helper-define-polyfill-provider@0.6.8':
     resolution: {integrity: sha512-47UwBLPpQi1NoWzLuHNjRoHlYXMwIJoBf7MFou6viC/sIHWYygpvr0B6IAyh5sBdA2nr2LPIRww8lfaUVQINBA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
   '@babel/helper-globals@7.29.7':
     resolution: {integrity: sha512-3nQVUAtvkKH9zahfWgw96Jc/uFOmjACE1kQz82E2lqWmHBgjzbNlsC22nuQTfahmWeQtTq5nQ/4Nnd2A1wj4zA==}
@@ -3557,7 +3600,7 @@ packages:
     resolution: {integrity: sha512-UPUVSyXbOh627KiCIGQSgwWzGeBKLkaJ9PJEdrngIwMSzxLR4jS4+f1f1jb7VzBbg8nFLaYotvVPFCTqdrmTAg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/helper-optimise-call-expression@7.29.7':
     resolution: {integrity: sha512-+kmGVjcT9RGYzoDwdwEqEvGgKe3BYq+O1iGzjFubaNgZHwYHP6lsF2Yghf4kEuv9BV7tYDZ913aBW9am6YKong==}
@@ -3571,13 +3614,13 @@ packages:
     resolution: {integrity: sha512-16AMiW26DbXWBbr3B8wNozKM0ydMLB892vaOaJW/fPJdnT8vJk5sdkQcU/isqUxyCE0cEoa8wZOcbgDuC4b6Og==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/helper-replace-supers@7.29.7':
     resolution: {integrity: sha512-atfGXWSeCiF4DnKZIfmJfQRkSw9b9gNNXR1kqKjbhG4pGYCOnkp8OcTB8E3NXjBu8NpheSnOeNKz8KT7UNFTmQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/helper-skip-transparent-expression-wrappers@7.29.7':
     resolution: {integrity: sha512-brcMGQaVzIeUb+6/bs1Av0f8YuNNjKY2JyvfRCsFuFsdKccEQ5Ges2y74D74NZ1Rz8lKJ9ksJkfqwQFJ/iNEyQ==}
@@ -3612,563 +3655,563 @@ packages:
     resolution: {integrity: sha512-j8SrR0zLZrRsC09DlszEx8FpMiwukKffYXMK0d5LmOglO7vGG6sz/BR/20yHqWH+Lnn31JTt2PE3hIWNgM2J6w==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-bugfix-safari-class-field-initializer-scope@7.29.7':
     resolution: {integrity: sha512-r8j8escF+U2FUHo0KOhPUdMzUO+jp9fInva6+ACVAF3Y97Ev+5iNZwiqTghmzNeWwDkOPlYuTcfb1vDaoZKmAQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@7.29.7':
     resolution: {integrity: sha512-GE1TFSiuFeGsCxmYXZl8HwoPrVlwe4rHPFE8weieGKZqnDORK+Ar3vgWMgW+AOxQ6/2TgLSKx9p6W7O4rC6qgQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-bugfix-safari-rest-destructuring-rhs-array@7.29.7':
     resolution: {integrity: sha512-oBNVCvnO5tND+xSopWvV8WNGfpTfgP4Zr/YXXSj8zfmcPktp5Ku/aZlsIowgSD4fjmgHn6sGmB9APVsU5zOdhA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining@7.29.7':
     resolution: {integrity: sha512-QQt9qKHZ2sg/kivaLr7lnQr8HVrQDdBNSfCsTjiDxRuX/K5ORyKq+Bu8Xr0cDE3Dfkv0cw28Ve0EKyKMvulkOw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.13.0
 
   '@babel/plugin-bugfix-v8-static-class-fields-redefine-readonly@7.29.7':
     resolution: {integrity: sha512-pn6QacGLgvCcwc+syUhKE/qSjV2D1IHDB84RNxWYSt1mW3K/SCtjinZ2p0cETJxAWBjPy3K/1lHwG5BjjPxNlw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-proposal-class-properties@7.18.6':
     resolution: {integrity: sha512-cumfXOF0+nzZrrN8Rf0t7M+tF6sZc7vhQwYQck9q1/5w2OExlD+b4v4RpMJFaV1Z7WcDRgO6FqvxqxGlwo+RHQ==}
     engines: {node: '>=6.9.0'}
     deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-nullish-coalescing-operator@7.18.6':
     resolution: {integrity: sha512-wQxQzxYeJqHcfppzBDnm1yAY0jSRkUXR2z8RePZYrKwMKgMlE8+Z6LUno+bd6LvbGh8Gltvy74+9pIYkr+XkKA==}
     engines: {node: '>=6.9.0'}
     deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-numeric-separator@7.18.6':
     resolution: {integrity: sha512-ozlZFogPqoLm8WBr5Z8UckIoE4YQ5KESVcNudyXOR8uqIkliTEgJ3RoketfG6pmzLdeZF0H/wjE9/cCEitBl7Q==}
     engines: {node: '>=6.9.0'}
     deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-object-rest-spread@7.20.7':
     resolution: {integrity: sha512-d2S98yCiLxDVmBmE8UjGcfPvNEUbA1U5q5WxaWFUGRzJSVAZqm5W6MbPct0jxnegUZ0niLeNX+IOzEs7wYg9Dg==}
     engines: {node: '>=6.9.0'}
     deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-object-rest-spread instead.
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-optional-chaining@7.21.0':
     resolution: {integrity: sha512-p4zeefM72gpmEe2fkUr/OnOXpWEf8nAgk7ZYVqqfFiyIG7oFfVZcCrU64hWn5xp4tQ9LkV4bTIa5rD0KANpKNA==}
     engines: {node: '>=6.9.0'}
     deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-private-property-in-object@7.21.0-placeholder-for-preset-env.2':
     resolution: {integrity: sha512-SOSkfJDddaM7mak6cPEpswyTRnuRltl429hMraQEglW+OkovnCzsiszTmsrlY//qLFjCpQDFRvjdm2wA5pPm9w==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-async-generators@7.8.4':
     resolution: {integrity: sha512-tycmZxkGfZaxhMRbXlPXuVFpdWlXpir2W4AMhSJgRKzk/eDlIXOhb2LHWoLpDF7TEHylV5zNhykX6KAgHJmTNw==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-bigint@7.8.3':
     resolution: {integrity: sha512-wnTnFlG+YxQm3vDxpGE57Pj0srRU4sHE/mDkt1qv2YJJSeUAec2ma4WLUnUPeKjyrfntVwe/N6dCXpU+zL3Npg==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-class-properties@7.12.13':
     resolution: {integrity: sha512-fm4idjKla0YahUNgFNLCB0qySdsoPiZP3iQE3rky0mBUtMZ23yDJ9SJdg6dXTSDnulOVqiF3Hgr9nbXvXTQZYA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-class-static-block@7.14.5':
     resolution: {integrity: sha512-b+YyPmr6ldyNnM6sqYeMWE+bgJcJpO6yS4QD7ymxgH34GBPNDM/THBh8iunyvKIZztiwLH4CJZ0RxTk9emgpjw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-dynamic-import@7.8.3':
     resolution: {integrity: sha512-5gdGbFon+PszYzqs83S3E5mpi7/y/8M9eC90MRTZfduQOYW76ig6SOSPNe41IG5LoP3FGBn2N0RjVDSQiS94kQ==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-flow@7.29.7':
     resolution: {integrity: sha512-ajMX6QPcyomotqwpzhkYGxcK2i/us0rs1Qo9QvUpa+Fca0FTmqrzKrctoIYLMxcOhGZldGT/BAVkRGTWBiR8gQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-import-assertions@7.29.7':
     resolution: {integrity: sha512-/An1OCBN93thpBAGyfsK2pcf0jvju1SAtKkL2Ny++B5Sy6sqgzXDQH1cZxWbF96Wuk+bn41MDA9bLd4VVAw6rw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-import-attributes@7.29.7':
     resolution: {integrity: sha512-zGYcYfq/WmZ4V+kBIXQon9dSSc8ircGZqw9ZaNhhGj9nZkeBu1jHLBDQqYYi5WA9uawvA2sIMbry2nCFhf5Djg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-import-meta@7.10.4':
     resolution: {integrity: sha512-Yqfm+XDx0+Prh3VSeEQCPU81yC+JWZ2pDPFSS4ZdpfZhp4MkFMaDC1UqseovEKwSUpnIL7+vK+Clp7bfh0iD7g==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-json-strings@7.8.3':
     resolution: {integrity: sha512-lY6kdGpWHvjoe2vk4WrAapEuBR69EMxZl+RoGRhrFGNYVK8mOPAW8VfbT/ZgrFbXlDNiiaxQnAtgVCZ6jv30EA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-jsx@7.29.7':
     resolution: {integrity: sha512-TSu8+mHCoEaaCDEZ0I3+6mvTBYR4PCxQwf2z9/r5Tbztv6NaLR3B9thGTTxX2WGuGHJqRiAbKPeGTJ5XWXVg6A==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-logical-assignment-operators@7.10.4':
     resolution: {integrity: sha512-d8waShlpFDinQ5MtvGU9xDAOzKH47+FFoney2baFIoMr952hKOLp1HR7VszoZvOsV/4+RRszNY7D17ba0te0ig==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-nullish-coalescing-operator@7.8.3':
     resolution: {integrity: sha512-aSff4zPII1u2QD7y+F8oDsz19ew4IGEJg9SVW+bqwpwtfFleiQDMdzA/R+UlWDzfnHFCxxleFT0PMIrR36XLNQ==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-numeric-separator@7.10.4':
     resolution: {integrity: sha512-9H6YdfkcK/uOnY/K7/aA2xpzaAgkQn37yzWUMRK7OaPOqOpGS1+n0H5hxT9AUw9EsSjPW8SVyMJwYRtWs3X3ug==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-object-rest-spread@7.8.3':
     resolution: {integrity: sha512-XoqMijGZb9y3y2XskN+P1wUGiVwWZ5JmoDRwx5+3GmEplNyVM2s2Dg8ILFQm8rWM48orGy5YpI5Bl8U1y7ydlA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-optional-catch-binding@7.8.3':
     resolution: {integrity: sha512-6VPD0Pc1lpTqw0aKoeRTMiB+kWhAoT24PA+ksWSBrFtl5SIRVpZlwN3NNPQjehA2E/91FV3RjLWoVTglWcSV3Q==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-optional-chaining@7.8.3':
     resolution: {integrity: sha512-KoK9ErH1MBlCPxV0VANkXW2/dw4vlbGDrFgz8bmUsBGYkFRcbRwMh6cIJubdPrkxRwuGdtCk0v/wPTKbQgBjkg==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-private-property-in-object@7.14.5':
     resolution: {integrity: sha512-0wVnp9dxJ72ZUJDV27ZfbSj6iHLoytYZmh3rFcxNnvsJF3ktkzLDZPy/mA17HGsaQT3/DQsWYX1f1QGWkCoVUg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-top-level-await@7.14.5':
     resolution: {integrity: sha512-hx++upLv5U1rgYfwe1xBQUhRmU41NEvpUvrp8jkrSCdvGSnM5/qdRMtylJ6PG5OFkBaHkbTAKTnd3/YyESRHFw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-typescript@7.29.7':
     resolution: {integrity: sha512-ngr+82Sh0xMz25TPCZi+nC2iTzjfCdWS2ONXTp/PtSCHCgaCNBpdMqgvJ2ccdLlClVZ7sisIgB914j/JFe+RZA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-unicode-sets-regex@7.18.6':
     resolution: {integrity: sha512-727YkEAPwSIQTv5im8QHz3upqp92JTWhidIC81Tdx4VJYIte/VndKf1qKrfnnhPLiPghStWfvC/iFaMCQu7Nqg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-transform-arrow-functions@7.29.7':
     resolution: {integrity: sha512-N7zArUXWzAMzm+/N0uPBeVB3Fam5lMxtUwMmDK5f/IBBS7a7p1qeUoxd/6CckXoxUdgsntq1Dh8xNW06maZbDQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-async-generator-functions@7.29.7':
     resolution: {integrity: sha512-d98gXZkgswvkyohMBABkhm3GeXhYj8psWfwQ2C7gtfrKGTykQa/iOIi+JJhwMjPlZ6Vm2XN+DCf3Es1EoG4ZLA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-async-to-generator@7.29.7':
     resolution: {integrity: sha512-pcUb2SS+RMo9TWVBwKGI5ShtoG7R+zBsFmCKDa6fe8c+hPr3XJlZgoE5j6i8W7gDjhyvy+85vmYexanvXh3d1w==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-block-scoped-functions@7.29.7':
     resolution: {integrity: sha512-cUSmjh72N+rN4PrkFlN1dJwNCwjVp5d38/CQrEsFggkD10UiFlBFgdH3tv5dNsLuHY+3S8db2xCHjhZcv5WgvA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-block-scoping@7.29.7':
     resolution: {integrity: sha512-ONyr4+AZhKh8yKWInVxU9AXA9EbsyeLcL6V0dJy6M2/62vuvpGm29zzuymbTpdc451GEpDIdAyPLP3r+P61yKQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-class-properties@7.29.7':
     resolution: {integrity: sha512-GtcpjFvanPfzNQi3eTitsCqtRRmmqzpy/A+yhTR1HaZo1Ly3EA8ZXxlPyHdR8/IuRMYc3E4wdGBewB2QKQjAaA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-class-static-block@7.29.7':
     resolution: {integrity: sha512-kibJgmEdX2iMwsHY2tSZNDgj8PwIlCQz7FK9KuGKO8zsuoUwSEhoNnNVp/emKWrbY4HeO6kkXfdMqRKKKXBm2A==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.12.0
 
   '@babel/plugin-transform-classes@7.29.7':
     resolution: {integrity: sha512-qV0OGGBVacduzQHE649JyCneOFI/maT+YKsO+K4Yi3xv2wTPNjM/W2o2gdzMwEAZz7fXNTHAe0NcSg30bIN69g==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-computed-properties@7.29.7':
     resolution: {integrity: sha512-RK7/IyU5phpuCdBAuig5VkzG/EnbDaui5SQGdU9BFrHdV+mV4cUjLMQ9lJDjLNtWHsqtiefpGZUXQP2BiTYMsA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-destructuring@7.29.7':
     resolution: {integrity: sha512-iPX8aD6H9zV5s7ZsqTdNocPN/MGQ5sSMnElKrktxjJRMnB2jN/1p2+R7GkfD6CAYoVFqy5A4XnSIUeGgJzIWpg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-dotall-regex@7.29.7':
     resolution: {integrity: sha512-3qc18hsD2RdZiyJNDNc7HQpv6xbncwh8FYtxNFFzclSyh/trPD9KkVR9BDECUjDLvb7yJVF15GfYUuC+LMkkiQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-duplicate-keys@7.29.7':
     resolution: {integrity: sha512-6IvRRriEMqnBwD6chtxdLpMYCHWEzN+oL5cyQtjykya19UgzbmKhxmhZgKC/LHxS2nYr9Q/qYPZ5Lr6jOL9+yQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-duplicate-named-capturing-groups-regex@7.29.7':
     resolution: {integrity: sha512-2wiIyo2BjtgU7HufSeDnL9L2O7zr8jmhFKuSr65VpRkUiRKRNpb0mdlk56+XPPKoIrfHqzbMuglDvZun0RISsA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-transform-dynamic-import@7.29.7':
     resolution: {integrity: sha512-giOlEm/EFjfjr+te9NsdjkUo2v4f8rS/SXPumRVHAtbNcyNlvtREkU1dZzaIDclNpnaVhlCqRdFKhJBjBikzLg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-explicit-resource-management@7.29.7':
     resolution: {integrity: sha512-Rstj7coNz8sE+7Ju7ihpHLI564lsK5pUpNNlvptCIC/16E/S5hbl6n3kESPKdNRmqEWlpn5xpS5Q2dvXBsySLw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-exponentiation-operator@7.29.7':
     resolution: {integrity: sha512-zFpMOTLZBdW5LfObqcSbL6kefg4R4eLdmvS0wbN9M6D5Mym/sKm9toOoWyVOa+xDjvCnuWcHls2YonXwHvH3CQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-export-namespace-from@7.29.7':
     resolution: {integrity: sha512-24B2nOy2TeJSMheqwPD4DDQOV/elLSIlKxjZt4i05H5AgdPdWR3n18HnNrcJ+j76WJd9gbwb9jPjNYUy6RautA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-flow-strip-types@7.29.7':
     resolution: {integrity: sha512-wRHeUjUjCZnMHmiO5bRgjFLcoEh7JyTdByOW11ahhwNa4V0bmeGEaIvt51yq0zQp2yWIpqfxXXPyUP6GFJZHOQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-for-of@7.29.7':
     resolution: {integrity: sha512-zeSIHh0+E1Um1WJRXCFlHQYu2ieJNdivLLjlBEp+dIBu3S51n+SZZmIXjxnItw6pz56Cn+KvK68BIBVsxq2JiQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-function-name@7.29.7':
     resolution: {integrity: sha512-otRWaHXE6fbAGkePvaj/kvs3HsqXfPhlnzwSOlnFgbqCPMd975dW+4wZ00WFBt+/YlBGcJwNrARQTOJOb4ZrIg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-json-strings@7.29.7':
     resolution: {integrity: sha512-RRnE2+eon1rJAq8MnoF1b5kTpY1vU88twHcvcKMrsqP/jxIRqDVs9iJB5fqPuqyeFAW0wJo4MlUIPpQCq/aRsg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-literals@7.29.7':
     resolution: {integrity: sha512-DZ/oLP21ZuWx1vKqnoNv6/tvEK48AQOBRai40CX9dTjGluvT/YZCyY3rryDtyUqCEoyNroy5KKPwX2iQCiRvyw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-logical-assignment-operators@7.29.7':
     resolution: {integrity: sha512-A0H91hh6W8MFRkp5TqJmMr39jzGD1A1E1Ysiv2O06Sfbhkapm+XyIzxWCEh5kqwOZ1/8QZ0dY3SeQ7XBqfJd5Q==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-member-expression-literals@7.29.7':
     resolution: {integrity: sha512-hl1kwFZCCiDyfH25Xmco9jTrkPgnS9pmOzSG7W5I4SaGbLeqKv417hcU2RKmaxoPEgsoJh7ZPOrnPGq99bHoUg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-modules-amd@7.29.7':
     resolution: {integrity: sha512-fxtQoH3m5ywUSIfaH0FGCzWu4McsYon5bD3K4XnskC7f+OyQMj7rsOMi4NvvmJ83WwBAg4UCe+ov4VZlqEvyew==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-modules-commonjs@7.29.7':
     resolution: {integrity: sha512-j0vCldybPC5b5dwCQOJ21uKtHzt7hxLygJTg9eF1ScfaikEDNfzn94XoW5Fi+seBR0nCyL23xaBFFkq7dTM8XQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-modules-systemjs@7.29.7':
     resolution: {integrity: sha512-TM2ZcQLoG2/y4HODiStCo10DibYhWhGWAwVv+EQKmG/7GFl0N+AAmUiXOMKM+aiJ9XBJ9AHVZBvTzMnJ2sM3cQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-modules-umd@7.29.7':
     resolution: {integrity: sha512-B4UkaTK3QpgCwJnrxKfMPKdo92CN7OKXAlpAAnM3UPu0Q0lCCk57ylA9AJbRy2v8dDKOPAAWcoR6CMyeoHwRCA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-named-capturing-groups-regex@7.29.7':
     resolution: {integrity: sha512-vuFoLwr4qnv2xbZ16SQd6uPcH5FNrLHhk/Jzo++0XJFcaDsr4gjJVg6j398oMHiC+83k/GiBzviwF5KBJkPUtQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-transform-new-target@7.29.7':
     resolution: {integrity: sha512-fEo41GmsOUhOBlw8ioo6zvjX5Xc2Lqkzlyfqbpsk3eB6TReV18uhxZ0esfEokVbY2+PVJAQHNKxER6lGrzNd3A==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-nullish-coalescing-operator@7.29.7':
     resolution: {integrity: sha512-idmp1dFaekP9GbcMvG24Kvw2BfhFZjHnNJCkV4WuIY4PskJzwI3f1N5OdgYke38T7rftO6ERulFRn2cFeZwRkg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-numeric-separator@7.29.7':
     resolution: {integrity: sha512-zR7fv/z14OjgHl4AgRtkDBvBMhIzCxqV/qN/2BCRC7LjFwvuzjYe7gDWxC4Wl/SNsLM6SE1IWvRPYMgSJaUvNw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-object-rest-spread@7.29.7':
     resolution: {integrity: sha512-Ld98jn4c0smUywL57m7SgsHq3OpThOa6LqZJif3G6jYOovPleoFhVrBJ1WegRApSFB2wu4+RelAj9AC9G08Z4A==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-object-super@7.29.7':
     resolution: {integrity: sha512-Ea/diGcw0twB5IlZPO5sgET6fJsLJqPABqTuFWIR+iMPGPZJkATEIWx0wa+aEQ5UY1CBQyP/gkAiLEqn1vBiQA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-optional-catch-binding@7.29.7':
     resolution: {integrity: sha512-sLsyndxK2VwX6yNUOakMb7Sh553ZTe/vVM1XJ+9Z5aW1ytsc8xOIwmyk05NNjN60vkc5/KqoTH6hB4V41LJhng==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-optional-chaining@7.29.7':
     resolution: {integrity: sha512-6GM1dhvK3gNODkXcEcMCOLEDCLSoZ/sBbro2Ax8HURyasQ4NshagQixkRFdh5niI6E4gmA/jYI/4aT7rRos3ZQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-parameters@7.29.7':
     resolution: {integrity: sha512-ZDOBqV/qLYJI0YElr8DcENEyARsFQeESqWXH6gZlghYXuPPjvweuDhP4VyEi4BlUBlLRFZVjxoZDMjxhLW766g==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-private-methods@7.29.7':
     resolution: {integrity: sha512-/6Rz4DK1ETDEM/bWHsPHcaEe7ZaT1EqSXjtSP/L0DijOYuaUhiRiOKcwpZ8P7zR4xXEHc2ITdiCgBm9Tpyv9ug==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-private-property-in-object@7.29.7':
     resolution: {integrity: sha512-+BNo06dnrzdNNqCm1X6YUaVv0DKk8Q+JYcoZfOkLhYWNCXzlwTSRq8zGWayT1csjcpNXV9CQTBRRbmTLZac5cA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-property-literals@7.29.7':
     resolution: {integrity: sha512-bOMRLQuI0A5ZqHq3OWJ89/rXpJ/NJrbVhXiP4zwPGMs6kpcVsuTUNjwoE30K0Qm3mf48a/TnRYYD6vPNqcg6jA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-react-display-name@7.29.7':
     resolution: {integrity: sha512-+1wdDMGNb4UPeY3Q4L5yLiYe6TXPXubs4NjrgRFw13hPRLJfEMw2Q5OXkee6/IfdqePIeW4Jjwe3aBh7SdKz4Q==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-react-jsx-development@7.29.7':
     resolution: {integrity: sha512-Xfy3UVMF04+ypnFbkhvfqtmvwfe92qwQdbGZVonhE+6v35GzlofmOnA1szaZqzb9xYWr0nl1e5EMmzi0DNON1g==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-react-jsx@7.29.7':
     resolution: {integrity: sha512-WsZulLVBUHXVj2cUcPVx6UE21TpalB6bHbSFErKT0Ib++ax24jjXe73FqlWvdylFOjiuPHYi6VCcgRad1ItN+A==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-react-pure-annotations@7.29.7':
     resolution: {integrity: sha512-H5E+HBgDpr6Q5t+Aj11tL7XkIui1jhbIoArVQnqjgXo5/3YxkN7ZEBcWF4RQlB0T4rrxJQbXS6kiFV6B7XTqUA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-regenerator@7.29.7':
     resolution: {integrity: sha512-rNNFV0DBAJp988xW2DOntfDoYn1eR8GGF5AT5vYc+rjyfaQkM242c9tZUHHPe7KYaiJizXPWhQTzzdbXySyhBw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-regexp-modifiers@7.29.7':
     resolution: {integrity: sha512-mB5Fs0VWrJ42ZCmc8114v60qetdaUVNkj9PmSZRmanCZM3S9hm0CFRLjRmYIsuXav14l2jvZ+4T8iiCGnhj3nQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/plugin-transform-reserved-words@7.29.7':
     resolution: {integrity: sha512-5+YhdpVgmfSmwZyLMftfaiffLRMHjzIRHFHHLdibcSyJm2pasMrKHrO3Ptrt2DRshjvpgjEJJ1zVW14WPq/6QA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-runtime@7.29.7':
     resolution: {integrity: sha512-xmAscdE/AsqRW7vutbPNoUmu/nF5SrLKPs7aoJgEjo35lLKA/Bc0i2rMv/hr1+Y0o1bQCiVtith3u2vdgRL39Q==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-shorthand-properties@7.29.7':
     resolution: {integrity: sha512-I+WYbGBAiCn7nA6xBrlgPH+MB7HWb4u8pv5S0Pv7OtwNvIFvCCb24YlttKEeUFVurfBCEaOTnuhlqsb7f0Z5Dg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-spread@7.29.7':
     resolution: {integrity: sha512-/u5K1QWada7tbYNqTjMh96718g9NTwh9tfPJMsSmVsQwGT447FskV+KcfeXkXq2GWki4EM/MuTdmBec+hOuVTQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-sticky-regex@7.29.7':
     resolution: {integrity: sha512-BCHzNYJGe9l7EpwwDBN/ztlL2NYFFq8hp9ddjtUEM9f2O7S7kKV/lL6Fwo7IF7NSkYhPK2vO+86nIGltA90MsA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-template-literals@7.29.7':
     resolution: {integrity: sha512-NCSEJ4sLFU2gqAub45HYh4fus2yQ36rr6ei6vpU7NdoJqCpxvEG8E6eJpscGyXP3VHD2Ny+fSXr04k1hoUrFqA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-typeof-symbol@7.29.7':
     resolution: {integrity: sha512-223mNGoTkBiTEWFoK+Q6Go3tueMRclO8vxxxxquNCYuNI4jWOofFKJRRDu6SDrB8Sgo1UEGW9T4GAQ8ZyRso1A==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-typescript@7.29.7':
     resolution: {integrity: sha512-jK52h8LaLc7JarhQV2ofeFMts4H7vnOXnqZNA6fYglBTZewRBE51KWt3BUltW1P+KoPsYkHoJeXePuz4zo2LMw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-unicode-escapes@7.29.7':
     resolution: {integrity: sha512-jCfXxSjf94lf4E0hKE0AByxF6F3/pVFqRdUUNkDJhsY0m1ZKjnN6ZYyMeHNpzflxb/0q5b7t3p+BE+SLF1WOtA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-unicode-property-regex@7.29.7':
     resolution: {integrity: sha512-OgZ+zoAJgZLUCunsTRQ5LAjOywDv5zzZ2/hQ5aMw1pGXyY2rtE8/chXYUmu3AlVHKpm10KEdG9aMwbI/K76ZGw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-unicode-regex@7.29.7':
     resolution: {integrity: sha512-7D/x/23/d/3VqZ0QA+LGbZMlGwZjztBygSWWWsfTPoQ1oQ6Q1P6Mr3d0kk42XabyUVw+fha3LqdRsFqeKqvCyA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-transform-unicode-sets-regex@7.29.7':
     resolution: {integrity: sha512-BLOhLht9DOJwIxlmp91wHvkXv1lguuHS3/FwUO8HL1H0u8s4hR1gASVFyilu9iGtcTRYqjTZmlsFFeQletntEg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   '@babel/preset-env@7.29.7':
     resolution: {integrity: sha512-GYzX36n1nsciIb0uyH0GHwxwtNwPQIcpxSeiVLDtG/B7jB5xXgchnmL1f/jCX5o+pwnaDBtO60ONSJhEBJfxYA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/preset-modules@0.1.6-no-external-plugins':
     resolution: {integrity: sha512-HrcgcIESLm9aIR842yhJ5RWan/gebQUJ6E/E5+rf0y9o6oj7w0Br+sWuL6kEQ/o/AdfvR1Je9jG18/gnpwjEyA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0 || ^8.0.0-0 <8.0.0
 
   '@babel/preset-react@7.29.7':
     resolution: {integrity: sha512-C+PV1TFUPTmBQGoPBL8j2QmLpZ117YTCwxIZeJOM96GbYMFSc7/pOXU5lVykwnZxyTqQxRsvoRk6f2FktZgGHA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/preset-typescript@7.29.7':
     resolution: {integrity: sha512-/Foi8vKY2EVbed/1eZx0gJEEwHAIxogrySI7rULcRIvhZzbvoE/b5qG5Ghc0WKAFKOHA9SD1x7RsFlOYdutIiQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   '@babel/runtime@7.29.7':
     resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
@@ -7749,7 +7792,7 @@ packages:
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
       '@types/babel__core': ^7.1.9
       rollup: ^1.20.0||^2.0.0
     peerDependenciesMeta:
@@ -8380,10 +8423,6 @@ packages:
     peerDependencies:
       storybook: ^8.5.5
 
-  '@storybook/testing-library@0.2.2':
-    resolution: {integrity: sha512-L8sXFJUHmrlyU2BsWWZGuAjv39Jl1uAqUHdxmN42JY15M4+XCMjGlArdCCjDe1wpTSW6USYISA9axjZojgtvnw==}
-    deprecated: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
-
   '@storybook/theming@8.5.5':
     resolution: {integrity: sha512-h/dsoA9RmWbIYjRNAVlJzjmrtLo5ZdNKEIZ0BDdpnuDhU3NEADtI4RrF4fwgoiA4ZNNUod0agvjUtzwgV1VF2Q==}
     peerDependencies:
@@ -8529,20 +8568,9 @@ packages:
     resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
     engines: {node: '>=18'}
 
-  '@testing-library/dom@9.3.4':
-    resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}
-    engines: {node: '>=14'}
-
   '@testing-library/jest-dom@6.5.0':
     resolution: {integrity: sha512-xGGHpBXYSHUUr6XsKBfs85TWlYKpTc37cSBBVrXcib2MkHLboWlkClhWF37JKlDb9KEq3dHs+f2xR7XJEWGBxA==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
-
-  '@testing-library/react@14.3.1':
-    resolution: {integrity: sha512-H99XjUhWQw0lTgyMN05W3xQG1Nh4lq574D8keFf1dDoNTJgp66VbJozRaczoF+wsiaPJNt/TcnfpLGufGxSrZQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      react: 18.3.1
-      react-dom: 18.3.1
 
   '@testing-library/react@16.2.0':
     resolution: {integrity: sha512-2cSskAvA1QNtKc8Y9VJQRv0tm3hLVgxRGDB+KYhIaPQJ1I+RHbhIXcM+zClKXzMes/wshsMVzf4B9vS4IZpqDQ==}
@@ -8561,12 +8589,6 @@ packages:
 
   '@testing-library/user-event@14.5.2':
     resolution: {integrity: sha512-YAh82Wh4TIrxYLmfGcixwD18oIjyC1pFQC2Y01F2lzV2HTMiYrI0nze0FD0ocB//CKS/7jIUgae+adPqxK5yCQ==}
-    engines: {node: '>=12', npm: '>=6'}
-    peerDependencies:
-      '@testing-library/dom': '>=7.21.4'
-
-  '@testing-library/user-event@14.6.1':
-    resolution: {integrity: sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
@@ -8729,10 +8751,6 @@ packages:
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
-
-  '@types/classnames@2.3.4':
-    resolution: {integrity: sha512-dwmfrMMQb9ujX1uYGvB5ERDlOzBNywnZAZBtOe107/hORWP05ESgU4QyaanZMWYYfd2BzrG78y13/Bju8IQcMQ==}
-    deprecated: This is a stub types definition. classnames provides its own type definitions, so you do not need this installed.
 
   '@types/cli-progress@3.11.6':
     resolution: {integrity: sha512-cE3+jb9WRlu+uOSAugewNpITJDt1VF8dHOopPO4IABFc3SXYL5WE/+PTz/FCdZRRfIujiWW3n3aMbv1eIGVRWA==}
@@ -9721,9 +9739,6 @@ packages:
     resolution: {integrity: sha512-ik3ZgC9dY/lYVVM++OISsaYDeg1tb0VtP5uL3ouh1koGOaUMDPpbFIei4JkFimWUFPn90sbMNMXQAIVOlnYKJA==}
     engines: {node: '>=10'}
 
-  aria-query@5.1.3:
-    resolution: {integrity: sha512-R5iJ5lkuHybztUfuOAznmboyjWq8O6sqNqtK7CLOqdydi54VNbORp49mb14KbWgG1QD3JFO9hJdZ+y4KutfdOQ==}
-
   aria-query@5.3.0:
     resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
@@ -9892,7 +9907,7 @@ packages:
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.8.0
 
   babel-jsx-utils@1.1.0:
     resolution: {integrity: sha512-Mh1j/rw4xM9T3YICkw22aBQ78FhsHdsmlb9NEk4uVAFBOg+Ez9ZgXXHugoBPCZui3XLomk/7/JBBH4daJqTkQQ==}
@@ -9901,7 +9916,7 @@ packages:
     resolution: {integrity: sha512-nXzRChX+Z1GoE6yWavBQg6jDslyFF3SDjl2paADuoQtQW10JqShJt62R6eJQ5m/pjJFDT8xgKIWSP85OY8eXeA==}
     engines: {node: '>= 8.9'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
       webpack: '>=2'
 
   babel-plugin-add-module-exports@1.0.4:
@@ -9910,12 +9925,12 @@ packages:
   babel-plugin-annotate-pure-calls@0.4.0:
     resolution: {integrity: sha512-oi4M/PWUJOU9ZyRGoPTfPMqdyMp06jbJAomd3RcyYuzUtBOddv98BqLm96Lucpi2QFoQHkdGQt0ACvw7VzVEQA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^6.0.0-0 || 7.x
 
   babel-plugin-dev-expression@0.2.3:
     resolution: {integrity: sha512-rP5LK9QQTzCW61nVVzw88En1oK8t8gTsIeC6E61oelxNsU842yMjF0G1MxhvUpCkxCEIj7sE8/e5ieTheT//uw==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   babel-plugin-dynamic-import-node@2.3.3:
     resolution: {integrity: sha512-jZVI+s9Zg3IqA/kdi0i6UDCybUI3aSBLnglhYbSSjKlV7yF1F/5LWv8MakQmvYpnbJDS6fcBL2KzHSxNCMtWSQ==}
@@ -9938,33 +9953,33 @@ packages:
   babel-plugin-polyfill-corejs2@0.4.17:
     resolution: {integrity: sha512-aTyf30K/rqAsNwN76zYrdtx8obu0E4KoUME29B1xj+B3WxgvWkp943vYQ+z8Mv3lw9xHXMHpvSPOBxzAkIa94w==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
   babel-plugin-polyfill-corejs3@0.13.0:
     resolution: {integrity: sha512-U+GNwMdSFgzVmfhNm8GJUX88AadB3uo9KpJqS3FaqNIPKgySuvMb+bHPsOmmuWyIcuqZj/pzt1RUIUZns4y2+A==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
   babel-plugin-polyfill-corejs3@0.14.2:
     resolution: {integrity: sha512-coWpDLJ410R781Npmn/SIBZEsAetR4xVi0SxLMXPaMO4lSf1MwnkGYMtkFxew0Dn8B3/CpbpYxN0JCgg8mn67g==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
   babel-plugin-polyfill-regenerator@0.0.4:
     resolution: {integrity: sha512-+/uCzO9JTYVZVGCpZpVAQkgPGt2zkR0VYiZvJ4aVoCe4ccgpKvNQqcjzAgQzSsjK64Jhc5hvrCR3l0087BevkA==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0-0
 
   babel-plugin-polyfill-regenerator@0.6.8:
     resolution: {integrity: sha512-M762rNHfSF1EV3SLtnCJXFoQbbIIz0OyRwnCmV0KPC7qosSfCO0QLTSuJX3ayAebubhE6oYBAYPrBA5ljowaZg==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
   babel-plugin-remove-graphql-queries@5.16.0:
     resolution: {integrity: sha512-dYh/VoEU5pwmM0N1TbKwdBAqMqW5lYwJsttqYYVuVaZgSE/zikak4KUC3S/qCqCbh6D8/LTeM9YhZgQKU2c8tg==}
     engines: {node: '>=18.0.0 <26'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
       gatsby: ^5.0.0-next
 
   babel-plugin-syntax-trailing-function-commas@7.0.0-beta.0:
@@ -9982,25 +9997,25 @@ packages:
   babel-preset-current-node-syntax@1.2.0:
     resolution: {integrity: sha512-E/VlAEzRrsLEb2+dv8yp3bo4scof3l9nR4lrld+Iy5NyVqgVYUJnDAmunkhPMisRI32Qc4iRiz425d8vM++2fg==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0 || ^8.0.0-0
 
   babel-preset-fbjs@3.4.0:
     resolution: {integrity: sha512-9ywCsCvo1ojrw0b+XYk7aFvTH6D9064t0RIL1rtMf3nsa02Xw41MS7sZw216Im35xj/UY0PDBQsa1brUDDF1Ow==}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   babel-preset-gatsby@3.16.0:
     resolution: {integrity: sha512-ad1XZpJMG0HcX/6w7auLx7MZmxzsbWNyvk1N1KHcvVva8s0SYtp+rXKQPQX1vJxKebzDXt0JvvNZ/smeQr4TeQ==}
     engines: {node: '>=18.0.0 <26'}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.11.6
       core-js: ^3.0.0
 
   babel-preset-jest@29.6.3:
     resolution: {integrity: sha512-0B3bhxR6snWXJZtR/RliHTDPRgn1sNHOR0yVtq/IiQFyuOVjFS+wuio/R4gSNkyYmKmJB4wGZv2NZanmKmTnNA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
-      '@babel/core': ^7.29.0
+      '@babel/core': ^7.0.0
 
   babel-runtime@6.26.0:
     resolution: {integrity: sha512-ITKNuq2wKlW1fJg9sSW52eepoYgZBggvOAHC0u/CYu/qxQ9EVzThCgR69BnSXLHjy2f7SY5zaQ4yt7H9ZVxY2g==}
@@ -11028,10 +11043,6 @@ packages:
     resolution: {integrity: sha512-5tdhKF6DbU7iIzrIOa1AOUt39ZRm13cmL1cGEh//aqR8x9+tNfbywRf0n5FD/18OKMdo7DNEtrX2t22ZAkI+eg==}
     engines: {node: '>= 0.4'}
 
-  deep-equal@2.2.3:
-    resolution: {integrity: sha512-ZIwpnevOurS8bpT4192sqAowWM76JDKSHYzMLty3BZGSswgq6pBaH3DhCSW5xVAZICZyKdOBPjwww5wfgT/6PA==}
-    engines: {node: '>= 0.4'}
-
   deep-extend@0.6.0:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
     engines: {node: '>=4.0.0'}
@@ -11389,9 +11400,6 @@ packages:
   es-errors@1.3.0:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
-
-  es-get-iterator@1.1.3:
-    resolution: {integrity: sha512-sPZmqHBe6JIiTfN5q2pEi//TwxmAFHwj/XEuYjTuse78i8KxaqMTTzxPoFKuzRpDpTJ+0NAbpfenkmH2rePtuw==}
 
   es-iterator-helpers@1.3.3:
     resolution: {integrity: sha512-0PuBxFi+4uPanB97iDxCLWuHeYud2FALrw5HFZGtAF38UpJDbDC8frwp2cnDyae692CQ0dou60UwWfhgsa4U/g==}
@@ -12716,11 +12724,6 @@ packages:
 
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
-
-  husky@7.0.4:
-    resolution: {integrity: sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==}
-    engines: {node: '>=12'}
-    hasBin: true
 
   husky@9.1.7:
     resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
@@ -24894,12 +24897,6 @@ snapshots:
       '@vitest/spy': 2.0.5
       storybook: 8.5.5(prettier@2.8.8)
 
-  '@storybook/testing-library@0.2.2':
-    dependencies:
-      '@testing-library/dom': 9.3.4
-      '@testing-library/user-event': 14.6.1(@testing-library/dom@9.3.4)
-      ts-dedent: 2.3.0
-
   '@storybook/theming@8.5.5(storybook@8.5.5(prettier@2.8.8))':
     dependencies:
       storybook: 8.5.5(prettier@2.8.8)
@@ -25027,17 +25024,6 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/dom@9.3.4':
-    dependencies:
-      '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.29.7
-      '@types/aria-query': 5.0.4
-      aria-query: 5.1.3
-      chalk: 4.1.2
-      dom-accessibility-api: 0.5.16
-      lz-string: 1.5.0
-      pretty-format: 27.5.1
-
   '@testing-library/jest-dom@6.5.0':
     dependencies:
       '@adobe/css-tools': 4.5.0
@@ -25048,15 +25034,15 @@ snapshots:
       lodash: 4.18.1
       redent: 3.0.0
 
-  '@testing-library/react@14.3.1(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@testing-library/react@16.2.0(@testing-library/dom@10.4.0)(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.29.7
-      '@testing-library/dom': 9.3.4
-      '@types/react-dom': 18.3.7(@types/react@18.3.27)
+      '@testing-library/dom': 10.4.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
+    optionalDependencies:
+      '@types/react': 18.3.27
+      '@types/react-dom': 18.3.7(@types/react@18.3.27)
 
   '@testing-library/react@16.2.0(@testing-library/dom@10.4.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -25071,10 +25057,6 @@ snapshots:
   '@testing-library/user-event@14.5.2(@testing-library/dom@10.4.0)':
     dependencies:
       '@testing-library/dom': 10.4.0
-
-  '@testing-library/user-event@14.6.1(@testing-library/dom@9.3.4)':
-    dependencies:
-      '@testing-library/dom': 9.3.4
 
   '@tiptap/core@2.27.2(@tiptap/pm@2.27.2)':
     dependencies:
@@ -25252,10 +25234,6 @@ snapshots:
     dependencies:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
-
-  '@types/classnames@2.3.4':
-    dependencies:
-      classnames: 2.5.1
 
   '@types/cli-progress@3.11.6':
     dependencies:
@@ -25913,7 +25891,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+      vitest: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
 
   '@vitest/expect@2.0.5':
     dependencies:
@@ -25967,23 +25945,23 @@ snapshots:
       msw: 2.15.0(@types/node@22.20.0)(typescript@5.2.2)
       vite: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
 
-  '@vitest/mocker@4.1.10(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.10(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.15.0(@types/node@24.13.3)(typescript@5.2.2)
-      vite: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
 
-  '@vitest/mocker@4.1.10(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.10(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.7.3(@types/node@24.13.3)(typescript@5.2.2)
-      vite: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
 
   '@vitest/pretty-format@2.0.5':
     dependencies:
@@ -26445,10 +26423,6 @@ snapshots:
   aria-hidden@1.2.6:
     dependencies:
       tslib: 2.8.1
-
-  aria-query@5.1.3:
-    dependencies:
-      deep-equal: 2.2.3
 
   aria-query@5.3.0:
     dependencies:
@@ -28019,27 +27993,6 @@ snapshots:
       object-keys: 1.1.1
       regexp.prototype.flags: 1.5.4
 
-  deep-equal@2.2.3:
-    dependencies:
-      array-buffer-byte-length: 1.0.2
-      call-bind: 1.0.9
-      es-get-iterator: 1.1.3
-      get-intrinsic: 1.3.0
-      is-arguments: 1.2.0
-      is-array-buffer: 3.0.5
-      is-date-object: 1.1.0
-      is-regex: 1.2.1
-      is-shared-array-buffer: 1.0.4
-      isarray: 2.0.5
-      object-is: 1.1.6
-      object-keys: 1.1.1
-      object.assign: 4.1.7
-      regexp.prototype.flags: 1.5.4
-      side-channel: 1.1.1
-      which-boxed-primitive: 1.1.1
-      which-collection: 1.0.2
-      which-typed-array: 1.1.22
-
   deep-extend@0.6.0: {}
 
   deep-is@0.1.4: {}
@@ -28417,18 +28370,6 @@ snapshots:
   es-define-property@1.0.1: {}
 
   es-errors@1.3.0: {}
-
-  es-get-iterator@1.1.3:
-    dependencies:
-      call-bind: 1.0.9
-      get-intrinsic: 1.3.0
-      has-symbols: 1.1.0
-      is-arguments: 1.2.0
-      is-map: 2.0.3
-      is-set: 2.0.3
-      is-string: 1.1.1
-      isarray: 2.0.5
-      stop-iteration-iterator: 1.1.0
 
   es-iterator-helpers@1.3.3:
     dependencies:
@@ -30493,8 +30434,6 @@ snapshots:
   humanize-ms@1.2.1:
     dependencies:
       ms: 2.1.3
-
-  husky@7.0.4: {}
 
   husky@9.1.7: {}
 
@@ -37833,7 +37772,7 @@ snapshots:
   url@0.11.4:
     dependencies:
       punycode: 1.4.1
-      qs: 6.15.3
+      qs: 6.16.0
 
   urlpattern-polyfill@10.1.0: {}
 
@@ -37994,6 +37933,22 @@ snapshots:
       tsx: 4.23.11
       yaml: 2.9.0
 
+  vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0):
+    dependencies:
+      lightningcss: 1.33.0
+      picomatch: 4.0.5
+      postcss: 8.5.22
+      rolldown: 1.1.5
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 24.13.3
+      esbuild: 0.28.2
+      fsevents: 2.3.3
+      jiti: 2.7.0
+      terser: 5.48.0
+      tsx: 4.23.11
+      yaml: 2.9.0
+
   vitest@4.1.10(@types/node@14.18.63)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@14.18.63)(typescript@5.2.2))(vite@8.1.5(@types/node@14.18.63)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.10
@@ -38110,10 +38065,10 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)):
+  vitest@4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.10(msw@2.15.0(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -38130,19 +38085,19 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.20.0
+      '@types/node': 24.13.3
       '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
       jsdom: 28.1.0
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(@types/node@22.20.0)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)):
+  vitest@4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.10(msw@2.7.3(@types/node@24.13.3)(typescript@5.2.2))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -38159,10 +38114,10 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.1.5(@types/node@22.20.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.11)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.20.0
+      '@types/node': 24.13.3
       '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
       jsdom: 28.1.0
     transitivePeerDependencies:

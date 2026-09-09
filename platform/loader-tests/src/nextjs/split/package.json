@@ -2,7 +2,7 @@
   "name": "template",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@11.10.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@plasmicapp/loader-edge": "^1.0.74",
     "@plasmicapp/loader-nextjs": "^1.0.141",
     "next": "12.3.7",
     "react": "^18",

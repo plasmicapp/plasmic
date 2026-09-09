@@ -28,16 +28,16 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.3",
     "@plasmicapp/host": "workspace:*",
-    "@types/debounce": "^1.2.4",
-    "@types/js-cookie": "^3.0.6",
+    "@types/debounce": "catalog:",
+    "@types/js-cookie": "catalog:",
     "@types/node": "^14.18.63",
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "nock": "14.0.17",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsdx": "^0.14.1",
-    "vite": "8.1.5",
-    "vitest": "4.1.10"
+    "tsdx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

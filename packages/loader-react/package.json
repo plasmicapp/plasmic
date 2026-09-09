@@ -72,13 +72,13 @@
   "devDependencies": {
     "@types/node": "^22",
     "@types/pascalcase": "^1.0.3",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@vitest/coverage-v8": "4.1.10",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "vite": "8.1.5",
-    "vitest": "4.1.10"
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

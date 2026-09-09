@@ -1,5 +1,6 @@
 {
   "name": "canvas-packages",
+  "private": true,
   "scripts": {
     "build": "node ./makePkgTypes.js && tsc && NODE_ENV=production node ./esbuild.js",
     "watch": "node ./makePkgTypes.js && ESBUILD_WATCH=true node ./esbuild.js",
@@ -144,7 +145,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "sha256": "^0.2.0",
     "size-limit": "^12.1.0",
-    "typescript": "6.0.3"
+    "typescript": "catalog:"
   },
   "size-limit": [
     {

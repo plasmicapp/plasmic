@@ -45,7 +45,7 @@
     "@plasmicapp/host": "workspace:*",
     "@plasmicapp/query": "workspace:*",
     "@types/node": "^17.0.45",
-    "@types/react": "^18"
+    "@types/react": "catalog:"
   },
   "dependencies": {
     "@plasmicpkgs/cms": "workspace:*",

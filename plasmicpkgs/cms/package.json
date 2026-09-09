@@ -35,11 +35,11 @@
   },
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
-    "@react-awesome-query-builder/core": "^6.6.15",
+    "@react-awesome-query-builder/core": "catalog:",
     "@types/json-logic-js": "^2.0.8",
     "@types/node": "^17.0.45",
-    "vite": "8.1.5",
-    "vitest": "4.1.10"
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.211"

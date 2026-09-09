@@ -74,10 +74,10 @@
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
     "@types/node": "^20.19.43",
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "@types/yargs": "^17.0.35",
     "next": "^13.5.11",
     "react": "^18.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "catalog:"
   }
 }

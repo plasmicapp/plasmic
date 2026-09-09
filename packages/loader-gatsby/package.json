@@ -65,8 +65,8 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.25",
-    "@types/react-dom": "^18",
+    "@types/lodash": "catalog:",
+    "@types/react-dom": "catalog:",
     "gatsby": "^5.11.0"
   },
   "peerDependencies": {

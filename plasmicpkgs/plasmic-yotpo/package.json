@@ -43,17 +43,16 @@
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
     "@plasmicapp/query": "workspace:*",
-    "@types/dlv": "^1.1.5",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "husky": "^7.0.4",
+    "@types/dlv": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "tsdx": "catalog:",
+    "tslib": "catalog:"
   },
   "dependencies": {
-    "@types/lodash": "^4.17.24",
+    "@types/lodash": "catalog:",
     "change-case": "^4.1.2",
     "dlv": "^1.1.3",
     "lodash": "^4.17.21"

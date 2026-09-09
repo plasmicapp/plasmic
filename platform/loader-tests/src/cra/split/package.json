@@ -2,7 +2,7 @@
   "name": "template",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@11.10.0",
   "dependencies": {
     "@plasmicapp/loader-react": "^1.0.410",
     "@testing-library/jest-dom": "^5.11.4",

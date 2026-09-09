@@ -81,7 +81,7 @@ Notes:
 
 ## Docker setup
 
-By default, the source code is mounted as a shared volume with the host. The node modules are mounted separately, each having their own volume, in order to cache the npm install step and make sure we don't pollute the shared volume with the built artifacts.
+By default, the source code is mounted as a shared volume with the host. The node modules are mounted separately, each having their own volume, in order to cache dependency installation and make sure we don't pollute the shared volume with the built artifacts.
 
 This setup is quite heavy on CPU/RAM consumption, make sure you have **at least** 8GB of RAM available for the application container.
 

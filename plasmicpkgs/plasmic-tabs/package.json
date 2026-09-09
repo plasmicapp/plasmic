@@ -31,11 +31,6 @@
   "peerDependencies": {
     "react": ">=16"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
   "prettier": {
     "printWidth": 80,
     "semi": true,
@@ -56,13 +51,12 @@
     }
   ],
   "devDependencies": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "husky": "^7.0.4",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "tsdx": "catalog:",
+    "tslib": "catalog:"
   },
   "dependencies": {
     "@plasmicapp/host": "workspace:*",

@@ -27,15 +27,11 @@ Note: These tests were split by platform into multiple files to enable parallel 
 
 ## pnpm in templates
 
-The framework templates use pnpm with `--frozen-lockfile`. If you update a template's `package.json`, you need to regenerate the lockfile:
-
-1. Create a `pnpm-workspace.yaml` in the template directory if it doesn't already exist:
-   ```bash
-   echo 'packages:\n  - "."' > src/nextjs/template-pages/pnpm-workspace.yaml
-   ```
-   This ensures that the `pnpm install` in the next step alters the template's own lock file.
-   The `pnpm-workspace.yaml` file is gitignored and won't be committed.
-2. Run `pnpm install` in the template directory to regenerate `pnpm-lock.yaml`.
+The framework templates use pnpm with `--frozen-lockfile`. Each template has a
+committed `pnpm-workspace.yaml` so commands in that directory use its own
+lockfile instead of walking up to the loader-tests workspace. If you update a
+template's `package.json`, run `pnpm install` in that template directory and
+commit its updated `pnpm-lock.yaml`.
 
 ## Running tests
 

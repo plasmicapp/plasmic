@@ -1,5 +1,5 @@
 import { logger } from "@/wab/server/observability";
-import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
+import { shouldBypassS3, uploadFilesToS3 } from "@/wab/server/util/s3-util";
 import { ComponentReference } from "@/wab/server/workers/codegen";
 import { LoaderEsbuildFatalError } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -112,6 +112,9 @@ export function getAllTsxFilesFromString(err: string) {
 }
 
 export async function uploadErrorFiles(err: Error, dir: string) {
+  if (shouldBypassS3()) {
+    return;
+  }
   const files = getAllTsxFilesFromString(err.toString());
   if (files.length === 0) {
     return;

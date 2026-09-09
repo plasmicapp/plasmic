@@ -1,0 +1,6 @@
+# Standalone pnpm root, copied with the template so allowBuilds applies on install.
+packages: []
+
+allowBuilds:
+  core-js: true
+  core-js-pure: true

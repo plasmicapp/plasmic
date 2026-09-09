@@ -70,18 +70,18 @@
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "@types/glob": "^7.2.0",
+    "@types/glob": "catalog:",
     "@types/node": "^14.18.63",
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "glob": "^7.1.3",
     "rc-menu": "~9.8.0",
     "rc-select": "~14.1.17",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.10.1",
-    "rollup-plugin-esbuild": "^5.0.0",
-    "rollup-plugin-replace-imports": "^1.0.0",
-    "typescript": "^5.2.2"
+    "rollup-plugin-esbuild": "catalog:",
+    "rollup-plugin-replace-imports": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

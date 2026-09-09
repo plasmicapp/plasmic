@@ -1,7 +1,9 @@
-import { useSwitch as useAriaSwitch } from "@react-aria/switch";
+import {
+  useSwitch as useAriaSwitch,
+  type AriaSwitchProps,
+} from "@react-aria/switch";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
-import { AriaSwitchProps } from "@react-types/switch";
 import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
@@ -9,13 +11,13 @@ import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import {
   AnyPlasmicClass,
-  mergeVariantToggles,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
   VariantDef,
+  mergeVariantToggles,
 } from "../plume-utils";
-import { getStyleProps, StyleProps } from "../props-utils";
+import { StyleProps, getStyleProps } from "../props-utils";
 
 export type SwitchRef = React.Ref<SwitchRefValue>;
 export interface SwitchRefValue extends SwitchState {
@@ -97,12 +99,12 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
       props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
-      wrapChildren: (children: React.ReactNode) => (
+      wrapChildren: (renderedChildren: React.ReactNode) => (
         <>
           <VisuallyHidden>
             <input {...inputProps} ref={inputRef} />
           </VisuallyHidden>
-          {children}
+          {renderedChildren}
         </>
       ),
     },

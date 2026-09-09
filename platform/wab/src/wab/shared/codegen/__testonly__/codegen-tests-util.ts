@@ -210,7 +210,7 @@ declare module '*.module.css' {
 }`
   );
 
-  // Link node_modules against the wab node_modules...  so we don't have to yarn install
+  // Link node_modules against the wab node_modules, so we don't have to install
   // anything for tests :-p
   if (!fs.existsSync(path.join(dir, "node_modules"))) {
     await promisify(exec)(

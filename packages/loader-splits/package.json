@@ -47,9 +47,9 @@
   "devDependencies": {
     "@plasmicapp/loader-fetcher": "workspace:*",
     "@types/json-logic-js": "^1.2.1",
-    "@vitest/coverage-v8": "4.1.10",
-    "vite": "8.1.5",
-    "vitest": "4.1.10"
+    "@vitest/coverage-v8": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "dependencies": {
     "json-logic-js": "^2.0.2"

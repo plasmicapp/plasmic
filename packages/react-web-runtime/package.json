@@ -22,11 +22,11 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.4",
-    "@types/react": "^18",
-    "react": "18.3.1",
+    "@types/react": "catalog:",
+    "react": "catalog:",
     "rollup": "^4.60.2",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.37.0"
+    "rollup-plugin-typescript2": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/react-web": ">=0.2.49",

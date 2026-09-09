@@ -37,10 +37,10 @@
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
     "@types/node": "^14.18.63",
-    "@types/react": "^18",
+    "@types/react": "catalog:",
     "@types/react-slick": "^0.23.7",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.2.0"
+    "tsdx": "catalog:",
+    "tslib": "catalog:"
   },
   "dependencies": {
     "@seznam/compose-react-refs": "^1.0.6",

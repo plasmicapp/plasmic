@@ -27,7 +27,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/react": "^18"
+    "@types/react": "catalog:"
   },
   "dependencies": {
     "@plasmicapp/query": "workspace:*",

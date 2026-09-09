@@ -35,7 +35,7 @@
   "devDependencies": {
     "@plasmicapp/host": "workspace:*",
     "@plasmicpkgs/fetch": "workspace:*",
-    "typescript": "^5.2.2"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.211",
