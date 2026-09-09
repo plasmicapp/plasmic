@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@plasmicapp/host':
-        specifier: ^2.0.18
-        version: 2.0.18(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^2.0.19
+        version: 2.0.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -177,14 +177,14 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicapp/host@2.0.18':
-    resolution: {integrity: sha512-NquSex8VSie44ZkPBhyznEsKjFb0RHkB9PyLJa5OILlWXctpwA+Jr8uIEFPlNnWylweFOGVT/9JjUMayGoX1Aw==}
+  '@plasmicapp/host@2.0.19':
+    resolution: {integrity: sha512-owX7XGuhqodJMNSac/8uU4pKzdT2Uy062mKMg2oGQ+ds6GUK/fAKhWvfEPyn8ekv5vuZOK9RpUOPtjp/UzYIvA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
 
-  '@plasmicapp/query@0.1.87':
-    resolution: {integrity: sha512-4M4QvE9IE8DtVv/LuEruGkMLo3bPhTZIwrYpQpcaXj6FQCL2G5XdhjhcH6JzSW2LxqjhyC+2xDLlZKUAzYqpvw==}
+  '@plasmicapp/query@0.1.88':
+    resolution: {integrity: sha512-NewFoWKPbtOTtEeKJEWnmrpzKlzQi6CbVgXDnWz9yOg11bbdeg/gx025wJ72iA60YopPRME03DdjXqY6PgMQ6g==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16.8.0'
@@ -1603,15 +1603,15 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       window-or-global: 1.0.1
 
-  '@plasmicapp/host@2.0.18(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@plasmicapp/host@2.0.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@plasmicapp/query': 0.1.87(react@18.2.0)
+      '@plasmicapp/query': 0.1.88(react@18.2.0)
       csstype: 3.2.3
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       window-or-global: 1.0.1
 
-  '@plasmicapp/query@0.1.87(react@18.2.0)':
+  '@plasmicapp/query@0.1.88(react@18.2.0)':
     dependencies:
       react: 18.2.0
       swr: 1.3.0(react@18.2.0)
