@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-cms",
-  "version": "0.0.332",
+  "version": "0.0.333",
   "description": "Plasmic code components for querying and rendering Plasmic CMS content.",
   "homepage": "https://www.plasmic.app",
   "repository": {

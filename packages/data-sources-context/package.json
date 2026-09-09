@@ -1,5 +1,5 @@
 {
-  "version": "0.1.25",
+  "version": "0.1.26",
   "description": "React context that supplies the current user and auth token to Plasmic data source queries.",
   "homepage": "https://www.plasmic.app",
   "repository": {
