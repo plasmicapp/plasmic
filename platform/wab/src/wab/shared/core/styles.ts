@@ -2697,14 +2697,14 @@ export function createExpandedRuleSetMerger(
 
 export function cloneVariantedValue(variantedValue: VariantedValue) {
   return new VariantedValue({
-    variants: variantedValue.variants,
+    variants: [...variantedValue.variants],
     value: variantedValue.value,
   });
 }
 
 export function cloneVariantedRs(variantedRs: VariantedRuleSet) {
   return new VariantedRuleSet({
-    variants: variantedRs.variants,
+    variants: [...variantedRs.variants],
     rs: cloneRuleSet(variantedRs.rs),
   });
 }

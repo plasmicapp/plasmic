@@ -655,6 +655,9 @@ export function cloneSite(fromSite: Site) {
   };
 
   const getNewMaybeImageAssetRefValue = (value: string) => {
+    if (!value.includes("var(--image-")) {
+      return value;
+    }
     return replaceAllAssetRefs(value, (assetId) => {
       const oldAsset = fromSite.imageAssets.find((a) => a.uuid === assetId);
       if (oldAsset) {
@@ -669,9 +672,7 @@ export function cloneSite(fromSite: Site) {
   const fixRefsForRuleset = (rs: RuleSet) => {
     for (const key of Object.keys(rs.values)) {
       rs.values[key] = getNewMaybeTokenRefValue(rs.values[key]);
-      if (key === "background") {
-        rs.values[key] = getNewMaybeImageAssetRefValue(rs.values[key]);
-      }
+      rs.values[key] = getNewMaybeImageAssetRefValue(rs.values[key]);
     }
   };
 
