@@ -8,5 +8,8 @@ export default defineConfig({
     fileParallelism: false,
     reporters: ["verbose"],
     testTimeout: 7 * 60 * 1000,
+    // Tests pull from npm/GitHub and fetch Plasmic designs, so any
+    // failed connection fails the test
+    retry: 2,
   },
 });
