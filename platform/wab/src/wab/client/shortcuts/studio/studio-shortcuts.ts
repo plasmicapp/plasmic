@@ -99,7 +99,7 @@ export const VIEW_SHORTCUT_GROUP = mkShortcutGroup("View", {
 export const CHROME_SHORTCUT_GROUP = mkShortcutGroup("Chrome", {
   TOGGLE_UI_COPILOT: {
     combos: "mod+k",
-    description: "Toggle Copilot!",
+    description: "Toggle Plasmic AI",
   },
   SEARCH_PROJECT_ARENAS: {
     combos: ["p", "alt+p"],

@@ -652,7 +652,7 @@ function NavigationDropdown_(
             break;
           }
           case "copilot": {
-            assert(chosenTemplate.prompt, "Copilot prompt is required");
+            assert(chosenTemplate.prompt, "AI prompt is required");
             await studioCtx.createCopilotPageWithPrompt(
               chosenTemplate.name,
               chosenTemplate.prompt

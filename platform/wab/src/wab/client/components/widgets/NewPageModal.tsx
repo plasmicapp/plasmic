@@ -138,7 +138,7 @@ function NewPageModal(props: NewPageModalProps) {
           {uiCopilotEnabled && (
             <NewComponentItem
               isSelected={pageInfo.type === "copilot"}
-              title="Copilot page"
+              title="AI page"
               imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
               onClick={() => {
                 setPageInfo({
@@ -152,7 +152,7 @@ function NewPageModal(props: NewPageModalProps) {
         </NewComponentSection>
       )}
       {pageInfo.type === "copilot" && (
-        <NewComponentSection title="Copilot Prompt">
+        <NewComponentSection title="AI prompt">
           <CopilotPromptInput
             showImageUpload={false}
             textAreaInput={{

@@ -190,7 +190,7 @@ function CopilotPromptDialog<Response>({
             disabled: !isValidPrompt,
           },
           wrap: (elt) => (
-            <Tooltip title={"Run Copilot"} mouseEnterDelay={0.5}>
+            <Tooltip title={"Run Plasmic AI"} mouseEnterDelay={0.5}>
               {elt}
             </Tooltip>
           ),

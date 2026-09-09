@@ -3518,6 +3518,10 @@ export class StudioCtx extends WithDbCtx {
   // Copilot
   //
   uiCopilotEnabled(): boolean {
+    if (!this.canEditProject()) {
+      return false;
+    }
+
     if (this.appCtx.appConfig.enableChatCopilot) {
       return false;
     }
@@ -3530,7 +3534,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   chatCopilotEnabled(): boolean {
-    if (!this.appCtx.appConfig.enableChatCopilot) {
+    if (!this.canEditProject() || !this.appCtx.appConfig.enableChatCopilot) {
       return false;
     }
 
@@ -7984,7 +7988,9 @@ export function isUserProjectEditor(
 }
 
 function checkIsTeamOnPaidTierOrTrial(team: ApiTeam): boolean {
-  return !!(team.featureTierId && team.stripeCustomerId) || team.onTrial;
+  // The API resolves featureTier from the parent for child organizations.
+  const tierId = team.featureTierId || team.featureTier?.id;
+  return (!!tierId && tierId !== DEVFLAGS.freeTier.id) || team.onTrial;
 }
 
 export function cssPropsForInvertTransform(

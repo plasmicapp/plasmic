@@ -1,10 +1,12 @@
 import { fakeStudioCtx } from "@/wab/client/__testonly__/fake-init-ctx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
+  ApiFeatureTier,
   ApiTeam,
   FeatureTierId,
   StripeCustomerId,
   TeamId,
+  UserId,
 } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
@@ -73,6 +75,68 @@ describe("uiCopilotEnabled", () => {
     });
     expect(studioCtx.uiCopilotEnabled()).toBeFalsy();
   });
+});
+
+describe("chatCopilotEnabled", () => {
+  function setup(team: ApiTeam) {
+    return fakeStudioCtx({
+      teams: [team],
+      siteInfo: { teamId: TEAM_ID },
+      devFlagOverrides: { enableChatCopilot: true },
+    });
+  }
+
+  it("inherits an enterprise tier without a child Stripe customer", () => {
+    const { studioCtx } = setup(
+      mockTeam({
+        parentTeamId: "parent" as TeamId,
+        featureTier: { id: "enterprise" as FeatureTierId } as ApiFeatureTier,
+      })
+    );
+    expect(studioCtx.chatCopilotEnabled()).toBe(true);
+  });
+
+  it("allows paid plans and trials but rejects free teams", () => {
+    expect(
+      setup(
+        mockTeam({ featureTierId: "paid" as FeatureTierId })
+      ).studioCtx.chatCopilotEnabled()
+    ).toBe(true);
+    expect(
+      setup(mockTeam({ onTrial: true })).studioCtx.chatCopilotEnabled()
+    ).toBe(true);
+    expect(setup(mockTeam({})).studioCtx.chatCopilotEnabled()).toBe(false);
+    expect(
+      setup(
+        mockTeam({ featureTierId: DEVFLAGS.freeTier.id })
+      ).studioCtx.chatCopilotEnabled()
+    ).toBe(false);
+  });
+
+  it.each(["viewer", "commenter", "content", "editor"] as const)(
+    "checks project access for %s",
+    (accessLevel) => {
+      const { studioCtx, appCtx } = setup(
+        mockTeam({ featureTierId: "paid" as FeatureTierId })
+      );
+      const userId = "customer" as UserId;
+      appCtx.selfInfo = {
+        id: userId,
+        email: "customer@example.com",
+      } as NonNullable<typeof appCtx.selfInfo>;
+      studioCtx.siteInfo.createdById = "owner" as UserId;
+      studioCtx.siteInfo.perms = [
+        {
+          projectId: studioCtx.siteInfo.id,
+          userId,
+          accessLevel,
+        } as (typeof studioCtx.siteInfo.perms)[number],
+      ];
+      expect(studioCtx.chatCopilotEnabled()).toBe(
+        accessLevel === "content" || accessLevel === "editor"
+      );
+    }
+  );
 });
 
 describe("background arenas", () => {

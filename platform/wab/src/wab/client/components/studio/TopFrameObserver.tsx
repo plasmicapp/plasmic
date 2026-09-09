@@ -196,7 +196,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           return {
             success: false,
             error: {
-              message: `Copilot tool "${toolName}" not found.`,
+              message: `AI tool "${toolName}" not found.`,
               type: "TOOL_NOT_FOUND",
             },
           };

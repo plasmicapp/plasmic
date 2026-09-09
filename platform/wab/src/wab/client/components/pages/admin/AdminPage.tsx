@@ -864,7 +864,7 @@ function CopilotFeedbackView() {
 
   return (
     <div className="mv-lg">
-      <h2>View Copilot Feedback</h2>
+      <h2>View AI Feedback</h2>
       <SearchBox
         placeholder={"Project ID or user email (press enter to run)"}
         onEdit={(v) => setQuery(v)}

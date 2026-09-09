@@ -360,7 +360,7 @@ export function TopFrameChrome({
               />
             )}
             <FloatingWindowLayer>
-              {hostFrameApiReady && rest.showCopilotChatModal && (
+              {hostFrameApiReady && rest.showCopilotChatModal && editorPerm && (
                 <CopilotChatDialog
                   projectId={project.id}
                   initialPrompt={rest.copilotStarterPrompt}

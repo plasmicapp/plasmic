@@ -52,7 +52,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
         },
         wrap: (elt) => (
           <>
-            <Tooltip title={"Open Copilot"} mouseEnterDelay={0.5}>
+            <Tooltip title={"Open Plasmic AI"} mouseEnterDelay={0.5}>
               {elt}
             </Tooltip>
             <CopilotPromptDialog<string>

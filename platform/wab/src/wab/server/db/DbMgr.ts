@@ -90,7 +90,11 @@ import {
   WorkspaceAuthConfig,
   WorkspaceUser,
 } from "@/wab/server/entities/Entities";
-import { isPaidTeam, isTeamOnFreeTrial } from "@/wab/server/freeTrial";
+import {
+  getEntitledTeam,
+  isPaidTeam,
+  isTeamOnFreeTrial,
+} from "@/wab/server/freeTrial";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { CompatRequest } from "@/wab/server/routes/util";
@@ -1686,8 +1690,7 @@ export class DbMgr implements MigrationDbMgr {
     includeDeleted = false
   ): Promise<Team | undefined> {
     await this.checkProjectPerms(projectId, "viewer", "get", undefined, false);
-    const qb = this.teams()
-      .createQueryBuilder("t")
+    const qb = this._queryTeams({}, includeDeleted)
       .innerJoin(Workspace, "w", "w.teamId = t.id")
       .innerJoin(Project, "p", "p.workspaceId = w.id")
       .where("p.id = :projectId", { projectId });
@@ -6284,8 +6287,7 @@ export class DbMgr implements MigrationDbMgr {
       const team = await this.getTeamByProjectId(opts.checkTeamHasPlan);
       if (
         !team ||
-        !team.featureTierId ||
-        (!team.stripeCustomerId && !isTeamOnFreeTrial(team))
+        (!isPaidTeam(team) && !isTeamOnFreeTrial(getEntitledTeam(team)))
       ) {
         throw new ForbiddenError();
       }
@@ -6321,7 +6323,7 @@ export class DbMgr implements MigrationDbMgr {
     model: "gpt" | "claude";
     request: CreateChatCompletionRequest | LanguageModelRequestMetadata;
   }) {
-    await this.checkProjectPerms(projectId, "content", "run copilot");
+    await this.checkProjectPerms(projectId, "content", "use Plasmic AI");
     const copilotInteraction = this.copilotInteractions().create({
       ...this.stampNew(),
       fullPromptSnapshot: JSON.stringify(request),
@@ -6345,7 +6347,7 @@ export class DbMgr implements MigrationDbMgr {
     feedback: boolean;
     feedbackDescription?: string | null;
   }) {
-    await this.checkProjectPerms(projectId, "content", "save copilot feedback");
+    await this.checkProjectPerms(projectId, "content", "save AI feedback");
 
     const copilotInteraction = await findExactlyOne(
       this.copilotInteractions(),
