@@ -1,5 +1,8 @@
 import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
-import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
+import {
+  resetNodes as doResetNodes,
+  focusSlateEditor,
+} from "@/wab/client/components/canvas/slate";
 import { CopilotCodePrompt } from "@/wab/client/components/copilot/CopilotCodePrompt";
 import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor.module.scss";
 import DataPicker, {
@@ -208,10 +211,7 @@ export const TemplatedTextEditor = React.forwardRef<
     React.useImperativeHandle<PropEditorRef, PropEditorRef>(
       outerRef,
       () => ({
-        focus: () => {
-          ReactEditor.focus(editor);
-          Transforms.select(editor, Editor.end(editor, []));
-        },
+        focus: () => focusSlateEditor(editor, "end"),
         isFocused: () => ReactEditor.isFocused(editor),
         element: slateContainerRef.current,
         useDynamicValue: insertDynamicValue,

@@ -1,28 +1,23 @@
 import { TagName } from "@/wab/shared/html";
 import type { Expr } from "@/wab/shared/model/classes";
 import { CSSProperties } from "react";
-import {
-  BaseEditor,
-  Descendant,
-  Editor,
-  Element,
-  Node,
-  Point,
-  Range,
-  Text,
-  Transforms,
-} from "slate";
+import * as slate from "slate";
 import type { HistoryEditor } from "slate-history";
-import type { ReactEditor } from "slate-react";
+import * as slateReact from "slate-react";
 import type { MakeADT } from "ts-adt/MakeADT";
 
+interface SlateLibs {
+  slate: typeof slate;
+  slateReact: typeof slateReact;
+}
+
 type ParagraphAttributes = {
-  children: Descendant[];
+  children: slate.Descendant[];
 };
 
 type TplTagAttributes = {
   tag: TagName;
-  children: Descendant[];
+  children: slate.Descendant[];
   uuid?: string;
   attributes?: Record<string, string>;
 };
@@ -39,7 +34,7 @@ type MentionAttributes = {
   /** The raw text the mention serializes to between `@<` and `>` */
   raw: string;
   /** Always a single empty text node: the element is void. */
-  children: Descendant[];
+  children: slate.Descendant[];
 };
 
 type CustomElement = MakeADT<
@@ -61,7 +56,7 @@ export type MentionElement = Record<"type", "mention"> & MentionAttributes;
 
 declare module "slate" {
   interface CustomTypes {
-    Editor: BaseEditor & ReactEditor & HistoryEditor;
+    Editor: slate.BaseEditor & slateReact.ReactEditor & HistoryEditor;
     Element: CustomElement;
     Text: CustomText;
   }
@@ -71,8 +66,8 @@ export function mkTplTagElement(
   uuid: string,
   tag: TagName,
   attributes: Record<string, string>,
-  children: Descendant[]
-): Element {
+  children: slate.Descendant[]
+): slate.Element {
   return {
     type: "TplTag",
     tag,
@@ -88,12 +83,15 @@ export function mkTplTagElement(
  * https://docs.slatejs.org/walkthroughs/06-saving-to-a-database
  */
 export function resetNodes(
-  editor: Editor,
+  editor: slate.Editor,
   options: {
-    nodes?: Node | Node[];
-    at?: Location;
-  } = {}
+    nodes?: slate.Node | slate.Node[];
+    at?: slate.Location;
+  } = {},
+  libs: SlateLibs = { slate, slateReact }
 ): void {
+  const { Editor, Node, Point, Transforms } = libs.slate;
+
   const children = [...editor.children];
 
   children.forEach((node) =>
@@ -127,7 +125,12 @@ export function resetNodes(
  * Editor.marks() at both [1] and [2] would return no marks.
  * marksForToolbar() correctly returns no marks for [1] and bold for [2].
  */
-export function marksForToolbar(editor: Editor): Omit<Text, "text"> | null {
+export function marksForToolbar(
+  editor: slate.Editor,
+  libs: SlateLibs = { slate, slateReact }
+): Omit<slate.Text, "text"> | null {
+  const { Editor, Node, Range } = libs.slate;
+
   // When the user toggles a mark on the toolbar without typing anything yet,
   // this might be set.
   if (editor.marks) {
@@ -144,5 +147,28 @@ export function marksForToolbar(editor: Editor): Omit<Text, "text"> | null {
   }
   const [leaf] = Editor.leaf(editor, editor.selection.anchor.path);
   const { text: _text, ...leafMarks } = leaf;
-  return leafMarks as Omit<Text, "text">;
+  return leafMarks as Omit<slate.Text, "text">;
+}
+
+/**
+ * Focuses the editor and sets the selection.
+ *
+ * This is useful because just `ReactEditor.focus(editor)` selects the start of
+ * the document.
+ */
+export function focusSlateEditor(
+  editor: slate.Editor,
+  select: "all" | "end",
+  libs: SlateLibs = { slate, slateReact }
+): void {
+  const { Editor, Transforms } = libs.slate;
+  const { ReactEditor } = libs.slateReact;
+
+  ReactEditor.focus(editor);
+
+  const end = Editor.end(editor, []);
+  Transforms.select(
+    editor,
+    select === "all" ? { anchor: Editor.start(editor, []), focus: end } : end
+  );
 }

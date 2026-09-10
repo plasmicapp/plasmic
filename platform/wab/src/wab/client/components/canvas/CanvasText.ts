@@ -10,6 +10,7 @@ import {
 import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import "@/wab/client/components/canvas/slate";
 import {
+  focusSlateEditor,
   mkTplTagElement,
   ParagraphElement,
   TplTagElement,
@@ -907,7 +908,7 @@ export const mkCanvasText = computedFn(
         const doc = ctx.viewCtx.canvasCtx.doc();
 
         const { createEditor, Range, Transforms } = sub.slate;
-        const { Editable, ReactEditor, Slate, withReact } = sub.slateReact;
+        const { Editable, Slate, withReact } = sub.slateReact;
         const { withHistory } = sub.slateHistory;
 
         const editor = react.useMemo(
@@ -962,11 +963,7 @@ export const mkCanvasText = computedFn(
           }
 
           // Focus and select all on mount.
-          ReactEditor.focus(editor);
-          Transforms.select(editor, {
-            anchor: sub.slate.Editor.start(editor, []),
-            focus: sub.slate.Editor.end(editor, []),
-          });
+          focusSlateEditor(editor, "all", sub);
         }, [readOnly, editor]);
 
         // Handles value changes from outside the component, by checking for

@@ -1,20 +1,31 @@
 .root {
-  display: inline-flex;
+  display: flex;
+  position: relative;
+}
+.root:focus-within:focus-within {
+  outline: none;
+}
+.root:focus-within .tooltip:global(.__wab_instance):global(.__wab_instance) {
+  outline: none;
+}
+.button {
+  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  position: relative;
   border-radius: 4px;
-  border: 1px solid var(--token-sBh7BFhgAybb);
+  padding: 0px;
+  border: 2px solid var(--token-CE-OiWjNhspe);
 }
-.root:hover:hover {
-  border-color: var(--token-XeFw4MGauXBT);
+.root:hover .button {
+  border: 2px dashed var(--token-2ziDTor6aAuH);
+}
+.root:focus-within .button {
+  outline: none;
+  border-style: dashed;
+  border-color: var(--token-2ziDTor6aAuH);
 }
 .img {
-  max-width: 100%;
   width: 50px;
   height: 50px;
   object-fit: cover;
@@ -24,32 +35,48 @@
 .img > picture > img {
   object-fit: cover;
 }
-.closeIconContainer {
+.deleteOverlay {
   flex-direction: row;
   position: absolute;
   align-items: center;
   justify-content: center;
-  width: auto;
   height: auto;
-  max-width: 100%;
-  top: -8px;
-  right: -8px;
-  background: var(--token-iR8SeEwQZ);
-  box-shadow: 0px 4px 16px 0px var(--token-VEgqNiouHaAh);
+  width: auto;
+  cursor: pointer;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
   display: none;
-  border-radius: 50%;
+  border-radius: 4px;
 }
-.root:hover .closeIconContainer {
+.root:hover .deleteOverlay {
   display: flex;
 }
-.svg {
-  object-fit: cover;
-  max-width: 100%;
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  display: none;
+.root:focus-within .deleteOverlay {
+  display: flex;
+  outline: none;
 }
-.root:hover .svg {
-  display: block;
+.deleteBackground {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  background: var(--token-iDYSCk74HNX3);
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+}
+.svg {
+  display: flex;
+  object-fit: cover;
+  color: var(--token-2ziDTor6aAuH);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }

@@ -123,3 +123,7 @@ function maybeTransformCombos<Action extends string>(
 export function isSubmitKeyCombo(e: React.KeyboardEvent): boolean {
   return isHotkey("mod+enter")(e.nativeEvent);
 }
+
+/** The submit key combo as shown to the user, e.g. in a tooltip. */
+export const SUBMIT_KEY_COMBO_LABEL =
+  PLATFORM === "osx" ? "Cmd+Enter" : "Ctrl+Enter";

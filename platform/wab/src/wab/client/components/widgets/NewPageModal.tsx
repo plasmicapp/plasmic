@@ -154,7 +154,9 @@ function NewPageModal(props: NewPageModalProps) {
       {pageInfo.type === "copilot" && (
         <NewComponentSection title="AI prompt">
           <CopilotPromptInput
-            showImageUpload={false}
+            imageUploadIcon={{ render: () => null }}
+            imageUploadContainer={{ render: () => null }}
+            runPromptBtn={{ render: () => null }}
             textAreaInput={{
               value: pageInfo.prompt,
               placeholder: "Describe the page you want to create...",

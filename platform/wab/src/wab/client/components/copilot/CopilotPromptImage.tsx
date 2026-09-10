@@ -7,18 +7,21 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 export type CopilotPromptImageProps = DefaultCopilotPromptImageProps &
-  Pick<PlasmicCopilotPromptImage__OverridesType, "img" | "closeIconContainer">;
+  Pick<PlasmicCopilotPromptImage__OverridesType, "img"> & {
+    onDelete: () => void;
+  };
 
 function CopilotPromptImage_(
   props: CopilotPromptImageProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { img, closeIconContainer, ...plasmicProps } = props;
+  const { img, onDelete, ...plasmicProps } = props;
   return (
     <PlasmicCopilotPromptImage
       root={{ ref }}
+      button={{ onClick: onDelete }}
+      overrides={{ img }}
       {...plasmicProps}
-      overrides={{ img, closeIconContainer }}
     />
   );
 }

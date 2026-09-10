@@ -621,7 +621,6 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   ? 'e.g. "Generate a hero section"'
                   : undefined
               }
-              withAction={true}
             />
 
             {(hasVariant($state, "state", "loading") ? true : false) ? (

@@ -132,7 +132,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
           <CopilotPromptInput
             data-plasmic-name={"copilotPromptInput"}
             data-plasmic-override={overrides.copilotPromptInput}
-            placeholder={'"Create a landing page, hero section, ..."'}
+            placeholder={"What can I build for you today?"}
           />
         </div>
       }

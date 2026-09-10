@@ -3,7 +3,7 @@ import {
   DefaultCopilotPromptDialogProps,
   PlasmicCopilotPromptDialog,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog";
-import { Tooltip } from "antd";
+import { Tooltip, notification } from "antd";
 import * as React from "react";
 import { FocusScope } from "react-aria";
 
@@ -12,18 +12,16 @@ import {
   CopilotData,
   useCopilot,
 } from "@/wab/client/components/copilot/useCopilot";
-import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
+import { useCopilotImageUpload } from "@/wab/client/components/copilot/useCopilotImageUpload";
 import { useAutoFocus } from "@/wab/client/hooks/useAutoFocus";
-import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
 import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
 import {
   CopilotPrompt,
   CopilotType,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { CopilotImageType, copilotImageTypes } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
-import { asDataUrl, parseDataUrl } from "@/wab/shared/data-urls";
+import { asDataUrl } from "@/wab/shared/data-urls";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import cn from "classnames";
 import defer = setTimeout;
@@ -106,7 +104,21 @@ function CopilotPromptDialog<Response>({
     });
   }, [response]);
 
-  const isValidPrompt = copilotPrompt.prompt.trim() && state !== "loading";
+  const { fileInput, openFilePicker, isUploading } = useCopilotImageUpload({
+    onUpload: (image) =>
+      setCopilotPrompt((prev) => ({
+        ...prev,
+        images: [...prev.images, image],
+      })),
+    onUploadError: (file, uploadError) =>
+      notification.error({
+        message: `Error uploading ${file.name}`,
+        description: uploadError.message,
+      }),
+  });
+
+  const isValidPrompt =
+    copilotPrompt.prompt.trim() && state !== "loading" && !isUploading;
 
   const applyResponse = (historyResponse: Response) => {
     onCopilotApply(historyResponse);
@@ -135,55 +147,43 @@ function CopilotPromptDialog<Response>({
               copilotSystemPromptOverride: value,
             }),
         },
-        imageUploadIcon: {
-          render: () =>
-            showImageUpload ? (
-              <ImageUploader
-                onUploaded={async (image, _file) => {
-                  const dataUrl = parseDataUrl(image.url);
-                  setCopilotPrompt((prev) => ({
-                    ...prev,
-                    images: [
-                      ...prev.images,
-                      {
-                        type: dataUrl.mediaType.split(
-                          "/"
-                        )[1] as CopilotImageType,
-                        base64: dataUrl.data,
-                      },
-                    ],
-                  }));
-                }}
-                accept={copilotImageTypes.map((t) => `.${t}`).join(",")}
-                isDisabled={false}
-              >
-                <div className="flex dimfg p-sm">
-                  <ImageUploadsIcon />
-                </div>
-              </ImageUploader>
-            ) : null,
-        },
-        imageUploadContainer: {
-          wrapChildren: () => {
-            return copilotPrompt.images.map((image) => (
-              <CopilotPromptImage
-                img={{
-                  src: asDataUrl(image.base64, `image/${image.type}`, "base64"),
-                }}
-                closeIconContainer={{
-                  onClick: () => {
-                    setCopilotPrompt((prev) => ({
-                      ...prev,
-                      images: prev.images.filter(
-                        (img) => img.base64 !== image.base64
+        imageUploadIcon: showImageUpload
+          ? {
+              props: {
+                tooltip: "Attach image",
+                onClick: openFilePicker,
+              },
+              wrap: (button) => (
+                <>
+                  {button}
+                  {fileInput}
+                </>
+              ),
+            }
+          : { render: () => null },
+        imageUploadContainer: showImageUpload
+          ? {
+              wrapChildren: () =>
+                copilotPrompt.images.map((image) => (
+                  <CopilotPromptImage
+                    key={image.base64}
+                    img={{
+                      src: asDataUrl(
+                        image.base64,
+                        `image/${image.type}`,
+                        "base64"
                       ),
-                    }));
-                  },
-                }}
-              />
-            ));
-          },
-        },
+                    }}
+                    onDelete={() =>
+                      setCopilotPrompt((prev) => ({
+                        ...prev,
+                        images: prev.images.filter((img) => img !== image),
+                      }))
+                    }
+                  />
+                )),
+            }
+          : { render: () => null },
         runPromptBtn: {
           props: {
             onClick: () => submitPrompt(copilotPrompt),
@@ -195,7 +195,6 @@ function CopilotPromptDialog<Response>({
             </Tooltip>
           ),
         },
-        showImageUpload,
         textAreaInput: {
           value: copilotPrompt.prompt,
           maxLength,
