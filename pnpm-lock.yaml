@@ -3079,7 +3079,7 @@ importers:
         specifier: 'catalog:'
         version: 18.3.27
       '@types/react-slick':
-        specifier: ^0.23.7
+        specifier: ^0.23.13
         version: 0.23.13
       tsdx:
         specifier: 'catalog:'
