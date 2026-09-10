@@ -1749,6 +1749,13 @@ a.btn-link
     opacity: 1
     filter: drop-shadow(0 3px 10px rgba(0,0,0,.2))
 
+  // Must come after :hover/:focus-within to win at equal specificity.
+  &.floating-window--hidden-by-modal
+    opacity: 0
+    pointer-events: none
+    visibility: hidden
+    transition: opacity 0.15s ease, visibility 0s linear 0.15s
+
 .floating-window--resizer--n
   position: absolute
   top: -4px

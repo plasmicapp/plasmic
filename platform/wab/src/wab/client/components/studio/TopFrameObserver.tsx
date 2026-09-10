@@ -5,6 +5,7 @@ import {
   mkMentionableResources,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import { isAnyModalOpen } from "@/wab/client/components/widgets/open-modals";
 import { COPILOT_TOOLS } from "@/wab/client/copilot";
 import {
   CopilotToolCallResult,
@@ -249,6 +250,16 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
   React.useEffect(() => {
     hostFrameCtx.onHostFrameApiReady(hostFrameApi);
   }, [hostFrameApi]);
+
+  React.useEffect(() => {
+    const dispose = autorun(() => {
+      spawn(topFrameApi.setStudioModalOpen(isAnyModalOpen()));
+    });
+    return () => {
+      dispose();
+      spawn(topFrameApi.setStudioModalOpen(false));
+    };
+  }, [topFrameApi]);
 
   React.useEffect(() => {
     const noComponents = computed(

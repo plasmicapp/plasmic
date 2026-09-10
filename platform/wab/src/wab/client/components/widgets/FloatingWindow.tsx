@@ -45,6 +45,7 @@ export function FloatingWindow({
   initialHeight,
   disableWidthResize,
   disableHeightResize,
+  hiddenByModal,
   className,
   children,
   style,
@@ -63,6 +64,8 @@ export function FloatingWindow({
   initialHeight?: number;
   disableWidthResize?: boolean;
   disableHeightResize?: boolean;
+  /** Hides the window, for a modal whose mask stops at a frame below this one. */
+  hiddenByModal?: boolean;
 }) {
   const windowRef = React.useRef<HTMLDivElement>(null);
 
@@ -131,7 +134,7 @@ export function FloatingWindow({
     onPointerDown?.(e);
 
     const windowEl = windowRef.current;
-    if (!windowEl) {
+    if (!windowEl || hiddenByModal) {
       return;
     }
 
@@ -161,7 +164,7 @@ export function FloatingWindow({
     dir: ResizeDirection
   ) => {
     const windowEl = windowRef.current;
-    if (!windowEl) {
+    if (!windowEl || hiddenByModal) {
       return;
     }
 
@@ -229,6 +232,7 @@ export function FloatingWindow({
       className={cn(className, {
         "floating-window": true,
         "floating-window--focused": focusedMode,
+        "floating-window--hidden-by-modal": hiddenByModal,
       })}
       style={{
         ...style,

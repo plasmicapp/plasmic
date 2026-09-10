@@ -20,6 +20,7 @@ import {
 } from "@/wab/client/components/modals/PricingModal";
 import { FloatingWindowLayer } from "@/wab/client/components/widgets/FloatingWindow";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import { isAnyModalOpen } from "@/wab/client/components/widgets/open-modals";
 import {
   TopFrameApi,
   TopFrameApiArgs,
@@ -56,6 +57,7 @@ import {
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
 import { Action, Location } from "history";
+import { observer } from "mobx-react";
 import { ExtendedKeyboardEvent } from "mousetrap";
 import React from "react";
 import * as Signals from "signals";
@@ -94,6 +96,7 @@ export interface TopFrameChromeProps {
   showUpsellForm: TopBarPromptBillingArgs | undefined;
   setShowUpsellForm: (_: undefined) => void;
   showAppAuthModal: boolean;
+  studioModalOpen: boolean;
   showCopilotChatModal: boolean;
   copilotStarterPrompt: { prompt: string } | undefined;
   subjectComponentInfo:
@@ -361,9 +364,10 @@ export function TopFrameChrome({
             )}
             <FloatingWindowLayer>
               {hostFrameApiReady && rest.showCopilotChatModal && editorPerm && (
-                <CopilotChatDialog
+                <CopilotChat
                   projectId={project.id}
                   initialPrompt={rest.copilotStarterPrompt}
+                  studioModalOpen={rest.studioModalOpen}
                   onClose={() => topFrameApi.toggleCopilotChat()}
                 />
               )}
@@ -383,6 +387,21 @@ export function TopFrameChrome({
     </>
   );
 }
+
+/** Observes top frame modals, Studio's are relayed as `studioModalOpen`. */
+const CopilotChat = observer(function CopilotChat({
+  studioModalOpen,
+  ...props
+}: Omit<React.ComponentProps<typeof CopilotChatDialog>, "hiddenByModal"> & {
+  studioModalOpen: boolean;
+}) {
+  return (
+    <CopilotChatDialog
+      {...props}
+      hiddenByModal={studioModalOpen || isAnyModalOpen()}
+    />
+  );
+});
 
 function ForwardShortcuts() {
   const { hostFrameApi, hostFrameApiReady } = useTopFrameCtx();
@@ -479,6 +498,7 @@ export function useTopFrameState({
     TopBarPromptBillingArgs | undefined
   >(undefined);
   const [showAppAuthModal, setShowAppAuthModal] = React.useState(false);
+  const [studioModalOpen, setStudioModalOpen] = React.useState(false);
   // Object-wrapped so a repeat request with identical text is still a state
   // change, re-triggering the prefill of an already open dialog.
   const [copilotStarterPrompt, setCopilotStarterPrompt] = React.useState<
@@ -591,6 +611,7 @@ export function useTopFrameState({
         setShouldShowRegenerateSecretTokenModal(true),
       setShowUpsellForm: asyncWrapper(setShowUpsellForm),
       setShowAppAuthModal: asyncWrapper(setShowAppAuthModal),
+      setStudioModalOpen: asyncWrapper(setStudioModalOpen),
       toggleCopilotChat: async () => {
         const queryParams = new URLSearchParams(history.location.search);
         if (queryParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true") {
@@ -671,6 +692,7 @@ export function useTopFrameState({
     showUpsellForm,
     setShowUpsellForm,
     showAppAuthModal,
+    studioModalOpen,
     showCopilotChatModal,
     copilotStarterPrompt,
     defaultPageRoleId,

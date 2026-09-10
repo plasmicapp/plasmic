@@ -22,6 +22,7 @@ import {
 import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { providesAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   StudioCtx,
@@ -63,7 +64,6 @@ import {
 import { DataSourceSchema, TableSchema } from "@plasmicapp/data-sources";
 import { FormType, formTypeDescription } from "@plasmicpkgs/antd5";
 import { notification } from "antd";
-import Modal from "antd/lib/modal/Modal";
 import { isString, size } from "lodash";
 import { ok } from "neverthrow";
 import React from "react";

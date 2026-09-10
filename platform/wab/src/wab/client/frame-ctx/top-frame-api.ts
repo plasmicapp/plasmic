@@ -74,6 +74,7 @@ export interface TopFrameApi {
   showRegenerateSecretTokenModal(): Promise<void>;
   setShowUpsellForm(val: TopBarPromptBillingArgs | undefined): Promise<void>;
   setShowAppAuthModal(val: boolean): Promise<void>;
+  setStudioModalOpen(val: boolean): Promise<void>;
   setOnboardingTour(val: TopFrameTourState): Promise<void>;
   toggleAdminMode(val: boolean): Promise<void>;
   toggleCopilotChat(): Promise<void>;
