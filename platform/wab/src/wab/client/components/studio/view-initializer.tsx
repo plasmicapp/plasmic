@@ -35,8 +35,8 @@ export const ViewInitializer = observer(function ViewInitializer(
 function TopFrameViewInitializer({ projectId }: ViewInitializerProps) {
   const [studioFrameKey, setStudioFrameKey] = React.useState(0);
   const refreshStudio = React.useCallback(
-    async () => setStudioFrameKey(studioFrameKey + 1),
-    [studioFrameKey]
+    async () => setStudioFrameKey((prevKey) => prevKey + 1),
+    []
   );
 
   return (

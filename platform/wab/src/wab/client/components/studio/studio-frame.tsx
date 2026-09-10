@@ -68,12 +68,16 @@ export function StudioFrame({
     () => setFetchProjectCount(fetchProjectCount + 1),
     [fetchProjectCount]
   );
-  const toggleAdminMode = React.useCallback(async (newMode: boolean) => {
-    await appCtx.api.updateSelfAdminMode({
-      adminModeDisabled: newMode,
-    });
-    await refreshStudio();
-  }, []);
+  const toggleAdminMode = React.useCallback(
+    async (newMode: boolean) => {
+      await appCtx.api.updateSelfAdminMode({
+        adminModeDisabled: newMode,
+      });
+      await appCtx.reloadAll();
+      await refreshStudio();
+    },
+    [appCtx, refreshStudio]
+  );
 
   const fetchBranches = React.useCallback(
     moize(
