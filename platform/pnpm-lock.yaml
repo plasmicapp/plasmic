@@ -17452,8 +17452,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-parallax-tilt@1.7.341:
-    resolution: {integrity: sha512-xGBExqbqO2Xg4jc4is43oSpjsMOZFUpCq6CP67MtKrga8xRZKU9k2NlXwqqrxnknq6G1YP1Yw4uf9s4CHV3yMA==}
+  react-parallax-tilt@1.7.342:
+    resolution: {integrity: sha512-chyKKkAkxQtXpm4L1Zppl5RGEYOXX5Ps4iShtunOPTYOvFbbEeE+qQVGanHIf2gXVorsUZtV6ChxAuTmqP4Tyg==}
     peerDependencies:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -19708,6 +19708,11 @@ packages:
 
   use-sync-external-store@1.6.0:
     resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  use-sync-external-store@1.7.0:
+    resolution: {integrity: sha512-6L+EeigHMQhdaIPNIFUKwfWJSwWFQ8gJbJ2DLOs5sDIegTwR9fRxvnM3uciHKjIZhFz+KAv2emhWMRvDmMcY8A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -25800,7 +25805,7 @@ snapshots:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-parallax-tilt: 1.7.341(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-parallax-tilt: 1.7.342(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@plasmicpkgs/react-quill@1.0.125(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -27084,7 +27089,7 @@ snapshots:
       '@swc/helpers': 0.5.23
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      use-sync-external-store: 1.6.0(react@18.3.1)
+      use-sync-external-store: 1.7.0(react@18.3.1)
 
   '@react-aria/color@3.0.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -40978,7 +40983,7 @@ snapshots:
       react-aria: 3.40.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
       react-stately: 3.38.0(react@18.3.1)
-      use-sync-external-store: 1.6.0(react@18.3.1)
+      use-sync-external-store: 1.7.0(react@18.3.1)
 
   react-aria@3.40.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -41385,7 +41390,7 @@ snapshots:
       - utf-8-validate
     optional: true
 
-  react-parallax-tilt@1.7.341(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-parallax-tilt@1.7.342(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -44001,6 +44006,10 @@ snapshots:
       react: 18.3.1
 
   use-sync-external-store@1.6.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
+  use-sync-external-store@1.7.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
