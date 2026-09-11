@@ -231,27 +231,6 @@
 .freeBoxtier_enterprise___2CSw5Ph4X {
   display: none;
 }
-.changeSeatsButton:global(.__wab_instance) {
-  position: relative;
-}
-.svg__zyBz8 {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 16px;
-  height: 16px;
-}
-.text__uzg1X {
-  height: auto;
-  font-size: 14px;
-}
-.svg__a4XtS {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 16px;
-  height: 1em;
-}
 .changeCreditCardButton:global(.__wab_instance) {
   position: relative;
 }
@@ -298,7 +277,7 @@
   align-items: flex-start;
   justify-content: flex-end;
 }
-.svg__yg250 {
+.svg___60R6O {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -307,7 +286,7 @@
 .text__iI7N {
   font-size: 14px;
 }
-.svg__pTzp5 {
+.svg__nnQv7 {
   display: flex;
   position: relative;
   object-fit: cover;

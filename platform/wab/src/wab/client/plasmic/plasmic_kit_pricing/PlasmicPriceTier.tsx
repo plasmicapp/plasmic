@@ -49,7 +49,8 @@ export type PlasmicPriceTier__VariantMembers = {
     | "manual"
     | "goback"
     | "startFreeTrial"
-    | "freeTrialCurrent";
+    | "freeTrialCurrent"
+    | "manageSeats";
   tier:
     | "free"
     | "starter"
@@ -69,6 +70,7 @@ export type PlasmicPriceTier__VariantsArgs = {
     | "goback"
     | "startFreeTrial"
     | "freeTrialCurrent"
+    | "manageSeats"
   >;
   tier?: SingleChoiceArg<
     | "free"
@@ -89,21 +91,21 @@ export const PlasmicPriceTier__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicPriceTier__ArgsType = {
+  openSection?: boolean;
+  price?: React.ReactNode;
   subprice?: React.ReactNode;
   valueProps?: React.ReactNode;
-  price?: React.ReactNode;
   expandableTitle?: React.ReactNode;
   expandableBody?: React.ReactNode;
-  openSection?: boolean;
 };
 type ArgPropType = keyof PlasmicPriceTier__ArgsType;
 export const PlasmicPriceTier__ArgProps = new Array<ArgPropType>(
+  "openSection",
+  "price",
   "subprice",
   "valueProps",
-  "price",
   "expandableTitle",
-  "expandableBody",
-  "openSection"
+  "expandableBody"
 );
 
 export type PlasmicPriceTier__OverridesType = {
@@ -115,12 +117,12 @@ export type PlasmicPriceTier__OverridesType = {
 };
 
 export interface DefaultPriceTierProps {
+  openSection?: boolean;
+  price?: React.ReactNode;
   subprice?: React.ReactNode;
   valueProps?: React.ReactNode;
-  price?: React.ReactNode;
   expandableTitle?: React.ReactNode;
   expandableBody?: React.ReactNode;
-  openSection?: boolean;
   status?: SingleChoiceArg<
     | "unavailable"
     | "current"
@@ -129,6 +131,7 @@ export interface DefaultPriceTierProps {
     | "goback"
     | "startFreeTrial"
     | "freeTrialCurrent"
+    | "manageSeats"
   >;
   tier?: SingleChoiceArg<
     | "free"
@@ -356,6 +359,11 @@ function PlasmicPriceTier__RenderFunc(props: {
       >
         <div
           className={classNames("all", sty.freeBox__b4JBz, {
+            [sty.freeBoxstatus_current__b4JBZi3Xzy]: hasVariant(
+              $state,
+              "status",
+              "current"
+            ),
             [sty.freeBoxtier_enterprise__b4JBz8TtOs]: hasVariant(
               $state,
               "tier",
@@ -390,6 +398,11 @@ function PlasmicPriceTier__RenderFunc(props: {
                 "status",
                 "freeTrialCurrent"
               ),
+              [sty.priceTierChipstatus_manageSeats]: hasVariant(
+                $state,
+                "status",
+                "manageSeats"
+              ),
               [sty.priceTierChipstatus_unavailable]: hasVariant(
                 $state,
                 "status",
@@ -420,7 +433,9 @@ function PlasmicPriceTier__RenderFunc(props: {
               [sty.priceTierChiptier_team]: hasVariant($state, "tier", "team"),
             })}
             current={
-              hasVariant($state, "status", "freeTrialCurrent")
+              hasVariant($state, "status", "manageSeats")
+                ? true
+                : hasVariant($state, "status", "freeTrialCurrent")
                 ? true
                 : hasVariant($state, "status", "current")
                 ? true
@@ -715,6 +730,11 @@ function PlasmicPriceTier__RenderFunc(props: {
               [sty.normalButtonstatus_goback_tier_starter]:
                 hasVariant($state, "tier", "starter") &&
                 hasVariant($state, "status", "goback"),
+              [sty.normalButtonstatus_manageSeats]: hasVariant(
+                $state,
+                "status",
+                "manageSeats"
+              ),
               [sty.normalButtonstatus_manual]: hasVariant(
                 $state,
                 "status",
@@ -764,6 +784,9 @@ function PlasmicPriceTier__RenderFunc(props: {
               [sty.normalButtontier_grandfathered_status_freeTrialCurrent]:
                 hasVariant($state, "status", "freeTrialCurrent") &&
                 hasVariant($state, "tier", "grandfathered"),
+              [sty.normalButtontier_grandfathered_status_manageSeats]:
+                hasVariant($state, "status", "manageSeats") &&
+                hasVariant($state, "tier", "grandfathered"),
               [sty.normalButtontier_legacy]: hasVariant(
                 $state,
                 "tier",
@@ -775,6 +798,9 @@ function PlasmicPriceTier__RenderFunc(props: {
               [sty.normalButtontier_legacy_status_freeTrialCurrent]:
                 hasVariant($state, "status", "freeTrialCurrent") &&
                 hasVariant($state, "tier", "legacy"),
+              [sty.normalButtontier_legacy_status_manageSeats]:
+                hasVariant($state, "tier", "legacy") &&
+                hasVariant($state, "status", "manageSeats"),
               [sty.normalButtontier_pro]: hasVariant($state, "tier", "pro"),
               [sty.normalButtontier_pro_global_environment_website]:
                 hasVariant($state, "tier", "pro") &&
@@ -805,6 +831,9 @@ function PlasmicPriceTier__RenderFunc(props: {
                 ? true
                 : undefined
             }
+            interactive={
+              hasVariant($state, "status", "manageSeats") ? true : undefined
+            }
             link={
               hasVariant($state, "tier", "enterprise") &&
               hasVariant(globalVariants, "environment", "website")
@@ -832,6 +861,8 @@ function PlasmicPriceTier__RenderFunc(props: {
               hasVariant($state, "tier", "grandfathered")
                 ? "selected"
                 : hasVariant($state, "tier", "legacy")
+                ? "selected"
+                : hasVariant($state, "status", "manageSeats")
                 ? "selected"
                 : hasVariant($state, "status", "current")
                 ? "selected"
@@ -863,6 +894,11 @@ function PlasmicPriceTier__RenderFunc(props: {
                   "status",
                   "goback"
                 ),
+                [sty.textstatus_manageSeats___31NBu1Lc]: hasVariant(
+                  $state,
+                  "status",
+                  "manageSeats"
+                ),
                 [sty.textstatus_manual___31Nb0CL90]: hasVariant(
                   $state,
                   "status",
@@ -893,19 +929,33 @@ function PlasmicPriceTier__RenderFunc(props: {
                   "tier",
                   "grandfathered"
                 ),
+                [sty.texttier_grandfathered_status_manageSeats___31NbgMgSwU1Lc]:
+                  hasVariant($state, "status", "manageSeats") &&
+                  hasVariant($state, "tier", "grandfathered"),
                 [sty.texttier_legacy___31NboDxgc]: hasVariant(
                   $state,
                   "tier",
                   "legacy"
                 ),
+                [sty.texttier_legacy_status_manageSeats___31NboDxgcU1Lc]:
+                  hasVariant($state, "tier", "legacy") &&
+                  hasVariant($state, "status", "manageSeats"),
               })}
             >
-              {hasVariant($state, "tier", "grandfathered")
+              {hasVariant($state, "status", "manageSeats") &&
+              hasVariant($state, "tier", "grandfathered")
+                ? "Manage seats"
+                : hasVariant($state, "tier", "legacy") &&
+                  hasVariant($state, "status", "manageSeats")
+                ? "Manage seats"
+                : hasVariant($state, "tier", "grandfathered")
                 ? "Selected"
                 : hasVariant($state, "tier", "legacy")
                 ? "Selected"
                 : hasVariant($state, "tier", "enterprise")
                 ? "Contact us"
+                : hasVariant($state, "status", "manageSeats")
+                ? "Manage seats"
                 : hasVariant($state, "status", "startFreeTrial")
                 ? "Start free trial"
                 : hasVariant($state, "status", "goback")
@@ -1106,8 +1156,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPriceTier__VariantsArgs;
     args?: PlasmicPriceTier__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPriceTier__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicPriceTier__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicPriceTier__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

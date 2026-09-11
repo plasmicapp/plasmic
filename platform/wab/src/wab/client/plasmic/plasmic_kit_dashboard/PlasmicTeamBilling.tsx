@@ -86,7 +86,6 @@ export type PlasmicTeamBilling__OverridesType = {
   h4?: Flex__<"h4">;
   billingEmail?: Flex__<"input">;
   updateBillingEmailButton?: Flex__<typeof Button>;
-  changeSeatsButton?: Flex__<typeof Button>;
   changeCreditCardButton?: Flex__<typeof Button>;
   manageBilling?: Flex__<typeof Button>;
   cancelSubscriptionButton?: Flex__<typeof Button>;
@@ -464,31 +463,6 @@ function PlasmicTeamBilling__RenderFunc(props: {
               })}
             >
               <Button
-                data-plasmic-name={"changeSeatsButton"}
-                data-plasmic-override={overrides.changeSeatsButton}
-                className={classNames("__wab_instance", sty.changeSeatsButton)}
-                endIcon={
-                  <ChevronDownSvgIcon
-                    className={classNames("all", sty.svg__a4XtS)}
-                    role={"img"}
-                  />
-                }
-                size={"wide"}
-                startIcon={
-                  <ArrowRightSvgIcon
-                    className={classNames("all", sty.svg__zyBz8)}
-                    role={"img"}
-                  />
-                }
-                type={["secondary"]}
-              >
-                <div
-                  className={classNames("all", "__wab_text", sty.text__uzg1X)}
-                >
-                  {"Manage seats"}
-                </div>
-              </Button>
-              <Button
                 data-plasmic-name={"changeCreditCardButton"}
                 data-plasmic-override={overrides.changeCreditCardButton}
                 className={classNames(
@@ -574,7 +548,6 @@ const PlasmicDescendants = {
     "h4",
     "billingEmail",
     "updateBillingEmailButton",
-    "changeSeatsButton",
     "changeCreditCardButton",
     "manageBilling",
     "cancelSubscriptionButton",
@@ -588,7 +561,6 @@ const PlasmicDescendants = {
     "h4",
     "billingEmail",
     "updateBillingEmailButton",
-    "changeSeatsButton",
     "changeCreditCardButton",
     "manageBilling",
     "cancelSubscriptionButton",
@@ -596,7 +568,6 @@ const PlasmicDescendants = {
   h4: ["h4"],
   billingEmail: ["billingEmail"],
   updateBillingEmailButton: ["updateBillingEmailButton"],
-  changeSeatsButton: ["changeSeatsButton"],
   changeCreditCardButton: ["changeCreditCardButton"],
   manageBilling: ["manageBilling"],
   cancelSubscriptionButton: ["cancelSubscriptionButton"],
@@ -614,7 +585,6 @@ type NodeDefaultElementType = {
   h4: "h4";
   billingEmail: "input";
   updateBillingEmailButton: typeof Button;
-  changeSeatsButton: typeof Button;
   changeCreditCardButton: typeof Button;
   manageBilling: typeof Button;
   cancelSubscriptionButton: typeof Button;
@@ -689,7 +659,6 @@ export const PlasmicTeamBilling = Object.assign(
     h4: makeNodeComponent("h4"),
     billingEmail: makeNodeComponent("billingEmail"),
     updateBillingEmailButton: makeNodeComponent("updateBillingEmailButton"),
-    changeSeatsButton: makeNodeComponent("changeSeatsButton"),
     changeCreditCardButton: makeNodeComponent("changeCreditCardButton"),
     manageBilling: makeNodeComponent("manageBilling"),
     cancelSubscriptionButton: makeNodeComponent("cancelSubscriptionButton"),

@@ -17,6 +17,7 @@ import * as React from "react";
 interface UpsellCheckoutProps extends DefaultUpsellCheckoutProps {
   appCtx: AppCtx;
   disabled: boolean;
+  isCurrentSubscription: boolean;
   hasActiveSubscription: boolean;
   teamName: string;
   currentTier: ApiFeatureTier | null;
@@ -37,6 +38,7 @@ function UpsellCheckout_(
   const {
     appCtx,
     disabled,
+    isCurrentSubscription,
     hasActiveSubscription,
     teamName,
     currentTier,
@@ -85,11 +87,13 @@ function UpsellCheckout_(
       priceTierPicker={{
         appCtx: appCtx,
         availableTiers: [tier],
+        currentFeatureTier: currentTier ?? undefined,
         onSelectFeatureTier: async () => onResetTier(),
         billingFrequency: billingFreq,
         overrideStatus: "goback",
         hideEnterprise: true,
         hideFree: true,
+        hideLegacyTier: true,
       }}
       stripeCardElement={{
         render: () => <CardNumberElement />,
@@ -103,11 +107,11 @@ function UpsellCheckout_(
       // See Plasmic project. We have 2 of each, hidden depending on
       // whether skipCreditCard is enabled
       confirmButton={{
-        disabled,
+        disabled: disabled || isCurrentSubscription,
         onClick: onSubmit,
       }}
       confirmButton2={{
-        disabled,
+        disabled: disabled || isCurrentSubscription,
         onClick: onSubmit,
       }}
       cancelButton={{

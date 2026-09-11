@@ -89,6 +89,10 @@
 .normalButtondark_state_selected {
   background: var(--token-bV4cCeIniS6);
 }
+.normalButtoninteractive_state_selected {
+  cursor: pointer;
+  pointer-events: auto;
+}
 .svg {
   position: relative;
   object-fit: cover;

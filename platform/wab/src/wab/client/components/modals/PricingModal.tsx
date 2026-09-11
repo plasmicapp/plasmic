@@ -258,6 +258,14 @@ function UpsellForm(
   const hasActiveSubscription =
     !!team?.featureTierId && !!team?.stripeSubscriptionId;
 
+  // Prevent submitting an unchanged subscription (allow changing seats or converting trial)
+  const isCurrentSubscription =
+    hasActiveSubscription &&
+    !team?.onTrial &&
+    tier?.id === team?.featureTierId &&
+    seats === team?.seats &&
+    billingFreq === team?.billingFrequency;
+
   /**
    * Change the subscription on the server.
    * This is a terminating function. Either way the modal will be dismissed.
@@ -309,6 +317,9 @@ function UpsellForm(
   };
 
   const confirmBill = async () => {
+    if (isCurrentSubscription) {
+      return;
+    }
     setWaiting(true);
     try {
       const ensureTeam = ensure(
@@ -450,6 +461,11 @@ function UpsellForm(
             onSelectFeatureTier={async (newTier: ApiFeatureTier) =>
               setTier(newTier)
             }
+            onManageSeats={
+              hasActiveSubscription && team.featureTier
+                ? async () => setTier(ensure(team.featureTier))
+                : undefined
+            }
             canStartFreeTrial={!!teamMeta?.canStartFreeTrial}
             onStartFreeTrial={startFreeTrial}
             isFreeTrialTeam={team?.onTrial}
@@ -466,6 +482,7 @@ function UpsellForm(
             <UpsellCheckout
               appCtx={appCtx}
               disabled={waiting || !canUpdateBilling}
+              isCurrentSubscription={isCurrentSubscription}
               hasActiveSubscription={hasActiveSubscription}
               onFreeTrial={team?.onTrial}
               teamName={team.name}

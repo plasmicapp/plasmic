@@ -165,6 +165,14 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     await onChange();
   };
 
+  const manageSeats = async () => {
+    const tier = ensure(
+      team.featureTier,
+      "Feature tier should exist to change seats"
+    );
+    await upsell(tier, "Change seat count");
+  };
+
   return (
     <PlasmicTeamBilling
       root={{ ref }}
@@ -192,6 +200,13 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
           subStatus?.type === "valid" ? subStatus.tier : subStatus?.freeTier,
         canStartFreeTrial,
         onSelectFeatureTier: upsell,
+        onManageSeats:
+          subStatus?.type === "valid" &&
+          !subStatus.free &&
+          !team.onTrial &&
+          !!team.stripeSubscriptionId
+            ? manageSeats
+            : undefined,
         onStartFreeTrial: startFreeTrial,
         isFreeTrialTeam: team.onTrial,
       }}
@@ -210,17 +225,6 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       currentBill={currentBill}
       seatsUsed={`${seatsUsed}`}
       seatsPurchased={`${team.seats ?? appCtx.appConfig.freeTier.maxUsers}`}
-      changeSeatsButton={{
-        onClick: async () => {
-          // Skip straight to the Checkout where you change the number of seats
-          const tier = ensure(
-            team.featureTier,
-            "Feature tier should exist to change seats"
-          );
-          await upsell(tier, "Change seat count");
-        },
-        disabled: disabled,
-      }}
       changeCreditCardButton={{
         onClick: async () => {
           await updateCreditCard();

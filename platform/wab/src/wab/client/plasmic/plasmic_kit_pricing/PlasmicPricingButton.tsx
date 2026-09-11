@@ -47,6 +47,7 @@ export type PlasmicPricingButton__VariantMembers = {
   state: "invisible" | "selected";
   noBorder: "noBorder";
   type: "link";
+  interactive: "interactive";
 };
 export type PlasmicPricingButton__VariantsArgs = {
   dark?: SingleBooleanChoiceArg<"dark">;
@@ -54,6 +55,7 @@ export type PlasmicPricingButton__VariantsArgs = {
   state?: SingleChoiceArg<"invisible" | "selected">;
   noBorder?: SingleBooleanChoiceArg<"noBorder">;
   type?: SingleChoiceArg<"link">;
+  interactive?: SingleBooleanChoiceArg<"interactive">;
 };
 type VariantPropType = keyof PlasmicPricingButton__VariantsArgs;
 export const PlasmicPricingButton__VariantProps = new Array<VariantPropType>(
@@ -61,7 +63,8 @@ export const PlasmicPricingButton__VariantProps = new Array<VariantPropType>(
   "withIcon",
   "state",
   "noBorder",
-  "type"
+  "type",
+  "interactive"
 );
 
 export type PlasmicPricingButton__ArgsType = {
@@ -92,6 +95,7 @@ export interface DefaultPricingButtonProps {
   state?: SingleChoiceArg<"invisible" | "selected">;
   noBorder?: SingleBooleanChoiceArg<"noBorder">;
   type?: SingleChoiceArg<"link">;
+  interactive?: SingleBooleanChoiceArg<"interactive">;
   className?: string;
 }
 
@@ -156,6 +160,13 @@ function PlasmicPricingButton__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
+      },
+      {
+        path: "interactive",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.interactive,
       },
     ],
     [$props, $ctx, $refs]
@@ -240,6 +251,14 @@ function PlasmicPricingButton__RenderFunc(props: {
           [sty.normalButtondark_withIcon]:
             hasVariant($state, "dark", "dark") &&
             hasVariant($state, "withIcon", "withIcon"),
+          [sty.normalButtoninteractive]: hasVariant(
+            $state,
+            "interactive",
+            "interactive"
+          ),
+          [sty.normalButtoninteractive_state_selected]:
+            hasVariant($state, "interactive", "interactive") &&
+            hasVariant($state, "state", "selected"),
           [sty.normalButtonnoBorder]: hasVariant(
             $state,
             "noBorder",
@@ -346,8 +365,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPricingButton__VariantsArgs;
     args?: PlasmicPricingButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPricingButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicPricingButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicPricingButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
