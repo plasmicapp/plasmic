@@ -115,6 +115,7 @@ COPY --from=builder --chown=node:node /platform/pnpm-workspace.yaml /platform/pn
 # pod (e.g. `pnpm db:one-time-job`) would download it from the registry at
 # container runtime.
 RUN pnpm --version && chmod -R a+rX "$COREPACK_HOME"
+COPY --from=builder --chown=node:node /platform/shared ./shared
 COPY --from=builder --chown=node:node /platform/wab ./wab
 COPY --from=builder --chown=node:node /platform/loader-bundle-env ./loader-bundle-env
 COPY --from=builder --chown=node:node /platform/loader-html-hydrate ./loader-html-hydrate

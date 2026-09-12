@@ -1068,6 +1068,8 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.0)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.10)(jsdom@22.1.0)(msw@2.7.3(@types/node@22.19.19)(typescript@6.0.3))(vite@6.4.2(@types/node@22.19.19)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.51.2)(tsx@4.19.3)(yaml@2.9.0))
 
+  shared/hosting: {}
+
   wab:
     dependencies:
       '@ai-sdk/anthropic':
@@ -1163,6 +1165,9 @@ importers:
       '@pankod/refine-core':
         specifier: 3.58.1
         version: 3.58.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react-native@0.86.0(@babel/core@7.29.0)(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@plasmic-shared/hosting':
+        specifier: workspace:*
+        version: link:../shared/hosting
       '@plasmicapp/data-sources':
         specifier: ^1.0.29
         version: 1.0.29(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

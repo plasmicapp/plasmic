@@ -1,4 +1,5 @@
 packages:
+  - shared/*
   - analytics-rproxy
   - mini-cache
   - wab

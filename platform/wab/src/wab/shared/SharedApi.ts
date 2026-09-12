@@ -126,7 +126,6 @@ import {
   NextPublishVersionRequest,
   NextPublishVersionResponse,
   PersonalApiToken,
-  PlasmicHostingSettings,
   PostCommentResponse,
   ProcessSvgRequest,
   ProcessSvgResponse,
@@ -206,6 +205,7 @@ import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
 import { UiConfig } from "@/wab/shared/ui-config-utils";
+import type { PlasmicHostingSettings } from "@plasmic-shared/hosting";
 import { executePlasmicDataOp } from "@plasmicapp/data-sources";
 import L, { pick, uniq } from "lodash";
 import semver from "semver";
@@ -1885,14 +1885,28 @@ export abstract class SharedApi {
   }
   async updatePlasmicHostingSettings(
     projectId: ProjectId,
-    opts: {
-      favicon?: { url: string; mimeType?: string };
-    }
+    opts: PlasmicHostingSettings
   ) {
     return this.put(
       `/plasmic-hosting/${projectId}`,
       opts
     ) as Promise<PlasmicHostingSettings>;
+  }
+
+  /** Sets the text served at path (e.g. /robots.txt), or removes it with null. */
+  async setPlasmicHostingTextFile(
+    projectId: ProjectId,
+    path: string,
+    content: string | null
+  ) {
+    const settings = await this.getPlasmicHostingSettings(projectId);
+    const textFiles = { ...settings.textFiles };
+    if (content === null) {
+      delete textFiles[path];
+    } else {
+      textFiles[path] = content;
+    }
+    return this.updatePlasmicHostingSettings(projectId, { textFiles });
   }
 
   async getComments(

@@ -1565,13 +1565,6 @@ export interface CheckDomainResponse {
   status: CheckDomainStatus;
 }
 
-export interface PlasmicHostingSettings {
-  favicon?: {
-    url: string;
-    mimeType?: string;
-  };
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetCommentsRequest {}
 
