@@ -208,6 +208,8 @@ function SubsectionPlasmicHosting_(
                       ? "Blocked by Cloudflare challenge, please allow calls to /api/revalidate route on your domain or disable Cloudflare."
                       : failure.error.type === "Invalid JSON response"
                       ? "Unable to call /api/revalidate"
+                      : failure.error.type === "HTTP error"
+                      ? `/api/revalidate returned HTTP ${failure.error.status}`
                       : "please retry later";
                   return (
                     <GitJobStep

@@ -1778,6 +1778,10 @@ export type RevalidateError =
       type: "Invalid JSON response";
     }
   | {
+      type: "HTTP error";
+      status: number;
+    }
+  | {
       type: "Cloudflare challenge";
     }
   | {
