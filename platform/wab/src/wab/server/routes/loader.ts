@@ -585,7 +585,10 @@ async function buildLoader(
       ])
     )[projectId];
     const prefix = `${LOADER_CACHE_BUST}-${projectId}@${projectRev}`;
-    const suffix = component ? `-${normComponentName(component)}` : "";
+    // Encode because Node rejects header values with chars above U+00FF
+    const suffix = component
+      ? `-${encodeURIComponent(normComponentName(component))}`
+      : "";
     const etag = `W/${prefix}${suffix}`;
 
     if (checkEtagSkippable(req, res, etag)) {

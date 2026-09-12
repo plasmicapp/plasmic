@@ -222,6 +222,25 @@ export class PublicApiTester extends ApiTester {
       }
     );
   }
+
+  async getPreviewLoaderHtml(
+    project: Project,
+    component: string,
+    { ifNoneMatch }: { ifNoneMatch?: string } = {}
+  ): Promise<APIResponse> {
+    const projectToken = `${project.id}:${project.projectApiToken}`;
+    return this.rawReq(
+      "get",
+      `/api/v1/loader/html/preview/${project.id}/${component}`,
+      undefined,
+      {
+        headers: {
+          "x-plasmic-api-project-tokens": projectToken,
+          ...(ifNoneMatch ? { "if-none-match": ifNoneMatch } : {}),
+        },
+      }
+    );
+  }
 }
 
 /** Expects the ts-rest response to have a status and narrows the type. */

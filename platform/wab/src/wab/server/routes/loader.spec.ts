@@ -249,6 +249,25 @@ describe("loader", () => {
       },
     });
   });
+
+  it("sets a valid preview HTML ETag for non-Latin-1 component names", async () => {
+    const component = encodeURIComponent("平仮名s.php");
+
+    const htmlRes = await publicApi.getPreviewLoaderHtml(
+      projects[0],
+      component
+    );
+    expect(htmlRes.status()).toEqual(404);
+    const etag = htmlRes.headers()["etag"];
+    expect(etag).toBeString();
+
+    const cachedRes = await publicApi.getPreviewLoaderHtml(
+      projects[0],
+      component,
+      { ifNoneMatch: etag }
+    );
+    expect(cachedRes.status()).toEqual(304);
+  });
 });
 
 async function publish(
