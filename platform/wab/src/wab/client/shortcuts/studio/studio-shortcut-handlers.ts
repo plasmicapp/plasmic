@@ -162,9 +162,7 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
         });
       },
       ZOOM_TO_SELECTION: async () => {
-        return studioCtx.changeUnsafe(async () => {
-          await studioCtx.tryZoomToFitSelection();
-        });
+        return studioCtx.tryZoomToFitSelection();
       },
       FOCUS_FRAME: async () => {
         return studioCtx.changeUnsafe(() => {
