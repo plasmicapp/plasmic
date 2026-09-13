@@ -45,7 +45,6 @@ catalog:
 overrides:
   react-aria-components: 1.9.0
   sha.js: ^2.4.12
-  retry-request: ^8.0.2
   # vitest allows vite 6-8; pin it to the vite wab already declares, so the
   # workspace keeps a single vite copy.
   "vitest>vite": "catalog:"
