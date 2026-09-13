@@ -2111,19 +2111,8 @@ export function promiseToCallback<T>(cb: StandardCallback<T>, p: Promise<T>) {
   p.then((res) => cb(undefined, res)).catch((err) => cb(err));
 }
 
-export function extractDomainFromEmail(email: string) {
-  return ensure(
-    last(email.split("@")),
-    "Failed to extract domain for email: " + email
-  );
-}
-
 export async function asyncNever() {
   return new Promise<never>(() => {});
-}
-
-export function isValidEmail(str: string) {
-  return !!str.match(/^\S+@\S+\.\S+$/);
 }
 
 /**

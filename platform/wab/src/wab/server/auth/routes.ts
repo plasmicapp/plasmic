@@ -3,6 +3,7 @@ import {
   customTeamApiUserAuth,
 } from "@/wab/server/auth/custom-api-auth";
 import { extractSsoConfig } from "@/wab/server/auth/passport-cfg";
+import { hasBlockedEmailDomain } from "@/wab/server/auth/signup-policy";
 import { doLogin, doLogout } from "@/wab/server/auth/util";
 import {
   DbMgr,
@@ -49,13 +50,9 @@ import {
   UpdatePasswordResponse,
   UpdateSelfRequest,
 } from "@/wab/shared/ApiSchema";
-import {
-  ensureType,
-  extractDomainFromEmail,
-  isValidEmail,
-  uncheckedCast,
-} from "@/wab/shared/common";
+import { ensureType, uncheckedCast } from "@/wab/shared/common";
 import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
+import { parseEmailAddress } from "@/wab/shared/email-address";
 import { getPublicUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import { NextFunction, Request, Response } from "express-serve-static-core";
@@ -124,20 +121,19 @@ export async function createUserFull({
     authorizationPath: string;
   };
 }): Promise<User> {
-  const domain = extractDomainFromEmail(email).toLowerCase();
-  const blockedDomains = req.devflags.blockedSignupDomains.map((d) =>
-    d.toLowerCase()
-  );
-  const blocked = blockedDomains.some(
-    (blockedDomain) =>
-      domain === blockedDomain || domain.endsWith("." + blockedDomain)
-  );
-  if (blocked) {
+  const parsedEmail = parseEmailAddress(email);
+  if (!parsedEmail) {
+    throw new BadRequestError();
+  }
+  if (hasBlockedEmailDomain(parsedEmail)) {
+    logger().info(
+      `Blocked signup from email domain ${parsedEmail.normalizedDomain}`
+    );
     throw new BadRequestError();
   }
   const signUpPromotionCode = getPromotionCodeCookie(req);
   const user = await mgr.createUser({
-    email,
+    email: parsedEmail,
     password,
     firstName,
     lastName,
@@ -157,13 +153,18 @@ export async function createUserFull({
 
   if (!noWelcomeEmailAndSurvey) {
     if (!appInfo) {
-      await sendWelcomeEmail(req, email, emailVerificationToken, nextPath);
+      await sendWelcomeEmail(
+        req,
+        parsedEmail.normalized,
+        emailVerificationToken,
+        nextPath
+      );
     } else {
       // If we are dealing with an app, we don't want to send the welcome email.
       // Just a verification email.
       await sendEmailVerificationToUser(
         req,
-        email,
+        parsedEmail.normalized,
         emailVerificationToken ?? "",
         appInfo.authorizationPath,
         appInfo.appName
@@ -229,7 +230,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     return;
   }
 
-  if (!isValidEmail(email)) {
+  if (!parseEmailAddress(email)) {
     res.json(
       ensureType<SignUpResponse>({
         status: false,
@@ -734,14 +735,13 @@ export function isPublicApiRequest(req: Request) {
 }
 
 export async function isValidSsoEmail(req: Request, res: Response) {
-  if (
-    req.query.email &&
-    typeof req.query.email === "string" &&
-    isValidEmail(req.query.email)
-  ) {
-    const domain = extractDomainFromEmail(req.query.email);
+  const parsedEmail =
+    typeof req.query.email === "string"
+      ? parseEmailAddress(req.query.email)
+      : null;
+  if (parsedEmail) {
     const db = userDbMgr(req);
-    const config = await db.getSsoConfigByDomain(domain);
+    const config = await db.getSsoConfigByDomain(parsedEmail.normalizedDomain);
     if (config) {
       res.json({ valid: true, tenantId: config.tenantId });
       return;

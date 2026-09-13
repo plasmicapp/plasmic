@@ -41,12 +41,12 @@ import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import {
   assert,
   ensure,
-  isValidEmail,
   spawn,
   unexpected,
   withoutFalsy,
 } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { parseEmailAddress } from "@/wab/shared/email-address";
 import {
   convertToTaggedResourceId,
   filterDirectResourcePerms,
@@ -177,8 +177,8 @@ function ShareDialogContent(props: ShareDialogContentProps) {
   }
 
   async function invite() {
-    const cleaned = email.trim();
-    if (!isValidEmail(cleaned)) {
+    const parsedEmail = parseEmailAddress(email);
+    if (!parsedEmail) {
       setEmailInvalid(true);
       notification.error({ message: "Insert a valid email to invite" });
       return;
@@ -187,7 +187,9 @@ function ShareDialogContent(props: ShareDialogContentProps) {
     setSubmitting(true);
     try {
       const { enqueued } = await doGrantRevoke({
-        grants: [{ email: cleaned, accessLevel: inviteAccessLevel }],
+        grants: [
+          { email: parsedEmail.normalized, accessLevel: inviteAccessLevel },
+        ],
         revokes: [],
       });
 
@@ -433,7 +435,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       newUserEmail={{
         onChange: (e) => {
           setEmail(e.target.value);
-          if (isEmailInvalid && isValidEmail(e.target.value)) {
+          if (isEmailInvalid && parseEmailAddress(e.target.value)) {
             setEmailInvalid(false);
           }
         },

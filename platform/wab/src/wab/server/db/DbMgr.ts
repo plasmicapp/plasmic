@@ -227,6 +227,10 @@ import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
+import {
+  ParsedEmailAddress,
+  parseEmailAddress,
+} from "@/wab/shared/email-address";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import {
   HostLessPackageInfo,
@@ -1967,7 +1971,7 @@ export class DbMgr implements MigrationDbMgr {
    */
   async createUser({
     orgId,
-    email,
+    email: maybeUnparsedEmail,
     password,
     id,
     needsTeamCreationPrompt,
@@ -1979,7 +1983,7 @@ export class DbMgr implements MigrationDbMgr {
     ...fields
   }: {
     orgId?: string;
-    email: string;
+    email: string | ParsedEmailAddress;
     password?: string;
     id?: UserId;
     needsTeamCreationPrompt: boolean;
@@ -1992,7 +1996,14 @@ export class DbMgr implements MigrationDbMgr {
     this.allowAnyone();
     fields = _.pick(fields, updatableUserFields);
     await checkWeakPassword(password);
-    email = email.toLowerCase();
+    const parsedEmail =
+      typeof maybeUnparsedEmail === "string"
+        ? ensure(
+            parseEmailAddress(maybeUnparsedEmail),
+            `invalid email: ${maybeUnparsedEmail}`
+          )
+        : maybeUnparsedEmail;
+    const email = parsedEmail.normalized;
     const user = this.users().create({
       ...this.stampNew(),
       email,

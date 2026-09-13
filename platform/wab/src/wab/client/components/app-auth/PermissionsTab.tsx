@@ -24,13 +24,9 @@ import {
 import { isUserProjectEditor } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { ApiAppEndUserAccessRule, ApiProject } from "@/wab/shared/ApiSchema";
-import {
-  ensure,
-  isValidEmail,
-  withoutFalsy,
-  withoutNils,
-} from "@/wab/shared/common";
+import { ensure, withoutFalsy, withoutNils } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { parseEmailAddress } from "@/wab/shared/email-address";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { prodUrlForProject } from "@/wab/shared/project-urls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -234,7 +230,7 @@ function PermissionsTab_(
   }
 
   function tryGetGroupId(value: string) {
-    if (!(!isDomainEntry(value) && !isValidEmail(value))) {
+    if (!(!isDomainEntry(value) && !parseEmailAddress(value))) {
       return undefined;
     }
     const group = groups.find((g) => g.name === value);
@@ -243,7 +239,10 @@ function PermissionsTab_(
 
   async function inviteCurrentSelection() {
     await inviteElements(
-      invites.flatMap((invite) => (isValidEmail(invite) ? [invite] : [])),
+      invites.flatMap((invite) => {
+        const parsedEmail = parseEmailAddress(invite);
+        return parsedEmail ? [parsedEmail.normalized] : [];
+      }),
       invites.flatMap((invite) => (isDomainEntry(invite) ? [invite] : [])),
       withoutNils(invites.map((invite) => tryGetGroupId(invite)))
     );
@@ -295,7 +294,7 @@ function PermissionsTab_(
         ),
         value: group.name,
       })),
-      isValidEmail(search.trim()) && {
+      parseEmailAddress(search.trim()) && {
         label: "Add " + search,
         value: search,
       },
@@ -309,7 +308,7 @@ function PermissionsTab_(
 
   const [submitting, setSubmitting] = useState(false);
 
-  const anyEmails = invites.some((v) => isValidEmail(v));
+  const anyEmails = invites.some((v) => !!parseEmailAddress(v));
 
   const [selecting, setSelecting] = useState(false);
 

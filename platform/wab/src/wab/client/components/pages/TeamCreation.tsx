@@ -7,7 +7,8 @@ import { getTeamInviteLink } from "@/wab/client/components/widgets/plasmic/Share
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { ApiTeam, Grant, MAX_GRANTS_PER_REQUEST } from "@/wab/shared/ApiSchema";
-import { ensure, isValidEmail, spawn } from "@/wab/shared/common";
+import { ensure, spawn, withoutNils } from "@/wab/shared/common";
+import { parseEmailAddress } from "@/wab/shared/email-address";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Button, Form, Input, Select, Tooltip, notification } from "antd";
 import copy from "copy-to-clipboard";
@@ -57,7 +58,8 @@ export function TeamCreation() {
             .map((email) => email.trim())
             .filter((email) => !!email)
         : [];
-      if (emails.some((email) => !isValidEmail(email))) {
+      const parsedEmails = emails.map((email) => parseEmailAddress(email));
+      if (parsedEmails.some((parsedEmail) => !parsedEmail)) {
         notification.error({
           message: "Enter valid emails only, comma separated... ",
         });
@@ -65,8 +67,8 @@ export function TeamCreation() {
         return;
       }
 
-      const grants: Grant[] = emails.map((email) => ({
-        email,
+      const grants: Grant[] = withoutNils(parsedEmails).map((parsedEmail) => ({
+        email: parsedEmail.normalized,
         accessLevel: "editor",
         teamId: ensure(team, "Organization must exist to invite").id,
       }));
