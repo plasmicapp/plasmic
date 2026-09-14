@@ -3,7 +3,11 @@ import { MergeModalContext } from "@/wab/client/components/TopFrame/TopFrameChro
 import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
 import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
-import { ApiBranch, ApiTeam } from "@/wab/shared/ApiSchema";
+import {
+  ApiBranch,
+  ApiTeam,
+  CopilotChatOpenOpts,
+} from "@/wab/shared/ApiSchema";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { LocalizationConfig } from "@/wab/shared/localization";
 import { Listener } from "history";
@@ -78,7 +82,7 @@ export interface TopFrameApi {
   setOnboardingTour(val: TopFrameTourState): Promise<void>;
   toggleAdminMode(val: boolean): Promise<void>;
   toggleCopilotChat(): Promise<void>;
-  openCopilotChat(prompt: string): Promise<void>;
+  openCopilotChat(opts: CopilotChatOpenOpts): Promise<void>;
 }
 
 export type TopFrameApiArgs<Method extends keyof TopFrameApi> = Parameters<

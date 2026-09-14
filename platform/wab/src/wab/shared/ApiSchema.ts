@@ -2075,9 +2075,20 @@ export type QueryCopilotUiRequest = {
   copilotSystemPromptOverride?: string;
 } & CopilotUiProps;
 
+export const copilotChatModes = ["query-migration"] as const;
+
+/** Special chat modes. `undefined` is general chat. */
+export type CopilotChatMode = (typeof copilotChatModes)[number] | undefined;
+
+export interface CopilotChatOpenOpts {
+  prompt: string;
+  mode: CopilotChatMode;
+}
+
 export type QueryCopilotChatUiStreamRequest = {
   type: "chat-ui";
   projectId: ProjectId;
+  mode?: CopilotChatMode;
   modelProviderOverride?: ModelProviderOpts;
   copilotSystemPromptOverride?: string;
 } & CopilotChat;

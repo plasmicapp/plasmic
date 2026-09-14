@@ -433,6 +433,7 @@ const DEFAULT_DEVFLAGS = {
   showCopilot: true,
   enableUiCopilot: false,
   enableChatCopilot: false,
+  enableQueryMigrationCopilot: false,
   uiCopilotModelProviderOpts: {
     provider: "VertexAnthropic",
     modelName: "claude-haiku-4-5",
@@ -611,6 +612,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     previewSteps: true,
     enableUiCopilot: true,
     enableChatCopilot: true,
+    enableQueryMigrationCopilot: true,
     cmsUniqueFields: true,
   } as Partial<DevFlagsType>);
 }

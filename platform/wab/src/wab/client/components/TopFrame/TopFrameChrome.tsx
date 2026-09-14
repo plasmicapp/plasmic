@@ -44,8 +44,10 @@ import {
   ApiBranch,
   ApiPermission,
   ApiProject,
+  CopilotChatOpenOpts,
   MergeSrcDst,
 } from "@/wab/shared/ApiSchema";
+import { checkIsTeamOnPaidTierOrTrial } from "@/wab/shared/billing/billing-util";
 import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { LocalizationConfig } from "@/wab/shared/localization";
@@ -98,7 +100,7 @@ export interface TopFrameChromeProps {
   showAppAuthModal: boolean;
   studioModalOpen: boolean;
   showCopilotChatModal: boolean;
-  copilotStarterPrompt: { prompt: string } | undefined;
+  copilotChatOpenOpts: CopilotChatOpenOpts | undefined;
   subjectComponentInfo:
     | {
         pathOrComponent: string;
@@ -143,6 +145,11 @@ export function TopFrameChrome({
     location.pathname,
     false
   );
+  const projectTeam = appCtx
+    .getAllTeams()
+    .find((team) => team.id === project.teamId);
+  const isPayingTeam =
+    !!projectTeam && checkIsTeamOnPaidTierOrTrial(projectTeam);
 
   React.useEffect(() => {
     document.title = `${project.name} - Plasmic`;
@@ -366,8 +373,9 @@ export function TopFrameChrome({
               {hostFrameApiReady && rest.showCopilotChatModal && editorPerm && (
                 <CopilotChat
                   projectId={project.id}
-                  initialPrompt={rest.copilotStarterPrompt}
+                  chatOpenOpts={rest.copilotChatOpenOpts}
                   studioModalOpen={rest.studioModalOpen}
+                  canStartNewChat={isPayingTeam}
                   onClose={() => topFrameApi.toggleCopilotChat()}
                 />
               )}
@@ -499,10 +507,10 @@ export function useTopFrameState({
   >(undefined);
   const [showAppAuthModal, setShowAppAuthModal] = React.useState(false);
   const [studioModalOpen, setStudioModalOpen] = React.useState(false);
-  // Object-wrapped so a repeat request with identical text is still a state
-  // change, re-triggering the prefill of an already open dialog.
-  const [copilotStarterPrompt, setCopilotStarterPrompt] = React.useState<
-    { prompt: string } | undefined
+  // A new object per request, so a repeat request with identical text is still
+  // a state change that re-triggers the effect in an already open dialog.
+  const [copilotChatOpenOpts, setCopilotChatOpenOpts] = React.useState<
+    CopilotChatOpenOpts | undefined
   >(undefined);
 
   const showCopilotChatModal = React.useMemo(() => {
@@ -510,11 +518,11 @@ export function useTopFrameState({
     return searchParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true";
   }, [currentLocation.search]);
 
-  // A starter prompt is scoped to one dialog session, clear when the dialog
-  // closes so it can't come back prefilled on a later history navigation.
+  // The open options are scoped to one dialog session, clear when the dialog
+  // closes so the prompt can't come back prefilled on a later history navigation.
   React.useEffect(() => {
     if (!showCopilotChatModal) {
-      setCopilotStarterPrompt(undefined);
+      setCopilotChatOpenOpts(undefined);
     }
   }, [showCopilotChatModal]);
 
@@ -622,8 +630,8 @@ export function useTopFrameState({
         history.push({ search: queryParams.toString() });
         forceUpdate();
       },
-      openCopilotChat: async (prompt) => {
-        setCopilotStarterPrompt({ prompt });
+      openCopilotChat: async (opts) => {
+        setCopilotChatOpenOpts(opts);
         const queryParams = new URLSearchParams(history.location.search);
         if (queryParams.get(SEARCH_PARAM_COPILOT_CHAT) !== "true") {
           queryParams.set(SEARCH_PARAM_COPILOT_CHAT, "true");
@@ -694,7 +702,7 @@ export function useTopFrameState({
     showAppAuthModal,
     studioModalOpen,
     showCopilotChatModal,
-    copilotStarterPrompt,
+    copilotChatOpenOpts,
     defaultPageRoleId,
     setDefaultPageRoleId,
     onboardingTour,

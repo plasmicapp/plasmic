@@ -194,6 +194,7 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
+import { checkIsTeamOnPaidTierOrTrial } from "@/wab/shared/billing/billing-util";
 import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
@@ -3542,6 +3543,12 @@ export class StudioCtx extends WithDbCtx {
     return (
       isAdminTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig) ||
       (!!team && checkIsTeamOnPaidTierOrTrial(team))
+    );
+  }
+
+  queryMigrationCopilotEnabled(): boolean {
+    return (
+      this.canEditProject() && this.appCtx.appConfig.enableQueryMigrationCopilot
     );
   }
 
@@ -7985,12 +7992,6 @@ export function isUserProjectEditor(
   perms: ApiPermission[]
 ) {
   return checkAccessLevelRank(user, project, perms, "editor");
-}
-
-function checkIsTeamOnPaidTierOrTrial(team: ApiTeam): boolean {
-  // The API resolves featureTier from the parent for child organizations.
-  const tierId = team.featureTierId || team.featureTier?.id;
-  return (!!tierId && tierId !== DEVFLAGS.freeTier.id) || team.onTrial;
 }
 
 export function cssPropsForInvertTransform(

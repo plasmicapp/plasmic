@@ -61,9 +61,14 @@ import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
 
-// Opens Chat Copilot with a migration prompt prefilled for the user to review.
+// Opens Chat Copilot and sends the migration prompt right away.
 function startQueryMigrationChat(studioCtx: StudioCtx, prompt: string) {
-  spawn(studioCtx.appCtx.topFrameApi?.openCopilotChat(prompt));
+  spawn(
+    studioCtx.appCtx.topFrameApi?.openCopilotChat({
+      prompt,
+      mode: "query-migration",
+    })
+  );
 }
 
 const DataQueryRow = observer(
@@ -79,7 +84,8 @@ const DataQueryRow = observer(
     isDeprecated: boolean;
   }) => {
     const studioCtx = viewCtx.studioCtx;
-    const showMigrateItem = isDeprecated && studioCtx.chatCopilotEnabled();
+    const showMigrateItem =
+      isDeprecated && studioCtx.queryMigrationCopilotEnabled();
     // The integration is only needed for the migrate menu item; don't fetch
     // (and on 403, retry) it otherwise.
     const {
@@ -247,7 +253,7 @@ function ComponentQueriesSection_(props: {
 
   const showMigrate =
     isDeprecated &&
-    studioCtx.chatCopilotEnabled() &&
+    studioCtx.queryMigrationCopilotEnabled() &&
     component.dataQueries.length > 0;
 
   const handleAddDataQuery = () => {

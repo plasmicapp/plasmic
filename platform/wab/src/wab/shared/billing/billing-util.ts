@@ -33,6 +33,14 @@ export function checkIsTeamOnFreeTierOrTrial(
   );
 }
 
+export function checkIsTeamOnPaidTierOrTrial(
+  team: Pick<ApiTeam, "featureTierId" | "featureTier" | "onTrial">
+): boolean {
+  // The API resolves featureTier from the parent for child organizations.
+  const tierId = team.featureTierId || team.featureTier?.id;
+  return (!!tierId && tierId !== DEVFLAGS.freeTier.id) || team.onTrial;
+}
+
 /**
  * Given a team and Stripe subscription, determine the status of my account
  */
