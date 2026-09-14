@@ -1701,6 +1701,12 @@ export function serializeTplTagBase(
     delete attrs["outerHTML"];
   }
 
+  // <button> type can be "button", "reset", or "submit" (default).
+  // We don't offer "reset" and "submit" on <input>, so only "button" makes sense.
+  if (tag === "button" && !("type" in attrs)) {
+    attrs["type"] = codeLit("button").code;
+  }
+
   if (tag === "img") {
     if (!("alt" in attrs)) {
       attrs["alt"] = codeLit("").code;

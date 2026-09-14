@@ -1,8 +1,13 @@
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
-import { mkComponentVariantGroup } from "@/wab/shared/Variants";
+import {
+  ensureVariantSetting,
+  mkComponentVariantGroup,
+} from "@/wab/shared/Variants";
+import { codegen } from "@/wab/shared/codegen/__testonly__/codegen-tests-util";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { ParamTypes, mkParam } from "@/wab/shared/core/lang";
+import { createSite } from "@/wab/shared/core/sites";
 import { mkTplTagX, trackComponentRoot } from "@/wab/shared/core/tpls";
 import {
   Component,
@@ -11,6 +16,61 @@ import {
   VariantGroup,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
+import tmp from "tmp";
+
+describe("serializeTplTagBase", () => {
+  let dir: tmp.DirResult;
+
+  beforeEach(() => {
+    dir = tmp.dirSync({ unsafeCleanup: true });
+  });
+  afterEach(() => {
+    dir.removeCallback();
+  });
+
+  it('defaults <button> to type="button" unless the attr is set explicitly', async () => {
+    const site = createSite();
+    const component = mkComponent({
+      name: "Buttons",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => {
+        const plainButton = mkTplTagX("button", { name: "plainButton" });
+        ensureVariantSetting(plainButton, [baseVariant]);
+        const submitButton = mkTplTagX("button", {
+          name: "submitButton",
+          baseVariant,
+          attrs: { type: "submit" },
+        });
+        const root = mkTplTagX("div", {}, [plainButton, submitButton]);
+        ensureVariantSetting(root, [baseVariant]);
+        return root;
+      },
+    });
+    site.components.push(component);
+
+    const { readFromProject } = await codegen(dir.name, site);
+    const renderModule = readFromProject("PlasmicButtons.tsx");
+
+    const plainButtonStart = renderModule.indexOf(
+      'data-plasmic-name={"plainButton"}'
+    );
+    const submitButtonStart = renderModule.indexOf(
+      'data-plasmic-name={"submitButton"}'
+    );
+    expect(plainButtonStart).toBeGreaterThan(-1);
+    expect(submitButtonStart).toBeGreaterThan(plainButtonStart);
+
+    const plainButtonJsx = renderModule.slice(
+      plainButtonStart,
+      submitButtonStart
+    );
+    expect(plainButtonJsx).toContain('type={"button"}');
+
+    const submitButtonJsx = renderModule.slice(submitButtonStart);
+    expect(submitButtonJsx).toContain('type={"submit"}');
+    expect(submitButtonJsx).not.toContain('type={"button"}');
+  });
+});
 
 function expectMakeCssClassNameForVariantCombo(
   variantCombo: Variant[],
