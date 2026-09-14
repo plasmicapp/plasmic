@@ -165,11 +165,11 @@
   border-radius: var(--token-CyMxORMQ0iY7);
   border: 2px dashed var(--token-qP8a3gYPq7fd);
 }
-.dropOverlaydragState_dragstart {
+.dropOverlaydragState_dragging {
   opacity: 0.75;
   display: flex;
 }
-.dropOverlaydragState_dragover {
+.dropOverlaydragState_draggingOver {
   opacity: 1;
   display: flex;
   border-width: 3px;

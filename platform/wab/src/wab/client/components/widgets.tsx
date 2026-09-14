@@ -8,6 +8,7 @@ import {
   useFocusOnDisplayed,
   useToggleDisplayed,
 } from "@/wab/client/dom-utils";
+import { useFileDragState } from "@/wab/client/file-drag/useFileDragState";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
@@ -16,6 +17,7 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
 import DragGripIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__DragGrip";
+import UploadSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__UploadSvg";
 import {
   MaybeWrap,
   createFakeEvent,
@@ -361,9 +363,20 @@ export function DragItem({
   );
 }
 
+const fileUploaderAcceptConfig = {
+  any: { inputAccept: undefined, dropText: "Drop file to upload" },
+  image: {
+    inputAccept: ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp,.ico",
+    dropText: "Drop image to upload",
+  },
+  svg: { inputAccept: ".svg", dropText: "Drop SVG to upload" },
+};
+
+export type FileUploaderAccept = keyof typeof fileUploaderAcceptConfig;
+
 export interface FileUploaderProps {
   onChange: (files: FileList | null) => void;
-  accept?: string;
+  accept: FileUploaderAccept;
   style?: React.CSSProperties;
   disabled?: boolean;
   children?: React.ReactNode;
@@ -371,25 +384,33 @@ export interface FileUploaderProps {
 
 export function FileUploader(props: FileUploaderProps) {
   const { onChange, accept, style, children, disabled } = props;
-  const [isDragOver, setDragOver] = React.useState(false);
+  const { inputAccept, dropText } = fileUploaderAcceptConfig[accept];
+  const [input, setInput] = React.useState<HTMLInputElement | null>(null);
+  const dragState = useFileDragState(input);
   return (
     <Tooltip title={"Upload or drag a file here"}>
-      <PlainLinkButton
-        className={cx("file-uploader", { "file-uploader--over": isDragOver })}
-        style={style}
-      >
+      <PlainLinkButton className="file-uploader" style={style}>
         {children ?? (
           <div className={"fake-upload"}>
             <FaUpload />
           </div>
         )}
+        {dragState && !disabled && (
+          <div
+            className={cx("drop-overlay", "file-uploader__drop-overlay", {
+              "drop-overlay--dragover": dragState === "draggingOver",
+            })}
+          >
+            <Icon icon={UploadSvgIcon} size={24} />
+            <span>{dropText}</span>
+          </div>
+        )}
         <input
+          ref={setInput}
           type="file"
           className={"opaque-file-uploader"}
           onChange={(e) => onChange(e.target.files)}
-          accept={accept}
-          onDragEnter={() => setDragOver(true)}
-          onDragLeave={() => setDragOver(false)}
+          accept={inputAccept}
           disabled={disabled}
         />
       </PlainLinkButton>

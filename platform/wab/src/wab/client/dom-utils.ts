@@ -187,9 +187,11 @@ export type ImageAssetOpts = {
 export const isDescendant = ({
   parent,
   child,
+  crossFrame,
 }: {
   parent: Element;
   child: Element;
+  crossFrame?: boolean;
 }) => {
   let node = child.parentNode;
 
@@ -198,7 +200,10 @@ export const isDescendant = ({
       return true;
     }
 
-    node = node.parentNode;
+    node =
+      node.parentNode ??
+      (crossFrame ? (node as Document).defaultView?.frameElement : null) ??
+      null;
   }
 
   return false;

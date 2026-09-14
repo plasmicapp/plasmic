@@ -1,4 +1,3 @@
-import { AppCtx } from "@/wab/client/app-ctx";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
@@ -30,7 +29,6 @@ import {
   ResizableImage,
   downloadImageAsset,
   maybeUploadImage,
-  readAndSanitizeFileAsImage,
 } from "@/wab/client/dom-utils";
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
 import PlasmicLeftImagesPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImagesPanel";
@@ -41,7 +39,6 @@ import { ensure } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/shared/core/image-assets";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ImageAsset, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
@@ -525,11 +522,7 @@ export const ImageAssetSidebarPopup = observer(
             <div className="panel-content dimfg flex-col">
               <div className="mb-sm">Upload a new image</div>
               <ImageUploader
-                accept={
-                  asset.type === ImageAssetType.Picture
-                    ? ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"
-                    : ".svg"
-                }
+                accept={asset.type === ImageAssetType.Picture ? "image" : "svg"}
                 onUploaded={handleUploaded}
               />
 
@@ -542,53 +535,6 @@ export const ImageAssetSidebarPopup = observer(
     );
   }
 );
-
-export const IMAGE_ACCEPT = ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp";
-export async function promptFileUpload(
-  appCtx: AppCtx,
-  opts?: {
-    accept?: string;
-  }
-) {
-  return new Promise<ImageUploadResponse | undefined>((resolve, reject) => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", opts?.accept ?? IMAGE_ACCEPT);
-    input.classList.add("display-none");
-    document.body.appendChild(input);
-    const cleanup = () => {
-      document.body.removeChild(input);
-    };
-    input.addEventListener("change", async () => {
-      if (input.files && input.files[0]) {
-        try {
-          const image = await readAndSanitizeFileAsImage(
-            appCtx,
-            input.files[0]
-          );
-          if (!image) {
-            reject(new Error("Invalid image"));
-          } else {
-            const blob = imageDataUriToBlob(image.url);
-            const uploaded = await appCtx.api.uploadImageFile({
-              imageFile: blob,
-            });
-            resolve(uploaded);
-          }
-        } catch (err) {
-          reject(err);
-        } finally {
-          cleanup();
-        }
-      }
-    });
-    input.addEventListener("cancel", () => {
-      resolve(undefined);
-      cleanup();
-    });
-    input.click();
-  });
-}
 
 export function getCmsImageUrl(uploaded: ImageUploadResponse) {
   const imgId = ensure(last(uploaded.dataUri.split("/")), "Expected imgId");

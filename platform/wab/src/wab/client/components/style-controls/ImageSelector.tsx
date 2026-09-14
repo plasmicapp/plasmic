@@ -433,11 +433,7 @@ export const ImageAssetOrUrlPicker = observer(
           )}
           <ImageUploader
             onUploaded={handleImageUploaded}
-            accept={
-              type === ImageAssetType.Picture
-                ? ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"
-                : ".svg"
-            }
+            accept={type === ImageAssetType.Picture ? "image" : "svg"}
           />
           <div className="mv-sm">{"or paste a new image from clipboard"}</div>
           <ImagePaster onPasted={handleImageUploaded} />
@@ -476,7 +472,7 @@ export const ImageAssetOrUrlPicker = observer(
 
 export function ImageUploader(props: {
   onUploaded: (image: ResizableImage, file: File) => void;
-  accept?: string;
+  accept: "image" | "svg";
   children?: React.ReactNode;
   isDisabled?: boolean;
 }) {
@@ -499,7 +495,7 @@ export function ImageUploader(props: {
   return (
     <FileUploader
       onChange={handleUploadChange}
-      accept={accept ?? ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp"}
+      accept={accept}
       children={children}
       disabled={isDisabled}
     />

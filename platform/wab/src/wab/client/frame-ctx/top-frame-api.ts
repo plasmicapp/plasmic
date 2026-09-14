@@ -1,6 +1,7 @@
 import { Api } from "@/wab/client/api";
 import { MergeModalContext } from "@/wab/client/components/TopFrame/TopFrameChrome";
 import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
+import type { RemoteFileDragEvent } from "@/wab/client/file-drag/file-drag-monitor";
 import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
 import {
@@ -83,6 +84,7 @@ export interface TopFrameApi {
   toggleAdminMode(val: boolean): Promise<void>;
   toggleCopilotChat(): Promise<void>;
   openCopilotChat(opts: CopilotChatOpenOpts): Promise<void>;
+  onFileDragEventInHost(event: RemoteFileDragEvent): Promise<void>;
 }
 
 export type TopFrameApiArgs<Method extends keyof TopFrameApi> = Parameters<

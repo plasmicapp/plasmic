@@ -1,5 +1,6 @@
 import { isWithinPointerInteractiveElement } from "@/wab/client/dom-utils";
 import { LocalStorageKey } from "@/wab/client/LocalStorageKey";
+import { mergeRefs } from "@/wab/commons/components/ReactUtil";
 import { Box, Pt } from "@/wab/shared/geom";
 import cn from "classnames";
 import L from "lodash";
@@ -37,37 +38,47 @@ interface WindowState {
  * A persistent, draggable, resizable window that renders over most UI layers.
  * The window should have a handle which is used for dragging.
  */
-export function FloatingWindow({
-  handleSelector,
-  storageKey,
-  focusedMode,
-  initialWidth,
-  initialHeight,
-  disableWidthResize,
-  disableHeightResize,
-  hiddenByModal,
-  className,
-  children,
-  style,
-  onPointerDown,
-  ...rest
-}: React.HTMLAttributes<HTMLDivElement> & {
-  /** Selector for the drag-handle region to detect drags. */
-  handleSelector: string;
-  /** If set, stores the last position and size of the window here. */
-  storageKey?: LocalStorageKey;
-  /** Opens the window below the focused toolbar. */
-  focusedMode?: boolean;
-  /** Initial width. Stored width from storageKey takes precedence. If unset, width will auto-size. */
-  initialWidth?: number;
-  /** Initial height. Stored height from storageKey takes precedence. If unset, height will auto-size. */
-  initialHeight?: number;
-  disableWidthResize?: boolean;
-  disableHeightResize?: boolean;
-  /** Hides the window, for a modal whose mask stops at a frame below this one. */
-  hiddenByModal?: boolean;
-}) {
+export const FloatingWindow = React.forwardRef(function FloatingWindow(
+  {
+    handleSelector,
+    storageKey,
+    focusedMode,
+    initialWidth,
+    initialHeight,
+    disableWidthResize,
+    disableHeightResize,
+    hiddenByModal,
+    forceActive,
+    className,
+    children,
+    style,
+    onPointerDown,
+    ...rest
+  }: React.HTMLAttributes<HTMLDivElement> & {
+    /** Selector for the drag-handle region to detect drags. */
+    handleSelector: string;
+    /** If set, stores the last position and size of the window here. */
+    storageKey?: LocalStorageKey;
+    /** Forces the window to look "active" (e.g. hovered/focused). */
+    forceActive?: boolean;
+    /** Opens the window below the focused toolbar. */
+    focusedMode?: boolean;
+    /** Initial width. Stored width from storageKey takes precedence. If unset, width will auto-size. */
+    initialWidth?: number;
+    /** Initial height. Stored height from storageKey takes precedence. If unset, height will auto-size. */
+    initialHeight?: number;
+    disableWidthResize?: boolean;
+    disableHeightResize?: boolean;
+    /** Hides the window, for a modal whose mask stops at a frame below this one. */
+    hiddenByModal?: boolean;
+  },
+  outerRef: React.ForwardedRef<HTMLDivElement>
+) {
   const windowRef = React.useRef<HTMLDivElement>(null);
+  const ref = React.useMemo(
+    () => mergeRefs(windowRef, outerRef),
+    [windowRef, outerRef]
+  );
 
   const loadedState = React.useMemo(
     () => loadWindowState(storageKey),
@@ -228,9 +239,10 @@ export function FloatingWindow({
   return (
     <div
       {...rest}
-      ref={windowRef}
+      ref={ref}
       className={cn(className, {
         "floating-window": true,
+        "floating-window--force-active": forceActive,
         "floating-window--focused": focusedMode,
         "floating-window--hidden-by-modal": hiddenByModal,
       })}
@@ -260,7 +272,7 @@ export function FloatingWindow({
       ))}
     </div>
   );
-}
+});
 
 function storeWindowState(
   storageKey: LocalStorageKey | undefined,

@@ -52,12 +52,12 @@ createPlasmicElementProxy;
 export type PlasmicCopilotPromptInput__VariantMembers = {
   isLoading: "isLoading";
   withAdminOverrides: "withAdminOverrides";
-  dragState: "dragstart" | "dragover";
+  dragState: "dragging" | "draggingOver";
 };
 export type PlasmicCopilotPromptInput__VariantsArgs = {
   isLoading?: SingleBooleanChoiceArg<"isLoading">;
   withAdminOverrides?: SingleBooleanChoiceArg<"withAdminOverrides">;
-  dragState?: MultiChoiceArg<"dragstart" | "dragover">;
+  dragState?: MultiChoiceArg<"dragging" | "draggingOver">;
 };
 type VariantPropType = keyof PlasmicCopilotPromptInput__VariantsArgs;
 export const PlasmicCopilotPromptInput__VariantProps =
@@ -85,7 +85,7 @@ export interface DefaultCopilotPromptInputProps {
   placeholder?: string;
   isLoading?: SingleBooleanChoiceArg<"isLoading">;
   withAdminOverrides?: SingleBooleanChoiceArg<"withAdminOverrides">;
-  dragState?: MultiChoiceArg<"dragstart" | "dragover">;
+  dragState?: MultiChoiceArg<"dragging" | "draggingOver">;
   className?: string;
 }
 
@@ -190,10 +190,10 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
         styleTokensClassNames,
         sty.root,
         {
-          [sty.rootdragState_dragover]: hasVariant(
+          [sty.rootdragState_draggingOver]: hasVariant(
             $state,
             "dragState",
-            "dragover"
+            "draggingOver"
           ),
         }
       )}
@@ -396,29 +396,29 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
           data-plasmic-name={"dropOverlay"}
           data-plasmic-override={overrides.dropOverlay}
           className={classNames("all", sty.dropOverlay, {
-            [sty.dropOverlaydragState_dragover]: hasVariant(
+            [sty.dropOverlaydragState_draggingOver]: hasVariant(
               $state,
               "dragState",
-              "dragover"
+              "draggingOver"
             ),
-            [sty.dropOverlaydragState_dragstart]: hasVariant(
+            [sty.dropOverlaydragState_dragging]: hasVariant(
               $state,
               "dragState",
-              "dragstart"
+              "dragging"
             ),
           })}
         >
           <PhotoSvgIcon
             className={classNames("all", sty.svg__yuVHz, {
-              [sty.svgdragState_dragover__yuVHzCz5Op]: hasVariant(
+              [sty.svgdragState_draggingOver__yuVHzCz5Op]: hasVariant(
                 $state,
                 "dragState",
-                "dragover"
+                "draggingOver"
               ),
-              [sty.svgdragState_dragstart__yuVHzo2NEr]: hasVariant(
+              [sty.svgdragState_dragging__yuVHzo2NEr]: hasVariant(
                 $state,
                 "dragState",
-                "dragstart"
+                "dragging"
               ),
             })}
             role={"img"}
@@ -434,15 +434,15 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
               "__wab_text",
               sty.span,
               {
-                [sty.spandragState_dragover]: hasVariant(
+                [sty.spandragState_draggingOver]: hasVariant(
                   $state,
                   "dragState",
-                  "dragover"
+                  "draggingOver"
                 ),
-                [sty.spandragState_dragstart]: hasVariant(
+                [sty.spandragState_dragging]: hasVariant(
                   $state,
                   "dragState",
-                  "dragstart"
+                  "dragging"
                 ),
               }
             )}
@@ -507,7 +507,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotPromptInput__VariantsArgs;
     args?: PlasmicCopilotPromptInput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCopilotPromptInput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCopilotPromptInput__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotPromptInput__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

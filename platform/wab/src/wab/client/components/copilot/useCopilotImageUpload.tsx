@@ -17,6 +17,8 @@ export interface UseCopilotImageUpload {
   fileInput: React.ReactElement;
   isUploading: boolean;
   openFilePicker: () => void;
+  /** Uploads files obtained elsewhere, e.g. dropped or pasted. */
+  uploadFiles: (files: Iterable<File>) => void;
 }
 
 /** Hook to headlessly handle image uploads. */
@@ -27,6 +29,22 @@ export function useCopilotImageUpload({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [pendingReads, setPendingReads] = React.useState(0);
 
+  const uploadFiles = (files: Iterable<File>) => {
+    for (const file of files) {
+      setPendingReads((n) => n + 1);
+      readCopilotImage(file)
+        .then(
+          (image) => onUpload(image),
+          (err) =>
+            onUploadError?.(
+              file,
+              err instanceof Error ? err : new Error(String(err))
+            )
+        )
+        .finally(() => setPendingReads((n) => n - 1));
+    }
+  };
+
   const fileInput = (
     <input
       ref={inputRef}
@@ -35,21 +53,7 @@ export function useCopilotImageUpload({
       multiple
       accept={copilotImageTypes.map((t) => `.${t}`).join(",")}
       onChange={(e) => {
-        const files = Array.from(e.target.files ?? []);
-
-        for (const file of files) {
-          setPendingReads((n) => n + 1);
-          readCopilotImage(file)
-            .then(
-              (image) => onUpload(image),
-              (err) =>
-                onUploadError?.(
-                  file,
-                  err instanceof Error ? err : new Error(String(err))
-                )
-            )
-            .finally(() => setPendingReads((n) => n - 1));
-        }
+        uploadFiles(e.target.files ?? []);
 
         // Clear hidden input's value since it should be stateless.
         e.target.value = "";
@@ -61,6 +65,7 @@ export function useCopilotImageUpload({
     fileInput,
     isUploading: pendingReads > 0,
     openFilePicker: () => inputRef.current?.click(),
+    uploadFiles,
   };
 }
 

@@ -541,7 +541,7 @@ export function CmsImageInput(props: {
         <FileUploader
           style={{
             alignSelf: "auto",
-            width: 100,
+            width: 200,
           }}
           onChange={async (fileList: FileList | null) => {
             if (!fileList || fileList.length === 0) {
@@ -554,7 +554,7 @@ export function CmsImageInput(props: {
             setUploading(false);
             onChange?.(result.files[0]);
           }}
-          accept={".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp"}
+          accept={"image"}
         />
       )}
       {isUploading && <em>Uploading...</em>}
@@ -583,9 +583,10 @@ export function CmsFileInput(props: {
       )}
       {!disabled && (
         <FileUploader
+          accept={"any"}
           style={{
             alignSelf: "auto",
-            width: 100,
+            width: 200,
           }}
           onChange={async (fileList: FileList | null) => {
             if (!fileList || fileList.length === 0) {

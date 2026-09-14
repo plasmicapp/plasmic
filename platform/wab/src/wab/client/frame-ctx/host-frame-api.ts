@@ -2,6 +2,7 @@ import type {
   MentionableResourceKind,
   MentionableResources,
 } from "@/wab/client/components/copilot/resource-mention-utils";
+import type { RemoteFileDragEvent } from "@/wab/client/file-drag/file-drag-monitor";
 import {
   PublishResult,
   StudioAppUser,
@@ -70,6 +71,7 @@ export type HostFrameApi = {
     kind: MentionableResourceKind,
     uuid: string
   ): Promise<void>;
+  onFileDragEventInTop(event: RemoteFileDragEvent): Promise<void>;
 };
 
 /** Structured error for copilot tool calls — Comlink-serializable. */

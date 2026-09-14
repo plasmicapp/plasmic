@@ -7,12 +7,18 @@ import {
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { isAnyModalOpen } from "@/wab/client/components/widgets/open-modals";
 import { COPILOT_TOOLS } from "@/wab/client/copilot";
+import { fileDragMonitor } from "@/wab/client/file-drag/file-drag-monitor";
 import {
   CopilotToolCallResult,
   HostFrameApi,
 } from "@/wab/client/frame-ctx/host-frame-api";
 import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
-import { StudioAppUser, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  StudioAppUser,
+  StudioCtx,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
@@ -51,6 +57,31 @@ function notifyMentionedResourceGone() {
     message: "That resource no longer exists",
     description: "It may have been deleted since it was mentioned.",
   });
+}
+
+function trackArtboardFileDrags(studioCtx: StudioCtx): () => void {
+  const untrackByViewCtx = new Map<ViewCtx, () => void>();
+  const dispose = autorun(() => {
+    const viewCtxs = new Set(studioCtx.viewCtxs);
+    for (const [vc, untrack] of untrackByViewCtx) {
+      if (!viewCtxs.has(vc)) {
+        untrack();
+        untrackByViewCtx.delete(vc);
+      }
+    }
+    for (const vc of viewCtxs) {
+      if (!untrackByViewCtx.has(vc)) {
+        untrackByViewCtx.set(
+          vc,
+          fileDragMonitor.addWindowListeners(vc.canvasCtx.win())
+        );
+      }
+    }
+  });
+  return () => {
+    dispose();
+    untrackByViewCtx.forEach((untrack) => untrack());
+  };
 }
 
 export const TopFrameObserver = observer(function _TopFrameObserver({
@@ -243,6 +274,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         }
         studioCtx.uiActionBus.dispatch(uiId, "jump");
       },
+      async onFileDragEventInTop(event): Promise<void> {
+        fileDragMonitor.onRemoteEvent(event);
+      },
     }),
     [studioCtx]
   );
@@ -250,6 +284,15 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
   React.useEffect(() => {
     hostFrameCtx.onHostFrameApiReady(hostFrameApi);
   }, [hostFrameApi]);
+
+  React.useEffect(() => trackArtboardFileDrags(studioCtx), [studioCtx]);
+  React.useEffect(
+    () =>
+      fileDragMonitor.subscribeRemote((event) =>
+        spawn(topFrameApi.onFileDragEventInHost(event))
+      ),
+    [topFrameApi]
+  );
 
   React.useEffect(() => {
     const dispose = autorun(() => {

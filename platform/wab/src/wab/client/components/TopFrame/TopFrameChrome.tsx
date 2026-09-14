@@ -21,6 +21,7 @@ import {
 import { FloatingWindowLayer } from "@/wab/client/components/widgets/FloatingWindow";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { isAnyModalOpen } from "@/wab/client/components/widgets/open-modals";
+import { fileDragMonitor } from "@/wab/client/file-drag/file-drag-monitor";
 import {
   TopFrameApi,
   TopFrameApiArgs,
@@ -392,6 +393,7 @@ export function TopFrameChrome({
           </>
         ))}
       <ForwardShortcuts />
+      <ShareFileDrag />
     </>
   );
 }
@@ -410,6 +412,21 @@ const CopilotChat = observer(function CopilotChat({
     />
   );
 });
+
+function ShareFileDrag() {
+  const { hostFrameApi, hostFrameApiReady } = useTopFrameCtx();
+
+  React.useEffect(() => {
+    if (hostFrameApiReady) {
+      return fileDragMonitor.subscribeRemote((event) =>
+        spawn(hostFrameApi.onFileDragEventInTop(event))
+      );
+    }
+    return undefined;
+  }, [hostFrameApi, hostFrameApiReady]);
+
+  return null;
+}
 
 function ForwardShortcuts() {
   const { hostFrameApi, hostFrameApiReady } = useTopFrameCtx();
@@ -639,6 +656,9 @@ export function useTopFrameState({
         }
         forceUpdate();
       },
+      onFileDragEventInHost: asyncWrapper((event) =>
+        fileDragMonitor.onRemoteEvent(event)
+      ),
       setOnboardingTour: asyncWrapper(setOnboardingTour),
       pickDataSource: async (opts) => {
         return new Promise((resolve) => {

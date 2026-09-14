@@ -1,45 +1,30 @@
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import DownloadsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg";
+import { useFileDragState } from "@/wab/client/file-drag/useFileDragState";
+import UploadSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__UploadSvg";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import cx from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 interface CanvasDndOverlayProps {
-  opts: {
-    visible: boolean;
-  };
+  /** The canvas container this overlay covers and reports drags over. */
+  container: React.RefObject<HTMLElement>;
 }
 
-function CanvasDndOverlay_(props: CanvasDndOverlayProps) {
-  const visible = props.opts.visible;
+function CanvasDndOverlay_({ container }: CanvasDndOverlayProps) {
+  const studioCtx = useStudioCtx();
+  const dragState = useFileDragState(container.current);
+  if (!dragState || studioCtx.isInteractiveMode) {
+    return null;
+  }
   return (
     <div
-      style={{
-        zIndex: 99,
-        position: "fixed",
-        display: !visible ? "none" : "block",
-        width: "100%",
-        height: "100%",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        cursor: "pointer",
-      }}
+      className={cx("drop-overlay", "canvas-dnd-overlay", {
+        "drop-overlay--dragover": dragState === "draggingOver",
+      })}
     >
-      <Icon
-        icon={DownloadsvgIcon}
-        size={64}
-        style={{
-          zIndex: 100,
-          position: "fixed",
-          display: !visible ? "none" : "block",
-          top: "50%",
-          left: "50%",
-          color: "#ffffff",
-        }}
-      />
-      ;
+      <Icon icon={UploadSvgIcon} size={40} />
+      <span>Drop image to upload</span>
     </div>
   );
 }

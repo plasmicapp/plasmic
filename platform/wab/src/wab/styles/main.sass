@@ -1744,8 +1744,8 @@ a.btn-link
 
   transition: opacity 0.15s ease, filter 0.15s ease
 
-  // hover or focus-within = active
-  &:hover, &:focus-within
+  // hover or focus-within or force-active = active
+  &:hover, &:focus-within, &.floating-window--force-active
     opacity: 1
     filter: drop-shadow(0 3px 10px rgba(0,0,0,.2))
 
@@ -3514,6 +3514,18 @@ $invalid-arg-color: #faad14
   color: rgba(255, 255, 255, 0.2)
   padding: 0 10px
 
+// Drop affordance matching CopilotPromptInput's dropOverlay.
+.drop-overlay
+  @include dead-center
+  gap: 8px
+  color: $brand-brand-soft-foreground
+  background-color: $brand-brand-soft
+  border: 2px dashed $brand-brand
+  opacity: 0.75
+  &.drop-overlay--dragover
+    opacity: 1
+    border-width: 3px
+
 .file-uploader
   position: relative
   align-self: stretch
@@ -3528,11 +3540,13 @@ $invalid-arg-color: #faad14
     height: 60px
     color: rgba(125, 125, 125, 0.2)
     font-size: 20px
-  &.file-uploader--over
-    border-style: solid
-    background-color: $inverse-dimbg
-    .fake-upload
-      color: $inverse-brightfg
+  .file-uploader__drop-overlay
+    position: absolute
+    inset: -1px  // cover the uploader's own border
+    border-radius: inherit
+    flex-wrap: wrap
+    text-align: center
+    pointer-events: none  // drops go to the file input on top
 
 .image-paster
   border: 1px dashed $border-strong
@@ -3944,6 +3958,7 @@ $color-stops-width: 100%
   background-color: white
   overflow: hidden
   margin-left: auto
+  border-left: 1px solid $sand6
 
 .canvas-editor__disable-right-pane
   position: absolute
@@ -3955,9 +3970,6 @@ $color-stops-width: 100%
   opacity: 30%
   cursor: not-allowed
   z-index: 100
-
-.canvas-editor__right-pane-box-shadow
-  box-shadow: -1px 0 0 1px $canvas-border
 
 .canvas-editor__top-pane
   flex: 1
@@ -4167,6 +4179,16 @@ $color-stops-width: 100%
 .canvas-editor__viewport-click-guard
   @include cover
   display: none
+// Covers the canvas container (which is positioned), not the side panes,
+// which have drop targets of their own.
+.canvas-dnd-overlay
+  position: absolute
+  inset: 0
+  z-index: 99
+  background-color: rgba($brand-brand-soft, 0.75)
+  gap: 12px
+  font-size: 20px
+  pointer-events: none // drops go to the canvas/artboards
 .canvas-editor__hoverbox-scroller
   position: absolute
 .hidden-image-selector

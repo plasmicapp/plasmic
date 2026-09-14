@@ -461,7 +461,7 @@ function PlasmicHostingSettings_(
                 })()
               );
             }}
-            accept={".ico,.jpg,.jpeg,.png,.svg,.gif"}
+            accept={"image"}
             isDisabled={isTeamOnFreeTierOrTrial}
           >
             <div className="flex gap-sm dimfg p-sm">

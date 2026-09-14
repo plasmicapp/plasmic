@@ -1,5 +1,6 @@
 import {
   deriveImageAssetTypeAndUri,
+  isDescendant,
   isWithinKeyboardInteractiveElement,
   isWithinPointerInteractiveElement,
   ResizableImage,
@@ -254,6 +255,90 @@ describe("deriveImageAssetTypeAndUri", () => {
 
       expect(result).toBeUndefined();
     });
+  });
+});
+
+describe("isDescendant", () => {
+  it("works", () => {
+    const root = document.createElement("div");
+    const a = root.appendChild(document.createElement("div"));
+    const aa = a.appendChild(document.createElement("div"));
+    const b = root.appendChild(document.createElement("div"));
+
+    expect(isDescendant({ parent: root, child: a })).toBe(true);
+    expect(isDescendant({ parent: root, child: aa })).toBe(true);
+    expect(isDescendant({ parent: root, child: b })).toBe(true);
+    expect(isDescendant({ parent: a, child: aa })).toBe(true);
+
+    expect(isDescendant({ parent: root, child: root })).toBe(false);
+    expect(isDescendant({ parent: a, child: root })).toBe(false);
+    expect(isDescendant({ parent: aa, child: root })).toBe(false);
+    expect(isDescendant({ parent: aa, child: a })).toBe(false);
+    expect(isDescendant({ parent: b, child: root })).toBe(false);
+    expect(isDescendant({ parent: a, child: b })).toBe(false);
+    expect(isDescendant({ parent: b, child: a })).toBe(false);
+  });
+
+  // prettier-ignore
+  it("works cross frame", () => {
+    // Iframes only get a contentDocument once connected to a document.
+    const root = document.body.appendChild(document.createElement('div'));
+    const f = root.appendChild(document.createElement('iframe'));
+    const fa = f.contentDocument!.body.appendChild(document.createElement("div"));
+    const ff = f.contentDocument!.body.appendChild(document.createElement("iframe"));
+    const ffa = ff.contentDocument!.body.appendChild(document.createElement("div"));
+    const faf = fa.appendChild(document.createElement("iframe"));
+    const fafa = faf.contentDocument!.body.appendChild(document.createElement("div"));
+
+    expect(isDescendant({ parent: root, child: root })).toBe(false);
+    expect(isDescendant({ parent: root, child: root, crossFrame: true })).toBe(false);
+
+    expect(isDescendant({ parent: root, child: f })).toBe(true);
+    expect(isDescendant({ parent: root, child: f, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: root, child: fa })).toBe(false);
+    expect(isDescendant({ parent: root, child: fa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: root, child: ff })).toBe(false);
+    expect(isDescendant({ parent: root, child: ff, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: root, child: ffa })).toBe(false);
+    expect(isDescendant({ parent: root, child: ffa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: root, child: faf })).toBe(false);
+    expect(isDescendant({ parent: root, child: faf, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: root, child: fafa })).toBe(false);
+    expect(isDescendant({ parent: root, child: fafa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: f, child: fa })).toBe(false);
+    expect(isDescendant({ parent: f, child: fa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: f, child: ff })).toBe(false);
+    expect(isDescendant({ parent: f, child: ff, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: f, child: ffa })).toBe(false);
+    expect(isDescendant({ parent: f, child: ffa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: f, child: faf })).toBe(false);
+    expect(isDescendant({ parent: f, child: faf, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: f, child: fafa })).toBe(false);
+    expect(isDescendant({ parent: f, child: fafa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: fa, child: faf })).toBe(true);
+    expect(isDescendant({ parent: fa, child: faf, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: fa, child: fafa })).toBe(false);
+    expect(isDescendant({ parent: fa, child: fafa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: ff, child: ffa })).toBe(false);
+    expect(isDescendant({ parent: ff, child: ffa, crossFrame: true })).toBe(true);
+
+    expect(isDescendant({ parent: faf, child: fafa })).toBe(false);
+    expect(isDescendant({ parent: faf, child: fafa, crossFrame: true })).toBe(true);
+
+    root.remove();
   });
 });
 

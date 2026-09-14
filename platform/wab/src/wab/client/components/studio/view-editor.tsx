@@ -114,7 +114,7 @@ import { ArgsProps } from "antd/lib/notification";
 import { default as cn, default as cx } from "classnames";
 import $ from "jquery";
 import { throttle } from "lodash";
-import { observable, runInAction } from "mobx";
+import { runInAction } from "mobx";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React, { createRef } from "react";
@@ -154,9 +154,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     targetVc: ViewCtx;
   };
   private resizeObserver?: ResizeObserver;
-  private dndOverlayOpts = observable({
-    visible: false,
-  });
+  private canvasContainer = createRef<HTMLDivElement>();
 
   private unbindShortcutHandlers: () => void;
 
@@ -899,35 +897,14 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   }
 
   /**
-   * The dragenter and dragleave events fire on entering/leaving nested elements
-   * in a DOM tree, so we count how deep we are in a nested tree to track
-   * whether we're actually entered or exited from the overall tree.
-   */
-  private dragDepth = 0;
-
-  /**
-   * We must call preventDefault to signify a valid drop target.
+   * We must call preventDefault to signify a valid drop target. The drop
+   * affordance itself follows `fileDragMonitor`; see `CanvasDndOverlay`.
    */
   private handleDragEnter(e: DragEvent | React.DragEvent<HTMLDivElement>) {
     if (this.props.studioCtx.isInteractiveMode) {
       return;
     }
     e.preventDefault();
-    this.dragDepth++;
-    if (!this.dndOverlayOpts.visible) {
-      this.dndOverlayOpts.visible = true;
-    }
-  }
-
-  private handleDragLeave(e: DragEvent | React.DragEvent<HTMLDivElement>) {
-    if (this.props.studioCtx.isInteractiveMode) {
-      return;
-    }
-    e.preventDefault();
-    this.dragDepth--;
-    if (this.dndOverlayOpts.visible && this.dragDepth === 0) {
-      this.dndOverlayOpts.visible = false;
-    }
   }
 
   private updateCursorLocation(
@@ -954,8 +931,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       return;
     }
     e.preventDefault();
-    this.dndOverlayOpts.visible = false;
-    this.dragDepth = 0;
     if (e.dataTransfer) {
       await this.props.studioCtx.paste(
         ReadableClipboard.fromDataTransfer(e.dataTransfer)
@@ -1172,14 +1147,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     this.props.studioCtx.tryUpdateKeyboardStatus(e);
     if (this.props.studioCtx.tryPanning(e)) {
       return;
-    }
-
-    if (this.dndOverlayOpts.visible) {
-      // Sometimes dropping over the canvas gets stuck.  But we know that while dragging,
-      // mouse events are not fired; so if we detect mouse move events, then we
-      // cancel the canvas-drop overlay
-      this.dndOverlayOpts.visible = false;
-      this.dragDepth = 0;
     }
 
     // Record where the mouse is
@@ -1792,12 +1759,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             ensure(e.originalEvent, () => "Expected originalEvent to exist")
           )
         )
-        .on("dragover", (e) => e.preventDefault())
-        .on("dragleave", (e) =>
-          this.handleDragLeave(
-            ensure(e.originalEvent, () => "Expected originalEvent to exist")
-          )
-        );
+        .on("dragover", (e) => e.preventDefault());
     });
   };
 
@@ -1842,6 +1804,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           <div className="canvas-editor__hsplit">
             <LeftPane key={studioCtx.site.uid} studioCtx={studioCtx} />
             <div
+              ref={this.canvasContainer}
               className={cn("canvas-editor__canvas-container", {
                 "canvas-editor__canvas-container__focus_mode":
                   studioCtx.focusedMode,
@@ -1880,7 +1843,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
               // Prevents the file from being loaded in a new tab when dropped
               onDragOver={(e) => e.preventDefault()}
               onDragEnter={(e) => this.handleDragEnter(e)}
-              onDragLeave={(e) => this.handleDragLeave(e)}
               onMouseLeave={() => this.updateCursorLocation(null)}
               onMouseMove={(e) => this.updateCursorLocation(e)}
               onMouseDown={() => {
@@ -1976,10 +1938,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                     </DevContainer>
                   </div>
                   <div className="canvas-editor__viewport-click-guard" />
-                  <CanvasDndOverlay opts={this.dndOverlayOpts} />
                 </div>
                 {!studioCtx.focusedMode && <VariantsBar />}
               </div>
+              <CanvasDndOverlay container={this.canvasContainer} />
               {this.viewCtx()?.editingTextContext() && (
                 <RichTextToolbar
                   ctx={ensure(
@@ -2111,7 +2073,6 @@ const RightPane = observer(function RightPane(props: {
     <DevContainer
       className={cx({
         "canvas-editor__right-pane": true,
-        "canvas-editor__right-pane-box-shadow": !studioCtx.watchPlayerId,
         dimfg: true,
         monochrome: !hover,
       })}
