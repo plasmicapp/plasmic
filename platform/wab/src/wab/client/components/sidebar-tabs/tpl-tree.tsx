@@ -1710,6 +1710,26 @@ const ArenaTreeNode = observer(function ArenaTreeNode(props: {
 
 export type ArenaTreeRef = FixedSizeList;
 
+// react-window positions rows absolutely, so overflowing row contents cannot
+// size the inner element. Give every row the same scrollable width, including
+// rows that are currently outside the virtualized viewport.
+const OutlineTreeInner = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(function OutlineTreeInner({ style, ...props }, ref) {
+  return (
+    <div
+      {...props}
+      ref={ref}
+      style={{
+        ...style,
+        position: "relative",
+        minWidth: "var(--outline-tree-min-width)",
+      }}
+    />
+  );
+});
+
 export const ArenaTree = observer(
   React.forwardRef(function ArenaTree(
     props: {
@@ -1754,6 +1774,11 @@ export const ArenaTree = observer(
       []
     );
 
+    // Leave room after the deepest indentation for the expander, node icons,
+    // a readable label, and the row actions. Long labels still ellipsize.
+    const minTreeWidth =
+      indentPadding(L.max(visibleNodes.map((node) => node.indent)) ?? 0) + 200;
+
     return (
       // For now, we don't know how much space to request, so we just request 5000.
       // Ideally, we'd want to know exactly how many tree nodes are shown so we can
@@ -1776,6 +1801,12 @@ export const ArenaTree = observer(
           height > 0 && (
             <FixedSizeList
               className="tpltree-scroller"
+              innerElementType={OutlineTreeInner}
+              style={
+                {
+                  "--outline-tree-min-width": `${minTreeWidth}px`,
+                } as React.CSSProperties
+              }
               width={"100%"}
               height={height}
               itemCount={visibleNodes.length}
