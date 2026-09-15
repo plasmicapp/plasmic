@@ -63,7 +63,6 @@ function ensureStateCell(
   const stateCell = proxyObjToStateCell.get(target)!;
   if (!(property in stateCell)) {
     stateCell[property as any] = {
-      listeners: [],
       initialValue: UNINITIALIZED,
       path,
       node,
@@ -144,9 +143,6 @@ function initializeStateValue(
   proxyRoot: any
 ) {
   const initialStateName = initialStateCell.node.getSpec().path;
-  const stateAccess: Set<{
-    stateCell: StateCell<any>;
-  }> = new Set();
   $$state.stateInitializationEnv.visited.add(initialStateName);
   $$state.stateInitializationEnv.stack.push(initialStateName);
   const $state = create$StateProxy($$state, (internalStateCell) => ({
@@ -172,7 +168,6 @@ function initializeStateValue(
         proxyRoot,
         internalStateCell.path
       );
-      stateAccess.add({ stateCell });
       if (spec.valueProp) {
         return $$state.env.$props[spec.valueProp];
       } else if (spec.initFunc && stateCell.initialValue === UNINITIALIZED) {
@@ -186,19 +181,6 @@ function initializeStateValue(
       );
     },
   }));
-
-  stateAccess.forEach(({ stateCell }) => {
-    stateCell.listeners.push(() => {
-      const newValue = invokeInitFunc(
-        initialStateCell.node.getSpec().initFunc!,
-        {
-          $state,
-          ...(initialStateCell.overrideEnv ?? $$state.env),
-        }
-      );
-      set(proxyRoot, initialStateCell.path, newValue);
-    });
-  });
 
   const initialValue = invokeInitFunc(initialStateCell.initFunc!, {
     $state,
@@ -415,12 +397,116 @@ function invokeInitFunc<T>(
   return initFunc(env);
 }
 
+function initFuncEnv(
+  $$state: Internal$State,
+  stateCell: StateCell<any>,
+  $state: $State
+): NoUndefinedField<InitFuncEnv> {
+  return { $state, ...(stateCell.overrideEnv ?? $$state.env) };
+}
+
+// Pure check with no effect on the reset budget; the layout scan decides.
+function initValueChanged(
+  $$state: Internal$State,
+  stateCell: StateCell<any>,
+  $state: $State
+) {
+  try {
+    return !deepEqual(
+      invokeInitFunc(
+        stateCell.initFunc!,
+        initFuncEnv($$state, stateCell, $state)
+      ),
+      stateCell.initialValue
+    );
+  } catch {
+    return false;
+  }
+}
+
+// Bound consecutive resets without a settled evaluation, even on slow renders.
+const MAX_UNSETTLED_RESETS = 5;
+
+function warnUnstableInitFunc(stateCell: StateCell<any>, reason: string) {
+  if (stateCell.warnedUnstableInitFunc) {
+    return;
+  }
+  stateCell.warnedUnstableInitFunc = true;
+  console.warn(
+    `Plasmic: the initial value of state "${stateCell.path.join(
+      "."
+    )}" ${reason}, so it is kept at its current value instead of being reset. To set a random or time-based value, run an interaction from a Side Effect component instead.`
+  );
+}
+
+/**
+ * Whether `stateCell` should be reset to what `initFunc` now returns. An
+ * initFunc that returns a new value every time it runs would reset on every
+ * render, and each reset renders again, so the loop never ends. We refuse to
+ * reset in two cases:
+ *
+ * - Two back-to-back calls disagree, indicating an unstable initializer.
+ * - Too many resets occur without a settled evaluation. This also catches
+ *   values that are stable within a render but drift between renders.
+ *
+ * This is a circuit breaker, not a proof of determinism: legitimate feedback
+ * chains can also exceed the budget, and unstable functions can return equal
+ * values by chance. Initializers must be pure and deterministic for fixed inputs.
+ *
+ * Rejected probes never change the installed initial value used by preview
+ * reset. A rejected value that repeats on a later render can reopen the budget.
+ */
+function shouldReInitialize<T>(
+  stateCell: StateCell<T>,
+  initFunc: InitFunc<T>,
+  env: NoUndefinedField<InitFuncEnv>
+) {
+  let newInit: T;
+  let repeats: boolean;
+  try {
+    newInit = invokeInitFunc(initFunc, env);
+    if (deepEqual(newInit, stateCell.initialValue)) {
+      stateCell.unsettledResetCount = undefined;
+      stateCell.rejectedInitProbe = undefined;
+      return false;
+    }
+    repeats = deepEqual(invokeInitFunc(initFunc, env), newInit);
+  } catch {
+    // initFunc can throw, e.g. if it tries to access loading $queries. Swallow here
+    // since we only care whether the init value changed, not error handling.
+    return false;
+  }
+  let reason: string | undefined;
+  if (!repeats) {
+    reason = "is not deterministic";
+  } else {
+    const { rejectedInitProbe } = stateCell;
+    const reopened =
+      rejectedInitProbe && deepEqual(newInit, rejectedInitProbe.value);
+    stateCell.unsettledResetCount = reopened
+      ? 1
+      : (stateCell.unsettledResetCount ?? 0) + 1;
+    if (stateCell.unsettledResetCount > MAX_UNSETTLED_RESETS) {
+      reason = "keeps changing";
+    }
+  }
+  stateCell.rejectedInitProbe = reason ? { value: newInit } : undefined;
+  if (reason) {
+    warnUnstableInitFunc(stateCell, reason);
+  }
+  return !reason;
+}
+
 export function useDollarState(
   specs: $StateSpec<any>[],
   ...rest: any[]
 ): $State {
   const { env, opts } = extractDollarStateParametersBackwardCompatible(...rest);
   const [, setState] = React.useState<[]>();
+  // Set for the whole render pass and cleared by the layout effect, which applies
+  // registrations. One that arrives outside a render must schedule a render to be applied.
+  const rendering = React.useRef(false);
+  rendering.current = true;
 
   const mountedRef = React.useRef<boolean>(false);
   const isMounted = React.useCallback(() => mountedRef.current, []);
@@ -453,15 +539,12 @@ export function useDollarState(
         specTreeLeaves: getSpecTreeLeaves(rootSpecTree),
         stateValues: createValtioProxy({}),
         env: envFieldsAreNonNill(env),
-        specs: [],
-        registrationsQueue: [],
         stateInitializationEnv: { stack: [], visited: new Set<string>() },
         initializedLeafPaths: new Set(),
       };
     })()
   ).current;
   $$state.env = envFieldsAreNonNill(env);
-  $$state.specs = specs;
 
   const create$State = React.useCallback(() => {
     const $state = Object.assign(
@@ -496,28 +579,27 @@ export function useDollarState(
           repetitionIndex?: number[],
           overrideEnv?: DollarStateEnv
         ) {
-          const { node, realPath } = findStateCell(
+          const { realPath } = findStateCell(
             $$state.rootSpecTree,
             pathStr,
             repetitionIndex
           );
           const stateCell = getStateCellFrom$StateRoot($state, realPath);
-          const innerEnv = overrideEnv
+          // The first initializer always applies, even if unstable, like the
+          // lazy initialization of a spec initFunc.
+          stateCell.pendingInit ||= !stateCell.initFunc;
+          stateCell.initFunc = f;
+          stateCell.overrideEnv = overrideEnv
             ? envFieldsAreNonNill(overrideEnv)
-            : $$state.env;
-          if (!deepEqual(stateCell.initialValue, f({ $state, ...innerEnv }))) {
-            $$state.registrationsQueue.push({
-              node,
-              path: realPath,
-              f,
-              overrideEnv: overrideEnv
-                ? envFieldsAreNonNill(overrideEnv)
-                : undefined,
-            });
-            if (!pendingUpdate.current) {
-              pendingUpdate.current = true;
-              forceUpdate();
-            }
+            : undefined;
+          if (
+            !rendering.current &&
+            !pendingUpdate.current &&
+            (stateCell.pendingInit ||
+              initValueChanged($$state, stateCell, $state))
+          ) {
+            pendingUpdate.current = true;
+            forceUpdate();
           }
         },
         ...(opts?.inCanvas
@@ -545,6 +627,9 @@ export function useDollarState(
                   }
                   stateCell.initFunc = newSpec.initFunc;
                   stateCell.initFuncHash = newSpec.initFuncHash ?? "";
+                  stateCell.unsettledResetCount = undefined;
+                  stateCell.warnedUnstableInitFunc = undefined;
+                  stateCell.rejectedInitProbe = undefined;
                   const init = spec.valueProp
                     ? $$state.env.$props[spec.valueProp]
                     : spec.initFunc
@@ -582,48 +667,28 @@ export function useDollarState(
     }
   }
 
-  const reInitializeState = (stateCell: StateCell<any>) => {
-    const newInit = initializeStateValue($$state, stateCell, $state);
-    const spec = stateCell.node.getSpec();
-    if (spec.onChangeProp) {
-      $$state.env.$props[spec.onChangeProp]?.(newInit);
-    }
-  };
   useIsomorphicLayoutEffect(() => {
-    // For each spec with an initFunc, evaluate it and see if
-    // the init value has changed. If so, reset its state.
-    const resetSpecs: {
-      stateCell: StateCell<any>;
-    }[] = [];
-    getStateCells($state, $$state.rootSpecTree).forEach((stateCell) => {
-      if (stateCell.initFunc) {
-        try {
-          const newInit = invokeInitFunc(stateCell.initFunc, {
-            $state,
-            ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
-          });
-          if (!deepEqual(newInit, stateCell.initialValue)) {
-            resetSpecs.push({ stateCell });
-          }
-        } catch {
-          // Exception may be thrown from initFunc -- for example, if it tries to access $queries
-          // that are still loading. We swallow those here, since we're only interested in
-          // checking if the init value has changed, not in handling these errors.
-        }
+    rendering.current = false;
+    // Scan every cell before resetting any, so each initFunc sees the same
+    // pre-reset state.
+    const resetCells = getStateCells($state, $$state.rootSpecTree).filter(
+      (stateCell) =>
+        stateCell.pendingInit ||
+        (stateCell.initFunc &&
+          shouldReInitialize(
+            stateCell,
+            stateCell.initFunc,
+            initFuncEnv($$state, stateCell, $state)
+          ))
+    );
+    resetCells.forEach((stateCell) => {
+      stateCell.pendingInit = undefined;
+      const newInit = initializeStateValue($$state, stateCell, $state);
+      const spec = stateCell.node.getSpec();
+      if (spec.onChangeProp) {
+        $$state.env.$props[spec.onChangeProp]?.(newInit);
       }
     });
-    resetSpecs.forEach(({ stateCell }) => {
-      reInitializeState(stateCell);
-    });
-  }, [env.$props, $state, $$state, reInitializeState]);
-  useIsomorphicLayoutEffect(() => {
-    while ($$state.registrationsQueue.length) {
-      const { path, f, overrideEnv } = $$state.registrationsQueue.shift()!;
-      const stateCell = getStateCellFrom$StateRoot($state, path);
-      stateCell.initFunc = f;
-      stateCell.overrideEnv = overrideEnv;
-      reInitializeState(stateCell);
-    }
   });
   // immediately initialize exposed non-private states
   useIsomorphicLayoutEffect(() => {

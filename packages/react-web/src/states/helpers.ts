@@ -115,11 +115,14 @@ export function getStateCells(
     const stateCell = proxyObjToStateCell.get($state) ?? {};
     const stateCells: StateCell<any>[] = [];
     for (const [key, child] of root.edges().entries()) {
-      if (typeof key === "string" && key in $state) {
+      if (typeof key !== "string") {
+        continue;
+      }
+      // A leaf cell can exist without a local value, e.g. a valueProp state.
+      if (key in stateCell) {
+        stateCells.push(stateCell[key]);
+      } else if (key in $state) {
         stateCells.push(...getStateCells($state[key], child));
-        if (key in stateCell) {
-          stateCells.push(stateCell[key]);
-        }
       }
     }
     return stateCells;
@@ -169,6 +172,16 @@ export function getCurrentInitialValue(obj: any, path: ObjectPath) {
     return undefined;
   }
   return tryGetStateCellFrom$StateRoot(obj, path)?.initialValue;
+}
+
+/** Whether the runtime guard has detected instability in this initializer.
+ * Canvas edits clear the diagnostic when the initializer hash changes.
+ */
+export function hasUnstableStateInitializer(obj: any, path: ObjectPath) {
+  if (!isPlasmicStateProxy(obj)) {
+    return false;
+  }
+  return !!tryGetStateCellFrom$StateRoot(obj, path)?.warnedUnstableInitFunc;
 }
 
 export function resetToInitialValue(obj: any, path: ObjectPath) {

@@ -32,7 +32,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { notification } from "antd";
+import { Alert, notification } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -129,6 +129,14 @@ export const VariableValueEditor = observer(function VariableValueEditor({
           disabled={disableInitialValue}
         />
       </div>
+      {!disableInitialValue && viewCtx.hasUnstableStateInitializer(state) && (
+        <Alert
+          className="mb-m"
+          type="warning"
+          showIcon
+          message="Unstable state initializers are not recommended. Use Side Effects for random or time based inputs."
+        />
+      )}
       <PropEditorRow
         viewCtx={viewCtx}
         tpl={component.tplTree}

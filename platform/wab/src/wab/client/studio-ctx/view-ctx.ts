@@ -1536,6 +1536,15 @@ export class ViewCtx extends WithDbCtx {
     return this.canvasCtx.Sub.reactWeb.resetToInitialValue($state, statePath);
   }
 
+  hasUnstableStateInitializer(state: State) {
+    return (
+      this.canvasCtx.Sub.reactWeb.hasUnstableStateInitializer?.(
+        this.get$StateInEnv(),
+        getStateVarName(state).split(".")
+      ) ?? false
+    );
+  }
+
   /**
    * @deprecated Use {@link focusedDomElts} to handle multi-selection.
    */

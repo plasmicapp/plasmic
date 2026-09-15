@@ -7,6 +7,7 @@ export {
   getCurrentInitialValue,
   getStateCellsInPlasmicProxy,
   getStateSpecInPlasmicProxy,
+  hasUnstableStateInitializer,
   initializeCodeComponentStates,
   initializePlasmicStates,
   is$StateProxy,
