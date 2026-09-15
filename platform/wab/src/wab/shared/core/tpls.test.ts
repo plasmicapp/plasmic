@@ -236,6 +236,43 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
       }).map(describeNode)
     ).toEqual([{ type: "node", name: "codeComponent-instance", layer: 0 }]);
   });
+
+  it("should include the roots of every nested component root", () => {
+    const { baseVariant, codeComponent, describeNode } =
+      ancestorsThroughComponentsUtils();
+
+    const innerComponent = Components.mkComponent({
+      tplTree: Tpls.mkTplComponentX({
+        name: "codeComponent-instance",
+        component: codeComponent,
+        baseVariant,
+      }),
+      type: ComponentType.Plain,
+    });
+    const outerComponent = Components.mkComponent({
+      tplTree: Tpls.mkTplComponentX({
+        name: "innerComponent-instance",
+        component: innerComponent,
+        baseVariant,
+      }),
+      type: ComponentType.Plain,
+    });
+
+    expect(
+      Tpls.ancestorsThroughComponentsWithSlotSelections(
+        Tpls.mkTplComponentX({
+          name: "outerComponent-instance",
+          component: outerComponent,
+          baseVariant,
+        }),
+        { includeTplComponentRoot: true }
+      ).map(describeNode)
+    ).toEqual([
+      { type: "node", name: "codeComponent-instance", layer: 2 },
+      { type: "node", name: "innerComponent-instance", layer: 1 },
+      { type: "node", name: "outerComponent-instance", layer: 0 },
+    ]);
+  });
 });
 
 describe("computeAncestorsValKey", () => {

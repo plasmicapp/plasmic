@@ -1357,13 +1357,17 @@ export function ancestorsThroughComponentsWithSlotSelections(
     opts.includeTplComponentRoot
   ) {
     // We will consider the tpl component root as part of the ancestors chain even if it is not
-    // technically an ancestor of the tpl node, we may want to extend it later to go down in the
-    // chain of nodes until finding a code component or tpl tag, since we are entering the tpl.component
-    // tree, it's a deeper layer than the tpl node itself
-    allAncestors.push({
-      node: tpl.component.tplTree,
-      layer: 1,
-    });
+    // technically an ancestor of the tpl node, since we are entering the tpl.component tree,
+    // it's a deeper layer than the tpl node itself. A root that is itself a plasmic component
+    // renders its own root in turn, so we keep going down until we reach a code component or a
+    // tpl tag. The roots are pushed deepest-first to keep the chain bottom-up.
+    let root: TplNode = tpl.component.tplTree;
+    const roots: NodeWithLayer[] = [{ node: root, layer: 1 }];
+    while (isTplComponent(root) && !isCodeComponent(root.component)) {
+      root = root.component.tplTree;
+      roots.push({ node: root, layer: roots.length + 1 });
+    }
+    allAncestors.push(...roots.reverse());
   }
 
   while (curNode) {
