@@ -1,3 +1,4 @@
+import path from "upath";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   MockComponent,
@@ -59,6 +60,22 @@ describe("versioned-sync", () => {
   test("syncs down new names", async () => {
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
+    const oldButtonConfig = ensure(
+      tmpRepo
+        .readPlasmicJson()
+        .projects.find((p) => p.projectId === "projectId1")
+        ?.components.find((c) => c.id === "buttonId"),
+      "Button should be in plasmic.json after the first sync"
+    );
+    const oldButtonFiles = [
+      oldButtonConfig.renderModuleFilePath,
+      oldButtonConfig.cssFilePath,
+      oldButtonConfig.importSpec.modulePath,
+    ].map((p) => path.join("src", p));
+    for (const oldFile of oldButtonFiles) {
+      expect(tmpRepo.checkFile(oldFile)).toBeTruthy();
+    }
+
     // Change component name server-side
     const mockProject = ensure(getMockProject("projectId1", "main", "1.2.3"));
     const buttonData = ensure(
@@ -79,6 +96,23 @@ describe("versioned-sync", () => {
       : undefined;
     expect(componentInConfig).toBeTruthy();
     expect(componentInConfig?.name).toEqual(buttonData.name);
+
+    // Files generated under the old name should be gone, not left behind
+    for (const oldFile of oldButtonFiles) {
+      expect(tmpRepo.checkFile(oldFile)).toBeFalsy();
+    }
+    const button = stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "buttonId")
+    );
+    expect(button?.name).toEqual("NewButton");
+    expect(
+      tmpRepo.checkFile(
+        path.join(
+          "src",
+          ensure(componentInConfig, "checked above").importSpec.modulePath
+        )
+      )
+    ).toBeTruthy();
   });
 
   test("syncs latest", async () => {

@@ -5,6 +5,7 @@ import { logger } from "../deps";
 import { ComponentUpdateSummary, formatAsLocal } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
+  ComponentConfig,
   PlasmicContext,
   ProjectConfig,
   ProjectLock,
@@ -138,6 +139,18 @@ export async function syncProjectComponents(
     );
 
     if (shouldRegenerate) {
+      if (compConfig?.type === "managed") {
+        await deleteRenamedComponentFiles(
+          context,
+          project,
+          version,
+          compConfig,
+          componentName,
+          defaultRenderModuleFilePath,
+          defaultCssFilePath,
+          skeletonPath
+        );
+      }
       project.components = project.components.filter(
         (existingComponent) => existingComponent.id !== id
       );
@@ -325,5 +338,50 @@ export async function syncProjectComponents(
     await syncRscFiles(context, project, bundle, compConfig, {
       shouldRegenerate,
     });
+  }
+}
+
+/**
+ * A renamed component keeps its id but gets brand new file names, so it goes
+ * through the same code path as a newly added component. Without this, the
+ * files generated under the old name would stay on disk forever.
+ */
+async function deleteRenamedComponentFiles(
+  context: PlasmicContext,
+  project: ProjectConfig,
+  version: string,
+  oldConfig: ComponentConfig,
+  newName: string,
+  newRenderModuleFilePath: string,
+  newCssFilePath: string,
+  newSkeletonPath: string
+) {
+  logger.info(
+    `Component renamed: ${oldConfig.name} -> ${newName}@${version}\t['${project.projectName}' ${project.projectId}/${oldConfig.id} ${project.version}]`
+  );
+
+  for (const [oldPath, newPath] of [
+    [oldConfig.renderModuleFilePath, newRenderModuleFilePath],
+    [oldConfig.cssFilePath, newCssFilePath],
+  ]) {
+    if (oldPath !== newPath && fileExists(context, oldPath)) {
+      deleteFile(context, oldPath);
+    }
+  }
+
+  const oldSkeletonPath = oldConfig.importSpec.modulePath;
+  if (
+    !eqPagePath(oldSkeletonPath, newSkeletonPath) &&
+    fileExists(context, oldSkeletonPath)
+  ) {
+    // The skeleton may have been edited by hand, so ask before deleting it,
+    // just like we do for deleted components.
+    const deleteSkeleton = await confirmWithUser(
+      `Do you want to delete ${oldSkeletonPath}?`,
+      context.cliArgs.yes
+    );
+    if (deleteSkeleton) {
+      deleteFile(context, oldSkeletonPath);
+    }
   }
 }
