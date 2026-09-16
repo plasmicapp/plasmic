@@ -300,7 +300,8 @@ export type FunctionArgumentsPropType<P> = PropTypeBaseDefault<
   // the editors are rendered for code components
   // which means we can't expose internal model data
   forExternal?: boolean;
-  targetTpl?: ComponentContextConfig<P, TplTag | TplComponent>;
+  // A global provider may not have rendered yet when the editor opens.
+  targetTpl?: ComponentContextConfig<P, TplTag | TplComponent | undefined>;
 };
 export type DataSourceOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
   type: "dataSourceOp";

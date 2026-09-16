@@ -567,7 +567,7 @@ function getActionMeta(sc: StudioCtx, actionName: string) {
     }
     const globalAction = contextMeta.meta.globalActions[action];
     return globalAction
-      ? generateActionMetaForGlobalAction(globalAction)
+      ? generateActionMetaForGlobalAction(globalAction, contextName)
       : undefined;
   }
   return undefined;

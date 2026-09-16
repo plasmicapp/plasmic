@@ -186,6 +186,22 @@ export abstract class BaseCliSvrEvaluator {
     });
   }
 
+  getGlobalContextTpl(contextName: string) {
+    // Global contexts wrap the system root. Use their rendered tpl clones,
+    // since the settings nodes in site.globalContexts aren't in renderState.
+    let root: ValNode | null | undefined = this.valRoot;
+    while (
+      root instanceof ValComponent &&
+      isContextCodeComponent(root.tpl.component)
+    ) {
+      if (root.tpl.component.name === contextName) {
+        return root.tpl;
+      }
+      root = root.contents?.[0];
+    }
+    return undefined;
+  }
+
   private renderRoot() {
     const vc = this.viewCtx();
     const sub = vc.canvasCtx.Sub;

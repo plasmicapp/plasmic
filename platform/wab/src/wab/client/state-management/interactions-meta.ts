@@ -842,7 +842,8 @@ export const mkDefaultInteraction = (
 };
 
 export function generateActionMetaForGlobalAction(
-  globalAction: GlobalActionRegistration<any>
+  globalAction: GlobalActionRegistration<any>,
+  contextName: string
 ) {
   return {
     displayName: globalAction.displayName ?? "",
@@ -853,6 +854,8 @@ export function generateActionMetaForGlobalAction(
         type: "functionArgs",
         displayName: "Arguments",
         forExternal: true,
+        targetTpl: (_args, ctx: InteractionContextData) =>
+          ctx.viewCtx.csEvaluator.getGlobalContextTpl(contextName),
         functionType: (_args, ctx: InteractionContextData) =>
           typeFactory.func(
             ...globalAction.parameters.map((arg) => {

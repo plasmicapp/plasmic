@@ -563,15 +563,15 @@ const PropValueEditor_ = (
       innerComponentPropValues = undefined;
     }
     if (propType.targetTpl && viewCtx) {
-      const targetTpl = ensure(
-        _getContextDependentValue(propType.targetTpl),
-        "if targetTpl is specified, it should return a valid tpl"
-      );
-      ({
-        componentPropValues: innerComponentPropValues,
-        ccContextData: innerCcContextData,
-      } = viewCtx.getComponentEvalContext(targetTpl));
+      const targetTpl = _getContextDependentValue(propType.targetTpl);
+      if (targetTpl) {
+        ({
+          componentPropValues: innerComponentPropValues,
+          ccContextData: innerCcContextData,
+        } = viewCtx.getComponentEvalContext(targetTpl));
+      }
     }
+
     return (
       <>
         {functionType.params.map((p, i) => {
