@@ -313,8 +313,8 @@ importers:
         specifier: ^0.0.262
         version: 0.0.262(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-saleor':
-        specifier: ^0.0.225
-        version: 0.0.225(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.226
+        version: 0.0.226(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-shopify':
         specifier: ^0.0.271
         version: 0.0.271(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
@@ -734,8 +734,8 @@ importers:
         specifier: ^0.0.262
         version: 0.0.262(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-saleor':
-        specifier: ^0.0.225
-        version: 0.0.225(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.226
+        version: 0.0.226(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-shopify':
         specifier: ^0.0.271
         version: 0.0.271(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
@@ -5343,8 +5343,8 @@ packages:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-saleor@0.0.225':
-    resolution: {integrity: sha512-1cYY43d3iGHLIhj7kSP4EwCPeZdqwxVQU2xqmputOv3ug+odOE/ms835yNJ879ZG/Pl3WSYo9OHKPY2AztLb5g==}
+  '@plasmicpkgs/commerce-saleor@0.0.226':
+    resolution: {integrity: sha512-vI7wDXDoybB88JNmr7C7nkPE4UAsDxO5//RHvaXD1zsjNKIx1q7MJl0AQZYIs/bweLuCnjSLJQLNTWTdyWe3mw==}
     peerDependencies:
       next: ^12
       react: '>=16.8.0'
@@ -15138,6 +15138,9 @@ packages:
   moment@2.30.1:
     resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
+  moment@2.31.0:
+    resolution: {integrity: sha512-0acOTfMiWOheYS4eoWb80yYMb/JLvVv9SHbs2PehaDzfUG0Bw855SKyk0IKTnPGa5+U2bmi3W68l1+sGLX/pvw==}
+
   monaco-editor-webpack-plugin@7.1.0:
     resolution: {integrity: sha512-ZjnGINHN963JQkFqjjcBtn1XBtUATDZBMgNQhDQwd78w2ukRhFXAPNgWuacaQiDZsUr4h1rWv5Mv6eriKuOSzA==}
     peerDependencies:
@@ -17495,8 +17498,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-parallax-tilt@1.7.342:
-    resolution: {integrity: sha512-chyKKkAkxQtXpm4L1Zppl5RGEYOXX5Ps4iShtunOPTYOvFbbEeE+qQVGanHIf2gXVorsUZtV6ChxAuTmqP4Tyg==}
+  react-parallax-tilt@1.7.343:
+    resolution: {integrity: sha512-x6WuEKNKmDDxORcvhwgHg7dpI7dSSYnqcuELFZd5nmE8oml52vH55Z8e9W6vndkjqpMpy6i7+JJzWiv2ggbXNA==}
     peerDependencies:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -25552,7 +25555,7 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-saleor@0.0.225(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-saleor@0.0.226(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicpkgs/commerce': 0.0.261(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       debounce: 1.2.1
@@ -25865,7 +25868,7 @@ snapshots:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-parallax-tilt: 1.7.342(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-parallax-tilt: 1.7.343(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@plasmicpkgs/react-quill@1.0.125(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -31732,7 +31735,7 @@ snapshots:
       copy-to-clipboard: 3.3.3
       lodash: 4.18.1
       memoize-one: 6.0.0
-      moment: 2.30.1
+      moment: 2.31.0
       rc-cascader: 3.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-checkbox: 2.3.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-collapse: 3.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -38353,6 +38356,8 @@ snapshots:
 
   moment@2.30.1: {}
 
+  moment@2.31.0: {}
+
   monaco-editor-webpack-plugin@7.1.0(monaco-editor@0.50.0)(webpack@5.108.4(@swc/core@1.15.43(@swc/helpers@0.4.14))(esbuild@0.25.4)(postcss@8.5.26)):
     dependencies:
       loader-utils: 2.0.4
@@ -40691,7 +40696,7 @@ snapshots:
       classnames: 2.5.1
       date-fns: 2.30.0
       dayjs: 1.11.23
-      moment: 2.30.1
+      moment: 2.31.0
       rc-trigger: 5.3.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-util: 5.44.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
@@ -41479,7 +41484,7 @@ snapshots:
       - utf-8-validate
     optional: true
 
-  react-parallax-tilt@1.7.342(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-parallax-tilt@1.7.343(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
