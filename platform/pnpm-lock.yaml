@@ -7570,11 +7570,11 @@ packages:
   '@remirror/types@1.0.1':
     resolution: {integrity: sha512-VlZQxwGnt1jtQ18D6JqdIF+uFZo525WEqrfp9BOc3COPpK4+AWCgdnAWL+ho6imWcoINlGjR/+3b6y5C1vBVEA==}
 
-  '@rive-app/canvas@2.42.1':
-    resolution: {integrity: sha512-S9u3DNWWTmACjlq5vW0KmG6IpMRVx+JNExdJskAhMulEP7rC64LPufQf6vCuL9g1ogbrgT828vFEyraRVJn8fA==}
+  '@rive-app/canvas@2.42.2':
+    resolution: {integrity: sha512-NlSngaccl6L0XambU8XuK+0MT9cIbQBQrBod+/tWPLIjL/G82cXs7c6hj6wdrfk9YSVj8ZNuXcUEKoEo6YABYg==}
 
-  '@rive-app/react-canvas@4.34.2':
-    resolution: {integrity: sha512-sH9IVRbCYhNgaSJ3/ozCiBbACKp00tL6MvwW5lU5goEj51ZWyJENonuV2pMMOplQ6yY03bcMzG0s61PqL4xt6A==}
+  '@rive-app/react-canvas@4.34.3':
+    resolution: {integrity: sha512-imxE0KGOQ45dZq84rBzWu/IFsabra71rwcpJi/dVw7o/WzOwhL+ueQ44545ODS2zUzw3E5e30ogQMf5VLXzi8w==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
 
@@ -25915,7 +25915,7 @@ snapshots:
   '@plasmicpkgs/rive@0.0.49(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@rive-app/react-canvas': 4.34.2(react@18.3.1)
+      '@rive-app/react-canvas': 4.34.3(react@18.3.1)
       react: 18.3.1
 
   '@plasmicpkgs/strapi@0.0.41(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
@@ -28500,11 +28500,11 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  '@rive-app/canvas@2.42.1': {}
+  '@rive-app/canvas@2.42.2': {}
 
-  '@rive-app/react-canvas@4.34.2(react@18.3.1)':
+  '@rive-app/react-canvas@4.34.3(react@18.3.1)':
     dependencies:
-      '@rive-app/canvas': 2.42.1
+      '@rive-app/canvas': 2.42.2
       react: 18.3.1
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
