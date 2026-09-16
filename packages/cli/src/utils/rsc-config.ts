@@ -1,7 +1,21 @@
+import path from "upath";
 import { ComponentBundle } from "../api";
 import { maybeConvertTsxToJsx } from "./code-utils";
 import { ComponentConfig, PlasmicContext, ProjectConfig } from "./config-utils";
-import { defaultResourcePath, writeFileContent } from "./file-utils";
+import {
+  defaultResourcePath,
+  fileExists,
+  stripExtension,
+  writeFileContent,
+} from "./file-utils";
+
+export function makeRscClientModulePath(
+  context: PlasmicContext,
+  skeletonPath: string,
+) {
+  const ext = context.config.code.lang === "js" ? "jsx" : "tsx";
+  return `${stripExtension(skeletonPath)}-client.${ext}`;
+}
 
 export async function syncRscFiles(
   context: PlasmicContext,
@@ -10,64 +24,54 @@ export async function syncRscFiles(
   compConfig: ComponentConfig,
   opts: {
     shouldRegenerate: boolean;
-  }
+  },
 ) {
   const rscMetadata = bundle.rscMetadata;
-  if (rscMetadata) {
-    if (!compConfig.rsc) {
-      compConfig.rsc = {
-        serverModulePath: "",
-        clientModulePath: "",
-      };
-    }
-
-    let serverModuleFilePath = defaultResourcePath(
-      context,
-      project,
-      rscMetadata.pageWrappers.server.fileName
-    );
-    let serverModuleContent = rscMetadata.pageWrappers.server.module;
-
-    if (context.config.code.lang === "js") {
-      const [convertedFileName, convertedContent] = await maybeConvertTsxToJsx(
-        serverModuleFilePath,
-        serverModuleContent
-      );
-      serverModuleFilePath = convertedFileName;
-      serverModuleContent = convertedContent;
-    }
-    compConfig.rsc.serverModulePath = serverModuleFilePath;
-
-    await writeFileContent(context, serverModuleFilePath, serverModuleContent, {
-      force: true,
-    });
-
-    let clientModuleFilePath = compConfig.importSpec.modulePath.replace(
-      /\.(tsx|jsx)$/,
-      "-client.tsx"
-    );
-    let clientModuleContent = rscMetadata.pageWrappers.client.module;
-
-    if (context.config.code.lang === "js") {
-      const [convertedFileName, convertedContent] = await maybeConvertTsxToJsx(
-        clientModuleFilePath,
-        clientModuleContent
-      );
-      clientModuleFilePath = convertedFileName;
-      clientModuleContent = convertedContent;
-    }
-
-    compConfig.rsc.clientModulePath = clientModuleFilePath;
-
-    if (opts.shouldRegenerate) {
-      await writeFileContent(
-        context,
-        clientModuleFilePath,
-        clientModuleContent,
-        {
-          force: false,
-        }
-      );
-    }
+  if (!rscMetadata) {
+    return;
   }
+
+  let serverModuleFilePath = defaultResourcePath(
+    context,
+    project,
+    rscMetadata.pageWrappers.server.fileName,
+  );
+  let serverModuleContent = rscMetadata.pageWrappers.server.module;
+  if (context.config.code.lang === "js") {
+    [serverModuleFilePath, serverModuleContent] = await maybeConvertTsxToJsx(
+      serverModuleFilePath,
+      serverModuleContent,
+    );
+  }
+  if (compConfig.rsc?.serverModulePath) {
+    serverModuleFilePath = path.join(
+      path.dirname(compConfig.rsc.serverModulePath),
+      path.basename(serverModuleFilePath),
+    );
+  }
+  await writeFileContent(context, serverModuleFilePath, serverModuleContent, {
+    force: true,
+  });
+
+  const existingClientPath = compConfig.rsc?.clientModulePath;
+  const clientModuleFilePath =
+    existingClientPath ||
+    makeRscClientModulePath(context, compConfig.importSpec.modulePath);
+  if (opts.shouldRegenerate || !fileExists(context, clientModuleFilePath)) {
+    let clientModuleContent = rscMetadata.pageWrappers.client.module;
+    if (context.config.code.lang === "js") {
+      [, clientModuleContent] = await maybeConvertTsxToJsx(
+        rscMetadata.pageWrappers.client.fileName,
+        clientModuleContent,
+      );
+    }
+    await writeFileContent(context, clientModuleFilePath, clientModuleContent, {
+      force: false,
+    });
+  }
+
+  compConfig.rsc = {
+    serverModulePath: serverModuleFilePath,
+    clientModulePath: clientModuleFilePath,
+  };
 }

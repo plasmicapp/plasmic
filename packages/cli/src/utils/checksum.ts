@@ -6,26 +6,26 @@ import { assert } from "./lang-utils";
 
 function getFilesByFileLockAssetId(
   context: PlasmicContext,
-  projectConfig: ProjectConfig
+  projectConfig: ProjectConfig,
 ) {
   return {
     renderModule: Object.fromEntries(
-      projectConfig.components.map((c) => [c.id, c.renderModuleFilePath])
+      projectConfig.components.map((c) => [c.id, c.renderModuleFilePath]),
     ),
     cssRules: Object.fromEntries(
-      projectConfig.components.map((c) => [c.id, c.cssFilePath])
+      projectConfig.components.map((c) => [c.id, c.cssFilePath]),
     ),
     icon: Object.fromEntries(
-      projectConfig.icons.map((i) => [i.id, i.moduleFilePath])
+      projectConfig.icons.map((i) => [i.id, i.moduleFilePath]),
     ),
     image: Object.fromEntries(
-      projectConfig.images.map((i) => [i.id, i.filePath])
+      projectConfig.images.map((i) => [i.id, i.filePath]),
     ),
     projectCss: { [projectConfig.projectId]: projectConfig.cssFilePath },
     globalVariant: Object.fromEntries(
       context.config.globalVariants.variantGroups
         .filter((vg) => vg.projectId === projectConfig.projectId)
-        .map((vg) => [vg.id, vg.contextFilePath])
+        .map((vg) => [vg.id, vg.contextFilePath]),
     ),
     globalContext: {
       [projectConfig.projectId]: projectConfig.globalContextsFilePath,
@@ -49,14 +49,14 @@ export function getChecksums(
   context: PlasmicContext,
   opts: SyncArgs,
   projectId: string,
-  componentIds: string[]
+  componentIds: string[],
 ): ChecksumBundle {
   const projectConfig = context.config.projects.find(
-    (p) => p.projectId === projectId
+    (p) => p.projectId === projectId,
   );
 
   const projectLock = context.lock.projects.find(
-    (lock) => lock.projectId === projectId
+    (lock) => lock.projectId === projectId,
   );
 
   if (!projectConfig || !projectLock || opts.allFiles) {
@@ -88,19 +88,30 @@ export function getChecksums(
 
   const knownImages = new Set(projectConfig.images.map((i) => i.id));
   const knownIcons = new Set(projectConfig.icons.map((i) => i.id));
-  const knownComponents = new Set(projectConfig.components.map((c) => c.id));
+  const componentsById = new Map(
+    projectConfig.components.map((c) => [c.id, c]),
+  );
   const knownGlobalVariants = new Set(
     context.config.globalVariants.variantGroups
       .filter((vg) => vg.projectId === projectId)
-      .map((vg) => vg.id)
+      .map((vg) => vg.id),
   );
 
   const toBeSyncedComponents = new Set(componentIds);
 
+  // The server skips a component whose checksum matches, so a missing RSC file
+  // would never be rewritten.
+  const rscFilesExist = (componentId: string) => {
+    const rsc = componentsById.get(componentId)?.rsc;
+    return (
+      !rsc || [rsc.serverModulePath, rsc.clientModulePath].every(checkFile)
+    );
+  };
+
   const imageChecksums = fileLocks
     .filter(
       (fileLock) =>
-        fileLock.type === "image" && knownImages.has(fileLock.assetId)
+        fileLock.type === "image" && knownImages.has(fileLock.assetId),
     )
     .filter((fileLock) => checkFile(fileLocations.image[fileLock.assetId]))
     .map((fileLock): [string, string] => [fileLock.assetId, fileLock.checksum]);
@@ -110,7 +121,7 @@ export function getChecksums(
       (fileLock) =>
         projectLock.lang === context.config.code.lang &&
         fileLock.type === "icon" &&
-        knownIcons.has(fileLock.assetId)
+        knownIcons.has(fileLock.assetId),
     )
     .filter((fileLock) => checkFile(fileLocations.icon[fileLock.assetId]))
     .map((fileLock): [string, string] => [fileLock.assetId, fileLock.checksum]);
@@ -121,10 +132,12 @@ export function getChecksums(
         projectLock.lang === context.config.code.lang &&
         fileLock.type === "renderModule" &&
         toBeSyncedComponents.has(fileLock.assetId) &&
-        knownComponents.has(fileLock.assetId)
+        componentsById.has(fileLock.assetId),
     )
-    .filter((fileLock) =>
-      checkFile(fileLocations.renderModule[fileLock.assetId])
+    .filter(
+      (fileLock) =>
+        checkFile(fileLocations.renderModule[fileLock.assetId]) &&
+        rscFilesExist(fileLock.assetId),
     )
     .map((fileLock): [string, string] => [fileLock.assetId, fileLock.checksum]);
 
@@ -133,7 +146,7 @@ export function getChecksums(
       (fileLock) =>
         fileLock.type === "cssRules" &&
         toBeSyncedComponents.has(fileLock.assetId) &&
-        knownComponents.has(fileLock.assetId)
+        componentsById.has(fileLock.assetId),
     )
     .filter((fileLock) => checkFile(fileLocations.cssRules[fileLock.assetId]))
     .map((fileLock): [string, string] => [fileLock.assetId, fileLock.checksum]);
@@ -143,31 +156,37 @@ export function getChecksums(
       (fileLock) =>
         projectLock.lang === context.config.code.lang &&
         fileLock.type === "globalVariant" &&
-        knownGlobalVariants.has(fileLock.assetId)
+        knownGlobalVariants.has(fileLock.assetId),
     )
     .filter((fileLock) =>
-      checkFile(fileLocations.globalVariant[fileLock.assetId])
+      checkFile(fileLocations.globalVariant[fileLock.assetId]),
     )
     .map((fileLock): [string, string] => [fileLock.assetId, fileLock.checksum]);
 
   const projectCssChecksums = fileLocks
     .filter((fileLock) => fileLock.type === "projectCss")
     .filter((fileLock) =>
-      checkFile(fileLocations.projectCss[fileLock.assetId])
+      checkFile(fileLocations.projectCss[fileLock.assetId]),
     );
-  assert(projectCssChecksums.length < 2);
+  assert(
+    projectCssChecksums.length < 2,
+    "Expected at most one projectCss file lock",
+  );
   const projectCssChecksum =
     projectCssChecksums.length > 0 ? projectCssChecksums[0].checksum : "";
 
   const globalContextsChecksums = fileLocks
     .filter(
       (fileLock) =>
-        fileLock.type === "globalContexts" && fileLock.assetId === projectId
+        fileLock.type === "globalContexts" && fileLock.assetId === projectId,
     )
     .filter((fileLock) =>
-      checkFile(fileLocations.globalContext[fileLock.assetId])
+      checkFile(fileLocations.globalContext[fileLock.assetId]),
     );
-  assert(globalContextsChecksums.length < 2);
+  assert(
+    globalContextsChecksums.length < 2,
+    "Expected at most one globalContexts file lock",
+  );
   const globalContextsChecksum =
     globalContextsChecksums.length > 0
       ? globalContextsChecksums[0].checksum
@@ -177,12 +196,15 @@ export function getChecksums(
     .filter(
       (fileLock) =>
         fileLock.type === "styleTokensProvider" &&
-        fileLock.assetId === projectId
+        fileLock.assetId === projectId,
     )
     .filter((fileLock) =>
-      checkFile(fileLocations.styleTokensProvider[fileLock.assetId])
+      checkFile(fileLocations.styleTokensProvider[fileLock.assetId]),
     );
-  assert(styleTokensProviderChecksums.length < 2);
+  assert(
+    styleTokensProviderChecksums.length < 2,
+    "Expected at most one styleTokensProvider file lock",
+  );
   const styleTokensProviderChecksum =
     styleTokensProviderChecksums.length > 0
       ? styleTokensProviderChecksums[0].checksum
@@ -191,24 +213,30 @@ export function getChecksums(
   const projectModuleChecksums = fileLocks
     .filter(
       (fileLock) =>
-        fileLock.type === "projectModule" && fileLock.assetId === projectId
+        fileLock.type === "projectModule" && fileLock.assetId === projectId,
     )
     .filter((fileLock) =>
-      checkFile(fileLocations.projectModule[fileLock.assetId])
+      checkFile(fileLocations.projectModule[fileLock.assetId]),
     );
-  assert(projectModuleChecksums.length < 2);
+  assert(
+    projectModuleChecksums.length < 2,
+    "Expected at most one projectModule file lock",
+  );
   const projectModuleChecksum =
     projectModuleChecksums.length > 0 ? projectModuleChecksums[0].checksum : "";
 
   const splitsProviderChecksums = fileLocks
     .filter(
       (fileLock) =>
-        fileLock.type === "splitsProvider" && fileLock.assetId === projectId
+        fileLock.type === "splitsProvider" && fileLock.assetId === projectId,
     )
     .filter((fileLock) =>
-      checkFile(fileLocations.splitsProvider[fileLock.assetId])
+      checkFile(fileLocations.splitsProvider[fileLock.assetId]),
     );
-  assert(splitsProviderChecksums.length < 2);
+  assert(
+    splitsProviderChecksums.length < 2,
+    "Expected at most one splitsProvider file lock",
+  );
   const splitsProviderChecksum =
     splitsProviderChecksums.length > 0
       ? splitsProviderChecksums[0].checksum
@@ -217,12 +245,15 @@ export function getChecksums(
   const dataTokensChecksums = fileLocks
     .filter(
       (fileLock) =>
-        fileLock.type === "dataTokens" && fileLock.assetId === projectId
+        fileLock.type === "dataTokens" && fileLock.assetId === projectId,
     )
     .filter((fileLock) =>
-      checkFile(fileLocations.dataTokens[fileLock.assetId])
+      checkFile(fileLocations.dataTokens[fileLock.assetId]),
     );
-  assert(dataTokensChecksums.length < 2);
+  assert(
+    dataTokensChecksums.length < 2,
+    "Expected at most one dataTokens file lock",
+  );
   const dataTokensChecksum =
     dataTokensChecksums.length > 0 ? dataTokensChecksums[0].checksum : "";
 

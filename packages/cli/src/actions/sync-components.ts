@@ -21,7 +21,7 @@ import {
   writeFileContent,
 } from "../utils/file-utils";
 import { assert, ensure } from "../utils/lang-utils";
-import { syncRscFiles } from "../utils/rsc-config";
+import { makeRscClientModulePath, syncRscFiles } from "../utils/rsc-config";
 import { confirmWithUser } from "../utils/user-utils";
 
 export async function syncProjectComponents(
@@ -233,9 +233,9 @@ export async function syncProjectComponents(
           compConfig.rsc?.clientModulePath &&
           fileExists(context, compConfig.rsc.clientModulePath)
         ) {
-          const clientModulePath = skeletonPath.replace(
-            /\.tsx$/,
-            "-client.tsx"
+          const clientModulePath = makeRscClientModulePath(
+            context,
+            skeletonPath
           );
           if (context.cliArgs.quiet !== true) {
             logger.info(
@@ -274,26 +274,36 @@ export async function syncProjectComponents(
       }
     }
 
-    assert(L.isArray(projectLock.fileLocks));
+    assert(L.isArray(projectLock.fileLocks), "fileLocks must be an array");
     // Update FileLocks
     if (renderModuleFileLocks[id]) {
       renderModuleFileLocks[id].checksum = ensure(
-        id2RenderModuleChecksum.get(id)
+        id2RenderModuleChecksum.get(id),
+        "missing render module checksum"
       );
     } else {
       projectLock.fileLocks.push({
         type: "renderModule",
         assetId: id,
-        checksum: ensure(id2RenderModuleChecksum.get(id)),
+        checksum: ensure(
+          id2RenderModuleChecksum.get(id),
+          "missing render module checksum"
+        ),
       });
     }
     if (cssRulesFileLocks[id]) {
-      cssRulesFileLocks[id].checksum = ensure(id2CssRulesChecksum.get(id));
+      cssRulesFileLocks[id].checksum = ensure(
+        id2CssRulesChecksum.get(id),
+        "missing css rules checksum"
+      );
     } else {
       projectLock.fileLocks.push({
         type: "cssRules",
         assetId: id,
-        checksum: ensure(id2CssRulesChecksum.get(id)),
+        checksum: ensure(
+          id2CssRulesChecksum.get(id),
+          "missing css rules checksum"
+        ),
       });
     }
 

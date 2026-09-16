@@ -123,7 +123,8 @@ function removeMissingFilesFromLock(
 async function attemptToRestoreFilePath(
   context: PlasmicContext,
   expectedPath: string,
-  baseNameToFiles: Record<string, string[]>
+  baseNameToFiles: Record<string, string[]>,
+  isOwnFile: (absPath: string) => boolean = () => true
 ) {
   // If the path is not set, always recreate.
   if (expectedPath === "") {
@@ -133,8 +134,10 @@ async function attemptToRestoreFilePath(
   if (fileExists(context, expectedPath)) {
     return expectedPath;
   }
-  const fileName = path.basename(expectedPath);
-  if (!baseNameToFiles[fileName]) {
+  const candidates = (
+    baseNameToFiles[path.basename(expectedPath)] ?? []
+  ).filter(isOwnFile);
+  if (candidates.length === 0) {
     const answer = await prompts.askChoice({
       message: `File ${path.join(
         context.absoluteSrcDir,
@@ -153,11 +156,8 @@ async function attemptToRestoreFilePath(
     return undefined;
   }
 
-  if (baseNameToFiles[fileName].length === 1) {
-    const newPath = path.relative(
-      context.absoluteSrcDir,
-      baseNameToFiles[fileName][0]
-    );
+  if (candidates.length === 1) {
+    const newPath = path.relative(context.absoluteSrcDir, candidates[0]);
     logger.info(`\tDetected file moved from ${expectedPath} to ${newPath}.`);
     return newPath;
   }
@@ -166,7 +166,7 @@ async function attemptToRestoreFilePath(
   const none = "None.";
   const answer = await prompts.askChoice({
     message: `Cannot find expected file at ${expectedPath}. Please select one of the following matches:`,
-    choices: [...baseNameToFiles[fileName], none],
+    choices: [...candidates, none],
     defaultAnswer: none,
     hidePrompt: context.cliArgs.yes,
   });
@@ -314,6 +314,17 @@ async function resolveMissingFilesInConfig(
         continue;
       }
 
+      if (component.rsc) {
+        // Same-named pages in other projects share the wrapper's base name.
+        component.rsc.serverModulePath =
+          (await attemptToRestoreFilePath(
+            context,
+            component.rsc.serverModulePath,
+            baseNameToFiles,
+            (f) => readFileText(f).includes(component.id)
+          )) || component.rsc.serverModulePath;
+      }
+
       component.importSpec.modulePath = newModulePath;
       component.renderModuleFilePath = newRenderModulePath;
       component.cssFilePath = newCssPath;
@@ -430,7 +441,7 @@ async function getOrInitAuth(args: CommonArgs) {
   }
 
   if (await maybeRunPlasmicInit(args, ".plasmic.auth")) {
-    return ensure(await getCurrentAuth());
+    return ensure(await getCurrentAuth(), "plasmic init did not create auth");
   }
 
   // Could not find the authentication credentials and the user

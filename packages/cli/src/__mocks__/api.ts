@@ -35,6 +35,9 @@ export interface MockProject {
 export interface MockComponent {
   id: string;
   name: string;
+  path?: string;
+  /** Emit Next.js RSC page wrappers. Requires `path`. */
+  rsc?: boolean;
   projectId?: string;
   branchName?: string;
   version?: string;
@@ -48,7 +51,7 @@ export function clear() {
 
 function mockProjectToProjectVersionMeta(
   mock: MockProject,
-  componentIdOrNames?: readonly string[]
+  componentIdOrNames?: readonly string[],
 ): ProjectVersionMeta {
   return {
     ...mock,
@@ -57,7 +60,7 @@ function mockProjectToProjectVersionMeta(
         (c) =>
           !componentIdOrNames ||
           componentIdOrNames.includes(c.name) ||
-          componentIdOrNames.includes(c.id)
+          componentIdOrNames.includes(c.id),
       )
       .map((c) => c.id),
     indirect: false,
@@ -98,7 +101,7 @@ export function addMockProject(proj: MockProject) {
  * @param data
  */
 export function stringToMockComponent(
-  data?: string
+  data?: string,
 ): MockComponent | undefined {
   if (!data) {
     return;
@@ -121,13 +124,13 @@ function mockComponentToString(component: MockComponent): string {
 export function getMockProject(
   projectId: string,
   branchName: string,
-  version: string
+  version: string,
 ): MockProject | undefined {
   return PROJECTS.find(
     (m) =>
       m.projectId === projectId &&
       m.branchName === branchName &&
-      m.version === version
+      m.version === version,
   );
 }
 
@@ -143,7 +146,7 @@ function getMockComponents(
   projectId: string,
   branchName: string,
   version: string,
-  componentIdOrNames: readonly string[] | undefined
+  componentIdOrNames: readonly string[] | undefined,
 ): MockComponent[] {
   const project = getMockProject(projectId, branchName, version);
   return !project
@@ -152,7 +155,7 @@ function getMockComponents(
         (c) =>
           !componentIdOrNames ||
           componentIdOrNames.includes(c.id) ||
-          componentIdOrNames.includes(c.name)
+          componentIdOrNames.includes(c.name),
       );
 }
 
@@ -160,19 +163,46 @@ function genFilename(base: string, suffix: string) {
   return "Plasmic" + base + "." + suffix;
 }
 
-function genComponentBundle(component: MockComponent): ComponentBundle {
+function genComponentBundle(
+  component: MockComponent,
+  lang: "ts" | "js",
+): ComponentBundle {
+  const ext = lang === "js" ? "jsx" : "tsx";
+  const isPage = component.path !== undefined;
+  const skeletonBaseName = isPage
+    ? component.path === "/"
+      ? "/index"
+      : component.path
+    : component.name;
   return {
     renderModule: mockComponentToString(component),
     skeletonModule: mockComponentToString(component),
     cssRules: `theClass {color: blue;}`,
-    renderModuleFileName: genFilename(component.name, "tsx"),
-    skeletonModuleFileName: component.name + ".tsx",
+    renderModuleFileName: genFilename(component.name, ext),
+    skeletonModuleFileName: `${skeletonBaseName}.${ext}`,
     cssFileName: genFilename(component.name, "css"),
     componentName: component.name,
     id: component.id,
     scheme: "blackbox",
     nameInIdToUuid: [],
-    isPage: false,
+    isPage,
+    path: component.path,
+    // RSC wrappers arrive as TSX; the CLI converts them for JavaScript projects.
+    rscMetadata:
+      isPage && component.rsc
+        ? {
+            pageWrappers: {
+              server: {
+                module: mockComponentToString(component),
+                fileName: `Plasmic${component.name}Server.tsx`,
+              },
+              client: {
+                module: mockComponentToString(component),
+                fileName: `Client${component.name}.tsx`,
+              },
+            },
+          }
+        : undefined,
   };
 }
 
@@ -228,7 +258,7 @@ export class PlasmicApi {
       componentIdOrNames: readonly string[] | undefined;
       projectApiToken?: string;
     }[],
-    recursive?: boolean
+    recursive?: boolean,
   ): Promise<VersionResolution> {
     const results: VersionResolution = {
       projects: [],
@@ -239,13 +269,13 @@ export class PlasmicApi {
     // Get top level projects
     projects.forEach((proj) => {
       const availableProjects = Array.from(PROJECTS.values()).filter(
-        (p) => p.projectId === proj.projectId
+        (p) => p.projectId === proj.projectId,
       );
       if (
         !(
           (this.auth.user && this.auth.token) ||
           availableProjects.every(
-            (p) => p.projectApiToken === proj.projectApiToken
+            (p) => p.projectApiToken === proj.projectApiToken,
           )
         )
       ) {
@@ -254,15 +284,15 @@ export class PlasmicApi {
       const availableVersions = availableProjects.map((p) => p.version);
       const version = semver.maxSatisfying(
         availableVersions,
-        proj.versionRange
+        proj.versionRange,
       );
       if (version) {
         const mockProject = ensure(
-          getMockProject(proj.projectId, proj.branchName, version)
+          getMockProject(proj.projectId, proj.branchName, version),
         );
         const projectMeta = mockProjectToProjectVersionMeta(
           mockProject,
-          proj.componentIdOrNames
+          proj.componentIdOrNames,
         );
         results.projects.push(projectMeta);
       }
@@ -291,14 +321,15 @@ export class PlasmicApi {
       existingCompScheme: Array<[string, "blackbox" | "direct"]>;
       componentIdOrNames: readonly string[] | undefined;
       version: string;
-    }
+      codeOpts?: { lang: "ts" | "js" };
+    },
   ): Promise<ProjectBundle> {
     const { componentIdOrNames, version } = opts;
     if (PROJECTS.length <= 0) {
       throw new Error("Remember to call __addMockProject first!");
     }
     const maybeTokenPair = this.lastProjectIdsAndTokens.find(
-      (pair) => pair.projectId === projectId
+      (pair) => pair.projectId === projectId,
     );
     const project = ensure(PROJECTS.find((p) => p.projectId === projectId));
     if (
@@ -313,30 +344,32 @@ export class PlasmicApi {
     const deps = [...getDeps([mockProjectToProjectVersionMeta(project)])];
     if (
       !deps.every((dep) =>
-        this.lastProjectIdsAndTokens.find((p) => p.projectId === dep.projectId)
+        this.lastProjectIdsAndTokens.find((p) => p.projectId === dep.projectId),
       )
     ) {
       throw new Error(
-        "No user+token and project API tokens don't match on a dependency"
+        "No user+token and project API tokens don't match on a dependency",
       );
     }
     const mockComponents = getMockComponents(
       projectId,
       branchName,
       version,
-      componentIdOrNames
+      componentIdOrNames,
     );
     if (mockComponents.length <= 0) {
       throw new Error(
         `Code gen failed: no components match the parameters ${JSON.stringify(
           { projectId, version, componentIdOrNames },
           undefined,
-          2
-        )}`
+          2,
+        )}`,
       );
     }
 
-    const components = mockComponents.map((c) => genComponentBundle(c));
+    const components = mockComponents.map((c) =>
+      genComponentBundle(c, opts.codeOpts?.lang ?? "ts"),
+    );
     const result = {
       components,
       codeComponentMetas: [],
@@ -370,21 +403,21 @@ export class PlasmicApi {
     _bundleName: string,
     _bundleJs: string,
     _css: string[],
-    _metaJson: string
+    _metaJson: string,
   ): Promise<StyleTokensMap> {
     throw new Error("Unimplemented");
   }
 
   async projectStyleTokens(
     _projectId: string,
-    _branchName: string
+    _branchName: string,
   ): Promise<StyleTokensMap> {
     throw new Error("Unimplemented");
   }
 
   async projectIcons(
     _projectId: string,
-    _branchName: string
+    _branchName: string,
   ): Promise<ProjectIconsResponse> {
     throw new Error("Unimplemented");
   }

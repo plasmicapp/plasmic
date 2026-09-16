@@ -98,6 +98,7 @@
     "lodash": "^4.18.1",
     "marked": "^9.1.1",
     "md5": "^2.3.0",
+    "moment": "catalog:",
     "nanoid": "^5.1.7",
     "papaparse": "^5.5.3",
     "pluralize": "^8.0.0",

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { defaultPagePath } from "./file-utils";
+import {
+  defaultPlasmicJson,
+  project1Config,
+} from "../actions/__testonly__/fixtures";
+import { ComponentConfig, PlasmicContext } from "./config-utils";
+import { assertAllPathsInRootDir, defaultPagePath } from "./file-utils";
 
 describe("defaultPagePath", () => {
   it("does nothing for react", () => {
@@ -150,4 +155,39 @@ describe("defaultPagePath", () => {
       )
     ).toBe("../routes/post/$postId/index.tsx");
   });
+});
+
+describe("assertAllPathsInRootDir", () => {
+  const insideRsc = {
+    serverModulePath: "plasmic/PlasmicHomepageServer.tsx",
+    clientModulePath: "../app/page-client.tsx",
+  };
+  const makeContext = (rsc: ComponentConfig["rsc"]) =>
+    ({
+      rootDir: "/repo",
+      absoluteSrcDir: "/repo/src",
+      config: {
+        ...defaultPlasmicJson,
+        projects: [
+          {
+            ...project1Config,
+            components: [{ ...project1Config.components[0], rsc }],
+          },
+        ],
+      },
+    } as unknown as PlasmicContext);
+
+  it("accepts RSC paths inside the root dir", () => {
+    expect(() => assertAllPathsInRootDir(makeContext(insideRsc))).not.toThrow();
+  });
+
+  it.each(["serverModulePath", "clientModulePath"] as const)(
+    "rejects rsc.%s outside the root dir",
+    (key) => {
+      const rsc = { ...insideRsc, [key]: "../../outside/file.tsx" };
+      expect(() => assertAllPathsInRootDir(makeContext(rsc))).toThrow(
+        /outside\/file\.tsx.*outside of \/repo/
+      );
+    }
+  );
 });

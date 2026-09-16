@@ -40,7 +40,7 @@
     "@types/node": "^17.0.45",
     "@types/react": "catalog:",
     "next": "^12.3.7",
-    "prettier": "^2.5.1",
+    "prettier": "catalog:",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tsdx": "catalog:"

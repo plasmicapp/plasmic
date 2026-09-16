@@ -173,8 +173,8 @@ export async function writeFileContent(
   content: string | Buffer,
   opts: { force?: boolean } = {},
 ) {
-  const path = makeFilePath(context, srcDirFilePath);
-  await writeFileContentRaw(path, content, {
+  const filePath = makeFilePath(context, srcDirFilePath);
+  await writeFileContentRaw(filePath, content, {
     yes: context.cliArgs.yes,
     ...opts,
   });
@@ -184,13 +184,13 @@ export function readFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,
 ) {
-  const path = makeFilePath(context, srcDirFilePath);
-  return readFileText(path);
+  const filePath = makeFilePath(context, srcDirFilePath);
+  return readFileText(filePath);
 }
 
 export function deleteFile(context: PlasmicContext, srcDirFilePath: string) {
-  const path = makeFilePath(context, srcDirFilePath);
-  deleteFileBuffered(path);
+  const filePath = makeFilePath(context, srcDirFilePath);
+  deleteFileBuffered(filePath);
 }
 
 export function fileExists(context: PlasmicContext, srcDirFilePath: string) {
@@ -331,6 +331,10 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
     if (isLocalModulePath(comp.importSpec.modulePath)) {
       pushPath(comp.importSpec, "modulePath");
     }
+    if (comp.rsc) {
+      pushPath(comp.rsc, "serverModulePath");
+      pushPath(comp.rsc, "clientModulePath");
+    }
   };
 
   const pushProject = (proj: ProjectConfig) => {
@@ -468,39 +472,39 @@ export async function withBufferedFs(f: () => Promise<void>) {
   }
 }
 
-export function writeFileText(path: string, content: string | Buffer) {
+export function writeFileText(filePath: string, content: string | Buffer) {
   if (buffering) {
-    buffer.set(path, { type: "create", content });
+    buffer.set(filePath, { type: "create", content });
   } else {
     // eslint-disable-next-line no-restricted-syntax
-    fs.writeFileSync(path, content, "utf8");
+    fs.writeFileSync(filePath, content, "utf8");
   }
 }
 
-export function readFileText(path: string): string {
+export function readFileText(filePath: string): string {
   if (buffering) {
-    const action = buffer.get(path);
+    const action = buffer.get(filePath);
     if (action) {
       switch (action.type) {
         case "create":
           return ensureString(action.content);
         case "rename":
           // eslint-disable-next-line no-restricted-syntax
-          return fs.readFileSync(path, "utf8");
+          return fs.readFileSync(filePath, "utf8");
         case "delete":
           throw new HandledError("File does not exists");
       }
     }
     // If we are buffering files and the file has been renamed, only the old file path
     // exists in disk, so we need to read the content from the old file path.
-    const renamedFilePath = renamedFiles.get(path);
+    const renamedFilePath = renamedFiles.get(filePath);
     if (renamedFilePath) {
       return readFileText(renamedFilePath);
     }
   }
 
   // eslint-disable-next-line no-restricted-syntax
-  return fs.readFileSync(path, "utf8");
+  return fs.readFileSync(filePath, "utf8");
 }
 
 export function renameFileBuffered(oldPath: string, newPath: string) {
@@ -541,18 +545,18 @@ export function renameFileBuffered(oldPath: string, newPath: string) {
   }
 }
 
-export function deleteFileBuffered(path: string) {
+export function deleteFileBuffered(filePath: string) {
   if (buffering) {
-    if (!existsBuffered(path)) {
+    if (!existsBuffered(filePath)) {
       throw new HandledError("File does not exists");
     }
 
-    const action = buffer.get(path);
+    const action = buffer.get(filePath);
 
     if (action) {
       switch (action.type) {
         case "create":
-          buffer.delete(path);
+          buffer.delete(filePath);
           break;
         case "rename":
           throw new HandledError("File does not exists");
@@ -560,23 +564,23 @@ export function deleteFileBuffered(path: string) {
           throw new HandledError("File does not exists");
       }
     } else {
-      buffer.set(path, { type: "delete" });
+      buffer.set(filePath, { type: "delete" });
     }
 
-    renamedFiles.delete(path);
+    renamedFiles.delete(filePath);
   } else {
     // eslint-disable-next-line no-restricted-syntax
-    fs.unlinkSync(path);
+    fs.unlinkSync(filePath);
   }
 }
 
-export function existsBuffered(path: string): boolean {
+export function existsBuffered(filePath: string): boolean {
   if (buffering) {
-    if (renamedFiles.has(path)) {
+    if (renamedFiles.has(filePath)) {
       return true;
     }
 
-    const action = buffer.get(path);
+    const action = buffer.get(filePath);
     if (action) {
       switch (action.type) {
         case "create":
@@ -590,5 +594,5 @@ export function existsBuffered(path: string): boolean {
   }
 
   // eslint-disable-next-line no-restricted-syntax
-  return fs.existsSync(path);
+  return fs.existsSync(filePath);
 }
