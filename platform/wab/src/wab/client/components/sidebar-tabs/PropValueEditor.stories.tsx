@@ -1,9 +1,9 @@
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
-import { expect } from "@storybook/jest";
 import type { Meta, StoryObj } from "@storybook/react";
-import { userEvent, waitFor, within } from "@storybook/testing-library";
 import React from "react";
+import { useArgs } from "storybook/preview-api";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
 export default {
   component: PropValueEditor,
@@ -11,11 +11,23 @@ export default {
     attr: "Attr",
     label: "Label",
     value: undefined,
-  },
-  argTypes: {
-    onChange: { action: "changed" },
+    onChange: fn(),
   },
   decorators: [
+    (Story, ctx) => {
+      const [, updateArgs] = useArgs();
+      return (
+        <Story
+          args={{
+            ...ctx.args,
+            onChange: (value) => {
+              ctx.args.onChange(value);
+              updateArgs({ value });
+            },
+          }}
+        />
+      );
+    },
     (Story) => (
       <SidebarModalProvider>
         <Story />

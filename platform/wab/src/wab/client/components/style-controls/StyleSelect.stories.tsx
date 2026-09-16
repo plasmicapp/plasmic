@@ -1,13 +1,12 @@
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
-import { expect } from "@storybook/jest";
 import type { Meta, StoryObj } from "@storybook/react";
-import { screen, userEvent, waitFor, within } from "@storybook/testing-library";
 import React from "react";
+import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test";
 
 export default {
   component: StyleSelect,
-  argTypes: {
-    onChange: { action: "changed" },
+  args: {
+    onChange: fn(),
   },
 } as Meta<typeof StyleSelect>;
 

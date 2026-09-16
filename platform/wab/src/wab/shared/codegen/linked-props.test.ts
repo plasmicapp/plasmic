@@ -6,7 +6,7 @@ import {
   collectSnapshotForDir,
 } from "@/wab/shared/codegen/__testonly__/codegen-tests-util";
 import { Site } from "@/wab/shared/model/classes";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom/vitest";
 import { render, within } from "@testing-library/react";
 import "core-js";
 import * as React from "react";

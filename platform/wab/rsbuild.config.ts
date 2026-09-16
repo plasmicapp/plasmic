@@ -1,26 +1,20 @@
-import { defineConfig } from "@rsbuild/core";
-import { pluginReact } from "@rsbuild/plugin-react";
-import { pluginSass } from "@rsbuild/plugin-sass";
+import { defineConfig, mergeRsbuildConfig } from "@rsbuild/core";
 import {
   Assets,
   Compiler,
   CopyRspackPlugin,
-  DefinePlugin,
-  ProvidePlugin,
   RspackPluginInstance,
 } from "@rspack/core";
-import { execSync } from "child_process";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import { homepage } from "./package.json";
 import { StudioHtmlPlugin } from "./tools/webpack/StudioHtmlPlugin";
 import {
-  OPTIONAL_VAR,
-  REQUIRED_VAR,
-  mkDefinePluginOptsForEnv,
-} from "./tools/webpack/mkDefinePluginOptsForEnv";
+  getCommitHash,
+  mkSharedRsbuildConfig,
+} from "./tools/webpack/sharedRsbuildConfig";
 
-const commitHash = execSync("git rev-parse HEAD").toString().slice(0, 6);
+const commitHash = getCommitHash();
 const buildEnv = process.env.NODE_ENV ?? "production";
 const isProd = buildEnv === "production";
 // Interface to listen on, shared with the other servers in the dev stack.
@@ -53,7 +47,7 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
   constructor(
     private opts: {
       paths: string[];
-    }
+    },
   ) {}
 
   apply(compiler: Compiler) {
@@ -94,7 +88,7 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
             processFile(filePath, assets);
           });
           callback();
-        }
+        },
       );
     });
 
@@ -109,7 +103,7 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
           processFile(filePath, compilation.assets);
         });
         callback();
-      }
+      },
     );
   }
 
@@ -129,7 +123,7 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
   }
 }
 
-export default defineConfig({
+const appConfig = defineConfig({
   dev: {
     // We write intermediate files to disk (build/) for debugging,
     // and also because our local host server will serve from there.
@@ -150,27 +144,6 @@ export default defineConfig({
       index: "src/wab/client/main.tsx",
     },
   },
-  resolve: {
-    alias: {
-      // Force a single jquery instance in the bundle. jquery plugins
-      // (jquery-serializejson) import "jquery" themselves, and under pnpm's
-      // isolated node_modules they can resolve a different copy than the app
-      // (the workspace has both 3.5.1 and 3.7.1), so the plugin registers
-      // itself on an instance the app never sees.
-      jquery: "./node_modules/jquery",
-      // data-urls.ts only falls back to xmldom when there is no window.
-      "@xmldom/xmldom": false,
-      ...(buildEnv === "production"
-        ? {}
-        : {
-            // In case you are linking to locally built packages,
-            // sometimes you end up with duplicate React versions.
-            // This fixes that issue.
-            react: "./node_modules/react",
-            "react-dom": "./node_modules/react-dom",
-          }),
-    },
-  },
   output: {
     assetPrefix: staticUrl,
     distPath: {
@@ -188,20 +161,11 @@ export default defineConfig({
       override: { maxSize: 1_000_000 },
     },
   },
-  plugins: [pluginReact(), pluginSass()],
   tools: {
     // We use html-webpack-plugin directly instead of relying in @rsbuild/core
     // html plugin so it works with StudioHtmlPlugin.
     htmlPlugin: false,
     rspack: {
-      resolve: {
-        fallback: {
-          // We are using "xml" package in web-exporter for serialization, it imports
-          // stream internally, but we don't need it so we set it to false so we can use
-          // web-exporter functions on the client side.
-          stream: false,
-        },
-      },
       plugins: [
         // For most files, we are appending a commitHash to the file name
         // for caching and cache-busting. Ideally they'd be using a
@@ -258,24 +222,6 @@ export default defineConfig({
           filename: `static/popup.html`,
           inject: false,
         }),
-        new ProvidePlugin({
-          process: [require.resolve("process/browser")],
-          Buffer: ["buffer", "Buffer"],
-        }),
-        new DefinePlugin(
-          mkDefinePluginOptsForEnv({
-            NODE_ENV: REQUIRED_VAR,
-            COMMITHASH: commitHash,
-            STATIC_URL: OPTIONAL_VAR,
-            POSTHOG_API_KEY: OPTIONAL_VAR,
-            POSTHOG_HOST: OPTIONAL_VAR,
-            POSTHOG_REVERSE_PROXY_HOST: OPTIONAL_VAR,
-            SENTRY_DSN: OPTIONAL_VAR,
-            SENTRY_ORG_ID: OPTIONAL_VAR,
-            SENTRY_PROJECT_ID: OPTIONAL_VAR,
-            STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
-          })
-        ),
         new MonacoWebpackPlugin(),
         new HtmlWebpackPlugin(
           Object.assign(
@@ -302,11 +248,16 @@ export default defineConfig({
                     minifyURLs: true,
                   },
                 }
-              : undefined
-          )
+              : undefined,
+          ),
         ),
         new StudioHtmlPlugin(commitHash),
       ],
     },
   },
 });
+
+export default mergeRsbuildConfig(
+  mkSharedRsbuildConfig({ commitHash }),
+  appConfig,
+);

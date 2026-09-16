@@ -1,12 +1,11 @@
 import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
-import { expect } from "@storybook/jest";
 import type { Meta, StoryObj } from "@storybook/react";
-import { userEvent, waitFor, within } from "@storybook/testing-library";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
 export default {
   component: StyleCheckbox,
-  argTypes: {
-    onChange: { action: "changed" },
+  args: {
+    onChange: fn(),
   },
 } as Meta<typeof StyleCheckbox>;
 

@@ -1,4 +1,4 @@
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom/vitest";
 import { act, getByTestId, getByText, render } from "@testing-library/react";
 // polyfill some js features like String.matchAll()
 import { Bundle, Bundler } from "@/wab/shared/bundler";

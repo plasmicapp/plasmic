@@ -13,7 +13,7 @@ import {
   isKnownSite,
 } from "@/wab/shared/model/classes";
 import { createUseStyleTokens } from "@plasmicapp/react-web";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom/vitest";
 import { getByText, render, renderHook } from "@testing-library/react";
 import { CssNode, find, parse } from "css-tree";
 import * as React from "react";

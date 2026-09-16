@@ -264,7 +264,7 @@ describe("FocusHeuristics", function () {
       ).toBe(valTree.children[0].contents[0].children[0]);
     });
 
-    return describe("from inside a slotted component", function () {
+    describe("from inside a slotted component", function () {
       // DEAD There's no more defaultContents.
       it.skip("should stay put if target is slot still rendering default contents (no arg was passed in)", function () {
         evalTpl({

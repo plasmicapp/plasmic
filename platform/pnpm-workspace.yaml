@@ -25,6 +25,8 @@ catalog:
   esbuild: ^0.25
   hono: ^4.7.6
   moment: 2.30.1
+  playwright: 1.60.0
+  playwright-core: 1.60.0
   tsx: ^4
   typescript: 6.0.3
   vite: 6.4.2
@@ -44,11 +46,12 @@ catalog:
 # same pins so the manifest matches what actually installs. If these are ever
 # upgraded, rebase patches/@react-aria__*.patch onto the new dist output.
 overrides:
+  playwright: "catalog:"
+  playwright-core: "catalog:"
+  "vitest>vite": "catalog:"
+
   react-aria-components: 1.9.0
   sha.js: ^2.4.12
-  # vitest allows vite 6-8; pin it to the vite wab already declares, so the
-  # workspace keeps a single vite copy.
-  "vitest>vite": "catalog:"
   "@plasmicpkgs/antd>antd": 4.19.5
   "@plasmicpkgs/react-slick>antd": 4.19.5
   "@plasmicpkgs/antd5>antd": 5.12.8
@@ -276,3 +279,4 @@ allowBuilds:
   core-js-pure: false
   msw: false
   pprof: true
+  unrs-resolver: false

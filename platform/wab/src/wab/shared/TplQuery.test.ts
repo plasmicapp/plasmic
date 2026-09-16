@@ -168,7 +168,7 @@ describe("TplQuery", function () {
       ).toEqual(uids([oneWrapped]));
       expect(uids([oneWrapped.parent])).toEqual(uids([wrapper]));
     });
-    return describe("on TplComponent parent", function () {
+    describe("on TplComponent parent", function () {
       let h1, h2, h3, h4;
       container = h1 = h2 = h3 = h4 = null;
       beforeEach(() => {
