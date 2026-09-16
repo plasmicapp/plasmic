@@ -2,7 +2,11 @@ import L from "lodash";
 import path from "upath";
 import { ChecksumBundle, ComponentBundle } from "../api";
 import { logger } from "../deps";
-import { ComponentUpdateSummary, formatAsLocal } from "../utils/code-utils";
+import {
+  ComponentUpdateSummary,
+  formatAsLocal,
+  renameSkeletonComponent,
+} from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
   ComponentConfig,
@@ -24,6 +28,12 @@ import {
 import { assert, ensure } from "../utils/lang-utils";
 import { syncRscFiles } from "../utils/rsc-config";
 import { confirmWithUser } from "../utils/user-utils";
+
+interface RenamedComponent {
+  oldConfig: ComponentConfig;
+  // Contents of the old skeleton, if there was one; carried over to the new name
+  skeleton?: string;
+}
 
 export async function syncProjectComponents(
   context: PlasmicContext,
@@ -96,6 +106,14 @@ export async function syncProjectComponents(
       !deletedComponentIds.has(fileLock.assetId)
   );
 
+  const renamedComponents = removeRenamedComponentFiles(
+    context,
+    project,
+    version,
+    componentBundles,
+    allCompConfigs
+  );
+
   for (const bundle of componentBundles) {
     const {
       renderModule,
@@ -139,18 +157,24 @@ export async function syncProjectComponents(
     );
 
     if (shouldRegenerate) {
-      if (compConfig?.type === "managed") {
-        await deleteRenamedComponentFiles(
-          context,
-          project,
-          version,
-          compConfig,
-          componentName,
-          defaultRenderModuleFilePath,
-          defaultCssFilePath,
-          skeletonPath
-        );
-      }
+      const renamed = renamedComponents.get(id);
+      // A renamed component keeps living wherever its files were before
+      const keepDir = (oldFilePath: string | undefined, newFilePath: string) =>
+        oldFilePath
+          ? path.join(path.dirname(oldFilePath), path.basename(newFilePath))
+          : newFilePath;
+      const renderModuleFilePath = keepDir(
+        renamed?.oldConfig.renderModuleFilePath,
+        defaultRenderModuleFilePath
+      );
+      const cssFilePath = keepDir(
+        renamed?.oldConfig.cssFilePath,
+        defaultCssFilePath
+      );
+      const newSkeletonPath = isPage
+        ? skeletonPath
+        : keepDir(renamed?.oldConfig.importSpec.modulePath, skeletonPath);
+
       project.components = project.components.filter(
         (existingComponent) => existingComponent.id !== id
       );
@@ -159,9 +183,9 @@ export async function syncProjectComponents(
         name: componentName,
         type: "managed",
         projectId: project.projectId,
-        renderModuleFilePath: defaultRenderModuleFilePath,
-        importSpec: { modulePath: skeletonPath },
-        cssFilePath: defaultCssFilePath,
+        renderModuleFilePath,
+        importSpec: { modulePath: newSkeletonPath },
+        cssFilePath,
         scheme: scheme as "blackbox" | "direct",
         componentType: isPage ? "page" : "component",
         path: pagePath,
@@ -170,10 +194,27 @@ export async function syncProjectComponents(
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
 
-      // Because it's the first time, we also generate the skeleton file.
-      await writeFileContent(context, skeletonPath, skeletonModule, {
-        force: false,
-      });
+      if (renamed?.skeleton !== undefined) {
+        // Carry the user's skeleton over instead of starting from scratch
+        await writeFileContent(
+          context,
+          newSkeletonPath,
+          await renameSkeletonComponent(context, renamed.skeleton, {
+            oldName: renamed.oldConfig.name,
+            newName: componentName,
+            oldSkeletonPath: renamed.oldConfig.importSpec.modulePath,
+            newSkeletonPath,
+            oldRenderModulePath: renamed.oldConfig.renderModuleFilePath,
+            newRenderModulePath: renderModuleFilePath,
+          }),
+          { force: false }
+        );
+      } else {
+        // Because it's the first time, we also generate the skeleton file.
+        await writeFileContent(context, newSkeletonPath, skeletonModule, {
+          force: false,
+        });
+      }
     } else if (compConfig.type === "managed") {
       // This is an existing component.
       // We only bother touching files on disk if this component is managed.
@@ -342,46 +383,52 @@ export async function syncProjectComponents(
 }
 
 /**
- * A renamed component keeps its id but gets brand new file names, so it goes
- * through the same code path as a newly added component. Without this, the
- * files generated under the old name would stay on disk forever.
+ * A renamed component keeps its id but gets brand new file names, so the main
+ * loop treats it like a newly added component and the files generated under
+ * the old name would stay on disk forever.
+ *
+ * All old files are removed here, before the loop writes anything, so renames
+ * that overlap (`Cmp1 -> Container1` while `Container1 -> Container2`, or two
+ * components swapping names) never see each other's files. The old skeleton
+ * is read into memory first so the loop can carry it over to the new name.
  */
-async function deleteRenamedComponentFiles(
+function removeRenamedComponentFiles(
   context: PlasmicContext,
   project: ProjectConfig,
   version: string,
-  oldConfig: ComponentConfig,
-  newName: string,
-  newRenderModuleFilePath: string,
-  newCssFilePath: string,
-  newSkeletonPath: string
-) {
-  logger.info(
-    `Component renamed: ${oldConfig.name} -> ${newName}@${version}\t['${project.projectName}' ${project.projectId}/${oldConfig.id} ${project.version}]`
-  );
-
-  for (const [oldPath, newPath] of [
-    [oldConfig.renderModuleFilePath, newRenderModuleFilePath],
-    [oldConfig.cssFilePath, newCssFilePath],
-  ]) {
-    if (oldPath !== newPath && fileExists(context, oldPath)) {
-      deleteFile(context, oldPath);
+  componentBundles: ComponentBundle[],
+  allCompConfigs: Record<string, ComponentConfig>
+): Map<string, RenamedComponent> {
+  const renamedComponents = new Map<string, RenamedComponent>();
+  for (const bundle of componentBundles) {
+    const oldConfig = allCompConfigs[bundle.id];
+    if (
+      !oldConfig ||
+      oldConfig.type !== "managed" ||
+      oldConfig.name === bundle.componentName
+    ) {
+      continue;
     }
-  }
-
-  const oldSkeletonPath = oldConfig.importSpec.modulePath;
-  if (
-    !eqPagePath(oldSkeletonPath, newSkeletonPath) &&
-    fileExists(context, oldSkeletonPath)
-  ) {
-    // The skeleton may have been edited by hand, so ask before deleting it,
-    // just like we do for deleted components.
-    const deleteSkeleton = await confirmWithUser(
-      `Do you want to delete ${oldSkeletonPath}?`,
-      context.cliArgs.yes
+    logger.info(
+      `Renaming component: ${oldConfig.name} -> ${bundle.componentName}@${version}\t['${project.projectName}' ${project.projectId}/${oldConfig.id} ${project.version}]`
     );
-    if (deleteSkeleton) {
+
+    const renamed: RenamedComponent = { oldConfig };
+    const oldSkeletonPath = oldConfig.importSpec.modulePath;
+    if (fileExists(context, oldSkeletonPath)) {
+      renamed.skeleton = readFileContent(context, oldSkeletonPath);
       deleteFile(context, oldSkeletonPath);
     }
+    for (const oldFilePath of [
+      oldConfig.renderModuleFilePath,
+      oldConfig.cssFilePath,
+      oldConfig.rsc?.serverModulePath,
+    ]) {
+      if (oldFilePath && fileExists(context, oldFilePath)) {
+        deleteFile(context, oldFilePath);
+      }
+    }
+    renamedComponents.set(bundle.id, renamed);
   }
+  return renamedComponents;
 }
