@@ -245,7 +245,7 @@ export type MayTriggerPaywall<T> = MakeADT<
       description?: PaywallDescription;
     };
     upsell: {
-      team?: ApiTeam;
+      team: ApiTeam;
       minSeats?: number;
       features: ApiFeatureTier[];
       description: PaywallDescription;

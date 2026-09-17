@@ -63,12 +63,10 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   );
 
   // Figure out the current plan we're on
-  const subStatus = team
-    ? getSubscriptionStatus(team, subscription)
-    : undefined;
+  const subStatus = getSubscriptionStatus(team, subscription);
 
   const billingError =
-    subStatus?.type === "invalid" ? subStatus.errorMsg : undefined;
+    subStatus.type === "invalid" ? subStatus.errorMsg : undefined;
 
   const currentBill = React.useMemo(() => {
     if (!team.featureTier || !team.seats || !team.billingFrequency) {
@@ -90,10 +88,6 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   ).length;
 
   const upsell = async (tier: ApiFeatureTier, title?: string) => {
-    if (!team) {
-      return;
-    }
-
     const { tiers } = await appCtx.api.listCurrentFeatureTiers();
 
     // Load the upsell modal to handle either an upgrade/downgrade or new subscription
@@ -128,10 +122,6 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   };
 
   const updateCreditCard = async () => {
-    if (!team) {
-      return;
-    }
-
     // Load the upsell modal to handle either an upgrade/downgrade or new subscription
     const promptResult = await promptUpdateCc({
       appCtx,
@@ -158,9 +148,6 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   };
 
   const startFreeTrial = async () => {
-    if (!team) {
-      return;
-    }
     await appCtx.api.startFreeTrial(team.id);
     await onChange();
   };
@@ -181,7 +168,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       billingError={billingError}
       billingFrequencyToggle={{
         // Don't let users switch billingFreq if they already have a subscription
-        isDisabled: !(subStatus?.type === "valid" && subStatus.free),
+        isDisabled: !(subStatus.type === "valid" && subStatus.free),
         isChecked: billingFreq === "year",
         onChange: (checked) => {
           if (checked) {
@@ -197,11 +184,11 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         billingFrequency: billingFreq,
         availableTiers: availFeatureTiers,
         currentFeatureTier:
-          subStatus?.type === "valid" ? subStatus.tier : subStatus?.freeTier,
+          subStatus.type === "valid" ? subStatus.tier : subStatus.freeTier,
         canStartFreeTrial,
         onSelectFeatureTier: upsell,
         onManageSeats:
-          subStatus?.type === "valid" &&
+          subStatus.type === "valid" &&
           !subStatus.free &&
           !team.onTrial &&
           !!team.stripeSubscriptionId
@@ -215,9 +202,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       }}
       // If we are on free or enterprise tiers, hide certain sections.
       tier={
-        subStatus?.type === "valid" && (subStatus.free || team.onTrial)
+        subStatus.type === "valid" && (subStatus.free || team.onTrial)
           ? "free"
-          : subStatus?.type === "valid" &&
+          : subStatus.type === "valid" &&
             subStatus.tier.name.includes("Enterprise")
           ? "enterprise"
           : undefined
@@ -234,7 +221,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         onClick: async () => {
           // If the user is on not on a Upgradable tier,
           // ask they talk to us first before cancelling
-          if (team && team.featureTier && !isUpgradableTier(team.featureTier)) {
+          if (team.featureTier && !isUpgradableTier(team.featureTier)) {
             const confirmed = await reactConfirm({
               title: "Cancel your Plasmic plan",
               message:

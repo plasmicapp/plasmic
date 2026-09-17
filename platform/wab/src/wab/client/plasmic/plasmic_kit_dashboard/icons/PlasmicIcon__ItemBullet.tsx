@@ -5,11 +5,11 @@
 import { classNames } from "@plasmicapp/react-web";
 import React from "react";
 
-export type Icon19IconProps = React.ComponentProps<"svg"> & {
+export type ItemBulletIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon19Icon(props: Icon19IconProps) {
+export function ItemBulletIcon(props: ItemBulletIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -41,5 +41,5 @@ export function Icon19Icon(props: Icon19IconProps) {
   );
 }
 
-export default Icon19Icon;
+export default ItemBulletIcon;
 /* prettier-ignore-end */

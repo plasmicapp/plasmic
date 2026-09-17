@@ -237,6 +237,7 @@ function PlasmicBill__RenderFunc(props: {
           ref={(ref) => {
             $refs["moreSeats"] = ref;
           }}
+          type={"button"}
         >
           <PlusSvgIcon
             className={classNames("all", sty.svg__qGr4R)}
@@ -437,8 +438,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicBill__VariantsArgs;
     args?: PlasmicBill__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicBill__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicBill__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicBill__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

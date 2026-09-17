@@ -63,26 +63,24 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
   const subscription = data?.subscription;
   const tier = team.featureTier ?? DEVFLAGS.freeTier;
 
-  const userAccessLevel = team
-    ? getAccessLevelToResource(
-        { type: "team", resource: team },
-        appCtx.selfInfo,
-        perms
-      )
-    : "blocked";
+  const userAccessLevel = getAccessLevelToResource(
+    { type: "team", resource: team },
+    appCtx.selfInfo,
+    perms
+  );
   const readOnly = accessLevelRank(userAccessLevel) < accessLevelRank("editor");
   const hasOwnership =
     accessLevelRank(userAccessLevel) >= accessLevelRank("owner");
 
-  const teamMenuItems = team ? getTeamMenuItems(appCtx, team) : [];
+  const teamMenuItems = getTeamMenuItems(appCtx, team);
 
   return (
     <PlasmicTeamSettings
       root={{ ref }}
       {...rest}
-      teamName={team?.name}
+      teamName={team.name}
       teamMenuButton={
-        team && teamMenuItems.length > 0
+        teamMenuItems.length > 0
           ? {
               props: {
                 menu: () => (
@@ -106,10 +104,6 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
         perms,
         tier,
         onChangeRole: async (email: string, role?: GrantableAccessLevel) => {
-          if (!team) {
-            return;
-          }
-
           async function grantRevoke(req: GrantRevokeRequest) {
             try {
               await appCtx.api.grantRevoke(req);
@@ -162,9 +156,6 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
           }
         },
         onRemoveUser: async (email: string) => {
-          if (!team) {
-            return;
-          }
           await appCtx.api.purgeUsersFromTeam({
             teamId: team.id,
             emails: [email],

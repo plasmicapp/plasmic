@@ -25,7 +25,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 interface TeamPageHeaderProps extends DefaultTeamPageHeaderProps {
-  team?: ApiTeam;
+  team: ApiTeam;
   perms: ApiPermission[];
   numMembers: number;
   numProjects: number;
@@ -48,10 +48,6 @@ function TeamPageHeader_(
     onUpdate,
     ...rest
   } = props;
-
-  if (!team) {
-    return null;
-  }
 
   const teamAccessLevel = getAccessLevelToResource(
     { type: "team", resource: team },

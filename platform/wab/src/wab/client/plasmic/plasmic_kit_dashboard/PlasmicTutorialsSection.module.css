@@ -1,0 +1,134 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--token-9jh0BkCENS);
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid var(--token-hoA5qaM-91G);
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  column-gap: 8px;
+  background: none;
+  padding: 1rem;
+  border-style: none;
+}
+.span__vQlHs {
+  font-weight: 600;
+}
+.freeBox__bhxn {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  border-radius: 6px;
+}
+.svg__lyh2G {
+  object-fit: cover;
+  color: #7a7d81;
+  width: 24px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.svgcollapsed__lyh2GEp0Ln {
+  transform: rotate3d(0, 0, 1, 180deg);
+}
+.freeBox___8Kfy8 {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  row-gap: 16px;
+}
+.freeBoxcollapsed___8Kfy8Ep0Ln {
+  display: none;
+}
+.starterGroup:global(.__wab_instance) {
+  position: relative;
+}
+.img__jf8Od {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-position: center top;
+  object-fit: cover;
+  min-width: 0;
+  min-height: 0;
+}
+.img__jf8Od > picture > img {
+  object-fit: cover;
+  object-position: center top;
+}
+.svg__pua8 {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.svg__gucm7 {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.img__iErlr {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-position: center top;
+  object-fit: cover;
+  min-width: 0;
+  min-height: 0;
+}
+.img__iErlr > picture > img {
+  object-fit: cover;
+  object-position: center top;
+}
+.svg__rbrhl {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.svg___19L0Z {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.img__i4D1L {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-position: center top;
+  object-fit: cover;
+  min-width: 0;
+  min-height: 0;
+}
+.img__i4D1L > picture > img {
+  object-fit: cover;
+  object-position: center top;
+}
+.svg__dkqI {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.svg__gCr0 {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 1.5rem;
+  height: 1.5rem;
+}

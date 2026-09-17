@@ -20,23 +20,6 @@
   box-shadow: 0px 0px 0px 2px var(--token-D666zt2IZPL);
   outline: none;
 }
-.freeBox__vFql {
-  position: relative;
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-start;
-  width: auto;
-  height: auto;
-  display: none;
-}
-.svg {
-  display: flex;
-  position: relative;
-  width: 24px;
-  height: 24px;
-  color: var(--token-fVn5vRhXJxQ);
-  flex-shrink: 0;
-}
 .freeBox__oClzd {
   display: flex;
   position: relative;
@@ -80,6 +63,9 @@
   font-size: 11px;
   line-height: 1.5;
   color: var(--token-UunsGa2Y3t3);
+}
+.root:focus-within .text__awqZb {
+  outline: none;
 }
 .text__gjCwb {
   position: relative;

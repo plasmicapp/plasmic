@@ -358,9 +358,8 @@ function _TopBar({ preview }: TopBarProps) {
         }
         mode={preview ? "preview" : undefined}
         hideAvatar
-        freeTrial={{
-          team,
-        }}
+        // Projects outside an org (e.g. in a playground) have no trial.
+        freeTrial={team ? { team } : { render: () => null }}
         logoLink={{
           render: (props) => (
             <Tooltip title={brand.logoTooltip ?? "Back to dashboard"}>

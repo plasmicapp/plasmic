@@ -212,6 +212,7 @@ function PlasmicEditableResourceName__RenderFunc(props: {
             $refs["editButton"] = ref;
           }}
           title={"Rename"}
+          type={"button"}
         >
           <EditSvgIcon
             data-plasmic-name={"svg"}
@@ -252,8 +253,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicEditableResourceName__VariantsArgs;
     args?: PlasmicEditableResourceName__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicEditableResourceName__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicEditableResourceName__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicEditableResourceName__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

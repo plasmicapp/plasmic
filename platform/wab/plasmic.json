@@ -582,7 +582,7 @@
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
       "projectName": "[PlasmicKit] Dashboard",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_dashboard.css",
       "components": [
         {
@@ -595,32 +595,6 @@
             "modulePath": "wab/client/components/ProjectListItem.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit/PlasmicProjectListItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "diKNfA_-roE",
-          "name": "ProjectListSection",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicProjectListSection.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/ProjectListSection.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit/PlasmicProjectListSection.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "-k-p1OXXphn",
-          "name": "ProjectList",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicProjectList.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/ProjectList.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit/PlasmicProjectList.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -872,32 +846,6 @@
           "componentType": "component"
         },
         {
-          "id": "vM6JbvCArA",
-          "name": "TeamPicker",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPicker.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/modals/TeamPicker.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPicker.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "3naiwkyPoFj",
-          "name": "TeamPickerItem",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPickerItem.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/modals/TeamPickerItem.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPickerItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "O3FCcJ_viT",
           "name": "TeamPage",
           "type": "managed",
@@ -1013,19 +961,6 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavTeamButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        },
-        {
-          "id": "nMR4ibQ-Ep",
-          "name": "AllProjectsPage",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicAllProjectsPage.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/dashboard/AllProjectsPage.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicAllProjectsPage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page"
         },
         {
           "id": "UttGK3xVrb",
@@ -1221,6 +1156,34 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicFreeTrialModal.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "gCsGtvW8svmg",
+          "name": "AllProjectsPage",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicAllProjectsPage.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/dashboard/AllProjectsPage.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicAllProjectsPage.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/projects"
+        },
+        {
+          "id": "3oNTe9fVQ0xW",
+          "name": "TutorialsSection",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTutorialsSection.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/dashboard/TutorialsSection.tsx",
+            "exportName": "TutorialsSection"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTutorialsSection.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -1240,14 +1203,9 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Clock.tsx"
         },
         {
-          "id": "UfxL0BbcEe",
-          "name": "Icon18Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Icon18.tsx"
-        },
-        {
           "id": "MHEeMLIhlB",
-          "name": "Icon19Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Icon19.tsx"
+          "name": "ItemBulletIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__ItemBullet.tsx"
         }
       ],
       "images": [
@@ -11562,6 +11520,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.377",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.377/dist/plasmic.schema.json"
+  "cliVersion": "0.1.378",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.378/dist/plasmic.schema.json"
 }

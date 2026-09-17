@@ -14,6 +14,7 @@ import {
   Router,
 } from "@/wab/client/cli-routes";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
+import { shouldUpsellRedirect } from "@/wab/client/components/dashboard/useUpsellQueryParam";
 import {
   NormalLayout,
   NormalNonAuthLayout,
@@ -133,6 +134,9 @@ function LoggedInContainer(props: LoggedInContainerProps) {
   });
 
   const currentLocation = useLocation();
+  const upsellRedirectRoute = selfInfo
+    ? shouldUpsellRedirect(appCtx, currentLocation)
+    : undefined;
 
   return (
     <React.Suspense
@@ -259,6 +263,10 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                         )}
                       />
                     ),
+                  }
+                : upsellRedirectRoute
+                ? {
+                    render: () => <Redirect to={upsellRedirectRoute} />,
                   }
                 : {
                     render: () => (

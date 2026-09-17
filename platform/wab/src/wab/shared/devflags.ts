@@ -40,10 +40,8 @@ export interface StarterProjectConfig {
   description: string; // description in card (name auto-retrieved from server)
   author?: string; // for template attribution
   authorLink?: string; // link to author
-  iconName?: string; // name of icon component to display next to title - resolved in StarterGroup
   imageUrl?: string; // Preview image URL (e.g. on S3)
-  highlightType?: "first" | "second" | "third"; // for coloring the cards
-  href?: string; // if it's just a link (Developer Quickstart should be the only such thing)
+  withImage?: boolean; // show the image area even without an imageUrl (default image)
   publishWizard?: boolean; // true if should show the publish wizard on the first open
   showPreview?: boolean; // true if this starter can be previewed in /templates/${tag}
   // show notification for users when the global context values aren't modified
@@ -367,7 +365,6 @@ const DEFAULT_DEVFLAGS = {
   freeTrialTierName: "Team",
   freeTrialDays: 15,
   freeTrialPromoDays: 60,
-  createTeamPrompt: true,
   insertPanelContent: ensureType<InsertPanelConfig>({
     componentsLabel: "Custom components",
     aliases: {},
@@ -429,6 +426,13 @@ const DEFAULT_DEVFLAGS = {
   secretApiTokenTeams: ["teamId"],
   showFullPreviewWarning: true,
   starterSections: [] as StarterSectionConfig[],
+  tutorials: undefined as
+    | {
+        portfolio: string;
+        game: string;
+        codegenQuickstart: string;
+      }
+    | undefined,
   hiddenQuickstartPlatforms: ensureType<string[]>([]),
   showCopilot: true,
   enableUiCopilot: false,

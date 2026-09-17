@@ -11,15 +11,14 @@ import {
 import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
-import { ensure, interleave, unexpected } from "@/wab/shared/common";
+import { ensure, unexpected } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Tooltip } from "antd";
 import L from "lodash";
 import React, { ReactNode } from "react";
-import { Helmet } from "react-helmet";
 
 interface StarterProjectProps {
-  name: string;
+  name: ReactNode;
   type?: PlasmicStarterProject__VariantsArgs["type"];
   // className prop is required for positioning instances of
   // this Component
@@ -34,9 +33,13 @@ interface StarterProjectProps {
    */
   baseProjectId?: string;
   tag: string;
-  descrip: string;
-  icon?: ReactNode;
+  instruction: ReactNode;
+  /** Icon to display. */
+  children?: ReactNode;
+  /** Image URL to display. Implies `withImage`. */
   imageUrl?: string;
+  /** Show the image area; the default image when `imageUrl` is unset. */
+  withImage?: boolean;
   href?: string;
   author?: string;
   authorLink?: string;
@@ -50,30 +53,6 @@ interface StarterProjectProps {
 function StarterProject(props: StarterProjectProps) {
   const appCtx = useAppCtx();
   const history = useHistory();
-  const name = props.name;
-  const decoratedName = name.includes("Plasmic Levels") ? (
-    <div className={"flex-row"}>
-      {/* @ts-ignore */}
-      <Helmet>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bungee&display=swap"
-          rel="stylesheet"
-        />
-      </Helmet>
-      {interleave(
-        name
-          .split("Plasmic Levels")
-          .map((text, i) => <span key={i}>{text}</span>),
-        [
-          <span key={"game"} className={"game-name"}>
-            Plasmic Levels
-          </span>,
-        ]
-      )}
-    </div>
-  ) : (
-    name
-  );
   const isChecked =
     props.type &&
     getExtraData(
@@ -103,20 +82,20 @@ function StarterProject(props: StarterProjectProps) {
     <PlasmicStarterProject
       variants={{
         type: props.type,
-        icon: !!props.icon || isChecked ? "withIcon" : undefined,
-        image: !!props.imageUrl || !hasProject ? "withImage" : undefined,
+        icon: !!props.children || isChecked ? "withIcon" : undefined,
+        image: props.withImage || props.imageUrl ? "withImage" : undefined,
       }}
       args={{
-        instruction: props.descrip,
+        instruction: props.instruction,
         name: (
           <span>
-            {decoratedName}
+            {props.name}
             {renderAuthor()}
           </span>
         ),
         children: isChecked
           ? undefined // default icon is a check mark
-          : props.icon,
+          : props.children,
       }}
       withDescrip={!!props.type}
       withDropShadow={props.withDropShadow}
@@ -183,12 +162,18 @@ function StarterProject(props: StarterProjectProps) {
               );
             }
 
+            const cloneName = props.cloneWithoutName
+              ? undefined
+              : typeof props.name === "string"
+              ? props.name
+              : undefined;
+
             if (props.href) {
               window.open(props.href);
             } else if (props.projectId) {
               const { projectId: newProjectId } = await appCtx.app.withSpinner(
                 appCtx.api.cloneProject(props.projectId, {
-                  name: props.cloneWithoutName ? undefined : name,
+                  name: cloneName,
                   workspaceId: props.workspaceId,
                 })
               );
@@ -201,7 +186,7 @@ function StarterProject(props: StarterProjectProps) {
               const { projectId: newProjectId } = await appCtx.app.withSpinner(
                 appCtx.api.clonePublishedTemplate(
                   props.baseProjectId,
-                  name,
+                  cloneName,
                   props.workspaceId
                 )
               );

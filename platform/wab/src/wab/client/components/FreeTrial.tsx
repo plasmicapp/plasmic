@@ -7,8 +7,8 @@ import {
   DefaultFreeTrialProps,
   PlasmicFreeTrial,
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicFreeTrial";
-import { ensure, spawn } from "@/wab/shared/common";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
+import { ensure, spawn } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { round } from "lodash";
 import * as React from "react";
@@ -42,18 +42,18 @@ export function recentlyEndedTrial(appCtx: AppCtx, team: ApiTeam) {
 }
 
 export interface FreeTrialProps extends DefaultFreeTrialProps {
-  team?: ApiTeam;
+  team: ApiTeam;
 }
 
 function FreeTrial_(props: FreeTrialProps, ref: HTMLElementRefOf<"a">) {
   const { team, ...rest } = props;
   const appCtx = useAppCtx();
-  // Show the banner if
-  const recentlyEnded = team && recentlyEndedTrial(appCtx, team);
+  // Show the banner if the org is on a trial, or one just ended.
+  const recentlyEnded = recentlyEndedTrial(appCtx, team);
 
   return (
     <>
-      {team && (team.onTrial || recentlyEnded) && (
+      {(team.onTrial || recentlyEnded) && (
         <PlasmicFreeTrial
           {...rest}
           root={{ ref }}
@@ -70,7 +70,7 @@ function FreeTrial_(props: FreeTrialProps, ref: HTMLElementRefOf<"a">) {
               team.trialDays ?? appCtx.appConfig.freeTrialDays
             )
           }
-          trialEnded={!!recentlyEnded}
+          trialEnded={recentlyEnded}
           onClick={async () => {
             if (appCtx.topFrameApi) {
               await appCtx.topFrameApi.promptBilling();

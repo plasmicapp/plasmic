@@ -18,7 +18,6 @@ import {
 import {
   ApiFeatureTier,
   ApiPermission,
-  TeamId,
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
@@ -37,7 +36,6 @@ interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
   changeRole: (email: string, role?: GrantableAccessLevel) => Promise<void>;
   removeUser: (email: string) => Promise<void>;
   disabled?: boolean;
-  teamId?: TeamId;
   perms: ApiPermission[];
 }
 
@@ -53,7 +51,6 @@ function TeamMemberListItem_(
     changeRole,
     removeUser,
     disabled,
-    teamId,
     perms,
     ...rest
   } = props;

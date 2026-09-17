@@ -141,7 +141,6 @@ function PlasmicMyPlayground__RenderFunc(props: {
             data-plasmic-name={"defaultLayout"}
             data-plasmic-override={overrides.defaultLayout}
             className={classNames("__wab_instance", sty.defaultLayout)}
-            hideNewProjectButton={true}
             navigation={"myProjects"}
             teams={
               <NavTeamSection
@@ -191,8 +190,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMyPlayground__VariantsArgs;
     args?: PlasmicMyPlayground__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicMyPlayground__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicMyPlayground__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicMyPlayground__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

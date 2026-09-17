@@ -142,7 +142,6 @@ function PlasmicWorkspacePage__RenderFunc(props: {
             data-plasmic-name={"defaultLayout"}
             data-plasmic-override={overrides.defaultLayout}
             className={classNames("__wab_instance", sty.defaultLayout)}
-            hideNewProjectButton={true}
             teams={
               <NavTeamSection
                 data-plasmic-name={"navTeamSection"}
@@ -234,8 +233,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWorkspacePage__VariantsArgs;
     args?: PlasmicWorkspacePage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicWorkspacePage__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicWorkspacePage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicWorkspacePage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

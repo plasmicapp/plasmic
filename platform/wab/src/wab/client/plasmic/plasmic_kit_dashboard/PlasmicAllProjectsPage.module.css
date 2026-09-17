@@ -6,35 +6,100 @@
   height: 100%;
   min-width: 0;
   min-height: 0;
+  overflow: auto;
 }
 .defaultLayout:global(.__wab_instance) {
+  max-width: 100%;
   position: relative;
 }
-.projectList:global(.__wab_instance) {
+.projects {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  row-gap: 16px;
+  min-width: 0;
+  padding: 1.5rem;
+}
+.tutorialsSection:global(.__wab_instance) {
   position: relative;
 }
-.img__zrryr {
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  column-gap: 8px;
+  position: relative;
+}
+.newProjectButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+.svg__vyOjv {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.filter:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.mainList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 12px;
+  position: relative;
+  min-width: 0;
+}
+.projectListItem__bpow4:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.projectListItem__xs45U:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.noProjectsText {
+  flex-direction: column;
+  color: #706f6c;
+  font-size: 14px;
+  text-align: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  display: none;
+}
+.navTeamSection:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__xK3I7 {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.svg__hyaMl {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.img__wCvOd {
   object-fit: cover;
   width: 24px;
   height: 24px;
   max-width: 24px;
   border-radius: 50%;
 }
-.img__zrryr > picture > img {
+.img__wCvOd > picture > img {
   object-fit: cover;
-}
-.navTeamSection:global(.__wab_instance) {
-  position: relative;
-}
-.svg__bcoDd {
-  display: flex;
-  position: relative;
-  width: 24px;
-  height: 24px;
-}
-.svg__ytJx3 {
-  display: flex;
-  position: relative;
-  width: 24px;
-  height: 24px;
 }

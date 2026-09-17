@@ -58,38 +58,6 @@
   justify-content: flex-start;
   column-gap: 8px;
 }
-.freeBox___8H74X {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-start;
-  cursor: pointer;
-  height: 2rem;
-}
-.newProjectButtonhideNewProjectButton:global(.__wab_instance) {
-  display: none;
-}
-.svg__pMrgf {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  color: var(--token-mu3x63xzJRW);
-  height: 1em;
-}
-.text {
-  font-weight: 500;
-  color: var(--token-VUsIDivgUss);
-}
-.svg__iw3P2 {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.svgnewProjectButtonAsDropdown__iw3P2LewDp {
-  margin-left: 5px;
-}
 .upgradeButton:global(.__wab_instance) {
   position: relative;
   height: 2rem;
@@ -181,18 +149,16 @@
 .allProjectsButton:global(.__wab_instance) {
   position: relative;
 }
-.svg__suQ4M {
+.svg__bMtWr {
+  object-fit: cover;
+  position: relative;
+  height: 1em;
+}
+.svg___0SK83 {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
-}
-.svg__ti7An {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 16px;
-  height: 16px;
 }
 .myProjectsButton:global(.__wab_instance) {
   position: relative;
@@ -209,15 +175,6 @@
   object-fit: cover;
   width: 16px;
   height: 16px;
-}
-.navSeparator__e9MNn:global(.__wab_instance) {
-  position: relative;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  margin-left: 30px;
-}
-.navSeparatorhideTeams__e9MNn5Ktlm:global(.__wab_instance) {
-  display: none;
 }
 .freeBox___1I5Dl {
   display: flex;
@@ -244,34 +201,6 @@
   position: relative;
   width: 24px;
   height: 24px;
-}
-.navSeparator__xnjTf:global(.__wab_instance) {
-  position: relative;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  margin-left: 30px;
-}
-.navSeparatorhideTeams__xnjTf5Ktlm:global(.__wab_instance) {
-  display: none;
-}
-.startersButton:global(.__wab_instance) {
-  position: relative;
-}
-.startersButtonhideStarters:global(.__wab_instance) {
-  display: none;
-}
-.svg__cyyvY {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.svg__tkcPl {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 16px;
-  height: 16px;
 }
 .navFooter {
   display: flex;

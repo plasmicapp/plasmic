@@ -35,7 +35,7 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicNavWorkspaceButton.module.css"; // plasmic-import: Cma6XahJmS/css
 
-import Icon19Icon from "./icons/PlasmicIcon__Icon19"; // plasmic-import: MHEeMLIhlB/icon
+import ItemBulletIcon from "./icons/PlasmicIcon__ItemBullet"; // plasmic-import: MHEeMLIhlB/icon
 
 createPlasmicElementProxy;
 
@@ -122,6 +122,7 @@ function PlasmicNavWorkspaceButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noIcon,
       },
     ],
+
     [$props, $ctx, $refs]
   );
 
@@ -170,7 +171,7 @@ function PlasmicNavWorkspaceButton__RenderFunc(props: {
         {(hasVariant($state, "noIcon", "noIcon") ? false : true)
           ? renderPlasmicSlot({
               defaultContents: (
-                <Icon19Icon
+                <ItemBulletIcon
                   className={classNames("all", sty.svg___9PPAp)}
                   role={"img"}
                 />
@@ -220,14 +221,14 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNavWorkspaceButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicNavWorkspaceButton__VariantsArgs;
     args?: PlasmicNavWorkspaceButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicNavWorkspaceButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicNavWorkspaceButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicNavWorkspaceButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

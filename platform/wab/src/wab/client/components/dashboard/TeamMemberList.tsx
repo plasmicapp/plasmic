@@ -20,7 +20,7 @@ import { sortBy } from "lodash";
 import * as React from "react";
 
 interface TeamMemberListProps extends DefaultTeamMemberListProps {
-  team?: ApiTeam;
+  team: ApiTeam;
   members: TeamMember[];
   perms: ApiPermission[];
   tier: ApiFeatureTier;
@@ -129,12 +129,11 @@ function TeamMemberList_(
             changeRole={onChangeRole}
             removeUser={onRemoveUser}
             disabled={disabled}
-            teamId={team?.id}
             perms={perms}
           />
         ))}
       </PlasmicTeamMemberList>
-      {sharedModal && team && (
+      {sharedModal && (
         <Modal
           visible={true}
           onCancel={() => setSharedModal(false)}

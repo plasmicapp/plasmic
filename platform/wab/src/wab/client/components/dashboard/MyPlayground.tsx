@@ -2,6 +2,7 @@
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import uniqBy from "lodash/uniqBy";
 // This file is owned by you, feel free to edit as you see fit.
+import DefaultTeamLayout from "@/wab/client/components/dashboard/DefaultTeamLayout";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -45,6 +46,16 @@ function MyPlayground_(props: MyPlaygroundProps, ref: HTMLElementRefOf<"div">) {
     props: filterProps,
   } = useProjectsFilter(asyncData.value?.projects, asyncData.value?.databases);
 
+  const data = asyncData.value;
+  if (!data) {
+    return (
+      <>
+        {documentTitle(PERSONAL_WORKSPACE)}
+        <Spinner />
+      </>
+    );
+  }
+
   return (
     <>
       {documentTitle(PERSONAL_WORKSPACE)}
@@ -52,30 +63,26 @@ function MyPlayground_(props: MyPlaygroundProps, ref: HTMLElementRefOf<"div">) {
         root={{ ref }}
         {...props}
         defaultLayout={{
-          wrapChildren: (children) =>
-            !asyncData?.value ? <Spinner /> : children,
+          as: DefaultTeamLayout,
+          props: { team: data.workspace.team },
         }}
-        workspaceSection={
-          !asyncData?.value
-            ? {
-                render: () => null,
-              }
-            : {
-                workspace: {
-                  ...asyncData.value?.workspace,
-                  name: PERSONAL_WORKSPACE,
-                  description: PERSONAL_WORKSPACE,
-                },
-                filterProps,
-                databases,
-                projects,
-                perms: asyncData.value.perms,
-                matcher,
-                onUpdate: async () => {
-                  await fetchAsyncData();
-                },
-              }
-        }
+        workspaceSection={{
+          props: {
+            workspace: {
+              ...data.workspace,
+              name: PERSONAL_WORKSPACE,
+              description: PERSONAL_WORKSPACE,
+            },
+            filterProps,
+            databases,
+            projects,
+            perms: data.perms,
+            matcher,
+            onUpdate: async () => {
+              await fetchAsyncData();
+            },
+          },
+        }}
       />
     </>
   );

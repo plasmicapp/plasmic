@@ -262,7 +262,7 @@
 .root:focus .freeBox__wHm4F {
   outline: none;
 }
-.frame317 {
+.freeBox__zsWCt {
   opacity: 1;
   transform: scale(1, 1) rotate(0deg) translate(0px, 0px);
   transform-origin: top left;
@@ -274,7 +274,7 @@
   column-gap: 6px;
   border-radius: 0px;
 }
-.root:focus .frame317 {
+.root:focus .freeBox__zsWCt {
   outline: none;
 }
 .slotTargetName {
@@ -305,7 +305,7 @@
   left: auto;
   top: auto;
 }
-.frame308 {
+.freeBox___0Egau {
   opacity: 1;
   transform: scale(1, 1) rotate(0deg) translate(0px, 0px);
   position: relative;

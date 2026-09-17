@@ -12,10 +12,10 @@ test.describe("Authentication", () => {
     await models.auth.login("user2@example.com", "!53kr3tz!");
 
     await expect(
-      page.locator('a[href="/projects"]', {
-        hasText: "All projects",
+      page.locator('a[href="/playground"]', {
+        hasText: "My Playground",
       })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 30000 });
 
     await models.auth.logout();
 

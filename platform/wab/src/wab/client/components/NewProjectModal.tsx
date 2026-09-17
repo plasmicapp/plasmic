@@ -1,5 +1,5 @@
-import StartersSection from "@/wab/client/components/StartersSection";
 import StarterGroup from "@/wab/client/components/StarterGroup";
+import StartersSection from "@/wab/client/components/StartersSection";
 import { BareModal } from "@/wab/client/components/studio/BareModal";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import {
@@ -17,6 +17,7 @@ import * as React from "react";
 
 interface NewProjectModalProps extends DefaultNewProjectModalProps {
   onCancel: () => void;
+  /** Workspace to create the project in; the playground when omitted. */
   workspaceId?: WorkspaceId;
 }
 

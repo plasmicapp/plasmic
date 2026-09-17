@@ -427,7 +427,7 @@ function PlasmicHostingSettings_(
                   appCtx,
                   availableTiers: tiers,
                   title: "",
-                  target: {},
+                  target: { team: projectTeam },
                 });
               },
             }

@@ -1,3 +1,4 @@
+import DefaultTeamLayout from "@/wab/client/components/dashboard/DefaultTeamLayout";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -10,6 +11,7 @@ import {
   DefaultWorkspacePageProps,
   PlasmicWorkspacePage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspacePage";
+import { Redirect } from "@/wab/client/route/Redirect";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -45,57 +47,54 @@ function WorkspacePage_(
   useAsyncStrict(fetchAsyncData, [workspaceId]);
 
   const {
-    workspace,
-    projects: unsortedProjects,
-    databases: unsortedDatabases,
-    perms,
-  } = asyncData.value ?? {
-    projects: [],
-    perms: [],
-  };
-
-  const {
     projects,
     databases,
     matcher,
     props: filterProps,
-  } = useProjectsFilter(unsortedProjects, unsortedDatabases ?? [], false);
+  } = useProjectsFilter(
+    asyncData.value?.projects,
+    asyncData.value?.databases,
+    false
+  );
 
+  if (asyncData.error) {
+    // Deleted workspace, or one the user can't access.
+    return <Redirect to={APP_ROUTES.dashboard.fill({})} />;
+  }
+
+  const data = asyncData.value;
+  if (!data) {
+    return (
+      <>
+        {documentTitle("Loading workspace...")}
+        <Spinner />
+      </>
+    );
+  }
+
+  const { workspace, perms } = data;
   return (
     <>
-      {documentTitle(workspace?.name || "Loading workspace...")}
+      {documentTitle(workspace.name)}
       <PlasmicWorkspacePage
         root={{ ref }}
         defaultLayout={{
-          wrapChildren: (children) =>
-            !asyncData?.value ? <Spinner /> : children,
-          helpButton: workspace
-            ? {
-                props: {
-                  href: APP_ROUTES.orgSupport.fill({
-                    teamId: workspace.team.id,
-                  }),
-                },
-              }
-            : undefined,
+          as: DefaultTeamLayout,
+          props: { team: workspace.team, workspace },
         }}
-        workspaceSection={
-          !asyncData?.value
-            ? {
-                render: () => null,
-              }
-            : {
-                workspace,
-                projects,
-                databases,
-                onUpdate: async () => {
-                  await fetchAsyncData();
-                },
-                perms,
-                matcher,
-                filterProps,
-              }
-        }
+        workspaceSection={{
+          props: {
+            workspace,
+            projects,
+            databases,
+            onUpdate: async () => {
+              await fetchAsyncData();
+            },
+            perms,
+            matcher,
+            filterProps,
+          },
+        }}
         {...rest}
       />
     </>

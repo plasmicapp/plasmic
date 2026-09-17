@@ -43,7 +43,7 @@ createPlasmicElementProxy;
 
 export type PlasmicStarterProject__VariantMembers = {
   type: "first" | "second" | "third" | "noBorder";
-  icon: "withIcon" | "unnamedVariant";
+  icon: "withIcon";
   image: "withImage";
   withDescrip: "withDescrip";
   showPreview: "showPreview";
@@ -51,7 +51,7 @@ export type PlasmicStarterProject__VariantMembers = {
 };
 export type PlasmicStarterProject__VariantsArgs = {
   type?: SingleChoiceArg<"first" | "second" | "third" | "noBorder">;
-  icon?: SingleChoiceArg<"withIcon" | "unnamedVariant">;
+  icon?: SingleChoiceArg<"withIcon">;
   image?: SingleChoiceArg<"withImage">;
   withDescrip?: SingleBooleanChoiceArg<"withDescrip">;
   showPreview?: SingleBooleanChoiceArg<"showPreview">;
@@ -87,8 +87,6 @@ export type PlasmicStarterProject__OverridesType = {
   root?: Flex__<"div">;
   button?: Flex__<"button">;
   divider?: Flex__<"div">;
-  frame317?: Flex__<"div">;
-  frame308?: Flex__<"div">;
   bordersOutlinesStrokesPlaceholder?: Flex__<"div">;
 };
 
@@ -99,7 +97,7 @@ export interface DefaultStarterProjectProps {
   instruction?: React.ReactNode;
   previewIcon?: React.ReactNode;
   type?: SingleChoiceArg<"first" | "second" | "third" | "noBorder">;
-  icon?: SingleChoiceArg<"withIcon" | "unnamedVariant">;
+  icon?: SingleChoiceArg<"withIcon">;
   image?: SingleChoiceArg<"withImage">;
   withDescrip?: SingleBooleanChoiceArg<"withDescrip">;
   showPreview?: SingleBooleanChoiceArg<"showPreview">;
@@ -265,6 +263,7 @@ function PlasmicStarterProject__RenderFunc(props: {
             "withDropShadow"
           ),
         })}
+        type={"button"}
       >
         {(
           hasVariant($state, "withDropShadow", "withDropShadow")
@@ -556,32 +555,38 @@ function PlasmicStarterProject__RenderFunc(props: {
               })}
             >
               <div
-                data-plasmic-name={"frame317"}
-                data-plasmic-override={overrides.frame317}
-                className={classNames("all", sty.frame317, {
-                  [sty.frame317icon_withIcon]: hasVariant(
+                className={classNames("all", sty.freeBox__zsWCt, {
+                  [sty.freeBoxicon_withIcon__zsWCtn8MlJ]: hasVariant(
                     $state,
                     "icon",
                     "withIcon"
                   ),
-                  [sty.frame317image_withImage]: hasVariant(
+                  [sty.freeBoximage_withImage__zsWCtPe6Kv]: hasVariant(
                     $state,
                     "image",
                     "withImage"
                   ),
-                  [sty.frame317type_first]: hasVariant($state, "type", "first"),
-                  [sty.frame317type_second]: hasVariant(
+                  [sty.freeBoxtype_first__zsWCtnPTsW]: hasVariant(
+                    $state,
+                    "type",
+                    "first"
+                  ),
+                  [sty.freeBoxtype_second__zsWCtIg5DJ]: hasVariant(
                     $state,
                     "type",
                     "second"
                   ),
-                  [sty.frame317type_third]: hasVariant($state, "type", "third"),
-                  [sty.frame317withDescrip]: hasVariant(
+                  [sty.freeBoxtype_third__zsWCt2NMma]: hasVariant(
+                    $state,
+                    "type",
+                    "third"
+                  ),
+                  [sty.freeBoxwithDescrip__zsWCtZYyL8]: hasVariant(
                     $state,
                     "withDescrip",
                     "withDescrip"
                   ),
-                  [sty.frame317withDropShadow]: hasVariant(
+                  [sty.freeBoxwithDropShadow__zsWCtQdgSu]: hasVariant(
                     $state,
                     "withDropShadow",
                     "withDropShadow"
@@ -650,40 +655,38 @@ function PlasmicStarterProject__RenderFunc(props: {
                 hasVariant($state, "withDescrip", "withDescrip") ? true : false
               ) ? (
                 <div
-                  data-plasmic-name={"frame308"}
-                  data-plasmic-override={overrides.frame308}
-                  className={classNames("all", sty.frame308, {
-                    [sty.frame308icon_withIcon]: hasVariant(
+                  className={classNames("all", sty.freeBox___0Egau, {
+                    [sty.freeBoxicon_withIcon___0Egaun8MlJ]: hasVariant(
                       $state,
                       "icon",
                       "withIcon"
                     ),
-                    [sty.frame308image_withImage]: hasVariant(
+                    [sty.freeBoximage_withImage___0EgauPe6Kv]: hasVariant(
                       $state,
                       "image",
                       "withImage"
                     ),
-                    [sty.frame308type_first]: hasVariant(
+                    [sty.freeBoxtype_first___0EgaunPTsW]: hasVariant(
                       $state,
                       "type",
                       "first"
                     ),
-                    [sty.frame308type_second]: hasVariant(
+                    [sty.freeBoxtype_second___0EgauIg5DJ]: hasVariant(
                       $state,
                       "type",
                       "second"
                     ),
-                    [sty.frame308type_third]: hasVariant(
+                    [sty.freeBoxtype_third___0Egau2NMma]: hasVariant(
                       $state,
                       "type",
                       "third"
                     ),
-                    [sty.frame308withDescrip]: hasVariant(
+                    [sty.freeBoxwithDescrip___0EgauZYyL8]: hasVariant(
                       $state,
                       "withDescrip",
                       "withDescrip"
                     ),
-                    [sty.frame308withDropShadow]: hasVariant(
+                    [sty.freeBoxwithDropShadow___0EgauQdgSu]: hasVariant(
                       $state,
                       "withDropShadow",
                       "withDropShadow"
@@ -837,24 +840,9 @@ function PlasmicStarterProject__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: [
-    "root",
-    "button",
-    "divider",
-    "frame317",
-    "frame308",
-    "bordersOutlinesStrokesPlaceholder",
-  ],
-  button: [
-    "button",
-    "divider",
-    "frame317",
-    "frame308",
-    "bordersOutlinesStrokesPlaceholder",
-  ],
+  root: ["root", "button", "divider", "bordersOutlinesStrokesPlaceholder"],
+  button: ["button", "divider", "bordersOutlinesStrokesPlaceholder"],
   divider: ["divider"],
-  frame317: ["frame317"],
-  frame308: ["frame308"],
   bordersOutlinesStrokesPlaceholder: ["bordersOutlinesStrokesPlaceholder"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -864,8 +852,6 @@ type NodeDefaultElementType = {
   root: "div";
   button: "button";
   divider: "div";
-  frame317: "div";
-  frame308: "div";
   bordersOutlinesStrokesPlaceholder: "div";
 };
 
@@ -932,8 +918,6 @@ export const PlasmicStarterProject = Object.assign(
     // Helper components rendering sub-elements
     button: makeNodeComponent("button"),
     divider: makeNodeComponent("divider"),
-    frame317: makeNodeComponent("frame317"),
-    frame308: makeNodeComponent("frame308"),
     bordersOutlinesStrokesPlaceholder: makeNodeComponent(
       "bordersOutlinesStrokesPlaceholder"
     ),

@@ -30,9 +30,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
 import NavButton from "../../components/dashboard/NavButton"; // plasmic-import: 82ZzbE4hazN/component
-import NavSeparator from "../../components/dashboard/NavSeparator"; // plasmic-import: cOUHQYmbvX/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 
@@ -42,52 +40,41 @@ import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtc
 import sty from "./PlasmicDefaultLayout.module.css"; // plasmic-import: nSkQWLjK-B/css
 
 import HelpIcon from "../plasmic_kit/PlasmicIcon__Help"; // plasmic-import: -9-68IGPdLG-5/icon
-import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
 import BookSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BookSvg"; // plasmic-import: hxRmy8Nhq/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import GolfSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GolfSvg"; // plasmic-import: U5dSOeF1P/icon
 import RocketSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RocketSvg"; // plasmic-import: uRQfbBjV9/icon
-import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
 import UnorderedListSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UnorderedListSvg"; // plasmic-import: suHkgkKOX/icon
 import UsersPlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersPlusSvg"; // plasmic-import: OqMJdWElK/icon
 
 createPlasmicElementProxy;
 
 export type PlasmicDefaultLayout__VariantMembers = {
-  navigation: "allProjects" | "myProjects" | "starters";
-  hideStarters: "hideStarters";
+  navigation: "myProjects" | "starters" | "allProjects";
   hideTeams: "hideTeams";
-  hideNewProjectButton: "hideNewProjectButton";
-  newProjectButtonAsDropdown: "newProjectButtonAsDropdown";
 };
 export type PlasmicDefaultLayout__VariantsArgs = {
-  navigation?: SingleChoiceArg<"allProjects" | "myProjects" | "starters">;
-  hideStarters?: SingleBooleanChoiceArg<"hideStarters">;
+  navigation?: SingleChoiceArg<"myProjects" | "starters" | "allProjects">;
   hideTeams?: SingleBooleanChoiceArg<"hideTeams">;
-  hideNewProjectButton?: SingleBooleanChoiceArg<"hideNewProjectButton">;
-  newProjectButtonAsDropdown?: SingleBooleanChoiceArg<"newProjectButtonAsDropdown">;
 };
 type VariantPropType = keyof PlasmicDefaultLayout__VariantsArgs;
 export const PlasmicDefaultLayout__VariantProps = new Array<VariantPropType>(
   "navigation",
-  "hideStarters",
-  "hideTeams",
-  "hideNewProjectButton",
-  "newProjectButtonAsDropdown"
+  "hideTeams"
 );
 
 export type PlasmicDefaultLayout__ArgsType = {
-  children?: React.ReactNode;
-  avatar?: React.ReactNode;
   teams?: React.ReactNode;
+  avatar?: React.ReactNode;
+  children?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicDefaultLayout__ArgsType;
 export const PlasmicDefaultLayout__ArgProps = new Array<ArgPropType>(
-  "children",
+  "teams",
   "avatar",
-  "teams"
+  "children"
 );
 
 export type PlasmicDefaultLayout__OverridesType = {
@@ -97,16 +84,14 @@ export type PlasmicDefaultLayout__OverridesType = {
   headerLogoLink?: Flex__<"a">;
   headerLogo?: Flex__<"svg">;
   headerActions?: Flex__<"div">;
-  newProjectButton?: Flex__<typeof Button>;
-  text?: Flex__<"div">;
   upgradeButton?: Flex__<typeof NavButton>;
   freeTrial?: Flex__<typeof FreeTrial>;
   wrapper?: Flex__<"div">;
   sidebar?: Flex__<"aside">;
   nav?: Flex__<"nav">;
   allProjectsButton?: Flex__<typeof NavButton>;
+  span?: Flex__<"span">;
   myProjectsButton?: Flex__<typeof NavButton>;
-  startersButton?: Flex__<typeof NavButton>;
   navFooter?: Flex__<"footer">;
   newTeamButton?: Flex__<typeof NavButton>;
   documentationButton?: Flex__<typeof NavButton>;
@@ -116,14 +101,11 @@ export type PlasmicDefaultLayout__OverridesType = {
 };
 
 export interface DefaultDefaultLayoutProps {
-  children?: React.ReactNode;
-  avatar?: React.ReactNode;
   teams?: React.ReactNode;
-  navigation?: SingleChoiceArg<"allProjects" | "myProjects" | "starters">;
-  hideStarters?: SingleBooleanChoiceArg<"hideStarters">;
+  avatar?: React.ReactNode;
+  children?: React.ReactNode;
+  navigation?: SingleChoiceArg<"myProjects" | "starters" | "allProjects">;
   hideTeams?: SingleBooleanChoiceArg<"hideTeams">;
-  hideNewProjectButton?: SingleBooleanChoiceArg<"hideNewProjectButton">;
-  newProjectButtonAsDropdown?: SingleBooleanChoiceArg<"newProjectButtonAsDropdown">;
   className?: string;
 }
 
@@ -166,33 +148,13 @@ function PlasmicDefaultLayout__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.navigation,
       },
       {
-        path: "hideStarters",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.hideStarters,
-      },
-      {
         path: "hideTeams",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideTeams,
       },
-      {
-        path: "hideNewProjectButton",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.hideNewProjectButton,
-      },
-      {
-        path: "newProjectButtonAsDropdown",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.newProjectButtonAsDropdown,
-      },
     ],
+
     [$props, $ctx, $refs]
   );
 
@@ -232,13 +194,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"headerWrapper"}
           data-plasmic-override={overrides.headerWrapper}
-          className={classNames("all", sty.headerWrapper, {
-            [sty.headerWrapperhideNewProjectButton]: hasVariant(
-              $state,
-              "hideNewProjectButton",
-              "hideNewProjectButton"
-            ),
-          })}
+          className={classNames("all", sty.headerWrapper)}
         >
           <PlasmicLink__
             data-plasmic-name={"headerLogoLink"}
@@ -259,71 +215,6 @@ function PlasmicDefaultLayout__RenderFunc(props: {
             data-plasmic-override={overrides.headerActions}
             className={classNames("all", sty.headerActions)}
           >
-            <div
-              className={classNames("all", sty.freeBox___8H74X, {
-                [sty.freeBoxhideNewProjectButton___8H74X7VyVs]: hasVariant(
-                  $state,
-                  "hideNewProjectButton",
-                  "hideNewProjectButton"
-                ),
-              })}
-            >
-              <Button
-                data-plasmic-name={"newProjectButton"}
-                data-plasmic-override={overrides.newProjectButton}
-                className={classNames("__wab_instance", {
-                  [sty.newProjectButtonhideNewProjectButton]: hasVariant(
-                    $state,
-                    "hideNewProjectButton",
-                    "hideNewProjectButton"
-                  ),
-                })}
-                endIcon={
-                  <ChevronDownSvgIcon
-                    className={classNames("all", sty.svg__iw3P2, {
-                      [sty.svgnewProjectButtonAsDropdown__iw3P2LewDp]:
-                        hasVariant(
-                          $state,
-                          "newProjectButtonAsDropdown",
-                          "newProjectButtonAsDropdown"
-                        ),
-                    })}
-                    role={"img"}
-                  />
-                }
-                size={"wide"}
-                startIcon={
-                  <PlusIcon
-                    className={classNames("all", sty.svg__pMrgf)}
-                    role={"img"}
-                  />
-                }
-                type={["clearPrimary"]}
-                withIcons={
-                  hasVariant(
-                    $state,
-                    "newProjectButtonAsDropdown",
-                    "newProjectButtonAsDropdown"
-                  )
-                    ? ["startIcon", "endIcon"]
-                    : ["startIcon"]
-                }
-              >
-                <div
-                  data-plasmic-name={"text"}
-                  data-plasmic-override={overrides.text}
-                  className={classNames("all", "__wab_text", sty.text, {
-                    [sty.texthideNewProjectButton]: hasVariant(
-                      $state,
-                      "hideNewProjectButton",
-                      "hideNewProjectButton"
-                    ),
-                  })}
-                >
-                  {"New project"}
-                </div>
-              </Button>
-            </div>
             <NavButton
               data-plasmic-name={"upgradeButton"}
               data-plasmic-override={overrides.upgradeButton}
@@ -382,11 +273,6 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 "hideTeams",
                 "hideTeams"
               ),
-              [sty.sidebarnavigation_allProjects]: hasVariant(
-                $state,
-                "navigation",
-                "allProjects"
-              ),
             })}
           >
             <nav
@@ -410,13 +296,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                     "allProjects"
                   ),
                 })}
-                endIcon={
-                  <TriangleBottomIcon
-                    className={classNames("all", sty.svg__ti7An)}
-                    role={"img"}
-                  />
-                }
-                href={`/projects`}
+                href={"/projects"}
                 selected={
                   hasVariant($state, "navigation", "allProjects")
                     ? true
@@ -424,22 +304,29 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
                 startIcon={
                   <UnorderedListSvgIcon
-                    className={classNames("all", sty.svg__suQ4M)}
+                    className={classNames("all", sty.svg__bMtWr)}
                     role={"img"}
                   />
                 }
               >
-                {"All projects"}
+                <span
+                  data-plasmic-name={"span"}
+                  data-plasmic-override={overrides.span}
+                  className={classNames(
+                    "all",
+                    "span",
+                    "span__ooL7E",
+                    "__wab_text",
+                    sty.span
+                  )}
+                >
+                  {"All projects"}
+                </span>
               </NavButton>
               <NavButton
                 data-plasmic-name={"myProjectsButton"}
                 data-plasmic-override={overrides.myProjectsButton}
                 className={classNames("__wab_instance", sty.myProjectsButton, {
-                  [sty.myProjectsButtonnavigation_allProjects]: hasVariant(
-                    $state,
-                    "navigation",
-                    "allProjects"
-                  ),
                   [sty.myProjectsButtonnavigation_myProjects]: hasVariant(
                     $state,
                     "navigation",
@@ -467,30 +354,6 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               >
                 {"My Playground"}
               </NavButton>
-              <NavSeparator
-                className={classNames(
-                  "__wab_instance",
-                  sty.navSeparator__e9MNn,
-                  {
-                    [sty.navSeparatorhideStarters__e9MNnwfmdR]: hasVariant(
-                      $state,
-                      "hideStarters",
-                      "hideStarters"
-                    ),
-                    [sty.navSeparatorhideTeams__e9MNn5Ktlm]: hasVariant(
-                      $state,
-                      "hideTeams",
-                      "hideTeams"
-                    ),
-                  }
-                )}
-                hideStarters={
-                  hasVariant($state, "hideStarters", "hideStarters")
-                    ? true
-                    : undefined
-                }
-              />
-
               <div
                 className={classNames("all", sty.freeBox___1I5Dl, {
                   [sty.freeBoxhideTeams___1I5Dl5Ktlm]: hasVariant(
@@ -513,73 +376,6 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   value: args.teams,
                 })}
               </div>
-              <NavSeparator
-                className={classNames(
-                  "__wab_instance",
-                  sty.navSeparator__xnjTf,
-                  {
-                    [sty.navSeparatorhideStarters__xnjTfwfmdR]: hasVariant(
-                      $state,
-                      "hideStarters",
-                      "hideStarters"
-                    ),
-                    [sty.navSeparatorhideTeams__xnjTf5Ktlm]: hasVariant(
-                      $state,
-                      "hideTeams",
-                      "hideTeams"
-                    ),
-                  }
-                )}
-                hideStarters={
-                  hasVariant($state, "hideStarters", "hideStarters")
-                    ? true
-                    : undefined
-                }
-              />
-
-              <NavButton
-                data-plasmic-name={"startersButton"}
-                data-plasmic-override={overrides.startersButton}
-                className={classNames("__wab_instance", sty.startersButton, {
-                  [sty.startersButtonhideStarters]: hasVariant(
-                    $state,
-                    "hideStarters",
-                    "hideStarters"
-                  ),
-                  [sty.startersButtonnavigation_allProjects]: hasVariant(
-                    $state,
-                    "navigation",
-                    "allProjects"
-                  ),
-                  [sty.startersButtonnavigation_starters]: hasVariant(
-                    $state,
-                    "navigation",
-                    "starters"
-                  ),
-                })}
-                endIcon={
-                  <TriangleBottomIcon
-                    className={classNames("all", sty.svg__tkcPl)}
-                    role={"img"}
-                  />
-                }
-                href={`/projects`}
-                selected={
-                  hasVariant($state, "navigation", "starters")
-                    ? true
-                    : undefined
-                }
-                startIcon={
-                  <SparklesSvgIcon
-                    className={classNames("all", sty.svg__cyyvY)}
-                    role={"img"}
-                  />
-                }
-              >
-                {hasVariant(globalVariants, "screen", "mobile")
-                  ? "Starters"
-                  : "Starters"}
-              </NavButton>
             </nav>
             <footer
               data-plasmic-name={"navFooter"}
@@ -690,11 +486,6 @@ function PlasmicDefaultLayout__RenderFunc(props: {
             data-plasmic-override={overrides.main}
             className={classNames("all", sty.main, {
               [sty.mainhideTeams]: hasVariant($state, "hideTeams", "hideTeams"),
-              [sty.mainnavigation_allProjects]: hasVariant(
-                $state,
-                "navigation",
-                "allProjects"
-              ),
             })}
           >
             {renderPlasmicSlot({
@@ -716,16 +507,14 @@ const PlasmicDescendants = {
     "headerLogoLink",
     "headerLogo",
     "headerActions",
-    "newProjectButton",
-    "text",
     "upgradeButton",
     "freeTrial",
     "wrapper",
     "sidebar",
     "nav",
     "allProjectsButton",
+    "span",
     "myProjectsButton",
-    "startersButton",
     "navFooter",
     "newTeamButton",
     "documentationButton",
@@ -733,38 +522,29 @@ const PlasmicDescendants = {
     "userButton",
     "main",
   ],
+
   header: [
     "header",
     "headerWrapper",
     "headerLogoLink",
     "headerLogo",
     "headerActions",
-    "newProjectButton",
-    "text",
     "upgradeButton",
     "freeTrial",
   ],
+
   headerWrapper: [
     "headerWrapper",
     "headerLogoLink",
     "headerLogo",
     "headerActions",
-    "newProjectButton",
-    "text",
     "upgradeButton",
     "freeTrial",
   ],
+
   headerLogoLink: ["headerLogoLink", "headerLogo"],
   headerLogo: ["headerLogo"],
-  headerActions: [
-    "headerActions",
-    "newProjectButton",
-    "text",
-    "upgradeButton",
-    "freeTrial",
-  ],
-  newProjectButton: ["newProjectButton", "text"],
-  text: ["text"],
+  headerActions: ["headerActions", "upgradeButton", "freeTrial"],
   upgradeButton: ["upgradeButton"],
   freeTrial: ["freeTrial"],
   wrapper: [
@@ -772,8 +552,8 @@ const PlasmicDescendants = {
     "sidebar",
     "nav",
     "allProjectsButton",
+    "span",
     "myProjectsButton",
-    "startersButton",
     "navFooter",
     "newTeamButton",
     "documentationButton",
@@ -781,22 +561,24 @@ const PlasmicDescendants = {
     "userButton",
     "main",
   ],
+
   sidebar: [
     "sidebar",
     "nav",
     "allProjectsButton",
+    "span",
     "myProjectsButton",
-    "startersButton",
     "navFooter",
     "newTeamButton",
     "documentationButton",
     "helpButton",
     "userButton",
   ],
-  nav: ["nav", "allProjectsButton", "myProjectsButton", "startersButton"],
-  allProjectsButton: ["allProjectsButton"],
+
+  nav: ["nav", "allProjectsButton", "span", "myProjectsButton"],
+  allProjectsButton: ["allProjectsButton", "span"],
+  span: ["span"],
   myProjectsButton: ["myProjectsButton"],
-  startersButton: ["startersButton"],
   navFooter: [
     "navFooter",
     "newTeamButton",
@@ -804,6 +586,7 @@ const PlasmicDescendants = {
     "helpButton",
     "userButton",
   ],
+
   newTeamButton: ["newTeamButton"],
   documentationButton: ["documentationButton"],
   helpButton: ["helpButton"],
@@ -820,16 +603,14 @@ type NodeDefaultElementType = {
   headerLogoLink: "a";
   headerLogo: "svg";
   headerActions: "div";
-  newProjectButton: typeof Button;
-  text: "div";
   upgradeButton: typeof NavButton;
   freeTrial: typeof FreeTrial;
   wrapper: "div";
   sidebar: "aside";
   nav: "nav";
   allProjectsButton: typeof NavButton;
+  span: "span";
   myProjectsButton: typeof NavButton;
-  startersButton: typeof NavButton;
   navFooter: "footer";
   newTeamButton: typeof NavButton;
   documentationButton: typeof NavButton;
@@ -843,14 +624,14 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDefaultLayout__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicDefaultLayout__VariantsArgs;
     args?: PlasmicDefaultLayout__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDefaultLayout__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicDefaultLayout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicDefaultLayout__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -904,16 +685,14 @@ export const PlasmicDefaultLayout = Object.assign(
     headerLogoLink: makeNodeComponent("headerLogoLink"),
     headerLogo: makeNodeComponent("headerLogo"),
     headerActions: makeNodeComponent("headerActions"),
-    newProjectButton: makeNodeComponent("newProjectButton"),
-    text: makeNodeComponent("text"),
     upgradeButton: makeNodeComponent("upgradeButton"),
     freeTrial: makeNodeComponent("freeTrial"),
     wrapper: makeNodeComponent("wrapper"),
     sidebar: makeNodeComponent("sidebar"),
     nav: makeNodeComponent("nav"),
     allProjectsButton: makeNodeComponent("allProjectsButton"),
+    span: makeNodeComponent("span"),
     myProjectsButton: makeNodeComponent("myProjectsButton"),
-    startersButton: makeNodeComponent("startersButton"),
     navFooter: makeNodeComponent("navFooter"),
     newTeamButton: makeNodeComponent("newTeamButton"),
     documentationButton: makeNodeComponent("documentationButton"),

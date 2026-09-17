@@ -352,7 +352,6 @@ const DEFAULT_APP_TAG = "app";
 
 interface Starters {
   templateAndExampleSections: StarterGroupProps[];
-  tutorialSections: StarterGroupProps[];
   appSections: StarterGroupProps[];
 }
 
@@ -363,7 +362,6 @@ export function loadStarters(
 ): Starters {
   if (isHostFrame() || !user) {
     return {
-      tutorialSections: [],
       templateAndExampleSections: [],
       appSections: [],
     };
@@ -371,13 +369,6 @@ export function loadStarters(
 
   const showAdminTeamOnlySections = isAdminTeamEmail(user.email, appConfig);
 
-  const filteredSections = appConfig.starterSections.filter(
-    (s) =>
-      s.tag === DEFAULT_STARTER_TAG &&
-      (!s.isPlasmicOnly || showAdminTeamOnlySections)
-  );
-
-  const tutorialSections = filteredSections.slice(0, 1) ?? [];
   const blankProjectSection: StarterGroupProps = {
     title: "Blank",
     // An undefined project will be interpreted as a blank project.  This is only
@@ -388,6 +379,7 @@ export function loadStarters(
         name: "Blank project",
         tag: "",
         description: "",
+        withImage: true,
       },
     ],
     tag: "",
@@ -395,7 +387,12 @@ export function loadStarters(
 
   const templateAndExampleSections = [
     ...(appConfig.hideBlankStarter ? [] : [blankProjectSection]),
-    ...(filteredSections.slice(1) ?? []),
+    ...appConfig.starterSections.filter(
+      (s) =>
+        s.tag === DEFAULT_STARTER_TAG &&
+        s.title !== "" && // TODO: remove after prod devflag update
+        (!s.isPlasmicOnly || showAdminTeamOnlySections)
+    ),
   ];
 
   const appSections = appConfig.starterSections.filter(
@@ -403,7 +400,6 @@ export function loadStarters(
   );
 
   return {
-    tutorialSections,
     templateAndExampleSections,
     appSections,
   };

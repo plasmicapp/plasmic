@@ -106,7 +106,7 @@ export function TeamCreation() {
     }
   }
   React.useEffect(() => {
-    if (nextPath.includes("?inviteId=") || !appCtx.appConfig.createTeamPrompt) {
+    if (nextPath.includes("?inviteId=")) {
       spawn(onSkip());
     }
   }, [nextPath, appCtx]);

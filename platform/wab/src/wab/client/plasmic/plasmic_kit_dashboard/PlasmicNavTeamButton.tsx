@@ -35,8 +35,6 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicNavTeamButton.module.css"; // plasmic-import: Mql0DTa_iO/css
 
-import Icon18Icon from "./icons/PlasmicIcon__Icon18"; // plasmic-import: UfxL0BbcEe/icon
-
 createPlasmicElementProxy;
 
 export type PlasmicNavTeamButton__VariantMembers = {
@@ -65,7 +63,6 @@ export const PlasmicNavTeamButton__ArgProps = new Array<ArgPropType>(
 
 export type PlasmicNavTeamButton__OverridesType = {
   root?: Flex__<"a">;
-  svg?: Flex__<"svg">;
   link?: Flex__<"a">;
 };
 
@@ -122,6 +119,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.freeTrial,
       },
     ],
+
     [$props, $ctx, $refs]
   );
 
@@ -160,24 +158,6 @@ function PlasmicNavTeamButton__RenderFunc(props: {
       href={args.href}
       platform={"react"}
     >
-      <div
-        className={classNames("all", sty.freeBox__vFql, {
-          [sty.freeBoxselected__vFqlLsQaD]: hasVariant(
-            $state,
-            "selected",
-            "selected"
-          ),
-        })}
-      >
-        <Icon18Icon
-          data-plasmic-name={"svg"}
-          data-plasmic-override={overrides.svg}
-          className={classNames("all", sty.svg, {
-            [sty.svgselected]: hasVariant($state, "selected", "selected"),
-          })}
-          role={"img"}
-        />
-      </div>
       <div
         className={classNames("all", sty.freeBox__oClzd, {
           [sty.freeBoxfreeTrial__oClzdCMcVy]: hasVariant(
@@ -275,8 +255,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "svg", "link"],
-  svg: ["svg"],
+  root: ["root", "link"],
   link: ["link"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -284,7 +263,6 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "a";
-  svg: "svg";
   link: "a";
 };
 
@@ -293,14 +271,14 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNavTeamButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicNavTeamButton__VariantsArgs;
     args?: PlasmicNavTeamButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicNavTeamButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicNavTeamButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicNavTeamButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -349,7 +327,6 @@ export const PlasmicNavTeamButton = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    svg: makeNodeComponent("svg"),
     link: makeNodeComponent("link"),
 
     // Metadata about props expected for PlasmicNavTeamButton

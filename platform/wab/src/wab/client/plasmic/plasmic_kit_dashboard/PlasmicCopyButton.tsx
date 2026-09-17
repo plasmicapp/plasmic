@@ -141,6 +141,7 @@ function PlasmicCopyButton__RenderFunc(props: {
         sty.root
       )}
       title={triggers.hover_root ? "Copy project ID" : undefined}
+      type={"button"}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       {renderPlasmicSlot({
@@ -183,8 +184,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopyButton__VariantsArgs;
     args?: PlasmicCopyButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopyButton__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCopyButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCopyButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -1,14 +1,8 @@
-import { recentlyEndedTrial } from "@/wab/client/components/FreeTrial";
-import NewProjectModal from "@/wab/client/components/NewProjectModal";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import NavSeparator from "@/wab/client/components/dashboard/NavSeparator";
 import NavTeamSection from "@/wab/client/components/dashboard/NavTeamSection";
 import NavWorkspaceButton from "@/wab/client/components/dashboard/NavWorkspaceButton";
 import { promptNewTeam } from "@/wab/client/components/dashboard/dashboard-actions";
-import {
-  canUpgradeTeam,
-  promptBilling,
-} from "@/wab/client/components/modals/PricingModal";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -18,7 +12,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDefaultLayout";
 import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
-import { TeamId, WorkspaceId } from "@/wab/shared/ApiSchema";
+import { ApiTeam, ApiWorkspace } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -26,16 +20,21 @@ import { Dropdown, Menu } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { useState } from "react";
 
-type DefaultLayoutProps = DefaultDefaultLayoutProps & {
-  helpButton: PlasmicDefaultLayout__OverridesType["helpButton"];
-};
+export type DefaultLayoutProps = DefaultDefaultLayoutProps &
+  PlasmicDefaultLayout__OverridesType & {
+    /** Currently active team, if any. */
+    team?: ApiTeam;
+    /** Currently active workspace, if any. */
+    workspace?: ApiWorkspace;
+  };
 
 function DefaultLayout_(
   props: DefaultLayoutProps,
   ref: HTMLElementRefOf<"div">
 ) {
+  const { team, workspace, freeTrial, upgradeButton, helpButton, ...rest } =
+    props;
   const history = useHistory();
   const appCtx = useAppCtx();
   const userInfo = ensure(
@@ -43,50 +42,8 @@ function DefaultLayout_(
     "DefaultLayout requires appCtx to contain user information"
   );
 
-  const [activeTeam, setActiveTeam] = React.useState<TeamId | undefined>(
-    undefined
-  );
-  const [activeWorkspace, setActiveWorkspace] = React.useState<
-    WorkspaceId | undefined
-  >(undefined);
-
-  const updateLocation = (path: string) => {
-    const matchTeam = APP_ROUTES.org.parse(path);
-    const matchTeamSettings = APP_ROUTES.orgSettings.parse(path);
-    const matchWorkspace = APP_ROUTES.workspace.parse(path);
-
-    setActiveTeam(
-      (matchTeam?.teamId ||
-        matchTeamSettings?.teamId ||
-        appCtx.workspaces.find((w) => w.id === matchWorkspace?.workspaceId)
-          ?.team.id) as TeamId | undefined
-    );
-    setActiveWorkspace(matchWorkspace?.workspaceId as WorkspaceId | undefined);
-  };
-
   const teams = appCtx.getAllTeams();
   const workspaces = _.sortBy(appCtx.workspaces, (w) => w.name);
-  const teamsToShow = teams.filter((t) => !activeTeam || activeTeam === t.id);
-  const teamsOnTrial = teamsToShow.filter((t) => t.onTrial);
-  const trialTeamToShow =
-    teamsOnTrial.length > 0
-      ? teamsOnTrial.reduce((a, b) =>
-          a.trialStartDate! < b.trialStartDate! ? a : b
-        )
-      : teamsToShow.find((t) => recentlyEndedTrial(appCtx, t));
-
-  React.useEffect(() => {
-    updateLocation(history.location.pathname);
-    const disposeHistory = history.listen(({ location }) => {
-      updateLocation(location.pathname);
-    });
-
-    return () => {
-      disposeHistory();
-    };
-  }, [appCtx.teams, appCtx.workspaces]);
-
-  const [showNewProjectModal, setShowNewProjectModal] = React.useState(false);
 
   useBrowserNotification();
 
@@ -106,157 +63,72 @@ function DefaultLayout_(
   );
 
   const brand =
-    appCtx.appConfig.brands?.[activeTeam ?? ""] ??
-    appCtx.appConfig.brands?.[""];
-
-  const [newProjectWorkspaceId, setNewProjectWorkspaceId] =
-    useState<WorkspaceId>();
-
-  const requestNewProjectCreation = (workspaceId?: WorkspaceId) => {
-    setNewProjectWorkspaceId(workspaceId);
-    setShowNewProjectModal(true);
-  };
-
-  const projectCreationMenu = React.useMemo(
-    () =>
-      props.newProjectButtonAsDropdown ? (
-        <Menu>
-          {teams.map((team) => (
-            <Menu.ItemGroup title={team.name}>
-              {workspaces
-                .filter((w) => w.team.id === team.id)
-                .map((workspace) => (
-                  <Menu.Item
-                    onClick={() => requestNewProjectCreation(workspace.id)}
-                  >
-                    {workspace.name}
-                  </Menu.Item>
-                ))}
-            </Menu.ItemGroup>
-          ))}
-          {teams.length === 0 && (
-            <Menu.Item
-              onClick={async () => {
-                await promptNewTeam(appCtx, history);
-              }}
-            >
-              No teams - <strong>create a team</strong>
-            </Menu.Item>
-          )}
-        </Menu>
-      ) : (
-        <></>
-      ),
-    [teams, workspaces, props.newProjectButtonAsDropdown]
-  );
+    appCtx.appConfig.brands?.[team?.id ?? ""] ?? appCtx.appConfig.brands?.[""];
 
   return (
-    <>
-      <PlasmicDefaultLayout
-        root={{ ref }}
-        {...props}
-        headerLogoLink={{
-          as: PublicLink,
-          props: brand.logoHref
-            ? {
-                href: brand.logoHref,
-              }
-            : {},
-        }}
-        headerLogo={
-          brand.logoImgSrc
-            ? {
-                render: () => <img src={brand.logoImgSrc} />,
-              }
-            : undefined
-        }
-        freeTrial={{
-          team: trialTeamToShow,
-        }}
-        teams={teams.map((t, i) => (
-          <React.Fragment key={t.id}>
-            <NavSeparator />
-            <NavTeamSection
-              name={t.name}
-              href={APP_ROUTES.org.fill({ teamId: t.id })}
-              selected={activeTeam === t.id}
-              freeTrial={t.onTrial}
-            >
-              {workspaces
-                .filter((w) => w.team.id === t.id)
-                .map((w) => (
-                  <NavWorkspaceButton
-                    key={w.id}
-                    name={w.name}
-                    href={APP_ROUTES.workspace.fill({
-                      workspaceId: w.id,
-                    })}
-                    selected={activeWorkspace === w.id}
-                  />
-                ))}
-            </NavTeamSection>
-          </React.Fragment>
-        ))}
-        newProjectButton={
-          props.newProjectButtonAsDropdown
-            ? {
-                wrap: (newProjectButton) => (
-                  <Dropdown trigger={["click"]} overlay={projectCreationMenu}>
-                    {newProjectButton}
-                  </Dropdown>
-                ),
-              }
-            : {
-                onClick: () => requestNewProjectCreation(),
-              }
-        }
-        hideStarters={true}
-        upgradeButton={
-          teams.some((t) => canUpgradeTeam(appCtx, t))
-            ? {
-                onClick: async () => {
-                  const { tiers } = await appCtx.api.listCurrentFeatureTiers();
-                  await promptBilling({
-                    appCtx,
-                    availableTiers: tiers,
-                    title: "",
-                    target: {},
-                  });
-                },
-              }
-            : {
-                render: () => null,
-              }
-        }
-        newTeamButton={{
-          onClick: async () => {
-            await promptNewTeam(appCtx, history);
-          },
-        }}
-        userButton={{
-          props: {
-            children: userInfo.firstName,
-            "data-test-id": "btn-dashboard-user",
-          },
-          wrap: (node) => (
-            <Dropdown
-              overlay={userMenu}
-              placement="topLeft"
-              trigger={["click"]}
-            >
-              {node}
-            </Dropdown>
-          ),
-        }}
-        avatar={<Avatar size="small" user={userInfo} />}
-      />
-      {showNewProjectModal && (
-        <NewProjectModal
-          workspaceId={newProjectWorkspaceId}
-          onCancel={() => setShowNewProjectModal(false)}
-        />
-      )}
-    </>
+    <PlasmicDefaultLayout
+      root={{ ref }}
+      {...rest}
+      headerLogoLink={{
+        as: PublicLink,
+        props: brand.logoHref
+          ? {
+              href: brand.logoHref,
+            }
+          : {},
+      }}
+      headerLogo={
+        brand.logoImgSrc
+          ? {
+              render: () => <img src={brand.logoImgSrc} />,
+            }
+          : undefined
+      }
+      freeTrial={freeTrial ?? { render: () => null }}
+      teams={teams.map((t) => (
+        <React.Fragment key={t.id}>
+          <NavSeparator />
+          <NavTeamSection
+            name={t.name}
+            href={APP_ROUTES.org.fill({ teamId: t.id })}
+            selected={team?.id === t.id}
+            freeTrial={t.onTrial}
+          >
+            {workspaces
+              .filter((w) => w.team.id === t.id)
+              .map((w) => (
+                <NavWorkspaceButton
+                  key={w.id}
+                  name={w.name}
+                  href={APP_ROUTES.workspace.fill({
+                    workspaceId: w.id,
+                  })}
+                  selected={workspace?.id === w.id}
+                />
+              ))}
+          </NavTeamSection>
+        </React.Fragment>
+      ))}
+      upgradeButton={upgradeButton ?? { render: () => null }}
+      helpButton={helpButton}
+      newTeamButton={{
+        onClick: async () => {
+          await promptNewTeam(appCtx, history);
+        },
+      }}
+      userButton={{
+        props: {
+          children: userInfo.firstName,
+          "data-test-id": "btn-dashboard-user",
+        },
+        wrap: (node) => (
+          <Dropdown overlay={userMenu} placement="topLeft" trigger={["click"]}>
+            {node}
+          </Dropdown>
+        ),
+      }}
+      avatar={<Avatar size="small" user={userInfo} />}
+    />
   );
 }
 

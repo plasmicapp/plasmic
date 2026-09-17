@@ -143,8 +143,7 @@ export async function createUserFull({
           needsSurvey: !noWelcomeEmailAndSurvey,
         }
       : {}),
-    needsTeamCreationPrompt:
-      !noWelcomeEmailAndSurvey && req.devflags.createTeamPrompt,
+    needsTeamCreationPrompt: !noWelcomeEmailAndSurvey,
   });
 
   const emailVerificationToken = password

@@ -35,7 +35,7 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicDataSourceOption.module.css"; // plasmic-import: 89XWXKZUx6q/css
 
-import Icon19Icon from "./icons/PlasmicIcon__Icon19"; // plasmic-import: MHEeMLIhlB/icon
+import ItemBulletIcon from "./icons/PlasmicIcon__ItemBullet"; // plasmic-import: MHEeMLIhlB/icon
 
 createPlasmicElementProxy;
 
@@ -114,6 +114,7 @@ function PlasmicDataSourceOption__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected,
       },
     ],
+
     [$props, $ctx, $refs]
   );
 
@@ -156,7 +157,7 @@ function PlasmicDataSourceOption__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <Icon19Icon
+            <ItemBulletIcon
               className={classNames("all", sty.svg___25JfE)}
               role={"img"}
             />
@@ -198,14 +199,14 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataSourceOption__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicDataSourceOption__VariantsArgs;
     args?: PlasmicDataSourceOption__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDataSourceOption__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicDataSourceOption__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicDataSourceOption__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

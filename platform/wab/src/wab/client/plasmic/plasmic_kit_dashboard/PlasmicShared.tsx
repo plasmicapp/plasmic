@@ -102,6 +102,7 @@ function PlasmicShared__RenderFunc(props: {
         styleTokensClassNames,
         sty.root
       )}
+      type={"button"}
     >
       <div
         data-plasmic-name={"avatars"}
@@ -172,8 +173,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicShared__VariantsArgs;
     args?: PlasmicShared__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicShared__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicShared__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicShared__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
