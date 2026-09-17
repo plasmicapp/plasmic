@@ -2353,12 +2353,6 @@ export abstract class SharedApi {
     return this.post(`/copilot/ui`, request, true);
   }
 
-  async queryPublicUiCopilot(
-    request: QueryCopilotUiRequest
-  ): Promise<QueryCopilotUiResponse> {
-    return this.post(`/copilot/ui/public`, request, true);
-  }
-
   async sendCopilotFeedback(request: SendCopilotFeedbackRequest) {
     return this.post(`/copilot-feedback`, request, true);
   }

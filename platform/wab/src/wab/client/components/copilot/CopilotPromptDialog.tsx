@@ -20,7 +20,6 @@ import {
   CopilotType,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/shared/common";
 import { asDataUrl } from "@/wab/shared/data-urls";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import cn from "classnames";
@@ -76,30 +75,10 @@ function CopilotPromptDialog<Response>({
     onCopilotSubmit,
   });
 
-  const starterPrompt = studioCtx.copilotStarterPrompt;
-
-  React.useEffect(() => {
-    if (starterPrompt) {
-      const newCopilotPrompt = {
-        prompt: starterPrompt,
-        images: [],
-      };
-      setCopilotPrompt(newCopilotPrompt);
-      spawn(submitPrompt(newCopilotPrompt));
-      studioCtx.app.showSpinner();
-    }
-  }, [starterPrompt]);
-
   React.useEffect(() => {
     defer(() => {
       if (response && applyBtnRef.current) {
-        if (starterPrompt) {
-          studioCtx.app.hideSpinner();
-          applyResponse(response);
-          studioCtx.copilotStarterPrompt = "";
-        } else {
-          applyBtnRef.current.focus();
-        }
+        applyBtnRef.current.focus();
       }
     });
   }, [response]);

@@ -347,7 +347,6 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
     pathname.includes("/api/v1/app-auth/user") ||
     pathname.includes("/api/v1/app-auth/userinfo") ||
     pathname.includes("/api/v1/app-auth/token") ||
-    pathname.includes("/api/v1/copilot/ui/public") ||
     (!config.production &&
       (pathname === "/api/v1/projects/import" ||
         pathname.includes("/api/v1/cmse/")))

@@ -11,6 +11,7 @@ import ShareModal from "@/wab/client/components/TopFrame/TopBar/ShareModal";
 import UpsellModal from "@/wab/client/components/TopFrame/TopBar/UpsellModal";
 import { AppAuthSettingsModal } from "@/wab/client/components/app-auth/AppAuthSettings";
 import { CopilotChatDialog } from "@/wab/client/components/copilot/CopilotChatDialog";
+import { isAnonymousQuotaReached } from "@/wab/client/components/copilot/anonymous-chat";
 import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
 import { ContentEditorConfigModal } from "@/wab/client/components/modals/ContentEditorConfigModal";
 import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
@@ -47,6 +48,7 @@ import {
   ApiProject,
   CopilotChatOpenOpts,
   MergeSrcDst,
+  ProjectId,
 } from "@/wab/shared/ApiSchema";
 import { checkIsTeamOnPaidTierOrTrial } from "@/wab/shared/billing/billing-util";
 import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
@@ -144,7 +146,7 @@ export function TopFrameChrome({
   const location = useLocation();
   const fullPreview = !!APP_ROUTES.projectFullPreview.parse(
     location.pathname,
-    false
+    false,
   );
   const projectTeam = appCtx
     .getAllTeams()
@@ -162,7 +164,7 @@ export function TopFrameChrome({
         showRegenerateSecretTokenModal({
           appCtx,
           project,
-        })
+        }),
       );
       didShowRegenerateSecretTokenModal();
     }
@@ -179,7 +181,7 @@ export function TopFrameChrome({
       const accessLevel = getAccessLevelToResource(
         { type: "project", resource: project },
         appCtx.selfInfo,
-        perms
+        perms,
       );
 
       const key = mkUuid();
@@ -190,7 +192,7 @@ export function TopFrameChrome({
         perms.every(
           (perm) =>
             perm.accessLevel !== "owner" ||
-            !isAdminTeamEmail(perm.email, appCtx.appConfig)
+            !isAdminTeamEmail(perm.email, appCtx.appConfig),
         )
       ) {
         spawn(
@@ -229,7 +231,7 @@ export function TopFrameChrome({
             duration: 0,
             icon: [],
             type: "info",
-          })
+          }),
         );
         return () => notification.destroy(key);
       }
@@ -321,7 +323,7 @@ export function TopFrameChrome({
                   if (result?.sourceId) {
                     await appCtx.api.allowProjectToDataSource(
                       result.sourceId,
-                      project.id
+                      project.id,
                     );
                   }
                   rest.dataSourcePicker?.resolve(result);
@@ -394,8 +396,33 @@ export function TopFrameChrome({
         ))}
       <ForwardShortcuts />
       <ShareFileDrag />
+      <AnonymousChatUserStudioLock appCtx={appCtx} projectId={project.id} />
     </>
   );
+}
+
+function AnonymousChatUserStudioLock({
+  appCtx,
+  projectId,
+}: {
+  appCtx: AppCtx;
+  projectId: ProjectId;
+}) {
+  const { hostFrameApi, hostFrameApiReady } = useTopFrameCtx();
+
+  React.useEffect(() => {
+    if (hostFrameApiReady && !appCtx.selfInfo) {
+      spawn(
+        (async () => {
+          if (await isAnonymousQuotaReached(projectId)) {
+            await hostFrameApi.blockChanges();
+          }
+        })(),
+      );
+    }
+  }, [hostFrameApi, hostFrameApiReady, appCtx.selfInfo, projectId]);
+
+  return null;
 }
 
 /** Observes top frame modals, Studio's are relayed as `studioModalOpen`. */
@@ -419,7 +446,7 @@ function ShareFileDrag() {
   React.useEffect(() => {
     if (hostFrameApiReady) {
       return fileDragMonitor.subscribeRemote((event) =>
-        spawn(hostFrameApi.onFileDragEventInTop(event))
+        spawn(hostFrameApi.onFileDragEventInTop(event)),
       );
     }
     return undefined;
@@ -469,13 +496,13 @@ function ForwardShortcuts() {
                 metaKey: e.metaKey,
                 code: e.code,
                 keyCode: e.keyCode,
-              })
+              }),
             );
           }
           return true;
         },
-      ])
-    )
+      ]),
+    ),
   );
   return null;
 }
@@ -517,7 +544,7 @@ export function useTopFrameState({
   ] = React.useState(false);
   const didShowRegenerateSecretTokenModal = React.useCallback(
     () => setShouldShowRegenerateSecretTokenModal(false),
-    [setShouldShowRegenerateSecretTokenModal]
+    [setShouldShowRegenerateSecretTokenModal],
   );
   const [showUpsellForm, setShowUpsellForm] = React.useState<
     TopBarPromptBillingArgs | undefined
@@ -559,7 +586,7 @@ export function useTopFrameState({
   const [dataSourcePicker, setDataSourcePicker] = React.useState<{
     args: Parameters<TopFrameApi["pickDataSource"]>[0];
     resolve: (
-      result: Awaited<ReturnType<TopFrameApi["pickDataSource"]>>
+      result: Awaited<ReturnType<TopFrameApi["pickDataSource"]>>,
     ) => void;
   }>();
   const [defaultPageRoleId, setDefaultPageRoleId] = React.useState<
@@ -571,7 +598,7 @@ export function useTopFrameState({
       run: false,
       tour: "",
       stepIndex: 0,
-    }
+    },
   );
 
   const topFrameApi = React.useMemo<TopFrameApi>(
@@ -616,7 +643,7 @@ export function useTopFrameState({
         setDefaultPageRoleId(vals.defaultPageRoleId);
       },
       setLatestPublishedVersionData: asyncWrapper(
-        setLatestPublishedVersionData
+        setLatestPublishedVersionData,
       ),
       setSubjectComponentInfo: asyncWrapper(setSubjectComponentInfo),
       setActivatedBranch: asyncWrapper((x) => {
@@ -657,14 +684,14 @@ export function useTopFrameState({
         forceUpdate();
       },
       onFileDragEventInHost: asyncWrapper((event) =>
-        fileDragMonitor.onRemoteEvent(event)
+        fileDragMonitor.onRemoteEvent(event),
       ),
       setOnboardingTour: asyncWrapper(setOnboardingTour),
       pickDataSource: async (opts) => {
         return new Promise((resolve) => {
           setDataSourcePicker({ args: opts, resolve });
         }).finally(() =>
-          setDataSourcePicker(undefined)
+          setDataSourcePicker(undefined),
         ) as TopFrameApiReturnType<"pickDataSource">;
       },
       toggleAdminMode,
@@ -683,7 +710,7 @@ export function useTopFrameState({
           team,
           { type: "project", resource: project },
           appCtx.selfInfo,
-          appCtx.perms
+          appCtx.perms,
         );
       },
       promptBilling: async () => {
@@ -694,7 +721,7 @@ export function useTopFrameState({
         await getTiersAndPromptBilling(appCtx, team);
       },
     }),
-    [appCtx, project]
+    [appCtx, project],
   );
 
   return {
@@ -733,7 +760,7 @@ export function useTopFrameState({
 
 function validateNewLocation(
   path: string | undefined,
-  previousLocation: Location
+  previousLocation: Location,
 ) {
   if (!path) {
     return; // query / hash changes only are okay
@@ -745,12 +772,12 @@ function validateNewLocation(
   if (APP_ROUTES.projectFullPreview.parse(previousLocation.pathname, false)) {
     assert(
       APP_ROUTES.projectFullPreview.parse(path, false),
-      `Cannot navigate from full preview mode to outside of it, from ${previousLocation.pathname} to ${path}`
+      `Cannot navigate from full preview mode to outside of it, from ${previousLocation.pathname} to ${path}`,
     );
   } else {
     assert(
       !APP_ROUTES.projectFullPreview.parse(path, false),
-      `Cannot navigate from studio to full preview mode, from ${previousLocation.pathname} to ${path}`
+      `Cannot navigate from studio to full preview mode, from ${previousLocation.pathname} to ${path}`,
     );
   }
 }

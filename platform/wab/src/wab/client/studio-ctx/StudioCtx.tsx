@@ -2196,12 +2196,15 @@ export class StudioCtx extends WithDbCtx {
     }
 
     const location = this.appCtx.history.location;
-    const searchParams = new URLSearchParams(location.search);
-    const prompt = searchParams.get(SEARCH_PROMPT);
+    await this.handleRouteChange(location);
+
+    // 'prompt' is prefilled from marketing site AI landing page, which opens up
+    // Plasmic AI chat and auto-submits the prompt.
+    const prompt = new URLSearchParams(location.search).get(SEARCH_PROMPT);
     if (prompt) {
-      await this.createCopilotPageWithPrompt("Copilot", prompt);
-    } else {
-      await this.handleRouteChange(location);
+      spawn(
+        this.appCtx.topFrameApi?.openCopilotChat({ prompt, mode: "starter" })
+      );
     }
   }
 
@@ -3100,8 +3103,6 @@ export class StudioCtx extends WithDbCtx {
   get isCopilotChatOpen() {
     return this._isCopilotChatOpen.get();
   }
-
-  copilotStarterPrompt = "";
 
   openUiCopilotDialog(isOpen: boolean) {
     this._showUiCopilot.set(isOpen);
@@ -7408,18 +7409,6 @@ export class StudioCtx extends WithDbCtx {
 
   getCopilotFeedback(copilotInteractionId: CopilotInteractionId) {
     return this._copilotFeedbackByInteractionId.get(copilotInteractionId);
-  }
-
-  async createCopilotPageWithPrompt(pageName: string, prompt: string) {
-    await this.change(() => {
-      this.addComponent(pageName, {
-        type: ComponentType.Page,
-      }) as PageComponent;
-
-      return ok();
-    });
-    this.openUiCopilotDialog(true);
-    this.copilotStarterPrompt = prompt;
   }
 
   /** Gets dedicated arena for component/page, while checking if user has edit access. */

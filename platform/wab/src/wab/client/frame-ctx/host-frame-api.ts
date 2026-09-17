@@ -64,6 +64,10 @@ export type HostFrameApi = {
   setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void>;
   /** Resolves once the studio and its active canvas are ready. */
   waitForStudioReady(): Promise<void>;
+  /**
+   * Makes the studio read-only
+   */
+  blockChanges(): Promise<void>;
   listMentionableResources(): Promise<MentionableResources>;
   /** Labels of `@<…>` mentions whose resource no longer exists. */
   findMissingMentions(text: string): Promise<string[]>;

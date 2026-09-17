@@ -29,7 +29,7 @@ import {
   MainBranchId,
   ProjectId,
 } from "@/wab/shared/ApiSchema";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { accessLevelRank, isUnownedProject } from "@/wab/shared/EntUtil";
 import { maybeOne, spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
@@ -177,8 +177,10 @@ export function StudioFrame({
           accessLevelRank(proj.defaultAccessLevel)
             ? userAccessLevel
             : proj.defaultAccessLevel;
+        // An unowned project is editable by anyone, matching the server's permission check.
         setEditorPerm(
-          accessLevelRank(accessLevel) >= accessLevelRank("content")
+          accessLevelRank(accessLevel) >= accessLevelRank("content") ||
+            isUnownedProject(proj)
         );
         setProject(proj);
         if (appCtx.appConfig.defaultHostUrl !== DEVFLAGS.defaultHostUrl) {

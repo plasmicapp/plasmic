@@ -1,4 +1,3 @@
-import { CopilotPromptInput } from "@/wab/client/components/copilot/CopilotPromptInput";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import NewComponentItem from "@/wab/client/components/widgets/NewComponentItem";
 import NewComponentSection from "@/wab/client/components/widgets/NewComponentSection";
@@ -29,11 +28,6 @@ export type NewPageInfo =
       type: "template";
       componentName: string;
       projectId: string;
-    }
-  | {
-      name: string;
-      type: "copilot";
-      prompt: string;
     };
 
 interface NewPageModalProps
@@ -66,7 +60,6 @@ function NewPageModal(props: NewPageModalProps) {
   const showDefaultPageTemplates =
     pageTemplatesGroups.length === 0 ||
     !studioCtx.getCurrentUiConfig().hideDefaultPageTemplates;
-  const uiCopilotEnabled = studioCtx.uiCopilotEnabled();
 
   const getNewPageName = (defaultName: string) => {
     return !pageInfo.name ||
@@ -109,8 +102,7 @@ function NewPageModal(props: NewPageModalProps) {
         props: {
           "data-test-id": "prompt-submit",
           htmlType: "submit",
-          disabled:
-            !pageInfo.name || (pageInfo.type === "copilot" && !pageInfo.prompt),
+          disabled: !pageInfo.name,
         },
       }}
       showTemplates={true}
@@ -133,40 +125,6 @@ function NewPageModal(props: NewPageModalProps) {
             imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
             onClick={() => {
               setPageInfo({ type: "dynamic", name: getNewPageName("NewPage") });
-            }}
-          />
-          {uiCopilotEnabled && (
-            <NewComponentItem
-              isSelected={pageInfo.type === "copilot"}
-              title="AI page"
-              imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
-              onClick={() => {
-                setPageInfo({
-                  type: "copilot",
-                  prompt: pageInfo.type === "copilot" ? pageInfo.prompt : "",
-                  name: getNewPageName("NewPage"),
-                });
-              }}
-            />
-          )}
-        </NewComponentSection>
-      )}
-      {pageInfo.type === "copilot" && (
-        <NewComponentSection title="AI prompt">
-          <CopilotPromptInput
-            imageUploadIcon={{ render: () => null }}
-            imageUploadContainer={{ render: () => null }}
-            runPromptBtn={{ render: () => null }}
-            textAreaInput={{
-              value: pageInfo.prompt,
-              placeholder: "Describe the page you want to create...",
-              rows: 3,
-              autoFocus: true,
-              onChange: (e) =>
-                setPageInfo((prev) => ({
-                  ...prev,
-                  prompt: e.target.value ?? "",
-                })),
             }}
           />
         </NewComponentSection>

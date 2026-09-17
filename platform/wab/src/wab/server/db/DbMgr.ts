@@ -111,6 +111,7 @@ import { KnownProvider } from "@/wab/server/util/passport-multi-oauth2";
 import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   BadRequestError,
+  CopilotPlanRequiredError,
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,
   UnauthorizedError,
@@ -6300,7 +6301,7 @@ export class DbMgr implements MigrationDbMgr {
         !team ||
         (!isPaidTeam(team) && !isTeamOnFreeTrial(getEntitledTeam(team)))
       ) {
-        throw new ForbiddenError();
+        throw new CopilotPlanRequiredError();
       }
     }
 

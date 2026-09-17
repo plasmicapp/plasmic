@@ -651,14 +651,6 @@ function NavigationDropdown_(
             );
             break;
           }
-          case "copilot": {
-            assert(chosenTemplate.prompt, "AI prompt is required");
-            await studioCtx.createCopilotPageWithPrompt(
-              chosenTemplate.name,
-              chosenTemplate.prompt
-            );
-            break;
-          }
         }
       }
     }

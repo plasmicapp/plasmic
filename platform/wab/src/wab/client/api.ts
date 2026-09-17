@@ -499,7 +499,6 @@ export function filteredApi(
     "uploadImageFile",
     "queryCopilot",
     "queryUiCopilot",
-    "queryPublicUiCopilot",
     "sendCopilotFeedback",
     "addReactionToComment",
     "removeReactionFromComment",

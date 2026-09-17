@@ -2,6 +2,7 @@
 //  allow granting this on workspaces/projects, only on teams.
 
 import type { Project, ProjectRevision } from "@/wab/server/entities/Entities";
+import { ApiProject } from "@/wab/shared/ApiSchema";
 import {
   MinimalRevisionInfo,
   PkgVersionInfoMeta,
@@ -47,7 +48,7 @@ export function accessLevelRank(a: AccessLevel) {
   return accessLevelOrderAsc.indexOf(a);
 }
 
-export function isUnownedProject(project: SiteInfo | Project) {
+export function isUnownedProject(project: SiteInfo | Project | ApiProject) {
   return !project.createdById && project.readableByPublic;
 }
 

@@ -30,9 +30,6 @@ function CopilotUiPrompt() {
         modelProviderOverride,
         copilotSystemPromptOverride,
       }) => {
-        const copilotQuery = studioCtx.appCtx.selfInfo
-          ? studioCtx.appCtx.api.queryUiCopilot
-          : studioCtx.appCtx.api.queryPublicUiCopilot;
         const payload: QueryCopilotUiRequest = {
           type: "ui",
           goal: prompt,
@@ -53,7 +50,7 @@ function CopilotUiPrompt() {
         if (copilotSystemPromptOverride) {
           payload.copilotSystemPromptOverride = copilotSystemPromptOverride;
         }
-        const result = await copilotQuery(payload);
+        const result = await studioCtx.appCtx.api.queryUiCopilot(payload);
 
         const response = result.response;
         const { tokens, html } = response;

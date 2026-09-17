@@ -218,6 +218,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       async waitForStudioReady(): Promise<void> {
         await studioCtx.awaitStudioReady();
       },
+      async blockChanges(): Promise<void> {
+        studioCtx.blockChanges = true;
+      },
       async executeCopilotToolCall(
         toolName: string,
         toolArgs: Record<string, unknown>

@@ -33,12 +33,6 @@ export class App {
       this._view.setState({ showSpinner: wasShowingSpinner });
     }
   }
-  showSpinner() {
-    this._view.setState({ showSpinner: true });
-  }
-  hideSpinner() {
-    this._view.setState({ showSpinner: false });
-  }
 }
 type AppViewProps = {
   contents: (app: App) => ReactNode;
