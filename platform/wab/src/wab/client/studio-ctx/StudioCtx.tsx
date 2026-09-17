@@ -1423,8 +1423,12 @@ export class StudioCtx extends WithDbCtx {
         );
       });
       (this.modelChangeQueue as any).process();
-      await drainQueue(this.modelChangeQueue);
-      return res;
+      // Observe failures immediately, even while other queued changes drain.
+      const [result] = await Promise.all([
+        res,
+        drainQueue(this.modelChangeQueue),
+      ]);
+      return result;
     }
   }
 
@@ -1699,7 +1703,8 @@ export class StudioCtx extends WithDbCtx {
     );
     asyncQueue.error((error, _task) => {
       handleError(error);
-      throw error;
+      // The task callback already rejects its caller. Throwing here interrupts
+      // async's completion bookkeeping, leaving drain() and later tasks stuck.
     });
     return asyncQueue;
   })();

@@ -1846,7 +1846,7 @@ export function isTplVariantable(tplNode: any): tplNode is TplNode {
 
 export function canToggleVisibility(
   tplNode: TplNode,
-  viewCtx: ViewCtx
+  viewCtx: Pick<ViewCtx, "getTplCodeComponentMeta">
 ): tplNode is TplNode {
   // Verify if the component's root element is a code component and styleSections is enabled
   const tplRoot = resolveTplRoot(tplNode);
