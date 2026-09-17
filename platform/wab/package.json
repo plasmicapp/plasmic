@@ -279,7 +279,6 @@
     "is-hotkey": "^0.1.6",
     "isomorphic-unfetch": "^3",
     "jquery": "~3.5.1",
-    "jquery-serializejson": "^2.9.0",
     "js-cookie": "3.0.5",
     "js-string-escape": "^1.0.1",
     "jsdom": "^22.1.0",

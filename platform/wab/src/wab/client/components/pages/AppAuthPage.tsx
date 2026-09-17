@@ -11,6 +11,7 @@ import { IntakeFlowForm } from "@/wab/client/components/pages/IntakeFlowForm";
 import { LinkButton, Spinner } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { getFormStringValues } from "@/wab/client/dom";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { useLocation } from "@/wab/client/route/HistoryProvider";
 import { trackEvent } from "@/wab/client/tracking";
@@ -20,10 +21,9 @@ import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { Button, Divider, Input, Spin, Tooltip, notification } from "antd";
-import $ from "jquery";
 import React from "react";
 const LazyPasswordStrengthBar = React.lazy(
-  () => import("@/wab/client/components/PasswordStrengthBar")
+  () => import("@/wab/client/components/PasswordStrengthBar"),
 );
 
 type AuthorizationPageModes =
@@ -57,7 +57,7 @@ export function AppAuthPage() {
   const { config, loading } = useAppAuthPubConfig(
     appCtx,
     clientId ?? "",
-    userEmail
+    userEmail,
   );
 
   const changeModeAndNavigate = (mode: AuthorizationPageModes) => {
@@ -558,7 +558,7 @@ export function AppForgotPasswordForm({
   const nonAuthCtx = useNonAuthCtx();
   const [submitting, setSubmitting] = React.useState(false);
   const [feedback, setFeedback] = React.useState<undefined | Feedback>(
-    undefined
+    undefined,
   );
   return (
     <IntakeFlowForm>
@@ -567,7 +567,7 @@ export function AppForgotPasswordForm({
           className="LoginForm__Fields"
           onSubmit={async (e) => {
             e.preventDefault();
-            const { email } = $(e.target).serializeJSON();
+            const { email = "" } = getFormStringValues(e.currentTarget);
             setSubmitting(true);
             try {
               await nonAuthCtx.api.forgotPassword({
@@ -635,7 +635,7 @@ export function AppResetPasswordForm({
   const nonAuthCtx = useNonAuthCtx();
   const [submitting, setSubmitting] = React.useState(false);
   const [feedback, setFeedback] = React.useState<undefined | Feedback>(
-    undefined
+    undefined,
   );
   return (
     <IntakeFlowForm>
@@ -644,7 +644,9 @@ export function AppResetPasswordForm({
           className="LoginForm__Fields"
           onSubmit={async (e) => {
             e.preventDefault();
-            const { email, password } = $(e.target).serializeJSON();
+            const { email = "", password = "" } = getFormStringValues(
+              e.currentTarget,
+            );
 
             setSubmitting(true);
             const res = await nonAuthCtx.api.resetPassword({

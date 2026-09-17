@@ -27,12 +27,6 @@ export function mkSharedRsbuildConfig(opts: {
   return {
     resolve: {
       alias: {
-        // Force a single jquery instance in the bundle. jquery plugins
-        // (jquery-serializejson) import "jquery" themselves, and under pnpm's
-        // isolated node_modules they can resolve a different copy than the app
-        // (the workspace has both 3.5.1 and 3.7.1), so the plugin registers
-        // itself on an instance the app never sees.
-        jquery: "./node_modules/jquery",
         // data-urls.ts only falls back to xmldom when there is no window.
         "@xmldom/xmldom": false,
       },

@@ -1463,9 +1463,6 @@ importers:
       jquery:
         specifier: ~3.5.1
         version: 3.5.1
-      jquery-serializejson:
-        specifier: ^2.9.0
-        version: 2.9.0
       js-cookie:
         specifier: 3.0.5
         version: 3.0.5
@@ -11922,9 +11919,6 @@ packages:
 
   jose@4.15.9:
     resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
-
-  jquery-serializejson@2.9.0:
-    resolution: {integrity: sha512-xR7rjl0tRKIVioV5lOkOSv7K8BHMvGzYzC7Ech1iAYuZiYf0ksEpLC8OqjA5VApXf/qn/49O9hTmW70+/EA0vA==}
 
   jquery@3.5.1:
     resolution: {integrity: sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==}
@@ -29194,8 +29188,6 @@ snapshots:
       '@standard-schema/spec': 1.1.0
 
   jose@4.15.9: {}
-
-  jquery-serializejson@2.9.0: {}
 
   jquery@3.5.1: {}
 

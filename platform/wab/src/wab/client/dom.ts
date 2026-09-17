@@ -18,7 +18,7 @@ export interface NodeAndOffset {
 export function range(
   doc: Document,
   start?: NodeAndOffset,
-  end?: NodeAndOffset
+  end?: NodeAndOffset,
 ) {
   const sel = ensure(doc.getSelection());
   if (sel.rangeCount === 0) {
@@ -68,7 +68,7 @@ export function* bfs($elt: JQuery, excludeSelf = false) {
   while (qIndex < q.length) {
     const [stack, xs] = ensure(
       q[qIndex++],
-      "Nonempty queue must have first element"
+      "Nonempty queue must have first element",
     );
     for (const x of [...xs]) {
       if (!($elt === x && excludeSelf)) {
@@ -77,8 +77,8 @@ export function* bfs($elt: JQuery, excludeSelf = false) {
       q.push(
         tuple(
           stack.concat([x]),
-          Array.from(x.children()).map((c) => $(c as any))
-        )
+          Array.from(x.children()).map((c) => $(c as any)),
+        ),
       );
     }
   }
@@ -88,7 +88,7 @@ export function tag(x) {
   let left;
   return coalesce(
     maybe(x.get(0).tagName, (x1) => x1.toLowerCase()),
-    () => ""
+    () => "",
   );
 }
 
@@ -330,7 +330,7 @@ export function getContentOnlyRect(
       top: number;
       left: number;
     };
-  } = {}
+  } = {},
 ): DOMRect {
   const node = $(elt).get(0);
   const rect = getElementBounds(elt);
@@ -357,10 +357,30 @@ export function getContentOnlyRect(
 
 export function getBoundingClientRect(...elts: Element[]): ClientRect {
   return ensure(
-    Box.mergeBBs(elts.map((x) => x.getBoundingClientRect()))
+    Box.mergeBBs(elts.map((x) => x.getBoundingClientRect())),
   ).rect();
 }
 
 export function isArrowKey(key: string) {
   return ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(key);
+}
+
+/**
+ * Reads the submitted values of a form's named fields as strings, e.g. for a
+ * form `onSubmit` handler: `getFormStringValues(e.currentTarget)`.
+ *
+ * Like `FormData`, this skips disabled fields and unchecked checkboxes/radios.
+ * File inputs are skipped since they are not strings. If multiple fields share
+ * a name, the last one wins.
+ */
+export function getFormStringValues(
+  form: HTMLFormElement,
+): Record<string, string | undefined> {
+  const values: Record<string, string | undefined> = {};
+  new FormData(form).forEach((value, key) => {
+    if (typeof value === "string") {
+      values[key] = value;
+    }
+  });
+  return values;
 }
