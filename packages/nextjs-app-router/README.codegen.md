@@ -1,3 +1,5 @@
+> **Deprecated:** `@plasmicapp/nextjs-app-router` is deprecated. See the docs for up to date Next.js App Router support: https://docs.plasmic.app/learn/migrate-to-app-router/
+
 This package provides helpers for doing extractPlasmicQueryData() with Next.js App Router.
 
 We normally use react-ssr-prepass to fake-render a React tree to gather data requirements. We can't do so in RSC mode, because all the client components are imported as placeholders, so we cannot fake-render them.
