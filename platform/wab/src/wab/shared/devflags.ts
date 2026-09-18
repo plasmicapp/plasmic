@@ -231,10 +231,10 @@ type InsertableByTypeString<T extends InsertableTemplatesSelectable["type"]> =
     : never;
 
 export function flattenInsertableTemplatesByType<
-  T extends InsertableTemplatesSelectable["type"]
+  T extends InsertableTemplatesSelectable["type"],
 >(
   item: InsertableTemplatesSelectable | undefined,
-  type: T
+  type: T,
 ): InsertableByTypeString<T>[] {
   if (!item) {
     return [];
@@ -248,7 +248,7 @@ export function flattenInsertableTemplatesByType<
 }
 
 export function flattenInsertableTemplates(
-  item?: InsertableTemplatesSelectable
+  item?: InsertableTemplatesSelectable,
 ): InsertableTemplatesItem[] {
   if (!item || item.type === "insertable-icons-group") {
     return [];
@@ -263,13 +263,13 @@ export function flattenInsertableTemplates(
       false,
       "Not expected insertable template type: " + typeof item === "object"
         ? JSON.stringify(item)
-        : item
+        : item,
     );
   }
 }
 
 export function flattenInsertableIconGroups(
-  item?: InsertableTemplatesSelectable
+  item?: InsertableTemplatesSelectable,
 ): InsertableIconsGroup[] {
   if (!item || item.type === "insertable-templates-item") {
     return [];
@@ -284,7 +284,7 @@ export function flattenInsertableIconGroups(
       false,
       "Not expected insertable template type: " + typeof item === "object"
         ? JSON.stringify(item)
-        : item
+        : item,
     );
   }
 }
@@ -373,7 +373,7 @@ const DEFAULT_DEVFLAGS = {
     overrideSections: {},
   }),
   insertableTemplates: ensureType<InsertableTemplatesGroup | undefined>(
-    undefined
+    undefined,
   ),
   installables: ensureType<Installable[]>([]),
   hostLessComponents: ensureType<HostLessPackageInfo[] | undefined>([
@@ -565,6 +565,8 @@ const DEFAULT_DEVFLAGS = {
   disablePublicCopilot: false,
   // Preset animations importable project id
   presetAnimationsProjectId: "",
+  // True only on a request carrying the e2e devflags cookie; see e2e-devflags.ts
+  e2eDevFlagsApplied: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -590,7 +592,7 @@ export function applyDevFlagOverrides(overrides: Partial<DevFlagsType>): void {
 
 /** Applies overrides to a copy of the default devflags and returns it. */
 export function applyDevFlagOverridesToDefaults(
-  overrides: Partial<DevFlagsType>
+  overrides: Partial<DevFlagsType>,
 ): DevFlagsType {
   const devflags = cloneDeep(DEFAULT_DEVFLAGS);
   applyDevFlagOverridesToTarget(devflags, overrides);
@@ -600,7 +602,7 @@ export function applyDevFlagOverridesToDefaults(
 /** Applies overrides to a target. */
 export function applyDevFlagOverridesToTarget(
   target: DevFlagsType,
-  overrides: Partial<DevFlagsType>
+  overrides: Partial<DevFlagsType>,
 ): void {
   mergeSane(target, overrides);
   normalizeDevFlags(target);
@@ -632,10 +634,10 @@ export function getProjectFlags(
   site: {
     flags: { [f: string]: string | number | boolean | null | undefined };
   },
-  target = DEVFLAGS
+  target = DEVFLAGS,
 ): DevFlagsType {
   return Object.assign(
     JSON.parse(JSON.stringify(target)),
-    pick(site.flags, perProjectFlags)
+    pick(site.flags, perProjectFlags),
   );
 }
