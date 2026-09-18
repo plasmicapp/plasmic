@@ -24,7 +24,7 @@ import { Config } from "@/wab/server/config";
 import { logger } from "@/wab/server/observability";
 import { sendCommentsNotificationEmails } from "@/wab/server/scripts/send-comments-notifications";
 import { withSpan } from "@/wab/server/util/apm-util";
-import httpProxy from "http-proxy";
+import httpProxy from "http-proxy-3";
 
 export async function runAppServer(config: Config) {
   await ensureDbConnections(config.databaseUri, {
