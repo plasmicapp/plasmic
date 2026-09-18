@@ -648,6 +648,12 @@ function addMiddlewares(
     logger().debug("Skipping CSRF setup...");
   }
 
+  app.use((req, _res, next) => {
+    if (req.readableAborted) {
+      return;
+    }
+    next();
+  });
   // Parse body further down to prevent unauthorized users from incurring large parses.
   app.use(bodyParser.json({ limit: "400mb" }));
   app.use(bodyParser.urlencoded({ extended: true }));
