@@ -1,4 +1,5 @@
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { removeWhere } from "@/wab/shared/common";
 import {
   EventHandlerKeyType,
   findExprsInInteraction,
@@ -8,7 +9,6 @@ import {
 import { GenericError } from "@/wab/shared/error-handling";
 import { Interaction, TplNode } from "@/wab/shared/model/classes";
 import { isInteractionResultUsedInExpr } from "@/wab/shared/refactoring";
-import { remove } from "lodash";
 import { Result, err, ok } from "neverthrow";
 
 export type DeleteInteractionResult = Result<void, GenericError>;
@@ -41,8 +41,8 @@ export function deleteInteraction(opts: {
     (sibling) =>
       sibling !== interaction &&
       findExprsInInteraction(sibling).some((expr) =>
-        isInteractionResultUsedInExpr(interaction, expr)
-      )
+        isInteractionResultUsedInExpr(interaction, expr),
+      ),
   );
   if (referencing) {
     return err({
@@ -50,13 +50,13 @@ export function deleteInteraction(opts: {
     });
   }
 
-  remove(eventHandler.interactions, (it) => it === interaction);
+  removeWhere(eventHandler.interactions, (it) => it === interaction);
   if (eventHandler.interactions.length === 0) {
     const baseVs = ensureBaseVariantSetting(tpl);
     if (isEventHandlerKeyForAttr(eventHandlerKey)) {
       delete baseVs.attrs[eventHandlerKey.attr];
     } else {
-      remove(baseVs.args, (arg) => arg.param === eventHandlerKey.param);
+      removeWhere(baseVs.args, (arg) => arg.param === eventHandlerKey.param);
     }
   }
   return ok(undefined);
