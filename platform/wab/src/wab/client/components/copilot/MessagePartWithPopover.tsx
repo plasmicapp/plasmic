@@ -18,6 +18,7 @@ export function MessagePartWithPopover({
     <Popover
       placement="leftBottom"
       trigger="hover"
+      destroyTooltipOnHide
       content={
         <MessagePartPopoverContent
           title={popoverTitle}
