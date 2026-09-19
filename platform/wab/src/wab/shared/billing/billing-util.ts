@@ -23,7 +23,7 @@ export type SubscriptionStatus = MakeADT<
 >;
 
 export function checkIsTeamOnFreeTierOrTrial(
-  team?: Pick<ApiTeam, "featureTierId" | "onTrial">
+  team?: Pick<ApiTeam, "featureTierId" | "onTrial">,
 ) {
   return (
     !team ||
@@ -33,12 +33,13 @@ export function checkIsTeamOnFreeTierOrTrial(
   );
 }
 
-export function checkIsTeamOnPaidTierOrTrial(
-  team: Pick<ApiTeam, "featureTierId" | "featureTier" | "onTrial">
+/** Returns true for team on paid tiers, excludes teams on free tier. */
+export function checkIsTeamOnPaidTier(
+  team: Pick<ApiTeam, "featureTierId" | "featureTier" | "onTrial">,
 ): boolean {
   // The API resolves featureTier from the parent for child organizations.
   const tierId = team.featureTierId || team.featureTier?.id;
-  return (!!tierId && tierId !== DEVFLAGS.freeTier.id) || team.onTrial;
+  return !!tierId && tierId !== DEVFLAGS.freeTier.id && !team.onTrial;
 }
 
 /**
@@ -46,7 +47,7 @@ export function checkIsTeamOnPaidTierOrTrial(
  */
 export function getSubscriptionStatus(
   team: ApiTeam,
-  subscription?: Subscription
+  subscription?: Subscription,
 ): SubscriptionStatus {
   const freeTier = DEVFLAGS.freeTier;
 
@@ -54,7 +55,7 @@ export function getSubscriptionStatus(
   if (!team.featureTier) {
     assert(
       !team.stripeSubscriptionId,
-      `Found a Stripe subscription without a feature tier for teamId=${team.id}`
+      `Found a Stripe subscription without a feature tier for teamId=${team.id}`,
     );
     return {
       type: "valid",
@@ -75,13 +76,13 @@ export function getSubscriptionStatus(
   }
   assert(
     !!team.stripeSubscriptionId && !!subscription,
-    `Found team.featureTier without a corresponding subscription for teamId=${team.id}`
+    `Found team.featureTier without a corresponding subscription for teamId=${team.id}`,
   );
   // team.featureTier and subscription are both defined by here
 
   if (
     ["canceled", "incomplete", "incomplete_expired"].includes(
-      subscription.status
+      subscription.status,
     )
   ) {
     // Stay on the free tier if we have canceled or incomplete subs
@@ -107,7 +108,7 @@ export function getSubscriptionStatus(
 export function calculateBill(
   tier: ApiFeatureTier,
   seats: number,
-  billingFrequency: BillingFrequency
+  billingFrequency: BillingFrequency,
 ) {
   let basePrice: number;
   let stripeBasePriceId: StripePriceId | null; // null for plans without base price

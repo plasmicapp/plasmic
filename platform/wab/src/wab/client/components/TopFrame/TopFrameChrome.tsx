@@ -50,7 +50,7 @@ import {
   MergeSrcDst,
   ProjectId,
 } from "@/wab/shared/ApiSchema";
-import { checkIsTeamOnPaidTierOrTrial } from "@/wab/shared/billing/billing-util";
+import { checkIsTeamOnPaidTier } from "@/wab/shared/billing/billing-util";
 import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { LocalizationConfig } from "@/wab/shared/localization";
@@ -151,8 +151,7 @@ export function TopFrameChrome({
   const projectTeam = appCtx
     .getAllTeams()
     .find((team) => team.id === project.teamId);
-  const isPayingTeam =
-    !!projectTeam && checkIsTeamOnPaidTierOrTrial(projectTeam);
+  const isPayingTeam = !!projectTeam && checkIsTeamOnPaidTier(projectTeam);
 
   React.useEffect(() => {
     document.title = `${project.name} - Plasmic`;

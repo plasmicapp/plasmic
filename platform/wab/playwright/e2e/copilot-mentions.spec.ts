@@ -14,11 +14,9 @@ test.describe("copilot mentions", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    // Chat copilot is only enabled for projects on a paid/trial team, so the
-    // project can't live in the default personal workspace.
     projectId = await apiClient.setupNewProject({
       name: "copilot-mentions",
-      workspaceId: await apiClient.setupTrialWorkspace(),
+      workspaceId: await apiClient.setupPaidWorkspace(),
     });
     await goToProject(page, `/projects/${projectId}`);
   });
@@ -27,7 +25,7 @@ test.describe("copilot mentions", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -129,7 +127,7 @@ test.describe("copilot mentions", () => {
     await page.keyboard.type("@");
 
     await expect(
-      popover.getByText("Start typing to search project resources")
+      popover.getByText("Start typing to search project resources"),
     ).toBeVisible();
     await expect(popover.getByText("Current element")).toHaveCount(0);
     await expect(popover.getByText("Current page")).toHaveCount(0);

@@ -9,7 +9,10 @@ export class ApiClient {
   private token: string | undefined = undefined;
   private dataSourceId: string | undefined = undefined;
 
-  constructor(public request: APIRequestContext, public baseUrl: string) {}
+  constructor(
+    public request: APIRequestContext,
+    public baseUrl: string,
+  ) {}
 
   async getCsrf() {
     const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
@@ -84,31 +87,41 @@ export class ApiClient {
     await this.request.delete(`${this.baseUrl}/api/v1/projects/${projectId}`);
   }
 
-  // A user gets one unpaid team and one trial, so the seeded team is reused.
-  async setupTrialWorkspace(): Promise<string> {
+  async setupPaidWorkspace(): Promise<string> {
     const csrf = await this.getCsrf();
     const teamsRes = await this.request.get(`${this.baseUrl}/api/v1/teams`);
     const team = (await teamsRes.json()).teams.find(
-      (t) => t.name === "Plasmic's First Organization",
+      (t) => t.name === "Test Pro Org",
     );
     if (!team) {
-      throw new Error("Seeded team not found");
-    }
-
-    if (!team.onTrial) {
-      const trialRes = await this.request.post(
-        `${this.baseUrl}/api/v1/teams/${team.id}/trial`,
-        { headers: { "X-CSRF-Token": csrf } },
-      );
-      if (!trialRes.ok()) {
-        throw new Error(`Failed to start team trial: ${await trialRes.text()}`);
-      }
+      throw new Error("Seeded paid team not found");
     }
 
     const workspacesRes = await this.request.get(
       `${this.baseUrl}/api/v1/teams/${team.id}/workspaces`,
     );
-    return (await workspacesRes.json()).workspaces[0].id;
+    const existing = (await workspacesRes.json()).workspaces[0];
+    if (existing) {
+      return existing.id;
+    }
+
+    const createRes = await this.request.post(
+      `${this.baseUrl}/api/v1/workspaces`,
+      {
+        data: { name: "Paid workspace", teamId: team.id },
+        headers: { "X-CSRF-Token": csrf },
+      },
+    );
+    if (!createRes.ok()) {
+      throw new Error(`Failed to create workspace: ${await createRes.text()}`);
+    }
+    const result = await createRes.json();
+    if (result.paywall !== "pass") {
+      throw new Error(
+        `Workspace creation hit a paywall: ${JSON.stringify(result)}`,
+      );
+    }
+    return result.response.workspace.id;
   }
 
   async importProjectFromTemplate(bundle: any) {

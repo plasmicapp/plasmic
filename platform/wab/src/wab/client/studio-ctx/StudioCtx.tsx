@@ -194,7 +194,7 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
-import { checkIsTeamOnPaidTierOrTrial } from "@/wab/shared/billing/billing-util";
+import { checkIsTeamOnPaidTier } from "@/wab/shared/billing/billing-util";
 import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
@@ -497,7 +497,10 @@ export type PointerState =
   | "stack";
 
 export class DragInsertState {
-  constructor(readonly dragMgr: DragInsertManager, readonly spec: AddTplItem) {}
+  constructor(
+    readonly dragMgr: DragInsertManager,
+    readonly spec: AddTplItem,
+  ) {}
 }
 
 interface ArenaViewInfo {
@@ -632,7 +635,7 @@ class UnsupportedServerUpdate extends Error {
 export function calculateNextVersionKey(studioCtx: StudioCtx) {
   return invalidationKey(
     "calculateNextPublishVersion",
-    studioCtx.branchInfo()?.id
+    studioCtx.branchInfo()?.id,
   );
 }
 
@@ -716,7 +719,7 @@ export class StudioCtx extends WithDbCtx {
 
     this.asyncSaver = asyncOneAtATime(
       this.trySave.bind(this),
-      SaveResult.Throttled
+      SaveResult.Throttled,
     );
     // We keep this timer enabled even if we are in read-only mode, in case the
     // user keeps making changes.
@@ -736,7 +739,7 @@ export class StudioCtx extends WithDbCtx {
               if (r === SaveResult.StopSaving) {
                 window.clearInterval(this.asyncSaverTimer);
               }
-            })
+            }),
           );
         }
       }, 2000);
@@ -746,7 +749,7 @@ export class StudioCtx extends WithDbCtx {
     this.undoLog = new UndoLog(
       this.site,
       this.recorder,
-      this._serverUpdatesSummary
+      this._serverUpdatesSummary,
     );
 
     // handleInitialRoute will create the first undo record
@@ -766,14 +769,14 @@ export class StudioCtx extends WithDbCtx {
 
     spawn(
       this.getProjectReleases().then((releases) =>
-        this.releases.replace(releases)
-      )
+        this.releases.replace(releases),
+      ),
     );
 
     spawn(
       this.listUnpublishedProjectRevisions().then((revision) =>
-        this.revisions.replace(revision)
-      )
+        this.revisions.replace(revision),
+      ),
     );
 
     this.disposals.push(
@@ -808,13 +811,13 @@ export class StudioCtx extends WithDbCtx {
                 const globalVariant = tryGetGlobalVariantByUuid(
                   this.site,
                   parsed.uuid,
-                  { includeDeps: "direct" }
+                  { includeDeps: "direct" },
                 );
                 if (!globalVariant) {
                   // A component variant: focus its owning component so the
                   // variants panel shows it.
                   const owner = this.site.components.find((c) =>
-                    allComponentVariants(c).some((v) => v.uuid === parsed.uuid)
+                    allComponentVariants(c).some((v) => v.uuid === parsed.uuid),
                   );
                   if (owner) {
                     this.switchToComponentArena(owner);
@@ -852,7 +855,7 @@ export class StudioCtx extends WithDbCtx {
           case "Tpl": {
             const component = tryGetComponentByUuid(
               this.site,
-              parsed.componentUuid
+              parsed.componentUuid,
             );
             const tpl = component && tryGetTplByUuid(component, parsed.tplUuid);
             if (component && tpl) {
@@ -888,11 +891,11 @@ export class StudioCtx extends WithDbCtx {
         },
         {
           name: "StudioCtx.setDocumentTitle",
-        }
+        },
       ),
       reaction(
         () => [this.currentArena, getAllSiteFrames(this.site)],
-        () => defer(() => this.framesChanged.dispatch())
+        () => defer(() => this.framesChanged.dispatch()),
       ),
       autorun(
         () => {
@@ -905,7 +908,7 @@ export class StudioCtx extends WithDbCtx {
             spawn(this.stopListeningForSocketEvents());
           }
         },
-        { name: "StudioCtx.createDarkMask" }
+        { name: "StudioCtx.createDarkMask" },
       ),
       autorun(
         () => {
@@ -915,7 +918,7 @@ export class StudioCtx extends WithDbCtx {
             this.blockChanges = false;
           }
         },
-        { name: "StudioCtx.updateBlockChanges" }
+        { name: "StudioCtx.updateBlockChanges" },
       ),
       autorun(
         () => {
@@ -928,20 +931,20 @@ export class StudioCtx extends WithDbCtx {
           spawn(
             this.appCtx.api.addStorageItem(
               this.mkFocusPreferenceKey(),
-              focusPreference ? "true" : "false"
-            )
+              focusPreference ? "true" : "false",
+            ),
           );
         },
-        { name: "StudioCtx.updateFocusPreference" }
+        { name: "StudioCtx.updateFocusPreference" },
       ),
       reaction(
         () => [getSiteArenas(this.site)],
         () => {
           this.recentArenas = this.recentArenas.filter((arena) =>
-            isValidArena(this.site, arena)
+            isValidArena(this.site, arena),
           );
         },
-        { name: "StudioCtx.fixRecentArenas" }
+        { name: "StudioCtx.fixRecentArenas" },
       ),
       autorun(
         () => {
@@ -954,10 +957,10 @@ export class StudioCtx extends WithDbCtx {
             : currentArena.children.map((child) => child.container.component);
           this.dbCtx().maybeObserveComponents(
             componentsToObserve,
-            ComponentContext.Arena
+            ComponentContext.Arena,
           );
         },
-        { name: "StudioCtx.observeCurrentArena" }
+        { name: "StudioCtx.observeCurrentArena" },
       ),
       autorun(
         () => {
@@ -969,10 +972,10 @@ export class StudioCtx extends WithDbCtx {
           const componentsToObserve = [currentViewCtxComponent];
           this.dbCtx().maybeObserveComponents(
             componentsToObserve,
-            ComponentContext.View
+            ComponentContext.View,
           );
         },
-        { name: "StudioCtx.observeCurrentViewCtx" }
+        { name: "StudioCtx.observeCurrentViewCtx" },
       ),
       autorun(() => {
         if (!isHostLessPackage(this.site)) {
@@ -985,14 +988,14 @@ export class StudioCtx extends WithDbCtx {
           // Things that should be fixed upon canvas transform
           this.fixRuler();
           this.adjustDevEnv(this.zoom);
-        }
-      )
+        },
+      ),
     );
 
     const hostPageUrl = (toggleTrailingSlash: boolean) =>
       maybeToggleTrailingSlash(
         toggleTrailingSlash,
-        this.getHostUrl({ fixHostOrigin: true })
+        this.getHostUrl({ fixHostOrigin: true }),
       );
 
     const fetchHostPageHtml = async () => {
@@ -1029,22 +1032,22 @@ export class StudioCtx extends WithDbCtx {
     document.body.appendChild(this.hostLessPkgsFrame);
     const hostLessWindow = ensure(
       this.hostLessPkgsFrame.contentWindow,
-      "the hostless window must be non null"
+      "the hostless window must be non null",
     );
     (hostLessWindow as any).__Sub = (window as any).__Sub;
     this.hostLessRegistry = new CodeComponentsRegistry(
       hostLessWindow,
-      getBuiltinComponentRegistrations()
+      getBuiltinComponentRegistrations(),
     );
     this.installedHostLessPkgs.clear();
   }
 
   private async getInitialLeftTabKey() {
     const existingLeftTabKey = await this.appCtx.api.getStorageItem(
-      this.leftTabKeyLocalStorageKey()
+      this.leftTabKeyLocalStorageKey(),
     );
     const filteredKey = LEFT_TAB_PANEL_KEYS.find(
-      (key) => key === existingLeftTabKey
+      (key) => key === existingLeftTabKey,
     );
     return filteredKey;
   }
@@ -1056,7 +1059,7 @@ export class StudioCtx extends WithDbCtx {
         await previousFetch;
         const pkgsData = await getSortedHostLessPkgs(
           pkgs,
-          getVersionForCanvasPackages(this.hostLessPkgsFrame.contentWindow)
+          getVersionForCanvasPackages(this.hostLessPkgsFrame.contentWindow),
         );
         runInAction(() => {
           // We run in action because `installedHostLessPkgs` is observable
@@ -1066,7 +1069,7 @@ export class StudioCtx extends WithDbCtx {
             if (!this.installedHostLessPkgs.has(pkg)) {
               const hostLessWindow = ensure(
                 this.hostLessPkgsFrame.contentWindow,
-                "hostless window must be non null"
+                "hostless window must be non null",
               );
               scriptExec(hostLessWindow, pkgModule);
               this.installedHostLessPkgs.add(pkg);
@@ -1076,7 +1079,7 @@ export class StudioCtx extends WithDbCtx {
           this.hostLessRegistry.clear();
         });
         resolve();
-      })
+      }),
     );
     await this.hostLessPkgsLock;
   }
@@ -1100,7 +1103,7 @@ export class StudioCtx extends WithDbCtx {
       this.siteInfo,
       this.branchInfo(),
       this.appCtx.appConfig,
-      opts?.fixHostOrigin
+      opts?.fixHostOrigin,
     );
   }
 
@@ -1145,7 +1148,7 @@ export class StudioCtx extends WithDbCtx {
     const focusedTpls = vc.focusedTpls();
     assert(
       obj.length === focusedTpls.length,
-      "focusedSelectable and focusedTpls should have the same length."
+      "focusedSelectable and focusedTpls should have the same length.",
     );
 
     if (
@@ -1194,8 +1197,8 @@ export class StudioCtx extends WithDbCtx {
           (this._isUndoing && this.recorder.isRecording) ||
           (this._isRefreshing && this.recorder.isRecording) ||
           this._isRestoring,
-        "Invariant Failed: Unexpected model change"
-      )
+        "Invariant Failed: Unexpected model change",
+      ),
     );
   }
 
@@ -1249,7 +1252,7 @@ export class StudioCtx extends WithDbCtx {
         ensureActivatedScreenVariantsForComponentArenaFrame(
           this.site,
           this.currentArena,
-          frame
+          frame,
         );
       } else {
         ensureActivatedScreenVariantsForFrameByWidth(this.site, frame);
@@ -1265,7 +1268,7 @@ export class StudioCtx extends WithDbCtx {
     syncArenaFrameSize(
       this.site,
       ensure(this.currentArena, "current arena must exist"),
-      frame
+      frame,
     );
     reorderPageArenaCols(this.site);
 
@@ -1333,7 +1336,7 @@ export class StudioCtx extends WithDbCtx {
         if ((res as unknown) instanceof Promise) {
           reportError(
             new Error("Change function cannot be async"),
-            "Async changeFn"
+            "Async changeFn",
           );
         }
         return ok(res);
@@ -1345,13 +1348,13 @@ export class StudioCtx extends WithDbCtx {
       (res) => res,
       (e) => {
         throw e;
-      }
+      },
     );
   }
 
   async change<E = never, T = void>(
     f: () => Result<T, E>,
-    opts: StudioChangeOpts = {}
+    opts: StudioChangeOpts = {},
   ): Promise<Result<T, E>> {
     return this._change(f, opts);
   }
@@ -1362,7 +1365,7 @@ export class StudioCtx extends WithDbCtx {
   async changeObserved<E = never, T = void>(
     c: () => Component[],
     f: () => Result<T, E>,
-    opts: StudioChangeOpts = {}
+    opts: StudioChangeOpts = {},
   ): Promise<Result<T, E>> {
     const changedComponents = c();
     this.dbCtx().maybeObserveComponents(changedComponents);
@@ -1371,7 +1374,7 @@ export class StudioCtx extends WithDbCtx {
 
   async _change<E = never, T = void>(
     f: () => Result<T, E>,
-    opts: StudioChangeOpts = {}
+    opts: StudioChangeOpts = {},
   ): Promise<Result<T, E>> {
     if (this._isChanging) {
       /* reportError(
@@ -1389,7 +1392,7 @@ export class StudioCtx extends WithDbCtx {
           opts.event.persist();
         } else {
           console.warn(
-            "Async change, but no event.persist(); change was wrapped in another async change call."
+            "Async change, but no event.persist(); change was wrapped in another async change call.",
           );
         }
       }
@@ -1415,11 +1418,11 @@ export class StudioCtx extends WithDbCtx {
               resolve(
                 ensure(
                   result.map((_r) => actualRes),
-                  "if you don't find a result, it should throw an error"
-                )
+                  "if you don't find a result, it should throw an error",
+                ),
               );
             }
-          }
+          },
         );
       });
       (this.modelChangeQueue as any).process();
@@ -1434,13 +1437,13 @@ export class StudioCtx extends WithDbCtx {
 
   private changeInternal<E>(
     f: () => Result<void, E>,
-    opts: StudioChangeOpts = {}
+    opts: StudioChangeOpts = {},
   ): Result<void, E> {
     assert(!this._isChanging, "isChanging should be false");
     // Save some view state about each ViewCtx, so we know which of them
     // will need to be re-evaluated after f().
     const previousComponentCtxs = new Map<ViewCtx, ComponentCtx | null>(
-      this.viewCtxs.map((vc) => tuple(vc, vc.currentComponentCtx()))
+      this.viewCtxs.map((vc) => tuple(vc, vc.currentComponentCtx())),
     );
     const vcToSpotlightAndVariantsInfo = new Map<
       ViewCtx,
@@ -1470,7 +1473,7 @@ export class StudioCtx extends WithDbCtx {
 
           const [newChanges, summary] = fixupForChanges(
             this,
-            maybeChanges.value
+            maybeChanges.value,
           );
 
           if (newChanges.changes.length > 0) {
@@ -1489,7 +1492,7 @@ export class StudioCtx extends WithDbCtx {
           if (this.isUnlogged()) {
             this._queuedUnloggedChanges = mergeRecordedChanges(
               this._queuedUnloggedChanges,
-              newChanges
+              newChanges,
             );
           } else if (opts.noUndoRecord) {
             if (this.canUndo()) {
@@ -1507,7 +1510,7 @@ export class StudioCtx extends WithDbCtx {
         } finally {
           this._isChanging = false;
         }
-      }
+      },
     );
 
     if (maybeSummary.isErr()) {
@@ -1582,7 +1585,7 @@ export class StudioCtx extends WithDbCtx {
   recordAndMarkDirty(changes: RecordedChanges) {
     const allChanges = mergeRecordedChanges(
       this._queuedUnloggedChanges,
-      changes
+      changes,
     );
     this.undoLog.record(this.createUndoRecord(allChanges));
     this._queuedUnloggedChanges = emptyRecordedChanges();
@@ -1673,7 +1676,7 @@ export class StudioCtx extends WithDbCtx {
         }
       })(),
       "Timed out waiting for the studio and active canvas to be ready",
-      60_000
+      60_000,
     );
   }
 
@@ -1699,7 +1702,7 @@ export class StudioCtx extends WithDbCtx {
           return undefined;
         }
       }),
-      1
+      1,
     );
     asyncQueue.error((error, _task) => {
       handleError(error);
@@ -1719,16 +1722,16 @@ export class StudioCtx extends WithDbCtx {
   private frame2ViewCtx = computedFn(
     () =>
       new Map<ArenaFrame, ViewCtx>(
-        [...this.viewCtxs].map((vc) => [vc.arenaFrame(), vc] as const)
+        [...this.viewCtxs].map((vc) => [vc.arenaFrame(), vc] as const),
       ),
-    { name: "frame2ViewCtx" }
+    { name: "frame2ViewCtx" },
   );
 
   tryGetViewCtxForFrame = computedFn(
     (frame: ArenaFrame | undefined) => {
       return frame && this.frame2ViewCtx().get(frame);
     },
-    { name: "tryGetViewCtxForFrame" }
+    { name: "tryGetViewCtxForFrame" },
   );
 
   private frameToViewCtxPromise = new Map<
@@ -1744,7 +1747,7 @@ export class StudioCtx extends WithDbCtx {
     if (this.frameToViewCtxPromise.get(frame)) {
       return ensure(
         this.frameToViewCtxPromise.get(frame),
-        "you should find a viewCtx from the frame"
+        "you should find a viewCtx from the frame",
       )[0];
     }
 
@@ -1758,10 +1761,10 @@ export class StudioCtx extends WithDbCtx {
     const allLiveFrames = new Set(
       getSiteArenas(this.site)
         .filter((arena) => this.getArenaStatus(arena) !== "dead")
-        .flatMap((arena) => getArenaFrames(arena))
+        .flatMap((arena) => getArenaFrames(arena)),
     );
     const liveVcs = this.viewCtxs.filter((vc) =>
-      allLiveFrames.has(vc.arenaFrame())
+      allLiveFrames.has(vc.arenaFrame()),
     );
 
     if (liveVcs.length !== this.viewCtxs.length) {
@@ -1826,7 +1829,7 @@ export class StudioCtx extends WithDbCtx {
     if (this.frameToViewCtxPromise.has(frame)) {
       const [_promise, resolve] = ensure(
         this.frameToViewCtxPromise.get(frame),
-        "you should find a viewCtx from the frame"
+        "you should find a viewCtx from the frame",
       );
       resolve(viewCtx);
       this.frameToViewCtxPromise.delete(frame);
@@ -1906,7 +1909,7 @@ export class StudioCtx extends WithDbCtx {
   // Runs background reads one at a time, so they don't thrash each other's arenas.
   private serializeBackgroundRead = asyncMaxAtATime(
     1,
-    (run: () => Promise<unknown>) => run()
+    (run: () => Promise<unknown>) => run(),
   );
 
   getCurrentStudioViewportSnapshot(): StudioViewportSnapshot {
@@ -1919,7 +1922,7 @@ export class StudioCtx extends WithDbCtx {
 
   restoreStudioViewportSnapshot(
     snapshot: StudioViewportSnapshot,
-    restoreFrameFocus: boolean
+    restoreFrameFocus: boolean,
   ) {
     if (restoreFrameFocus) {
       this.setStudioFocusOnFrame({
@@ -1937,7 +1940,7 @@ export class StudioCtx extends WithDbCtx {
 
   getSortedPageArenas = computedFn(() => {
     return naturalSort(this.site.pageArenas, (it) => it.component.name).filter(
-      (arena) => this.canEditComponent(arena.component)
+      (arena) => this.canEditComponent(arena.component),
     );
   });
 
@@ -1962,7 +1965,7 @@ export class StudioCtx extends WithDbCtx {
     };
     for (const compArena of naturalSort(
       this.site.componentArenas,
-      (it) => it.component.name
+      (it) => it.component.name,
     )) {
       if (compArena.component.superComp) {
         // Sub-components are added when dealing with super components
@@ -1982,7 +1985,7 @@ export class StudioCtx extends WithDbCtx {
   switchToBranch(
     branch: ApiBranch | undefined,
     pkgVersionInfoMeta?: PkgVersionInfoMeta,
-    opts?: { replace?: boolean }
+    opts?: { replace?: boolean },
   ) {
     return this.switchRoute({
       branch,
@@ -1995,12 +1998,12 @@ export class StudioCtx extends WithDbCtx {
   /** Switches the branch version only. */
   switchToBranchVersion(
     pkgVersionInfoMeta: PkgVersionInfoMeta | undefined,
-    opts?: { replace?: boolean }
+    opts?: { replace?: boolean },
   ) {
     return this.switchToBranch(
       this.dbCtx().branchInfo,
       pkgVersionInfoMeta,
-      opts
+      opts,
     );
   }
 
@@ -2017,11 +2020,11 @@ export class StudioCtx extends WithDbCtx {
   refreshFocusedFrameArena() {
     assert(
       isDedicatedArena(this.currentArena) && this.currentArena._focusedFrame,
-      "Can't refresh: not in focus mode"
+      "Can't refresh: not in focus mode",
     );
 
     this.currentArena._focusedFrame = cloneArenaFrame(
-      this.currentArena._focusedFrame
+      this.currentArena._focusedFrame,
     );
     this.refreshFetchedDataFromPlasmicQuery();
   }
@@ -2039,18 +2042,18 @@ export class StudioCtx extends WithDbCtx {
       replace?: boolean;
       stopWatching?: boolean;
       threadId?: string;
-    }
+    },
   ) {
     if (isDedicatedArena(arena) && !this.canEditComponent(arena.component)) {
       const error = new Error(
-        `Tried to switch to an component arena as a content editor without access to it`
+        `Tried to switch to an component arena as a content editor without access to it`,
       );
       console.error(error);
       Sentry.captureException(error);
       return;
     } else if (isMixedArena(arena) && this.contentEditorMode) {
       const error = new Error(
-        `Tried to switch to an mixed arena as a content editor`
+        `Tried to switch to an mixed arena as a content editor`,
       );
       console.error(error);
       Sentry.captureException(error);
@@ -2102,7 +2105,7 @@ export class StudioCtx extends WithDbCtx {
       const arenaType = switchType(arena)
         .when(Arena, () => "custom" as const)
         .when([ComponentArena, PageArena], (v) =>
-          isKnownComponentArena(v) ? ("component" as const) : ("page" as const)
+          isKnownComponentArena(v) ? ("component" as const) : ("page" as const),
         )
         .result();
       const arenaUuidOrName = getArenaUuidOrName(arena);
@@ -2189,7 +2192,7 @@ export class StudioCtx extends WithDbCtx {
   private async handleInitialRoute() {
     // initialize initialFocusPreference first, which handleRouteChange depends on
     const focusPreference = await this.appCtx.api.getStorageItem(
-      this.mkFocusPreferenceKey()
+      this.mkFocusPreferenceKey(),
     );
     if (!isNil(focusPreference)) {
       this.focusPreference.set(focusPreference === "true");
@@ -2203,7 +2206,7 @@ export class StudioCtx extends WithDbCtx {
     const prompt = new URLSearchParams(location.search).get(SEARCH_PROMPT);
     if (prompt) {
       spawn(
-        this.appCtx.topFrameApi?.openCopilotChat({ prompt, mode: "starter" })
+        this.appCtx.topFrameApi?.openCopilotChat({ prompt, mode: "starter" }),
       );
     }
   }
@@ -2230,7 +2233,7 @@ export class StudioCtx extends WithDbCtx {
           await this.handleArenaChange(
             arenaType,
             arenaUuidOrNameOrPath,
-            threadId
+            threadId,
           );
         }
       }
@@ -2242,7 +2245,7 @@ export class StudioCtx extends WithDbCtx {
   private async handleBranchChange(
     branchName: string,
     branchVersion: string,
-    branchRevision?: string
+    branchRevision?: string,
   ) {
     const currentBranchName = this.dbCtx().branchInfo?.name ?? MainBranchId;
     const currentBranchVersion =
@@ -2261,7 +2264,7 @@ export class StudioCtx extends WithDbCtx {
     let branch: ApiBranch | undefined = undefined;
     if (branchName !== MainBranchId) {
       const branches = await this.appCtx.api.listBranchesForProject(
-        this.siteInfo.id
+        this.siteInfo.id,
       );
       branch = branches.branches.find((b) => b.name === branchName);
       if (!branch) {
@@ -2277,7 +2280,7 @@ export class StudioCtx extends WithDbCtx {
     if (branchRevision) {
       const { rev } = await this.appCtx.api.getProjectRevision(
         this.siteInfo.id,
-        branchRevision
+        branchRevision,
       );
       versionOrRevision = rev;
       editMode = false;
@@ -2292,7 +2295,7 @@ export class StudioCtx extends WithDbCtx {
         const resp = await this.appCtx.api.getPkgVersionMeta(
           pkg.id,
           branchVersion,
-          branch?.id
+          branch?.id,
         );
         versionOrRevision = resp.pkg;
         editMode = false; // cannot edit when viewing previous pkg version
@@ -2314,7 +2317,7 @@ export class StudioCtx extends WithDbCtx {
     arenaType: ArenaType | undefined,
     arenaName: string | undefined,
     threadId: string | undefined,
-    opts?: StudioChangeOpts
+    opts?: StudioChangeOpts,
   ) {
     return this.change(() => {
       const currentArena = this.currentArena;
@@ -2340,7 +2343,7 @@ export class StudioCtx extends WithDbCtx {
         const targetArena = getArenaByNameOrUuidOrPath(
           this.site,
           arenaName,
-          arenaType
+          arenaType,
         );
         if (!targetArena) {
           // Arena is missing/invalid. Focus on the first arena.
@@ -2384,13 +2387,13 @@ export class StudioCtx extends WithDbCtx {
       subjectInfo.ownerComponent,
       subjectInfo.subject,
       subjectInfo.variants,
-      threadId
+      threadId,
     );
     const focusedViewSet = this.focusedViewCtx();
     if (focusedViewSet) {
       this.commentsCtx.handleOpenCommentThreadDialog(
         commentThread.id,
-        focusedViewSet
+        focusedViewSet,
       );
       if (!skipZoomOnFocus) {
         await this.tryZoomToFitSelection();
@@ -2406,7 +2409,7 @@ export class StudioCtx extends WithDbCtx {
     arena: AnyArena | null,
     opts?: {
       noFocusedModeChange?: boolean;
-    }
+    },
   ) {
     try {
       // Stop any active animation previews before switching arenas
@@ -2465,13 +2468,13 @@ export class StudioCtx extends WithDbCtx {
             const focusedMode = !this.canEditProject()
               ? false
               : isDedicatedArena(prevArena)
-              ? !!prevArena._focusedFrame
-              : this.focusPreference.get() ?? this.siteInfo.hasAppAuth;
+                ? !!prevArena._focusedFrame
+                : (this.focusPreference.get() ?? this.siteInfo.hasAppAuth);
             if (focusedMode) {
               const newFocusedFrame = setFocusedFrame(this.site, arena);
               ensureActivatedScreenVariantsForFrameByWidth(
                 this.site,
-                newFocusedFrame
+                newFocusedFrame,
               );
             }
           }
@@ -2522,7 +2525,7 @@ export class StudioCtx extends WithDbCtx {
       }
       return info.isBackground ? "background" : "cached";
     },
-    { name: "getArenaStatus" }
+    { name: "getArenaStatus" },
   );
 
   addArena(prefix?: string) {
@@ -2543,7 +2546,7 @@ export class StudioCtx extends WithDbCtx {
     }
     if (this.arenaViewStates.size > DEVFLAGS.liveArenas) {
       const entries = Array.from<[AnyArena, ArenaViewInfo]>(
-        this.arenaViewStates.entries()
+        this.arenaViewStates.entries(),
       );
       // Evict background arenas before user-visited ones, so they can't evict arenas the
       // user is actively visiting. Background arenas are not evicted outright so repeated
@@ -2556,7 +2559,7 @@ export class StudioCtx extends WithDbCtx {
           ([_arena, info]) => (info.isBackground ? 0 : 1),
           ([_arena, info]) => info.lastAccess,
         ],
-        ["asc", "asc"]
+        ["asc", "asc"],
       )
         .slice(0, this.arenaViewStates.size - DEVFLAGS.liveArenas)
         .filter(([arena, _info]) => arena !== this.pinnedBackgroundArena);
@@ -2587,11 +2590,11 @@ export class StudioCtx extends WithDbCtx {
       plumeTemplateId?: string;
       insertableTemplateInfo?: InsertableTemplateComponentExtraInfo;
       noSwitchArena?: boolean;
-    }
+    },
   ) {
     assert(
       type === ComponentType.Plain || type === ComponentType.Page,
-      "component should be plain or page"
+      "component should be plain or page",
     );
 
     const frame =
@@ -2605,20 +2608,20 @@ export class StudioCtx extends WithDbCtx {
           this.projectDependencyManager.plumeSite,
           plumeTemplateId,
           name,
-          true
+          true,
         );
         syncPlumeComponent(this, comp).match(
           (x) => x,
           (e) => {
             throw e;
-          }
+          },
         );
         return comp;
       } else if (insertableTemplateInfo) {
         const { component: comp, seenFonts } = cloneInsertableTemplateComponent(
           this.site,
           insertableTemplateInfo,
-          this.projectDependencyManager.plumeSite
+          this.projectDependencyManager.plumeSite,
         );
         postInsertableTemplate(this, seenFonts);
         return comp;
@@ -2661,7 +2664,7 @@ export class StudioCtx extends WithDbCtx {
   // This only sets the high level focus for the studio, i.e. viewCtx and frame.
   private setHighLevelFocusOnly(
     viewCtx: ViewCtx | undefined,
-    frame: ArenaFrame | undefined
+    frame: ArenaFrame | undefined,
   ) {
     const curFocusedViewCtx = this.focusedViewCtx();
     if (curFocusedViewCtx && (viewCtx !== curFocusedViewCtx || frame)) {
@@ -2729,7 +2732,7 @@ export class StudioCtx extends WithDbCtx {
   async getViewCtxForComponent(
     component: Component,
     variants?: VariantCombo,
-    opts?: { threadId?: string }
+    opts?: { threadId?: string },
   ): Promise<ViewCtx> {
     const threadId = opts?.threadId;
 
@@ -2744,13 +2747,13 @@ export class StudioCtx extends WithDbCtx {
       const arenasToSearch = isFrameComponent(component)
         ? this.site.arenas
         : this.currentArena
-        ? [this.currentArena]
-        : [];
+          ? [this.currentArena]
+          : [];
 
       let match: { arena: AnyArena; frame: ArenaFrame } | undefined;
       for (const arena of arenasToSearch) {
         const baseFrame = getArenaFrames(arena).find(
-          (frame) => frame.container.component === component
+          (frame) => frame.container.component === component,
         );
         if (baseFrame) {
           const frame = variants?.length
@@ -2791,7 +2794,7 @@ export class StudioCtx extends WithDbCtx {
                   threadId,
                 }) ?? this.currentArena;
               return ok(switchedArena);
-            })
+            }),
           )
         : this.currentArena;
 
@@ -2802,11 +2805,11 @@ export class StudioCtx extends WithDbCtx {
     const baseFrame = getComponentArenaBaseFrame(arena);
     const hasVariants = !!variants?.length;
     const arenaDetails = hasVariants
-      ? this.getArenaFrameForSetOfVariants(arena, variants) ??
+      ? (this.getArenaFrameForSetOfVariants(arena, variants) ??
         this.getComponentFrameForSetOfVariantsInCustomArenas(
           arena.component,
-          variants
-        )
+          variants,
+        ))
       : null;
     const frame = arenaDetails?.frame ?? baseFrame;
 
@@ -2820,7 +2823,7 @@ export class StudioCtx extends WithDbCtx {
             vcontroller.onToggleTargetingOfActiveVariants();
             return ok();
           },
-          { noUndoRecord: true }
+          { noUndoRecord: true },
         );
       }
       // In focus mode, there's guaranteed to be only one visible ViewCtx, so always use that.
@@ -2843,7 +2846,7 @@ export class StudioCtx extends WithDbCtx {
 
     if (!viewCtx) {
       throw new Error(
-        `Could not get ViewCtx for component "${component.name}".`
+        `Could not get ViewCtx for component "${component.name}".`,
       );
     }
 
@@ -2856,7 +2859,7 @@ export class StudioCtx extends WithDbCtx {
    */
   tryGetLiveViewCtxForComponent(component: Component): ViewCtx | undefined {
     return this.viewCtxs.find(
-      (vc) => !vc.isDisposed && vc.component === component
+      (vc) => !vc.isDisposed && vc.component === component,
     );
   }
 
@@ -2883,13 +2886,13 @@ export class StudioCtx extends WithDbCtx {
    * if none exists. Frame components live in mixed arenas; others use their
    * dedicated arena. */
   private resolveArenaFrameForComponent(
-    component: Component
+    component: Component,
   ): { arena: AnyArena; frame: ArenaFrame } | undefined {
     if (isFrameComponent(component)) {
       // Frame components only exist in mixed arenas, find the arena owning its frame.
       for (const mixedArena of this.site.arenas) {
         const match = getArenaFrames(mixedArena).find(
-          (f) => f.container.component === component
+          (f) => f.container.component === component,
         );
         if (match) {
           return { arena: mixedArena, frame: match };
@@ -2926,7 +2929,7 @@ export class StudioCtx extends WithDbCtx {
    */
   private async loadBackgroundViewCtxForComponent(
     component: Component,
-    opts?: { timeoutMs?: number }
+    opts?: { timeoutMs?: number },
   ): Promise<{ viewCtx: ViewCtx; arena: AnyArena } | undefined> {
     const existing = this.tryGetLiveViewCtxForComponent(component);
     if (existing) {
@@ -2947,7 +2950,7 @@ export class StudioCtx extends WithDbCtx {
     const viewCtx = await withTimeout(
       this.awaitViewCtxForFrame(frame),
       `Timed out waiting for component "${component.name}" to render`,
-      timeoutMs
+      timeoutMs,
     );
     return { viewCtx, arena };
   }
@@ -2960,12 +2963,12 @@ export class StudioCtx extends WithDbCtx {
   withBackgroundViewCtxForComponent<T>(
     component: Component,
     cb: (viewCtx: ViewCtx) => Promise<T>,
-    opts?: { timeoutMs?: number }
+    opts?: { timeoutMs?: number },
   ): Promise<T | undefined> {
     return this.serializeBackgroundRead(async () => {
       const resolved = await this.loadBackgroundViewCtxForComponent(
         component,
-        opts
+        opts,
       );
       if (!resolved) {
         return undefined;
@@ -2984,7 +2987,7 @@ export class StudioCtx extends WithDbCtx {
     component: Component,
     tpl: TplNode,
     variants?: VariantCombo,
-    threadId?: string
+    threadId?: string,
   ) {
     const viewCtx = await this.getViewCtxForComponent(component, variants, {
       threadId,
@@ -2994,7 +2997,7 @@ export class StudioCtx extends WithDbCtx {
 
   getArenaFrameForSetOfVariants(
     arena: AnyArena,
-    variants: VariantCombo
+    variants: VariantCombo,
   ): { arena: AnyArena; frame: ArenaFrame } | undefined {
     const frames = getArenaFrames(arena);
     const components = new Set<Component>();
@@ -3008,14 +3011,14 @@ export class StudioCtx extends WithDbCtx {
     for (const component of components) {
       const allComponentVariantsMap = keyBy(
         allComponentVariants(component),
-        (v) => v.uuid
+        (v) => v.uuid,
       );
       const allGlobalVariantsMap = keyBy(
         allGlobalVariants(this.site, {
           includeDeps: "direct",
           excludeInactiveScreenVariants: true,
         }),
-        (v) => v.uuid
+        (v) => v.uuid,
       );
 
       for (const frame of frames) {
@@ -3024,7 +3027,7 @@ export class StudioCtx extends WithDbCtx {
             frame,
             variants,
             allComponentVariantsMap,
-            allGlobalVariantsMap
+            allGlobalVariantsMap,
           )
         ) {
           return { arena, frame };
@@ -3037,18 +3040,18 @@ export class StudioCtx extends WithDbCtx {
 
   getComponentFrameForSetOfVariantsInCustomArenas(
     component: Component,
-    variants: VariantCombo
+    variants: VariantCombo,
   ): { arena: AnyArena; frame: ArenaFrame } | undefined {
     const allComponentVariantsMap = keyBy(
       allComponentVariants(component),
-      (v) => v.uuid
+      (v) => v.uuid,
     );
     const allGlobalVariantsMap = keyBy(
       allGlobalVariants(this.site, {
         includeDeps: "direct",
         excludeInactiveScreenVariants: true,
       }),
-      (v) => v.uuid
+      (v) => v.uuid,
     );
     const customArenas = this.getSortedMixedArenas();
     for (const customArena of customArenas) {
@@ -3060,7 +3063,7 @@ export class StudioCtx extends WithDbCtx {
               customArenaFrame,
               variants,
               allComponentVariantsMap,
-              allGlobalVariantsMap
+              allGlobalVariantsMap,
             )
           ) {
             return { arena: customArena, frame: customArenaFrame };
@@ -3149,7 +3152,7 @@ export class StudioCtx extends WithDbCtx {
 
   switchLeftTab(
     tabKey: LeftTabKey | undefined,
-    opts?: { highlight?: boolean }
+    opts?: { highlight?: boolean },
   ) {
     if (tabKey) {
       this.lastLeftTabKey = tabKey;
@@ -3211,7 +3214,7 @@ export class StudioCtx extends WithDbCtx {
   };
 
   private _projectSearchInputRef = observable.box(
-    React.createRef<HTMLInputElement>()
+    React.createRef<HTMLInputElement>(),
   );
 
   get projectSearchInputRef() {
@@ -3221,7 +3224,7 @@ export class StudioCtx extends WithDbCtx {
   focusOnProjectSearchInput() {
     when(
       () => !!this.projectSearchInputRef.current,
-      () => this.projectSearchInputRef.current?.focus()
+      () => this.projectSearchInputRef.current?.focus(),
     );
   }
 
@@ -3264,12 +3267,12 @@ export class StudioCtx extends WithDbCtx {
   shouldHideUIOverlay(includeResizing = true): boolean {
     return Boolean(
       this.freestyleState() ||
-        this.dragInsertState() ||
-        this.isResizingFocusedArenaFrame ||
-        !this.showDevControls ||
-        this.screenshotting ||
-        this.isTransforming() ||
-        (includeResizing && this.isResizeDragging)
+      this.dragInsertState() ||
+      this.isResizingFocusedArenaFrame ||
+      !this.showDevControls ||
+      this.screenshotting ||
+      this.isTransforming() ||
+      (includeResizing && this.isResizeDragging),
     );
   }
 
@@ -3318,7 +3321,7 @@ export class StudioCtx extends WithDbCtx {
     }
     const children = getArenaFrames(arena);
     return await this.awaitViewCtxForFrame(
-      ensure(children[0], "you must have at least one arena frame")
+      ensure(children[0], "you must have at least one arena frame"),
     );
   }
 
@@ -3406,7 +3409,7 @@ export class StudioCtx extends WithDbCtx {
   // Managing the component presets modal
   //
   private _presetsModalComponent = observable.box<CodeComponent | undefined>(
-    undefined
+    undefined,
   );
   getPresetsModalComponent(): CodeComponent | undefined {
     return this._presetsModalComponent.get();
@@ -3492,7 +3495,7 @@ export class StudioCtx extends WithDbCtx {
   async readClipboardForPaste(): Promise<ReadableClipboard> {
     try {
       const clipboardData = await this.appCtx.api.readNavigatorClipboard(
-        this.clipboardAction
+        this.clipboardAction,
       );
       return ReadableClipboard.fromData(clipboardData);
     } catch (e) {
@@ -3514,7 +3517,7 @@ export class StudioCtx extends WithDbCtx {
       this.appCtx.appConfig.branching ||
       (this.siteInfo.teamId &&
         this.appCtx.appConfig.branchingTeamIds.includes(
-          this.siteInfo.teamId
+          this.siteInfo.teamId,
         )) ||
       (team?.parentTeamId &&
         this.appCtx.appConfig.branchingTeamIds.includes(team.parentTeamId))
@@ -3536,7 +3539,7 @@ export class StudioCtx extends WithDbCtx {
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       this.appCtx.appConfig.enableUiCopilot ||
-      (!!team && checkIsTeamOnPaidTierOrTrial(team))
+      (!!team && checkIsTeamOnPaidTier(team))
     );
   }
 
@@ -3548,7 +3551,7 @@ export class StudioCtx extends WithDbCtx {
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       isAdminTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig) ||
-      (!!team && checkIsTeamOnPaidTierOrTrial(team))
+      (!!team && checkIsTeamOnPaidTier(team))
     );
   }
 
@@ -3565,7 +3568,7 @@ export class StudioCtx extends WithDbCtx {
     const accessLevel = getAccessLevelToResource(
       { type: "project", resource: this.siteInfo },
       this.appCtx.selfInfo,
-      this.siteInfo.perms
+      this.siteInfo.perms,
     );
     return accessLevelRank(accessLevel) >= accessLevelRank("commenter");
   }
@@ -3627,7 +3630,7 @@ export class StudioCtx extends WithDbCtx {
     const newFocusedFrame = setFocusedFrame(
       this.site,
       currentArena,
-      this.focusedContentFrame()
+      this.focusedContentFrame(),
     );
     ensureActivatedScreenVariantsForFrameByWidth(this.site, newFocusedFrame);
     this.setStudioFocusOnFrame({ frame: newFocusedFrame, autoZoom: false });
@@ -3669,7 +3672,7 @@ export class StudioCtx extends WithDbCtx {
    * Note `undefined` is a valid value and means there is no focus preference.
    */
   private readonly focusPreference = observable.box<boolean | undefined>(
-    undefined
+    undefined,
   );
 
   getDataSource = memoize((sourceId: string) =>
@@ -3677,13 +3680,13 @@ export class StudioCtx extends WithDbCtx {
       // Don't cache rejections, so a transient failure can be retried.
       this.getDataSource.cache.delete(sourceId);
       throw dataSourceErr;
-    })
+    }),
   );
 
   refreshFetchedDataFromPlasmicQuery = (invalidateKey?: string) => {
     this.mutateDataOp(invalidateKey);
     this.viewCtxs.forEach((vc) =>
-      vc?.refreshFetchedDataFromPlasmicQuery(invalidateKey)
+      vc?.refreshFetchedDataFromPlasmicQuery(invalidateKey),
     );
     // Also refresh the data for the current window, so we update data from DataSourceOpPicker preview
     const maybeExistingMutateAllKeysFn = (window as any).__SWRMutateAllKeys;
@@ -3723,7 +3726,7 @@ export class StudioCtx extends WithDbCtx {
     if (this.contentEditorMode) {
       return mergeUiConfigs(
         this.siteInfo.uiConfig,
-        this.siteInfo.contentCreatorConfig
+        this.siteInfo.contentCreatorConfig,
       );
     } else {
       return mergeUiConfigs(this.siteInfo.uiConfig);
@@ -3844,7 +3847,7 @@ export class StudioCtx extends WithDbCtx {
   focusNextFrame() {
     const curFrame = maybe(this.focusedViewCtx(), (vc) => vc.arenaFrame());
     const frames = getArenaFrames(this.currentArena).filter(
-      (c): c is ArenaFrame => isKnownArenaFrame(c)
+      (c): c is ArenaFrame => isKnownArenaFrame(c),
     );
     const curIndex = curFrame ? frames.indexOf(curFrame) : undefined;
     const nextIndex =
@@ -3856,7 +3859,7 @@ export class StudioCtx extends WithDbCtx {
   focusPrevFrame() {
     const curFrame = maybe(this.focusedViewCtx(), (vc) => vc.arenaFrame());
     const frames = getArenaFrames(this.currentArena).filter(
-      (c): c is ArenaFrame => isKnownArenaFrame(c)
+      (c): c is ArenaFrame => isKnownArenaFrame(c),
     );
     const curIndex = curFrame ? frames.indexOf(curFrame) : undefined;
     const prevIndex =
@@ -3917,8 +3920,8 @@ export class StudioCtx extends WithDbCtx {
       this.viewportCtx!.scrollTo(
         new Pt(
           s.initScrollX + s.initScreenX - e.screenX,
-          s.initScrollY + s.initScreenY - e.screenY
-        )
+          s.initScrollY + s.initScreenY - e.screenY,
+        ),
       );
     return s !== undefined;
   };
@@ -3958,7 +3961,7 @@ export class StudioCtx extends WithDbCtx {
 
   private _ccRegistry = new CodeComponentsRegistry(
     window.parent,
-    getBuiltinComponentRegistrations()
+    getBuiltinComponentRegistrations(),
   );
 
   get codeComponentsRegistry() {
@@ -3980,7 +3983,7 @@ export class StudioCtx extends WithDbCtx {
   getCodeComponentsRegistration() {
     return [
       ...(swallow(() =>
-        this.codeComponentsRegistry.getRegisteredCodeComponents()
+        this.codeComponentsRegistry.getRegisteredCodeComponents(),
       ) ?? []),
       ...(swallow(() => this.hostLessRegistry.getRegisteredCodeComponents()) ??
         []),
@@ -3996,7 +3999,7 @@ export class StudioCtx extends WithDbCtx {
 
   getCodeComponentMeta(comp: Component) {
     return this.getCodeComponentsRegistration().find(
-      ({ meta }) => meta.name === comp.name
+      ({ meta }) => meta.name === comp.name,
     )?.meta;
   }
 
@@ -4005,7 +4008,7 @@ export class StudioCtx extends WithDbCtx {
       const key = token.regKey;
       return (
         swallow(() =>
-          this.codeComponentsRegistry.getRegisteredTokensMap().get(key)
+          this.codeComponentsRegistry.getRegisteredTokensMap().get(key),
         ) ||
         swallow(() => this.hostLessRegistry.getRegisteredTokensMap().get(key))
       );
@@ -4025,7 +4028,7 @@ export class StudioCtx extends WithDbCtx {
     const map = new Map([
       ...Array.from(this._ccRegistry.getRegisteredFunctionsMap().entries()),
       ...Array.from(
-        this.hostLessRegistry.getRegisteredFunctionsMap().entries()
+        this.hostLessRegistry.getRegisteredFunctionsMap().entries(),
       ),
     ]);
     if (DEVFLAGS.fnStubs) {
@@ -4116,7 +4119,7 @@ export class StudioCtx extends WithDbCtx {
   private handleWheelScroll = (
     e: WheelEvent,
     _topClientX: number,
-    _topClientY: number
+    _topClientY: number,
   ) => {
     const [deltaX, deltaY] =
       PLATFORM === "osx" || !e.shiftKey
@@ -4171,7 +4174,7 @@ export class StudioCtx extends WithDbCtx {
   private handleWheelZoom = (
     e: WheelEvent,
     topClientX: number,
-    topClientY: number
+    topClientY: number,
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -4245,7 +4248,7 @@ export class StudioCtx extends WithDbCtx {
     this.viewportCtx!.scaleAtFixedPt(
       scale,
       zoomState.scalerPt,
-      zoomState.clientPt
+      zoomState.clientPt,
     );
   };
 
@@ -4278,7 +4281,7 @@ export class StudioCtx extends WithDbCtx {
       return undefined;
     }
     const scalerRect = this.viewportCtx!.clientToScaler(
-      Box.fromRect(clientRect)
+      Box.fromRect(clientRect),
     ).rect();
     return scalerRect;
   }
@@ -4286,7 +4289,7 @@ export class StudioCtx extends WithDbCtx {
   /** Returns element of frame if rendered and visible. */
   private getFrameElement(frame: ArenaFrame) {
     const frameElt = document.querySelector(
-      `[data-frame-id="${frame.uid}"]`
+      `[data-frame-id="${frame.uid}"]`,
     ) as HTMLElement | null;
     if (
       frameElt &&
@@ -4324,7 +4327,7 @@ export class StudioCtx extends WithDbCtx {
           bottom: DEFAULT_ZOOM_PADDING,
         },
         ignoreHeight: this.focusedMode,
-      }
+      },
     );
   }
 
@@ -4413,7 +4416,7 @@ export class StudioCtx extends WithDbCtx {
 
     const labelClassNames = cn(
       gridFramesLayoutStyles.rowLabel,
-      gridFramesLayoutStyles.rowLabelInner
+      gridFramesLayoutStyles.rowLabelInner,
     );
 
     return getTextWidth(longestLabel, labelClassNames);
@@ -4524,14 +4527,14 @@ export class StudioCtx extends WithDbCtx {
                 };
                 spawn(api.emit("view", data));
               },
-              { name: "StudioCtx.syncView", delay: 200 }
+              { name: "StudioCtx.syncView", delay: 200 },
             );
           }
           this.watchPlayerDispose = autorun(
             () => {
               if (this.watchPlayerId) {
                 const playerData = this.multiplayerCtx.getPlayerDataById(
-                  this.watchPlayerId
+                  this.watchPlayerId,
                 );
                 if (!playerData) {
                   this.setWatchPlayerId(null);
@@ -4547,7 +4550,7 @@ export class StudioCtx extends WithDbCtx {
                 spawn(this.goToPlayer(this.watchPlayerId, true));
               }
             },
-            { name: "StudioCtx.watchPlayer", delay: 200 }
+            { name: "StudioCtx.watchPlayer", delay: 200 },
           );
         }
       },
@@ -4571,7 +4574,7 @@ export class StudioCtx extends WithDbCtx {
         const currentBranchId = this.branchInfo()?.id ?? null;
 
         console.log(
-          `Project ${data.projectId} updated to revision ${revisionNum}`
+          `Project ${data.projectId} updated to revision ${revisionNum}`,
         );
 
         // Append revision to the list if it's from the current branch
@@ -4596,7 +4599,7 @@ export class StudioCtx extends WithDbCtx {
               await this.fetchUpdatesWatch();
             } else if (this.isAtTip) {
               console.log(
-                `Edit lock stolen.  pendingSavedRevisionNum is ${this.pendingSavedRevisionNum} but got ${revisionNum}`
+                `Edit lock stolen.  pendingSavedRevisionNum is ${this.pendingSavedRevisionNum} but got ${revisionNum}`,
               );
               this.alertBannerState.set(AlertSpec.ConcurrentEdit);
               await this.changeUnsafe(() => (this.isAtTip = false));
@@ -4639,7 +4642,7 @@ export class StudioCtx extends WithDbCtx {
     };
 
     const eventNames = Object.keys(
-      eventListeners
+      eventListeners,
     ) as (keyof ServerToClientEvents)[];
 
     this.listeningForSocketEvents = true;
@@ -4699,7 +4702,7 @@ export class StudioCtx extends WithDbCtx {
       } else {
         // Else make network call for branches
         const { branches } = await this.appCtx.api.listBranchesForProject(
-          this.siteInfo.id
+          this.siteInfo.id,
         );
         branch = branches.find((b) => (b.id = branchId));
         if (!branch) {
@@ -4713,14 +4716,14 @@ export class StudioCtx extends WithDbCtx {
       await this.loadVersion(
         undefined /* undefined loads latest version */,
         true,
-        branch
+        branch,
       );
     }
 
     const arena = getArenaByNameOrUuidOrPath(
       this.site,
       arenaInfo.uuidOrName,
-      arenaInfo.type
+      arenaInfo.type,
     );
     if (!arena) {
       return; // Give up on watching player
@@ -4738,7 +4741,7 @@ export class StudioCtx extends WithDbCtx {
       },
       {
         noUndoRecord: true,
-      }
+      },
     );
     if (changeResult.isErr()) {
       return; // Give up on watching player
@@ -4750,7 +4753,7 @@ export class StudioCtx extends WithDbCtx {
     const selection = playerData?.viewInfo?.selectionInfo;
     const arenaFrame = selection
       ? getArenaFrames(arena).find(
-          (frame) => frame.uuid === selection.selectableFrameUuid
+          (frame) => frame.uuid === selection.selectableFrameUuid,
         )
       : undefined;
     if (!arenaFrame) {
@@ -4828,7 +4831,7 @@ export class StudioCtx extends WithDbCtx {
 
   private async restoreUndoRecordInternal(type: "undo" | "redo") {
     const previousComponentCtxs = new Map<ViewCtx, ComponentCtx | null>(
-      this.viewCtxs.map((vc) => tuple(vc, vc.currentComponentCtx()))
+      this.viewCtxs.map((vc) => tuple(vc, vc.currentComponentCtx())),
     );
     const vcToSpotlightAndVariantsInfo = new Map<
       ViewCtx,
@@ -4837,7 +4840,7 @@ export class StudioCtx extends WithDbCtx {
 
     const restoreStudioView = (view: ViewStateSnapshot) => {
       const focusedArena = getSiteArenas(this.site).find(
-        (it) => it === view.focusedArena
+        (it) => it === view.focusedArena,
       );
 
       if (!focusedArena) {
@@ -4910,7 +4913,7 @@ export class StudioCtx extends WithDbCtx {
         }
         const vc = ensure(
           sc.tryGetViewCtxForFrame(frame),
-          "should find viewctx for this frame"
+          "should find viewctx for this frame",
         );
         console.log("Restoring VC");
         // Restore VC before doing post-change fixes
@@ -4926,7 +4929,7 @@ export class StudioCtx extends WithDbCtx {
 
           // Make sure focused tpls have the right variant settings
           fixupChrome(sc);
-        })
+        }),
       );
 
       sc.addToChangeRecords(record.changes);
@@ -4992,7 +4995,7 @@ export class StudioCtx extends WithDbCtx {
       interactiveModeChanged?: boolean;
       previousComponentCtx: ComponentCtx | null | undefined;
       previousVcInfo: SpotlightAndVariantsInfo | null | undefined;
-    }
+    },
   ) {
     if (!vc.valState().maybeValGlobalRoot()) {
       // If this frame has never been evaluated before, then evaluate.
@@ -5052,10 +5055,10 @@ export class StudioCtx extends WithDbCtx {
     const frame = vc
       ? vc.arenaFrame()
       : arena &&
-        curFocusedFrame &&
-        getArenaFrames(arena).includes(curFocusedFrame)
-      ? curFocusedFrame
-      : undefined;
+          curFocusedFrame &&
+          getArenaFrames(arena).includes(curFocusedFrame)
+        ? curFocusedFrame
+        : undefined;
     // If the element is invisible, then retain the focusedTpl.
     const nextFocusedTpl =
       (vc && vc.nextFocusedTpl()) ||
@@ -5070,8 +5073,8 @@ export class StudioCtx extends WithDbCtx {
           .slice()
           .map((f) => f.clone())
       : frame
-      ? [new RootComponentVariantFrame(frame)]
-      : undefined;
+        ? [new RootComponentVariantFrame(frame)]
+        : undefined;
 
     return {
       focusedArena: arena,
@@ -5093,7 +5096,7 @@ export class StudioCtx extends WithDbCtx {
   //
   private _pointerState: PointerState = "move";
   private _freestyleState = observable.box<FreestyleState | undefined>(
-    undefined
+    undefined,
   );
   setFreestyleState(state: FreestyleState | undefined) {
     this.setDragInsertState(undefined);
@@ -5113,23 +5116,23 @@ export class StudioCtx extends WithDbCtx {
         return this.setFreestyleState(undefined);
       case "rect":
         return this.setFreestyleState(
-          new FreestyleState(INSERTABLES_MAP.box as AddTplItem)
+          new FreestyleState(INSERTABLES_MAP.box as AddTplItem),
         );
       case "stack":
         return this.setFreestyleState(
-          new FreestyleState(INSERTABLES_MAP.stack as AddTplItem)
+          new FreestyleState(INSERTABLES_MAP.stack as AddTplItem),
         );
       case "hstack":
         return this.setFreestyleState(
-          new FreestyleState(INSERTABLES_MAP.hstack as AddTplItem)
+          new FreestyleState(INSERTABLES_MAP.hstack as AddTplItem),
         );
       case "vstack":
         return this.setFreestyleState(
-          new FreestyleState(INSERTABLES_MAP.vstack as AddTplItem)
+          new FreestyleState(INSERTABLES_MAP.vstack as AddTplItem),
         );
       case "text":
         return this.setFreestyleState(
-          new FreestyleState(INSERTABLES_MAP.text as AddTplItem)
+          new FreestyleState(INSERTABLES_MAP.text as AddTplItem),
         );
     }
   }
@@ -5139,7 +5142,7 @@ export class StudioCtx extends WithDbCtx {
   // is selected on the canvas)
   //
   private _dragInsertState = observable.box<DragInsertState | undefined>(
-    undefined
+    undefined,
   );
   setDragInsertState(state: DragInsertState | undefined) {
     if (state) {
@@ -5255,7 +5258,7 @@ export class StudioCtx extends WithDbCtx {
   //
   async tryInsertTplItem(
     item: AddTplItem,
-    opts?: ExtraInfoOpts
+    opts?: ExtraInfoOpts,
   ): Promise<TplNode | null> {
     const vc = this.focusedViewCtx();
     if (!vc) {
@@ -5281,7 +5284,7 @@ export class StudioCtx extends WithDbCtx {
       for (const tpl of tpls) {
         if (isTplComponent(tpl)) {
           const slotParam = tpl.component.params.find(
-            (p) => p.isMainContentSlot
+            (p) => p.isMainContentSlot,
           );
           if (slotParam) {
             // Found it!
@@ -5308,7 +5311,7 @@ export class StudioCtx extends WithDbCtx {
 
     const getTargetLoc = (): [
       TplNode | SlotSelection | undefined,
-      InsertRelLoc[]
+      InsertRelLoc[],
     ] => {
       const sel = maybe(vc.focusedTpl(), tryGetMainContentSlotTarget);
       if (sel) {
@@ -5345,7 +5348,7 @@ export class StudioCtx extends WithDbCtx {
       return null;
     }
     return await this.changeUnsafe(() =>
-      vc.getViewOps().tryInsertInsertableSpec(item, locs[0], extraInfo, target)
+      vc.getViewOps().tryInsertInsertableSpec(item, locs[0], extraInfo, target),
     );
   }
 
@@ -5364,10 +5367,10 @@ export class StudioCtx extends WithDbCtx {
 
   customFunctionsSchema = computedFn((): DataPickerTypesSchema => {
     const registeredFunctionsMap = new Map(
-      this.getRegisteredFunctions().map((f) => [registeredFunctionId(f), f])
+      this.getRegisteredFunctions().map((f) => [registeredFunctionId(f), f]),
     );
     const getCustomFunctionDeclaration = (
-      customFunction: classes.CustomFunction
+      customFunction: classes.CustomFunction,
     ) => {
       const registeredTypeToTs = (type: any): string => {
         if (Array.isArray(type)) {
@@ -5383,7 +5386,7 @@ export class StudioCtx extends WithDbCtx {
         }
       };
       const meta = registeredFunctionsMap.get(
-        customFunctionId(customFunction)
+        customFunctionId(customFunction),
       )?.meta;
       let documentation = "";
       if (meta?.description) {
@@ -5426,7 +5429,7 @@ export class StudioCtx extends WithDbCtx {
                   ? `${p}: any`
                   : `${p.isRestParameter ? "..." : ""}${p.name}${
                       p.isOptional ? "?" : ""
-                    }: ${registeredTypeToTs(p.type)}`
+                    }: ${registeredTypeToTs(p.type)}`,
               )
               .join(", ")
           : `...args: any[]`
@@ -5443,8 +5446,8 @@ export class StudioCtx extends WithDbCtx {
             ? ""
             : ".default"
           : lib.importType === "namespace"
-          ? ""
-          : `.${lib.namedImport}`
+            ? ""
+            : `.${lib.namedImport}`
       }`;
     };
     // Subscribe to changes to `installedHostLessPkgs` so the schema is updated
@@ -5465,8 +5468,8 @@ export class StudioCtx extends WithDbCtx {
                 allCustomFunctions(this.site)
                   .map(({ customFunction }) => customFunction)
                   .filter((f) => !!f.namespace),
-                (f) => f.namespace
-              )
+                (f) => f.namespace,
+              ),
             ),
           ].map((functionOrGroup) =>
             !Array.isArray(functionOrGroup)
@@ -5474,17 +5477,17 @@ export class StudioCtx extends WithDbCtx {
               : `${functionOrGroup[0].namespace}: {
                 ${functionOrGroup
                   .map((customFunction) =>
-                    getCustomFunctionDeclaration(customFunction)
+                    getCustomFunctionDeclaration(customFunction),
                   )
                   .join(";\n")}
-              }`
+              }`,
           ),
           ...allCodeLibraries(this.site).map(({ codeLibrary }) =>
-            getCodeLibraryDeclaration(codeLibrary)
+            getCodeLibraryDeclaration(codeLibrary),
           ),
         ]).join(";\n")}}`,
       [extraTsFilesSymbol]: this.getRegisteredLibraries().flatMap(
-        (lib) => lib.meta.files
+        (lib) => lib.meta.files,
       ),
     };
   });
@@ -5547,7 +5550,7 @@ export class StudioCtx extends WithDbCtx {
       this.tplMgr().changePagePath(page, newPath);
       this.maybeWarnPathChange(
         newPath,
-        ensure(page.pageMeta, "page should have pageMeta").path
+        ensure(page.pageMeta, "page should have pageMeta").path,
       );
     });
   };
@@ -5555,7 +5558,7 @@ export class StudioCtx extends WithDbCtx {
   tryChangePageMeta = async (
     page: Component,
     key: "title" | "canonical",
-    value: string | classes.TemplatedString | null
+    value: string | classes.TemplatedString | null,
   ) => {
     return this.changeUnsafe(() => {
       if (!page.pageMeta) {
@@ -5567,7 +5570,7 @@ export class StudioCtx extends WithDbCtx {
 
   tryChangePageMetaDescription = async (
     page: Component,
-    value: string | classes.TemplatedString
+    value: string | classes.TemplatedString,
   ) => {
     return this.changeUnsafe(() => {
       if (!page.pageMeta) {
@@ -5579,7 +5582,7 @@ export class StudioCtx extends WithDbCtx {
 
   tryChangePageMetaImage = async (
     page: Component,
-    value: string | classes.ImageAssetRef | classes.TemplatedString | null
+    value: string | classes.ImageAssetRef | classes.TemplatedString | null,
   ) => {
     return this.changeUnsafe(() => {
       if (!page.pageMeta) {
@@ -5748,12 +5751,12 @@ export class StudioCtx extends WithDbCtx {
 
       const changes: RecordedChanges = mergeRecordedChanges(
         ...this._changeRecords,
-        this._queuedUnloggedChanges
+        this._queuedUnloggedChanges,
       );
       assert(
         this._changeRecords.length ===
           changeCounterBeingSaved - this._savedChangeCounter,
-        "changeRecords should have exactly the amount os changes since it was saved last"
+        "changeRecords should have exactly the amount os changes since it was saved last",
       );
       const { changesBundle, toDeleteIids, allIids, modifiedComponentIids } =
         this.bundleChanges(changes.changes, incremental);
@@ -5790,13 +5793,13 @@ export class StudioCtx extends WithDbCtx {
           }),
           "Saving project revision timed out",
           // Two-minute timeout
-          120 * 1000
+          120 * 1000,
         );
         this.dbCtx().revisionNum++;
         // We can clear the change records as they have already been saved
         this._changeRecords.splice(
           0,
-          changeCounterBeingSaved - this._savedChangeCounter
+          changeCounterBeingSaved - this._savedChangeCounter,
         );
         this._savedIids.clear();
         allIids.forEach((iid) => this._savedIids.add(iid));
@@ -5815,7 +5818,7 @@ export class StudioCtx extends WithDbCtx {
         if (e.name === "ProjectRevisionError") {
           return await withTimeout(
             this.fetchUpdates(),
-            "Sync with latest updates timed out"
+            "Sync with latest updates timed out",
           ).then(async () => {
             await this.refreshRevisions();
             return this.trySave(preferIncremental);
@@ -5867,7 +5870,7 @@ export class StudioCtx extends WithDbCtx {
             closeIcon: null,
           });
           await this.loadVersion(undefined, true).finally(() =>
-            notification.destroy(notificationKey)
+            notification.destroy(notificationKey),
           );
           return SaveResult.TimedOut;
         } else {
@@ -5921,7 +5924,7 @@ export class StudioCtx extends WithDbCtx {
         } catch (e) {
           logChangedNodes(
             "Bundle type error! Changed nodes:\n",
-            changes.changes
+            changes.changes,
           );
           throw e;
         }
@@ -5949,7 +5952,7 @@ export class StudioCtx extends WithDbCtx {
 
   private checkIfMatchesSlowBundle(
     bundle: DeepReadonly<Bundle>,
-    changes: ModelChange[]
+    changes: ModelChange[],
   ) {
     const reportFastBundleError = (e: Error) => {
       logChangedNodes("Fast Bundle Error! Changed Nodes:\n", changes);
@@ -5959,26 +5962,26 @@ export class StudioCtx extends WithDbCtx {
     const slowBundle = this.bundler().bundle(
       this.site,
       this.siteInfo.id,
-      this.appCtx.lastBundleVersion
+      this.appCtx.lastBundleVersion,
     );
     try {
       const printVal = (val: any) => JSON.stringify(val, undefined, 2);
       const missingIids = [...Object.keys(slowBundle.map)].filter(
-        (iid) => !(iid in bundle.map)
+        (iid) => !(iid in bundle.map),
       );
       if (missingIids.length > 0) {
         console.log(
           missingIids
             .map(
               (iid) =>
-                `Missing IID ${iid}, value: ${printVal(slowBundle.map[iid])}`
+                `Missing IID ${iid}, value: ${printVal(slowBundle.map[iid])}`,
             )
-            .join("\n")
+            .join("\n"),
         );
       }
       assert(missingIids.length === 0, `Fast Bundle is missing instances`);
       const mismatchingIids = Object.keys(bundle.map).filter(
-        (iid) => !isEqual(bundle.map[iid], slowBundle.map[iid])
+        (iid) => !isEqual(bundle.map[iid], slowBundle.map[iid]),
       );
       if (mismatchingIids.length > 0) {
         console.log(
@@ -5986,30 +5989,30 @@ export class StudioCtx extends WithDbCtx {
             .map(
               (iid) =>
                 `Mismatching IID ${iid}. Received: ${printVal(
-                  bundle.map[iid]
-                )}\nExpected: ${printVal(slowBundle.map[iid])}`
+                  bundle.map[iid],
+                )}\nExpected: ${printVal(slowBundle.map[iid])}`,
             )
-            .join("\n")
+            .join("\n"),
         );
       }
       assert(
         mismatchingIids.length === 0,
-        `Fast Bundle has mismatching instances`
+        `Fast Bundle has mismatching instances`,
       );
       assert(
         arrayEqIgnoreOrder(bundle.deps, slowBundle.deps),
         `Different deps array. Received: ${printVal(
-          bundle.deps
-        )}\nExpected: ${printVal(slowBundle.deps)}`
+          bundle.deps,
+        )}\nExpected: ${printVal(slowBundle.deps)}`,
       );
       assert(
         bundle.root === slowBundle.root,
         `Different root! Received: ${bundle.root},` +
-          ` Expected: ${slowBundle.root}`
+          ` Expected: ${slowBundle.root}`,
       );
     } catch (e) {
       reportFastBundleError(
-        new Error("FastBundle error - didn't match slow bundle!\n" + e.message)
+        new Error("FastBundle error - didn't match slow bundle!\n" + e.message),
       );
     }
   }
@@ -6019,7 +6022,7 @@ export class StudioCtx extends WithDbCtx {
       site: this.bundler().bundle(
         this.site,
         this.siteInfo.id,
-        this.appCtx.lastBundleVersion
+        this.appCtx.lastBundleVersion,
       ),
     };
   }
@@ -6030,7 +6033,7 @@ export class StudioCtx extends WithDbCtx {
    **/
   bundleChanges(
     allChanges: ModelChange[],
-    incremental?: boolean
+    incremental?: boolean,
   ): {
     changesBundle: DeepReadonly<Bundle>;
     toDeleteIids: string[];
@@ -6044,14 +6047,14 @@ export class StudioCtx extends WithDbCtx {
         return this.bundler().bundle(
           this.site,
           this.siteInfo.id,
-          this.appCtx.lastBundleVersion
+          this.appCtx.lastBundleVersion,
         );
       }
 
       const _bundle: DeepReadonly<Bundle> = this.bundler().fastBundle(
         this.site,
         this.siteInfo.id,
-        persistentChanges.map((change) => change.changeNode)
+        persistentChanges.map((change) => change.changeNode),
       );
 
       if (!DEVFLAGS.skipInvariants && Math.random() < 0.1) {
@@ -6090,7 +6093,7 @@ export class StudioCtx extends WithDbCtx {
       if (addr) {
         assert(
           addr.uuid === this.siteInfo.id,
-          "addr uuid should be the same as site info id"
+          "addr uuid should be the same as site info id",
         );
         if (bundle.map[addr.iid]) {
           if (!map[addr.iid]) {
@@ -6111,7 +6114,7 @@ export class StudioCtx extends WithDbCtx {
 
     // Deleted Iids
     const toDeleteIids = [...this._savedIids.keys()].filter(
-      (iid) => !(iid in bundle.map)
+      (iid) => !(iid in bundle.map),
     );
 
     return {
@@ -6137,9 +6140,8 @@ export class StudioCtx extends WithDbCtx {
   revisions = observable.array<MinimalRevisionInfo>([], { deep: false });
 
   async refreshRevisions(revisionNumGt?: number) {
-    const newRevisions = await this.listUnpublishedProjectRevisions(
-      revisionNumGt
-    );
+    const newRevisions =
+      await this.listUnpublishedProjectRevisions(revisionNumGt);
 
     if (revisionNumGt) {
       // Prepend only new revisions to existing ones
@@ -6160,7 +6162,7 @@ export class StudioCtx extends WithDbCtx {
       : undefined;
     assert(
       (versionOrRevision.branchId ?? null) === (branch?.id ?? null),
-      () => `Can only revert to a version of the same branch`
+      () => `Can only revert to a version of the same branch`,
     );
 
     if (isPkgVersionInfoMeta(versionOrRevision)) {
@@ -6173,7 +6175,7 @@ export class StudioCtx extends WithDbCtx {
       await this.appCtx.api.revertProjectToRevision(
         this.siteInfo.id,
         versionOrRevision.id,
-        branch?.id
+        branch?.id,
       );
     }
 
@@ -6192,7 +6194,7 @@ export class StudioCtx extends WithDbCtx {
         },
         {
           noUndoRecord: true,
-        }
+        },
       );
     } else {
       // Switch to latest version of branch.
@@ -6214,7 +6216,7 @@ export class StudioCtx extends WithDbCtx {
   private async loadVersion(
     versionOrRevision?: PkgVersionInfoMeta | ProjectRevision,
     editMode?: boolean,
-    branch?: ApiBranch
+    branch?: ApiBranch,
   ) {
     const hideLoadingMsg = message.loading("Loading...", 0);
     const branchChanged = branch?.id !== this.branchInfo()?.id;
@@ -6238,7 +6240,7 @@ export class StudioCtx extends WithDbCtx {
             await this.appCtx.api.getPkgVersion(
               versionOrRevision.pkgId,
               versionOrRevision.version,
-              branch?.id
+              branch?.id,
             );
           return {
             bundle: pkg.model,
@@ -6249,13 +6251,13 @@ export class StudioCtx extends WithDbCtx {
           const { rev, depPkgs: _depPkgs } =
             await this.appCtx.api.getProjectRevision(
               this.siteInfo.id,
-              versionOrRevision.id
+              versionOrRevision.id,
             );
           return {
             rev,
             bundle: getBundle(
               rev,
-              parseBundle(rev).version ?? this.appCtx.lastBundleVersion
+              parseBundle(rev).version ?? this.appCtx.lastBundleVersion,
             ),
             depPkgs: _depPkgs,
             revisionNum: rev.revision,
@@ -6265,7 +6267,7 @@ export class StudioCtx extends WithDbCtx {
             this.siteInfo.id,
             {
               branchId: branch?.id,
-            }
+            },
           );
           return {
             bundle: getBundle(rev, this.appCtx.lastBundleVersion),
@@ -6280,7 +6282,7 @@ export class StudioCtx extends WithDbCtx {
           newBundler,
           this.siteInfo.id,
           bundle,
-          depPkgs
+          depPkgs,
         );
         this.appCtx.bundler = newBundler;
         this.dbCtx().setSite(site, branch, versionOrRevision);
@@ -6289,9 +6291,9 @@ export class StudioCtx extends WithDbCtx {
             this.appCtx,
             this.siteInfo,
             depPkgVersions.filter((dep): dep is ProjectDependency =>
-              isKnownProjectDependency(dep)
-            )
-          )
+              isKnownProjectDependency(dep),
+            ),
+          ),
         );
         this.projectDependencyManager.syncDirectDeps();
         this.pruneInvalidViewCtxs();
@@ -6386,7 +6388,7 @@ export class StudioCtx extends WithDbCtx {
     this.undoLog = new UndoLog(
       this.site,
       this.recorder,
-      this._serverUpdatesSummary
+      this._serverUpdatesSummary,
     );
     // handleRouteChange will create the first undo record
   }
@@ -6398,7 +6400,7 @@ export class StudioCtx extends WithDbCtx {
    * @param opts - if mainBranchOnly is true, only return releases from the main branch
    **/
   async getProjectReleases(
-    opts = { mainBranchOnly: false }
+    opts = { mainBranchOnly: false },
   ): Promise<PkgVersionInfoMeta[]> {
     const projectId = this.siteInfo.id;
     const appCtx = this.appCtx;
@@ -6412,7 +6414,7 @@ export class StudioCtx extends WithDbCtx {
    *
    **/
   async listUnpublishedProjectRevisions(
-    revisionNumGt?: number
+    revisionNumGt?: number,
   ): Promise<ProjectRevision[]> {
     const projectId = this.siteInfo.id;
     const appCtx = this.appCtx;
@@ -6421,7 +6423,7 @@ export class StudioCtx extends WithDbCtx {
       appCtx,
       projectId,
       branchId,
-      revisionNumGt
+      revisionNumGt,
     );
   }
 
@@ -6432,16 +6434,16 @@ export class StudioCtx extends WithDbCtx {
 
     const latestRelease = ensure(
       asOne(this.releases),
-      "should have at least one release"
+      "should have at least one release",
     );
     const { rev: latestPublishedRev } =
       await this.appCtx.api.getProjectRevWithoutData(
         this.siteInfo.id,
         ensure(
           latestRelease.revisionId,
-          "latest release should have revisionId"
+          "latest release should have revisionId",
         ),
-        latestRelease.branch?.id
+        latestRelease.branch?.id,
       );
 
     return latestPublishedRev.revision !== this.dbCtx().revisionNum;
@@ -6449,13 +6451,13 @@ export class StudioCtx extends WithDbCtx {
 
   async getLatestVersion(
     latestPublishedRevId: string | undefined,
-    branchId: string | undefined
+    branchId: string | undefined,
   ) {
     return latestPublishedRevId
       ? await this.appCtx.api.getProjectRevWithoutData(
           this.siteInfo.id,
           ensure(latestPublishedRevId, "latestPublishedRevId must exist"),
-          branchId
+          branchId,
         )
       : { rev: null };
   }
@@ -6482,9 +6484,9 @@ export class StudioCtx extends WithDbCtx {
         this.siteInfo.id,
         ensure(
           latestRelease.revisionId,
-          "latestRelease should have revision id"
+          "latestRelease should have revision id",
         ),
-        latestRelease.branchId ?? undefined
+        latestRelease.branchId ?? undefined,
       );
     if (latestPublishedRev.revision === this.dbCtx().revisionNum) {
       return undefined;
@@ -6502,14 +6504,14 @@ export class StudioCtx extends WithDbCtx {
     const latestPublishedPkg = await this.appCtx.api.getPkgVersion(
       latestRelease.pkgId,
       undefined,
-      latestRelease.branchId ?? undefined
+      latestRelease.branchId ?? undefined,
     );
 
     const bundler = new FastBundler();
     const prevSite = unbundleProjectDependency(
       bundler,
       latestPublishedPkg.pkg,
-      latestPublishedPkg.depPkgs
+      latestPublishedPkg.depPkgs,
     ).projectDependency.site;
 
     // Compare the 2 sites to calculate a new semantic version
@@ -6534,7 +6536,7 @@ export class StudioCtx extends WithDbCtx {
           pkg.id,
           {
             branchId,
-          }
+          },
         );
         return [...pkgVersionResp.pkgVersions];
       } else {
@@ -6545,12 +6547,12 @@ export class StudioCtx extends WithDbCtx {
       this.siteInfo.id,
       // undefined to get the latest revision
       undefined,
-      branchId ?? undefined
+      branchId ?? undefined,
     );
     const latestPublishedVersion = head(branchReleases);
     const { rev: latestPublishedRev } = await this.getLatestVersion(
       latestPublishedVersion?.revisionId,
-      latestPublishedVersion?.branchId ?? undefined
+      latestPublishedVersion?.branchId ?? undefined,
     );
     if (
       rev.revision > 1 &&
@@ -6568,7 +6570,7 @@ export class StudioCtx extends WithDbCtx {
     maybeTags?: string[],
     maybeDescription?: string,
     branchId?: BranchId,
-    opts?: { hostLessPackage?: boolean }
+    opts?: { hostLessPackage?: boolean },
   ): Promise<PublishResult> {
     // Use empty list as default tags
     const tags = maybeTags || [];
@@ -6616,14 +6618,14 @@ export class StudioCtx extends WithDbCtx {
             tags,
             description,
             opts?.hostLessPackage,
-            branchId
+            branchId,
           ),
         {
           title: "Publishing is disabled",
           description:
             "This project belongs to a team that does not have enough seats. Increase the number of seats to perform this action.",
         },
-        true
+        true,
       );
       await mutate(calculateNextVersionKey(this));
       const newPkg = ensure(resp.pkg, "newPkg should exist");
@@ -6653,13 +6655,13 @@ export class StudioCtx extends WithDbCtx {
     pkgId: string,
     version: string,
     branchId: BranchId | null,
-    toMerge: Partial<PkgVersionInfo>
+    toMerge: Partial<PkgVersionInfo>,
   ) {
     const { pkg: updatedPkgVersion } = await this.appCtx.api.updatePkgVersion(
       pkgId,
       version,
       branchId,
-      toMerge
+      toMerge,
     );
     const newReleases = this.releases.slice().map((r) => {
       if (r.pkgId === pkgId && r.version === version) {
@@ -6707,7 +6709,7 @@ export class StudioCtx extends WithDbCtx {
 
   closeGlobalContextNotificationForStarters() {
     notification.destroy(
-      this.notificationKeyForGlobalContextNotificationStarters
+      this.notificationKeyForGlobalContextNotificationStarters,
     );
   }
 
@@ -6715,13 +6717,14 @@ export class StudioCtx extends WithDbCtx {
     const starterProject = this.appCtx.appConfig.starterSections
       .flatMap((starterSection) => starterSection.projects)
       .find(
-        (starter) => starter.baseProjectId === this.siteInfo.clonedFromProjectId
+        (starter) =>
+          starter.baseProjectId === this.siteInfo.clonedFromProjectId,
       );
     if (
       starterProject?.globalContextConfigs?.every((starterGlobalContext) => {
         const tpl = this.site.globalContexts.find(
           (globalContext) =>
-            globalContext.component.name === starterGlobalContext.name
+            globalContext.component.name === starterGlobalContext.name,
         );
         if (!tpl) {
           return false;
@@ -6729,10 +6732,10 @@ export class StudioCtx extends WithDbCtx {
         const params = getRealParams(tpl.component);
         return [...(starterGlobalContext.props ?? [])].every((prop) => {
           const maybeArg = tpl.vsettings[0].args.find(
-            (arg) => arg.param.variable.name === prop.name
+            (arg) => arg.param.variable.name === prop.name,
           );
           const maybeParam = params.find(
-            (param) => param.variable.name === prop.name
+            (param) => param.variable.name === prop.name,
           );
           let value: JsonValue | undefined = undefined;
           if (maybeArg) {
@@ -6798,7 +6801,7 @@ export class StudioCtx extends WithDbCtx {
       this.siteInfo.id,
       this.dbCtx().revisionNum,
       this.bundler().allUuids(),
-      this.branchInfo()?.id
+      this.branchInfo()?.id,
     );
     if (partial.needsReload) {
       await this.loadVersion();
@@ -6810,7 +6813,7 @@ export class StudioCtx extends WithDbCtx {
       const { data, depPkgs } = partial;
       await this.changeUnsafe(() => {
         depPkgs.forEach((dep) =>
-          taggedUnbundle(this.bundler(), dep.model, dep.id)
+          taggedUnbundle(this.bundler(), dep.model, dep.id),
         );
         this.bundler().unbundlePartial(JSON.parse(data), this.siteInfo.id);
         this.site.components.forEach((c) => {
@@ -6825,12 +6828,12 @@ export class StudioCtx extends WithDbCtx {
   private async fetchUpdates() {
     assert(
       !this._isChanging && !this._isUndoing,
-      "should not be changing nor undoing"
+      "should not be changing nor undoing",
     );
     await this.modelChangeQueue.push({ type: "fetchModelUpdates" });
     (this.modelChangeQueue as any).process();
     return drainQueue(this.modelChangeQueue).then(() =>
-      this.framesChanged.dispatch()
+      this.framesChanged.dispatch(),
     );
   }
 
@@ -6841,14 +6844,14 @@ export class StudioCtx extends WithDbCtx {
   private async fetchUpdatesInternal() {
     assert(
       !this._isChanging && !this._isUndoing,
-      "should not be changing nor undoing"
+      "should not be changing nor undoing",
     );
     const projectId = this.siteInfo.id;
     const updatedModel = await this.appCtx.api.getModelUpdates(
       projectId,
       this.dbCtx().revisionNum,
       this.bundler().allUuids(),
-      this.branchInfo()?.id
+      this.branchInfo()?.id,
     );
     if (updatedModel.needsReload) {
       await this.loadVersion(undefined, true, this.branchInfo());
@@ -6861,7 +6864,7 @@ export class StudioCtx extends WithDbCtx {
         const newCurrentArena = getArenaByNameOrUuidOrPath(
           this.site,
           getArenaName(this.currentArena),
-          getArenaType(this.currentArena)
+          getArenaType(this.currentArena),
         );
         if (newCurrentArena) {
           spawn(
@@ -6872,8 +6875,8 @@ export class StudioCtx extends WithDbCtx {
               },
               {
                 noUndoRecord: true,
-              }
-            )
+              },
+            ),
           );
         }
       }
@@ -6894,8 +6897,8 @@ export class StudioCtx extends WithDbCtx {
                 iid: c,
               });
               return classes.isKnownComponent(compInst) ? compInst : undefined;
-            })
-          )
+            }),
+          ),
         );
 
         const undoAndRecord = (changes: RecordedChanges) =>
@@ -6904,10 +6907,10 @@ export class StudioCtx extends WithDbCtx {
         const { summary, styleChanges, allChanges } = runInAction(() => {
           // First, revert all changes to recover the old server version
           const revertedQueuedUnloggedChanges = undoAndRecord(
-            this._queuedUnloggedChanges
+            this._queuedUnloggedChanges,
           );
           const revertedChanges = arrayReversed(this._changeRecords).map(
-            undoAndRecord
+            undoAndRecord,
           );
           const previousProjectDeps = this.site.projectDependencies;
 
@@ -6915,15 +6918,15 @@ export class StudioCtx extends WithDbCtx {
             this._serverUpdatesSummary,
             withoutNils(
               deletedIids.map((iid) =>
-                this.bundler().objByAddr({ uuid: projectId, iid })
-              )
-            )
+                this.bundler().objByAddr({ uuid: projectId, iid }),
+              ),
+            ),
           );
 
           // Then, apply new changes from the server
           const serverChanges = this.recorder.withRecording(() => {
             depPkgs.forEach((dep) =>
-              taggedUnbundle(this.bundler(), dep.model, dep.id)
+              taggedUnbundle(this.bundler(), dep.model, dep.id),
             );
             const partialBundle: UnsafeBundle = JSON.parse(data);
             this.bundler().unbundlePartial(partialBundle, projectId);
@@ -6941,7 +6944,7 @@ export class StudioCtx extends WithDbCtx {
               // For now, we just refresh the project whenever an imported project
               // is deleted.
               throw new UnsupportedServerUpdate(
-                "Don't support ProjectDependency deletion"
+                "Don't support ProjectDependency deletion",
               );
             }
 
@@ -6951,7 +6954,7 @@ export class StudioCtx extends WithDbCtx {
             });
 
             Object.keys(partialBundle.map).forEach((iid) =>
-              this._savedIids.add(iid)
+              this._savedIids.add(iid),
             );
             deletedIids.forEach((iid) => this._savedIids.delete(iid));
           });
@@ -6962,14 +6965,14 @@ export class StudioCtx extends WithDbCtx {
               this.site,
               this.recorder,
               this._serverUpdatesSummary,
-              changes.changes
-            )
+              changes.changes,
+            ),
           );
           this._queuedUnloggedChanges = undoChangesAndResolveConflicts(
             this.site,
             this.recorder,
             this._serverUpdatesSummary,
-            revertedQueuedUnloggedChanges.changes
+            revertedQueuedUnloggedChanges.changes,
           );
 
           // Maybe clear focus if the focused element no longer exists
@@ -7007,7 +7010,7 @@ export class StudioCtx extends WithDbCtx {
           const _allChanges = mergeRecordedChanges(
             serverChanges,
             ...this._changeRecords,
-            this._queuedUnloggedChanges
+            this._queuedUnloggedChanges,
           );
 
           // Pruning
@@ -7062,7 +7065,7 @@ export class StudioCtx extends WithDbCtx {
         this.bundler().fastBundle(
           this.site,
           projectId,
-          persistentChanges.map((change) => change.changeNode)
+          persistentChanges.map((change) => change.changeNode),
         );
 
         this.dbCtx().revisionNum = updatedModel.revision;
@@ -7113,9 +7116,9 @@ export class StudioCtx extends WithDbCtx {
         // If there's a path from the root to the inst, it's no longer deleted
         removeWhere(
           deletedInsts,
-          (inst) => !!this.recorder.getPathToChild(inst)?.length
+          (inst) => !!this.recorder.getPathToChild(inst)?.length,
         );
-      }
+      },
     );
 
     return _styleChanges;
@@ -7224,7 +7227,7 @@ export class StudioCtx extends WithDbCtx {
   // is an async process, so we need to stash the intermediate state
   // somewhere
   private _saveAsPresetState = observable.box<SaveTplAsPresetState | undefined>(
-    undefined
+    undefined,
   );
   get saveAsPresetState() {
     return this._saveAsPresetState.get();
@@ -7285,7 +7288,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private _findReferencesComponent = observable.box<Component | undefined>(
-    undefined
+    undefined,
   );
   get findReferencesComponent() {
     return this._findReferencesComponent.get();
@@ -7297,7 +7300,7 @@ export class StudioCtx extends WithDbCtx {
     }
   }
   private _findReferencesStyleToken = observable.box<StyleToken | undefined>(
-    undefined
+    undefined,
   );
   get findReferencesStyleToken() {
     return this._findReferencesStyleToken.get();
@@ -7310,7 +7313,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private _findReferencesDataToken = observable.box<DataToken | undefined>(
-    undefined
+    undefined,
   );
   get findReferencesDataToken() {
     return this._findReferencesDataToken.get();
@@ -7323,7 +7326,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private _showPageSettings = observable.box<PageComponent | undefined>(
-    undefined
+    undefined,
   );
   get showPageSettings() {
     return this._showPageSettings.get();
@@ -7342,7 +7345,7 @@ export class StudioCtx extends WithDbCtx {
         this.site.components.filter((c) => !isBuiltinCodeComponent(c)),
         (c) => {
           return isNonNil(c.pageMeta);
-        }
+        },
       );
       return {
         components: comps.map((c) => ({ name: c.name })),
@@ -7352,26 +7355,26 @@ export class StudioCtx extends WithDbCtx {
         })),
       };
     },
-    { name: "getProjectData" }
+    { name: "getProjectData" },
   );
 
   private _copilotHistory = observable.map<CopilotType, CopilotInteraction[]>();
 
   addToCopilotHistory(
     type: "ui",
-    copilotInteraction: CopilotInteraction<QueryCopilotUiResponse["data"]>
+    copilotInteraction: CopilotInteraction<QueryCopilotUiResponse["data"]>,
   ): void;
   addToCopilotHistory(
     type: "code" | "sql",
-    copilotInteraction: CopilotInteraction<string>
+    copilotInteraction: CopilotInteraction<string>,
   ): void;
   addToCopilotHistory(
     type: CopilotType,
-    copilotInteraction: CopilotInteraction<unknown>
+    copilotInteraction: CopilotInteraction<unknown>,
   ): void;
   addToCopilotHistory(
     type: CopilotType,
-    copilotInteraction: CopilotInteraction<unknown>
+    copilotInteraction: CopilotInteraction<unknown>,
   ): void {
     this._copilotHistory.set(type, [
       ...(this._copilotHistory.get(type) ?? []),
@@ -7380,7 +7383,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   getCopilotHistory(
-    type: "ui"
+    type: "ui",
   ): CopilotInteraction<QueryCopilotUiResponse["data"]>[];
   getCopilotHistory(type: "code" | "sql"): CopilotInteraction<string>[];
   getCopilotHistory(type: CopilotType): CopilotInteraction<unknown>[];
@@ -7396,7 +7399,7 @@ export class StudioCtx extends WithDbCtx {
   async submitCopilotFeedback(
     id: CopilotInteractionId,
     feedback: boolean,
-    feedbackDescription: string | null
+    feedbackDescription: string | null,
   ) {
     await this.appCtx.api.sendCopilotFeedback({
       id,
@@ -7427,7 +7430,7 @@ export class StudioCtx extends WithDbCtx {
 
       if (isComponentArena(this.currentArena)) {
         getArenaFrames(this.currentArena).forEach(
-          (_frame) => (_frame.viewMode = ensure(mode, "mode should exist"))
+          (_frame) => (_frame.viewMode = ensure(mode, "mode should exist")),
         );
       } else {
         frame.viewMode = ensure(mode, "mode should exist");
@@ -7437,7 +7440,7 @@ export class StudioCtx extends WithDbCtx {
         const exp = viewCtx
           ?.variantTplMgr()
           .targetRshForNode(
-            ensure(component.tplTree as TplNode, "tplTree should exist")
+            ensure(component.tplTree as TplNode, "tplTree should exist"),
           );
         exp?.set("width", "stretch");
 
@@ -7463,7 +7466,7 @@ export class StudioCtx extends WithDbCtx {
       replace?: boolean;
       stopWatching?: boolean;
       threadId?: string;
-    }
+    },
   ) {
     const component = switchType(target)
       .when(undefined, () => undefined)
@@ -7522,7 +7525,7 @@ export class StudioCtx extends WithDbCtx {
         const nextRequest =
           this.canvasLoadRequests.find((r) => r.arena === this.currentArena) ??
           this.canvasLoadRequests.find(
-            (r) => this.getArenaStatus(r.arena) === "background"
+            (r) => this.getArenaStatus(r.arena) === "background",
           );
         if (!nextRequest) {
           return;
@@ -7555,7 +7558,7 @@ export class StudioCtx extends WithDbCtx {
                 // no longer visible.  Resolve this promise, so that we don't
                 // wait for it forever.
                 console.log(
-                  `StudioCtx: Bailing out of loading ${nextRequest.name}; different arena now`
+                  `StudioCtx: Bailing out of loading ${nextRequest.name}; different arena now`,
                 );
                 return "timeout";
               }
@@ -7564,7 +7567,7 @@ export class StudioCtx extends WithDbCtx {
         ]);
       });
     }),
-    1
+    1,
   );
   queueCanvasFrame(request: CanvasLoadRequest) {
     this.canvasLoadRequests.push(request);
@@ -7573,7 +7576,7 @@ export class StudioCtx extends WithDbCtx {
   }
   drainCanvasFrameForArena(arena: AnyArena) {
     const canvasRequests = this.canvasLoadRequests.filter(
-      (r) => r.arena === arena
+      (r) => r.arena === arena,
     );
     if (canvasRequests.length > 0) {
       defer(() => {
@@ -7587,7 +7590,7 @@ export class StudioCtx extends WithDbCtx {
     60000,
     {
       leading: true,
-    }
+    },
   );
 
   // Execution cache for in-flight/resolved data op/query Promises keyed by
@@ -7638,7 +7641,7 @@ export class StudioCtx extends WithDbCtx {
                   email: appUserCtx.appUser.email,
                   externalId: appUserCtx.appUser.externalId,
                 },
-              }
+              },
             );
 
           if (op.invalidatedKeys?.some((k) => k === ALL_QUERIES.value)) {
@@ -7681,7 +7684,7 @@ export class StudioCtx extends WithDbCtx {
       const resultPromise = execute();
       this.dataOpCache.set(cacheKey, resultPromise);
       return resultPromise;
-    }
+    },
   );
 
   executeServerQuery = asyncMaxAtATime(
@@ -7699,7 +7702,7 @@ export class StudioCtx extends WithDbCtx {
       const resultPromise = fn(...args);
       this.dataOpCache.set(cacheKey, resultPromise);
       return resultPromise;
-    }
+    },
   );
 
   // Deletes entries in our studio dataOp cache.
@@ -7737,7 +7740,7 @@ export class StudioCtx extends WithDbCtx {
     },
     {
       name: "StudioCtx._currentAppUserCtx",
-    }
+    },
   );
 
   get currentAppUserCtx() {
@@ -7761,13 +7764,13 @@ export class StudioCtx extends WithDbCtx {
         storageViewAsKey(this.siteInfo.id),
         JSON.stringify({
           studioAppUser: appUser,
-        })
+        }),
       );
     } else {
       // Save null for logout
       await this.appCtx.api.addStorageItem(
         storageViewAsKey(this.siteInfo.id),
-        "null"
+        "null",
       );
     }
 
@@ -7795,7 +7798,7 @@ export class StudioCtx extends WithDbCtx {
         {
           email: this.currentAppUser.email,
           externalId: this.currentAppUser.externalId,
-        }
+        },
       );
 
       const newAppUser = {
@@ -7881,11 +7884,11 @@ interface CanvasLoadRequest {
 
 export const StudioCtxContext = React.createContext<StudioCtx | undefined>(
   // To recover studioCtx after hot reloading
-  (window as any).dbg?.studioCtx
+  (window as any).dbg?.studioCtx,
 );
 export const withStudioCtx = withConsumer(
   StudioCtxContext.Consumer,
-  "studioCtx"
+  "studioCtx",
 );
 export const providesStudioCtx = withProvider(StudioCtxContext.Provider);
 export const useStudioCtx = () => ensure(useContext(StudioCtxContext), "");
@@ -7914,7 +7917,7 @@ function canUserEditProject(user: ApiUser | null, project: SiteInfo) {
   const accessLevel = getAccessLevelToResource(
     { type: "project", resource: project },
     user,
-    project.perms
+    project.perms,
   );
   return accessLevelRank(accessLevel) >= accessLevelRank("content");
 }
@@ -7926,7 +7929,7 @@ function isContentEditor(user: ApiUser | null, project: SiteInfo) {
   const userAccessLevel = getAccessLevelToResource(
     { type: "project", resource: project },
     user,
-    project.perms
+    project.perms,
   );
   const accessLevel =
     accessLevelRank(project.defaultAccessLevel) >=
@@ -7940,7 +7943,7 @@ export function checkAccessLevelRank(
   user: ApiUser | null,
   project: ApiProject,
   perms: ApiPermission[],
-  rank: AccessLevel
+  rank: AccessLevel,
 ) {
   if (!user) {
     return false;
@@ -7953,8 +7956,8 @@ export function checkAccessLevelRank(
           resource: project,
         },
         user,
-        perms
-      )
+        perms,
+      ),
     ) >= accessLevelRank(rank)
   );
 }
@@ -7962,20 +7965,20 @@ export function checkAccessLevelRank(
 export function isUserProjectContentEditor(
   user: ApiUser | null,
   project: ApiProject,
-  perms: ApiPermission[]
+  perms: ApiPermission[],
 ) {
   return checkAccessLevelRank(user, project, perms, "content");
 }
 
 export function canUpdateHistory(
   studioCtx: StudioCtx,
-  thread: TplCommentThread
+  thread: TplCommentThread,
 ): boolean {
   const appCtx = studioCtx.appCtx;
   const isProjectContentEditor = isUserProjectContentEditor(
     appCtx.selfInfo,
     studioCtx.siteInfo,
-    studioCtx.siteInfo.perms
+    studioCtx.siteInfo.perms,
   );
   return isProjectContentEditor || appCtx.selfInfo?.id === thread.createdById;
 }
@@ -7983,7 +7986,7 @@ export function canUpdateHistory(
 export function isUserProjectEditor(
   user: ApiUser | null,
   project: ApiProject,
-  perms: ApiPermission[]
+  perms: ApiPermission[],
 ) {
   return checkAccessLevelRank(user, project, perms, "editor");
 }
@@ -7991,7 +7994,7 @@ export function isUserProjectEditor(
 export function cssPropsForInvertTransform(
   curZoom: number,
   orgSize?: { width?: number; height?: number },
-  orgTransform?: string
+  orgTransform?: string,
 ) {
   return {
     transform: orgTransform
@@ -8030,7 +8033,7 @@ function invertTransform($e: JQuery, curZoom: number) {
       width: maybe(originalWidth, (x) => +x),
       height: maybe(originalHeight, (x) => +x),
     },
-    transform
+    transform,
   );
   const elt = $e[0];
   setElementStyles(elt, styles);
@@ -8043,7 +8046,7 @@ function invertTransform($e: JQuery, curZoom: number) {
  */
 function viewCtxInfoChanged(
   vcInfo: SpotlightAndVariantsInfo,
-  vcPreviousInfo: SpotlightAndVariantsInfo
+  vcPreviousInfo: SpotlightAndVariantsInfo,
 ) {
   return (
     vcInfo.componentStackFrameLength !==
@@ -8062,7 +8065,7 @@ function viewCtxInfoChanged(
 export function logChangedNodes(
   logMessage: string,
   changes: ModelChange[],
-  includeUids?: boolean
+  includeUids?: boolean,
 ) {
   console.log(
     logMessage,
@@ -8071,9 +8074,9 @@ export function logChangedNodes(
         (change) =>
           `${instUtil.getInstClassName(change.changeNode.inst)}${
             includeUids ? `[${change.changeNode.inst.uid}]` : ""
-          }.${change.changeNode.field}`
-      )
-    ).join(", ")
+          }.${change.changeNode.field}`,
+      ),
+    ).join(", "),
   );
 }
 
@@ -8091,7 +8094,7 @@ function emptyChanges(recordedChanges: RecordedChanges) {
     changes[0].type === "array-splice" &&
     changes[0].removed.length === 0 &&
     changes[0].added.every(
-      (val) => isKnownVariantSetting(val) && isVariantSettingEmpty(val)
+      (val) => isKnownVariantSetting(val) && isVariantSettingEmpty(val),
     )
   ) {
     return true;
@@ -8104,14 +8107,14 @@ export function studioCtxKey<
   Method extends keyof StudioCtx,
   Args extends StudioCtx[Method] extends (..._args: any[]) => any
     ? Parameters<StudioCtx[Method]>
-    : never
+    : never,
 >(method: Method, ...args: Args) {
   return invalidationKey(method, ...args);
 }
 
 export function normalizeTemplateSpec(
   templateSpec: TemplateSpec[],
-  isPageTemplatesGroup: boolean
+  isPageTemplatesGroup: boolean,
 ): InsertableTemplatesGroup {
   return {
     type: "insertable-templates-group",
@@ -8130,9 +8133,9 @@ export function normalizeTemplateSpec(
             displayName: spec.displayName,
             tokenResolution: spec.tokenResolution,
             componentResolution: spec.componentResolution,
-          })
+          }),
         ),
-      })
+      }),
     ),
   };
 }
@@ -8176,8 +8179,8 @@ export async function addGetManyQuery({
         name: "getMany",
         templates: mapValues(getMany.templates, dataSourceTemplateToString),
         roleId: undefined,
-      }
-    )
+      },
+    ),
   );
 
   const query = await studioCtx.changeUnsafe(() => {

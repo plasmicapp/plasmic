@@ -34,7 +34,7 @@ describe("model change queue failures", () => {
           studioCtx.addComponent("Original", {
             type: ComponentType.Plain,
             noSwitchArena: true,
-          })
+          }),
         );
         const failure = new Error("change failed");
         const change = () => {
@@ -52,7 +52,7 @@ describe("model change queue failures", () => {
           studioCtx.change(() => {
             component.name = "Recovered";
             return ok("done");
-          })
+          }),
         ).resolves.toEqual(ok("done"));
         expect(component.name).toBe("Recovered");
         expect(studioCtx.hasPendingModelChanges()).toBe(false);
@@ -60,7 +60,7 @@ describe("model change queue failures", () => {
         studioCtx.dispose();
       }
     },
-    5000
+    5000,
   );
 });
 
@@ -99,13 +99,16 @@ describe("uiCopilotEnabled", () => {
     expect(studioCtx.uiCopilotEnabled()).toBeTruthy();
   });
 
-  it("returns truthy for a team on trial", () => {
-    const team = mockTeam({ onTrial: true });
+  it("returns falsy for a team on trial", () => {
+    const team = mockTeam({
+      featureTierId: "paid" as FeatureTierId,
+      onTrial: true,
+    });
     const { studioCtx } = fakeStudioCtx({
       teams: [team],
       siteInfo: { teamId: TEAM_ID },
     });
-    expect(studioCtx.uiCopilotEnabled()).toBeTruthy();
+    expect(studioCtx.uiCopilotEnabled()).toBeFalsy();
   });
 
   it("returns falsy for a free team with no trial", () => {
@@ -132,25 +135,27 @@ describe("chatCopilotEnabled", () => {
       mockTeam({
         parentTeamId: "parent" as TeamId,
         featureTier: { id: "enterprise" as FeatureTierId } as ApiFeatureTier,
-      })
+      }),
     );
     expect(studioCtx.chatCopilotEnabled()).toBe(true);
   });
 
-  it("allows paid plans and trials but rejects free teams", () => {
+  it("allows paid plans but rejects trials and free teams", () => {
     expect(
       setup(
-        mockTeam({ featureTierId: "paid" as FeatureTierId })
-      ).studioCtx.chatCopilotEnabled()
+        mockTeam({ featureTierId: "paid" as FeatureTierId }),
+      ).studioCtx.chatCopilotEnabled(),
     ).toBe(true);
     expect(
-      setup(mockTeam({ onTrial: true })).studioCtx.chatCopilotEnabled()
-    ).toBe(true);
+      setup(
+        mockTeam({ featureTierId: "paid" as FeatureTierId, onTrial: true }),
+      ).studioCtx.chatCopilotEnabled(),
+    ).toBe(false);
     expect(setup(mockTeam({})).studioCtx.chatCopilotEnabled()).toBe(false);
     expect(
       setup(
-        mockTeam({ featureTierId: DEVFLAGS.freeTier.id })
-      ).studioCtx.chatCopilotEnabled()
+        mockTeam({ featureTierId: DEVFLAGS.freeTier.id }),
+      ).studioCtx.chatCopilotEnabled(),
     ).toBe(false);
   });
 
@@ -158,7 +163,7 @@ describe("chatCopilotEnabled", () => {
     "checks project access for %s",
     (accessLevel) => {
       const { studioCtx, appCtx } = setup(
-        mockTeam({ featureTierId: "paid" as FeatureTierId })
+        mockTeam({ featureTierId: "paid" as FeatureTierId }),
       );
       const userId = "customer" as UserId;
       appCtx.selfInfo = {
@@ -174,9 +179,9 @@ describe("chatCopilotEnabled", () => {
         } as (typeof studioCtx.siteInfo.perms)[number],
       ];
       expect(studioCtx.chatCopilotEnabled()).toBe(
-        accessLevel === "content" || accessLevel === "editor"
+        accessLevel === "content" || accessLevel === "editor",
       );
-    }
+    },
   );
 });
 
@@ -190,7 +195,7 @@ describe("background arenas", () => {
       devFlagOverrides: { noObserve: true },
     });
     const arenas = withoutNils(
-      site.components.map((c) => getDedicatedArena(site, c))
+      site.components.map((c) => getDedicatedArena(site, c)),
     );
     return { studioCtx, arenas };
   }
@@ -213,7 +218,7 @@ describe("background arenas", () => {
     isDisposed = false;
     constructor(
       readonly component: unknown,
-      private readonly frame?: unknown
+      private readonly frame?: unknown,
     ) {}
     arenaFrame() {
       return this.frame;
@@ -238,13 +243,13 @@ describe("background arenas", () => {
     const arena = getDedicatedArena(site, comp)!;
     const fakeVc = new FakeViewCtx(
       comp,
-      getArenaFrames(arena)[0]
+      getArenaFrames(arena)[0],
     ) as unknown as ViewCtx;
     studioCtx.viewCtxs.push(fakeVc);
 
     const received = await studioCtx.withBackgroundViewCtxForComponent(
       comp,
-      async (vc) => vc
+      async (vc) => vc,
     );
     expect(received).toBe(fakeVc);
   });
@@ -279,11 +284,11 @@ describe("background arenas", () => {
     const { studioCtx, arenas } = setup();
     const [userArena, bgArena] = arenas;
     const bgComp = site.components.find(
-      (c) => getDedicatedArena(site, c) === bgArena
+      (c) => getDedicatedArena(site, c) === bgArena,
     )!;
     const fakeVc = new FakeViewCtx(
       bgComp,
-      getArenaFrames(bgArena)[0]
+      getArenaFrames(bgArena)[0],
     ) as unknown as ViewCtx;
     studioCtx.viewCtxs.push(fakeVc);
 
@@ -350,7 +355,7 @@ describe("attachComponent", () => {
     });
 
     expect(studioCtx.site.components).toEqual(
-      expect.arrayContaining([select, option])
+      expect.arrayContaining([select, option]),
     );
     expect(studioCtx.observeComponents([select, option])).toBe(false);
   });
