@@ -1,0 +1,96 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+}
+.freeBox__q1ThZ {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  column-gap: 8px;
+  padding: 8px;
+}
+.searchInput:global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+  flex-shrink: 1;
+  min-width: 0px;
+}
+.plusButtonContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.plusButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+.svg {
+  object-fit: cover;
+  max-width: 100%;
+  width: 1em;
+  height: 1em;
+}
+.freeBox__jm6T3 {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: auto;
+}
+.freeBox__j3Kg {
+  animation: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.branchSectionHeader__isG4C:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.span__clSgu {
+  animation: none;
+}
+.folderItem__mEv9S:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+}
+.span__bePmM {
+  animation: none;
+}
+.folderItem__f0LRs:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+}
+.span__leV8M {
+  animation: none;
+}
+.branchSectionHeader__yp2W:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.span__gbZnQ {
+  animation: none;
+}
+.folderItem__fzsYb:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+}
+.span__z7Isk {
+  animation: none;
+}

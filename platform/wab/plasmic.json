@@ -4872,6 +4872,32 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicNavigationDropdown.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "-6NBGvUCP1-j",
+          "name": "BranchPanel",
+          "type": "managed",
+          "projectId": "m8VxGcigeLAEXFe8c12w5Q",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicBranchPanel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicBranchPanel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "-MhOsyk6L9so",
+          "name": "BranchSectionHeader",
+          "type": "managed",
+          "projectId": "m8VxGcigeLAEXFe8c12w5Q",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicBranchSectionHeader.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar-tabs/ProjectPanel/BranchSectionHeader.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicBranchSectionHeader.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [],
@@ -11520,6 +11546,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.378",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.378/dist/plasmic.schema.json"
+  "cliVersion": "0.1.379",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.379/dist/plasmic.schema.json"
 }

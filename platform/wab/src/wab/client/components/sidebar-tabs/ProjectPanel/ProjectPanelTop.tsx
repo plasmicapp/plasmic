@@ -4,13 +4,18 @@ import {
   reactConfirm,
   reactPrompt,
 } from "@/wab/client/components/quick-modals";
+import BranchSectionHeader from "@/wab/client/components/sidebar-tabs/ProjectPanel/BranchSectionHeader";
 import FolderItem from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderItem";
+import {
+  HEADER_HEIGHT,
+  ROW_HEIGHT,
+} from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
 import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.module.scss";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import PlasmicBranchPanel from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicBranchPanel";
 import { DefaultFolderItemProps } from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicFolderItem";
-import PlasmicNavigationDropdown from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicNavigationDropdown";
 import PlasmicSearchInput from "@/wab/client/plasmic/plasmic_kit_project_panel/PlasmicSearchInput";
 import {
   StudioCtx,
@@ -32,14 +37,14 @@ import { trimStart } from "lodash";
 import { observer } from "mobx-react";
 import React, { ReactNode, useRef, useState } from "react";
 import { useDebounce } from "react-use";
-import { FixedSizeList } from "react-window";
+import { VariableSizeList } from "react-window";
 import useSWR, { mutate } from "swr";
 
 export const BranchPanelTop = observer(React.forwardRef(BranchPanelTop_));
 
 function BranchPanelTop_(
   { onClose }: { onClose: () => void },
-  outerRef: React.Ref<HTMLDivElement>
+  outerRef: React.Ref<HTMLDivElement>,
 ) {
   const topFrameApi = useTopFrameApi();
   const studioCtx = useStudioCtx();
@@ -48,7 +53,7 @@ function BranchPanelTop_(
   const { data: branchesResponse } = useSWR<ListBranchesResponse>(
     apiKey(`listBranchesForProject`, projectId),
     () => api.listBranchesForProject(projectId),
-    { revalidateOnMount: true, focusThrottleInterval: 0, dedupingInterval: 0 }
+    { revalidateOnMount: true, focusThrottleInterval: 0, dedupingInterval: 0 },
   );
 
   const { data: unpublishedChangesResponse } = useSWR(
@@ -58,13 +63,13 @@ function BranchPanelTop_(
         branchId: null,
       }),
     }),
-    { revalidateOnMount: true, focusThrottleInterval: 0, dedupingInterval: 0 }
+    { revalidateOnMount: true, focusThrottleInterval: 0, dedupingInterval: 0 },
   );
 
   const searchInputRef = studioCtx.projectSearchInputRef;
   const [queryMatcher, setQueryMatcher] = useState(mkMatcher());
   const [query, setQuery] = useState("");
-  const listRef = useRef<FixedSizeList>(null);
+  const listRef = useRef<VariableSizeList>(null);
   const [renamingItem, setRenamingItem] = useState<
     ApiBranch | MainBranchId | undefined
   >();
@@ -84,13 +89,13 @@ function BranchPanelTop_(
 
   const allBranches = branchesResponse.branches;
   const focusedBranch = allBranches.find(
-    (branch) => branch.id === studioCtx.dbCtx().branchInfo?.id
+    (branch) => branch.id === studioCtx.dbCtx().branchInfo?.id,
   );
   const activeBranches = allBranches.filter(
-    (branch) => branch.status === "active"
+    (branch) => branch.status === "active",
   );
   const archivedBranches = allBranches.filter(
-    (branch) => branch.status === "abandoned" || branch.status === "merged"
+    (branch) => branch.status === "abandoned" || branch.status === "merged",
   );
 
   function queryBranches(branches: (ApiBranch | undefined)[]) {
@@ -100,7 +105,7 @@ function BranchPanelTop_(
         type: "branch",
         branch,
         nameWithQueryHighlighting: queryMatcher.boldSnippets(
-          branch?.name ?? "main"
+          branch?.name ?? "main",
         ),
       }));
   }
@@ -108,9 +113,11 @@ function BranchPanelTop_(
   const shownActiveBranches = queryBranches([undefined, ...activeBranches]);
   const shownArchivedBranches = queryBranches(archivedBranches);
   const items = withoutNils([
-    shownActiveBranches.length > 0 && { label: "Active Branches" },
+    shownActiveBranches.length > 0 ? { label: "Active Branches" } : undefined,
     ...shownActiveBranches,
-    shownArchivedBranches.length > 0 && { label: "Archived Branches" },
+    shownArchivedBranches.length > 0
+      ? { label: "Archived Branches" }
+      : undefined,
     ...shownArchivedBranches,
   ]);
 
@@ -128,7 +135,7 @@ function BranchPanelTop_(
           async validator(_, value) {
             const msg = validateBranchName(
               value,
-              allBranches.filter((b) => b.name !== defaultValue)
+              allBranches.filter((b) => b.name !== defaultValue),
             );
             if (msg) {
               throw new Error(msg);
@@ -181,7 +188,7 @@ function BranchPanelTop_(
     }
     assert(
       hasCommits,
-      "Must have some commits at this point in creating a branch"
+      "Must have some commits at this point in creating a branch",
     );
     return true;
   }
@@ -206,8 +213,8 @@ function BranchPanelTop_(
           studioCtx.switchToBranch(
             ensure(
               allBranches.find((branch) => branch.id === sourceBranchId),
-              () => `Couldn't find branch ${sourceBranchId}`
-            )
+              () => `Couldn't find branch ${sourceBranchId}`,
+            ),
           );
         }
         await topFrameApi.setShowPublishModal(true);
@@ -283,7 +290,7 @@ function BranchPanelTop_(
 
   return (
     <div className={styles.root} ref={outerRef} {...testIds.projectPanel}>
-      <PlasmicNavigationDropdown
+      <PlasmicBranchPanel
         style={{ zIndex: 0 }}
         plusButton={{
           props: {
@@ -322,7 +329,8 @@ function BranchPanelTop_(
           ),
         }}
       >
-        <FixedSizeList
+        <VariableSizeList
+          key={items.map((item) => ("type" in item ? "r" : "h")).join("")}
           ref={listRef}
           itemData={{
             items,
@@ -332,7 +340,9 @@ function BranchPanelTop_(
             focusedBranch,
           }}
           itemCount={items.length}
-          itemSize={32}
+          itemSize={(index) =>
+            "type" in items[index] ? ROW_HEIGHT : HEADER_HEIGHT
+          }
           width="100%"
           height={window.innerHeight * 0.4}
           overscanCount={2}
@@ -357,9 +367,9 @@ function BranchPanelTop_(
 
             if (!currentItem.type) {
               return (
-                <div className={styles.sectionHeader} style={style}>
+                <BranchSectionHeader style={style}>
                   {currentItem.label}
-                </div>
+                </BranchSectionHeader>
               );
             }
 
@@ -369,16 +379,16 @@ function BranchPanelTop_(
               if (
                 studioCtx.isLiveMode &&
                 APP_ROUTES.projectPreview.parse(
-                  studioCtx.appCtx.history.location.pathname
+                  studioCtx.appCtx.history.location.pathname,
                 )
               ) {
                 // Avoid navigating back to dev mode
                 const hashParams = new URLSearchParams(
-                  trimStart(studioCtx.appCtx.history.location.hash, "#")
+                  trimStart(studioCtx.appCtx.history.location.hash, "#"),
                 );
                 hashParams.set(
                   SEARCH_PARAM_BRANCH,
-                  branch?.name || MainBranchId
+                  branch?.name || MainBranchId,
                 );
                 studioCtx.appCtx.history.push({
                   hash: `#${hashParams.toString()}`,
@@ -414,7 +424,7 @@ function BranchPanelTop_(
                   onToggleProtectionMainBranch: async () => {
                     await api.setMainBranchProtection(
                       projectId,
-                      !studioCtx.siteInfo.isMainBranchProtected
+                      !studioCtx.siteInfo.isMainBranchProtected,
                     );
                     await studioCtx.refreshSiteInfo();
                     notification.success({
@@ -442,8 +452,8 @@ function BranchPanelTop_(
               />
             );
           }}
-        </FixedSizeList>
-      </PlasmicNavigationDropdown>
+        </VariableSizeList>
+      </PlasmicBranchPanel>
     </div>
   );
 }
@@ -497,13 +507,13 @@ function getBranchMenuRenderer({
                 main branch
               </Tooltip>
             </Menu.Item>
-          )
+          ),
         )}
         {menuSection(
           "branch-switch",
           <Menu.Item key="switch" onClick={onSwitch}>
             <strong>Switch</strong> to branch
-          </Menu.Item>
+          </Menu.Item>,
         )}
         {menuSection(
           "branch-name",
@@ -520,7 +530,7 @@ function getBranchMenuRenderer({
           ),
           <Menu.Item key="duplicate" onClick={onDuplicate}>
             <strong>Duplicate</strong> branch
-          </Menu.Item>
+          </Menu.Item>,
         )}
         {branch &&
           menuSection(
@@ -575,7 +585,7 @@ function getBranchMenuRenderer({
               }}
             >
               <strong>Delete</strong> branch
-            </Menu.Item>
+            </Menu.Item>,
           )}
       </Menu>
     );
