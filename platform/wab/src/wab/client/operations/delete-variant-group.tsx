@@ -66,7 +66,7 @@ export async function deleteVariantGroup(
   site: Site,
   studioCtx: StudioCtx,
   tplMgr: TplMgr,
-  opts?: DeleteResourcesOpts
+  opts?: DeleteResourcesOpts,
 ): Promise<DeleteVariantGroupResult> {
   if (component) {
     // Check if variant group is referenced in the component
@@ -85,7 +85,7 @@ export async function deleteVariantGroup(
       const groupName = toVarName(group.param.variable.name);
       const plugin = getPlumeEditorPlugin(component);
       const isRequired = plugin?.componentMeta.variantDefs.some(
-        (def) => def.group === groupName && def.required
+        (def) => def.group === groupName && def.required,
       );
       if (isRequired) {
         return err({
@@ -101,7 +101,7 @@ export async function deleteVariantGroup(
         : [];
       if (implicitUsages.length > 0) {
         const components = Array.from(
-          new Set(implicitUsages.map((usage) => usage.component))
+          new Set(implicitUsages.map((usage) => usage.component)),
         );
         return err({
           message: `Variant group is referenced in ${components
@@ -112,6 +112,11 @@ export async function deleteVariantGroup(
     }
   }
 
+  if (component) {
+    // deleteResourcesWithUsages only observes the components using the group,
+    // but removing it also edits the owning component's tpl tree.
+    studioCtx.observeComponents([component]);
+  }
   const usageSummary = extractVariantGroupUsages(site, group, component);
   const usageCount =
     usageSummary.components.length +
@@ -134,7 +139,7 @@ export async function deleteVariantGroup(
     {
       ...opts,
       deleteLabel: `variant group ${group.param.variable.name}`,
-    }
+    },
   );
 
   return result
@@ -149,7 +154,7 @@ export async function deleteVariantGroup(
 function extractVariantGroupUsages(
   site: Site,
   group: VariantGroup,
-  component?: Component
+  component?: Component,
 ): GeneralUsageSummary & { splits: Split[]; tokens: StyleToken[] } {
   const usingComps = new Set<Component>();
   for (const variant of group.variants) {
@@ -175,13 +180,13 @@ function extractVariantGroupUsages(
  */
 function findVariantGroupReferences(
   component: Component,
-  group: VariantGroup
+  group: VariantGroup,
 ): ExprReference[] {
   const state = ensure(
     findStateForParam(component, group.param),
-    "Variant group param must correspond to state"
+    "Variant group param must correspond to state",
   );
   return findExprsInComponent(component).filter(({ expr }) =>
-    isStateUsedInExpr(state, expr)
+    isStateUsedInExpr(state, expr),
   );
 }

@@ -251,6 +251,16 @@ export function undoChangesAndResolveConflicts(
   return recorder.withRecording(() => {
     undoChanges(changes);
 
+    // A restored component is observed without its tplTree, so its nodes
+    // would have no path from the site and look deleted below.
+    recorder.maybeObserveComponents(
+      changes.flatMap((change) =>
+        change.type === "array-splice"
+          ? change.removed.filter(isKnownComponent)
+          : []
+      )
+    );
+
     const toBeDeleted = recorder.getToBeDeletedInsts();
     const isInstDeleted = (inst: ObjInst) =>
       toBeDeleted.has(inst) || !recorder.getAnyPathToChild(inst);

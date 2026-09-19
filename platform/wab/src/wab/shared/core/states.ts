@@ -134,7 +134,7 @@ export type StateType = Omit<State, "accessType" | "variableType"> & {
 };
 
 export function getDefaultValueForStateVariableType(
-  variableType: StateVariableType
+  variableType: StateVariableType,
 ) {
   switch (variableType) {
     case "text":
@@ -173,7 +173,7 @@ export function mkImplicitState(
   state: State,
   tplNode: TplComponent | TplTag,
   param: StateParam,
-  onChangeParam: StateChangeHandlerParam
+  onChangeParam: StateChangeHandlerParam,
 ) {
   let implicitVariableType = state.variableType;
   if (
@@ -181,7 +181,7 @@ export function mkImplicitState(
     isTplComponent(tplNode)
   ) {
     const vg = tplNode.component.variantGroups.find(
-      (iVg) => iVg.param === state.param
+      (iVg) => iVg.param === state.param,
     );
     if (isStandaloneVariantGroup(vg)) {
       implicitVariableType = "boolean" as StateVariableType;
@@ -210,21 +210,21 @@ export function mkState(
     onChangeParam: StateChangeHandlerParam;
     variantGroup: ComponentVariantGroup;
     variableType: "variant";
-  } & Partial<StateType>
+  } & Partial<StateType>,
 ): VariantGroupState;
 export function mkState(
   stateProps: {
     param: StateParam;
     onChangeParam: StateChangeHandlerParam;
     variantGroup?: ComponentVariantGroup;
-  } & Partial<StateType>
+  } & Partial<StateType>,
 ): State;
 export function mkState(
   stateProps: {
     param: StateParam;
     onChangeParam: StateChangeHandlerParam;
     variantGroup?: ComponentVariantGroup;
-  } & Partial<StateType>
+  } & Partial<StateType>,
 ): State {
   const {
     param,
@@ -246,7 +246,7 @@ export function mkState(
       variableType,
       variantGroup: ensure(
         variantGroup,
-        () => `VariantGroup should be set for variant non-implicit states`
+        () => `VariantGroup should be set for variant non-implicit states`,
       ),
     });
     writeable(state.variantGroup).linkedState = state;
@@ -272,7 +272,7 @@ export function mkNamedState(
     onChangeParam: StateChangeHandlerParam | PropParam;
     name: string;
     variableType?: Exclude<StateVariableType, "variant">;
-  } & Partial<StateType>
+  } & Partial<StateType>,
 ) {
   const {
     param,
@@ -297,7 +297,7 @@ export function mkNamedState(
 export function removeImplicitStatesAfterRemovingTplNode(
   site: Site,
   component: Component,
-  node: TplNode
+  node: TplNode,
 ) {
   component.states
     .filter((state) => state.tplNode === node)
@@ -307,7 +307,7 @@ export function removeImplicitStatesAfterRemovingTplNode(
 export function ensureCorrectImplicitStates(
   site: Site,
   owner: Component,
-  tpl: TplComponent | TplTag
+  tpl: TplComponent | TplTag,
 ) {
   if (shouldHaveImplicitState(owner, tpl)) {
     addImplicitStatesAfterInsertingTplNode(site, owner, tpl);
@@ -318,7 +318,7 @@ export function ensureCorrectImplicitStates(
 
 export function shouldHaveImplicitState(
   owner: Component,
-  tpl: TplComponent | TplTag
+  tpl: TplComponent | TplTag,
 ) {
   if (isTplComponent(tpl)) {
     if (!tpl.component.states.find((s) => isPublicState(s))) {
@@ -351,7 +351,7 @@ export function shouldHaveImplicitState(
 function addImplicitStatesAfterInsertingTplNode(
   site: Site,
   owner: Component,
-  node: TplComponent | TplTag
+  node: TplComponent | TplTag,
 ) {
   const tplMgr = new TplMgr({ site });
 
@@ -363,7 +363,7 @@ function addImplicitStatesAfterInsertingTplNode(
 
       if (
         owner.states.find(
-          (s) => s.tplNode === node && s.implicitState === state
+          (s) => s.tplNode === node && s.implicitState === state,
         )
       ) {
         continue;
@@ -373,13 +373,13 @@ function addImplicitStatesAfterInsertingTplNode(
       const { onChangeParam, valueParam } = Lang.mkParamsForImplicitState(
         state,
         tplMgr.getUniqueParamName(owner, paramName),
-        tplMgr.getUniqueParamName(owner, genOnChangeParamName(paramName))
+        tplMgr.getUniqueParamName(owner, genOnChangeParamName(paramName)),
       );
       const implicitState = mkImplicitState(
         state,
         node,
         valueParam,
-        onChangeParam
+        onChangeParam,
       );
       addComponentState(site, owner, implicitState);
     }
@@ -397,7 +397,7 @@ function addImplicitStatesAfterInsertingTplNode(
           (s) =>
             s.tplNode === node &&
             isKnownNamedState(s) &&
-            s.name === valueState.name
+            s.name === valueState.name,
         )
       ) {
         // Implicit state already added.
@@ -414,10 +414,10 @@ function deriveStatefulTagName(node: TplTag) {
     node.tag === "textarea"
       ? AddItemKey.textarea
       : tagSummary === "password input"
-      ? AddItemKey.password
-      : tagSummary.endsWith(" input")
-      ? AddItemKey.textbox
-      : undefined;
+        ? AddItemKey.password
+        : tagSummary.endsWith(" input")
+          ? AddItemKey.textbox
+          : undefined;
   return addItemKey;
 }
 
@@ -443,10 +443,10 @@ export function getLastPartOfImplicitStateName(state: State) {
 export function getStateVarName(state: State) {
   if (state.tplNode) {
     const dataReps = Tpls.ancestorsUp(state.tplNode).filter(
-      Tpls.isTplRepeated
+      Tpls.isTplRepeated,
     ).length;
     const tplName = toVarName(
-      ensure(state.tplNode.name, "TplNode with public states must be named")
+      ensure(state.tplNode.name, "TplNode with public states must be named"),
     );
     const stateName = toVarName(getLastPartOfImplicitStateName(state));
     return `${tplName}${"[]".repeat(dataReps)}.${stateName}`;
@@ -472,10 +472,10 @@ export function getStateVarNameParts(state: State): string[] {
  */
 export function getStateByVarName(
   component: Component,
-  varName: string
+  varName: string,
 ): State | undefined {
   return component.states.find(
-    (state) => varName === getStateVarNameParts(state)[0]
+    (state) => varName === getStateVarNameParts(state)[0],
   );
 }
 
@@ -507,15 +507,15 @@ export function findStateIn$State(state: State, $state: {}): StateIn$State[] {
 export function getStateDisplayName(
   state: State,
   mode: "short" | "long" = "long",
-  humanize = true
+  humanize = true,
 ) {
   if (state.tplNode) {
     const dataReps = Tpls.ancestorsUp(state.tplNode).filter(
-      Tpls.isTplRepeated
+      Tpls.isTplRepeated,
     ).length;
     const tplName = ensure(
       state.tplNode.name,
-      "TplNode with public states must be named"
+      "TplNode with public states must be named",
     );
     const rawName = getLastPartOfImplicitStateName(state);
     const stateName = humanize ? smartHumanize(rawName) : rawName;
@@ -533,8 +533,8 @@ function genImplicitStateParamName(node: TplTag | TplComponent, state: State) {
   const name = node.name
     ? node.name
     : isTplComponent(node)
-    ? node.component.name
-    : "";
+      ? node.component.name
+      : "";
   return (name + " " + state.param.variable.name).trim();
 }
 
@@ -553,16 +553,16 @@ export function getStateOnChangePropName(state: State) {
 
 export function getComponentStateOnChangePropNames(
   component: Component,
-  node: TplComponent
+  node: TplComponent,
 ) {
   return new Set(
     withoutNils(
       component.states.map((state) =>
         state.tplNode === node && !!state.implicitState
           ? getStateOnChangePropName(state.implicitState)
-          : null
-      )
-    )
+          : null,
+      ),
+    ),
   );
 }
 
@@ -571,7 +571,7 @@ export function isPrivateState(state: State) {
 }
 
 export function isPublicState(
-  state: State
+  state: State,
 ): state is State & { onChangeParam: Param } {
   return state.accessType !== "private";
 }
@@ -595,7 +595,7 @@ export function updateStateAccessType(
   newAccessType: StateAccessType,
   opts?: {
     onChangeProp?: string;
-  }
+  },
 ) {
   const isPrevStatePrivate = isPrivateState(state);
   state.accessType = newAccessType;
@@ -610,7 +610,7 @@ export function updateStateAccessType(
     const onChangePropName = new TplMgr({ site }).getUniqueParamName(
       component,
       opts?.onChangeProp ?? genOnChangeParamName(state.param.variable.name),
-      state.onChangeParam
+      state.onChangeParam,
     );
     state.onChangeParam.variable.name = onChangePropName;
     state.onChangeParam.exportType = ParamExportType.External;
@@ -630,24 +630,24 @@ export function addImplicitStates(site: Site, component: Component) {
         tplMgr.renameTpl(
           referencedComponent,
           tpl,
-          getComponentDisplayName(component)
+          getComponentDisplayName(component),
         );
       }
       ensureCorrectImplicitStates(site, referencedComponent, tpl);
-    }
+    },
   );
 }
 
 export function findImplicitStates(
   site: Site,
   component: Component,
-  state: State
+  state: State,
 ) {
   return extractComponentUsages(site, component).components.flatMap(
     (refComponent) =>
       refComponent.states
         .filter((refState) => refState.implicitState === state)
-        .map((refState) => ({ component: refComponent, state: refState }))
+        .map((refState) => ({ component: refComponent, state: refState })),
   );
 }
 
@@ -668,6 +668,21 @@ export function* findRecursiveImplicitStates(site: Site, state: State) {
   }
 }
 
+/**
+ * The components that mirror a state of `component` as an implicit state.
+ * Renaming the state also rewrites their `$state` references.
+ */
+export function findComponentsWithImplicitStatesOf(
+  site: Site,
+  component: Component,
+) {
+  return component.states.flatMap((state) =>
+    [...findRecursiveImplicitStates(site, state)].map(
+      (usage) => usage.component,
+    ),
+  );
+}
+
 export function removeImplicitStates(site: Site, state: State) {
   const usages = [...findRecursiveImplicitStates(site, state)];
   for (const { component: refComponent, state: refState } of usages) {
@@ -678,7 +693,7 @@ export function removeImplicitStates(site: Site, state: State) {
 export function addComponentState(
   site: Site,
   component: Component,
-  state: State
+  state: State,
 ) {
   component.states.push(state);
   if (!component.params.includes(state.param)) {
@@ -695,7 +710,7 @@ export function addComponentState(
 export function removeComponentState(
   site: Site,
   component: Component,
-  state: State
+  state: State,
 ) {
   removeComponentParam(site, component, state.param);
   removeComponentParam(site, component, state.onChangeParam);
@@ -708,7 +723,7 @@ export function removeComponentState(
 export function removeComponentStateOnly(
   site: Site,
   component: Component,
-  state: State
+  state: State,
 ) {
   if (!isPrivateState(state)) {
     removeImplicitStates(site, state);
@@ -726,12 +741,12 @@ export function getFlattenedStateNames(component: Component): Set<string> {
     .filter(
       (state) =>
         state.tplNode &&
-        !Tpls.ancestorsUp(state.tplNode).some(Tpls.isTplRepeated)
+        !Tpls.ancestorsUp(state.tplNode).some(Tpls.isTplRepeated),
     )
     .map((state) =>
       toVarName(
-        ensure(state.tplNode?.name, "TplNode with public states must be named")
-      )
+        ensure(state.tplNode?.name, "TplNode with public states must be named"),
+      ),
     );
   return new Set(stateNames);
 }
@@ -741,7 +756,7 @@ export function getFlattenedStateNames(component: Component): Set<string> {
  */
 export function findImplicitStatesOfNodesInTree(
   component: Component,
-  tree: TplNode
+  tree: TplNode,
 ): State[] {
   const nodes = new Set(Tpls.flattenTpls(tree));
   return component.states.filter((s) => s.tplNode && nodes.has(s.tplNode));
@@ -752,14 +767,14 @@ export function findImplicitStatesOfNodesInTree(
  */
 export function isStateUsedInExpr(
   state: State,
-  expr: Expr | null | undefined
+  expr: Expr | null | undefined,
 ): boolean {
   if (isRealCodeExpr(expr) || isKnownFunctionExpr(expr)) {
     assert(
       isKnownCustomCode(expr) ||
         isKnownObjectPath(expr) ||
         isKnownFunctionExpr(expr),
-      "Real code expression must be CustomCode or ObjectPath"
+      "Real code expression must be CustomCode or ObjectPath",
     );
     const info = parseExpr(expr);
     const varName = getStateVarName(state);
@@ -775,7 +790,7 @@ export function isStateUsedInExpr(
     );
   } else if (isKnownVariantsRef(expr)) {
     return expr.variants.some(
-      (v) => v.parent?.param.variable === state.param.variable
+      (v) => v.parent?.param.variable === state.param.variable,
     );
   }
 
@@ -793,10 +808,10 @@ export function findImplicitUsages(site: Site, state: State) {
     state: componentState,
   } of findRecursiveImplicitStates(site, state)) {
     const refs = Tpls.findExprsInComponent(component).filter(({ expr }) =>
-      isStateUsedInExpr(componentState, expr)
+      isStateUsedInExpr(componentState, expr),
     );
     output.push(
-      ...refs.map(({ expr }) => ({ component, state: componentState, expr }))
+      ...refs.map(({ expr }) => ({ component, state: componentState, expr })),
     );
   }
 
@@ -832,7 +847,7 @@ export const updateVariableOperations: {
   value: UpdateVariableOperations;
   hidden?: (
     variableType: string | undefined,
-    isImplicitStateArray: boolean | undefined
+    isImplicitStateArray: boolean | undefined,
   ) => boolean;
   functionBody: string;
 }[] = [
@@ -1058,7 +1073,7 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
             }
             assert(
               isKnownObjectPath(value),
-              "custom function must be a custom code"
+              "custom function must be a custom code",
             );
             return new CustomCode({
               fallback: null,
@@ -1078,8 +1093,8 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
           args.find(
             (iarg) =>
               iarg.name === "operation" &&
-              op.value === tryExtractJson(iarg.expr)
-          )
+              op.value === tryExtractJson(iarg.expr),
+          ),
         );
         return `({ variable, value, startIndex, deleteCount }) => {
           if (!variable) {
@@ -1097,7 +1112,7 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
             if (isKnownVarRef(arg)) {
               const varRef = arg;
               const maybeState = component?.states.find(
-                (s) => s.param.variable === varRef.variable
+                (s) => s.param.variable === varRef.variable,
               );
               if (maybeState) {
                 // We serialize just to the name of the variant group,
@@ -1115,8 +1130,8 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
           args.find(
             (iarg) =>
               iarg.name === "operation" &&
-              op.value === tryExtractJson(iarg.expr)
-          )
+              op.value === tryExtractJson(iarg.expr),
+          ),
         );
         return `({ vgroup, value }) => {
           if (typeof value === "string") {
@@ -1172,7 +1187,7 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
               return value;
             }
             return customCode(
-              `(${convertToFunction(stripParens(value.code))})()`
+              `(${convertToFunction(stripParens(value.code))})()`,
             );
           },
         },
@@ -1271,8 +1286,8 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
             siteCtx.platform === "nextjs"
               ? "__nextRouter?.push"
               : siteCtx.platform === "gatsby"
-              ? "__gatsbyNavigate"
-              : "location.assign"
+                ? "__gatsbyNavigate"
+                : "location.assign"
           }(destination);
         }
       }`,
@@ -1297,7 +1312,7 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
             if (expr) {
               assert(
                 isKnownFunctionArg(expr),
-                "exprs for ref action should be of type FunctionArg"
+                "exprs for ref action should be of type FunctionArg",
               );
             }
           }
@@ -1313,7 +1328,7 @@ export const serializeActionArg = (
   component: Component,
   actionName: string,
   parameterName: string,
-  value: Expr
+  value: Expr,
 ) => {
   const action = ACTIONS[actionName];
   if (action) {
@@ -1326,7 +1341,7 @@ export const serializeActionArg = (
   } else {
     assert(
       actionName.includes("."),
-      `didn't find an action named ${actionName}`
+      `didn't find an action named ${actionName}`,
     );
     return value;
   }
@@ -1345,7 +1360,7 @@ export const serializeActionFunction = (interaction: Interaction) => {
   } else {
     assert(
       isGlobalAction(interaction),
-      `didn't find an action named ${actionName}`
+      `didn't find an action named ${actionName}`,
     );
     const [contextName, contextActionName] = actionName.split(".");
     return `$globalActions["${contextName}.${contextActionName}"]`;
@@ -1369,7 +1384,7 @@ function runCodeActionSchema() {
     code: z
       .string()
       .describe(
-        "JavaScript to run when the event fires. The last expression (or an explicit return inside a block) becomes the step's $steps result."
+        "JavaScript to run when the event fires. The last expression (or an explicit return inside a block) becomes the step's $steps result.",
       ),
   });
 }
@@ -1379,7 +1394,7 @@ function updateVariableActionSchema() {
     actionName: z.literal("updateVariable"),
     variable: z.array(z.string()).describe(
       `Path of the state variable under $state, e.g. ["count"] or ["form", "email"]. Implicit element states are ["<element name>", "<state name>"].
-Repeated element states (read with "[]" in the name, e.g. "email[].value") are not supported; use a "customFunction" step for those.`
+Repeated element states (read with "[]" in the name, e.g. "email[].value") are not supported; use a "customFunction" step for those.`,
     ),
     operation: z
       .enum([
@@ -1392,13 +1407,13 @@ Repeated element states (read with "[]" in the name, e.g. "email[].value") are n
         "Splice",
       ])
       .describe(
-        "NewValue sets the variable; ClearValue sets undefined; Increment/Decrement for numbers; Toggle for booleans; Push appends to an array; Splice removes array elements."
+        "NewValue sets the variable; ClearValue sets undefined; Increment/Decrement for numbers; Toggle for booleans; Push appends to an array; Splice removes array elements.",
       ),
     value: z
       .string()
       .optional()
       .describe(
-        `New value (NewValue) or element to append (Push). Required by those operations only. ${interpolatedStringFormatDescription}`
+        `New value (NewValue) or element to append (Push). Required by those operations only. ${interpolatedStringFormatDescription}`,
       ),
     startIndex: z
       .number()
@@ -1427,13 +1442,13 @@ function updateVariantActionSchema() {
         "MultiDeactivate",
       ])
       .describe(
-        "Toggle groups (standalone variants) use Toggle/Activate/Deactivate; single-select groups use NewValue/ClearValue; multi-select groups also allow MultiToggle/MultiActivate/MultiDeactivate."
+        "Toggle groups (standalone variants) use Toggle/Activate/Deactivate; single-select groups use NewValue/ClearValue; multi-select groups also allow MultiToggle/MultiActivate/MultiDeactivate.",
       ),
     value: z
       .array(z.string())
       .optional()
       .describe(
-        "Variant names in the group; required by NewValue and the Multi* operations (exactly one name for single-select NewValue)."
+        "Variant names in the group; required by NewValue and the Multi* operations (exactly one name for single-select NewValue).",
       ),
   });
 }
@@ -1455,10 +1470,10 @@ export type UpdateVariantInteractionAction = Extract<
 >;
 
 export function isInteractionActionName(
-  actionName: string
+  actionName: string,
 ): actionName is InteractionAction["actionName"] {
   return interactionActionSchema().options.some(
-    (option) => option.shape.actionName.value === actionName
+    (option) => option.shape.actionName.value === actionName,
   );
 }
 
@@ -1489,7 +1504,7 @@ type BuildInteractionArgsOpts = UnionToIntersection<
  */
 export function buildInteractionArgs(
   action: InteractionAction,
-  opts: BuildInteractionArgsOpts
+  opts: BuildInteractionArgsOpts,
 ): Result<Record<string, Expr>, string> {
   switch (action.actionName) {
     case "customFunction":
@@ -1503,7 +1518,7 @@ export function buildInteractionArgs(
 
 function buildRunCodeArgs(
   action: RunCodeInteractionAction,
-  { codeArgNames }: BuildInteractionArgsOptsByAction["customFunction"]
+  { codeArgNames }: BuildInteractionArgsOptsByAction["customFunction"],
 ): Result<Record<string, Expr>, string> {
   const invalidCodeMessage = validateInteractionCode(action.code);
   if (invalidCodeMessage) {
@@ -1514,7 +1529,7 @@ function buildRunCodeArgs(
       action.code,
       null,
       true /* isBodyFunction */,
-      codeArgNames ?? []
+      codeArgNames ?? [],
     ),
   });
 }
@@ -1525,7 +1540,7 @@ const VARIABLE_OPERATIONS_WITH_VALUE: UpdateVariableInteractionAction["operation
 
 function buildUpdateVariableArgs(
   action: UpdateVariableInteractionAction,
-  { component }: BuildInteractionArgsOptsByAction["updateVariable"]
+  { component }: BuildInteractionArgsOptsByAction["updateVariable"],
 ): Result<Record<string, Expr>, string> {
   const path = action.variable
     .flatMap((segment) => segment.split("."))
@@ -1548,7 +1563,7 @@ function buildUpdateVariableArgs(
     return err(
       `State "${path.join(".")}" not found on component "${
         component.name
-      }". Available states: ${names.join(", ") || "none"}.`
+      }". Available states: ${names.join(", ") || "none"}.`,
     );
   }
   const stateVarName = getStateVarName(state);
@@ -1562,30 +1577,30 @@ function buildUpdateVariableArgs(
     return err(
       `State "${stateVarName}" belongs to a repeated element and holds one value per row, so it is not supported by updateVariable. Use a "customFunction" step to target an exact row index in code (e.g. $state.${stateVarName.replaceAll(
         "[]",
-        "[0]"
-      )}).`
+        "[0]",
+      )}).`,
     );
   }
   // When a deeper path addresses a field inside an object-typed state,
   // whose type cannot be known here, so any operation is allowed.
   const targetsStateExactly = stateVarName.split(".").length === path.length;
   const applicableOperations = updateVariableOperations.filter(
-    (op) => !targetsStateExactly || !op.hidden?.(state.variableType, undefined)
+    (op) => !targetsStateExactly || !op.hidden?.(state.variableType, undefined),
   );
   if (
     !applicableOperations.some(
-      (op) => op.value === UpdateVariableOperations[action.operation]
+      (op) => op.value === UpdateVariableOperations[action.operation],
     )
   ) {
     const names = applicableOperations.map(
-      (op) => UpdateVariableOperations[op.value]
+      (op) => UpdateVariableOperations[op.value],
     );
     return err(
       `Operation "${action.operation}" is not available for state "${path.join(
-        "."
+        ".",
       )}" of type "${state.variableType}". Available operations: ${names.join(
-        ", "
-      )}.`
+        ", ",
+      )}.`,
     );
   }
 
@@ -1635,45 +1650,45 @@ const VARIANT_OPERATIONS_WITH_VALUE: UpdateVariantInteractionAction["operation"]
 
 function buildUpdateVariantArgs(
   action: UpdateVariantInteractionAction,
-  { component }: BuildInteractionArgsOptsByAction["updateVariant"]
+  { component }: BuildInteractionArgsOptsByAction["updateVariant"],
 ): Result<Record<string, Expr>, string> {
   const vgroup = component.variantGroups.find(
-    (vg) => paramToVarName(component, vg.param) === action.vgroup
+    (vg) => paramToVarName(component, vg.param) === action.vgroup,
   );
   if (!vgroup) {
     const names = component.variantGroups.map((vg) =>
-      paramToVarName(component, vg.param)
+      paramToVarName(component, vg.param),
     );
     return err(
       `Variant group "${action.vgroup}" not found on component "${
         component.name
-      }". Available groups: ${names.join(", ") || "none"}.`
+      }". Available groups: ${names.join(", ") || "none"}.`,
     );
   }
   // `hidden` is the same rule Studio's UI uses to filter the operation
   // dropdown per group kind, so the tools also accept exactly what the UI offers.
   const applicableOperations = updateVariantOperations.filter(
-    (op) => !op.hidden?.(vgroup)
+    (op) => !op.hidden?.(vgroup),
   );
   if (
     !applicableOperations.some(
-      (op) => op.value === UpdateVariantOperations[action.operation]
+      (op) => op.value === UpdateVariantOperations[action.operation],
     )
   ) {
     const names = applicableOperations.map(
-      (op) => UpdateVariantOperations[op.value]
+      (op) => UpdateVariantOperations[op.value],
     );
     return err(
       `Operation "${action.operation}" is not available for variant group "${
         action.vgroup
-      }". Available operations: ${names.join(", ")}.`
+      }". Available operations: ${names.join(", ")}.`,
     );
   }
 
   const needsValue = VARIANT_OPERATIONS_WITH_VALUE.includes(action.operation);
   if (needsValue && (!action.value || action.value.length === 0)) {
     return err(
-      `Operation "${action.operation}" requires "value" with at least one variant name.`
+      `Operation "${action.operation}" requires "value" with at least one variant name.`,
     );
   }
   if (!needsValue && action.value !== undefined) {
@@ -1685,7 +1700,7 @@ function buildUpdateVariantArgs(
     action.value!.length > 1
   ) {
     return err(
-      `Variant group "${action.vgroup}" is single-select; "value" must contain exactly one variant name.`
+      `Variant group "${action.vgroup}" is single-select; "value" must contain exactly one variant name.`,
     );
   }
 
@@ -1702,7 +1717,7 @@ function buildUpdateVariantArgs(
         return err(
           `Variant "${variantName}" not found in group "${
             action.vgroup
-          }". Available variants: ${names.join(", ") || "none"}.`
+          }". Available variants: ${names.join(", ") || "none"}.`,
         );
       }
       variants.push(variant);
@@ -1716,7 +1731,7 @@ function buildUpdateVariantArgs(
  * Validates the JS code body of a "Run code" interaction.
  */
 export function validateInteractionCode(
-  interactionCode: string
+  interactionCode: string,
 ): string | undefined {
   if (!interactionCode.trim()) {
     return "Interaction code cannot be empty.";
@@ -1728,7 +1743,7 @@ export function validateInteractionCode(
 
   const writesToState = tryCodeWritesToGlobalVariable(
     interactionCode,
-    "$state"
+    "$state",
   );
   if (writesToState === undefined) {
     return "Interaction code uses unsupported JavaScript syntax";
@@ -1749,7 +1764,7 @@ export function validateInteractionCode(
  * for different variants. In this case, we reference the base variant initial value.
  **/
 export const getVirtualWritableStateInitialValue = (
-  state: State
+  state: State,
 ): Expr | undefined => {
   if (state.tplNode) {
     // is a implicit implicit state, so the initial value is saved in tpl component arg.
@@ -1758,15 +1773,15 @@ export const getVirtualWritableStateInitialValue = (
       return baseVs?.attrs[toVarName(ensureKnownNamedState(state).name)];
     } else {
       const maybeArg = baseVs?.args.find(
-        (arg) => arg.param === state.implicitState?.param
+        (arg) => arg.param === state.implicitState?.param,
       );
       return maybeArg
         ? maybeArg.expr
         : getVirtualWritableStateInitialValue(
             ensure(
               state.implicitState,
-              "state referencing a tplNode should also have an implicit state"
-            )
+              "state referencing a tplNode should also have an implicit state",
+            ),
           );
     }
   } else {
@@ -1780,7 +1795,7 @@ export const getVirtualWritableStateInitialValue = (
 export function mkValueStateForTextInput(
   tplNode: TplTag,
   owner: Component,
-  tplMgr: TplMgr
+  tplMgr: TplMgr,
 ) {
   const { valueParam, onChangeParam } = Lang.mkParamsForState({
     name: `${tplNode.name} Value`,
@@ -1788,7 +1803,7 @@ export function mkValueStateForTextInput(
     accessType: "private",
     onChangeProp: tplMgr.getUniqueParamName(
       owner,
-      genOnChangeParamName(`${tplNode.name} Value`)
+      genOnChangeParamName(`${tplNode.name} Value`),
     ),
   });
   const state = mkNamedState({
@@ -1804,7 +1819,7 @@ export function mkValueStateForTextInput(
 
 export const extractLit = (
   param: Param,
-  expr: Expr | null | undefined = param.defaultExpr
+  expr: Expr | null | undefined = param.defaultExpr,
 ) => {
   if (!expr) {
     return undefined;
@@ -1820,7 +1835,7 @@ export const extractLit = (
 
 export function findKeyForEventHandler(
   component: Component,
-  expr: EventHandler
+  expr: EventHandler,
 ) {
   const { eventHandlerKey } =
     Tpls.flattenTpls(component.tplTree)
@@ -1828,7 +1843,7 @@ export function findKeyForEventHandler(
       .find(
         ({ expr: expr2 }) =>
           expr2 === expr ||
-          (expr2 && isFallbackSet(expr2) && expr2.fallback === expr)
+          (expr2 && isFallbackSet(expr2) && expr2.fallback === expr),
       ) ?? {};
   if (eventHandlerKey) {
     return eventHandlerKey;
@@ -1842,7 +1857,7 @@ export function mkInteraction(
   eventHandler: EventHandler,
   actionName: string,
   interactionName: string,
-  args: Record<string, Expr>
+  args: Record<string, Expr>,
 ) {
   return new Interaction({
     // $steps results are keyed by toVarName(interactionName), so uniqueness
@@ -1850,7 +1865,7 @@ export function mkInteraction(
     interactionName: uniqueName(
       eventHandler.interactions.map((it) => it.interactionName),
       interactionName,
-      { normalize: toVarName }
+      { normalize: toVarName },
     ),
     actionName,
     condExpr: null,
@@ -1859,7 +1874,7 @@ export function mkInteraction(
       Lang.mkNameArg({
         name,
         expr,
-      })
+      }),
     ),
     parent: eventHandler,
     uuid: mkShortId(),
@@ -1868,7 +1883,7 @@ export function mkInteraction(
 
 export const extractEventArgsNameFromEventHandler = (
   expr: EventHandler,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) => {
   if (isKnownGenericEventHandler(expr)) {
     return expr.handlerType.params.map((p) => `${p.argName}`);
@@ -1876,7 +1891,7 @@ export const extractEventArgsNameFromEventHandler = (
     const eventHandlerKey = findKeyForEventHandler(exprCtx.component, expr);
     if (Tpls.isEventHandlerKeyForParam(eventHandlerKey)) {
       return ensureKnownFunctionType(eventHandlerKey.param.type).params.map(
-        (p) => `${p.argName}`
+        (p) => `${p.argName}`,
       );
     }
   }

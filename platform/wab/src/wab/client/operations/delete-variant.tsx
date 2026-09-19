@@ -53,7 +53,7 @@ export async function deleteVariant(
   site: Site,
   studioCtx: StudioCtx,
   tplMgr: TplMgr,
-  opts?: DeleteResourcesOpts
+  opts?: DeleteResourcesOpts,
 ): Promise<DeleteVariantResult> {
   if (isBaseVariant(variant)) {
     return err({ message: "Cannot delete the base variant." });
@@ -63,10 +63,10 @@ export async function deleteVariant(
   if (variant.parent && isKnownComponentVariantGroup(variant.parent)) {
     const state = ensure(
       findStateForParam(component, variant.parent.param),
-      "Variant group param must correspond to state"
+      "Variant group param must correspond to state",
     );
     const refs = findExprsInComponent(component).filter(({ expr }) =>
-      isStateUsedInExpr(state, expr)
+      isStateUsedInExpr(state, expr),
     );
 
     if (refs.length > 0) {
@@ -87,6 +87,9 @@ export async function deleteVariant(
     }
   }
 
+  // deleteResourcesWithUsages only observes the components using the variant,
+  // but removing it also edits the owning component's tpl tree.
+  studioCtx.observeComponents([component]);
   const usageSummary = extractVariantUsages(site, variant, component);
   const usageCount =
     usageSummary.components.length + usageSummary.frames.length;
@@ -102,7 +105,7 @@ export async function deleteVariant(
     {
       ...opts,
       deleteLabel: `variant ${makeVariantName({ variant, site })}`,
-    }
+    },
   );
 
   return result
@@ -117,7 +120,7 @@ export async function deleteVariant(
 function extractVariantUsages(
   site: Site,
   variant: Variant,
-  component?: Component
+  component?: Component,
 ): GeneralUsageSummary {
   const usingComps = !component
     ? findComponentsUsingGlobalVariant(site, variant)
@@ -128,8 +131,8 @@ function extractVariantUsages(
   const usingFrames = [...usingComps].filter(isFrameComponent).map((c) =>
     ensure(
       arenaFrames.find((frame) => frame.container.component === c),
-      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`
-    )
+      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`,
+    ),
   );
 
   return {
