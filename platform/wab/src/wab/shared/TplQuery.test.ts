@@ -319,12 +319,16 @@ describe("TplQuery", function () {
         tplTree: tpls.mkTplTag("div"),
         type: ComponentType.Plain,
       });
+      const tplMgr = new TplMgr({ site: createSite() });
+      tplMgr.attachComponent(component);
       const origRoot = ensureKnownTplTag(component.tplTree);
+      const variant = tplMgr.createPrivateStyleVariant(component, origRoot);
       const newRoot = tpls.mkTplTag("div", mkTplTestText("B"));
       $$$(origRoot).replaceWith(newRoot);
       expect(uids([component.tplTree])).toEqual(uids([newRoot]));
       expect(origRoot.parent).toBe(null);
       expect(tpls.getTplOwnerComponent(newRoot)).toBe(component);
+      expect(component.variants).not.toContain(variant);
     });
   });
   describe("remove", () =>

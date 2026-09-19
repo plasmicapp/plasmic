@@ -159,6 +159,9 @@ export class TplQuery {
           newChild.parent = null;
         }
         mutate(content);
+        if (!content.includes(child)) {
+          TplQuery._cleanup(child, { deep: opts.deepRemove });
+        }
         owningComponent.tplTree = only(content);
         trackComponentRoot(owningComponent);
       })
