@@ -98,7 +98,7 @@ function splitSelectorByPseudo(selectorNode: Selector): {
 
   // Find the first PseudoClassSelector
   const pseudoClassIndex = children.findIndex(
-    (child) => child.type === "PseudoClassSelector"
+    (child) => child.type === "PseudoClassSelector",
   );
 
   // No pseudo-class found - return full selector as base
@@ -165,13 +165,13 @@ function describeNodeSegment(elt: Element): string {
           elt.getAttribute("data-plasmic-component") || "?"
         }]`
       : name
-      ? `${tag}[data-plasmic-name="${name}"]`
-      : tag;
+        ? `${tag}[data-plasmic-name="${name}"]`
+        : tag;
 
   const parent = elt.parentElement;
   if (parent) {
     const sameTagSiblings = Array.from(parent.children).filter(
-      (child) => child.tagName === elt.tagName
+      (child) => child.tagName === elt.tagName,
     );
     if (sameTagSiblings.length > 1) {
       return `${base}:nth-of-type(${sameTagSiblings.indexOf(elt) + 1})`;
@@ -200,7 +200,7 @@ function describeNodePath(elt: Element): string {
 /** Stamp missing paths onto style errors that were produced without node context. */
 function withStyleErrorPath(errors: WIError[], path: string): WIError[] {
   return errors.map((e) =>
-    e.code === "invalid-style-declaration" && !e.path ? { ...e, path } : e
+    e.code === "invalid-style-declaration" && !e.path ? { ...e, path } : e,
   );
 }
 
@@ -223,7 +223,7 @@ function addNodeWIRule(
   context: string,
   selector: string,
   declarations: Declaration[],
-  _node: Node
+  _node: Node,
 ) {
   const node = _node as any;
   ensureNodeWiRulesContext(_node, context);
@@ -237,7 +237,7 @@ function addNodeWIRule(
         selector,
         specificity: getSpecificity(selector, decl.loc),
       };
-    })
+    }),
   );
 
   node.__wi_rules[context].push(...wiRules);
@@ -252,24 +252,27 @@ function addSelfStyleRule(_node: Node, errors: WIError[]) {
     return;
   }
 
-  const styles = cssText.split(";").reduce((acc, style) => {
-    if (!style.trim()) {
+  const styles = cssText.split(";").reduce(
+    (acc, style) => {
+      if (!style.trim()) {
+        return acc;
+      }
+      const [key, value] = style.split(":");
+      if (!key || !value) {
+        errors.push({
+          code: "invalid-style-declaration",
+          prop: (key ?? style).trim(),
+          value: (value ?? "").trim(),
+          path: describeNodePath(_node as Element),
+          reason: "malformed inline style declaration",
+        });
+        return acc;
+      }
+      acc[key.trim()] = value.trim();
       return acc;
-    }
-    const [key, value] = style.split(":");
-    if (!key || !value) {
-      errors.push({
-        code: "invalid-style-declaration",
-        prop: (key ?? style).trim(),
-        value: (value ?? "").trim(),
-        path: describeNodePath(_node as Element),
-        reason: "malformed inline style declaration",
-      });
-      return acc;
-    }
-    acc[key.trim()] = value.trim();
-    return acc;
-  }, {} as Record<string, string>);
+    },
+    {} as Record<string, string>,
+  );
 
   ensureNodeWiRulesContext(_node, BASE_VARIANT);
   (_node as any).__wi_rules.base.push({
@@ -284,10 +287,13 @@ function computeStylesFromWIRules(rules: WIRule[]) {
   const sortedRules = rules.sort((a, b) => {
     return -compareSpecificity(a.specificity, b.specificity);
   });
-  const styles = sortedRules.reduce((acc, rule) => {
-    // Already existing styles have higher priority
-    return { ...rule.styles, ...acc };
-  }, {} as Record<string, string>);
+  const styles = sortedRules.reduce(
+    (acc, rule) => {
+      // Already existing styles have higher priority
+      return { ...rule.styles, ...acc };
+    },
+    {} as Record<string, string>,
+  );
   return styles;
 }
 
@@ -302,7 +308,7 @@ function computeStylesFromWIRules(rules: WIRule[]) {
  */
 export function fixCSSValue(
   key: string,
-  value: string
+  value: string,
 ): Result<Record<string, string>, WIError> {
   return Result.fromThrowable(
     () => fixCSSValueUnsafe(key, value),
@@ -311,7 +317,7 @@ export function fixCSSValue(
       prop: key,
       value,
       reason: e instanceof Error ? e.message : String(e),
-    })
+    }),
   )();
 }
 
@@ -369,6 +375,16 @@ function fixCSSValueUnsafe(key: string, value: string): Record<string, string> {
 
   if (fixedKey === "flex") {
     return parseFlexShorthand(valueNode);
+  }
+
+  // cssText folds flex-direction + flex-wrap into this shorthand.
+  if (fixedKey === "flexFlow") {
+    const parts = fixedValue.split(/\s+/);
+    const flexWrap = parts.find((p) => p.includes("wrap"));
+    return {
+      flexDirection: parts.find((p) => /^(row|column)/.test(p)) ?? "row",
+      ...(flexWrap && { flexWrap }),
+    };
   }
 
   if (fixedKey === "aspectRatio") {
@@ -441,7 +457,7 @@ function splitStylesBySafety(styles: Record<string, string>): {
 function renameTokenVarNameToUuid(
   value: string,
   site: Site,
-  errors: WIError[]
+  errors: WIError[],
 ) {
   const unresolvedTokens = new Set<string>();
   const renamed = value.replaceAll(
@@ -453,7 +469,7 @@ function renameTokenVarNameToUuid(
       }
       unresolvedTokens.add(tokenIdentifier);
       return match;
-    }
+    },
   );
   for (const token of unresolvedTokens) {
     errors.push({ code: "unresolved-token", token });
@@ -500,7 +516,7 @@ function parseContextToVariantCombo(context: string): WIVariant[] {
   if (context.startsWith(`${VariantGroupType.GlobalScreen}__`)) {
     // Split to separate screen part from pseudo-selector
     const [screenPart, pseudoSelector] = context.split(
-      CONTEXT_PSEUDO_DELIMITER
+      CONTEXT_PSEUDO_DELIMITER,
     );
 
     const screenWidth = parseInt(screenPart.split("__")[1], 10);
@@ -533,7 +549,7 @@ function parseContextToVariantCombo(context: string): WIVariant[] {
 function getVariantSettingsForNode(
   node: Element,
   defaultStyles: CSSStyleDeclaration,
-  errors: WIError[]
+  errors: WIError[],
 ): WIVariantSettings[] {
   const path = describeNodePath(node);
   const rules = ensureType<Record<string, WIRule[]>>((node as any).__wi_rules);
@@ -548,7 +564,10 @@ function getVariantSettingsForNode(
 
   // Add flex-direction default for flex display
   if (processedBaseStyles["display"] === "flex") {
-    if (!processedBaseStyles["flex-direction"]) {
+    if (
+      !processedBaseStyles["flex-direction"] &&
+      !processedBaseStyles["flex-flow"]
+    ) {
       processedBaseStyles["flex-direction"] = "row";
     }
   }
@@ -627,7 +646,7 @@ function getVariantSettingsForNode(
 }
 
 export function processUnsanitizedStyles(
-  unsanitizedStyles: WIUnsanitizedStyles
+  unsanitizedStyles: WIUnsanitizedStyles,
 ): {
   safe: WISafeStyles;
   unsafe: WIUnsafeStyles;
@@ -645,7 +664,7 @@ export function processUnsanitizedStyles(
         }
         Object.assign(newStyles, fixedStyles);
       },
-      (error) => errors.push(error)
+      (error) => errors.push(error),
     );
   }
 
@@ -687,7 +706,7 @@ function isProbablyEmptyVariantSettings(variantSettings: WIVariantSettings[]) {
 
   // Should be base variant setting here
   const baseVariantSetting = variantSettings.find((vs) =>
-    vs.variantCombo.some((v) => v.type === "base")
+    vs.variantCombo.some((v) => v.type === "base"),
   );
   if (!baseVariantSetting) {
     return true;
@@ -715,10 +734,13 @@ function isLikelyEmptyContainer(containerNode: WIContainer) {
 }
 
 function getElementAttrs(elt: Element): Record<string, string> {
-  return [...elt.attributes].reduce((acc, attr) => {
-    acc[attr.name] = attr.value;
-    return acc;
-  }, {} as Record<string, string>);
+  return [...elt.attributes].reduce(
+    (acc, attr) => {
+      acc[attr.name] = attr.value;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
 }
 
 function isElementNode(node: Node): node is Element {
@@ -744,7 +766,7 @@ function isInlineTextContent(elt: Element): boolean {
 function parseWITextContent(
   elt: Element,
   defaultStyles: CSSStyleDeclaration,
-  errors: WIError[]
+  errors: WIError[],
 ): WIText["content"] {
   const parts: WIText["content"] = [];
   for (const child of elt.childNodes) {
@@ -773,7 +795,7 @@ function parseWITextContent(
         variantSettings: getVariantSettingsForNode(
           child,
           defaultStyles,
-          errors
+          errors,
         ),
       });
     }
@@ -784,7 +806,7 @@ function parseWITextContent(
 function getElementsWITree(
   node: Node,
   defaultStyles: CSSStyleDeclaration,
-  errors: WIError[]
+  errors: WIError[],
 ) {
   function rec(elt: Node): WIElement | null {
     if (elt.nodeType === Node.TEXT_NODE) {
@@ -828,7 +850,7 @@ function getElementsWITree(
     const allVariantSettings = getVariantSettingsForNode(
       elt,
       defaultStyles,
-      errors
+      errors,
     );
 
     const attrs = getElementAttrs(elt);
@@ -840,13 +862,13 @@ function getElementsWITree(
         attrs,
         rec,
         path,
-        errors
+        errors,
       ).match(
         (component) => component,
         (error) => {
           errors.push(error);
           return null;
-        }
+        },
       );
     }
 
@@ -897,10 +919,10 @@ function getElementsWITree(
       // Unparseable width/height attrs fallbacks to the viewBox size and then
       // to 16px (instead of crashing the whole import).
       const parsedWidth = parseCssNumericNew(
-        elt.getAttribute("width") ?? viewBoxWidth
+        elt.getAttribute("width") ?? viewBoxWidth,
       );
       const parsedHeight = parseCssNumericNew(
-        elt.getAttribute("height") ?? viewBoxHeight
+        elt.getAttribute("height") ?? viewBoxHeight,
       );
       const w =
         parsedWidth ?? parseCssNumericNew(viewBoxWidth) ?? fallbackDimension;
@@ -995,7 +1017,7 @@ function extractDeclarationsFromBlock(block: CssNode) {
  * Keyframes are sorted by percentage.
  */
 export function processKeyframesRule(
-  atrule: Atrule
+  atrule: Atrule,
 ): Result<{ sequence: WIAnimationSequence; errors: WIError[] }, WIError> {
   if (!atrule.block || !atrule.prelude) {
     return err({ code: "invalid-keyframes", sequence: "<unnamed>" });
@@ -1071,7 +1093,7 @@ export function processKeyframesRule(
  */
 export async function parseHtmlToWebImporterTree(
   htmlString: string,
-  site: Site
+  site: Site,
 ): Promise<Result<WITree, WIImportFailedError>> {
   const errors: WIError[] = [];
   const parser = new DOMParser();
@@ -1102,7 +1124,7 @@ export async function parseHtmlToWebImporterTree(
   function storeRuleRelationToNodes(
     context: string,
     selectors: Selector[],
-    declarations: Declaration[]
+    declarations: Declaration[],
   ) {
     for (const selectorNode of selectors) {
       const selector = generate(selectorNode);
@@ -1184,7 +1206,7 @@ export async function parseHtmlToWebImporterTree(
       (): WIError => ({
         code: "unsupported-media-query",
         query: mediaCondition,
-      })
+      }),
     )();
 
     if (specResult.isErr()) {
@@ -1204,7 +1226,7 @@ export async function parseHtmlToWebImporterTree(
       if (mediaNode.type === "Rule") {
         processRule(
           mediaNode,
-          `${VariantGroupType.GlobalScreen}__${screenWidth}`
+          `${VariantGroupType.GlobalScreen}__${screenWidth}`,
         );
       }
     });
@@ -1218,10 +1240,10 @@ export async function parseHtmlToWebImporterTree(
 
     const declarationNodes = findAllAndMap(
       atrule.block.children.toArray(),
-      (node) => (node.type === "Declaration" ? node : null)
+      (node) => (node.type === "Declaration" ? node : null),
     );
     const declarations = declarationNodes.map(
-      (decl) => `\t${decl.property}: ${generate(decl.value)};`
+      (decl) => `\t${decl.property}: ${generate(decl.value)};`,
     );
 
     fontDefinitions.push(`@font-face {\n${declarations.join("\n")}\n}`);
@@ -1270,8 +1292,8 @@ export async function parseHtmlToWebImporterTree(
       new WIImportFailedError(
         "invalid-html",
         errors,
-        "The HTML snippet contains no importable elements"
-      )
+        "The HTML snippet contains no importable elements",
+      ),
     );
 
   if (!wiTree) {

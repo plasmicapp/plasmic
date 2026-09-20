@@ -405,6 +405,32 @@ describe("parseHtmlToWebImporterTree", () => {
     });
   });
 
+  it("expands flex-flow instead of defaulting flex-direction to row", async () => {
+    const html =
+      '<div style="display: flex; flex-flow: column wrap; gap: 10px">Content</div>';
+    const { wiTree: rootEl } = await parseHtml(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+    expect(rootEl).toMatchObject({
+      children: [
+        {
+          variantSettings: [
+            {
+              safeStyles: {
+                display: "flex",
+                flexDirection: "column",
+                flexWrap: "wrap",
+                rowGap: "10px",
+                columnGap: "10px",
+              },
+              unsafeStyles: {},
+            },
+          ],
+        },
+      ],
+    });
+  });
+
   it("expands gap property for grid layouts", async () => {
     const html = '<div style="display: grid; gap: 20px">Content</div>';
     const { wiTree: rootEl } = await parseHtml(html, site);
@@ -1137,44 +1163,44 @@ describe("renameTokenVarNameToUuid", () => {
   it("Rename token variable name to token uuid ", async () => {
     // "returns original value for invalid token"
     expect(
-      renameTokenVarNameToUuid("var(--token-unknown-token)", site)
+      renameTokenVarNameToUuid("var(--token-unknown-token)", site),
     ).toEqual("var(--token-unknown-token)");
 
     // "transform a valid token name to token uuid"
     expect(
       renameTokenVarNameToUuid(
         `var(--token-${toVarName(colorPrimaryToken.name)})`,
-        site
-      )
+        site,
+      ),
     ).toEqual(`var(--token-${colorPrimaryToken.uuid})`);
 
     // "transform multiple valid token names properly"
     expect(
       renameTokenVarNameToUuid(
         `linear-gradient(var(--token-${toVarName(
-          colorPrimaryToken.name
+          colorPrimaryToken.name,
         )}), var(--token-${toVarName(colorPrimaryForegroundToken.name)}))`,
-        site
-      )
+        site,
+      ),
     ).toEqual(
-      `linear-gradient(var(--token-${colorPrimaryToken.uuid}), var(--token-${colorPrimaryForegroundToken.uuid}))`
+      `linear-gradient(var(--token-${colorPrimaryToken.uuid}), var(--token-${colorPrimaryForegroundToken.uuid}))`,
     );
 
     // "renames valid tokens and keeps invalid tokens in mixed case"
     expect(
       renameTokenVarNameToUuid(
         `linear-gradient(var(--token-unknown-token), var(--token-${toVarName(
-          colorPrimaryForegroundToken.name
+          colorPrimaryForegroundToken.name,
         )}))`,
-        site
-      )
+        site,
+      ),
     ).toEqual(
-      `linear-gradient(var(--token-unknown-token), var(--token-${colorPrimaryForegroundToken.uuid}))`
+      `linear-gradient(var(--token-unknown-token), var(--token-${colorPrimaryForegroundToken.uuid}))`,
     );
 
     // "returns original value for invalid token in border value"
     expect(
-      renameTokenVarNameToUuid(`1px var(--token-border-color) solid`, site)
+      renameTokenVarNameToUuid(`1px var(--token-border-color) solid`, site),
     ).toEqual("1px var(--token-border-color) solid");
   });
 });
@@ -1256,6 +1282,20 @@ describe("fixCSSValue", () => {
 
   it("transforms 'inline-flex' into 'flex'", () => {
     expect(fixCSSValue("display", "inline-flex")).toEqual({ display: "flex" });
+  });
+
+  it("expands flex-flow into flex-direction and flex-wrap", () => {
+    expect(fixCSSValue("flex-flow", "wrap")).toEqual({
+      flexDirection: "row",
+      flexWrap: "wrap",
+    });
+    expect(fixCSSValue("flex-flow", "column-reverse wrap-reverse")).toEqual({
+      flexDirection: "column-reverse",
+      flexWrap: "wrap-reverse",
+    });
+    expect(fixCSSValue("flex-flow", "column")).toEqual({
+      flexDirection: "column",
+    });
   });
 
   it("strips '!important' suffix", () => {
@@ -1401,15 +1441,15 @@ describe("fixCSSValue", () => {
       boxShadow: "5px 10px 0px 0px rgba(0,0,0,0.5)",
     });
     expect(
-      fixCSSValue("box-shadow", "5px 10px 15px 20px rgba(0,0,0,0.5)")
+      fixCSSValue("box-shadow", "5px 10px 15px 20px rgba(0,0,0,0.5)"),
     ).toEqual({
       boxShadow: "5px 10px 15px 20px rgba(0,0,0,0.5)",
     });
     expect(
       fixCSSValue(
         "box-shadow",
-        "calc(100% - 5px) 10px 15px calc(20% - 20px) rgba(0,0,0,0.5)"
-      )
+        "calc(100% - 5px) 10px 15px calc(20% - 20px) rgba(0,0,0,0.5)",
+      ),
     ).toEqual({
       boxShadow: "calc(100% - 5px) 10px 15px calc(20% - 20px) rgba(0,0,0,0.5)",
     });
@@ -1418,8 +1458,8 @@ describe("fixCSSValue", () => {
     expect(
       fixCSSValue(
         "box-shadow",
-        "5px 10px rgba(0,0,0,0.5), rgba(0,0,0,0.5) 5px 10px"
-      )
+        "5px 10px rgba(0,0,0,0.5), rgba(0,0,0,0.5) 5px 10px",
+      ),
     ).toEqual({
       boxShadow:
         "5px 10px 0px 0px rgba(0,0,0,0.5), 5px 10px 0px 0px rgba(0,0,0,0.5)",
@@ -1464,7 +1504,7 @@ describe("fixCSSValue", () => {
       fontFamily: "Times New Roman",
     });
     expect(
-      fixCSSValue("font-family", "Georgia, 'Times New Roman', serif")
+      fixCSSValue("font-family", "Georgia, 'Times New Roman', serif"),
     ).toEqual({
       fontFamily: "Georgia",
     });
@@ -1507,7 +1547,7 @@ describe("processUnsanitizedStyles", () => {
         flex: "rgb(0, 0, 0)",
         color: "",
         "font-size": "24px",
-      })
+      }),
     ).toEqual({
       safe: { fontSize: "24px" },
       unsafe: {},
@@ -1518,7 +1558,7 @@ describe("processUnsanitizedStyles", () => {
 
   it("validates url() targets regardless of the function name casing", () => {
     expect(
-      processUnsanitizedStyles({ cursor: "URL(/bad.cur), pointer" })
+      processUnsanitizedStyles({ cursor: "URL(/bad.cur), pointer" }),
     ).toEqual({
       safe: {},
       unsafe: { cursor: "URL(/bad.cur), pointer" },
@@ -1529,7 +1569,7 @@ describe("processUnsanitizedStyles", () => {
     expect(
       processUnsanitizedStyles({
         cursor: "Url(https://example.com/ok.cur), pointer",
-      })
+      }),
     ).toEqual({
       safe: { cursor: "Url(https://example.com/ok.cur), pointer" },
       unsafe: {},
@@ -1545,7 +1585,7 @@ describe("snapshot tests", () => {
   it("parse landing page html properly", async () => {
     const landingPageFilePath = path.join(
       __dirname,
-      "__testonly__/data/landing-page.html"
+      "__testonly__/data/landing-page.html",
     );
     const landingPageHtml = readFileSync(landingPageFilePath, "utf8");
 
@@ -1557,7 +1597,7 @@ describe("snapshot tests", () => {
   it("parses component page with props and slots correctly", async () => {
     const fixturePath = path.join(
       __dirname,
-      "__testonly__/data/component-page.html"
+      "__testonly__/data/component-page.html",
     );
     const html = readFileSync(fixturePath, "utf8");
 
@@ -1747,7 +1787,7 @@ describe("keyframes and animations parsing", () => {
         code: "invalid-keyframes",
         sequence: "mixedAnimation",
         selector: "invalid",
-      })
+      }),
     );
   });
 
@@ -1777,7 +1817,7 @@ describe("error reporting", () => {
   it("returns Err with reason invalid-html when nothing is importable", async () => {
     const result = await parseHtmlToWebImporterTree(
       "<script>alert(1)</script>",
-      site
+      site,
     );
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().reason).toEqual("invalid-html");
@@ -1796,7 +1836,7 @@ describe("error reporting", () => {
       expect.objectContaining({
         code: "invalid-component-instance",
         path: expect.stringContaining("plasmic-component"),
-      })
+      }),
     );
   });
 
@@ -1812,7 +1852,7 @@ describe("error reporting", () => {
       expect.objectContaining({
         code: "invalid-data-props",
         component: "Button",
-      })
+      }),
     );
   });
 
@@ -1841,7 +1881,7 @@ describe("error reporting", () => {
       expect.objectContaining({
         code: "unsupported-media-query",
         query: "(min-width:48em)",
-      })
+      }),
     );
   });
 
@@ -1859,7 +1899,7 @@ describe("error reporting", () => {
       ],
     });
     expect(errors).toContainEqual(
-      expect.objectContaining({ code: "svg-size-fallback" })
+      expect.objectContaining({ code: "svg-size-fallback" }),
     );
   });
 
@@ -1873,7 +1913,7 @@ describe("error reporting", () => {
       expect.objectContaining({
         code: "unsupported-selector",
         selector: ".a::before",
-      })
+      }),
     );
   });
 
@@ -1882,13 +1922,13 @@ describe("error reporting", () => {
     _testOnlyUtils.renameTokenVarNameToUuid(
       "var(--token-unknown-token)",
       site,
-      errors
+      errors,
     );
     expect(errors).toContainEqual(
       expect.objectContaining({
         code: "unresolved-token",
         token: "unknown-token",
-      })
+      }),
     );
   });
 
@@ -1927,7 +1967,7 @@ describe("error reporting", () => {
       expect.objectContaining({
         code: "invalid-style-declaration",
         prop: "background-color",
-      })
+      }),
     );
   });
 });
