@@ -6,7 +6,8 @@ import {
   Subscription,
 } from "@/wab/shared/ApiSchema";
 import { assert } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { MakeADT } from "ts-adt/MakeADT";
 
 export type SubscriptionStatus = MakeADT<
@@ -40,6 +41,17 @@ export function checkIsTeamOnPaidTier(
   // The API resolves featureTier from the parent for child organizations.
   const tierId = team.featureTierId || team.featureTier?.id;
   return !!tierId && tierId !== DEVFLAGS.freeTier.id && !team.onTrial;
+}
+
+/** Whether the user gets general chat, not only the modes free tiers allow. */
+export function canUseChatCopilot(
+  email: string | undefined | null,
+  team: Pick<ApiTeam, "featureTierId" | "featureTier" | "onTrial"> | undefined,
+  devflags: DevFlagsType,
+): boolean {
+  return (
+    isAdminTeamEmail(email, devflags) || (!!team && checkIsTeamOnPaidTier(team))
+  );
 }
 
 /**

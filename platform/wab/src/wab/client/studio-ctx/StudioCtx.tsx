@@ -194,7 +194,10 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
-import { checkIsTeamOnPaidTier } from "@/wab/shared/billing/billing-util";
+import {
+  canUseChatCopilot,
+  checkIsTeamOnPaidTier,
+} from "@/wab/shared/billing/billing-util";
 import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
@@ -3548,10 +3551,10 @@ export class StudioCtx extends WithDbCtx {
       return false;
     }
 
-    const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
-    return (
-      isAdminTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig) ||
-      (!!team && checkIsTeamOnPaidTier(team))
+    return canUseChatCopilot(
+      this.appCtx.selfInfo?.email,
+      this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId),
+      this.appCtx.appConfig,
     );
   }
 
