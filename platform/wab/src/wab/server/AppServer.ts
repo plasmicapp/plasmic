@@ -519,7 +519,7 @@ export function addPromMetricsMiddleware(app: express.Application) {
       promClient: {
         collectDefaultMetrics: {},
       },
-      buckets: DEFAULT_HISTOGRAM_BUCKETS,
+      buckets: [...DEFAULT_HISTOGRAM_BUCKETS, 300],
     }),
   );
 }
