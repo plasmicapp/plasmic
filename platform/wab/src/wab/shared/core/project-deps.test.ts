@@ -1,5 +1,15 @@
 import { mkTokenRef } from "@/wab/commons/StyleToken";
-import { mkVariant } from "@/wab/shared/Variants";
+import { getArenaFrames, setFocusedFrame } from "@/wab/shared/Arenas";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import {
+  VariantGroupType,
+  ensureVariantSetting,
+  mkGlobalVariantGroup,
+  mkVariant,
+} from "@/wab/shared/Variants";
+import { mkComponentArena } from "@/wab/shared/component-arenas";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { mkParam } from "@/wab/shared/core/lang";
 import {
   getDependenciesWithReferencedCss,
   upgradeProjectDeps,
@@ -7,12 +17,18 @@ import {
 } from "@/wab/shared/core/project-deps";
 import { createSite } from "@/wab/shared/core/sites";
 import {
+  mkTplTagX,
+  trackComponentRoot,
+  trackComponentSite,
+} from "@/wab/shared/core/tpls";
+import {
   ProjectDependency,
   Site,
   StyleToken,
   StyleTokenOverride,
   VariantedValue,
 } from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 
 describe("walkDependencyTree", () => {
   test("scope: direct", () => {
@@ -421,6 +437,91 @@ describe("upgradeProjectDeps", () => {
     // Verify the dependency was updated
     expect(mainSite.projectDependencies).toEqual([newDep]);
   });
+
+  test("fixes global variant refs in matrix frames of an arena in focused mode", () => {
+    const groupUuid = "theme-group-uuid";
+    const variantUuid = "dark-variant-uuid";
+
+    // Create a dependency with a "Theme" group holding a "Dark" variant
+    const mkDep = (version: string, depUuid: string) => {
+      const variant = mkVariant({ name: "Dark" });
+      (variant as any).uuid = variantUuid;
+      const group = mkGlobalVariantGroup({
+        param: mkParam({
+          name: "Theme",
+          paramType: "globalVariantGroup",
+          type: typeFactory.text(),
+        }),
+        variants: [variant],
+        type: VariantGroupType.GlobalUserDefined,
+        multi: false,
+      });
+      (group as any).uuid = groupUuid;
+
+      const depSite = createSite();
+      depSite.globalVariantGroups.push(group);
+
+      return {
+        variant,
+        dep: new ProjectDependency({
+          name: "DesignSystem",
+          pkgId: "design-system-pkg-id",
+          projectId: "design-system-project-id",
+          version,
+          uuid: depUuid,
+          site: depSite,
+        }),
+      };
+    };
+
+    const { dep: oldDep, variant: oldVariant } = mkDep(
+      "1.0.0",
+      "design-system-dep-uuid",
+    );
+    const { dep: newDep, variant: newVariant } = mkDep(
+      "2.0.0",
+      "design-system-dep-uuid-v2",
+    );
+
+    // Create main site with the OLD dependency and a local component
+    const mainSite = createSite({ projectDependencies: [oldDep] });
+    const component = mkComponent({
+      name: "Local",
+      tplTree: mkTplTagX("div"),
+      type: ComponentType.Plain,
+    });
+    mainSite.components.push(component);
+    trackComponentSite(component, mainSite);
+    trackComponentRoot(component);
+
+    // Style the component under the dep's variant, so the arena gets a row for
+    // the dep's variant group
+    const vs = ensureVariantSetting(component.tplTree, [oldVariant]);
+    RSH(vs.rs, component.tplTree).set("color", "red");
+
+    const arena = mkComponentArena({ site: mainSite, component });
+    mainSite.componentArenas.push(arena);
+
+    // Verify initial state: a matrix frame targets the OLD variant
+    const depFrames = getArenaFrames(arena).filter((f) =>
+      f.targetGlobalVariants.includes(oldVariant),
+    );
+    expect(depFrames.length).toBeGreaterThan(0);
+
+    // Turn off design mode, which hides the matrix frames from getArenaFrames
+    const focusedFrame = setFocusedFrame(mainSite, arena);
+    expect(getArenaFrames(arena)).toEqual([focusedFrame]);
+
+    // Upgrade the dependency
+    upgradeProjectDeps(mainSite, [{ oldDep, newDep }]);
+
+    // Verify after upgrade: matrix frames point at the NEW variant. Identity,
+    // not structural equality - the bundler xrefs deps by object identity
+    for (const frame of depFrames) {
+      expect(frame.targetGlobalVariants).toHaveLength(1);
+      expect(frame.targetGlobalVariants[0]).toBe(newVariant);
+    }
+  });
 });
 
 describe("getDependenciesWithReferencedCss", () => {
@@ -450,7 +551,7 @@ describe("getDependenciesWithReferencedCss", () => {
     const usedDep = mkDep("UsedDep", createSite({ styleTokens: [depToken] }));
     const unusedDep = mkDep(
       "UnusedDep",
-      createSite({ styleTokens: [mkToken("Other", "other", "#000")] })
+      createSite({ styleTokens: [mkToken("Other", "other", "#000")] }),
     );
 
     // A local token references the used dep's token.
@@ -462,14 +563,14 @@ describe("getDependenciesWithReferencedCss", () => {
     });
 
     expect(
-      getDependenciesWithReferencedCss(site, []).map((d) => d.name)
+      getDependenciesWithReferencedCss(site, []).map((d) => d.name),
     ).toEqual(["UsedDep"]);
   });
 
   test("returns no deps when nothing references them", () => {
     const dep = mkDep(
       "Dep",
-      createSite({ styleTokens: [mkToken("DepColor", "dep-color", "#fff")] })
+      createSite({ styleTokens: [mkToken("DepColor", "dep-color", "#fff")] }),
     );
     const site = createSite({
       projectDependencies: [dep],
@@ -497,7 +598,7 @@ describe("getDependenciesWithReferencedCss", () => {
     });
 
     expect(
-      getDependenciesWithReferencedCss(site, []).map((d) => d.name)
+      getDependenciesWithReferencedCss(site, []).map((d) => d.name),
     ).toEqual(["Dep"]);
   });
 
@@ -513,7 +614,7 @@ describe("getDependenciesWithReferencedCss", () => {
       createSite({
         projectDependencies: [depB],
         styleTokens: [depAUsedToken, depAChainToken],
-      })
+      }),
     );
 
     // The site references only depA's non-chain token; depB is reachable only
@@ -527,7 +628,7 @@ describe("getDependenciesWithReferencedCss", () => {
     expect(
       getDependenciesWithReferencedCss(site, [])
         .map((d) => d.name)
-        .sort()
+        .sort(),
     ).toEqual(["DepA", "DepB"]);
   });
 });
