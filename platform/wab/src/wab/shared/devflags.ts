@@ -217,18 +217,19 @@ export interface PreInstallFunctionInfo {
   functionId: string;
   displayName: string;
   description?: string;
+  isMutation?: boolean;
 }
 
 type InsertableByTypeString<T extends InsertableTemplatesSelectable["type"]> =
   T extends "insertable-templates-item"
     ? InsertableTemplatesItem
     : T extends "insertable-templates-component"
-    ? InsertableTemplatesComponent
-    : T extends "insertable-templates-group"
-    ? InsertableTemplatesGroup
-    : T extends "insertable-icons-group"
-    ? InsertableIconsGroup
-    : never;
+      ? InsertableTemplatesComponent
+      : T extends "insertable-templates-group"
+        ? InsertableTemplatesGroup
+        : T extends "insertable-icons-group"
+          ? InsertableIconsGroup
+          : never;
 
 export function flattenInsertableTemplatesByType<
   T extends InsertableTemplatesSelectable["type"],

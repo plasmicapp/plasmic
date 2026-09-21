@@ -1,3 +1,4 @@
+import { mergeSane } from "@/wab/shared/common";
 import type { DevFlagsType } from "@/wab/shared/devflags";
 import { E2E_DEVFLAGS_COOKIE_NAME } from "@/wab/shared/e2e";
 import type { Request } from "express-serve-static-core";
@@ -142,7 +143,12 @@ const E2E_DEVFLAGS: Partial<DevFlagsType> = {
 export function getE2eDevFlags(
   req: Request,
 ): Partial<DevFlagsType> | undefined {
-  return !req.config.production && req.cookies[E2E_DEVFLAGS_COOKIE_NAME]
-    ? structuredClone(E2E_DEVFLAGS)
-    : undefined;
+  const cookie: string | undefined = req.cookies[E2E_DEVFLAGS_COOKIE_NAME];
+  if (req.config.production || !cookie) {
+    return undefined;
+  }
+  const flags = structuredClone(E2E_DEVFLAGS);
+  // Any value but "1" is a test's own flags as JSON, for values it only knows
+  // at runtime (like a freshly published project id).
+  return cookie === "1" ? flags : mergeSane(flags, JSON.parse(cookie));
 }

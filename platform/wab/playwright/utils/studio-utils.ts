@@ -1,4 +1,5 @@
 import { FrameLocator, Page, expect } from "@playwright/test";
+import { E2E_DEVFLAGS_COOKIE_NAME } from "../../src/wab/shared/e2e";
 
 export interface ExpectedFormItem {
   label: string;
@@ -31,6 +32,26 @@ export async function waitForFrameToLoad(page: Page) {
 }
 
 /**
+ * Replaces this context's e2e devflags cookie so the server applies `flags` over
+ * its e2e defaults (arrays replace, not merge). Call before goToProject.
+ */
+export async function setE2eDevFlags(
+  page: Page,
+  flags: Record<string, unknown>,
+) {
+  const context = page.context();
+  const cookie = (await context.cookies()).find(
+    (c) => c.name === E2E_DEVFLAGS_COOKIE_NAME,
+  );
+  if (!cookie) {
+    throw new Error(`No ${E2E_DEVFLAGS_COOKIE_NAME} cookie to override`);
+  }
+  await context.addCookies([
+    { ...cookie, value: encodeURIComponent(JSON.stringify(flags)) },
+  ]);
+}
+
+/**
  * Go to a project page and wait for the studio to load
  */
 export async function goToProject(
@@ -39,7 +60,7 @@ export async function goToProject(
   options?: {
     timeout?: number;
     waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
-  }
+  },
 ) {
   await page.goto(url, options);
   await waitForFrameToLoad(page);
@@ -47,7 +68,7 @@ export async function goToProject(
 
 export async function getComponentUuid(
   page: Page,
-  componentName: string
+  componentName: string,
 ): Promise<string | null> {
   for (const frame of page.frames()) {
     const uuid = await frame
@@ -55,7 +76,7 @@ export async function getComponentUuid(
         const win = window as any;
         if (win.dbg && win.dbg.studioCtx) {
           const component = win.dbg.studioCtx.site.components.find(
-            (c: any) => c.name === name
+            (c: any) => c.name === name,
           );
           return component?.uuid ?? null;
         }
@@ -96,7 +117,7 @@ async function resolveFormItem(root: FrameLocator, item: ExpectedFormItem) {
 
 export async function checkFormValues(
   expectedFormItems: ExpectedFormItem[],
-  root: FrameLocator
+  root: FrameLocator,
 ) {
   for (const item of expectedFormItems) {
     const formItem = await resolveFormItem(root, item);
@@ -106,7 +127,7 @@ export async function checkFormValues(
       // Case-insensitive since bundle labels can differ in casing from the field name.
       const containsRegex = new RegExp(escapeRegex(item.label), "i");
       await expect(
-        formItem.locator(".ant-form-item-label label")
+        formItem.locator(".ant-form-item-label label"),
       ).toContainText(containsRegex, { timeout: 15000 });
     }
     if (item.value == null) {
@@ -117,17 +138,17 @@ export async function checkFormValues(
     switch (item.type) {
       case "Text Area":
         await expect(
-          formItem.locator(`textarea[name="${item.name}"]`)
+          formItem.locator(`textarea[name="${item.name}"]`),
         ).toHaveValue(valueStr);
         break;
       case "Checkbox":
         await expect(
-          formItem.locator(`input[type="checkbox"][name="${item.name}"]`)
+          formItem.locator(`input[type="checkbox"][name="${item.name}"]`),
         ).toBeChecked();
         break;
       case "Radio Group":
         await expect(
-          formItem.locator(`input[type="radio"][value="${item.value}"]`)
+          formItem.locator(`input[type="radio"][value="${item.value}"]`),
         ).toBeChecked();
         break;
       case "Select": {
@@ -144,7 +165,7 @@ export async function checkFormValues(
         break;
       default:
         await expect(
-          formItem.locator(`input[name="${item.name}"]`)
+          formItem.locator(`input[name="${item.name}"]`),
         ).toHaveValue(valueStr);
     }
   }
@@ -156,7 +177,7 @@ export async function updateFormValuesInLiveMode(
     selects?: Record<string, any>;
     radios?: Record<string, any>;
   },
-  root: FrameLocator
+  root: FrameLocator,
 ) {
   const { inputs = {}, selects = {}, radios = {} } = newValues;
 
@@ -211,7 +232,7 @@ export function getFormValue(expectedFormItems: ExpectedFormItem[]): string {
   const values = Object.fromEntries(
     expectedFormItems
       .filter((formItem) => formItem.value != null)
-      .map((formItem) => [formItem.name, formItem.value])
+      .map((formItem) => [formItem.name, formItem.value]),
   );
   return JSON.stringify(values, Object.keys(values).sort());
 }

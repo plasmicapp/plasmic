@@ -23,6 +23,24 @@ describe("getE2eDevFlags", () => {
     expect(flags?.e2eDevFlagsApplied).toBe(true);
   });
 
+  it("applies a test's own flags from a JSON cookie over the defaults", () => {
+    const flags = getE2eDevFlags(
+      fakeReq({
+        production: false,
+        cookies: {
+          [E2E_DEVFLAGS_COOKIE_NAME]: JSON.stringify({
+            branching: false,
+            hostLessComponents: [],
+          }),
+        },
+      }),
+    );
+    expect(flags?.e2eDevFlagsApplied).toBe(true);
+    expect(flags?.branching).toBe(false);
+    // Arrays replace, so a test declaring its packages sees only those.
+    expect(flags?.hostLessComponents).toEqual([]);
+  });
+
   it("returns undefined in dev without the cookie", () => {
     expect(
       getE2eDevFlags(fakeReq({ production: false, cookies: {} })),

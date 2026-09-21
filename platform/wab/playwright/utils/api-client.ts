@@ -204,6 +204,34 @@ export class ApiClient {
         }> & { name: string })[];
     devFlags?: Record<string, any>;
   }): Promise<string> {
+    const { project } = await this.createProjectWithHostlessPackages({
+      name,
+      hostLessPackagesInfo,
+      devFlags,
+    });
+    return project.id;
+  }
+
+  /**
+   * Publishes hostless packages and returns their project ids, leaving behind
+   * the scratch project they were installed into. Point a `hostLessComponents`
+   * devflag at one to exercise an install flow (see setE2eDevFlags).
+   */
+  async publishHostlessPackages(
+    args: Parameters<ApiClient["setupProjectWithHostlessPackages"]>[0],
+  ): Promise<string[]> {
+    return (await this.createProjectWithHostlessPackages(args))
+      .hostLessProjectIds;
+  }
+
+  private async createProjectWithHostlessPackages({
+    name,
+    hostLessPackagesInfo,
+    devFlags = {},
+  }: Parameters<ApiClient["setupProjectWithHostlessPackages"]>[0]): Promise<{
+    project: { id: string };
+    hostLessProjectIds: string[];
+  }> {
     const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
     const csrf = (await csrfRes.json()).csrf;
 
@@ -239,7 +267,7 @@ export class ApiClient {
       },
     );
 
-    return (await res.json()).project.id;
+    return await res.json();
   }
 
   async codegen(page: Page) {

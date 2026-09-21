@@ -2,7 +2,7 @@ import { expect, Page } from "@playwright/test";
 import { PageModels, test } from "../fixtures/test";
 import { setDynamicVisibility } from "../utils/auto-open-utils";
 import { pasteIntoMonaco } from "../utils/key-utils";
-import { goToProject } from "../utils/studio-utils";
+import { goToProject, setE2eDevFlags } from "../utils/studio-utils";
 
 const MOCK_API_URL = "https://mock-api-for-server-queries.test";
 
@@ -11,7 +11,7 @@ async function createServerQuery(
   opts: {
     name: string;
     expectedResult: string;
-  } & ({ url: string } | { urlExpression: string })
+  } & ({ url: string } | { urlExpression: string }),
 ) {
   await test.step(`Create server query "${opts.name}"`, async () => {
     const serverQueryModal = models.studio.serverQueryBottomModal;
@@ -37,7 +37,7 @@ async function createServerQuery(
       .click();
 
     const queryNameInput = serverQueryModal.locator(
-      `[data-test-id="query-name"] input`
+      `[data-test-id="query-name"] input`,
     );
     await queryNameInput.fill(opts.name);
 
@@ -65,13 +65,13 @@ async function createServerQuery(
 async function assertNotification(
   models: PageModels,
   expectedText: string,
-  expectedDescription?: string
+  expectedDescription?: string,
 ) {
   await test.step(`Assert notification "${expectedText}"`, async () => {
     await expect(models.studio.notificationMessage).toContainText(expectedText);
     if (expectedDescription) {
       await expect(models.studio.notificationDescription).toContainText(
-        expectedDescription
+        expectedDescription,
       );
     } else {
       await expect(models.studio.notificationDescription).not.toBeVisible();
@@ -83,7 +83,7 @@ async function assertNotification(
 async function copyQueryFromPage(
   models: PageModels,
   sourcePage: string,
-  queryName: string
+  queryName: string,
 ) {
   await models.studio.rightPanel.addServerQueryButton.click();
 
@@ -127,7 +127,7 @@ async function openNewCustomCodeQuery(models: PageModels, name: string) {
   await models.studio.frame.locator('[data-key="__custom_code__"]').click();
 
   const codeEditor = serverQueryModal.locator(
-    "div.react-monaco-editor-container"
+    "div.react-monaco-editor-container",
   );
   await codeEditor.click();
   await codeEditor.locator(".view-lines").waitFor({ state: "visible" });
@@ -165,7 +165,7 @@ test.describe("server queries", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -183,7 +183,7 @@ test.describe("server queries", () => {
     const previewResult = serverQueryModal.locator(".code-preview-inner");
     const queryRows =
       models.studio.rightPanel.serverQueriesSectionContent.locator(
-        `[data-plasmic-role="labeled-item"]`
+        `[data-plasmic-role="labeled-item"]`,
       );
 
     const QUERIES = {
@@ -223,7 +223,7 @@ test.describe("server queries", () => {
 
       await pasteIntoMonaco(
         codeEditor,
-        "await new Promise(resolve => setTimeout(() => {\n  resolve(`Welcome to ${ }`)\n}, 2000))"
+        "await new Promise(resolve => setTimeout(() => {\n  resolve(`Welcome to ${ }`)\n}, 2000))",
       );
 
       // Position cursor between ${ and } to insert the data token there
@@ -244,7 +244,7 @@ test.describe("server queries", () => {
 
       // Verify the data token was inserted in display format
       await expect(codeEditor.locator(".view-lines")).toContainText(
-        "$dataTokens.planet"
+        "$dataTokens.planet",
       );
 
       await serverQueryModal.locator("button").getByText("Execute").click();
@@ -293,7 +293,7 @@ test.describe("server queries", () => {
 
       await serverQueryModal.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText(
-        "Welcome to Mars, enjoy your stay!"
+        "Welcome to Mars, enjoy your stay!",
       );
 
       await serverQueryModal.locator("button").getByText("Save").click();
@@ -306,14 +306,14 @@ test.describe("server queries", () => {
       await queryRows.getByText("Greeting", { exact: true }).click();
 
       const codeEditor = serverQueryModal.locator(
-        "div.react-monaco-editor-container"
+        "div.react-monaco-editor-container",
       );
       await codeEditor.waitFor({ state: "visible" });
 
       // Verify the code editor shows the display format ($dataTokens.planet)
       // not the stored format ($dataTokens_<projectShortId>_planet)
       await expect(codeEditor.locator(".view-lines")).toContainText(
-        "$dataTokens.planet"
+        "$dataTokens.planet",
       );
 
       await serverQueryModal.locator("button").getByText("Save").click();
@@ -340,13 +340,13 @@ test.describe("server queries", () => {
 
       const studioFrame = models.studio.frame;
       const textContentLabel = studioFrame.locator(
-        '[data-test-id="text-content"] label'
+        '[data-test-id="text-content"] label',
       );
       await textContentLabel.click({ button: "right" });
       await models.studio.rightPanel.useDynamicValueButton.click();
 
       const dataPicker = models.studio.rightPanel.frame.locator(
-        '[data-test-id="data-picker"]'
+        '[data-test-id="data-picker"]',
       );
       await dataPicker.waitFor({ state: "visible" });
 
@@ -356,8 +356,8 @@ test.describe("server queries", () => {
       // Verify the text element shows the query result on the canvas
       await expect(
         models.studio.componentFrame.getByText(
-          "Welcome to Mars, enjoy your stay!"
-        )
+          "Welcome to Mars, enjoy your stay!",
+        ),
       ).toBeVisible();
     });
 
@@ -382,10 +382,111 @@ test.describe("server queries", () => {
     await test.step("text renders in live preview", async () => {
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(
-          liveFrame.getByText("Welcome to Mars, enjoy your stay!")
+          liveFrame.getByText("Welcome to Mars, enjoy your stay!"),
         ).toBeVisible();
       });
     });
+  });
+
+  test("installs a declared custom function from the query picker", async ({
+    apiClient,
+    page,
+    models,
+  }) => {
+    // Published but installed nowhere the test touches, so the picker offers the
+    // package's functions as installable.
+    const [cmsPackageProjectId] = await apiClient.publishHostlessPackages({
+      name: "server-queries-cms-package",
+      hostLessPackagesInfo: { name: "cms", npmPkg: ["@plasmicpkgs/cms"] },
+    });
+
+    projectId = await apiClient.setupNewProject({
+      name: "server-queries-installable",
+    });
+
+    // `functions` is what the picker offers; the item only installs the package.
+    await setE2eDevFlags(page, {
+      hostLessComponents: [
+        {
+          type: "hostless-package",
+          name: "Plasmic CMS",
+          sectionLabel: "CMS",
+          projectId: cmsPackageProjectId,
+          items: [
+            {
+              type: "hostless-component",
+              componentName: "fake-hostless-cms",
+              displayName: "Plasmic CMS Queries",
+              isCustomFunction: true,
+            },
+          ],
+          functions: [
+            {
+              functionId: "plasmicCms.fetchTables",
+              displayName: "Fetch Plasmic CMS Tables",
+            },
+            {
+              functionId: "plasmicCms.fetchContent",
+              displayName: "Fetch Plasmic CMS Content",
+            },
+          ],
+        },
+      ],
+    });
+    await goToProject(page, `/projects/${projectId}`);
+
+    await models.studio.leftPanel.createNewPage("CMS Page");
+    await models.studio.rightPanel.clickPageData();
+
+    const serverQueryModal = models.studio.serverQueryBottomModal;
+    await models.studio.rightPanel.addServerQueryButton.click();
+    await models.studio.rightPanel.serverQueriesSection
+      .locator(`[data-plasmic-role="labeled-item"]`)
+      .last()
+      .click();
+    await serverQueryModal
+      .locator(`[data-test-id="query-name"] input`)
+      .fill("cmsTables");
+
+    const installOption = (functionId: string) =>
+      models.studio.frame.locator(
+        `[data-key="install-custom-function-${functionId}"]`,
+      );
+
+    await serverQueryModal.getByText("Select...").click();
+    // Each declared function is its own option, keyed by its customFunctionId.
+    await expect(installOption("plasmicCms.fetchTables")).toBeVisible();
+    await expect(installOption("plasmicCms.fetchContent")).toBeVisible();
+
+    await installOption("plasmicCms.fetchTables").click();
+
+    // fetchTables and fetchContent share host/cmsId/cmsPublicToken, so tableId is
+    // what proves the requested function was bound rather than a sibling query.
+    await expect(
+      serverQueryModal.locator(`[data-test-id="prop-editor-row-cmsId"]`),
+    ).toBeVisible();
+    await expect(
+      serverQueryModal.locator(`[data-test-id="prop-editor-row-tableId"]`),
+    ).toBeHidden();
+
+    await serverQueryModal.locator("button").getByText("Save").click();
+    await serverQueryModal.waitFor({ state: "hidden" });
+
+    const queryRow = models.studio.rightPanel.serverQueriesSectionContent
+      .locator(`[data-plasmic-role="labeled-item"]`)
+      .filter({ hasText: "cmsTables" });
+    await expect(queryRow).toContainText("Plasmic cms.fetch tables");
+
+    // Installing the package moves every function it declares out of the
+    // installable group, including the ones the test never picked.
+    await queryRow.click();
+    await serverQueryModal
+      .locator(`[data-test-id="data-query-fn"] button`)
+      .click();
+    await expect(
+      models.studio.frame.locator(`[data-key="plasmicCms.fetchContent"]`),
+    ).toBeVisible();
+    await expect(installOption("plasmicCms.fetchContent")).toBeHidden();
   });
 
   test("create, duplicate, and copy server queries", async ({
@@ -409,7 +510,7 @@ test.describe("server queries", () => {
 
     const queryRows =
       models.studio.rightPanel.serverQueriesSectionContent.locator(
-        `[data-plasmic-role="labeled-item"]`
+        `[data-plasmic-role="labeled-item"]`,
       );
 
     await expect(queryRows).toHaveCount(0);
@@ -468,7 +569,7 @@ test.describe("server queries", () => {
 
       const targetQueryRows =
         models.studio.rightPanel.serverQueriesSectionContent.locator(
-          `[data-plasmic-role="labeled-item"]`
+          `[data-plasmic-role="labeled-item"]`,
         );
       await expect(targetQueryRows).toHaveCount(0);
 
@@ -483,7 +584,7 @@ test.describe("server queries", () => {
       await assertNotification(
         models,
         "Copied queries: Todos, Todo",
-        "References component state (extra), props (filter), context (suffix) that may not exist or differ"
+        "References component state (extra), props (filter), context (suffix) that may not exist or differ",
       );
 
       // Copy Todo again — Todos already exists on this page,
@@ -505,7 +606,7 @@ test.describe("server queries", () => {
       await assertNotification(
         models,
         "Copied query: Todos 2",
-        "References component state (extra), props (filter), context (suffix) that may not exist or differ"
+        "References component state (extra), props (filter), context (suffix) that may not exist or differ",
       );
     });
   });
@@ -558,13 +659,13 @@ test.describe("server queries", () => {
       .fill("gqlQuery");
 
     const urlRow = serverQueryModal.locator(
-      '[data-test-id="prop-editor-row-url"]'
+      '[data-test-id="prop-editor-row-url"]',
     );
     const methodRow = serverQueryModal.locator(
-      '[data-test-id="prop-editor-row-method"]'
+      '[data-test-id="prop-editor-row-method"]',
     );
     const requestRow = serverQueryModal.locator(
-      '[data-test-id="prop-editor-row-request"]'
+      '[data-test-id="prop-editor-row-request"]',
     );
     const urlInput = urlRow.locator('[data-plasmic-prop="url"]');
     const invalidArgIcons = serverQueryModal.locator(".invalid-arg-icon");
@@ -586,14 +687,14 @@ test.describe("server queries", () => {
     await test.step("executing with missing required params is blocked with validation errors", async () => {
       await executeButton.click();
       await expect(
-        serverQueryModal.getByText("Fix validation errors")
+        serverQueryModal.getByText("Fix validation errors"),
       ).toBeVisible();
       await expect(
-        serverQueryModal.getByText("These parameters have invalid values:")
+        serverQueryModal.getByText("These parameters have invalid values:"),
       ).toBeVisible();
       await expect(serverQueryModal.getByText("URL: Required")).toBeVisible();
       await expect(
-        serverQueryModal.getByText("Request: Required")
+        serverQueryModal.getByText("Request: Required"),
       ).toBeVisible();
       await expect(invalidArgIcons).toHaveCount(2);
       expect(receivedMethods).toEqual([]);
@@ -607,13 +708,13 @@ test.describe("server queries", () => {
 
       await executeButton.click();
       await expect(
-        serverQueryModal.getByText("This parameter has an invalid value:")
+        serverQueryModal.getByText("This parameter has an invalid value:"),
       ).toBeVisible();
       await expect(
-        serverQueryModal.getByText("Request: Required")
+        serverQueryModal.getByText("Request: Required"),
       ).toBeVisible();
       await expect(
-        serverQueryModal.getByText("URL: Required")
+        serverQueryModal.getByText("URL: Required"),
       ).not.toBeVisible();
       await expect(invalidArgIcons).toHaveCount(1);
     });
@@ -657,14 +758,14 @@ test.describe("server queries", () => {
         .click({ button: "right" });
       await models.studio.frame.getByText("Use dynamic value").click();
       await models.studio.rightPanel.insertMonacoCode(
-        '({ query: "query { hello }" })'
+        '({ query: "query { hello }" })',
       );
       await expect(setIndicator(requestRow)).toBeVisible();
 
       await executeButton.click();
       await expect(previewResult).toContainText("statusCode: 200");
       await expect(
-        serverQueryModal.getByText("Fix validation errors")
+        serverQueryModal.getByText("Fix validation errors"),
       ).not.toBeVisible();
       await expect(invalidArgIcons).toHaveCount(0);
 
@@ -720,7 +821,7 @@ test.describe("server queries", () => {
         },
         assertCustomFunctionOpModal: async (modal) => {
           await expect(
-            modal.locator('[data-insert-path="$steps"]')
+            modal.locator('[data-insert-path="$steps"]'),
           ).toBeVisible();
         },
       },
@@ -789,7 +890,7 @@ test.describe("server queries – advanced", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -870,7 +971,7 @@ test.describe("server queries – advanced", () => {
       await expect(baseText.first()).toBeVisible();
       // cardExtra (dependent on cardBase) resolves the extra note
       await expect(
-        liveFrame.getByText("Alpha extra", { exact: true }).first()
+        liveFrame.getByText("Alpha extra", { exact: true }).first(),
       ).toBeVisible();
     });
   });
