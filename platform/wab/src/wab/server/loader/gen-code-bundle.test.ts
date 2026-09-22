@@ -13,29 +13,46 @@ import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 
 const s3 = vi.hoisted(() => {
   const objects = new Map<string, string>();
-  const getObject = vi.fn(({ Key }: { Key: string }) => ({
-    promise: async () => {
-      const body = objects.get(Key);
-      if (body === undefined) {
-        throw Object.assign(new Error("NoSuchKey"), { code: "NoSuchKey" });
-      }
-      return { Body: Buffer.from(body) };
-    },
-  }));
-  const putObject = vi.fn(({ Key, Body }: { Key: string; Body: string }) => ({
-    promise: async () => void objects.set(Key, Body),
-  }));
+  const getObject = vi.fn(({ Key }: { Key: string }) => async () => {
+    const body = objects.get(Key);
+    if (body === undefined) {
+      throw Object.assign(new Error("NoSuchKey"), { name: "NoSuchKey" });
+    }
+    return { Body: { transformToString: async () => body } };
+  });
+  const putObject = vi.fn(
+    ({ Key, Body }: { Key: string; Body: string }) =>
+      async () =>
+        void objects.set(Key, Body)
+  );
+  const GetObjectCommand = vi.fn(function (input: { Key: string }) {
+    return { run: getObject(input) };
+  });
+  const PutObjectCommand = vi.fn(function (input: {
+    Key: string;
+    Body: string;
+  }) {
+    return { run: putObject(input) };
+  });
   return {
     objects,
     getObject,
     putObject,
-    S3: vi.fn(function () {
-      return { getObject, putObject };
+    GetObjectCommand,
+    PutObjectCommand,
+    S3Client: vi.fn(function () {
+      return {
+        send: (command: { run: () => Promise<unknown> }) => command.run(),
+      };
     }),
   };
 });
 
-vi.mock("aws-sdk/clients/s3", () => ({ default: s3.S3 }));
+vi.mock("@aws-sdk/client-s3", () => ({
+  S3Client: s3.S3Client,
+  GetObjectCommand: s3.GetObjectCommand,
+  PutObjectCommand: s3.PutObjectCommand,
+}));
 vi.mock("@/wab/server/db/DbCon", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   getSerializableConnectionOptions: () => ({}),
@@ -123,20 +140,28 @@ describe("genPublishedLoaderCodeBundle", () => {
   beforeEach(() => {
     s3.objects.clear();
     // `restoreMocks` wipes the implementations set at creation time.
-    s3.getObject.mockImplementation(({ Key }) => ({
-      promise: async () => {
-        const body = s3.objects.get(Key);
-        if (body === undefined) {
-          throw Object.assign(new Error("NoSuchKey"), { code: "NoSuchKey" });
-        }
-        return { Body: Buffer.from(body) };
-      },
-    }));
-    s3.putObject.mockImplementation(({ Key, Body }) => ({
-      promise: async () => void s3.objects.set(Key, Body),
-    }));
-    s3.S3.mockImplementation(function () {
-      return { getObject: s3.getObject, putObject: s3.putObject };
+    s3.getObject.mockImplementation(({ Key }) => async () => {
+      const body = s3.objects.get(Key);
+      if (body === undefined) {
+        throw Object.assign(new Error("NoSuchKey"), { name: "NoSuchKey" });
+      }
+      return { Body: { transformToString: async () => body } };
+    });
+    s3.putObject.mockImplementation(
+      ({ Key, Body }) =>
+        async () =>
+          void s3.objects.set(Key, Body)
+    );
+    s3.GetObjectCommand.mockImplementation(function (input) {
+      return { run: s3.getObject(input) };
+    });
+    s3.PutObjectCommand.mockImplementation(function (input) {
+      return { run: s3.putObject(input) };
+    });
+    s3.S3Client.mockImplementation(function () {
+      return {
+        send: (command: { run: () => Promise<unknown> }) => command.run(),
+      };
     });
 
     vi.mocked(resolveProjectDeps).mockResolvedValue({});

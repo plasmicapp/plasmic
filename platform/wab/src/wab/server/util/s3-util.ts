@@ -1,12 +1,27 @@
 import { logger } from "@/wab/server/observability";
 import { withSpan } from "@/wab/server/util/apm-util";
-import { ensureInstance } from "@/wab/shared/common";
-import S3 from "aws-sdk/clients/s3";
+import { ensure } from "@/wab/shared/common";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
+import { memoize } from "lodash";
 import path from "path";
 
 export function shouldBypassS3() {
   return Boolean(process.env.BYPASS_S3_CACHE);
 }
+
+export const makeS3Client = memoize(() => {
+  return new S3Client({
+    endpoint: process.env.S3_ENDPOINT,
+    region: process.env.AWS_REGION ?? "us-east-1",
+    requestChecksumCalculation: process.env.S3_ENDPOINT
+      ? "WHEN_REQUIRED"
+      : undefined,
+  });
+});
 
 /**
  * Reads a cache entry, returning null when it is absent (or unreadable for any
@@ -21,14 +36,19 @@ export async function tryGetS3CacheEntry<T>(opts: {
   if (shouldBypassS3()) {
     return null;
   }
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = makeS3Client();
   try {
-    const obj = await s3.getObject({ Bucket: bucket, Key: key }).promise();
-    const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
+    const obj = await s3.send(
+      new GetObjectCommand({ Bucket: bucket, Key: key }),
+    );
+    const serialized = await ensure(
+      obj.Body,
+      "Unexpected empty S3 cache entry body",
+    ).transformToString("utf8");
     logger().info(`S3 cache hit for ${bucket} ${key}`);
     return deserialize(serialized);
   } catch (err) {
-    if (err.code === "TimeoutError") {
+    if (err.name === "TimeoutError") {
       throw err;
     }
     return null;
@@ -55,15 +75,15 @@ export async function upsertS3CacheEntry<T>(opts: {
     return { data: content, cacheHit: false };
   }
   const serialized = serialize(content);
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = makeS3Client();
   try {
-    await s3
-      .putObject({
+    await s3.send(
+      new PutObjectCommand({
         Bucket: bucket,
         Key: key,
         Body: serialized,
-      })
-      .promise();
+      }),
+    );
   } catch (e) {
     if (process.env.NODE_ENV === "production") {
       throw e;
@@ -82,16 +102,16 @@ export async function uploadFilesToS3(opts: {
   if (shouldBypassS3()) {
     return;
   }
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = makeS3Client();
   await Promise.all(
     Object.entries(files).map(async ([file, content]) => {
-      await s3
-        .putObject({
+      await s3.send(
+        new PutObjectCommand({
           Bucket: bucket,
           Key: path.join(key, file),
           Body: content,
-        })
-        .promise();
-    })
+        }),
+      );
+    }),
   );
 }

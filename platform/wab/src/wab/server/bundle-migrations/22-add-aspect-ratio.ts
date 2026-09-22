@@ -1,6 +1,7 @@
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { svgoProcess } from "@/wab/server/svgo";
+import { makeS3Client } from "@/wab/server/util/s3-util";
 import { ensure } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
@@ -10,7 +11,7 @@ import {
   parseDataUrl,
   SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
-import S3 from "aws-sdk/clients/s3";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 
 const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;
 
@@ -26,17 +27,15 @@ export const migrate: BundledMigrationFn = async (bundle) => {
         url.endsWith(".svg")
       ) {
         const storagePath = new URL(url).pathname.replace(/^\//, "");
-        const res = await new S3({
-          endpoint: process.env.S3_ENDPOINT,
-        })
-          .getObject({
+        const res = await makeS3Client().send(
+          new GetObjectCommand({
             Bucket: siteAssetsBucket,
             Key: storagePath,
-          })
-          .promise();
+          }),
+        );
         const dataUrl = asDataUrl(
-          Buffer.from(ensure(res.Body, "must exist") as string),
-          ensure(res.ContentType, "must exist")
+          await ensure(res.Body, "must exist").transformToByteArray(),
+          ensure(res.ContentType, "must exist"),
         );
         const parsed = parseDataUrl(dataUrl);
         if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
@@ -47,7 +46,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
               : undefined;
           if (aspectRatio && isFinite(aspectRatio)) {
             inst["aspectRatio"] = Math.round(
-              aspectRatio * ASPECT_RATIO_SCALE_FACTOR
+              aspectRatio * ASPECT_RATIO_SCALE_FACTOR,
             );
           }
         }

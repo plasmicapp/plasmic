@@ -26,24 +26,19 @@ import {
 import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
+import { makeS3Client } from "@/wab/server/util/s3-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { toClassName } from "@/wab/shared/codegen/util";
-import {
-  ensure,
-  ensureArray,
-  ensureInstance,
-  hackyCast,
-  tuple,
-} from "@/wab/shared/common";
+import { ensure, ensureArray, hackyCast, tuple } from "@/wab/shared/common";
 import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { toJson } from "@/wab/shared/model/model-tree-util";
 import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { context, propagation } from "@opentelemetry/api";
-import S3 from "aws-sdk/clients/s3";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
@@ -442,15 +437,18 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   logger().info(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
 
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = makeS3Client();
 
-  const obj = await s3
-    .getObject({
+  const obj = await s3.send(
+    new GetObjectCommand({
       Bucket: LOADER_ASSETS_BUCKET,
       Key: bundleKey,
     })
-    .promise();
-  const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
+  );
+  const serialized = await ensure(
+    obj.Body,
+    "Unexpected empty loader bundle body"
+  ).transformToString("utf8");
 
   const bundle: LoaderBundleOutput = JSON.parse(serialized);
 

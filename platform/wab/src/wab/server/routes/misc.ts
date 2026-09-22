@@ -1,7 +1,8 @@
 import "@/wab/server/extensions";
+import { makeS3Client } from "@/wab/server/util/s3-util";
 import { GetClipResponse } from "@/wab/shared/ApiSchema";
-import { ensureInstance, ensureType } from "@/wab/shared/common";
-import S3 from "aws-sdk/clients/s3";
+import { ensure, ensureType } from "@/wab/shared/common";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Request, Response } from "express-serve-static-core";
 
 const CLIP_BUCKET = process.env.CLIP_BUCKET ?? "plasmic-clips";
@@ -13,10 +14,14 @@ export async function getAppConfig(req: Request, res: Response) {
 
 export async function putClip(req: Request, res: Response) {
   const { clipId } = req.params;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
-  await s3
-    .upload({ Bucket: CLIP_BUCKET, Key: clipId, Body: req.body.content })
-    .promise();
+  const s3 = makeS3Client();
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: CLIP_BUCKET,
+      Key: clipId,
+      Body: req.body.content,
+    })
+  );
   req.analytics.track("Figma put clip", {
     size: req.body.content.length,
   });
@@ -25,14 +30,17 @@ export async function putClip(req: Request, res: Response) {
 
 export async function getClip(req: Request, res: Response) {
   const { clipId } = req.params;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
-  const result = await s3
-    .getObject({
+  const s3 = makeS3Client();
+  const result = await s3.send(
+    new GetObjectCommand({
       Bucket: CLIP_BUCKET,
       Key: clipId,
     })
-    .promise();
-  const content = ensureInstance(result.Body, Buffer).toString("utf8");
+  );
+  const content = await ensure(
+    result.Body,
+    "Unexpected empty clip body"
+  ).transformToString("utf8");
   req.analytics.track("Figma get clip", {
     size: content.length,
   });
