@@ -68,7 +68,7 @@
   "author": "Plasmic Team",
   "gitHead": "14cfee473c6a27212c54d536a8bd531c84e9fb68",
   "devDependencies": {
-    "@plasmicapp/cli": "^0.1.379",
+    "@plasmicapp/cli": "^0.1.380",
     "@rsbuild/core": "1.7.6",
     "@rsbuild/plugin-react": "1.4.6",
     "@rsbuild/plugin-sass": "1.5.3",
