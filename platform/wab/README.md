@@ -11,6 +11,12 @@ This includes:
 - Codegen server
 - Lots of misc tools and scripts
 
+## Docs
+
+Additional docs live in [`docs/`](./docs):
+
+- [`docs/ICONS.md`](./docs/ICONS.md) - how to add and use SVG icons
+
 ## Directory structure
 
 Overall rough directory structure (please feel free to fill in more):
@@ -18,6 +24,7 @@ Overall rough directory structure (please feel free to fill in more):
 ```
 .
 ├── package.json             # shared package.json for client and servers
+│   ├── docs/                # docs for working in this directory
 │   ├── playwright/          # playwright e2e tests for wab client+server
 │   ├── src/wab/
 │   │   ├── client/          # client-only code (can only be imported by other client code)
