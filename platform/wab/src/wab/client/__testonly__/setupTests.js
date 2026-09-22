@@ -1,4 +1,5 @@
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { notification } from "antd";
 import "fake-indexeddb/auto";
 import * as jestExtendedMatchers from "jest-extended";
 import { TransformStream } from "stream/web";
@@ -26,10 +27,16 @@ vi.mock(
     getLiveFrameClientJs: async () => "",
     getHostLessPkg: async () => "",
     getSortedHostLessPkgs: async (pkgs) => pkgs.map((pkg) => [pkg, ""]),
-  })
+  }),
 );
 
 DEVFLAGS.hostUrl = "http://localhost";
+
+// antd's static notifications render in their own React root and auto-close on timer.
+// In CI it can fire after jsdom teardown, which fails the run
+for (const method of ["open", "success", "info", "warning", "error"]) {
+  notification[method] = () => {};
+}
 
 // Web shims for APIs missing in JSDOM
 

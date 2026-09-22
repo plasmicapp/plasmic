@@ -1,5 +1,7 @@
-This is just a thin wrapper around @plasmicapp/cli.
+This package no longer forwards commands to `@plasmicapp/cli`. Running its
+`plasmic` command exits and asks you to use `@plasmicapp/cli` instead.
 
-It's a convenient and easier-to-remember npx command:
+Install the CLI and then authenticate:
 
-    npx plasmic auth
+    npm install -g @plasmicapp/cli
+    plasmic auth

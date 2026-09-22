@@ -12,7 +12,8 @@ npm install -g @plasmicapp/cli
 
 See <https://docs.plasmic.app/learn/codegen-guide/> for the full docs to get started with Plasmic codegen.
 
-`plasmic init` creates the initial plasmic.json file, pointing to your local dev host.
+`plasmic init` creates the initial `plasmic.json` file and uses the hosted Plasmic
+Studio by default. To use another Plasmic host, pass `--host`.
 
 `plasmic sync --projects ...` allows you to sync all components in the specified projects
 down as code files to your current folder. Once you've run `plasmic init`, you can run
