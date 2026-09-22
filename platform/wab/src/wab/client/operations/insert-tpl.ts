@@ -113,7 +113,7 @@ export interface InsertTplAsChildOpts {
 export function canInsertTplAsChild(
   newItem: TplNode,
   targetTplOrSlotSelection: TplNode | SlotSelection,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ): true | CantInsertTplReason {
   const canAdd = canAddChildrenAndWhy(targetTplOrSlotSelection, newItem);
   if (canAdd !== true) {
@@ -166,7 +166,7 @@ export function canInsertTplAsChild(
 export function canInsertTplAsSibling(
   newItem: TplNode,
   target: TplNode | SlotSelection,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ): true | CantInsertTplReason {
   const canAdd = canAddSiblingsAndWhy(target, newItem);
   if (canAdd !== true) {
@@ -194,7 +194,7 @@ export function canInsertTplAsSibling(
 
   const targetParent = ensure(
     getParentOrSlotSelection(target),
-    "Unexpected undefined value of parent/slotSelection for target"
+    "Unexpected undefined value of parent/slotSelection for target",
   );
   return canInsertTplAsChild(newItem, targetParent, ctx);
 }
@@ -203,7 +203,7 @@ export function canInsertTplAt(
   newItem: TplNode,
   target: TplNode,
   loc: InsertTplLoc,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ): true | CantInsertTplReason {
   return loc === "before" || loc === "after"
     ? canInsertTplAsSibling(newItem, target, ctx)
@@ -220,7 +220,7 @@ export function insertTplAsSibling(
   newNode: TplNode,
   targetNode: TplNode,
   loc: "before" | "after",
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ): InsertTplResult {
   const reason = canInsertTplAsSibling(newNode, targetNode, ctx);
   if (reason !== true) {
@@ -228,13 +228,13 @@ export function insertTplAsSibling(
   }
   const targetParent = ensure(
     getParentOrSlotSelection(targetNode),
-    "targetNode should have a targetParent to be used for inserting newNode"
+    "targetNode should have a targetParent to be used for inserting newNode",
   );
   return insertTplAsChild(
     newNode,
     targetParent,
     ctx,
-    loc === "before" ? { beforeNode: targetNode } : { afterNode: targetNode }
+    loc === "before" ? { beforeNode: targetNode } : { afterNode: targetNode },
   );
 }
 
@@ -257,7 +257,7 @@ export function insertTplAsChild(
   newNode: TplNode,
   newParent: TplNode | SlotSelection,
   ctx: InsertTplCtx,
-  opts: InsertTplAsChildOpts = {}
+  opts: InsertTplAsChildOpts = {},
 ): InsertTplResult {
   opts = merge({ keepFree: true }, opts);
   const reason = canInsertTplAsChild(newNode, newParent, ctx);
@@ -270,7 +270,7 @@ export function insertTplAsChild(
     // Break up text block into a container and text, so we can insert more content
     newParent = ensure(
       convertTextBlockToContainer(newParent, ctx),
-      "Unexpected undefined tpl after converting text to container"
+      "Unexpected undefined tpl after converting text to container",
     );
   }
   if (
@@ -317,7 +317,7 @@ export function insertTplAt(
   newNode: TplNode,
   target: TplNode,
   loc: InsertTplLoc,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ): InsertTplResult {
   switch (loc) {
     case "before":
@@ -334,7 +334,7 @@ function postInsertAsChildUpdates(
   newNode: TplNode,
   newParent: TplNode | SlotSelection,
   isNewNode: boolean,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   if (
     isKnownTplNode(newParent) &&
@@ -381,7 +381,7 @@ function fixupNewlyInsertedNode(newNode: TplNode, ctx: InsertTplCtx) {
 export function copyMixins(
   fromNode: TplNode,
   toNode: TplNode,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   const vtm = ctx.vtm;
   for (const fromVs of fromNode.vsettings) {
@@ -399,7 +399,7 @@ export function transferStyleProps(
   toNode: TplNode,
   ctx: InsertTplCtx,
   props?: string[],
-  clearProps?: string[]
+  clearProps?: string[],
 ) {
   const vtm = ctx.vtm;
   for (const fromVs of fromNode.vsettings) {
@@ -412,7 +412,7 @@ export function transferStyleProps(
       if (fromExp.has(prop)) {
         RSH(vtm.ensureVariantSetting(toNode, fromVs.variants).rs, toNode).set(
           prop,
-          fromExp.get(prop)
+          fromExp.get(prop),
         );
         if (!clearProps || clearProps.includes(prop)) {
           fromExp.clear(prop);
@@ -434,7 +434,7 @@ function adoptLayoutParentContainerStyle(
   child: TplNode,
   parent: TplNode | SlotSelection,
   opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean },
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   const layoutParent = $$$(parent)
     .layoutParent({ includeSelf: true })
@@ -473,7 +473,7 @@ export function adoptParentContainerStyle(
   layoutChild: TplNode,
   layoutParent: TplTag,
   opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean },
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   if (!Tpls.isTplTagOrComponent(layoutChild)) {
     return;
@@ -501,7 +501,7 @@ export function adoptParentContainerStyle(
       layoutParent,
       variantCombo,
       opts,
-      ctx
+      ctx,
     );
   }
 }
@@ -509,7 +509,7 @@ export function adoptParentContainerStyle(
 function convertToSlotContent(
   child: TplNode,
   ctx: InsertTplCtx,
-  variantCombo?: VariantCombo
+  variantCombo?: VariantCombo,
 ) {
   const vtm = ctx.vtm;
   const combos = variantCombo
@@ -525,7 +525,7 @@ function convertToSlotContent(
     ) {
       convertExpToSlotContent(
         effectiveExp,
-        RSH(vtm.ensureVariantSetting(child, combo).rs, child)
+        RSH(vtm.ensureVariantSetting(child, combo).rs, child),
       );
     }
   }
@@ -539,7 +539,7 @@ export function adoptParentContainerStyleForVariant(
   layoutParent: TplTag,
   variantCombo: VariantCombo,
   opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean },
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   if (!Tpls.isTplTagOrComponent(layoutChild)) {
     return;
@@ -558,7 +558,7 @@ export function adoptParentContainerStyleForVariant(
   // being a child of a different layout
   const exp = RSH(
     vtm.ensureVariantSetting(layoutChild, variantCombo).rs,
-    layoutChild
+    layoutChild,
   );
   if (parentContainerType !== ContainerLayoutType.contentLayout) {
     exp.clearAll(contentLayoutChildProps);
@@ -588,7 +588,10 @@ export function adoptParentContainerStyleForVariant(
 
   const newChildPosType =
     opts.forceFree ||
-    parentContainerType === ContainerLayoutType.free ||
+    // List items use normal block flow, even though their display value is
+    // classified as a free container. Keep inserted children in that flow.
+    (parentContainerType === ContainerLayoutType.free &&
+      effectiveParentExp.get("display") !== "list-item") ||
     (opts.keepFree && childPositionType === PositionLayoutType.free)
       ? "free"
       : "auto";
@@ -633,7 +636,7 @@ export function adoptFreePositionType(
   node: TplTag | TplComponent,
   variants: Variant[],
   ctx: InsertTplCtx,
-  parentOffset?: Pt | "current"
+  parentOffset?: Pt | "current",
 ) {
   const vtm = ctx.vtm;
   const effectiveExp = vtm.effectiveVariantSetting(node, variants).rsh();
@@ -684,7 +687,7 @@ export function adoptFreePositionType(
 export function adoptRelativePositionType(
   node: TplTag | TplComponent,
   variantCombo: VariantCombo,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   const vtm = ctx.vtm;
   const effectiveExp = vtm.effectiveVariantSetting(node, variantCombo).rsh();
@@ -706,7 +709,7 @@ export function adoptRelativePositionType(
 export function adoptFixedPositionType(
   node: TplTag | TplComponent,
   variantCombo: VariantCombo,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   const vtm = ctx.vtm;
   const effectiveExp = vtm.effectiveVariantSetting(node, variantCombo).rsh();
@@ -735,7 +738,7 @@ export function adoptFixedPositionType(
 export function adoptStickyPositionType(
   node: TplTag | TplComponent,
   variantCombo: VariantCombo,
-  ctx: InsertTplCtx
+  ctx: InsertTplCtx,
 ) {
   const vtm = ctx.vtm;
   const effectiveExp = vtm.effectiveVariantSetting(node, variantCombo).rsh();
@@ -778,7 +781,7 @@ export function adoptStickyPositionType(
 export function convertTextBlockToContainer(
   tpl: Tpls.TplTextTag,
   ctx: InsertTplCtx,
-  inferFlexStyleFromChild = false
+  inferFlexStyleFromChild = false,
 ): TplTag | undefined {
   if (Tpls.hasTextAncestor(tpl)) {
     return undefined;
@@ -790,7 +793,7 @@ export function convertTextBlockToContainer(
     "div",
     { type: Tpls.TplTagType.Text },
     undefined,
-    true
+    true,
   );
   textChildNode.children = container.children;
   container.children = [];
@@ -802,14 +805,14 @@ export function convertTextBlockToContainer(
       if (privateStyleVariantsMap.has(v)) {
         return ensure(
           privateStyleVariantsMap.get(v),
-          "Should check if privateStyleVariantsMap contains variant"
+          "Should check if privateStyleVariantsMap contains variant",
         );
       }
       if (isPrivateStyleVariant(v) && owningComponent) {
         const newVariant = ctx.tplMgr.createPrivateStyleVariant(
           owningComponent,
           textChildNode,
-          maybe(v.selectors, (s) => [...s])
+          maybe(v.selectors, (s) => [...s]),
         );
         privateStyleVariantsMap.set(v, newVariant);
         return newVariant;
@@ -819,7 +822,7 @@ export function convertTextBlockToContainer(
     const childVs = vtm.ensureVariantSetting(
       textChildNode,
       variantCombo,
-      vtm.getOwningComponentForNewNode()
+      vtm.getOwningComponentForNewNode(),
     );
     // Move the text and typography styling from parent to child vs
     childVs.text = vs.text;
@@ -881,7 +884,7 @@ export function convertTextBlockToContainer(
     container,
     baseVs.variants,
     {},
-    ctx
+    ctx,
   );
   return container;
 }

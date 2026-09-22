@@ -140,6 +140,136 @@ describe("insertTplAsChild", () => {
     expect(movedVs.rs.values["top"]).toEqual("auto");
   });
 
+  describe("PLA-12899", () => {
+    function setupList() {
+      const content = Tpls.mkTplTagX("div", {});
+      const item = Tpls.mkTplTagX("li", {}, content);
+      const nextItem = Tpls.mkTplTagX("li", {});
+      const list = Tpls.mkTplTagX("ul", {}, item, nextItem);
+      const root = Tpls.mkTplTagX("div", {}, list);
+      const result = setup(root);
+      const text = result.vtm.mkTplInlinedText("Parent item", "div");
+      content.children.push(text);
+      text.parent = content;
+      result.vtm.ensureBaseVariantSetting(item).rs.values = {
+        display: "list-item",
+      };
+      const nestedItem = result.vtm.mkTplTagX("li");
+      result.vtm.ensureBaseVariantSetting(nestedItem).rs.values = {
+        display: "list-item",
+      };
+      const nested = result.vtm.mkTplTagX("ul", undefined, [nestedItem]);
+      return {
+        ...result,
+        root,
+        list,
+        item,
+        nextItem,
+        content,
+        text,
+        nested,
+        nestedItem,
+      };
+    }
+
+    it.each([false, true])(
+      "%s PLA-12899 new nested list stays in normal flow",
+      (withOffset) => {
+        const {
+          ctx,
+          vtm,
+          list,
+          item,
+          nextItem,
+          content,
+          text,
+          nested,
+          nestedItem,
+        } = setupList();
+        if (withOffset) {
+          vtm.ensureBaseVariantSetting(nested).rs.values = {
+            position: "relative",
+            left: "12px",
+            top: "24px",
+            right: "6px",
+            bottom: "8px",
+          };
+        }
+
+        expect(insertTplAsChild(nested, item, ctx).isOk()).toBe(true);
+        expect(item.children).toEqual([content, nested]);
+        expect(content.children).toEqual([text]);
+        expect(vtm.ensureBaseVariantSetting(text).text).toMatchObject({
+          text: "Parent item",
+        });
+        expect(list.children).toEqual([item, nextItem]);
+        expect(item.tag).toBe("li");
+        expect(vtm.effectiveVariantSetting(item).rsh().get("display")).toBe(
+          "list-item",
+        );
+        expect(nested.tag).toBe("ul");
+        expect(nested.children).toEqual([nestedItem]);
+        expect(nested.parent).toBe(item);
+        const styles = vtm.effectiveVariantSetting(nested).rsh();
+        expect(styles.get("position")).toBe("relative");
+        for (const prop of ["left", "top", "right", "bottom"]) {
+          expect(styles.get(prop)).toBe("auto");
+        }
+      },
+    );
+
+    it("PLA-12899 reparent nested list stays in normal flow", () => {
+      const { ctx, vtm, root, list, item, nextItem, content, text, nested } =
+        setupList();
+      root.children.push(nested);
+      nested.parent = root;
+      vtm.ensureBaseVariantSetting(nested).rs.values = { position: "relative" };
+
+      expect(insertTplAsChild(nested, item, ctx).isOk()).toBe(true);
+      expect(root.children).toEqual([list]);
+      expect(item.children).toEqual([content, nested]);
+      expect(content.children).toEqual([text]);
+      expect(vtm.ensureBaseVariantSetting(text).text).toMatchObject({
+        text: "Parent item",
+      });
+      expect(list.children).toEqual([item, nextItem]);
+      expect(nested.parent).toBe(item);
+      const styles = vtm.effectiveVariantSetting(nested).rsh();
+      expect(styles.get("position")).toBe("relative");
+      for (const prop of ["left", "top", "right", "bottom"]) {
+        expect(styles.get(prop)).toBe("auto");
+      }
+    });
+
+    it.each(["free container", "forceFree", "keepFree"])(
+      "PLA-12899 intentional absolute positioning: %s",
+      (mode) => {
+        const { ctx, vtm, root, item, nested } = setupList();
+        vtm.ensureBaseVariantSetting(root).rs.values = { display: "block" };
+        if (mode === "keepFree") {
+          vtm.ensureBaseVariantSetting(nested).rs.values = {
+            position: "absolute",
+          };
+        }
+        expect(
+          insertTplAsChild(
+            nested,
+            mode === "free container" ? root : item,
+            ctx,
+            {
+              forceFree: mode === "forceFree",
+              keepFree: mode === "keepFree",
+            },
+          ).isOk(),
+        ).toBe(true);
+        const styles = vtm.effectiveVariantSetting(nested).rsh();
+        expect(styles.get("position")).toBe("absolute");
+        expect(styles.get("left")).toBe("0px");
+        expect(styles.get("top")).toBe("0px");
+      },
+    );
+  });
+
   it("redistributes column sizes when a column is added to a columns container", () => {
     const col1 = Tpls.mkTplTagX("div", { type: Tpls.TplTagType.Column });
     const col2 = Tpls.mkTplTagX("div", { type: Tpls.TplTagType.Column });
@@ -213,7 +343,7 @@ describe("canInsertTplAsChild", () => {
         name: "children",
         type: typeFactory.renderable(),
         paramType: "slot",
-      })
+      }),
     );
     component.params.push(paramA);
     const slotA = Tpls.mkSlot(paramA, [slotContent]);
@@ -241,7 +371,7 @@ describe("canInsertTplAsChild", () => {
         name: "children",
         type: typeFactory.renderable(),
         paramType: "slot",
-      })
+      }),
     );
     component.params.push(param);
     const slot = Tpls.mkSlot(param);
@@ -259,7 +389,7 @@ describe("canInsertTplAsChild", () => {
         vtm,
         tplMgr,
         canEditSlotDefaultContents: () => false,
-      })
+      }),
     ).toMatchObject({ type: "CantAddToSlotOutOfContext" });
   });
 });
