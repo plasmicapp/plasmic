@@ -185,8 +185,20 @@ export function parseMetadata(m?: any) {
   }
 }
 
-export function parseQueryParams(req: Request) {
-  return L.mapValues(req.query, (v) => JSON.parse(v as string));
+export function parseQueryParams(req: Pick<Request, "query">) {
+  return L.mapValues(req.query, (v, key) => {
+    if (typeof v !== "string") {
+      throw new BadRequestError(`Query parameter ${key} must be a JSON string`);
+    }
+    try {
+      return JSON.parse(v);
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new BadRequestError(`Query parameter ${key} must be valid JSON`);
+      }
+      throw err;
+    }
+  });
 }
 
 /**
