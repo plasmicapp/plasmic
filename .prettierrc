@@ -1,4 +1,4 @@
 {
-  "trailingComma": "all",
+  "organizeImportsSkipDestructiveCodeActions": true,
   "plugins": ["prettier-plugin-organize-imports"]
 }

@@ -11,11 +11,12 @@ test.describe("Authentication", () => {
 
     await models.auth.login("user2@example.com", "!53kr3tz!");
 
+    // Login can complete before the dashboard loads on a cold dev server.
     await expect(
       page.locator('a[href="/playground"]', {
         hasText: "My Playground",
-      })
-    ).toBeVisible({ timeout: 30000 });
+      }),
+    ).toBeVisible({ timeout: 60_000 });
 
     await models.auth.logout();
 

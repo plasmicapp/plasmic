@@ -36,18 +36,18 @@ describe("bundle-migrations", () => {
           console.log(`Formatting input at ${inputFilePath}`);
           fs.writeFileSync(
             inputFilePath,
-            Prettier.format(inputBundle, PRETTIER_OPTS)
+            await Prettier.format(inputBundle, PRETTIER_OPTS),
           );
           console.log(`Writing output to ${expectedFilePath}`);
           fs.writeFileSync(
             expectedFilePath,
-            Prettier.format(outputBundle, PRETTIER_OPTS)
+            await Prettier.format(outputBundle, PRETTIER_OPTS),
           );
           expect(WRITE_FILES).toBe(false);
         }
 
-        expect(Prettier.format(outputBundle, PRETTIER_OPTS)).toEqual(
-          Prettier.format(expectedBundle, PRETTIER_OPTS)
+        expect(await Prettier.format(outputBundle, PRETTIER_OPTS)).toEqual(
+          await Prettier.format(expectedBundle, PRETTIER_OPTS),
         );
       });
     });

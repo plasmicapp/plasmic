@@ -26,7 +26,7 @@ export default defineConfig({
     actionTimeout: 10_000,
     navigationTimeout: 15_000,
     baseURL,
-    trace: process.env.CI ? "on-first-retry" : "retain-on-failure",
+    trace: "retain-on-failure",
     video: process.env.CI ? "on-first-retry" : "retain-on-failure",
     storageState: {
       cookies: [
@@ -47,6 +47,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testIgnore: /global-setup\.spec\.ts/,
       use: { ...devices["Desktop Chrome"] },
     },
   ],

@@ -2308,11 +2308,11 @@ export async function updatePkgVersion(req: Request, res: Response) {
   }
 }
 
-function getFormattedStyleConfig(
+async function getFormattedStyleConfig(
   opts: SetRequired<Partial<ExportOpts>, "targetEnv">,
 ) {
   const sc = exportStyleConfig(opts);
-  const formattedRules = Prettier.format(sc.defaultStyleCssRules, {
+  const formattedRules = await Prettier.format(sc.defaultStyleCssRules, {
     parser: "css",
   });
   sc.defaultStyleCssRules = formattedRules;
@@ -2387,7 +2387,7 @@ export async function revertToVersion(req: Request, res: Response) {
 
 export async function genStyleConfig(req: Request, res: Response) {
   res.json(
-    getFormattedStyleConfig({
+    await getFormattedStyleConfig({
       targetEnv: "codegen",
       stylesOpts: req.body,
     }),
@@ -2662,7 +2662,10 @@ export async function genCode(req: Request, res: Response) {
 
 export async function fmtCode(req: Request, res: Response) {
   res.json({
-    formatted: Prettier.format(req.body.code, { parser: req.body.parser }),
+    formatted: await Prettier.format(req.body.code, {
+      parser: req.body.parser,
+      trailingComma: "es5",
+    }),
   });
 }
 

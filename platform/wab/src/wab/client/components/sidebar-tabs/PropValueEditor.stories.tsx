@@ -33,6 +33,9 @@ export default {
     value: undefined,
     onChange: fn(),
   },
+  // updateArgs re-runs loaders, and the default mock restore can
+  // wipe the onChange call before the play function asserts it.
+  parameters: { test: { restoreMocks: false } },
   decorators: [
     (Story) => (
       <SidebarModalProvider>

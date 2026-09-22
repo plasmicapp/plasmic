@@ -10,17 +10,18 @@ import {
   PlasmicCodePreviewSnippet,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicCodePreviewSnippet";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
-import { ensure, mkUuid } from "@/wab/shared/common";
+import { ensure, mkUuid, spawn } from "@/wab/shared/common";
 import { isSubComponent } from "@/wab/shared/core/components";
 import { Component, Site } from "@/wab/shared/model/classes";
 import {
   PlumeDocsExample,
   getPlumeDocsPlugin,
 } from "@/wab/shared/plume/plume-registry";
-import { observable } from "mobx";
+import { observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
-import * as Prettier from "prettier";
-import parserTypescript from "prettier/parser-typescript";
+import * as printerEstree from "prettier/plugins/estree";
+import * as parserTypescript from "prettier/plugins/typescript";
+import * as Prettier from "prettier/standalone";
 import * as React from "react";
 
 function mkDeps(site: Site, component: Component): Record<string, Component> {
@@ -105,11 +106,18 @@ export class CodePreviewCtx {
       );
     }
 
-    this.code.set(
+    initialCode = initialCode.trim();
+    this.code.set(initialCode);
+    spawn(
       Prettier.format(initialCode, {
         parser: "typescript",
-        plugins: [parserTypescript],
-      }).trim()
+        plugins: [parserTypescript, printerEstree],
+        trailingComma: "es5",
+      }).then((formatted) => {
+        if (this.code.get() === initialCode) {
+          runInAction(() => this.code.set(formatted.trim()));
+        }
+      }),
     );
   }
 

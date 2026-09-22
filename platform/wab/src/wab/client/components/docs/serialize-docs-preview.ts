@@ -70,8 +70,9 @@ import * as t from "@babel/types";
 import * as asynclib from "async";
 import L from "lodash";
 import { autorun } from "mobx";
-import * as Prettier from "prettier";
-import parserTypescript from "prettier/parser-typescript";
+import * as printerEstree from "prettier/plugins/estree";
+import * as parserTypescript from "prettier/plugins/typescript";
+import * as Prettier from "prettier/standalone";
 
 /**
  * Syncs current state DocsPortalCtx -- focused component and configured
@@ -84,7 +85,7 @@ export function syncDocsPreview(
     onRendered: () => void;
     onError?: (error: Error) => void;
     codePreviewCtx?: CodePreviewCtx;
-  }
+  },
 ) {
   const { onRendered, onError, codePreviewCtx } = opts;
 
@@ -95,7 +96,7 @@ export function syncDocsPreview(
     safeCallbackify(async (tasks: any[]) => {
       const { modules } = ensure(
         L.last(tasks),
-        "Expecting tasks to be passed from cargo"
+        "Expecting tasks to be passed from cargo",
       ) as any;
       return new Promise<void>((resolve) => {
         // Our listener is invoked once the inner React app is rendered
@@ -126,7 +127,7 @@ export function syncDocsPreview(
         // Send the generated code modules to the live frame
         updateModules(doc, modules);
       });
-    })
+    }),
   );
   return autorun(
     () => {
@@ -146,13 +147,13 @@ export function syncDocsPreview(
           docsCtx,
           globalGroups,
           depsProjectConfigs,
-          codePreviewCtx
-        )
+          codePreviewCtx,
+        ),
       );
 
       spawn(renderQueue.push({ modules }));
     },
-    { name: "DocsPreviewCanvas.syncPreview" }
+    { name: "DocsPreviewCanvas.syncPreview" },
   );
 }
 
@@ -181,7 +182,7 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
   // Give access to all icons, so that the user can use different icons
   // in the custom code editor
   const allIcons = allImageAssets(site, { includeDeps: "direct" }).filter(
-    (x) => x.type === ImageAssetType.Icon && !!x.dataUri
+    (x) => x.type === ImageAssetType.Icon && !!x.dataUri,
   );
   modules.push(...allIcons.map((asset) => createIconAssetModule(asset)));
 
@@ -192,14 +193,19 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
         modules.push(createCodeComponentModule(comp, { idFileNames: true }));
         if (isCodeComponentWithHelpers(comp)) {
           modules.push(
-            createCodeComponentHelperModule(comp, { idFileNames: true })
+            createCodeComponentHelperModule(comp, { idFileNames: true }),
           );
         }
       } else {
         modules.push(
           ...createComponentModules(
-            createComponentOutput(docsCtx.studioCtx, comp, projectOutput, false)
-          )
+            createComponentOutput(
+              docsCtx.studioCtx,
+              comp,
+              projectOutput,
+              false,
+            ),
+          ),
         );
       }
     }
@@ -209,13 +215,13 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
         extractUsedGlobalVariantsForComponents(
           site,
           [...referencedComponents],
-          docsCtx.studioCtx.appCtx.appConfig.usePlasmicImg
-        )
-      )
+          docsCtx.studioCtx.appCtx.appConfig.usePlasmicImg,
+        ),
+      ),
     );
 
     modules.push(
-      ...globalGroups.map((group) => createGlobalVariantGroupModule(group))
+      ...globalGroups.map((group) => createGlobalVariantGroupModule(group)),
     );
 
     return {
@@ -234,7 +240,7 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
 
 export function depsForComponent(
   site: Site,
-  component: Component
+  component: Component,
 ): Set<Component> {
   const set = new Set<Component>();
   for (const sub of getSubComponents(component)) {
@@ -247,7 +253,7 @@ export function depsForComponent(
   }
 
   const deps = site.components.filter(
-    (c) => c.plumeInfo && plugin.deps?.includes(c.plumeInfo.type)
+    (c) => c.plumeInfo && plugin.deps?.includes(c.plumeInfo.type),
   );
 
   for (const dep of deps) {
@@ -268,7 +274,7 @@ export function makePlumeDepsImports(site: Site, component: Component): string {
       (className) =>
         `import ${className} from "./${
           idFileNames ? makeComponentSkeletonIdFileName(component) : className
-        }";`
+        }";`,
     )
     .join("\n");
 }
@@ -276,7 +282,7 @@ export function makePlumeDepsImports(site: Site, component: Component): string {
 function makeComponentsMap(
   site: Site,
   component: Component,
-  useSkeleton: boolean
+  useSkeleton: boolean,
 ) {
   const components = [component, ...depsForComponent(site, component)];
 
@@ -289,7 +295,7 @@ function makeComponentsMap(
             useSkeleton
               ? getExportedComponentName(c)
               : makePlasmicComponentName(c)
-          }`
+          }`,
       )
       .join(",\n") +
     `\n};`
@@ -304,12 +310,12 @@ function makeComponentsMap(
 function serializeReferencedDepCssImports(
   site: Site,
   component: Component,
-  depsProjectConfigs: ProjectConfig[]
+  depsProjectConfigs: ProjectConfig[],
 ): string {
   const referencedDepIds = new Set(
     getDependenciesWithReferencedCss(site, [
       ...componentToDeepReferenced(component, true),
-    ]).map((dep) => dep.projectId)
+    ]).map((dep) => dep.projectId),
   );
   return depsProjectConfigs
     .filter((cfg) => referencedDepIds.has(cfg.projectId))
@@ -325,7 +331,7 @@ function createPreviewModule(
   docsCtx: DocsPortalCtx,
   globalGroups: VariantGroup[],
   depsProjectConfigs: ProjectConfig[],
-  codePreviewCtx: CodePreviewCtx | undefined
+  codePreviewCtx: CodePreviewCtx | undefined,
 ) {
   const component = docsCtx.tryGetFocusedComponent();
   const icon = docsCtx.tryGetFocusedIcon();
@@ -337,8 +343,8 @@ function createPreviewModule(
   const className = useSkeleton
     ? getExportedComponentName(ensure(component, "picked component"))
     : component
-    ? makePlasmicComponentName(component)
-    : makeAssetClassName(ensure(icon, "picked icon"));
+      ? makePlasmicComponentName(component)
+      : makeAssetClassName(ensure(icon, "picked icon"));
 
   const getComponentFilename = (c: Component): string => {
     if (idFileNames) {
@@ -361,24 +367,24 @@ function createPreviewModule(
     : getIconFilename(ensure(icon, "picked icon"));
 
   let content = component
-    ? docsCtx.getComponentCustomCode(component) ??
+    ? (docsCtx.getComponentCustomCode(component) ??
       serializeToggledComponent(
         component,
         docsCtx.getComponentToggles(component),
-        docsCtx.useLoader()
-      )
-    : docsCtx.getIconCustomCode(ensure(icon, "picked icon")) ??
+        docsCtx.useLoader(),
+      ))
+    : (docsCtx.getIconCustomCode(ensure(icon, "picked icon")) ??
       serializeToggledIcon(
         ensure(icon, "picked icon"),
         docsCtx.getIconToggles(ensure(icon, "picked icon")),
-        docsCtx.useLoader()
-      );
+        docsCtx.useLoader(),
+      ));
 
   const depCssImports = component
     ? serializeReferencedDepCssImports(
         docsCtx.studioCtx.site,
         component,
-        depsProjectConfigs
+        depsProjectConfigs,
       )
     : "";
 
@@ -453,11 +459,7 @@ export function __run() {
 }
 
 type ComponentPropType =
-  | "plasmicIntrinsic"
-  | "variant"
-  | "arg"
-  | "override"
-  | "rootProp";
+  "plasmicIntrinsic" | "variant" | "arg" | "override" | "rootProp";
 const intrinsicProps = ["variants", "args", "overrides"];
 
 function variantAndArgNamesForComponent(component: Component) {
@@ -467,7 +469,7 @@ function variantAndArgNamesForComponent(component: Component) {
 export function resolveCollisionsForComponentProp(
   component: Component,
   key: string,
-  kind: ComponentPropType
+  kind: ComponentPropType,
 ) {
   let path: string[] = [];
   const maybeResolveCollision = (higherPriorityProps: string[]) => {
@@ -496,7 +498,7 @@ export function resolveCollisionsForComponentProp(
       const nodeNamer = makeNodeNamer(component);
       const rootName = ensure(
         nodeNamer(component.tplTree),
-        "must have roo t name"
+        "must have roo t name",
       );
       const paramLevelPriorityProps = [
         ...intrinsicProps,
@@ -505,7 +507,7 @@ export function resolveCollisionsForComponentProp(
       const higherPriorityProps = [
         ...paramLevelPriorityProps,
         ...getNamedDescendantNodes(nodeNamer, component.tplTree).map((node) =>
-          ensure(nodeNamer(node), "must have name")
+          ensure(nodeNamer(node), "must have name"),
         ),
       ];
       if (!higherPriorityProps.includes(key)) {
@@ -532,7 +534,7 @@ function serializeObjectChain(path: string[], serializedValue: string) {
   }
   return `{${path[0]}: ${serializeObjectChain(
     path.slice(1),
-    serializedValue
+    serializedValue,
   )}}`;
 }
 
@@ -541,7 +543,7 @@ function serializeObjectChain(path: string[], serializedValue: string) {
 function recursiveUpdateNode(
   node: t.ObjectExpression | t.JSXOpeningElement,
   path: string[],
-  serializedValue: string | undefined
+  serializedValue: string | undefined,
 ) {
   const parseExpr = (val: string) =>
     parser.parseExpression(val, {
@@ -571,7 +573,7 @@ function recursiveUpdateNode(
           ) {
             if (serializedValue) {
               prop.value = t.jsxExpressionContainer(
-                parseExpr(serializeObjectChain(innerPath, serializedValue))
+                parseExpr(serializeObjectChain(innerPath, serializedValue)),
               );
             }
           } else {
@@ -579,7 +581,7 @@ function recursiveUpdateNode(
               recursiveUpdateNode(
                 oldValue.expression,
                 innerPath,
-                serializedValue
+                serializedValue,
               )
             ) {
               deleteIndex = index;
@@ -596,9 +598,9 @@ function recursiveUpdateNode(
         t.jsxAttribute(
           t.jsxIdentifier(key),
           t.jsxExpressionContainer(
-            parseExpr(serializeObjectChain(innerPath, serializedValue))
-          )
-        )
+            parseExpr(serializeObjectChain(innerPath, serializedValue)),
+          ),
+        ),
       );
     }
     return false;
@@ -622,7 +624,7 @@ function recursiveUpdateNode(
           if (oldValue === null || oldValue.type !== "ObjectExpression") {
             if (serializedValue) {
               prop.value = parseExpr(
-                serializeObjectChain(innerPath, serializedValue)
+                serializeObjectChain(innerPath, serializedValue),
               );
             }
           } else {
@@ -643,8 +645,8 @@ function recursiveUpdateNode(
       node.properties.push(
         t.objectProperty(
           t.identifier(key),
-          parseExpr(serializeObjectChain(innerPath, serializedValue))
-        )
+          parseExpr(serializeObjectChain(innerPath, serializedValue)),
+        ),
       );
     }
     return false;
@@ -656,7 +658,7 @@ export function updateComponentCode(
   path: string[],
   value: any,
   isValueSerialized: boolean,
-  param: Param | undefined
+  param: Param | undefined,
 ) {
   const component = docsCtx.getFocusedComponent();
   const tryParseAndUpdateCode = (code: string | undefined) => {
@@ -682,8 +684,8 @@ export function updateComponentCode(
       expression.openingElement.name.name = docsCtx.useLoader()
         ? "PlasmicComponent"
         : isPlumeComponent(component)
-        ? getExportedComponentName(component)
-        : makePlasmicComponentName(component);
+          ? getExportedComponentName(component)
+          : makePlasmicComponentName(component);
 
       let pathToUse = path;
 
@@ -693,21 +695,15 @@ export function updateComponentCode(
       const serializedValue = isValueSerialized
         ? (value as string)
         : value
-        ? serializeToggleValue(component, value, param)
-        : undefined;
+          ? serializeToggleValue(component, value, param)
+          : undefined;
       recursiveUpdateNode(
         expression.openingElement,
         pathToUse,
-        serializedValue
+        serializedValue,
       );
       const newCode = generate(file as any).code;
-      return Prettier.format(newCode, {
-        parser: "typescript",
-        plugins: [parserTypescript],
-        trailingComma: "none",
-      })
-        .trim()
-        .slice(0, -1);
+      return newCode.trim().replace(/;$/, "");
     } catch {
       return null;
     }
@@ -719,27 +715,27 @@ export function updateComponentCode(
         serializeToggledComponent(
           component,
           docsCtx.getComponentToggles(component),
-          docsCtx.useLoader()
-        )
+          docsCtx.useLoader(),
+        ),
     )
   );
 }
 
 function togglesToProps(
   component: Component,
-  toggles: Map<Param, any>
+  toggles: Map<Param, any>,
 ): Record<string, string> {
   return Object.fromEntries(
     [...toggles.entries()].map(([param, value]) => [
       toVarName(param.variable.name),
       serializeToggleValue(component, value, param),
-    ])
+    ]),
   );
 }
 
 function serializePlasmicLoaderComponent(
   component: Component,
-  props: Record<string, string>
+  props: Record<string, string>,
 ) {
   const componentProps = Object.entries(props)
     .map(([key, value]) => `"${key}":${value}`)
@@ -753,7 +749,7 @@ function serializeCodegenComponent(
   component: Component,
   props: Record<string, string>,
   useSkeleton: boolean,
-  forceName?: string
+  forceName?: string,
 ) {
   const componentName =
     forceName ??
@@ -775,44 +771,52 @@ export function serializeComponent(
   props: Record<string, string>,
   useLoader: boolean,
   useSkeleton: boolean,
-  forceName?: string
+  forceName?: string,
 ) {
   const code = useLoader
     ? serializePlasmicLoaderComponent(component, props)
     : serializeCodegenComponent(component, props, useSkeleton, forceName);
 
-  return Prettier.format(code, {
-    parser: "typescript",
-    plugins: [parserTypescript],
-    trailingComma: "none",
-  })
+  return code.trim();
+}
+
+// Keep serialization synchronous and only format after storing, so MobX tracks
+// model reads and rapid prop edits build on the latest code.
+export async function formatDocsCode(code: string) {
+  return (
+    await Prettier.format(code, {
+      parser: "typescript",
+      plugins: [parserTypescript, printerEstree],
+      trailingComma: "none",
+    })
+  )
     .trim()
-    .slice(0, -1); // Remove extra ';'
+    .replace(/;$/, "");
 }
 
 export function serializeToggledComponent(
   component: Component,
   toggles: Map<Param, any>,
-  useLoader: boolean
+  useLoader: boolean,
 ) {
   const props = togglesToProps(component, toggles);
   return serializeComponent(
     component,
     props,
     useLoader,
-    isPlumeComponent(component)
+    isPlumeComponent(component),
   );
 }
 
 export function serializeToggledIcon(
   icon: ImageAsset,
   toggles: Map<IconToggleProp, string>,
-  useLoader: boolean
+  useLoader: boolean,
 ) {
   const iconName = makeAssetClassName(icon);
   const props = [...toggles.entries()]
     .map(
-      ([param, value]) => `${param}${useLoader ? ":" : "="}${jsLiteral(value)}`
+      ([param, value]) => `${param}${useLoader ? ":" : "="}${jsLiteral(value)}`,
     )
     .join(useLoader ? ",\n" : "\n");
   if (useLoader) {
@@ -827,7 +831,7 @@ export function serializeToggledIcon(
 function serializeToggleValue(
   component: Component,
   value: any,
-  param: Param | undefined
+  param: Param | undefined,
 ) {
   if (L.isString(value)) {
     return jsLiteral(value);

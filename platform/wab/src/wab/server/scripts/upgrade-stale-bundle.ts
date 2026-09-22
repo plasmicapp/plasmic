@@ -141,7 +141,7 @@ async function migrate() {
   }
   fs.writeFileSync(
     path,
-    Prettier.format(JSON.stringify([...Object.entries(bundles)]), {
+    await Prettier.format(JSON.stringify([...Object.entries(bundles)]), {
       parser: "json",
       trailingComma: "none",
     })

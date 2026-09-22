@@ -21,7 +21,7 @@ import {
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import L from "lodash";
-import { autorun } from "mobx";
+import { autorun, runInAction } from "mobx";
 import { observer } from "mobx-react";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
 import React from "react";
@@ -143,6 +143,12 @@ ${component ? makePlumeDepsImports(docsCtx.studioCtx.site, component) : ""}
                 docsCtx.getIconToggles(ensure(icon, "picked icon")),
                 docsCtx.useLoader()
               );
+
+        if (component && !docsCtx.getComponentCustomCode(component)) {
+          runInAction(() => {
+            docsCtx.setComponentCustomCode(component, docsCtxCode, true);
+          });
+        }
 
         const code = `
 ${injectedCode}

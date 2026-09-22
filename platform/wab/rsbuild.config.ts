@@ -125,6 +125,10 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
 
 const appConfig = defineConfig({
   dev: {
+    // Compile routes before CI starts.
+    ...(process.env.CI
+      ? { lazyCompilation: false, hmr: false, liveReload: false }
+      : {}),
     // We write intermediate files to disk (build/) for debugging,
     // and also because our local host server will serve from there.
     writeToDisk: publicUrl.includes("localhost") ? true : false,

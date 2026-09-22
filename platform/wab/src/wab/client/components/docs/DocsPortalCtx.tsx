@@ -1,5 +1,6 @@
 import { codegenTypeKey } from "@/wab/client/LocalStorageKey";
 import {
+  formatDocsCode,
   resolveCollisionsForComponentProp,
   serializeToggledComponent,
   updateComponentCode,
@@ -94,8 +95,9 @@ export class DocsPortalCtx {
           serializeToggledComponent(
             component,
             this.getComponentToggles(component),
-            this.useLoader()
-          )
+            this.useLoader(),
+          ),
+        true,
       );
     }
   }
@@ -112,11 +114,25 @@ export class DocsPortalCtx {
     return this.componentToCode.get(component);
   }
 
-  setComponentCustomCode(component: Component, code: string | null) {
+  setComponentCustomCode(
+    component: Component,
+    code: string | null,
+    format = false,
+  ) {
     if (code == null) {
       this.componentToCode.delete(component);
     } else {
       this.componentToCode.set(component, code);
+      if (format) {
+        spawn(
+          formatDocsCode(code).then((formatted) => {
+            // Do not overwrite an edit made while Prettier was running.
+            if (this.getComponentCustomCode(component) === code) {
+              this.setComponentCustomCode(component, formatted);
+            }
+          }),
+        );
+      }
     }
   }
 
@@ -180,7 +196,7 @@ export class DocsPortalCtx {
       isValueSerialized,
       param
     );
-    this.setComponentCustomCode(component, code);
+    this.setComponentCustomCode(component, code, true);
   }
 
   getComponentToggles(component: Component) {
