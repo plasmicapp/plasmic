@@ -15,6 +15,7 @@ import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import {
   CmsRow,
   FeatureTier,
+  Permission,
   Team,
   User,
 } from "@/wab/server/entities/Entities";
@@ -194,19 +195,19 @@ describe("DbMgr.CMS", () => {
 
       const duplicatedDb = await db1().cloneCmsDatabase(
         database1.id,
-        "database2"
+        "database2",
       );
       const duplicatedPostsTable = await db1().getCmsTableByIdentifier(
         duplicatedDb.id,
-        postsTable.identifier
+        postsTable.identifier,
       );
       const duplicatedUsersTable = await db1().getCmsTableByIdentifier(
         duplicatedDb.id,
-        usersTable.identifier
+        usersTable.identifier,
       );
       const duplicatedCommentsTable = await db1().getCmsTableByIdentifier(
         duplicatedDb.id,
-        commentsTable.identifier
+        commentsTable.identifier,
       );
 
       expect(duplicatedDb.name).toEqual("database2");
@@ -221,11 +222,11 @@ describe("DbMgr.CMS", () => {
       expect(duplicatedUsersTable.description).toEqual(usersTable.description);
 
       expect(duplicatedCommentsTable.identifier).toEqual(
-        commentsTable.identifier
+        commentsTable.identifier,
       );
       expect(duplicatedCommentsTable.name).toEqual(commentsTable.name);
       expect(duplicatedCommentsTable.description).toEqual(
-        commentsTable.description
+        commentsTable.description,
       );
 
       // Check that the schema is the same. No refs used in the Posts and Users tables
@@ -332,7 +333,7 @@ describe("DbMgr.CMS", () => {
       const databases = await db1().listCmsDatabases(workspace.id);
       expect(databases.length).toEqual(2);
       expect(new Set(databases.map((d) => d.id))).toEqual(
-        new Set([database.id, database2.id])
+        new Set([database.id, database2.id]),
       );
 
       const database3 = await db1().getCmsDatabaseById(database2.id);
@@ -379,12 +380,12 @@ describe("DbMgr.CMS", () => {
 
       const table1__3 = await db1().getCmsTableByIdentifier(
         database.id,
-        "quotes"
+        "quotes",
       );
       expect(table1__3.id).toEqual(table.id);
 
       await expect(
-        db1().getCmsTableByIdentifier(database2.id, "quotes")
+        db1().getCmsTableByIdentifier(database2.id, "quotes"),
       ).rejects.toThrow();
 
       const table2 = await db1().createCmsTable({
@@ -400,7 +401,7 @@ describe("DbMgr.CMS", () => {
       });
       const tables = await db1().listCmsTables(database.id);
       expect(new Set(tables.map((t) => t.id))).toEqual(
-        new Set([table.id, table2.id])
+        new Set([table.id, table2.id]),
       );
 
       const table2__2 = await db1().updateCmsTable(table2.id, {
@@ -539,16 +540,16 @@ describe("DbMgr.CMS", () => {
     query: ApiCmsQuery,
     expected: CmsRow[],
     ordered: boolean,
-    opts?: { useDraft?: boolean }
+    opts?: { useDraft?: boolean },
   ) => {
     const results = await db.queryCmsRows(tableId, query, opts);
     if (ordered) {
       expect(results.map((p) => p.identifier)).toEqual(
-        expected.map((p) => p.identifier)
+        expected.map((p) => p.identifier),
       );
     } else {
       expect(new Set(results.map((p) => p.identifier))).toEqual(
-        new Set(expected.map((p) => p.identifier))
+        new Set(expected.map((p) => p.identifier)),
       );
     }
 
@@ -705,7 +706,7 @@ describe("DbMgr.CMS", () => {
           },
         },
         [p1, p3, p4, p5],
-        false
+        false,
       );
 
       await expectCmsRows(
@@ -717,7 +718,7 @@ describe("DbMgr.CMS", () => {
           },
         },
         [p5],
-        false
+        false,
       );
 
       await expectCmsRows(
@@ -732,7 +733,7 @@ describe("DbMgr.CMS", () => {
           },
         },
         [p1, p4, p5],
-        false
+        false,
       );
 
       await expectCmsRows(
@@ -750,7 +751,7 @@ describe("DbMgr.CMS", () => {
           },
         },
         [p1, p4],
-        false
+        false,
       );
 
       await expectCmsRows(
@@ -782,7 +783,7 @@ describe("DbMgr.CMS", () => {
           },
         },
         [p1, p2, p4],
-        false
+        false,
       );
 
       const whereBlueAndBetween30And70: FilterClause = {
@@ -817,7 +818,7 @@ describe("DbMgr.CMS", () => {
           order: [{ field: "age", dir: "desc" }],
         },
         [p4, p2, p1],
-        true
+        true,
       );
 
       await expectCmsRows(
@@ -829,7 +830,7 @@ describe("DbMgr.CMS", () => {
           limit: 2,
         },
         [p1, p2],
-        true
+        true,
       );
 
       await expectCmsRows(
@@ -842,7 +843,7 @@ describe("DbMgr.CMS", () => {
           offset: 2,
         },
         [p4],
-        true
+        true,
       );
 
       await expect(
@@ -850,7 +851,7 @@ describe("DbMgr.CMS", () => {
           where: whereBlueAndBetween30And70,
           order: [{ field: "age", dir: "asc" }],
           limit: -1,
-        })
+        }),
       ).rejects.toThrowError(new Error("limit field cannot be negative"));
 
       await expect(
@@ -858,7 +859,7 @@ describe("DbMgr.CMS", () => {
           where: whereBlueAndBetween30And70,
           order: [{ field: "age", dir: "asc" }],
           offset: -1,
-        })
+        }),
       ).rejects.toThrowError(new Error("offset field cannot be negative"));
     }));
 
@@ -1004,7 +1005,7 @@ describe("DbMgr.CMS", () => {
         },
       });
       await expect(
-        db1().getCmsTableByIdentifier(database.id, "products")
+        db1().getCmsTableByIdentifier(database.id, "products"),
       ).resolves.toMatchObject({
         id: table1.id,
       });
@@ -1034,7 +1035,7 @@ describe("DbMgr.CMS", () => {
       // getCmsTableByIdentifier only returns the oldest table if multiple
       // tables have the same identifier
       await expect(
-        db1().getCmsTableByIdentifier(database.id, "products")
+        db1().getCmsTableByIdentifier(database.id, "products"),
       ).resolves.toMatchObject({
         id: table1.id,
       });
@@ -1042,7 +1043,7 @@ describe("DbMgr.CMS", () => {
       // Archive the table, now getCmsTableByIdentifier returns the new table
       await db1().updateCmsTable(table1.id, { isArchived: true });
       await expect(
-        db1().getCmsTableByIdentifier(database.id, "products")
+        db1().getCmsTableByIdentifier(database.id, "products"),
       ).resolves.toMatchObject({
         id: table2.id,
       });
@@ -1056,7 +1057,7 @@ describe("DbMgr.CMS", () => {
       const tablesWithArchived = await db1().listCmsTables(database.id, true);
       expect(tablesWithArchived.length).toEqual(2);
       expect(new Set(tablesWithArchived.map((t) => t.id))).toEqual(
-        new Set([table1.id, table2.id])
+        new Set([table1.id, table2.id]),
       );
     }));
 });
@@ -1067,11 +1068,11 @@ describe("DbMgr", () => {
       const allTeams = await sudo.listAllTeams();
       expect(allTeams.length).toBe(6);
       const teams = (await db1().getAffiliatedTeams()).filter(
-        (it) => !it.personalTeamOwnerId
+        (it) => !it.personalTeamOwnerId,
       );
       expect(teams.length).toBe(1);
       const workspaces = await db1().getWorkspacesByTeams(
-        teams.map((t) => t.id)
+        teams.map((t) => t.id),
       );
       expect(workspaces.length).toBe(1);
     }));
@@ -1081,11 +1082,11 @@ describe("DbMgr", () => {
       async function expectEffectiveTeam(users: User[]) {
         const effectiveUserIds = filterMapTruthy(
           await db1().getEffectiveUsersForTeam(team.id, false),
-          (u) => u.userId
+          (u) => u.userId,
         );
         const effectiveUsers = await db1().getUsersById(effectiveUserIds);
         expect(L.sortBy(effectiveUsers.map((u) => u.email))).toEqual(
-          L.sortBy(users.map((u) => u.email))
+          L.sortBy(users.map((u) => u.email)),
         );
       }
 
@@ -1098,7 +1099,7 @@ describe("DbMgr", () => {
       await db1().grantWorkspacePermissionByEmail(
         workspace.id,
         user2.email,
-        "editor"
+        "editor",
       );
       await expectEffectiveTeam([user1, user2]);
 
@@ -1106,7 +1107,7 @@ describe("DbMgr", () => {
       await db1().grantProjectPermissionByEmail(
         project.id,
         user3.email,
-        "editor"
+        "editor",
       );
       await expectEffectiveTeam([user1, user2, user3]);
 
@@ -1114,7 +1115,7 @@ describe("DbMgr", () => {
       await db1().grantProjectPermissionByEmail(
         project.id,
         user2.email,
-        "editor"
+        "editor",
       );
       await expectEffectiveTeam([user1, user2, user3]);
       await db1().grantTeamPermissionByEmail(team.id, user2.email, "editor");
@@ -1146,7 +1147,7 @@ describe("DbMgr", () => {
     withDb(async (sudo, [user1, user2, user3], [db1, db2], project) => {
       async function expectPerms(
         accessLevelPromise: Promise<AccessLevel>,
-        expectedAccessLevel: string
+        expectedAccessLevel: string,
       ) {
         const actualAccessLevel = await accessLevelPromise;
         expect(actualAccessLevel).toBe(expectedAccessLevel);
@@ -1157,35 +1158,35 @@ describe("DbMgr", () => {
       await db1().grantProjectPermissionByEmail(
         project.id,
         user2.email,
-        "commenter"
+        "commenter",
       );
       await expectPerms(
         db2().getActorAccessLevelToProject(project.id),
-        "commenter"
+        "commenter",
       );
 
       await db1().grantWorkspacePermissionByEmail(
         workspace.id,
         user2.email,
-        "editor"
+        "editor",
       );
       await expectPerms(
         db2().getActorAccessLevelToProject(project.id),
-        "editor"
+        "editor",
       );
       await expectPerms(
         db2().getActorAccessLevelToWorkspace(workspace.id),
-        "editor"
+        "editor",
       );
 
       await db1().grantTeamPermissionByEmail(team.id, user2.email, "commenter");
       await expectPerms(
         db2().getActorAccessLevelToProject(project.id),
-        "editor"
+        "editor",
       );
       await expectPerms(
         db2().getActorAccessLevelToWorkspace(workspace.id),
-        "editor"
+        "editor",
       );
     }));
 
@@ -1194,7 +1195,7 @@ describe("DbMgr", () => {
       const teams = await db1().getAffiliatedTeams();
       const rootTeam = ensure(
         teams.find((t) => (t.id as string) !== (user1.id as string)),
-        ""
+        "",
       );
       const subTeam = await sudo.sudoUpdateTeam({
         id: (await db1().createTeam("Sub Team")).id,
@@ -1202,23 +1203,23 @@ describe("DbMgr", () => {
       });
 
       expect(await sudo.getTeamAccessLevelByUser(subTeam.id, user2.id)).toBe(
-        "blocked"
+        "blocked",
       );
       expect(await sudo.getTeamAccessLevelByUser(rootTeam.id, user2.id)).toBe(
-        "blocked"
+        "blocked",
       );
 
       await db1().grantTeamPermissionByEmail(
         rootTeam.id,
         user2.email,
-        "editor"
+        "editor",
       );
 
       expect(await sudo.getTeamAccessLevelByUser(subTeam.id, user2.id)).toBe(
-        "editor"
+        "editor",
       );
       expect(await sudo.getTeamAccessLevelByUser(rootTeam.id, user2.id)).toBe(
-        "editor"
+        "editor",
       );
     }));
 
@@ -1297,49 +1298,53 @@ describe("DbMgr", () => {
         await db1().grantTeamPermissionByEmail(
           team.id,
           user2.email,
-          "commenter"
+          "commenter",
         );
 
         // Cannot grant permissions higher than yourself.
         await expect(
-          db2().grantProjectPermissionByEmail(project.id, user3.email, "editor")
+          db2().grantProjectPermissionByEmail(
+            project.id,
+            user3.email,
+            "editor",
+          ),
         ).toReject();
         await expect(
           db2().grantWorkspacePermissionByEmail(
             workspace.id,
             user3.email,
-            "editor"
-          )
+            "editor",
+          ),
         ).toReject();
         await expect(
-          db2().grantTeamPermissionByEmail(team.id, user3.email, "editor")
+          db2().grantTeamPermissionByEmail(team.id, user3.email, "editor"),
         ).toReject();
 
         // Commenters can grant other commenters.
         await db1().grantTeamPermissionByEmail(
           team.id,
           user2.email,
-          "commenter"
+          "commenter",
         );
         await db2().grantProjectPermissionByEmail(
           project.id,
           user3.email,
-          "commenter"
+          "commenter",
         );
         await db2().grantWorkspacePermissionByEmail(
           workspace.id,
           user3.email,
-          "commenter"
+          "commenter",
         );
         await db2().grantTeamPermissionByEmail(
           team.id,
           user3.email,
-          "commenter"
+          "commenter",
         );
 
         // Commenters cannot revoke, even other commenters XXX
         await expect(
-          db2().revokeProjectPermissionsByEmails(project.id, [user3.email])
+          db2().revokeProjectPermissionsByEmails(project.id, [user3.email]),
         ).toReject();
       }));
 
@@ -1351,19 +1356,19 @@ describe("DbMgr", () => {
         await db1().grantTeamPermissionByEmail(
           team.id,
           user2.email,
-          "designer"
+          "designer",
         );
         // Set user3 as editor of team, workspace, project
         await db1().grantTeamPermissionByEmail(team.id, user3.email, "editor");
         await db1().grantWorkspacePermissionByEmail(
           workspace.id,
           user3.email,
-          "editor"
+          "editor",
         );
         await db1().grantProjectPermissionByEmail(
           project.id,
           user3.email,
-          "editor"
+          "editor",
         );
 
         // Designer cannot demote or re-grant an editor (who already has direct permission)
@@ -1371,29 +1376,29 @@ describe("DbMgr", () => {
           db2().grantProjectPermissionByEmail(
             project.id,
             user3.email,
-            "designer"
-          )
+            "designer",
+          ),
         ).toReject();
         await expect(
           db2().grantWorkspacePermissionByEmail(
             workspace.id,
             user3.email,
-            "designer"
-          )
+            "designer",
+          ),
         ).toReject();
         await expect(
-          db2().grantTeamPermissionByEmail(team.id, user3.email, "designer")
+          db2().grantTeamPermissionByEmail(team.id, user3.email, "designer"),
         ).toReject();
 
         // Designer cannot revoke an editor (designer lacks editor-level access needed for revoke)
         await expect(
-          db2().revokeProjectPermissionsByEmails(project.id, [user3.email])
+          db2().revokeProjectPermissionsByEmails(project.id, [user3.email]),
         ).toReject();
         await expect(
-          db2().revokeWorkspacePermissionsByEmails(workspace.id, [user3.email])
+          db2().revokeWorkspacePermissionsByEmails(workspace.id, [user3.email]),
         ).toReject();
         await expect(
-          db2().revokeTeamPermissionsByEmails(team.id, [user3.email])
+          db2().revokeTeamPermissionsByEmails(team.id, [user3.email]),
         ).toReject();
       }));
 
@@ -1409,12 +1414,12 @@ describe("DbMgr", () => {
         await db2().grantProjectPermissionByEmail(
           project.id,
           user3.email,
-          "editor"
+          "editor",
         );
         await db2().grantWorkspacePermissionByEmail(
           workspace.id,
           user3.email,
-          "editor"
+          "editor",
         );
         await db2().grantTeamPermissionByEmail(team.id, user3.email, "editor");
 
@@ -1422,31 +1427,35 @@ describe("DbMgr", () => {
         await db1().grantProjectPermissionByEmail(
           project.id,
           user3.email,
-          "commenter"
+          "commenter",
         );
         await db2().grantProjectPermissionByEmail(
           project.id,
           user3.email,
-          "editor"
+          "editor",
         );
 
         // Editors can demote
         await db2().grantProjectPermissionByEmail(
           project.id,
           user3.email,
-          "commenter"
+          "commenter",
         );
 
         // Editors can't demote owners
         await expect(
-          db2().grantProjectPermissionByEmail(project.id, user1.email, "editor")
+          db2().grantProjectPermissionByEmail(
+            project.id,
+            user1.email,
+            "editor",
+          ),
         ).toReject();
         await expect(
           db2().grantProjectPermissionByEmail(
             project.id,
             user1.email,
-            "commenter"
-          )
+            "commenter",
+          ),
         ).toReject();
 
         // Editors can revoke
@@ -1459,15 +1468,15 @@ describe("DbMgr", () => {
 
         // Editors can't revoke owner
         await expect(
-          db2().revokeProjectPermissionsByEmails(project.id, [user1.email])
+          db2().revokeProjectPermissionsByEmails(project.id, [user1.email]),
         ).toReject();
 
         await expect(
-          db2().revokeWorkspacePermissionsByEmails(workspace.id, [user1.email])
+          db2().revokeWorkspacePermissionsByEmails(workspace.id, [user1.email]),
         ).toReject();
 
         await expect(
-          db2().revokeTeamPermissionsByEmails(team.id, [user1.email])
+          db2().revokeTeamPermissionsByEmails(team.id, [user1.email]),
         ).toReject();
       }));
 
@@ -1479,17 +1488,17 @@ describe("DbMgr", () => {
         await db1().grantProjectPermissionByEmail(
           project.id,
           user2.email,
-          "editor"
+          "editor",
         );
         await db1().grantWorkspacePermissionByEmail(
           workspace.id,
           user2.email,
-          "editor"
+          "editor",
         );
 
         // Owner cannot demote themselves if they are the last owner
         await expect(
-          db1().grantTeamPermissionByEmail(team.id, user1.email, "editor")
+          db1().grantTeamPermissionByEmail(team.id, user1.email, "editor"),
         ).toReject();
       }));
 
@@ -1497,7 +1506,7 @@ describe("DbMgr", () => {
       withDb(async (_sudo, _users, [db1]) => {
         const { team } = await getTeamAndWorkspace(db1());
         await expect(
-          db1().updateTeam({ id: team.id, defaultAccessLevel: "owner" })
+          db1().updateTeam({ id: team.id, defaultAccessLevel: "owner" }),
         ).rejects.toThrow("Ownership can only be granted by transfer");
       }));
 
@@ -1514,7 +1523,7 @@ describe("DbMgr", () => {
 
         // Cannot self-demote when last owner
         await expect(
-          db1().grantTeamPermissionByEmail(team.id, user1.email, "editor")
+          db1().grantTeamPermissionByEmail(team.id, user1.email, "editor"),
         ).toReject();
 
         await db1().grantTeamPermissionByEmail(team.id, user2.email, "owner");
@@ -1522,15 +1531,15 @@ describe("DbMgr", () => {
         expect((await sudo.getTeamById(team.id)).createdById).toBe(user2.id);
         const teamPerms = await sudo.getPermissionsForTeams([team.id]);
         expect(
-          teamPerms.filter((perm) => perm.accessLevel === "owner")
+          teamPerms.filter((perm) => perm.accessLevel === "owner"),
         ).toMatchObject([{ userId: user2.id }]);
         expect(
-          teamPerms.find((perm) => perm.userId === user1.id)?.accessLevel
+          teamPerms.find((perm) => perm.userId === user1.id)?.accessLevel,
         ).toBe("editor");
 
         // user2 is now the sole owner and cannot self-demote
         await expect(
-          db2().grantTeamPermissionByEmail(team.id, user2.email, "editor")
+          db2().grantTeamPermissionByEmail(team.id, user2.email, "editor"),
         ).toReject();
       }));
 
@@ -1538,26 +1547,34 @@ describe("DbMgr", () => {
       withDb(async (sudo, [user1, user2], [db1, db2], project) => {
         // Cannot self-demote when last owner
         await expect(
-          db1().grantProjectPermissionByEmail(project.id, user1.email, "editor")
+          db1().grantProjectPermissionByEmail(
+            project.id,
+            user1.email,
+            "editor",
+          ),
         ).toReject();
 
         // Phase 1: promote user2 to owner
         await db1().grantProjectPermissionByEmail(
           project.id,
           user2.email,
-          "owner"
+          "owner",
         );
 
         // Phase 2: self-demote is now safe since user2 is also an owner
         await db1().grantProjectPermissionByEmail(
           project.id,
           user1.email,
-          "editor"
+          "editor",
         );
 
         // user2 is now the sole owner and cannot self-demote
         await expect(
-          db2().grantProjectPermissionByEmail(project.id, user2.email, "editor")
+          db2().grantProjectPermissionByEmail(
+            project.id,
+            user2.email,
+            "editor",
+          ),
         ).toReject();
       }));
   });
@@ -1614,7 +1631,7 @@ describe("DbMgr", () => {
       const teamPerms = await db1().getPermissionsForTeams([team.id]);
       const workspacePerms = await db1().getPermissionsForWorkspaces(
         [workspace.id],
-        true
+        true,
       );
       const expected = [{ userId: user1.id, accessLevel: "owner" }];
       expect(teamPerms).toMatchObject(expected);
@@ -1670,7 +1687,7 @@ describe("DbMgr", () => {
           uiConfig: {
             hideDefaultPageTemplates: true,
           },
-        })
+        }),
       ).toReject();
 
       // cannot update UI config on team/scale tier
@@ -1689,7 +1706,7 @@ describe("DbMgr", () => {
           uiConfig: {
             hideDefaultPageTemplates: true,
           },
-        })
+        }),
       ).toReject();
 
       // can update UI config on enterprise tier
@@ -1723,7 +1740,7 @@ describe("DbMgr", () => {
           uiConfig: {
             hideDefaultPageTemplates: true,
           },
-        })
+        }),
       ).toReject();
 
       // can update UI config if parent team is on enterprise tier
@@ -1765,7 +1782,7 @@ describe("DbMgr.user", () => {
       const teams = await userDbMgr.getAffiliatedTeams();
       expect(teams).toHaveLength(2);
       const personalTeam = teams.find(
-        (t) => t.personalTeamOwnerId === user.id
+        (t) => t.personalTeamOwnerId === user.id,
       )!;
       expect(personalTeam.name).toEqual("Personal team");
       const orgTeam = teams.find((t) => t.personalTeamOwnerId === null)!;
@@ -1786,7 +1803,7 @@ describe("DbMgr.user", () => {
             teamId: orgTeam.id,
             accessLevel: "owner",
           }),
-        ])
+        ]),
       );
 
       // check workspaces
@@ -1802,7 +1819,7 @@ describe("DbMgr.user", () => {
             name: "Firstname's First Workspace",
             teamId: orgTeam.id,
           }),
-        ])
+        ]),
       );
     });
   });
@@ -1821,7 +1838,7 @@ describe("DbMgr organization entitlements", () => {
       const checkCanCreateTeam = () => limitedMgr.checkCanCreateTeam();
 
       await expect(checkCanCreateTeam()).rejects.toThrow(
-        "You can only have one unpaid organization"
+        "You can only have one unpaid organization",
       );
 
       await limitedMgr.startFreeTrial({
@@ -1829,7 +1846,7 @@ describe("DbMgr organization entitlements", () => {
         featureTierName: "Team",
       });
       await expect(checkCanCreateTeam()).rejects.toThrow(
-        "You can only have one unpaid organization"
+        "You can only have one unpaid organization",
       );
 
       await sudo.sudoUpdateTeam({
@@ -1857,15 +1874,15 @@ describe("DbMgr organization entitlements", () => {
       const freeTeam = await mgr.createTeam("Free org");
 
       await expect(mgr.checkCanCancelSubscription(paidTeam.id)).rejects.toThrow(
-        "You can only have one unpaid organization"
+        "You can only have one unpaid organization",
       );
       await expect(
-        mgr.checkCanCancelSubscription(freeTeam.id)
+        mgr.checkCanCancelSubscription(freeTeam.id),
       ).resolves.toBeUndefined();
 
       await mgr.deleteTeam(freeTeam.id);
       await expect(
-        mgr.checkCanCancelSubscription(paidTeam.id)
+        mgr.checkCanCancelSubscription(paidTeam.id),
       ).resolves.toBeUndefined();
     }));
 
@@ -1889,7 +1906,7 @@ describe("DbMgr organization entitlements", () => {
 
       await sudo.sudoUpdateTeam({ id: parent.id, trialStartDate: new Date() });
       await expect(mgr.checkCanCreateTeam()).rejects.toThrow(
-        "You can only have one unpaid organization"
+        "You can only have one unpaid organization",
       );
     }));
 
@@ -1906,7 +1923,7 @@ describe("DbMgr organization entitlements", () => {
       const secondTeam = await mgr.createTeam("Second org");
 
       await expect(mgr.restoreTeam(firstTeam.id)).rejects.toThrow(
-        "You can only have one unpaid organization"
+        "You can only have one unpaid organization",
       );
 
       await sudo.sudoUpdateTeam({
@@ -1975,7 +1992,7 @@ describe("DbMgr organization entitlements", () => {
         trialMgr.startFreeTrial({
           teamId: secondTeam.id,
           featureTierName: "Team",
-        })
+        }),
       ).rejects.toThrow("Free trials are only available once");
     }));
 
@@ -2001,12 +2018,12 @@ describe("DbMgr organization entitlements", () => {
       await ownerMgr.grantTeamPermissionByEmail(
         secondTeam.id,
         editor.email,
-        "editor"
+        "editor",
       );
 
       expect(await editorMgr.canStartFreeTrial(secondTeam.id)).toBe(false);
       expect(await editorMgr.getUserById(owner.id)).not.toHaveProperty(
-        "freeTrialStartedAt"
+        "freeTrialStartedAt",
       );
       const members = await editorMgr.getTeamMembers(secondTeam.id);
       expect(JSON.stringify(members)).toContain(owner.email);
@@ -2017,7 +2034,7 @@ describe("DbMgr organization entitlements", () => {
         editorMgr.startFreeTrial({
           teamId: secondTeam.id,
           featureTierName: "Team",
-        })
+        }),
       ).rejects.toThrow("Free trials are only available once");
     }));
 
@@ -2040,7 +2057,7 @@ describe("DbMgr organization entitlements", () => {
             select: ["id", "freeTrialStartedAt"],
             where: { id: owner.id },
           }),
-          "Trial owner must exist"
+          "Trial owner must exist",
         ).freeTrialStartedAt;
       const firstTrialClaim = await getTrialClaim();
       expect(firstTrialClaim).toBeInstanceOf(Date);
@@ -2050,7 +2067,7 @@ describe("DbMgr organization entitlements", () => {
         sudo.startFreeTrial({
           teamId: team.id,
           featureTierName: "Team",
-        })
+        }),
       ).resolves.toMatchObject({ id: team.id });
       expect(await getTrialClaim()).toEqual(firstTrialClaim);
     }));
@@ -2070,35 +2087,35 @@ describe("DbMgr organization entitlements", () => {
       await ownerMgr.grantTeamPermissionByEmail(
         team.id,
         newOwner.email,
-        "editor"
+        "editor",
       );
 
       await expect(sudo.changeTeamOwner(team.id, newOwner.id)).rejects.toThrow(
-        "Cannot transfer an unpaid organization."
+        "Cannot transfer an unpaid organization.",
       );
       await expect(
-        ownerMgr.grantTeamPermissionByEmail(team.id, newOwner.email, "owner")
+        ownerMgr.grantTeamPermissionByEmail(team.id, newOwner.email, "owner"),
       ).rejects.toThrow("Cannot transfer an unpaid organization.");
       await expect(
         ownerMgr.changeTeamOwner(team.id, newOwner.id, {
           allowUnpaidTransfer: true,
-        })
+        }),
       ).rejects.toThrow("Must be Super User");
 
       await expect(
         sudo.changeTeamOwner(team.id, newOwner.id, {
           allowUnpaidTransfer: true,
-        })
+        }),
       ).resolves.toBeUndefined();
       expect((await sudo.getTeamById(team.id)).createdById).toBe(newOwner.id);
       const teamPerms = await sudo.getPermissionsForTeams([team.id]);
       expect(
-        teamPerms.filter((perm) => perm.accessLevel === "owner")
+        teamPerms.filter((perm) => perm.accessLevel === "owner"),
       ).toMatchObject([{ userId: newOwner.id }]);
 
       const newOwnerMgr = new DbMgr(em, normalActor(newOwner.id));
       await expect(newOwnerMgr.checkCanCreateTeam()).rejects.toThrow(
-        "You can only have one unpaid organization"
+        "You can only have one unpaid organization",
       );
     }));
 
@@ -2118,7 +2135,7 @@ describe("DbMgr organization entitlements", () => {
       await ownerMgr.grantTeamPermissionByEmail(
         team.id,
         newOwner.email,
-        "editor"
+        "editor",
       );
       await sudo.sudoUpdateTeam({
         id: team.id,
@@ -2126,9 +2143,40 @@ describe("DbMgr organization entitlements", () => {
         stripeSubscriptionId: "sub_paid_transfer" as StripeSubscriptionId,
       });
       await expect(
-        sudo.changeTeamOwner(team.id, newOwner.id)
+        sudo.changeTeamOwner(team.id, newOwner.id),
       ).resolves.toBeUndefined();
       expect((await sudo.getTeamById(team.id)).createdById).toBe(newOwner.id);
+    }));
+
+  it("downgrades roles the new feature tier doesn't include", () =>
+    withDb(async (sudo, _users, dbs, project, em) => {
+      const { teamFt, proFt } = await seedTestFeatureTiers(em);
+      const { team, workspace } = await getTeamAndWorkspace(dbs[0]());
+      await sudo.sudoUpdateTeam({ id: team.id, featureTierId: teamFt.id });
+      await sudo.grantTeamPermissionByEmail(
+        team.id,
+        "d@downgrade.test",
+        "designer",
+      );
+      await sudo.grantWorkspacePermissionByEmail(
+        workspace.id,
+        "c@downgrade.test",
+        "content",
+      );
+      await sudo.grantProjectPermissionByEmail(
+        project.id,
+        "e@downgrade.test",
+        "editor",
+      );
+      const levels = async () =>
+        L.sortBy(
+          (await em.find(Permission))
+            .filter((p) => p.email?.endsWith("@downgrade.test"))
+            .map((p) => p.accessLevel),
+        );
+      expect(await levels()).toEqual(["content", "designer", "editor"]);
+      await sudo.sudoUpdateTeam({ id: team.id, featureTierId: proFt.id });
+      expect(await levels()).toEqual(["commenter", "commenter", "editor"]);
     }));
 });
 
@@ -2146,7 +2194,7 @@ describe("DbMgr project transfers", () => {
         db1().updateProject({
           id: project.id,
           workspaceId: sameTeamWorkspace.id,
-        })
+        }),
       ).resolves.toMatchObject({ workspaceId: sameTeamWorkspace.id });
 
       const destinationTeam = await db1().createTeam("Destination");
@@ -2162,7 +2210,7 @@ describe("DbMgr project transfers", () => {
         });
 
       await expect(transferProject()).rejects.toThrow(
-        "Projects can only be transferred to a paid organization"
+        "Projects can only be transferred to a paid organization",
       );
 
       const { teamFt } = await seedTestFeatureTiers(em);
@@ -2172,7 +2220,7 @@ describe("DbMgr project transfers", () => {
         trialStartDate: new Date(),
       });
       await expect(transferProject()).rejects.toThrow(
-        "Projects can only be transferred to a paid organization"
+        "Projects can only be transferred to a paid organization",
       );
 
       await sudo.sudoUpdateTeam({
@@ -2205,10 +2253,10 @@ describe("DbMgr project transfers", () => {
       });
 
       await expect(
-        db1().updateProject({ id: project.id, workspaceId: childWorkspace.id })
+        db1().updateProject({ id: project.id, workspaceId: childWorkspace.id }),
       ).resolves.toMatchObject({ workspaceId: childWorkspace.id });
       await expect(
-        sudo.changeTeamOwner(child.id, newOwner.id)
+        sudo.changeTeamOwner(child.id, newOwner.id),
       ).resolves.toBeUndefined();
     }));
 
@@ -2229,7 +2277,7 @@ describe("DbMgr project transfers", () => {
         teamId: destinationTeam.id,
       });
       await expect(moveWorkspace(workspace.id)).rejects.toThrow(
-        "Projects can only be transferred to a paid organization"
+        "Projects can only be transferred to a paid organization",
       );
 
       const { teamFt } = await seedTestFeatureTiers(em);
@@ -2255,7 +2303,7 @@ describe("DbMgr project transfers", () => {
         sudo.updateProject({
           id: project.id,
           workspaceId: freeWorkspace.id,
-        })
+        }),
       ).resolves.toMatchObject({ workspaceId: freeWorkspace.id });
     }));
 
@@ -2277,7 +2325,7 @@ describe("DbMgr project transfers", () => {
         db1().updateProject({
           id: project.id,
           workspaceId: destinationWorkspace.id,
-        })
+        }),
       ).resolves.toMatchObject({ workspaceId: destinationWorkspace.id });
     }));
 });
@@ -2315,7 +2363,7 @@ describe("DbMgr.project revisions", () => {
 
       const reverted = await mgr.revertProjectRev(
         project.id,
-        initialRev.revision
+        initialRev.revision,
       );
       expect(reverted.data).toEqual(initialRev.data);
       expect(reverted.revision).toEqual(rev2.revision + 1);
@@ -2352,7 +2400,7 @@ describe("DbMgr.comments", () => {
 
         const comment = await db1().postCommentInThread(
           { projectId: project.id },
-          { id: uuid.v4() as CommentId, threadId, body: "reply text" }
+          { id: uuid.v4() as CommentId, threadId, body: "reply text" },
         );
 
         expect(comment.commentThreadId).toEqual(threadId);
@@ -2368,15 +2416,15 @@ describe("DbMgr.comments", () => {
         await expect(
           db1().postCommentInThread(
             { projectId: await otherProjectId(db1()) },
-            { id: uuid.v4() as CommentId, threadId, body: "reply text" }
-          )
+            { id: uuid.v4() as CommentId, threadId, body: "reply text" },
+          ),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
           db1().postCommentInThread(
             { projectId: project.id, branchId: branch.id },
-            { id: uuid.v4() as CommentId, threadId, body: "reply text" }
-          )
+            { id: uuid.v4() as CommentId, threadId, body: "reply text" },
+          ),
         ).rejects.toThrow(NotFoundError);
       }));
   });
@@ -2390,12 +2438,12 @@ describe("DbMgr.comments", () => {
 
         const deleted = await db1().deleteCommentInProject(
           { projectId: project.id },
-          rootComment.id
+          rootComment.id,
         );
 
         expect(deleted.deletedAt).toBeTruthy();
         expect(
-          await db1().getThreadsForProject({ projectId: project.id })
+          await db1().getThreadsForProject({ projectId: project.id }),
         ).toMatchObject([]);
       }));
 
@@ -2408,15 +2456,15 @@ describe("DbMgr.comments", () => {
         await expect(
           db1().deleteCommentInProject(
             { projectId: await otherProjectId(db1()) },
-            rootComment.id
-          )
+            rootComment.id,
+          ),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
           db1().deleteCommentInProject(
             { projectId: project.id, branchId: branch.id },
-            rootComment.id
-          )
+            rootComment.id,
+          ),
         ).rejects.toThrow(NotFoundError);
       }));
   });
@@ -2431,12 +2479,12 @@ describe("DbMgr.comments", () => {
 
         const deleted = await db1().deleteThreadInProject(
           { projectId: project.id },
-          threadId
+          threadId,
         );
 
         expect(deleted.deletedAt).toBeTruthy();
         expect(
-          await db1().getThreadsForProject({ projectId: project.id })
+          await db1().getThreadsForProject({ projectId: project.id }),
         ).toMatchObject([]);
       }));
 
@@ -2450,15 +2498,15 @@ describe("DbMgr.comments", () => {
         await expect(
           db1().deleteThreadInProject(
             { projectId: await otherProjectId(db1()) },
-            threadId
-          )
+            threadId,
+          ),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
           db1().deleteThreadInProject(
             { projectId: project.id, branchId: branch.id },
-            threadId
-          )
+            threadId,
+          ),
         ).rejects.toThrow(NotFoundError);
       }));
   });

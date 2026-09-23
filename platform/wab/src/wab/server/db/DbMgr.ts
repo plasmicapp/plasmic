@@ -1477,6 +1477,9 @@ export class DbMgr implements MigrationDbMgr {
       ...userUpdatableTeamFields,
     ]);
     const team = await this.getTeamById(id);
+    const tierChanged =
+      fields.featureTierId !== undefined &&
+      fields.featureTierId !== team.featureTierId;
     // We need to keep featureTier and featureTierId consistent
     if (!fields.featureTierId) {
       fields["featureTier"] = undefined;
@@ -1484,7 +1487,43 @@ export class DbMgr implements MigrationDbMgr {
       fields["featureTier"] = { id: fields.featureTierId } as any;
     }
     assignAllowEmpty(team, this.stampUpdate(), fields);
-    return await this.entMgr.save(team);
+    const saved = await this.entMgr.save(team);
+    if (tierChanged) {
+      await this.downgradeTeamRoles(saved);
+    }
+    return saved;
+  }
+
+  /** Revert roles the team's feature tier doesn't include to commenter. */
+  private async downgradeTeamRoles(team: Team) {
+    const tier = team.featureTierId
+      ? await this.getFeatureTier(team.featureTierId)
+      : DEVFLAGS.freeTier;
+    const roles = [
+      ...(tier.designerRole ? [] : ["designer" as const]),
+      ...(tier.contentRole ? [] : ["content" as const]),
+    ];
+    if (roles.length === 0) {
+      return;
+    }
+    const workspaces = await this.getWorkspacesByTeams([team.id]);
+    const workspaceIds = workspaces.map((workspace) => workspace.id);
+    const projects = await this.getProjectsByWorkspaces(workspaceIds);
+    const unsupported = { accessLevel: In(roles), deletedAt: IsNull() };
+    // Update permission rows directly so pending email invitations are included.
+    await this.permissions()
+      .createQueryBuilder()
+      .update()
+      .set({ ...this.stampUpdate(), accessLevel: "commenter" })
+      .where([
+        { ...unsupported, teamId: team.id },
+        { ...unsupported, workspaceId: In(workspaceIds) },
+        {
+          ...unsupported,
+          projectId: In(projects.map((project) => project.id)),
+        },
+      ])
+      .execute();
   }
 
   /**
