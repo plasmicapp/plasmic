@@ -316,8 +316,8 @@ importers:
         specifier: ^0.0.263
         version: 0.0.263(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-saleor':
-        specifier: ^0.0.227
-        version: 0.0.227(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.228
+        version: 0.0.228(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-shopify':
         specifier: ^0.0.272
         version: 0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
@@ -737,8 +737,8 @@ importers:
         specifier: ^0.0.263
         version: 0.0.263(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-saleor':
-        specifier: ^0.0.227
-        version: 0.0.227(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.228
+        version: 0.0.228(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-shopify':
         specifier: ^0.0.272
         version: 0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
@@ -4904,8 +4904,8 @@ packages:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-saleor@0.0.227':
-    resolution: {integrity: sha512-jPgjnA1BehDfhlnkaDZw1uZyLDKrVQeblAA44P5k6bGiQARcv2fpjSNS4dQL8OdIU8tjuRN60JNUf260qs/jWA==}
+  '@plasmicpkgs/commerce-saleor@0.0.228':
+    resolution: {integrity: sha512-E7iB06tB83TzEysN1V29LGfKg/ud+HBB/qiGzTw2IzXtYLavgiXg2Dnpw1wfjV21h/ZSF+Xn1NQ644tdgOMTMg==}
     peerDependencies:
       next: ^12
       react: '>=16.8.0'
@@ -20988,7 +20988,7 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-saleor@0.0.227(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-saleor@0.0.228(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(next@12.3.7(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.101.0))(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicpkgs/commerce': 0.0.262(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       debounce: 1.2.1
