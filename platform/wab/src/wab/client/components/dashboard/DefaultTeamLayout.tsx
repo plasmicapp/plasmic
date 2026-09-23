@@ -3,7 +3,7 @@ import DefaultLayout, {
 } from "@/wab/client/components/dashboard/DefaultLayout";
 import {
   canUpgradeTeam,
-  getTiersAndPromptBilling,
+  promptTeamUpgrade,
 } from "@/wab/client/components/modals/PricingModal";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { spawn } from "@/wab/shared/common";
@@ -17,7 +17,7 @@ export type DefaultTeamLayoutProps = SetRequired<DefaultLayoutProps, "team">;
 
 function DefaultTeamLayout_(
   props: DefaultTeamLayoutProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { team, ...rest } = props;
   const appCtx = useAppCtx();
@@ -31,7 +31,7 @@ function DefaultTeamLayout_(
       upgradeButton={
         canUpgradeTeam(appCtx, team)
           ? {
-              onClick: () => spawn(getTiersAndPromptBilling(appCtx, team)),
+              onClick: () => spawn(promptTeamUpgrade(appCtx, team)),
             }
           : undefined
       }

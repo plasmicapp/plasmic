@@ -17,7 +17,7 @@ import { ContentEditorConfigModal } from "@/wab/client/components/modals/Content
 import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
 import {
   TopBarPromptBillingArgs,
-  getTiersAndPromptBilling,
+  promptTeamUpgrade,
 } from "@/wab/client/components/modals/PricingModal";
 import { FloatingWindowLayer } from "@/wab/client/components/widgets/FloatingWindow";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
@@ -378,11 +378,12 @@ export function TopFrameChrome({
             <FloatingWindowLayer>
               {hostFrameApiReady && rest.showCopilotChatModal && editorPerm && (
                 <CopilotChat
-                  projectId={project.id}
+                  project={project}
                   chatOpenOpts={rest.copilotChatOpenOpts}
                   studioModalOpen={rest.studioModalOpen}
                   canStartNewChat={canStartNewChat}
                   onClose={() => topFrameApi.toggleCopilotChat()}
+                  onPlanReady={refreshProjectAndPerms}
                 />
               )}
             </FloatingWindowLayer>
@@ -721,7 +722,7 @@ export function useTopFrameState({
         if (!team || !project) {
           return;
         }
-        await getTiersAndPromptBilling(appCtx, team);
+        await promptTeamUpgrade(appCtx, team);
       },
     }),
     [appCtx, project],
