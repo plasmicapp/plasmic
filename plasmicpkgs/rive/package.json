@@ -42,7 +42,7 @@
     "tslib": "catalog:"
   },
   "dependencies": {
-    "@rive-app/react-canvas": "^4.34.1"
+    "@rive-app/react-canvas": "^4.34.2"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
