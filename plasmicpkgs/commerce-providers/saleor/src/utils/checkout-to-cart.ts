@@ -3,58 +3,63 @@
   Changes: None 
 */
 
-import { Cart } from '../types'
-import { CommerceError } from '@plasmicpkgs/commerce'
+import { CommerceError } from "@plasmicpkgs/commerce";
+import { Cart } from "../types";
 
 import {
-  CheckoutLinesAdd,
-  CheckoutLinesUpdate,
+  Checkout,
   CheckoutCreate,
   CheckoutError,
-  Checkout,
-  Maybe,
   CheckoutLineDelete,
-} from '../schema'
+  CheckoutLinesAdd,
+  CheckoutLinesUpdate,
+  Maybe,
+} from "../schema";
 
-import { normalizeCart } from './normalize'
-import throwUserErrors from './throw-user-errors'
+import { normalizeCart } from "./normalize";
+import throwUserErrors from "./throw-user-errors";
 
 export type CheckoutQuery = {
-  checkout: Checkout
-  errors?: Array<CheckoutError>
-}
+  checkout: Checkout;
+  errors?: Array<CheckoutError>;
+};
 
 export type CheckoutPayload =
   | CheckoutLinesAdd
   | CheckoutLinesUpdate
   | CheckoutCreate
   | CheckoutQuery
-  | CheckoutLineDelete
+  | CheckoutLineDelete;
 
-const checkoutToCart = (checkoutPayload?: Maybe<CheckoutPayload>): Cart | undefined => {
+const checkoutToCart = (
+  checkoutPayload?: Maybe<CheckoutPayload>,
+): Cart | undefined => {
   if (!checkoutPayload) {
     throw new CommerceError({
-      message: 'Missing checkout payload from response',
-    })
+      message: "Missing checkout payload from response",
+    });
   }
 
-  const checkout = checkoutPayload?.checkout
-  if (checkoutPayload?.errors?.length === 1 && checkoutPayload.errors[0].code === "PRODUCT_UNAVAILABLE_FOR_PURCHASE") {
+  const checkout = checkoutPayload?.checkout;
+  if (
+    checkoutPayload?.errors?.length === 1 &&
+    checkoutPayload.errors[0].code === "PRODUCT_UNAVAILABLE_FOR_PURCHASE"
+  ) {
     console.error(checkoutPayload.errors[0]);
     return undefined;
   }
 
   if (checkoutPayload?.errors) {
-    throwUserErrors(checkoutPayload?.errors)
+    throwUserErrors(checkoutPayload?.errors);
   }
 
   if (!checkout) {
     throw new CommerceError({
-      message: 'Missing checkout object from response',
-    })
+      message: "Missing checkout object from response",
+    });
   }
 
-  return normalizeCart(checkout)
-}
+  return normalizeCart(checkout);
+};
 
-export default checkoutToCart
+export default checkoutToCart;

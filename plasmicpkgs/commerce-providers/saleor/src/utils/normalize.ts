@@ -7,15 +7,15 @@
 import { Product } from "@plasmicpkgs/commerce";
 
 import {
-  Product as SaleorProduct,
   Checkout,
   CheckoutLine,
+  Collection,
   Money,
   ProductVariant,
-  Collection,
+  Product as SaleorProduct,
 } from "../schema";
-import { Category } from "../types/site";
 import type { Cart, LineItem } from "../types";
+import { Category } from "../types/site";
 
 // TODO: Check nextjs-commerce bug if no images are added for a product
 const placeholderImg = "/product-img-placeholder.svg";

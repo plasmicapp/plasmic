@@ -4,8 +4,8 @@
 */
 
 export const CollectionMany = /* GraphQL */ `
-  query CollectionMany( $channel: String = "default-channel") {
-    collections(first:100, channel: $channel) {
+  query CollectionMany($channel: String = "default-channel") {
+    collections(first: 100, channel: $channel) {
       edges {
         node {
           id
@@ -15,4 +15,4 @@ export const CollectionMany = /* GraphQL */ `
       }
     }
   }
-`
+`;

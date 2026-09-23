@@ -7,7 +7,7 @@ import {
   getCommerceProvider as getCoreCommerceProvider,
   useCommerce as useCoreCommerce,
 } from "@plasmicpkgs/commerce";
-import { getSaleorProvider, SaleorProvider } from "./provider";
+import { SaleorProvider, getSaleorProvider } from "./provider";
 
 export type { SaleorProvider };
 

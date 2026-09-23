@@ -42,7 +42,7 @@ export function CommerceProviderComponent(props: CommerceProviderProps) {
 
   const CommerceProvider = React.useMemo(
     () => getCommerceProvider(storeId, publicKey),
-    [storeId, publicKey]
+    [storeId, publicKey],
   );
 
   return (
@@ -56,7 +56,7 @@ export function CommerceProviderComponent(props: CommerceProviderProps) {
 
 export function registerCommerceProvider(
   loader?: Registerable,
-  customCommerceProviderMeta?: GlobalContextMeta<CommerceProviderProps>
+  customCommerceProviderMeta?: GlobalContextMeta<CommerceProviderProps>,
 ) {
   const doRegisterComponent: typeof registerGlobalContext = (...args) =>
     loader
@@ -64,6 +64,6 @@ export function registerCommerceProvider(
       : registerGlobalContext(...args);
   doRegisterComponent(
     CommerceProviderComponent,
-    customCommerceProviderMeta ?? commerceProviderMeta
+    customCommerceProviderMeta ?? commerceProviderMeta,
   );
 }

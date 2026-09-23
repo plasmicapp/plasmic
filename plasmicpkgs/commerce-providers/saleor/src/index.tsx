@@ -1,7 +1,7 @@
 import { Registerable } from "./registerable";
 import {
-  registerCommerceProvider,
   CommerceProviderComponent,
+  registerCommerceProvider,
 } from "./registerCommerceProvider";
 export * from "./registerable";
 
@@ -11,4 +11,4 @@ export function registerAll(loader?: Registerable) {
   registerCommerceProvider(loader);
 }
 
-export { registerCommerceProvider, CommerceProviderComponent };
+export { CommerceProviderComponent, registerCommerceProvider };

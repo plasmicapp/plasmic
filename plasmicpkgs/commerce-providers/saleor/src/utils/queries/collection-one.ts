@@ -3,10 +3,14 @@
   Changes: None 
 */
 
-import * as fragment from '../fragments'
+import * as fragment from "../fragments";
 
 export const CollectionOne = /* GraphQL */ `
-  query getProductsFromCollection($categoryId: ID!, $first: Int = 100, $channel: String = "default-channel") {
+  query getProductsFromCollection(
+    $categoryId: ID!
+    $first: Int = 100
+    $channel: String = "default-channel"
+  ) {
     collection(id: $categoryId, channel: $channel) {
       id
       name
@@ -17,4 +21,4 @@ export const CollectionOne = /* GraphQL */ `
     }
   }
   ${fragment.ProductConnection}
-`
+`;

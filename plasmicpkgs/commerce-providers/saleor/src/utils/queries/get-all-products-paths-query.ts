@@ -4,7 +4,10 @@
 */
 
 export const getAllProductsPathsQuery = /* GraphQL */ `
-  query getAllProductPaths($cursor: String, $channel: String = "default-channel") {
+  query getAllProductPaths(
+    $cursor: String
+    $channel: String = "default-channel"
+  ) {
     products(first: 100, after: $cursor, channel: $channel) {
       pageInfo {
         hasNextPage
@@ -18,4 +21,4 @@ export const getAllProductsPathsQuery = /* GraphQL */ `
       }
     }
   }
-`
+`;

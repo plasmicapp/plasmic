@@ -2,22 +2,22 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/swell/src
   Changes: None
 */
-import { SwellConfig } from '..'
+import { SwellConfig } from "..";
 
 export type BrandNode = {
-  name: string
-  path: string
-}
+  name: string;
+  path: string;
+};
 
 export type BrandEdge = {
-  node: BrandNode
-}
+  node: BrandNode;
+};
 
-export type Brands = BrandEdge[]
+export type Brands = BrandEdge[];
 
 const getVendors = async (config: SwellConfig) => {
   const vendors: [string] =
-    (await config.fetch('attributes', 'get', ['brand']))?.values ?? []
+    (await config.fetch("attributes", "get", ["brand"]))?.values ?? [];
 
   return [...new Set(vendors)].map((v) => ({
     node: {
@@ -25,7 +25,7 @@ const getVendors = async (config: SwellConfig) => {
       name: v,
       path: `brands/${v}`,
     },
-  }))
-}
+  }));
+};
 
-export default getVendors
+export default getVendors;

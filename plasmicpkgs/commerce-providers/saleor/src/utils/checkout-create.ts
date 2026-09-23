@@ -1,27 +1,27 @@
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 
-import * as mutation from './mutations'
-import { CheckoutCreate } from '../schema'
-import { CHECKOUT_ID_COOKIE } from '../const'
+import { CHECKOUT_ID_COOKIE } from "../const";
+import { CheckoutCreate } from "../schema";
+import * as mutation from "./mutations";
 
 export const checkoutCreate = async (fetch: any): Promise<CheckoutCreate> => {
-  const data = await fetch({ query: mutation.CheckoutCreate })
-  const checkout = data.checkoutCreate?.checkout
-  const checkoutId = checkout?.id
-  const checkoutToken = checkout?.token
+  const data = await fetch({ query: mutation.CheckoutCreate });
+  const checkout = data.checkoutCreate?.checkout;
+  const checkoutId = checkout?.id;
+  const checkoutToken = checkout?.token;
 
-  const value = `${checkoutId}:${checkoutToken}`
+  const value = `${checkoutId}:${checkoutToken}`;
 
   if (checkoutId) {
     const options: Cookies.CookieAttributes = {
       expires: 60 * 60 * 24 * 30,
       sameSite: "none",
       secure: true,
-    }
-    Cookies.set(CHECKOUT_ID_COOKIE, value, options)
+    };
+    Cookies.set(CHECKOUT_ID_COOKIE, value, options);
   }
 
-  return checkout
-}
+  return checkout;
+};
 
-export default checkoutCreate
+export default checkoutCreate;

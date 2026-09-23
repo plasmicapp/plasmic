@@ -13,4 +13,4 @@ export const CustomerCurrent = /* GraphQL */ `
       dateJoined
     }
   }
-`
+`;

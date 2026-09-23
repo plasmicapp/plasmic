@@ -2,15 +2,14 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/saleor/src
   Changes:None
 */
-import { useCallback } from "react";
 import type { MutationHook } from "@plasmicpkgs/commerce";
-import { CommerceError } from "@plasmicpkgs/commerce";
-import { useAddItem, UseAddItem } from "@plasmicpkgs/commerce";
+import { CommerceError, useAddItem, UseAddItem } from "@plasmicpkgs/commerce";
+import { useCallback } from "react";
 import useCart from "./use-cart";
 
 import * as mutation from "../utils/mutations";
 
-import { getCheckoutId, checkoutToCart } from "../utils";
+import { checkoutToCart, getCheckoutId } from "../utils";
 
 import { Mutation, MutationCheckoutLinesAddArgs } from "../schema";
 import { AddItemHook } from "../types/cart";
@@ -62,7 +61,7 @@ export const handler: MutationHook<AddItemHook> = {
           }
           return data;
         },
-        [fetch, mutate]
+        [fetch, mutate],
       );
     },
 };

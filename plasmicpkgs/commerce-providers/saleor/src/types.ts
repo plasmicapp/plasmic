@@ -1,17 +1,17 @@
-import type { CartType as CoreCart } from '@plasmicpkgs/commerce'
-import { CheckoutLine } from './schema'
+import type { CartType as CoreCart } from "@plasmicpkgs/commerce";
+import { CheckoutLine } from "./schema";
 
 export type SaleorCheckout = {
-  id: string
-  webUrl: string
-  lineItems: CheckoutLine[]
-}
+  id: string;
+  webUrl: string;
+  lineItems: CheckoutLine[];
+};
 
 export type Cart = CoreCart.Cart & {
-  lineItems: LineItem[]
-}
+  lineItems: LineItem[];
+};
 export interface LineItem extends CoreCart.LineItem {
-  options?: any[]
+  options?: any[];
 }
 
 /**
@@ -19,14 +19,14 @@ export interface LineItem extends CoreCart.LineItem {
  */
 
 export type OptionSelections = {
-  option_id: number
-  option_value: number | string
-}
+  option_id: number;
+  option_value: number | string;
+};
 
 export type CartItemBody = CoreCart.CartItemBody & {
-  productId: string // The product id is always required for BC
-  optionSelections?: OptionSelections
-}
+  productId: string; // The product id is always required for BC
+  optionSelections?: OptionSelections;
+};
 
 // export type GetCartHandlerBody = CoreCart.GetCartHandlerBody
 

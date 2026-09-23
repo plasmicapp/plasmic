@@ -3,38 +3,38 @@
   Changes: None 
 */
 
-import { FetcherOptions } from '@plasmicpkgs/commerce'
-import { CreateToken, Mutation, MutationTokenCreateArgs } from '../schema'
-import { setToken, setCSRFToken } from './customer-token'
-import * as mutation from './mutations'
-import throwUserErrors from './throw-user-errors'
+import { FetcherOptions } from "@plasmicpkgs/commerce";
+import { CreateToken, Mutation, MutationTokenCreateArgs } from "../schema";
+import { setCSRFToken, setToken } from "./customer-token";
+import * as mutation from "./mutations";
+import throwUserErrors from "./throw-user-errors";
 
 const handleLogin = (data: CreateToken) => {
-  throwUserErrors(data?.errors)
+  throwUserErrors(data?.errors);
 
-  const token = data?.token
+  const token = data?.token;
 
   if (token) {
-    setToken(token)
-    setCSRFToken(token)
+    setToken(token);
+    setCSRFToken(token);
   }
 
-  return token
-}
+  return token;
+};
 
 export const handleAutomaticLogin = async (
   fetch: <T = any, B = Body>(options: FetcherOptions<B>) => Promise<T>,
-  input: MutationTokenCreateArgs
+  input: MutationTokenCreateArgs,
 ) => {
   try {
     const { tokenCreate } = await fetch<Mutation, MutationTokenCreateArgs>({
       query: mutation.SessionCreate,
       variables: { ...input },
-    })
-    handleLogin(tokenCreate!)
+    });
+    handleLogin(tokenCreate!);
   } catch (error) {
     //
   }
-}
+};
 
-export default handleLogin
+export default handleLogin;

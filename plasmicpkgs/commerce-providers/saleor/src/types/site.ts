@@ -1,5 +1,4 @@
-
-import { SiteTypes } from "@plasmicpkgs/commerce"
+import { SiteTypes } from "@plasmicpkgs/commerce";
 
 export type Category = SiteTypes.Category;
 

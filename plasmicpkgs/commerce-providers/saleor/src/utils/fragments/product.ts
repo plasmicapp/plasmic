@@ -51,4 +51,4 @@ export const ProductConnection = /* GraphQL */ `
       }
     }
   }
-`
+`;

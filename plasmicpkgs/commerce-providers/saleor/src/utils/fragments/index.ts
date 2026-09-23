@@ -3,5 +3,5 @@
   Changes: None 
 */
 
-export { ProductConnection } from './product'
-export { CheckoutDetails } from './checkout-details'
+export { CheckoutDetails } from "./checkout-details";
+export { ProductConnection } from "./product";

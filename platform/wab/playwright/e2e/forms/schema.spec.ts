@@ -7,9 +7,10 @@ import {
 
 test.describe("schema", () => {
   let projectId: string;
+  let dataSourceId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    await apiClient.createFakeDataSource();
+    dataSourceId = await apiClient.createFakeDataSource();
 
     projectId = await apiClient.setupProjectWithHostlessPackages({
       name: "form-schema",
@@ -29,7 +30,7 @@ test.describe("schema", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -43,7 +44,7 @@ test.describe("schema", () => {
       .frameLocator("iframe");
 
     const outlineButton = models.studio.frame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     const isPressed = await outlineButton.getAttribute("data-state-isselected");
     if (isPressed === "true") {
@@ -57,6 +58,7 @@ test.describe("schema", () => {
     await connectBtn.click();
 
     await models.studio.rightPanel.configureSchemaForm({
+      dataSourceId,
       formType: "New Entry",
       tableName: "athletes",
     });
@@ -64,7 +66,7 @@ test.describe("schema", () => {
     const schemaFieldsValid =
       await models.studio.rightPanel.verifySchemaFormFields(
         ["firstName", "lastName", "sport"],
-        nestedFrame
+        nestedFrame,
       );
 
     if (!schemaFieldsValid) {
@@ -76,7 +78,7 @@ test.describe("schema", () => {
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(1000);
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($queries.query.data)"
+      "JSON.stringify($queries.query.data)",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -98,7 +100,7 @@ test.describe("schema", () => {
             age: "123",
           },
         },
-        liveFrame
+        liveFrame,
       );
 
       const submitBtn = liveFrame
@@ -133,7 +135,7 @@ test.describe("schema", () => {
       .frameLocator("iframe");
 
     const outlineButton = models.studio.frame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     const isPressed = await outlineButton.getAttribute("data-state-isselected");
     if (isPressed === "true") {
@@ -147,6 +149,7 @@ test.describe("schema", () => {
     await connectBtn.click();
 
     await models.studio.rightPanel.configureSchemaForm({
+      dataSourceId,
       formType: "Update Entry",
       tableName: "athletes",
       lookupField: "id",
@@ -156,7 +159,7 @@ test.describe("schema", () => {
     const schemaFieldsValid =
       await models.studio.rightPanel.verifySchemaFormFields(
         ["firstName", "lastName", "sport"],
-        nestedFrame
+        nestedFrame,
       );
 
     if (!schemaFieldsValid) {
@@ -168,7 +171,7 @@ test.describe("schema", () => {
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(1000);
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($queries.query.data)"
+      "JSON.stringify($queries.query.data)",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -190,7 +193,7 @@ test.describe("schema", () => {
             age: "{selectall}{del}123",
           },
         },
-        liveFrame
+        liveFrame,
       );
 
       const submitBtn = liveFrame
@@ -226,7 +229,7 @@ test.describe("schema", () => {
       .frameLocator("iframe");
 
     const outlineButton = models.studio.frame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     const isPressed = await outlineButton.getAttribute("data-state-isselected");
     if (isPressed === "true") {
@@ -240,6 +243,7 @@ test.describe("schema", () => {
     await connectBtn.click();
 
     await models.studio.rightPanel.configureSchemaForm({
+      dataSourceId,
       formType: "New Entry",
       tableName: "athletes",
     });
@@ -247,7 +251,7 @@ test.describe("schema", () => {
     const athletesFieldsValid =
       await models.studio.rightPanel.verifySchemaFormFields(
         ["firstName", "lastName", "sport"],
-        nestedFrame
+        nestedFrame,
       );
 
     if (!athletesFieldsValid) {
@@ -259,7 +263,7 @@ test.describe("schema", () => {
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(1000);
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($queries.query.data)"
+      "JSON.stringify($queries.query.data)",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -281,7 +285,7 @@ test.describe("schema", () => {
             age: "123",
           },
         },
-        liveFrame
+        liveFrame,
       );
 
       const submitBtn = liveFrame
@@ -307,7 +311,7 @@ test.describe("schema", () => {
     await models.studio.leftPanel.selectTreeNode(["Form"]);
 
     const dataConfigBtn = models.studio.frame.locator(
-      'button:has-text("New Entry")'
+      'button:has-text("New Entry")',
     );
     await dataConfigBtn.click();
     await page.waitForTimeout(3000);
@@ -326,7 +330,7 @@ test.describe("schema", () => {
     await page.waitForTimeout(2000);
 
     const confirmBtn = models.studio.frame.locator(
-      'button:has-text("Confirm")'
+      'button:has-text("Confirm")',
     );
     if ((await confirmBtn.count()) > 0) {
       await confirmBtn.click();
@@ -343,12 +347,12 @@ test.describe("schema", () => {
     const productsFieldsValid =
       await models.studio.rightPanel.verifySchemaFormFields(
         ["name", "price"],
-        nestedFrame
+        nestedFrame,
       );
 
     if (!productsFieldsValid) {
       throw new Error(
-        "Products form does not have expected schema fields after table switch"
+        "Products form does not have expected schema fields after table switch",
       );
     }
 
@@ -357,7 +361,7 @@ test.describe("schema", () => {
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(1000); // Wait for text component
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($queries.query2.data)"
+      "JSON.stringify($queries.query2.data)",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -370,7 +374,7 @@ test.describe("schema", () => {
             price: "15",
           },
         },
-        liveFrame
+        liveFrame,
       );
 
       const submitBtn = liveFrame

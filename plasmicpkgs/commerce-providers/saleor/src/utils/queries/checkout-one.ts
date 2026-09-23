@@ -3,9 +3,7 @@
   Changes: None 
 */
 
-
-
-import * as fragment from '../fragments'
+import * as fragment from "../fragments";
 
 export const CheckoutOne = /* GraphQL */ `
   query CheckoutOne($checkoutId: UUID!) {
@@ -16,4 +14,4 @@ export const CheckoutOne = /* GraphQL */ `
     }
   }
   ${fragment.CheckoutDetails}
-`
+`;

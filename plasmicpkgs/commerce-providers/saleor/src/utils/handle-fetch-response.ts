@@ -3,30 +3,30 @@
   Changes: None 
 */
 
-import { FetcherError } from '@plasmicpkgs/commerce';
+import { FetcherError } from "@plasmicpkgs/commerce";
 
 export function getError(errors: any[], status: number) {
-  errors = errors ?? [{ message: 'Failed to fetch Saleor API' }]
-  return new FetcherError({ errors, status })
+  errors = errors ?? [{ message: "Failed to fetch Saleor API" }];
+  return new FetcherError({ errors, status });
 }
 
 export async function getAsyncError(res: Response) {
-  const data = await res.json()
-  return getError(data.errors, res.status)
+  const data = await res.json();
+  return getError(data.errors, res.status);
 }
 
 const handleFetchResponse = async (res: Response) => {
   if (res.ok) {
-    const { data, errors } = await res.json()
+    const { data, errors } = await res.json();
 
     if (errors && errors.length) {
-      throw getError(errors, res.status)
+      throw getError(errors, res.status);
     }
 
-    return data
+    return data;
   }
 
-  throw await getAsyncError(res)
-}
+  throw await getAsyncError(res);
+};
 
-export default handleFetchResponse
+export default handleFetchResponse;

@@ -3,7 +3,7 @@
   Changes: None 
 */
 
-import * as fragment from '../fragments'
+import * as fragment from "../fragments";
 
 export const ProductMany = /* GraphQL */ `
   query ProductMany(
@@ -12,9 +12,14 @@ export const ProductMany = /* GraphQL */ `
     $sortBy: ProductOrder
     $channel: String = "default-channel"
   ) {
-    products(first: $first, channel: $channel, filter: $filter, sortBy: $sortBy) {
+    products(
+      first: $first
+      channel: $channel
+      filter: $filter
+      sortBy: $sortBy
+    ) {
       ...ProductConnection
     }
   }
   ${fragment.ProductConnection}
-`
+`;

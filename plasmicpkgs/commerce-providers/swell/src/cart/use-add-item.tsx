@@ -2,21 +2,20 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/swell/src
   Changes: None
 */
-import type { MutationHook } from '@plasmicpkgs/commerce'
-import { CommerceError } from '@plasmicpkgs/commerce'
-import { useAddItem,  UseAddItem } from '@plasmicpkgs/commerce'
-import useCart from './use-cart'
-import { checkoutToCart } from './utils'
-import { getCheckoutId } from '../utils'
-import { useCallback } from 'react'
-import { AddItemHook } from '../types/cart'
+import type { MutationHook } from "@plasmicpkgs/commerce";
+import { CommerceError, useAddItem, UseAddItem } from "@plasmicpkgs/commerce";
+import { useCallback } from "react";
+import { AddItemHook } from "../types/cart";
+import { getCheckoutId } from "../utils";
+import useCart from "./use-cart";
+import { checkoutToCart } from "./utils";
 
-export default useAddItem as UseAddItem<typeof handler>
+export default useAddItem as UseAddItem<typeof handler>;
 
 export const handler: MutationHook<AddItemHook> = {
   fetchOptions: {
-    query: 'cart',
-    method: 'addItem',
+    query: "cart",
+    method: "addItem",
   },
   async fetcher({ input: item, options, fetch }) {
     if (
@@ -24,42 +23,42 @@ export const handler: MutationHook<AddItemHook> = {
       (!Number.isInteger(item.quantity) || item.quantity! < 1)
     ) {
       throw new CommerceError({
-        message: 'The item quantity has to be a valid integer greater than 0',
-      })
+        message: "The item quantity has to be a valid integer greater than 0",
+      });
     }
     const variables: {
-      product_id: string | undefined
-      variant_id?: string
-      checkoutId?: string
-      quantity?: number
+      product_id: string | undefined;
+      variant_id?: string;
+      checkoutId?: string;
+      quantity?: number;
     } = {
       checkoutId: getCheckoutId(),
       product_id: item.productId,
       quantity: item.quantity,
-    }
+    };
     if (item.productId !== item.variantId) {
-      variables.variant_id = item.variantId
+      variables.variant_id = item.variantId;
     }
 
     const response = await fetch({
       ...options,
       variables,
-    })
+    });
 
-    return checkoutToCart(response) as any
+    return checkoutToCart(response) as any;
   },
   useHook:
     ({ fetch }) =>
     () => {
-      const { mutate } = useCart()
+      const { mutate } = useCart();
 
       return useCallback(
         async function addItem(input) {
-          const data = await fetch({ input })
-          await mutate(data, false)
-          return data
+          const data = await fetch({ input });
+          await mutate(data, false);
+          return data;
         },
-        [fetch, mutate]
-      )
+        [fetch, mutate],
+      );
     },
-}
+};

@@ -3,10 +3,13 @@
   Changes: None 
 */
 
-import * as fragment from '../fragments'
+import * as fragment from "../fragments";
 
 export const CheckoutLineAdd = /* GraphQL */ `
-  mutation CheckoutLineAdd($checkoutId: ID!, $lineItems: [CheckoutLineInput!]!) {
+  mutation CheckoutLineAdd(
+    $checkoutId: ID!
+    $lineItems: [CheckoutLineInput!]!
+  ) {
     checkoutLinesAdd(checkoutId: $checkoutId, lines: $lineItems) {
       errors {
         code
@@ -19,4 +22,4 @@ export const CheckoutLineAdd = /* GraphQL */ `
     }
   }
   ${fragment.CheckoutDetails}
-`
+`;

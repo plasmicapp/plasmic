@@ -15,4 +15,4 @@ export const PageMany = /* GraphQL */ `
       }
     }
   }
-`
+`;

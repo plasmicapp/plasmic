@@ -54,7 +54,7 @@ export const handler: SWRHook<SearchProductsHook> = {
     const includedCategories = includeSubCategories
       ? walkCategoryTree(
           categories?.find((category) => category.id === categoryId),
-          categories
+          categories,
         )
       : undefined;
 
@@ -78,7 +78,7 @@ export const handler: SWRHook<SearchProductsHook> = {
 
     return {
       products: products.map((product: SwellProduct) =>
-        normalizeProduct(product)
+        normalizeProduct(product),
       ),
       found: products.length > 0,
     };

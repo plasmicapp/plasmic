@@ -3,7 +3,7 @@
   Changes: None 
 */
 
-import * as fragment from '../fragments'
+import * as fragment from "../fragments";
 
 export const CheckoutLineDelete = /* GraphQL */ `
   mutation CheckoutLineDelete($checkoutId: ID!, $lineId: ID!) {
@@ -19,4 +19,4 @@ export const CheckoutLineDelete = /* GraphQL */ `
     }
   }
   ${fragment.CheckoutDetails}
-`
+`;

@@ -24,7 +24,8 @@ export type SearchProductsHook = ProductTypes.SearchProductsHook;
 
 export type ProductsSchema = ProductTypes.ProductsSchema;
 
-export type GetAllProductPathsOperation = ProductTypes.GetAllProductPathsOperation;
+export type GetAllProductPathsOperation =
+  ProductTypes.GetAllProductPathsOperation;
 
 export type GetAllProductsOperation = ProductTypes.GetAllProductsOperation;
 

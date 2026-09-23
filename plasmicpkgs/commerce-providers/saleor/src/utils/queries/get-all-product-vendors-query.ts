@@ -4,8 +4,11 @@
 */
 
 export const getAllProductVendors = /* GraphQL */ `
-  query getAllProductVendors($cursor: String, $channel: String = "default-channel") {
-    products(first:100,channel: $channel, after: $cursor) {
+  query getAllProductVendors(
+    $cursor: String
+    $channel: String = "default-channel"
+  ) {
+    products(first: 100, channel: $channel, after: $cursor) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -18,4 +21,4 @@ export const getAllProductVendors = /* GraphQL */ `
       }
     }
   }
-`
+`;

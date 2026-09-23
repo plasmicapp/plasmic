@@ -1,7 +1,6 @@
 export const ProductOneById = /* GraphQL */ `
   query ProductOneById($id: ID!, $channel: String = "default-channel") {
     product(id: $id, channel: $channel) {
-
       slug
       name
       description
@@ -39,4 +38,5 @@ export const ProductOneById = /* GraphQL */ `
         alt
       }
     }
-  }`
+  }
+`;

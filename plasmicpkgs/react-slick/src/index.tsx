@@ -51,7 +51,7 @@ export type SliderMethods = Pick<
 
 export const SliderWrapper = forwardRef(function SliderWrapper_(
   props: SliderProps,
-  userRef?: Ref<SliderMethods>
+  userRef?: Ref<SliderMethods>,
 ) {
   const {
     initialSlide,
@@ -106,7 +106,7 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
         }
       },
     }),
-    []
+    [],
   );
 
   const css = `
@@ -284,7 +284,7 @@ export function registerSlider(loader?: {
                 maxWidth: "100%",
               },
             },
-            "children"
+            "children",
           );
           studioOps.updateStates({ currentSlide });
         },
@@ -299,7 +299,7 @@ export function registerSlider(loader?: {
             getSlideInfo(componentProps);
           studioOps.removeFromSlotAt(
             currentDotIndex * slidesPerDot,
-            "children"
+            "children",
           );
           let newPos = currentDotIndex;
           if (dotCount === 1) {
@@ -315,7 +315,7 @@ export function registerSlider(loader?: {
           } else {
             // the last dot
             newPos =
-              totalSlides % slidesPerDot === 1
+              (totalSlides - 1) % slidesPerDot === 0
                 ? currentDotIndex - 1
                 : currentDotIndex;
           }
