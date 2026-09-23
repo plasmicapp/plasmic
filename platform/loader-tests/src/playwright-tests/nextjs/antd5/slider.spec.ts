@@ -32,7 +32,7 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.getByRole(`tooltip`)).toHaveText("$-30M");
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(3);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(0);
 
         await page.getByText(`positive`).click();
@@ -40,7 +40,7 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.getByRole(`tooltip`)).toHaveText("$20M");
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(3);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(3);
 
         await page.getByText(`negative`).click();
@@ -48,7 +48,7 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.getByRole(`tooltip`)).toHaveText("$-20M");
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(3);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(1);
 
         await page.getByText(`neutral`).click();
@@ -56,7 +56,7 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.getByRole(`tooltip`)).toHaveText("$0M");
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(3);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(2);
       });
 
@@ -66,14 +66,14 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.locator("#range-slider-min-state")).toHaveText("-20");
         await expect(page.locator("#range-slider-max-state")).toHaveText("20");
         await expect(page.locator(`[role="tooltip"]`).nth(0)).toHaveText(
-          "Rs. -20k"
+          "Rs. -20k",
         );
         await expect(page.locator(`[role="tooltip"]`).nth(1)).toHaveText(
-          "Rs. 20k"
+          "Rs. 20k",
         );
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(21);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(5);
 
         await page
@@ -83,14 +83,14 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.locator("#range-slider-min-state")).toHaveText("-50");
         await expect(page.locator("#range-slider-max-state")).toHaveText("20");
         await expect(page.locator(`[role="tooltip"]`).nth(0)).toHaveText(
-          "Rs. -50k"
+          "Rs. -50k",
         );
         await expect(page.locator(`[role="tooltip"]`).nth(1)).toHaveText(
-          "Rs. 20k"
+          "Rs. 20k",
         );
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(21);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(8);
 
         await page
@@ -100,14 +100,14 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.locator("#range-slider-min-state")).toHaveText("-50");
         await expect(page.locator("#range-slider-max-state")).toHaveText("50");
         await expect(page.locator(`[role="tooltip"]`).nth(0)).toHaveText(
-          "Rs. -50k"
+          "Rs. -50k",
         );
         await expect(page.locator(`[role="tooltip"]`).nth(1)).toHaveText(
-          "Rs. 50k"
+          "Rs. 50k",
         );
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(21);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(11);
 
         await page
@@ -117,14 +117,14 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.locator("#range-slider-min-state")).toHaveText("0");
         await expect(page.locator("#range-slider-max-state")).toHaveText("50");
         await expect(page.locator(`[role="tooltip"]`).nth(0)).toHaveText(
-          "Rs. 0k"
+          "Rs. 0k",
         );
         await expect(page.locator(`[role="tooltip"]`).nth(1)).toHaveText(
-          "Rs. 50k"
+          "Rs. 50k",
         );
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(21);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(6);
 
         await page
@@ -134,14 +134,14 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         await expect(page.locator("#range-slider-min-state")).toHaveText("50");
         await expect(page.locator("#range-slider-max-state")).toHaveText("50");
         await expect(page.locator(`[role="tooltip"]`).nth(0)).toHaveText(
-          "Rs. 50k"
+          "Rs. 50k",
         );
         await expect(page.locator(`[role="tooltip"]`).nth(1)).toHaveText(
-          "Rs. 50k"
+          "Rs. 50k",
         );
         await expect(page.locator(`.ant-slider-dot`)).toHaveCount(21);
         await expect(
-          page.locator(`.ant-slider-dot.ant-slider-dot-active`)
+          page.locator(`.ant-slider-dot.ant-slider-dot-active`),
         ).toHaveCount(1);
       });
     });

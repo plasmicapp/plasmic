@@ -11,7 +11,7 @@ export const getStaticProps = async () => {
   const plasmicData = await PLASMIC.fetchComponentData(
     "Footer",
     "PriceTier",
-    "Testimonials"
+    "Testimonials",
   );
   return {
     props: {

@@ -17,13 +17,13 @@ const SERVERS: Record<string, ServerEntry> = {
     info: (baseUrl) => {
       console.log(`\nExample endpoints:`);
       console.log(
-        `  Content Types: ${baseUrl}/spaces/1234567890abc/environments/master/content_types?access_token=TOKEN`
+        `  Content Types: ${baseUrl}/spaces/1234567890abc/environments/master/content_types?access_token=TOKEN`,
       );
       console.log(
-        `  All Blogs:     ${baseUrl}/spaces/1234567890abc/environments/master/entries?access_token=TOKEN&content_type=pageBlogPost`
+        `  All Blogs:     ${baseUrl}/spaces/1234567890abc/environments/master/entries?access_token=TOKEN&content_type=pageBlogPost`,
       );
       console.log(
-        `  All Pages:     ${baseUrl}/spaces/1234567890abc/environments/master/entries?access_token=TOKEN&content_type=pageLanding`
+        `  All Pages:     ${baseUrl}/spaces/1234567890abc/environments/master/entries?access_token=TOKEN&content_type=pageLanding`,
       );
     },
   },
@@ -54,8 +54,8 @@ async function main() {
   if (!entry) {
     console.error(
       `Unknown server type: ${serverType}. Available: ${Object.keys(
-        SERVERS
-      ).join(", ")}`
+        SERVERS,
+      ).join(", ")}`,
     );
     process.exit(1);
   }

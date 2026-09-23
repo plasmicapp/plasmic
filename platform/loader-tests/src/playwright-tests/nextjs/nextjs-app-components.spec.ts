@@ -70,10 +70,10 @@ test.describe(`Plasmic App Components`, async () => {
         await expect(forms).toHaveCount(2);
         for (const form of await forms.all()) {
           await expect(form.locator("input")).toHaveValue(
-            "Vins et alcools Chevalier"
+            "Vins et alcools Chevalier",
           );
           await expect(form.locator("textarea")).toHaveValue(
-            `59 rue de l'Abbaye`
+            `59 rue de l'Abbaye`,
           );
           await form.locator("textarea").fill("");
           await form.locator("textarea").type("123 Sesame St");
@@ -86,9 +86,9 @@ test.describe(`Plasmic App Components`, async () => {
             t(
               `Submit: ${JSON.stringify(
                 expectedValues,
-                Object.keys(expectedValues).sort()
-              )}`
-            )
+                Object.keys(expectedValues).sort(),
+              )}`,
+            ),
           ).toBeVisible();
         }
 
@@ -99,7 +99,7 @@ test.describe(`Plasmic App Components`, async () => {
         const download = await pDownload;
         const contents = fs.readFileSync(ensure(await download.path()), "utf8");
         expect(
-          contents.startsWith("order_id,customer_id,employee_id,order_date")
+          contents.startsWith("order_id,customer_id,employee_id,order_date"),
         ).toBeTruthy();
 
         // Filter
@@ -126,7 +126,7 @@ test.describe(`Plasmic App Components`, async () => {
         await expect(listItems).toHaveCount(2);
         await expect(listItems.last()).toContainText("iPhone X");
         await expect(listItems.last()).toContainText(
-          "smartphones • SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with"
+          "smartphones • SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with",
         );
 
         //
@@ -146,7 +146,7 @@ test.describe(`Plasmic App Components`, async () => {
               +
               td:has-text(${JSON.stringify(value)})
             )
-          `)
+          `),
           ).toBeVisible();
         }
 
@@ -162,11 +162,11 @@ test.describe(`Plasmic App Components`, async () => {
         }
         await expect(menu("Home")).toHaveCSS(
           "background-color",
-          "rgb(46, 108, 197)"
+          "rgb(46, 108, 197)",
         );
         await expect(menu("Unhighlighted")).toHaveCSS(
           "background-color",
-          "rgba(0, 0, 0, 0)"
+          "rgba(0, 0, 0, 0)",
         );
         await page.getByText("Nested").hover();
         await expect(menu("Test")).toBeVisible();
@@ -181,11 +181,11 @@ test.describe(`Plasmic App Components`, async () => {
 
         await expect(menu("Home")).toHaveCSS(
           "background-color",
-          "rgba(0, 0, 0, 0.15)"
+          "rgba(0, 0, 0, 0.15)",
         );
         await expect(menu("Unhighlighted")).toHaveCSS(
           "background-color",
-          "rgba(0, 0, 0, 0)"
+          "rgba(0, 0, 0, 0)",
         );
       });
     });

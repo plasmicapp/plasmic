@@ -22,7 +22,7 @@ test.describe(`NextJS Strapi`, () => {
       bundleTransformation: (bundle) =>
         bundle.replaceAll(
           "<REPLACE_WITH_STRAPI_URL>",
-          mockServer.getBaseUrl() + "/"
+          mockServer.getBaseUrl() + "/",
         ),
     });
     // We can stop the server here to prove that the generated project statically generates pages/

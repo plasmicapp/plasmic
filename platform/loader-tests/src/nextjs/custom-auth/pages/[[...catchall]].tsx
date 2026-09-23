@@ -25,8 +25,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     typeof catchall === "string"
       ? catchall
       : Array.isArray(catchall)
-      ? `/${catchall.join("/")}`
-      : "/";
+        ? `/${catchall.join("/")}`
+        : "/";
   const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
   if (!plasmicData) {
     // This is some non-Plasmic catch-all page
@@ -37,9 +37,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // This is a path that Plasmic knows about.
   const pageMeta = plasmicData.entryCompMetas[0];
-  const { plasmicUser, plasmicUserToken } = await getPlasmicAppUserFromConfig(
-    userEmail
-  );
+  const { plasmicUser, plasmicUserToken } =
+    await getPlasmicAppUserFromConfig(userEmail);
 
   // Cache the necessary data fetched for the page.
   const queryCache = await extractPlasmicQueryData(
@@ -51,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       userAuthToken={plasmicUserToken}
     >
       <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+    </PlasmicRootProvider>,
   );
 
   // Pass the data in as props.

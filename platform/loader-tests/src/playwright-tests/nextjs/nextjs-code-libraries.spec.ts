@@ -39,7 +39,7 @@ test.describe(`Plasmic Code Libraries`, async () => {
                   },
                 ],
               },
-            })
+            }),
         );
       });
 
@@ -51,24 +51,24 @@ test.describe(`Plasmic Code Libraries`, async () => {
 
         await expect(page.getByText(`Axios response: "Animals"`)).toBeVisible();
         await expect(
-          page.getByText(`Copy to clipboard type: "function"`)
+          page.getByText(`Copy to clipboard type: "function"`),
         ).toBeVisible();
         await expect(page.getByText(`date-fns result: 48 hours`)).toBeVisible();
         await expect(
-          page.getByText(`day.js number of days in August: 31`)
+          page.getByText(`day.js number of days in August: 31`),
         ).toBeVisible();
         await expect(
-          page.getByText(`Faker name: "Maddison", PT-BR name: "Maria Eduarda"`)
-        ).toBeVisible();
-        await expect(
-          page.getByText(
-            `fast-stringify: {"foo":"[ref=.]","bar":{"bar":"[ref=.bar]","foo":"[ref=.]"}}`
-          )
+          page.getByText(`Faker name: "Maddison", PT-BR name: "Maria Eduarda"`),
         ).toBeVisible();
         await expect(
           page.getByText(
-            `Immer - state before: "done === false"; state after: "done === true"`
-          )
+            `fast-stringify: {"foo":"[ref=.]","bar":{"bar":"[ref=.bar]","foo":"[ref=.]"}}`,
+          ),
+        ).toBeVisible();
+        await expect(
+          page.getByText(
+            `Immer - state before: "done === false"; state after: "done === true"`,
+          ),
         ).toBeVisible();
         /*
         TODO: isomorphic-fetch
@@ -78,39 +78,39 @@ test.describe(`Plasmic Code Libraries`, async () => {
         */
         await expect(page.getByText(`jquery: red box width: 50`)).toBeVisible();
         await expect(
-          page.getByText(`lodash partition: [[1,3],[2,4]]`)
+          page.getByText(`lodash partition: [[1,3],[2,4]]`),
         ).toBeVisible();
         await expect(
           page.getByText(
-            `marked: <p>This text is <em><strong>really important</strong></em></p>`
-          )
+            `marked: <p>This text is <em><strong>really important</strong></em></p>`,
+          ),
         ).toBeVisible();
         await expect(
-          page.getByText(`MD5 hash: cd946e1909bfe736ec8921983eb9115f`)
+          page.getByText(`MD5 hash: cd946e1909bfe736ec8921983eb9115f`),
         ).toBeVisible();
         await expect(
           page.getByText(
-            `nanoid with single-character alphabet for stable results: 000000`
-          )
+            `nanoid with single-character alphabet for stable results: 000000`,
+          ),
         ).toBeVisible();
         await expect(page.getByText(`papaparse: 5 rows, 4 cols`)).toBeVisible();
         await expect(
-          page.getByText(`pluralize "house": "houses"`)
+          page.getByText(`pluralize "house": "houses"`),
         ).toBeVisible();
         await expect(page.getByText(`random: 65`)).toBeVisible();
         await expect(page.getByText(`semver: 3.3.0`)).toBeVisible();
         await expect(
-          page.getByText(`tinycolor2: rgb(255, 0, 0)`)
+          page.getByText(`tinycolor2: rgb(255, 0, 0)`),
         ).toBeVisible();
         await expect(
           page.getByText(
-            `uuid NIL: 00000000-0000-0000-0000-000000000000, validate: true`
-          )
+            `uuid NIL: 00000000-0000-0000-0000-000000000000, validate: true`,
+          ),
         ).toBeVisible();
         await expect(
           page.getByText(
-            `zod parse valid: {"username":"Test"}, safeParse with invalid data success: false`
-          )
+            `zod parse valid: {"username":"Test"}, safeParse with invalid data success: false`,
+          ),
         ).toBeVisible();
       });
     });

@@ -32,7 +32,7 @@ export async function setupCra(opts: {
   const { bundleFile, projectName } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
-    projectName
+    projectName,
   );
   const { name: tmpdir, removeCallback: tmpdirCleanup } = tmp.dirSync({
     unsafeCleanup: true,
@@ -47,7 +47,7 @@ export async function setupCra(opts: {
       reactVersion: opts.reactVersion,
       loaderReactVersion: opts.loaderReactVersion,
     },
-    tmpdir
+    tmpdir,
   );
 
   return {
@@ -69,7 +69,7 @@ export async function teardownCra(ctx: CraContext) {
 export async function setupCraServer(
   project: ProjectContext,
   env: CraEnv,
-  tmpdir: string
+  tmpdir: string,
 ) {
   // Limit concurrency to avoid Verdaccio overload. Reducing CI workers is another option.
   const pnpmCiFlags = `--store-dir "${PNPM_CACHE_DIR}" --network-concurrency=8 --fetch-retries=5`;
@@ -86,7 +86,7 @@ export async function setupCraServer(
 
   await runCommand(
     `pnpm install --frozen-lockfile ${pnpmCiFlags}`,
-    pnpmOptions
+    pnpmOptions,
   );
 
   const updatePackages = [
@@ -96,12 +96,12 @@ export async function setupCraServer(
     `react@${reactVersion}`,
     `react-dom@${reactVersion}`,
     `@types/react@${reactVersion}`,
-    `@types/react-dom@${reactVersion}`
+    `@types/react-dom@${reactVersion}`,
   );
 
   await runCommand(
     `pnpm update ${updatePackages.join(" ")} ${pnpmCiFlags}`,
-    pnpmOptions
+    pnpmOptions,
   );
 
   const codegenHost = getEnvVar("WAB_HOST");
@@ -115,7 +115,7 @@ export async function setupCraServer(
         },
       ],
       host: codegenHost,
-    })
+    }),
   );
 
   const port = await getPort();
@@ -149,7 +149,7 @@ export async function teardownCraServer(ctx: {
 }) {
   const { server, host } = ctx;
   console.log(
-    `Tearing down create-react-app at ${host} (pid ${server.pid})...`
+    `Tearing down create-react-app at ${host} (pid ${server.pid})...`,
   );
   server.kill("SIGINT");
 

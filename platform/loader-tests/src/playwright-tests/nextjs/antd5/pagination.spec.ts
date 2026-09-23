@@ -29,49 +29,49 @@ test.describe(`Plasmic Antd5 Pagination`, async () => {
         await page.goto(`${ctx.host}/pagination-test`);
 
         await expect(page.locator("#pagination-current-page-state")).toHaveText(
-          "4"
+          "4",
         );
         await expect(page.locator("#pagination-page-size-state")).toHaveText(
-          "20"
+          "20",
         );
         await expect(page.locator("#pagination-start-index-state")).toHaveText(
-          "60"
+          "60",
         );
         await expect(page.locator("#pagination-end-index-state")).toHaveText(
-          "79"
+          "79",
         );
         await expect(page.locator("#countries > div:first-child")).toHaveText(
-          "61. Dominica"
+          "61. Dominica",
         );
         await expect(page.locator("#countries > div:last-child")).toHaveText(
-          "80. Georgia"
+          "80. Georgia",
         );
 
         await expect(
           page.locator(
-            ".ant-pagination-item[title='3'] a[href='https://test.com?_page=3&_limit=20'][rel='prev']"
-          )
+            ".ant-pagination-item[title='3'] a[href='https://test.com?_page=3&_limit=20'][rel='prev']",
+          ),
         ).toBeVisible();
 
         await page.locator(`.ant-pagination-item[title='3']`).click();
 
         await expect(page.locator("#pagination-current-page-state")).toHaveText(
-          "3"
+          "3",
         );
         await expect(page.locator("#pagination-page-size-state")).toHaveText(
-          "20"
+          "20",
         );
         await expect(page.locator("#pagination-start-index-state")).toHaveText(
-          "40"
+          "40",
         );
         await expect(page.locator("#pagination-end-index-state")).toHaveText(
-          "59"
+          "59",
         );
         await expect(page.locator("#countries > div:first-child")).toHaveText(
-          "41. Cayman Islands"
+          "41. Cayman Islands",
         );
         await expect(page.locator("#countries > div:last-child")).toHaveText(
-          "60. Djibouti"
+          "60. Djibouti",
         );
       });
     });

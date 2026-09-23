@@ -4,7 +4,7 @@ import {
   PlasmicComponent,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-gatsby";
-import { graphql, PageProps } from "gatsby";
+import { PageProps, graphql } from "gatsby";
 import React from "react";
 import { initPlasmic } from "../init";
 

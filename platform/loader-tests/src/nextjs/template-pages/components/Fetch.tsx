@@ -7,7 +7,7 @@ interface Credentials {
 const CredentialsContext = React.createContext<Credentials | null>(null);
 
 export function FetcherCredentialsProvider(
-  props: Credentials & { children?: React.ReactNode }
+  props: Credentials & { children?: React.ReactNode },
 ) {
   const { token } = props;
   return (

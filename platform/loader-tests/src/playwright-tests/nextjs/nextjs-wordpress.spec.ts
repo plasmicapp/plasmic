@@ -29,7 +29,7 @@ for (const versions of LOADER_NEXTJS_TEMPLATES) {
         bundleTransformation: (bundle) =>
           bundle.replaceAll(
             "<REPLACE_WITH_WORDPRESS_URL>",
-            mockServer.getBaseUrl()
+            mockServer.getBaseUrl(),
           ),
       });
     });

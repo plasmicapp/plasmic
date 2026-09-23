@@ -1,5 +1,5 @@
-import React from "react";
 import { registerComponent } from "@plasmicapp/host";
+import React from "react";
 import DisplayProps from "./DisplayProps";
 
 interface ArrayPropTypeProps {
@@ -11,7 +11,7 @@ export function ArrayPropType(props: ArrayPropTypeProps) {
     <div>
       <DisplayProps {...props} />
       {JSON.stringify(
-        (props.array ?? []).map((item) => item.func?.(item.name, item.age))
+        (props.array ?? []).map((item) => item.func?.(item.name, item.age)),
       )}
     </div>
   );

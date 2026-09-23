@@ -29,19 +29,19 @@ test.describe(`Plasmic Antd5 Date Range Picker`, async () => {
         await page.goto(`${ctx.host}/date-range-picker-test`);
 
         await expect(page.locator(`#date-range-start-state`)).toHaveText(
-          "2023-09-04T14:22:30.351Z"
+          "2023-09-04T14:22:30.351Z",
         );
         await expect(page.locator(`#date-range-end-state`)).toHaveText(
-          "2023-09-28T14:22:36.386Z"
+          "2023-09-28T14:22:36.386Z",
         );
         await page.locator(`.ant-picker-range`).click();
         await page.waitForTimeout(1000);
         await page.getByText(`My December`).click();
         await expect(page.locator(`#date-range-start-state`)).toHaveText(
-          "2023-12-01T00:00:00.000Z"
+          "2023-12-01T00:00:00.000Z",
         );
         await expect(page.locator(`#date-range-end-state`)).toHaveText(
-          "2023-12-31T11:59:59.999Z"
+          "2023-12-31T11:59:59.999Z",
         );
       });
     });

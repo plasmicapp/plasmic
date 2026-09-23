@@ -41,8 +41,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     typeof catchall === "string"
       ? catchall
       : Array.isArray(catchall)
-      ? `/${catchall.join("/")}`
-      : "/";
+        ? `/${catchall.join("/")}`
+        : "/";
   const { path: plasmicPath, traits } = rewriteWithoutTraits(rawPlasmicPath);
   const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
   const variation = getActiveVariation({

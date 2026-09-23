@@ -44,7 +44,7 @@ test.describe(`Plasmic Quill (Rich Text Editor)`, async () => {
     await page.keyboard.type(" Sarah");
 
     await expect(page.locator(`#quill-state`)).toHaveText(
-      "<p>Hello World<strong> Sarah</strong></p>"
+      "<p>Hello World<strong> Sarah</strong></p>",
     );
 
     await page.locator(`.ql-underline`).click();
@@ -52,7 +52,7 @@ test.describe(`Plasmic Quill (Rich Text Editor)`, async () => {
     await page.keyboard.type("Ahmed");
 
     await expect(page.locator(`#quill-state`)).toHaveText(
-      "<p>Hello World<strong> Sarah<u>Ahmed</u></strong></p>"
+      "<p>Hello World<strong> Sarah<u>Ahmed</u></strong></p>",
     );
 
     await page.locator(`.ql-underline`).click();
@@ -62,13 +62,13 @@ test.describe(`Plasmic Quill (Rich Text Editor)`, async () => {
     await page.keyboard.type(".");
 
     await expect(page.locator(`#quill-state`)).toHaveText(
-      "<p>Hello World<strong> Sarah<u>Ahmed</u></strong>.</p>"
+      "<p>Hello World<strong> Sarah<u>Ahmed</u></strong>.</p>",
     );
 
     await selectText();
     await page.locator(`.ql-blockquote`).click();
     await expect(page.locator(`#quill-state`)).toHaveText(
-      "<blockquote>Hello World<strong> Sarah<u>Ahmed</u></strong>.</blockquote>"
+      "<blockquote>Hello World<strong> Sarah<u>Ahmed</u></strong>.</blockquote>",
     );
   });
 });

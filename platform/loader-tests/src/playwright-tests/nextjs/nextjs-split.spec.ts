@@ -53,7 +53,7 @@ for (const versions of SPLIT_VERSIONS) {
     }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       // plasmic_seed=1 -> 0.8782152701169252, should active experiment
       await page
@@ -77,7 +77,7 @@ for (const versions of SPLIT_VERSIONS) {
     }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       // plasmic_seed=0 -> 0.11585319298319519, should not active experiment
       await page
@@ -98,7 +98,7 @@ for (const versions of SPLIT_VERSIONS) {
     test(`should render segment page`, async ({ page, browserName }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       // segment page should be rendered using nextjs SSR getActiveVariation which uses the ${type}.${id} cookie
       await page
@@ -121,7 +121,7 @@ for (const versions of SPLIT_VERSIONS) {
     test(`should render schedule page`, async ({ page, browserName }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       // schedule page should be rendered using nextjs SSR getActiveVariation which uses the ${type}.${id} cookie
       await page
@@ -146,7 +146,7 @@ for (const versions of SPLIT_VERSIONS) {
     }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       await page.goto(`${ctx.host}/custom?utm_campaign=myfirstcampaign`);
 
@@ -154,10 +154,10 @@ for (const versions of SPLIT_VERSIONS) {
         "This is my campaign page",
         {
           timeout: 30000,
-        }
+        },
       );
       await expect(page.locator("body")).toContainText(
-        "You are seeing a campaign segment"
+        "You are seeing a campaign segment",
       );
       await matchScreenshot(page, "plasmic-nextjs-splits-custom-active.png");
     });
@@ -168,7 +168,7 @@ for (const versions of SPLIT_VERSIONS) {
     }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       await page.goto(`${ctx.host}/custom?utm_campaign=nocampaign`);
 
@@ -176,7 +176,7 @@ for (const versions of SPLIT_VERSIONS) {
         "This is my campaign page",
         {
           timeout: 30000,
-        }
+        },
       );
       await expect(page.locator("body")).toContainText("NO CAMPAIGN HERE");
       await matchScreenshot(page, "plasmic-nextjs-splits-custom-inactive.png");
@@ -188,7 +188,7 @@ for (const versions of SPLIT_VERSIONS) {
     }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       await page
         .context()
@@ -202,14 +202,14 @@ for (const versions of SPLIT_VERSIONS) {
         timeout: 30000,
       });
       await expect(page.locator("body")).toContainText(
-        "ext-experiment: ext-experiment-a"
+        "ext-experiment: ext-experiment-a",
       );
       await expect(page.locator("body")).toContainText(
-        "ext-utm-campaign: ext-utm-campaign-a"
+        "ext-utm-campaign: ext-utm-campaign-a",
       );
       await matchScreenshot(
         page,
-        "plasmic-nextjs-splits-external-nocampaign.png"
+        "plasmic-nextjs-splits-external-nocampaign.png",
       );
     });
 
@@ -219,7 +219,7 @@ for (const versions of SPLIT_VERSIONS) {
     }) => {
       test.skip(
         browserName === "firefox",
-        "Run only on Chromium for performance"
+        "Run only on Chromium for performance",
       );
       await page
         .context()
@@ -233,14 +233,14 @@ for (const versions of SPLIT_VERSIONS) {
         timeout: 30000,
       });
       await expect(page.locator("body")).toContainText(
-        "ext-experiment: ext-experiment-b"
+        "ext-experiment: ext-experiment-b",
       );
       await expect(page.locator("body")).toContainText(
-        "ext-utm-campaign: ext-utm-campaign-b"
+        "ext-utm-campaign: ext-utm-campaign-b",
       );
       await matchScreenshot(
         page,
-        "plasmic-nextjs-splits-external-campaign.png"
+        "plasmic-nextjs-splits-external-campaign.png",
       );
     });
   });

@@ -6,8 +6,8 @@ export default function DisplayProps(props: any) {
       {JSON.stringify(
         omitBy(
           props,
-          (_val, key) => key.startsWith("data-plasmic") || key === "className"
-        )
+          (_val, key) => key.startsWith("data-plasmic") || key === "className",
+        ),
       )}
     </p>
   );

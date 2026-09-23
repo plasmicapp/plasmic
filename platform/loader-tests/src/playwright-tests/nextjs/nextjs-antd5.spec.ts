@@ -37,10 +37,10 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
       await expect(page.locator("text=hello input!")).toBeVisible();
       await page.locator("textarea.ant-input").fill("hello textarea!");
       await expect(page.locator("textarea.ant-input")).toHaveValue(
-        "hello textarea!"
+        "hello textarea!",
       );
       await expect(
-        page.locator('[data-test-id="textarea-state"]')
+        page.locator('[data-test-id="textarea-state"]'),
       ).toContainText("hello textarea!");
       await expect(page.locator("text=Not checked")).toBeVisible();
       await page.locator(".ant-checkbox-wrapper").click();
@@ -65,21 +65,21 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
       await page.locator('input[id="name"]').fill("My Name");
       await page
         .locator(
-          '.ant-radio-group[id="message"] input.ant-radio-input[value="blue"]'
+          '.ant-radio-group[id="message"] input.ant-radio-input[value="blue"]',
         )
         .click();
       await expect(
-        page.locator('text={"name":"My Name","message":"blue"}')
+        page.locator('text={"name":"My Name","message":"blue"}'),
       ).toBeVisible();
 
       await page.locator('input[id="my-name"]').fill("Another name");
       await page
         .locator(
-          '.ant-radio-group[id="my-color"] input.ant-radio-input[value="red"]'
+          '.ant-radio-group[id="my-color"] input.ant-radio-input[value="red"]',
         )
         .click();
       await expect(
-        page.locator('text={"my-name":"Another name","my-color":"red"}')
+        page.locator('text={"my-name":"Another name","my-color":"red"}'),
       ).toBeVisible();
     });
   });

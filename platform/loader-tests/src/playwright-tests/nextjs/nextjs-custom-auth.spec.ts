@@ -56,41 +56,41 @@ test.skip(`PlasmicRootProvider Auth`, async () => {
 
     await page.goto(`${ctx.host}/normal-user`);
     expect(
-      await page.isVisible(`text="You don't have access to this page"`)
+      await page.isVisible(`text="You don't have access to this page"`),
     ).toBeTruthy();
 
     await page.goto(`${ctx.host}/normal-user?${NORMAL_USER}`);
     expect(
-      await page.isVisible('text="normal user role required"')
+      await page.isVisible('text="normal user role required"'),
     ).toBeTruthy();
     expect(
-      await page.isVisible('text="Email: e2e.1@plasmic.app"')
+      await page.isVisible('text="Email: e2e.1@plasmic.app"'),
     ).toBeTruthy();
     expect(await page.isVisible('text="Role: Normal User"')).toBeTruthy();
 
     await page.goto(`${ctx.host}/normal-user?${ADMIN_USER}`);
     expect(
-      await page.isVisible('text="normal user role required"')
+      await page.isVisible('text="normal user role required"'),
     ).toBeTruthy();
     expect(
-      await page.isVisible('text="Email: e2e.2@plasmic.app"')
+      await page.isVisible('text="Email: e2e.2@plasmic.app"'),
     ).toBeTruthy();
     expect(await page.isVisible('text="Role: Admin"')).toBeTruthy();
 
     await page.goto(`${ctx.host}/admin`);
     expect(
-      await page.isVisible(`text="You don't have access to this page"`)
+      await page.isVisible(`text="You don't have access to this page"`),
     ).toBeTruthy();
 
     await page.goto(`${ctx.host}/admin?${NORMAL_USER}`);
     expect(
-      await page.isVisible(`text="You don't have access to this page"`)
+      await page.isVisible(`text="You don't have access to this page"`),
     ).toBeTruthy();
 
     await page.goto(`${ctx.host}/admin?${ADMIN_USER}`);
     expect(await page.isVisible('text="admin role required"')).toBeTruthy();
     expect(
-      await page.isVisible('text="Email: e2e.2@plasmic.app"')
+      await page.isVisible('text="Email: e2e.2@plasmic.app"'),
     ).toBeTruthy();
     expect(await page.isVisible('text="Role: Admin"')).toBeTruthy();
 
@@ -177,7 +177,7 @@ test.skip(`PlasmicRootProvider Auth`, async () => {
     expect(await page.isVisible('text="Request ok: 0"')).toBeTruthy();
 
     await withFetchTodosPromise(
-      page.getByRole("button").filter({ hasText: "anonymous" }).click()
+      page.getByRole("button").filter({ hasText: "anonymous" }).click(),
     );
 
     expect(await page.isVisible('text="Request count: 1"')).toBeTruthy();
@@ -200,14 +200,14 @@ test.skip(`PlasmicRootProvider Auth`, async () => {
     expect(await page.isVisible('text="Request ok: 0"')).toBeTruthy();
 
     await withFetchTodosPromise(
-      page.getByRole("button").filter({ hasText: "anonymous" }).click()
+      page.getByRole("button").filter({ hasText: "anonymous" }).click(),
     );
 
     expect(await page.isVisible('text="Request count: 1"')).toBeTruthy();
     expect(await page.isVisible('text="Request ok: 1"')).toBeTruthy();
 
     await withFetchTodosPromise(
-      page.getByRole("button").filter({ hasText: "normal user" }).click()
+      page.getByRole("button").filter({ hasText: "normal user" }).click(),
     );
     expect(await page.isVisible('text="Request count: 2"')).toBeTruthy();
     expect(await page.isVisible('text="Request ok: 2"')).toBeTruthy();
@@ -225,20 +225,20 @@ test.skip(`PlasmicRootProvider Auth`, async () => {
     expect(await page.isVisible('text="Request ok: 0"')).toBeTruthy();
 
     await withFetchTodosPromise(
-      page.getByRole("button").filter({ hasText: "anonymous" }).click()
+      page.getByRole("button").filter({ hasText: "anonymous" }).click(),
     );
 
     expect(await page.isVisible('text="Request count: 1"')).toBeTruthy();
     expect(await page.isVisible('text="Request ok: 1"')).toBeTruthy();
 
     await withFetchTodosPromise(
-      page.getByRole("button").filter({ hasText: "normal user" }).click()
+      page.getByRole("button").filter({ hasText: "normal user" }).click(),
     );
     expect(await page.isVisible('text="Request count: 2"')).toBeTruthy();
     expect(await page.isVisible('text="Request ok: 2"')).toBeTruthy();
 
     await withFetchTodosPromise(
-      page.getByRole("button").filter({ hasText: "admin" }).click()
+      page.getByRole("button").filter({ hasText: "admin" }).click(),
     );
     expect(await page.isVisible('text="Request count: 3"')).toBeTruthy();
     expect(await page.isVisible('text="Request ok: 3"')).toBeTruthy();

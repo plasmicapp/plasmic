@@ -11,12 +11,12 @@ import { makeEnvName } from "../../setup-utils";
 async function assertions(page: Page, dialogOpen: boolean) {
   if (dialogOpen) {
     await expect(page.locator("#dialog-open-state-text")).toHaveText(
-      "dialog is open"
+      "dialog is open",
     );
     await expect(page.locator('text="Sheet title"')).toBeVisible();
   } else {
     await expect(page.locator("#dialog-open-state-text")).toHaveText(
-      "dialog is closed"
+      "dialog is closed",
     );
     await expect(page.locator('text="Sheet title"')).not.toBeVisible();
   }

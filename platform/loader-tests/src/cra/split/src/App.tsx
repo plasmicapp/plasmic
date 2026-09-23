@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import "./App.css";
 import Raw from "./Raw";
 import Schedule from "./Schedule";

@@ -33,14 +33,14 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
       await page.goto(`${ctx.host}/badge`);
 
       await expect(
-        page.locator('[data-test-id="badge"]').first()
+        page.locator('[data-test-id="badge"]').first(),
       ).toBeVisible();
       await expect(page.locator('[data-test-id="badge"]').first()).toHaveCSS(
         "background-color",
-        "rgb(51, 255, 0)"
+        "rgb(51, 255, 0)",
       );
       await expect(
-        page.locator('[data-test-id="badge"]').first()
+        page.locator('[data-test-id="badge"]').first(),
       ).toContainText("Hello Plasmic!");
 
       await page.getByText("Click here").first().click();

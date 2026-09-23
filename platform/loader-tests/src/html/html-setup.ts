@@ -27,7 +27,7 @@ export async function setupHtml(opts: {
   const { bundleFile, projectName } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
-    projectName
+    projectName,
   );
   const { name: tmpdir, removeCallback: tmpdirCleanup } = tmp.dirSync({
     unsafeCleanup: true,
@@ -42,7 +42,7 @@ export async function setupHtml(opts: {
 
   await runCommand(
     `pnpm install --frozen-lockfile --store-dir "${PNPM_CACHE_DIR}"`,
-    { dir: tmpdir, env: { PNPM_HOME: PNPM_CACHE_DIR } }
+    { dir: tmpdir, env: { PNPM_HOME: PNPM_CACHE_DIR } },
   );
 
   const port = await getPort();

@@ -21,7 +21,7 @@ export function Badge({
   const message = React.useMemo(
     () =>
       clicked === 0 ? `You haven't clicked` : `You clicked ${clicked} times`,
-    [clicked]
+    [clicked],
   );
   return (
     <div

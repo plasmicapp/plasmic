@@ -20,7 +20,7 @@ interface Params {
 }
 
 async function getPageData(
-  params: Promise<Params>
+  params: Promise<Params>,
 ): Promise<{ pagePath: string; prefetchedData?: ComponentRenderData }> {
   const catchall = (await params).catchall;
   const pagePath = catchall ? `/${catchall.join("/")}` : "/";
@@ -50,7 +50,7 @@ interface LoaderPageProps {
 
 export async function generateMetadata(
   { params }: LoaderPageProps,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { prefetchedData } = await getPageData(params);
 
@@ -79,7 +79,7 @@ export default async function PlasmicLoaderPage({ params }: LoaderPageProps) {
       pagePath,
       params: pageMeta.params,
       query: {},
-    }
+    },
   );
 
   // Expose the executeServerQueries cache so loader tests can assert which subtrees the server

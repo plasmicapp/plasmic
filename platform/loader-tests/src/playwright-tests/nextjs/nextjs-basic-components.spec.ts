@@ -38,7 +38,7 @@ for (const versions of LOADER_NEXTJS_VERSIONS) {
       await expect(page.getByText("Test embed")).toBeVisible();
       await expect(page.getByText("Test embed")).toHaveCSS(
         "background-color",
-        "rgb(255, 0, 0)"
+        "rgb(255, 0, 0)",
       );
       await expect(page.locator("div.video-wrapper > video")).toBeVisible();
       await expect(page.locator("div.iframe-wrapper > iframe")).toBeVisible();

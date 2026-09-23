@@ -14,7 +14,7 @@ function TestComponent(props: PropType) {
 function registerTestComponent(
   name: string,
   styleSections: boolean | StyleSection[],
-  applyClassName: boolean = true
+  applyClassName: boolean = true,
 ) {
   registerComponent(TestComponent, {
     name,

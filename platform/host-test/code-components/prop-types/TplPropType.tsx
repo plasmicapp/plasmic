@@ -1,5 +1,5 @@
-import React from "react";
 import { registerComponent } from "@plasmicapp/host";
+import React from "react";
 import DisplayProps from "./DisplayProps";
 
 function RefAction1(props: {}) {

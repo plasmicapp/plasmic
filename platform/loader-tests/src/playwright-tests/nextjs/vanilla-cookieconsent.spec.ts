@@ -54,7 +54,7 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
         // Check that consent cookie is not defined before clicking
         const initialCookies = await page.context().cookies();
         const initialConsentCookie = initialCookies.find(
-          (c) => c.name === "cc_cookie"
+          (c) => c.name === "cc_cookie",
         );
         expect(initialConsentCookie).toBeUndefined();
 
@@ -104,13 +104,13 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
 
         // Should see different cookie categories (in toggle labels)
         await expect(
-          page.locator('.toggle__label:has-text("Strictly Necessary")')
+          page.locator('.toggle__label:has-text("Strictly Necessary")'),
         ).toBeVisible();
         await expect(
-          page.locator('.toggle__label:has-text("Performance and Analytics")')
+          page.locator('.toggle__label:has-text("Performance and Analytics")'),
         ).toBeVisible();
         await expect(
-          page.locator('.toggle__label:has-text("Targeting and Advertising")')
+          page.locator('.toggle__label:has-text("Targeting and Advertising")'),
         ).toBeVisible();
       });
 
@@ -136,7 +136,7 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
 
         // The necessary toggle should be checked and disabled (readonly)
         const necessaryToggle = page.locator(
-          'input.section__toggle[value="necessary"]'
+          'input.section__toggle[value="necessary"]',
         );
 
         await expect(necessaryToggle).toBeChecked();
@@ -167,13 +167,13 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
 
         // Check for cookie table headers (they're in th elements)
         await expect(
-          page.locator('.pm__table-th:has-text("Cookie")')
+          page.locator('.pm__table-th:has-text("Cookie")'),
         ).toBeVisible();
         await expect(
-          page.locator('.pm__table-th:has-text("Domain")')
+          page.locator('.pm__table-th:has-text("Domain")'),
         ).toBeVisible();
         await expect(
-          page.locator('.pm__table-th:has-text("Description")')
+          page.locator('.pm__table-th:has-text("Description")'),
         ).toBeVisible();
 
         // Check for example cookies defined in the component metadata
@@ -208,10 +208,10 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
 
         // Links should be visible
         await expect(
-          page.getByRole("link", { name: /privacy policy/i })
+          page.getByRole("link", { name: /privacy policy/i }),
         ).toBeVisible();
         await expect(
-          page.getByRole("link", { name: /impressum/i })
+          page.getByRole("link", { name: /impressum/i }),
         ).toBeVisible();
       });
 
@@ -259,7 +259,7 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
         // Expand analytics section
         await page
           .locator(
-            '.pm__section--expandable:has-text("Performance and Analytics")'
+            '.pm__section--expandable:has-text("Performance and Analytics")',
           )
           .locator(".pm__section-title")
           .first()
@@ -272,10 +272,10 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
         // Should see individual services as defined in the metadata
         // Use .pm__service-title to target the service items specifically
         await expect(
-          page.locator('.pm__service-title:has-text("Google Analytics")')
+          page.locator('.pm__service-title:has-text("Google Analytics")'),
         ).toBeVisible();
         await expect(
-          page.locator('.pm__service-title:has-text("Youtube Embed")')
+          page.locator('.pm__service-title:has-text("Youtube Embed")'),
         ).toBeVisible();
       });
     });

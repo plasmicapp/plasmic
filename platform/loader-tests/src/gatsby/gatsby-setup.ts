@@ -30,7 +30,7 @@ export async function setupGatsby(opts: {
   const { bundleFile, projectName } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
-    projectName
+    projectName,
   );
   const { name: tmpdir, removeCallback: tmpdirCleanup } = tmp.dirSync({
     unsafeCleanup: true,
@@ -47,7 +47,7 @@ export async function setupGatsby(opts: {
       type: "gatsby",
       template: opts.template,
     },
-    tmpdir
+    tmpdir,
   );
 
   return {
@@ -88,7 +88,7 @@ export async function teardownGatsbyServer(ctx: {
 export async function setupGatsbyServer(
   project: ProjectContext,
   env: GatsbyEnv,
-  tmpdir: string
+  tmpdir: string,
 ) {
   const template = env.template ?? "template";
   const templateDir = path.resolve(path.join(__dirname, template));
@@ -105,11 +105,11 @@ export async function setupGatsbyServer(
 
   await runCommand(
     `pnpm install --frozen-lockfile --store-dir "${cacheDir}"`,
-    pnpmOptions
+    pnpmOptions,
   );
   await runCommand(
     `pnpm update @plasmicapp/loader-gatsby --latest --store-dir "${cacheDir}"`,
-    pnpmOptions
+    pnpmOptions,
   );
 
   const codegenHost = getEnvVar("WAB_HOST");
@@ -123,7 +123,7 @@ export async function setupGatsbyServer(
         },
       ],
       host: codegenHost,
-    })
+    }),
   );
 
   await runCommand(`pnpm run build`, { dir: tmpdir });

@@ -11,7 +11,7 @@ export default function Badge({ name = "friend", className }: BadgeProps) {
     () =>
       // Don't use "'" (in "haven't") to make it easier to check HTML response
       clicked === 0 ? `You havent clicked` : `You clicked ${clicked} times`,
-    [clicked]
+    [clicked],
   );
 
   return (

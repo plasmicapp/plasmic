@@ -28,16 +28,16 @@ test.describe(`NextJS Sanity.io`, () => {
   test(`should work`, async ({ page }) => {
     const fixturesPath = path.resolve(__dirname, "../fixtures");
     const allData = JSON.parse(
-      fs.readFileSync(path.join(fixturesPath, "sanity-io-all.json"), "utf8")
+      fs.readFileSync(path.join(fixturesPath, "sanity-io-all.json"), "utf8"),
     );
     const moviesData = JSON.parse(
-      fs.readFileSync(path.join(fixturesPath, "sanity-io-movies.json"), "utf8")
+      fs.readFileSync(path.join(fixturesPath, "sanity-io-movies.json"), "utf8"),
     );
     const screeningData = JSON.parse(
       fs.readFileSync(
         path.join(fixturesPath, "sanity-io-screening.json"),
-        "utf8"
-      )
+        "utf8",
+      ),
     );
 
     await page.route("**/*_type*", async (route) => {
@@ -88,7 +88,7 @@ test.describe(`NextJS Sanity.io`, () => {
           contentType: "image/png",
           body: Buffer.from(
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
-            "base64"
+            "base64",
           ),
         });
       });

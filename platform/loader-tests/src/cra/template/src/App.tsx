@@ -2,7 +2,7 @@ import {
   PlasmicComponent,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import "./App.css";
 import { PLASMIC } from "./init-plasmic";
 

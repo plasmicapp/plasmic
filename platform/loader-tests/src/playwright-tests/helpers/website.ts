@@ -30,7 +30,7 @@ export async function testWebsiteDesktop(page: Page, ctx: WebsiteCtx) {
       normalizeUrl(url.toString()) === normalizeUrl(`${ctx.host}/pricing`),
     {
       waitUntil: "domcontentloaded",
-    }
+    },
   );
 
   await waitForPlasmicDynamic(page);
@@ -40,7 +40,7 @@ export async function testWebsiteDesktop(page: Page, ctx: WebsiteCtx) {
   await gotoUrl(page, `${ctx.host}/cms`);
   await waitForPlasmicDynamic(page);
   await expect(
-    page.getByText("Launch beautiful digital").first()
+    page.getByText("Launch beautiful digital").first(),
   ).toBeVisible();
   await matchScreenshot(page, "plasmic-website-cms.png");
 }
@@ -73,7 +73,7 @@ export async function testWebsiteComponents(page: Page, ctx: WebsiteCtx) {
   await expect(page.getByText("VERY COOL")).toBeVisible();
   await expect(page.getByText("James Armenta")).toBeVisible();
   await expect(page.locator("body")).toContainText(
-    "already been a huge increase in efficiency"
+    "already been a huge increase in efficiency",
   );
 
   await matchScreenshot(page, "plasmic-website-components.png");

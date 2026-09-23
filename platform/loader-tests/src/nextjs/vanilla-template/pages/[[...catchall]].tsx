@@ -33,8 +33,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     typeof catchall === "string"
       ? catchall
       : Array.isArray(catchall)
-      ? `/${catchall.join("/")}`
-      : "/";
+        ? `/${catchall.join("/")}`
+        : "/";
   const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
   if (!plasmicData) {
     // This is some non-Plasmic catch-all page
@@ -54,7 +54,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       pageParams={pageMeta.params}
     >
       <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+    </PlasmicRootProvider>,
   );
 
   // Pass the data in as props.

@@ -43,7 +43,7 @@ function itemFor(page: Page, buttonLabel: string): Locator {
 /** JSON of the executeServerQueries cache the page exposes. */
 function prefetchedQueries(html: string): string {
   const match = html.match(
-    /<script[^>]*id="plasmic-prefetched-server-queries"[^>]*>([\s\S]*?)<\/script>/
+    /<script[^>]*id="plasmic-prefetched-server-queries"[^>]*>([\s\S]*?)<\/script>/,
   );
   return match?.[1] ?? "";
 }
@@ -72,7 +72,7 @@ test.describe(`NextJS Subtree Prefetching Config`, () => {
     const response = await page.goto(`${ctx.host}/subtree-prefetching-config`);
     const prefetched = prefetchedQueries(await response!.text());
     expect(prefetched, "page did not expose prefetched query data").not.toBe(
-      ""
+      "",
     );
 
     // Page query and visible card query are prefetched, non-prefetched card query is not.
@@ -83,7 +83,7 @@ test.describe(`NextJS Subtree Prefetching Config`, () => {
     // The skipped query still runs during React SSR, so the expanded card is visible. This
     // proves the query is wired up and only the explicit prefetch phase skipped it.
     await expect(
-      itemFor(page, NO_PREFETCH_OPEN_BTN).getByText(NO_PREFETCH_CARD_TEXT)
+      itemFor(page, NO_PREFETCH_OPEN_BTN).getByText(NO_PREFETCH_CARD_TEXT),
     ).toBeVisible();
 
     const collapsedItem = itemFor(page, PREFETCH_COLLAPSED_BTN);

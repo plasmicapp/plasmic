@@ -15,24 +15,24 @@ async function checkActiveTab(page: Page, activeIndex: number) {
     if (i === activeIndex) {
       await expect(
         page.locator(
-          `.ant-tabs-nav-list [data-node-key="${i}a"].ant-tabs-tab-active`
-        )
+          `.ant-tabs-nav-list [data-node-key="${i}a"].ant-tabs-tab-active`,
+        ),
       ).toBeVisible();
       await expect(
         page.locator(
-          `.ant-tabs-content #rc-tabs-0-panel-${i}a.ant-tabs-tabpane-active`
-        )
+          `.ant-tabs-content #rc-tabs-0-panel-${i}a.ant-tabs-tabpane-active`,
+        ),
       ).toBeVisible();
     } else {
       await expect(
         page.locator(
-          `.ant-tabs-nav-list [data-node-key="${i}a"].ant-tabs-tab-active`
-        )
+          `.ant-tabs-nav-list [data-node-key="${i}a"].ant-tabs-tab-active`,
+        ),
       ).not.toBeVisible();
       await expect(
         page.locator(
-          `.ant-tabs-content #rc-tabs-0-panel-${i}a.ant-tabs-tabpane-active`
-        )
+          `.ant-tabs-content #rc-tabs-0-panel-${i}a.ant-tabs-tabpane-active`,
+        ),
       ).not.toBeVisible();
     }
   }

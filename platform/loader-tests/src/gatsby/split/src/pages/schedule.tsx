@@ -4,7 +4,7 @@ import {
   PlasmicComponent,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-gatsby";
-import { GetServerDataProps, graphql, PageProps } from "gatsby";
+import { GetServerDataProps, PageProps, graphql } from "gatsby";
 import React from "react";
 import config from "../../config.json";
 import { initPlasmic } from "../init";
@@ -27,7 +27,7 @@ export async function getServerData(ctx: GetServerDataProps) {
         const key = _ref[0],
           value = _ref[1];
         return [key.split(":")[1], value];
-      })
+      }),
   );
   const PLASMIC = initPlasmic(config);
   const variation = await PLASMIC.getActiveVariation({
