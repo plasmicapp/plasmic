@@ -192,7 +192,7 @@
     "@plasmicapp/query": "^0.1.88",
     "@plasmicapp/react-web": "^1.0.39",
     "@plasmicpkgs/antd5": "^0.0.377",
-    "@plasmicpkgs/commerce-local": "^0.0.262",
+    "@plasmicpkgs/commerce-local": "^0.0.263",
     "@plasmicpkgs/plasmic-basic-components": "^0.0.291",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.246",
     "@plasmicpkgs/react-aria": "^0.0.199",
