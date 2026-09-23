@@ -322,8 +322,8 @@ importers:
         specifier: ^0.0.272
         version: 0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-swell':
-        specifier: ^0.0.272
-        version: 0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.273
+        version: 0.0.273(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/contentful':
         specifier: ^0.0.35
         version: 0.0.35(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -409,8 +409,8 @@ importers:
         specifier: ^0.0.271
         version: 0.0.271(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-slick':
-        specifier: ^0.0.284
-        version: 0.0.284(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.285
+        version: 0.0.285(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-twitter-widgets':
         specifier: ^0.0.260
         version: 0.0.260(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -743,8 +743,8 @@ importers:
         specifier: ^0.0.272
         version: 0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/commerce-swell':
-        specifier: ^0.0.272
-        version: 0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
+        specifier: ^0.0.273
+        version: 0.0.273(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/contentful':
         specifier: ^0.0.35
         version: 0.0.35(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -830,8 +830,8 @@ importers:
         specifier: ^0.0.271
         version: 0.0.271(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-slick':
-        specifier: ^0.0.284
-        version: 0.0.284(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.285
+        version: 0.0.285(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-twitter-widgets':
         specifier: ^0.0.260
         version: 0.0.260(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4916,8 +4916,8 @@ packages:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/commerce-swell@0.0.272':
-    resolution: {integrity: sha512-2yXVA5qzP/pcDlyy29xtaFmJSKqXCwQbHWNqtMxwg49IzIR+OaGgVXOOFcYavOkge1a/Ts7Q8+Epv79YaVnnnA==}
+  '@plasmicpkgs/commerce-swell@0.0.273':
+    resolution: {integrity: sha512-6Ih0QiP7APZDJ/gGbB8PbovcrmcyJ/ZBBqOsurg1QFctsGqDo+Bva/U2KVJ6nrpBdTTKDwpq0ppCg2wx4jrN0w==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -5123,8 +5123,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/react-slick@0.0.284':
-    resolution: {integrity: sha512-MPBkl/cXGwtFZryU4ytHIu6NHFbEM5A70eQx23A4dpZh9LJ8ik2V49ocBmqj0K0V2ljelmU6JkuFz56/5hLZmA==}
+  '@plasmicpkgs/react-slick@0.0.285':
+    resolution: {integrity: sha512-x+IwzLe14AjH6TQzFyx1gruWn0L89z1oFNgd8gWUReace2gtGsGlbJiIRBQ9STS7VkXzl/B1DILP0zEd714cCw==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -21015,7 +21015,7 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-swell@0.0.272(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
+  '@plasmicpkgs/commerce-swell@0.0.273(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/commerce': 0.0.262(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(node-fetch@3.3.2)(react@18.3.1)
@@ -21318,7 +21318,7 @@ snapshots:
       react-scroll-parallax: 3.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       resize-observer-polyfill: 1.5.1
 
-  '@plasmicpkgs/react-slick@0.0.284(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/react-slick@0.0.285(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@seznam/compose-react-refs': 1.0.6
