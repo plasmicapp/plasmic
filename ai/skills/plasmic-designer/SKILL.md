@@ -155,7 +155,7 @@ Text, attributes, and component props can be bound to runtime data — `$props`,
 
 - Write bindings as inline `{{ jsExpr }}` interpolation. Content is static by default; wrapping JS in `{{ }}` makes it dynamic (also used for non-string literals, e.g. `"{{ 10 }}"`).
 - Before binding, `read({ dataContext: [{ componentUuid, elementUuid }] })` to see which paths exist, then drill in with `paths` / `maxArrayItems`. Reference only paths it returns.
-- Repetition: `data-repeat="{{ $q.myQuery.data }}"` in `insertHtml`, or `repeat: { collection: "..." }` in `changeElement`; bind the subtree with `{{ currentItem.* }}`.
+- Repetition: `data-repeat="{{ $q.myQuery.data }}"` in `insertHtml`, or `repeat: { collection: "..." }` in `changeElement`; bind the subtree with `{{ currentItem.* }}`. The repeated element is duplicated once per item, so put row or wrapping layout on its parent.
 - Visibility: `data-visible-if="{{ ... }}"` / `data-visibility="displayNone"`, or `visibility: { showIf: "..." }` in `changeElement`.
 - A prop wired to the enclosing component's prop reads back as `{{ $props.<name> }}`, and a link-to-page destination as its URL with dynamic parts inlined (e.g. `/products/{{ $state.slug }}`).
 
