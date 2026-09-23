@@ -400,8 +400,8 @@ importers:
         specifier: ^1.0.172
         version: 1.0.172(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(chart.js@4.5.1)(react-chartjs-2@5.3.1(chart.js@4.5.1)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-parallax-tilt':
-        specifier: ^0.0.263
-        version: 0.0.263(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.264
+        version: 0.0.264(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-quill':
         specifier: ^1.0.125
         version: 1.0.125(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -821,8 +821,8 @@ importers:
         specifier: ^1.0.172
         version: 1.0.172(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(chart.js@4.5.1)(react-chartjs-2@5.3.1(chart.js@4.5.1)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-parallax-tilt':
-        specifier: ^0.0.263
-        version: 0.0.263(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.264
+        version: 0.0.264(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-quill':
         specifier: ^1.0.125
         version: 1.0.125(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5102,8 +5102,8 @@ packages:
       react-chartjs-2: '>=5.2.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/react-parallax-tilt@0.0.263':
-    resolution: {integrity: sha512-Jzb6070TgPaIHc5gp1zOUj6knbHcwkQ9b62yzsSJn/WbGuIFJzf069nrBM5GOzQv7viJMq+Aet8OhOPVeoS5eQ==}
+  '@plasmicpkgs/react-parallax-tilt@0.0.264':
+    resolution: {integrity: sha512-vptdnLjbqSeWgfnY4ydw5MhVk5FA4n1krkSPtqalaRHQiF5oAw+QgRy/AHZfn28EtzyKzi2zyxD35LCHfwEdVQ==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -21296,7 +21296,7 @@ snapshots:
       react-chartjs-2: 5.3.1(chart.js@4.5.1)(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
 
-  '@plasmicpkgs/react-parallax-tilt@0.0.263(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/react-parallax-tilt@0.0.264(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
