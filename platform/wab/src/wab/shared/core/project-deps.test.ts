@@ -17,11 +17,13 @@ import {
 } from "@/wab/shared/core/project-deps";
 import { createSite } from "@/wab/shared/core/sites";
 import {
+  TplTagType,
   mkTplTagX,
   trackComponentRoot,
   trackComponentSite,
 } from "@/wab/shared/core/tpls";
 import {
+  ColumnsSetting,
   ProjectDependency,
   Site,
   StyleToken,
@@ -521,6 +523,84 @@ describe("upgradeProjectDeps", () => {
       expect(frame.targetGlobalVariants).toHaveLength(1);
       expect(frame.targetGlobalVariants[0]).toBe(newVariant);
     }
+  });
+
+  test("drops references to a global variant deleted while its group remains", () => {
+    const groupUuid = "screen-group-uuid";
+    const variantUuid = "mobile-variant-uuid";
+
+    const mkDep = (
+      version: string,
+      depUuid: string,
+      opts: { withVariant: boolean },
+    ) => {
+      const variant = mkVariant({
+        name: "Mobile",
+        mediaQuery: "(min-width:0px) and (max-width:1000px)",
+      });
+      (variant as any).uuid = variantUuid;
+
+      const depSite = createSite();
+      const group = depSite.activeScreenVariantGroup!;
+      (group as any).uuid = groupUuid;
+      if (opts.withVariant) {
+        variant.parent = group;
+        group.variants.push(variant);
+      }
+
+      return {
+        variant,
+        dep: new ProjectDependency({
+          name: "DesignSystem",
+          pkgId: "design-system-pkg-id",
+          projectId: "design-system-project-id",
+          version,
+          uuid: depUuid,
+          site: depSite,
+        }),
+      };
+    };
+
+    const { dep: oldDep, variant: oldVariant } = mkDep(
+      "1.0.0",
+      "design-system-dep-uuid",
+      { withVariant: true },
+    );
+    const { dep: newDep } = mkDep("2.0.0", "design-system-dep-uuid-v2", {
+      withVariant: false,
+    });
+
+    const mainSite = createSite({ projectDependencies: [oldDep] });
+    const columns = mkTplTagX("div");
+    columns.type = TplTagType.Columns;
+    columns.columnsSetting = new ColumnsSetting({
+      screenBreakpoint: oldVariant,
+    });
+
+    const component = mkComponent({
+      name: "Local",
+      tplTree: columns,
+      type: ComponentType.Plain,
+    });
+    mainSite.components.push(component);
+    trackComponentSite(component, mainSite);
+    trackComponentRoot(component);
+
+    ensureVariantSetting(columns, [mainSite.globalVariant]);
+    const vs = ensureVariantSetting(columns, [oldVariant]);
+    RSH(vs.rs, columns).set("color", "red");
+
+    expect(columns.vsettings.some((s) => s.variants.includes(oldVariant))).toBe(
+      true,
+    );
+    expect(columns.columnsSetting?.screenBreakpoint).toBe(oldVariant);
+
+    upgradeProjectDeps(mainSite, [{ oldDep, newDep }]);
+
+    expect(columns.vsettings.some((s) => s.variants.includes(oldVariant))).toBe(
+      false,
+    );
+    expect(columns.columnsSetting?.screenBreakpoint).toBeNull();
   });
 });
 

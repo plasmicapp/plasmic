@@ -140,7 +140,6 @@ import {
   TplSlot,
   Variant,
   VariantGroup,
-  VariantSetting,
   VariantedRuleSet,
   VariantedValue,
   isKnownArenaFrame,
@@ -1256,27 +1255,24 @@ function upgradeProjectDep(
   };
 
   /**
-   * Returns true if VariantSetting references an imported global variant
-   * from a still-existing global variant group; in that case, we can only
-   * remove this VariantSetting, as there's no place to re-create that variant.
+   * Returns true if `v` is a now-deleted imported global variant whose group
+   * still exists
    */
-  const referencesHopelesslyDeletedGlobalVariant = (vs: VariantSetting) => {
-    return vs.variants.some((v) => {
-      if (
-        !v.parent ||
-        oldToNewGlobalVariant.get(v) ||
-        newGlobalVariants.has(v.uuid)
-      ) {
-        // Variant has not been deleted
-        return false;
-      }
+  const isHopelesslyDeletedGlobalVariant = (v: Variant) => {
+    if (!v.parent || oldToNewGlobalVariant.get(v)) {
+      // Variant has not been deleted
+      return false;
+    }
 
-      // Variant has been deleted, but parent group not deleted
-      return (
-        !!newDep &&
-        newDep.site.globalVariantGroups.includes(v.parent as GlobalVariantGroup)
-      );
-    });
+    // Variant has been deleted, but parent group not deleted
+    const newGroup = oldToNewGlobalVariantGroup.get(
+      v.parent as GlobalVariantGroup,
+    );
+    return (
+      !!newDep &&
+      !!newGroup &&
+      newDep.site.globalVariantGroups.includes(newGroup)
+    );
   };
 
   /**
@@ -1298,12 +1294,11 @@ function upgradeProjectDep(
 
     // If we see a VariantSetting referencing a now-deleted global variant,
     // then we'll have to just delete the VariantSetting as well :-/
-    if (
-      tpl.vsettings.some((vs) => referencesHopelesslyDeletedGlobalVariant(vs))
-    ) {
-      tpl.vsettings = tpl.vsettings.filter(
-        (vs) => !referencesHopelesslyDeletedGlobalVariant(vs),
-      );
+    const filteredVsettings = tpl.vsettings.filter(
+      (vs) => !vs.variants.some(isHopelesslyDeletedGlobalVariant),
+    );
+    if (filteredVsettings.length !== tpl.vsettings.length) {
+      tpl.vsettings = filteredVsettings;
     }
 
     for (const vs of tpl.vsettings) {
@@ -1341,7 +1336,11 @@ function upgradeProjectDep(
 
     if (isTplColumns(tpl) && tpl.columnsSetting?.screenBreakpoint) {
       const variant = tpl.columnsSetting?.screenBreakpoint;
-      if (oldToNewGlobalVariant.has(variant)) {
+      if (isHopelesslyDeletedGlobalVariant(variant)) {
+        // There's no place to re-create the variant, so all we can do is drop
+        // the breakpoint reference
+        tpl.columnsSetting.screenBreakpoint = null;
+      } else if (oldToNewGlobalVariant.has(variant)) {
         tpl.columnsSetting.screenBreakpoint = ensure(
           getOrCloneOldGlobalVariant(variant),
           "Unexpected undefined GlobalVariant. If oldToNewGlobalVariant has this variant, " +
