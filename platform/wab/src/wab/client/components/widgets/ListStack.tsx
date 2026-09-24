@@ -24,7 +24,7 @@ import * as React from "react";
 import ResizeObserver from "resize-observer-polyfill";
 
 const ListStackContext = React.createContext<ListStackContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 interface ListStackContextValue {
@@ -46,7 +46,7 @@ interface ListStackContextValue {
    */
   requestSpace: (
     id: string,
-    opts: { space: number; minSpace?: number }
+    opts: { space: number; minSpace?: number },
   ) => void;
 
   /**
@@ -66,7 +66,7 @@ interface ListStackState {
 function useListStackContext() {
   return ensure(
     React.useContext(ListStackContext),
-    `Must be a descendant of ListStackContext`
+    `Must be a descendant of ListStackContext`,
   );
 }
 
@@ -157,7 +157,7 @@ export function ListStack(props: {
         ) {
           delayedReallocateSpace();
         }
-      })
+      }),
   );
 
   // Always observe the root element for size changes
@@ -239,7 +239,7 @@ export function ListStack(props: {
           containers,
         });
       }),
-    [stateRef]
+    [stateRef],
   );
 
   // Descendant ListSpaces will be registering / unregistering / requesting
@@ -258,11 +258,11 @@ export function ListStack(props: {
       delayedReallocateSpace();
       return stateRef.current.allocations[id] ?? 0;
     },
-    [stateRef, reallocateSpace, delayedReallocateSpace]
+    [stateRef, reallocateSpace, delayedReallocateSpace],
   );
   const getAllocatedSpace = React.useCallback(
     (id: string) => stateRef.current.allocations[id] ?? 0,
-    [stateRef]
+    [stateRef],
   );
   const registerContainer = React.useCallback(
     (id: string, container: HTMLElement) => {
@@ -270,7 +270,7 @@ export function ListStack(props: {
       sizeObserver.observe(container);
       delayedReallocateSpace();
     },
-    [stateRef, sizeObserver, delayedReallocateSpace]
+    [stateRef, sizeObserver, delayedReallocateSpace],
   );
   const unregisterContainer = React.useCallback(
     (id: string, container: HTMLElement) => {
@@ -281,7 +281,7 @@ export function ListStack(props: {
       sizeObserver.unobserve(container);
       delayedReallocateSpace();
     },
-    [stateRef, sizeObserver, delayedReallocateSpace]
+    [stateRef, sizeObserver, delayedReallocateSpace],
   );
 
   const value = React.useMemo(
@@ -291,7 +291,7 @@ export function ListStack(props: {
       unregisterContainer,
       getAllocatedSpace,
     }),
-    [requestSpace, registerContainer, unregisterContainer, getAllocatedSpace]
+    [requestSpace, registerContainer, unregisterContainer, getAllocatedSpace],
   );
 
   return (

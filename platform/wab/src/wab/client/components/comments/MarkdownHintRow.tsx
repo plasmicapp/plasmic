@@ -24,7 +24,7 @@ export type MarkdownHintRowProps = DefaultMarkdownHintRowProps;
 
 function MarkdownHintRow_(
   props: MarkdownHintRowProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicMarkdownHintRow to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

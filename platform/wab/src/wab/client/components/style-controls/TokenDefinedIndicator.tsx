@@ -83,7 +83,7 @@ export function TokenDefinedIndicator(props: {
                     studioCtx.site,
                     undefined,
                     v.value,
-                    vsh
+                    vsh,
                   )}
                 </div>
               </SourceRow>

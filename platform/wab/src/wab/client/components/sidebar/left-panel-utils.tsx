@@ -1,8 +1,8 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ProjectDependency } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { without } from "lodash";
 import React from "react";
-import { ProjectDependency } from "@/wab/shared/model/classes";
 
 export function useDepFilterButton(opts: {
   studioCtx: StudioCtx;
@@ -26,8 +26,8 @@ export function useDepFilterButton(opts: {
                     .map(
                       (d) =>
                         `"${studioCtx.projectDependencyManager.getNiceDepName(
-                          d
-                        )}"`
+                          d,
+                        )}"`,
                     )
                     .join(", ")}`,
             overlay: () => {

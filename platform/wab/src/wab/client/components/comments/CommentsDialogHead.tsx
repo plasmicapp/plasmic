@@ -21,14 +21,13 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultCommentsDialogHeadProps altogether and have
 // total control over the props for your component.
-export interface CommentsDialogHeadProps
-  extends DefaultCommentsDialogHeadProps {
+export interface CommentsDialogHeadProps extends DefaultCommentsDialogHeadProps {
   close?: PlasmicCommentsDialogHead__OverridesType["close"];
 }
 
 function CommentsDialogHead_(
   props: CommentsDialogHeadProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicCommentsDialogHead to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

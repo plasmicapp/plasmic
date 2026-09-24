@@ -29,7 +29,7 @@ export type ThreadCommentsProps = DefaultThreadCommentsProps & {
 
 function ThreadComments_(
   props: ThreadCommentsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { commentThread, ...rest } = props;
 

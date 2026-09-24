@@ -24,7 +24,7 @@ export type ListSeperatorProps = DefaultListSeperatorProps;
 
 function ListSeperator_(
   props: ListSeperatorProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicListSeperator to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

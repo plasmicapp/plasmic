@@ -48,14 +48,14 @@ export class StyleWrapper_ extends React.Component<
             <DefinedIndicator
               type={ensure(
                 sc,
-                "must have styleComponent if showing defined indicator"
+                "must have styleComponent if showing defined indicator",
               ).definedIndicators(...styleNames)}
               label={
                 displayStyleName
                   ? getLabelForStyleName(displayStyleName)
                   : styleNames.length === 1
-                  ? getLabelForStyleName(styleNames[0])
-                  : undefined
+                    ? getLabelForStyleName(styleNames[0])
+                    : undefined
               }
             />
           </div>

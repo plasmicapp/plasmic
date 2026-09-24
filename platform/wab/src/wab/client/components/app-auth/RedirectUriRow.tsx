@@ -28,7 +28,7 @@ export interface RedirectUriRowProps extends DefaultRedirectUriRowProps {
 
 function RedirectUriRow_(
   props: RedirectUriRowProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { uri, onChange, onRemove, ...rest } = props;
 

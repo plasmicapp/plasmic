@@ -28,7 +28,7 @@ export interface ExperimentEventsProps extends DefaultExperimentEventsProps {
 
 function ExperimentEvents_(
   props: ExperimentEventsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { events, changeEvents } = props;
   const [isExpanded, setIsExpanded] = React.useState(false);

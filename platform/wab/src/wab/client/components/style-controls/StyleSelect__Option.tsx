@@ -9,7 +9,7 @@ type StyleSelect__OptionProps = DefaultStyleSelect__OptionProps;
 
 function StyleSelect__Option_(
   props: StyleSelect__OptionProps,
-  ref: SelectOptionRef
+  ref: SelectOptionRef,
 ) {
   const { plasmicProps } = PlasmicStyleSelect__Option.useBehavior(props, ref);
   return (

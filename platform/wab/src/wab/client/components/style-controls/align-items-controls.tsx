@@ -53,7 +53,7 @@ export const AlignItemsControls = observer(
         </LabeledToggleButtonGroupItemRow>
       );
     }
-  }
+  },
 );
 
 // TODO fix icons when introducing grid

@@ -28,7 +28,7 @@ export interface AuthConfigTokenProps extends DefaultAuthConfigTokenProps {
 
 function AuthConfigToken_(
   props: AuthConfigTokenProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { onCopy, ...rest } = props;
 

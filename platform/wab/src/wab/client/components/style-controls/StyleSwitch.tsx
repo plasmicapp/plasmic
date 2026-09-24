@@ -18,14 +18,14 @@ interface StyleSwitchProps extends DefaultStyleSwitchProps {
 
 function StyleSwitch_(
   { className, ...props }: StyleSwitchProps,
-  ref: SwitchRef
+  ref: SwitchRef,
 ) {
   const { tooltip, disabledTooltip, isDisabled } = props;
   const { plasmicProps } = PlasmicStyleSwitch.useBehavior<StyleSwitchProps>(
     combineProps(props, {
       "data-plasmic-prop": undefined,
     }),
-    ref
+    ref,
   );
 
   plasmicProps.variants.valueSetState = undefined;
@@ -47,7 +47,7 @@ function StyleSwitch_(
     <div
       className={classNames(
         className,
-        "baseline-friendly-centered-block-container"
+        "baseline-friendly-centered-block-container",
       )}
     >
       {content}

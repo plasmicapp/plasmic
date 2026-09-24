@@ -26,7 +26,7 @@ interface GeneralTokenControlProps {
 }
 
 const GeneralTokenControl = observer(function GeneralTokenControl(
-  props: GeneralTokenControlProps
+  props: GeneralTokenControlProps,
 ) {
   const {
     style,

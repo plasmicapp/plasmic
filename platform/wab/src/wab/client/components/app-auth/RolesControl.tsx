@@ -1,15 +1,15 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import InlineEditableResource from "@/wab/client/components/app-auth/InlineEditableResource";
 import {
   useAppAccessRules,
   useAppAuthConfig,
   useAppRoles,
   useMutateHostAppAuthData,
 } from "@/wab/client/components/app-auth/app-auth-contexts";
-import InlineEditableResource from "@/wab/client/components/app-auth/InlineEditableResource";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
-import { arrayMoveIndex } from "@/wab/shared/collections";
 import { ApiProject } from "@/wab/shared/ApiSchema";
+import { arrayMoveIndex } from "@/wab/shared/collections";
 import * as tokens from "@/wab/styles/_tokens";
 import { Menu, notification } from "antd";
 import React from "react";
@@ -40,7 +40,7 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                 // there is no -1 because the anonymous role should always mantain the lowest order = 0
                 [r.id]: reordered.length - i,
               }),
-              {}
+              {},
             );
           await mutateRoles(
             async () => {
@@ -49,7 +49,7 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
             },
             {
               optimisticData: reordered,
-            }
+            },
           );
 
           await mutateHostAppAuthData();
@@ -94,7 +94,7 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                         const usedInComponents = (
                           await hostFrameApi.getUsedRolesInProject()
                         ).filter(
-                          (componentRole) => componentRole.roleId === role.id
+                          (componentRole) => componentRole.roleId === role.id,
                         );
 
                         if (usedInComponents.length > 0) {
@@ -109,7 +109,7 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                         }
 
                         const usedInAccesses = accesses.filter(
-                          (access) => access.roleId === role.id
+                          (access) => access.roleId === role.id,
                         );
 
                         if (usedInAccesses.length > 0) {
@@ -133,9 +133,9 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                           },
                           {
                             optimisticData: roles.filter(
-                              (r) => r.id !== role.id
+                              (r) => r.id !== role.id,
                             ),
-                          }
+                          },
                         );
 
                         await mutateHostAppAuthData();
@@ -156,8 +156,8 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                           (i === 0
                             ? " (highest)"
                             : i === roles.length - 1
-                            ? " (lowest)"
-                            : "")}
+                              ? " (lowest)"
+                              : "")}
                       </span>
                     }
                     value={role.name}
@@ -167,7 +167,7 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                           await appCtx.api.updateAppRoleName(
                             project.id,
                             role.id,
-                            val
+                            val,
                           );
                           return await appCtx.api.listAppRoles(project.id);
                         },
@@ -178,7 +178,7 @@ export function RolesControl({ appCtx, project }: RolesControlProps) {
                             }
                             return r;
                           }),
-                        }
+                        },
                       );
 
                       await mutateHostAppAuthData();

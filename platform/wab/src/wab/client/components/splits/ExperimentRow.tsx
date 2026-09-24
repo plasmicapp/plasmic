@@ -24,7 +24,7 @@ export type ExperimentRowProps = DefaultExperimentRowProps;
 
 function ExperimentRow_(
   props: ExperimentRowProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicExperimentRow to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

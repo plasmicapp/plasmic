@@ -21,13 +21,13 @@ type SearchboxProps = Omit<
 
 const Searchbox = React.forwardRef(function Searchbox(
   props: SearchboxProps,
-  outerRef: React.Ref<TextboxRef>
+  outerRef: React.Ref<TextboxRef>,
 ) {
   const { ref, onRef } = useForwardedRef(outerRef);
 
   const getInput = React.useCallback(
     () => maybe(ref.current, (x) => x.input()),
-    [ref]
+    [ref],
   );
 
   useFocusOnDisplayed(getInput, { autoFocus: props.autoFocus });
@@ -41,7 +41,7 @@ const Searchbox = React.forwardRef(function Searchbox(
         const input = ref.current.input();
         const fakeEvent = createFakeEvent<React.ChangeEvent<HTMLInputElement>>(
           e,
-          input
+          input,
         );
 
         const originalInputValue = input.value;

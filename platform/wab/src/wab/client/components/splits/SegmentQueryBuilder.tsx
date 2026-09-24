@@ -60,13 +60,13 @@ function convertRegisteredTraitsToQBuilder(traits: TraitRegistration[]) {
           ...convertMeta(meta),
         },
       ];
-    })
+    }),
   );
 }
 
 function SegmentQueryBuilder_(
   props: SegmentQueryBuilderProps,
-  outerRef: React.Ref<HTMLDivElement>
+  outerRef: React.Ref<HTMLDivElement>,
 ) {
   const { logic, saveLogic } = props;
 

@@ -21,7 +21,7 @@ import React from "react";
 interface TokenFolderRowProps<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > {
   folder: TokenFolder<TToken, TType, TValue>;
   matcher: Matcher;
@@ -33,7 +33,7 @@ interface TokenFolderRowProps<
 function _TokenFolderRow<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 >(props: TokenFolderRowProps<TToken, TType, TValue>) {
   const { folder, matcher, indentMultiplier, isOpen, toggleExpand } = props;
   const { onAddToken, onDeleteFolder, onFolderRenamed } = folder.actions ?? {};

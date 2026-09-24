@@ -20,7 +20,7 @@ function Switch_({ className, ...props }: SwitchProps, ref: SwitchRef) {
       // Explicitly set null children
       children: props.children ?? null,
     },
-    ref
+    ref,
   );
 
   let content = <PlasmicSwitch {...plasmicProps} />;
@@ -33,7 +33,7 @@ function Switch_({ className, ...props }: SwitchProps, ref: SwitchRef) {
     <div
       className={classNames(
         className,
-        "baseline-friendly-centered-block-container"
+        "baseline-friendly-centered-block-container",
       )}
     >
       {content}

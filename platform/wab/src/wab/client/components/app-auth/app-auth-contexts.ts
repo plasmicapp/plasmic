@@ -81,7 +81,7 @@ export const useAppAuthConfig = (appCtx: AppCtx, appId: string) => {
     {
       // Revalidate on mount to handle the workspace switching case
       revalidateOnMount: true,
-    }
+    },
   );
   return {
     config: data ?? undefined,
@@ -108,7 +108,7 @@ export const useAppCurrentUserOpConfig = (appCtx: AppCtx, appId: string) => {
 export const useAppAuthPubConfig = (
   appCtx: AppCtx,
   appId: string,
-  email?: string
+  email?: string,
 ) => {
   const key = `/app-auth/${appId}/pub-config/${email}`;
   const { data, error } = useSWR(key, async () => {
@@ -127,7 +127,7 @@ export const APP_ROLES_KEY = (appId: string) => `/app-auth/${appId}/roles`;
 export const useAppRoles = (
   appCtx: AppCtx,
   appId: string,
-  hideAnonymous: boolean = true
+  hideAnonymous: boolean = true,
 ) => {
   const key = APP_ROLES_KEY(appId);
   const { data, error, mutate } = useSWR(key, async () => {
@@ -167,7 +167,7 @@ export const useAppAccessRegistries = (
     pageSize: number;
     pageIndex: number;
     search: string;
-  }
+  },
 ) => {
   const key = `/app-auth/${appId}/access-registries?${JSON.stringify(params)}`;
   const { data, error, mutate } = useSWR(key, async () => {

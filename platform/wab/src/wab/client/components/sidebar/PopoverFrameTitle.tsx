@@ -24,7 +24,7 @@ export type PopoverFrameTitleProps = DefaultPopoverFrameTitleProps;
 
 function PopoverFrameTitle_(
   props: PopoverFrameTitleProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicPopoverFrameTitle to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

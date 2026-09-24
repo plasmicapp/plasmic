@@ -53,7 +53,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
     ? tokens.filter(
         (t) =>
           matcher.matches(t.name) ||
-          matcher.matches(Chroma.stringify(resolver(t, vsh)))
+          matcher.matches(Chroma.stringify(resolver(t, vsh))),
       )
     : tokens;
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -155,7 +155,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
                       <Tooltip
                         key={`tooltip-${token.uuid}`}
                         title={`${token.name} (${Chroma.stringify(
-                          resolver(token, vsh)
+                          resolver(token, vsh),
                         )})`}
                       >
                         <div
@@ -181,7 +181,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
                           <div className="text-ellipsis ml-m">
                             {matcher.boldSnippets(token.name)} (
                             {matcher.boldSnippets(
-                              Chroma.stringify(resolver(token, vsh))
+                              Chroma.stringify(resolver(token, vsh)),
                             )}
                             )
                           </div>
@@ -191,7 +191,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
                   } else {
                     const rowTokens = tokens.slice(
                       numCols * index,
-                      numCols * index + numCols
+                      numCols * index + numCols,
                     );
                     return (
                       <div
@@ -202,7 +202,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
                           <Tooltip
                             key={token.uuid}
                             title={`${token.name} (${Chroma.stringify(
-                              resolver(token, vsh)
+                              resolver(token, vsh),
                             )})`}
                           >
                             <PlainLinkButton

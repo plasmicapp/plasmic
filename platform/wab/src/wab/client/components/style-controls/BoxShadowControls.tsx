@@ -104,7 +104,7 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
               value={shadow.blur.showCss()}
               onChange={(val) =>
                 this.handleChange(
-                  () => (shadow.blur = Dim.fromCss(val || "0px"))
+                  () => (shadow.blur = Dim.fromCss(val || "0px")),
                 )
               }
               noClear
@@ -119,7 +119,7 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
               value={shadow.spread.showCss()}
               onChange={(val) =>
                 this.handleChange(
-                  () => (shadow.spread = Dim.fromCss(val || "0px"))
+                  () => (shadow.spread = Dim.fromCss(val || "0px")),
                 )
               }
               noClear

@@ -28,7 +28,7 @@ export type ComponentPanelRow = ComponentFolder | ComponentData;
 
 export type OnFolderRenamed = (
   folder: ComponentFolder,
-  newName: string
+  newName: string,
 ) => Promise<void>;
 
 export type OnDeleteFolder = (folder: ComponentFolder) => Promise<void>;
@@ -50,7 +50,7 @@ interface ComponentFolderRowProps {
 }
 
 export const ComponentFolderRow = observer(function ComponentFolderRow(
-  props: ComponentFolderRowProps
+  props: ComponentFolderRowProps,
 ) {
   const { folder, matcher, indentMultiplier, isOpen, toggleExpand } = props;
   const { onAddComponent, onDeleteFolder, onFolderRenamed } = folder.actions;

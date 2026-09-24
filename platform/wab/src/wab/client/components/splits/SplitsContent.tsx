@@ -24,7 +24,7 @@ export type SplitsContentProps = DefaultSplitsContentProps;
 
 function SplitsContent_(
   props: SplitsContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicSplitsContent to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

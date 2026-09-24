@@ -9,7 +9,8 @@ import {
 import React from "react";
 
 interface ButtonProps
-  extends DefaultButtonProps,
+  extends
+    DefaultButtonProps,
     Omit<
       React.ComponentProps<"button">,
       "type" | "disabled" | "color" | "key" | "onClick"
@@ -45,7 +46,7 @@ interface ButtonProps
 
 const Button = React.forwardRef(function Button(
   props: ButtonProps,
-  ref: React.Ref<HTMLButtonElement>
+  ref: React.Ref<HTMLButtonElement>,
 ) {
   const {
     tooltip,

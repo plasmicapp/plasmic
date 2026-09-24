@@ -72,7 +72,7 @@ function ModalScopeInternal({
 }
 
 function stopKeyboardEventPropagation(
-  allowKeyCombos: string[]
+  allowKeyCombos: string[],
 ): React.KeyboardEventHandler {
   return (e) => {
     if (!isKeyHotkey(allowKeyCombos, e.nativeEvent)) {

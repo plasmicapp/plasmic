@@ -69,12 +69,12 @@ function _ColorButton(props: ColorButtonProps) {
   const appliedToken = color
     ? tryParseTokenRef(
         color,
-        siteFinalColorTokens(sc.site, { includeDeps: "all" })
+        siteFinalColorTokens(sc.site, { includeDeps: "all" }),
       )
     : null;
 
   const resolver = useClientTokenResolver();
-  const realColor = appliedToken ? resolver(appliedToken, vsh) : color ?? "";
+  const realColor = appliedToken ? resolver(appliedToken, vsh) : (color ?? "");
 
   const handleClose = useCallback(() => {
     setShow(false);
@@ -93,10 +93,10 @@ function _ColorButton(props: ColorButtonProps) {
           appliedToken
             ? appliedToken.name
             : tokenRef
-            ? "Invalid " + TOKEN_CAP
-            : color != null
-            ? Chroma.stringify(color)
-            : zeroWidthSpace
+              ? "Invalid " + TOKEN_CAP
+              : color != null
+                ? Chroma.stringify(color)
+                : zeroWidthSpace
         }
         valueSetState={valueSetState}
         overrides={{

@@ -4,8 +4,8 @@ import {
   DefaultExperimentEternalIdsProps,
   PlasmicExperimentEternalIds,
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentEternalIds";
-import { Split } from "@/wab/shared/model/classes";
 import { SplitType } from "@/wab/shared/core/splits";
+import { Split } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -22,8 +22,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultExperimentEternalIdsProps altogether and have
 // total control over the props for your component.
-export interface ExperimentEternalIdsProps
-  extends DefaultExperimentEternalIdsProps {
+export interface ExperimentEternalIdsProps extends DefaultExperimentEternalIdsProps {
   split: Split;
   meta: {
     externalId?: string;
@@ -35,7 +34,7 @@ export interface ExperimentEternalIdsProps
 
 function ExperimentEternalIds_(
   props: ExperimentEternalIdsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { split, meta, onChange } = props;
   const [isExpanded, setIsExpanded] = React.useState(false);

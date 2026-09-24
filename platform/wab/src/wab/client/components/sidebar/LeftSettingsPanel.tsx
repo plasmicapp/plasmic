@@ -24,7 +24,7 @@ type LeftSettingsPanelProps = DefaultLeftSettingsPanelProps;
 
 function LeftSettingsPanel_(
   props: LeftSettingsPanelProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicLeftSettingsPanel to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

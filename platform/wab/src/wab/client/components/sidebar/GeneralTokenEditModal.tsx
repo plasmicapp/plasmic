@@ -86,5 +86,5 @@ export const GeneralTokenEditModal = observer(
         </div>
       </SidebarModal>
     );
-  }
+  },
 );

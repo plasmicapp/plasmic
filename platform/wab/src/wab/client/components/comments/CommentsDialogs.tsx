@@ -9,7 +9,7 @@ export type CommentsTabProps = {
 };
 
 export const CommentsDialogs = observer(function CommentsDialogs(
-  props: CommentsTabProps
+  props: CommentsTabProps,
 ) {
   const { studioCtx } = props;
 

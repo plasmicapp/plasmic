@@ -18,7 +18,7 @@ type SimpleTextboxProps = React.ComponentProps<"input"> & {
 
 export const SimpleTextbox = React.forwardRef(function SimpleTextbox(
   props: SimpleTextboxProps,
-  outerRef: React.Ref<HTMLInputElement>
+  outerRef: React.Ref<HTMLInputElement>,
 ) {
   const {
     onValueChange,

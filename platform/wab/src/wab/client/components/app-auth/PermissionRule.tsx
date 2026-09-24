@@ -12,7 +12,8 @@ import { Menu } from "antd";
 import * as React from "react";
 
 export interface PermissionRuleProps
-  extends DefaultPermissionRuleProps,
+  extends
+    DefaultPermissionRuleProps,
     Pick<PlasmicPermissionRule__OverridesType, "infoIcon"> {
   value: string | undefined | null;
   onChange: (value: string | undefined | null) => Promise<void>;
@@ -24,7 +25,7 @@ export interface PermissionRuleProps
 
 function PermissionRule_(
   props: PermissionRuleProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { value, onChange, onRemove, showDenied, roles, isFake, ...rest } =
     props;

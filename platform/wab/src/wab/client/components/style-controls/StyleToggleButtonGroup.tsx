@@ -9,8 +9,7 @@ import { Tooltip } from "antd";
 import * as React from "react";
 import flattenChildren from "react-keyed-flatten-children";
 
-interface StyleToggleButtonGroupProps
-  extends DefaultStyleToggleButtonGroupProps {
+interface StyleToggleButtonGroupProps extends DefaultStyleToggleButtonGroupProps {
   value?: string;
   onChange?: (value: string) => void;
   valueSetState?: ValueSetState;
@@ -31,20 +30,20 @@ function StyleToggleButtonGroup(props: StyleToggleButtonGroupProps) {
   const newChildren = flattenChildren(props.children).map((child) => {
     if (!isReactElementOfType(StyleToggleButton, child)) {
       throw new Error(
-        `Can only have instances of StyleToggleButton as children to StyleToggleButtonGroup`
+        `Can only have instances of StyleToggleButton as children to StyleToggleButtonGroup`,
       );
     }
 
     const childValue = child.props.value;
     if (!childValue) {
       throw new Error(
-        `Ever StyleToggleButton in the Group must have a valid value`
+        `Ever StyleToggleButton in the Group must have a valid value`,
       );
     }
 
     return React.cloneElement(child, {
       valueSetState:
-        childValue === value ? valueSetState ?? "isSet" : "isUnset",
+        childValue === value ? (valueSetState ?? "isSet") : "isUnset",
       onClick: () => {
         onChange && onChange(childValue);
       },

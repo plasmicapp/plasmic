@@ -7,7 +7,7 @@ import {
   DraggableProvidedDragHandleProps,
   Droppable,
 } from "react-beautiful-dnd";
-import { areEqual, FixedSizeList } from "react-window";
+import { FixedSizeList, areEqual } from "react-window";
 
 export function SimpleReorderableVirtualList<T>(props: {
   onReordered: (fromIndex: number, toIndex: number) => void;
@@ -108,7 +108,7 @@ interface ListContextValue<T> {
 }
 
 const ListContext = React.createContext<ListContextValue<any> | undefined>(
-  undefined
+  undefined,
 );
 
 const Row = React.memo(function Row<T>(props: {
@@ -118,7 +118,7 @@ const Row = React.memo(function Row<T>(props: {
 }) {
   const { data, index, style } = props;
   const { renderer, itemKey, customDragHandle } = ensure(
-    React.useContext(ListContext)
+    React.useContext(ListContext),
   );
   const item = data[index];
   if (!item) {
@@ -148,5 +148,4 @@ const Row = React.memo(function Row<T>(props: {
       )}
     </Draggable>
   );
-},
-areEqual);
+}, areEqual);

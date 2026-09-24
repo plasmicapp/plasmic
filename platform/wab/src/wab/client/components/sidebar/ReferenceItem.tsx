@@ -14,7 +14,7 @@ interface ReferenceItemProps extends DefaultReferenceItemProps {
 
 function ReferenceItem_(
   { menu, ...props }: ReferenceItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return (
     <PlasmicReferenceItem

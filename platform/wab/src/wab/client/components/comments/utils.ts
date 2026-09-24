@@ -67,7 +67,7 @@ export function hasNonDeletedComments(thread: ApiCommentThread): boolean {
 export function getCommentThreadWithModelMetadata(
   studioCtx: StudioCtx,
   bundler: Bundler,
-  thread: ApiCommentThread
+  thread: ApiCommentThread,
 ): TplCommentThread {
   const subject = bundler.objByAddr(thread.location.subject);
   const isSubjectNamable = isTplNamable(subject);
@@ -85,18 +85,18 @@ export function getCommentThreadWithModelMetadata(
   }
   const allComponentVariantsMap = keyBy(
     allComponentVariants(ownerComponent),
-    (v) => v.uuid
+    (v) => v.uuid,
   );
   const allGlobalVariantsMap = keyBy(
     allGlobalVariants(studioCtx.site, {
       includeDeps: "direct",
       excludeInactiveScreenVariants: true,
     }),
-    (v) => v.uuid
+    (v) => v.uuid,
   );
   const variants = thread.location.variants.reduce(function (
     filtered: Variant[],
-    variantAddr
+    variantAddr,
   ) {
     const variantInst = bundler.objByAddr(variantAddr);
     if (
@@ -107,8 +107,7 @@ export function getCommentThreadWithModelMetadata(
       filtered.push(variantInst);
     }
     return filtered;
-  },
-  []);
+  }, []);
   const hasDeletedVariants =
     thread.location.variants.length !== variants.length;
 
@@ -128,25 +127,25 @@ export function getCommentThreadWithModelMetadata(
 export function getCommentThreadsWithModelMetadata(
   studioCtx: StudioCtx,
   bundler: Bundler,
-  threads: ApiCommentThread[]
+  threads: ApiCommentThread[],
 ): TplCommentThreads {
   return threads
     .filter((thread) => hasNonDeletedComments(thread))
     .map((thread) =>
-      getCommentThreadWithModelMetadata(studioCtx, bundler, thread)
+      getCommentThreadWithModelMetadata(studioCtx, bundler, thread),
     );
 }
 
 export function partitionThreadsForFrames(
   threads: TplCommentThreads,
   arenaFrames: ArenaFrame[],
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ) {
   const [current, other] = partition([...threads], (thread) =>
     arenaFrames.find((arenaFrame) => {
       const vc = studioCtx.tryGetViewCtxForFrame(arenaFrame);
       return vc && isCommentForFrame(vc, thread);
-    })
+    }),
   );
 
   return {
@@ -177,14 +176,14 @@ export function computeCommentStats(threads: TplCommentThreads): {
   // filtered out threads with undefined(deleted) subject or variants
   const filteredThreads = threads.filter(
     (
-      thread
+      thread,
     ): thread is TplCommentThread & {
       subjectInfo: SubjectInfo & { variants: Variant[] };
-    } => !!thread.subjectInfo && !!thread.subjectInfo.variants
+    } => !!thread.subjectInfo && !!thread.subjectInfo.variants,
   );
   const threadsGroupedBySubject = groupBy(
     filteredThreads,
-    (commentThread) => commentThread.subjectInfo.subject.uuid
+    (commentThread) => commentThread.subjectInfo.subject.uuid,
   );
 
   const commentStatsBySubject: CommentStatsMap = new Map();
@@ -201,12 +200,12 @@ export function computeCommentStats(threads: TplCommentThreads): {
           {
             commentCount: 0,
             replyCount: 0,
-          }
+          },
         );
         subjectStats.commentCount = commentThreads.length;
         subjectStats.replyCount = commentThreads.reduce(
           (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
-          0
+          0,
         );
 
         const [commentThread] = commentThreads;
@@ -221,21 +220,21 @@ export function computeCommentStats(threads: TplCommentThreads): {
             {
               commentCount: 0,
               replyCount: 0,
-            }
+            },
           );
 
           componentStats.commentCount += subjectStats.commentCount;
           componentStats.replyCount += subjectStats.replyCount;
         }
       }
-    }
+    },
   );
 
   const threadsGroupedByVariants = groupBy(filteredThreads, (commentThread) =>
     getSubjectVariantsKey(
       commentThread.subjectInfo.subject,
-      commentThread.subjectInfo.variants
-    )
+      commentThread.subjectInfo.variants,
+    ),
   );
 
   Object.entries(threadsGroupedByVariants).forEach(
@@ -248,15 +247,15 @@ export function computeCommentStats(threads: TplCommentThreads): {
           {
             commentCount: 0,
             replyCount: 0,
-          }
+          },
         );
         variant.commentCount = commentThreads.length;
         variant.replyCount = commentThreads.reduce(
           (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
-          0
+          0,
         );
       }
-    }
+    },
   );
 
   return {
@@ -268,7 +267,7 @@ export function computeCommentStats(threads: TplCommentThreads): {
 
 export function isElementWithComments(
   commentsCtx: CommentsCtx,
-  element: ObjInst
+  element: ObjInst,
 ) {
   if (!isTplNamable(element)) {
     return false;
@@ -278,13 +277,13 @@ export function isElementWithComments(
     .unresolvedThreads.some(
       (commentThread) =>
         commentsCtx.bundler().objByAddr(commentThread.location.subject) ===
-        element
+        element,
     );
 }
 
 export function isCommentForFrame(
   viewCtx: ViewCtx,
-  commentThread: TplCommentThread
+  commentThread: TplCommentThread,
 ) {
   const bundler = viewCtx.bundler();
   if (!commentThread.subjectInfo) {
@@ -297,7 +296,7 @@ export function isCommentForFrame(
     variants &&
     xSymmetricDifference(
       variants,
-      getSetOfPinnedVariantsForViewCtx(viewCtx, bundler)
+      getSetOfPinnedVariantsForViewCtx(viewCtx, bundler),
     ).length === 0;
   return isForFrame;
 }

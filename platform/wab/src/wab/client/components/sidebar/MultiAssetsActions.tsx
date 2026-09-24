@@ -8,8 +8,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface MultiAssetsActionsProps
-  extends DefaultMultiAssetsActionsProps {
+export interface MultiAssetsActionsProps extends DefaultMultiAssetsActionsProps {
   type: "asset" | "token";
   selectableAssets: string[];
   onDelete: (selected: string[]) => Promise<boolean>;
@@ -26,7 +25,7 @@ export function useMultiAssetsActions() {
   const context = React.useContext(MultiAssetsActionsContext);
   if (!context) {
     throw new Error(
-      "useMultiAssetsActions must be used within a MultiAssetsActions"
+      "useMultiAssetsActions must be used within a MultiAssetsActions",
     );
   }
   return context;
@@ -34,7 +33,7 @@ export function useMultiAssetsActions() {
 
 function getLabelForNumSelected(
   type: MultiAssetsActionsProps["type"],
-  numSelected: number
+  numSelected: number,
 ) {
   const singular = type === "asset" ? "asset" : "token";
   const plural = type === "asset" ? "assets" : "tokens";
@@ -49,7 +48,7 @@ function getLabelForNumSelected(
 
 function MultiAssetsActions_(
   props: MultiAssetsActionsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { type, selectableAssets, children, onDelete, ...rest } = props;
 
@@ -62,15 +61,15 @@ function MultiAssetsActions_(
       setSelectedAssets((prev) =>
         selected
           ? [...prev, assetId]
-          : prev.filter((selectedAssetId) => selectedAssetId !== assetId)
+          : prev.filter((selectedAssetId) => selectedAssetId !== assetId),
       );
     },
-    []
+    [],
   );
 
   const isAssetSelected = React.useCallback(
     (assetId: string) => selectedAssets.includes(assetId),
-    [selectedAssets]
+    [selectedAssets],
   );
 
   const isAllSelected = React.useMemo(() => {
@@ -78,7 +77,7 @@ function MultiAssetsActions_(
       return false;
     }
     return selectableAssets.every((assetId) =>
-      selectedAssets.includes(assetId)
+      selectedAssets.includes(assetId),
     );
   }, [selectableAssets, selectedAssets]);
 

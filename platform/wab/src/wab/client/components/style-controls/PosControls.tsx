@@ -129,7 +129,7 @@ function MeasureControl_(props: MeasureControlProps) {
 
     const existingUnit = maybe(
       parseCssNumericNew(exp().get(oppSide(prop))),
-      ({ units }) => ensureUnit(units)
+      ({ units }) => ensureUnit(units),
     );
 
     if (e.metaKey || e.ctrlKey) {
@@ -145,10 +145,10 @@ function MeasureControl_(props: MeasureControlProps) {
 
   const rawValue = exp().get(prop);
   const maybeToken = tryParseTokenRef(rawValue, () =>
-    siteFinalStyleTokensAllDeps(studioCtx.site)
+    siteFinalStyleTokensAllDeps(studioCtx.site),
   );
   const isDraggingDisabled = !isDraggableSize(
-    (maybeToken && maybeToken.value) || rawValue
+    (maybeToken && maybeToken.value) || rawValue,
   );
 
   return (
@@ -178,7 +178,7 @@ function MeasureControl_(props: MeasureControlProps) {
                 }
 
                 initDim(e);
-              })
+              }),
             );
           }}
           data-plasmic-pos-trigger={prop}
@@ -193,7 +193,7 @@ function MeasureControl_(props: MeasureControlProps) {
             }}
             onDrag={(e) => {
               const parsed = parseCssNumericNew(
-                ensure(initValRef.current, `initValRef should be set`)
+                ensure(initValRef.current, `initValRef should be set`),
               );
               const { num, units } = parsed || {
                 num: 0,
@@ -207,7 +207,7 @@ function MeasureControl_(props: MeasureControlProps) {
               spawn(
                 studioCtx.changeUnsafe(() => {
                   manip.setNum(newVal);
-                })
+                }),
               );
             }}
             onStop={() => {
@@ -265,7 +265,7 @@ function MeasureControl_(props: MeasureControlProps) {
                             state.close();
                           }
                           exp().set(prop, val || "auto");
-                        })
+                        }),
                       );
                     }}
                     extraOptions={["auto"]}
@@ -289,7 +289,7 @@ function MeasureControl_(props: MeasureControlProps) {
               </Popover>
             </div>
           </OverlayProvider>,
-          container
+          container,
         )}
     </WithContextMenu>
   );
@@ -303,7 +303,7 @@ export const GenericPosPushButtons = observer(
     directions: ReadonlyArray<Side | Corner | "cover">;
     zeroSides: (
       exp: IRuleSetHelpersX,
-      sidesToZero: ReadonlyArray<Side>
+      sidesToZero: ReadonlyArray<Side>,
     ) => void;
   }) {
     const { expsProvider, directions, zeroSides } = props;
@@ -324,10 +324,10 @@ export const GenericPosPushButtons = observer(
           const sidesToZero = isStandardSide(part)
             ? sideToAdjacentSides(part)
             : isStandardCorner(part)
-            ? cornerToSides(part)
-            : standardSides;
+              ? cornerToSides(part)
+              : standardSides;
           zeroSides(exp, sidesToZero);
-        })
+        }),
       );
     }
     return (
@@ -341,7 +341,7 @@ export const GenericPosPushButtons = observer(
         ))}
       </div>
     );
-  }
+  },
 );
 
 export const PosPushButtons = observer(function PosPushButtons(props: {
@@ -396,7 +396,7 @@ export const PosControls2 = observer(function PosControls2(props: {
       {sidesAndCorners({
         side: (side) => {
           const cssIndicatorType = expsProvider.definedIndicator(
-            posProp || side
+            posProp || side,
           );
           // We only show cssIndicatorType for the defined side.
           const indicatorType =
@@ -407,7 +407,7 @@ export const PosControls2 = observer(function PosControls2(props: {
             expsProvider.studioCtx,
             expsProvider.forDom(),
             () => exp,
-            side
+            side,
           );
           const sc = mkStyleComponent(props);
           const menu = () =>
@@ -481,7 +481,7 @@ const Popover = React.forwardRef(function Popover(
     isOpen?: boolean;
     isOutsidePopover?: (e: HTMLElement) => boolean;
   } & React.ComponentProps<"div">,
-  outerRef: React.Ref<HTMLDivElement>
+  outerRef: React.Ref<HTMLDivElement>,
 ) {
   const { children, onClose, isOpen, isOutsidePopover, ...rest } = props;
   const { ref, onRef } = useForwardedRef(outerRef);
@@ -501,7 +501,7 @@ const Popover = React.forwardRef(function Popover(
           : true;
       },
     },
-    ref
+    ref,
   );
 
   // Hide content outside the modal from screen readers.

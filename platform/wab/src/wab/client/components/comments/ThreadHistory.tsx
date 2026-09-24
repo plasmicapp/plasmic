@@ -20,7 +20,7 @@ export interface ThreadHistoryProps extends DefaultThreadHistoryProps {
 
 function ThreadHistory_(
   props: ThreadHistoryProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { history, ...rest } = props;
 
@@ -30,7 +30,7 @@ function ThreadHistory_(
 
   const author = ensure(
     commentsCtx.computedData().usersMap.get(ensureString(history.createdById)),
-    `Author of comment ${history.createdById} should be present in usersMap`
+    `Author of comment ${history.createdById} should be present in usersMap`,
   );
 
   return (

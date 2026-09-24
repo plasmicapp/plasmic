@@ -24,7 +24,7 @@ export type ReactionButtonProps = DefaultReactionButtonProps;
 
 function ReactionButton_(
   props: ReactionButtonProps,
-  ref: HTMLElementRefOf<"button">
+  ref: HTMLElementRefOf<"button">,
 ) {
   // Use PlasmicReactionButton to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

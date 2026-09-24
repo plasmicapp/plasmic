@@ -27,17 +27,17 @@ interface TransformSettingsPanelProps {
   studioCtx: StudioCtx;
   updateSelfPerspective: (newSelfPerspective: string | undefined) => void;
   updateTransformOrigin: (
-    origin: { left: string; top: string } | undefined
+    origin: { left: string; top: string } | undefined,
   ) => void;
   updatePerspectiveOrigin: (
-    origin: { left: string; top: string } | undefined
+    origin: { left: string; top: string } | undefined,
   ) => void;
   updateBackfaceVisibility: (visibility: string | undefined) => void;
   updateChildPerspective: (newChildPerspective: string | undefined) => void;
 }
 
 export const TransformSettingsPanel = observer(function TransformSettingsPanel(
-  props: TransformSettingsPanelProps
+  props: TransformSettingsPanelProps,
 ) {
   const {
     studioCtx,
@@ -54,7 +54,7 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
   } = props;
   const parsedSelfPerspective = ensure(
     parseCssNumericNew(selfPerspective || "0px"),
-    "Unexpected undefined selfPerspective value"
+    "Unexpected undefined selfPerspective value",
   );
 
   const parseOrigin = (origin: { left?: string; top?: string } | undefined) => {
@@ -65,11 +65,11 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
       top: originTop,
       parsedLeft: ensure(
         parseCssNumericNew(originLeft),
-        "Unexpected undefined originLeft value"
+        "Unexpected undefined originLeft value",
       ),
       parsedTop: ensure(
         parseCssNumericNew(originTop),
-        "Unexpected undefined originTop value"
+        "Unexpected undefined originTop value",
       ),
     };
   };
@@ -98,7 +98,7 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
 
   const parsedChildPerspective = ensure(
     parseCssNumericNew(childPerspective || "0px"),
-    "Unexpected undefined childPerspective value"
+    "Unexpected undefined childPerspective value",
   );
 
   // ensure that we stop unlogging in case the component is going to unmount

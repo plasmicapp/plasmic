@@ -3,6 +3,7 @@
 import SegmentQueryBuilder, {
   getHumanFormatRules,
 } from "@/wab/client/components/splits/SegmentQueryBuilder";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import {
   DefaultSegmentControlsProps,
   PlasmicSegmentControls,
@@ -11,7 +12,6 @@ import PlasmicSegmentModal from "@/wab/client/plasmic/plasmic_kit_optimize/Plasm
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -35,7 +35,7 @@ const MODAL_WIDTH = 700;
 
 function SegmentControls_(
   props: SegmentControlsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { value, onChange } = props;
   const obj = JSON.parse(value);
@@ -44,7 +44,7 @@ function SegmentControls_(
     onChange(
       JSON.stringify({
         __logic: newLogic,
-      })
+      }),
     );
   };
 

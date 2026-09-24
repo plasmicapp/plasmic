@@ -24,7 +24,7 @@ interface TransformPanelProps {
 }
 
 export const TransformPanel = observer(function TransformPanel(
-  props: TransformPanelProps
+  props: TransformPanelProps,
 ) {
   const { studioCtx, transform, onChange } = props;
 
@@ -98,7 +98,7 @@ export const TransformPanel = observer(function TransformPanel(
 function renderSliders(
   transform: CssTransform,
   studioCtx: StudioCtx,
-  onChange: (newTransform: CssTransform) => void
+  onChange: (newTransform: CssTransform) => void,
 ) {
   if (transform instanceof TranslateTransform) {
     return renderDimensions(transform, ["X", "Y", "Z"], studioCtx, onChange);
@@ -108,7 +108,7 @@ function renderSliders(
       transform,
       ["X", "Y", "Z", "angle"],
       studioCtx,
-      onChange
+      onChange,
     );
   }
   if (transform instanceof ScaleTransform) {
@@ -126,7 +126,7 @@ function renderDimensions<T extends CssTransform>(
   transform: T,
   dimensionKeys: Array<keyof T & string>,
   studioCtx: StudioCtx,
-  onChange: (newTransform: CssTransform) => void
+  onChange: (newTransform: CssTransform) => void,
 ) {
   return dimensionKeys.map((key) => (
     <DimensionSlider

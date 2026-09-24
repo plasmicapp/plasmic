@@ -39,7 +39,7 @@ function selectorToReactKey(selector: Selector): string {
 
 function selectorToDisplayName(
   selector: Selector,
-  preferCssSelector = false
+  preferCssSelector = false,
 ): string {
   switch (selector.type) {
     case "CodeComponentSelector":
@@ -47,7 +47,7 @@ function selectorToDisplayName(
     case "CssSelector":
       return preferCssSelector
         ? selector.cssSelector
-        : selector.preset?.displayName ?? selector.cssSelector;
+        : (selector.preset?.displayName ?? selector.cssSelector);
   }
 }
 
@@ -84,7 +84,7 @@ function areSelectorsEqual(a: Selector, b: Selector) {
  */
 export function styleOrCodeComponentVariantToSelectors(
   variant: StyleOrCodeComponentVariant,
-  site: Site
+  site: Site,
 ): Selector[] {
   if (isCodeComponentVariant(variant)) {
     const info = siteCCVariantsToInfos(site).get(variant);
@@ -161,7 +161,7 @@ export function SelectorsInput({
         ...getApplicableSelectors(
           forTag,
           forPrivateStyleVariant,
-          forRoot ?? false
+          forRoot ?? false,
         ).map((preset) => ({
           type: "CssSelector" as const,
           cssSelector: preset.cssSelector,
@@ -186,7 +186,7 @@ export function SelectorsInput({
       }
 
       return true;
-    })
+    }),
   );
 
   const [keepOpen, setKeepOpen] = useState(false);
@@ -239,7 +239,7 @@ export function SelectorsInput({
           })()}
         >
           {matcher.boldSnippets(
-            selectorToDisplayName(selector, isTypingPseudoSelector)
+            selectorToDisplayName(selector, isTypingPseudoSelector),
           )}
         </Tooltip>
       )}
@@ -262,7 +262,7 @@ export function SelectorsInput({
             selectorToDisplayName(selector)
               .toLowerCase()
               .includes(inputLower) ||
-            getVariantIdentifier(selector).toLowerCase().includes(inputLower)
+            getVariantIdentifier(selector).toLowerCase().includes(inputLower),
         );
       }}
     />
@@ -309,6 +309,6 @@ function getCodeComponentSelectors(codeComponent: CodeComponent): Selector[] {
       componentName: codeComponent.name,
       key,
       displayName: variantMeta.displayName,
-    })
+    }),
   );
 }

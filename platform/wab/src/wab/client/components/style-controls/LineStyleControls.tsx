@@ -11,7 +11,7 @@ export function LabeledLineStyleToggleButtonGroupItemRow(
   props: Omit<
     React.ComponentProps<typeof LabeledToggleButtonGroupItemRow>,
     "children"
-  >
+  >,
 ) {
   return (
     <LabeledToggleButtonGroupItemRow {...props}>

@@ -32,7 +32,7 @@ const MARKDOWN_HINTS = [
 
 function MarkdownHintsPopoverContent_(
   props: MarkdownHintsPopoverContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return (
     <PlasmicMarkdownHintsPopoverContent
@@ -48,5 +48,5 @@ function MarkdownHintsPopoverContent_(
 }
 
 export const MarkdownHintsPopoverContent = React.forwardRef(
-  MarkdownHintsPopoverContent_
+  MarkdownHintsPopoverContent_,
 );

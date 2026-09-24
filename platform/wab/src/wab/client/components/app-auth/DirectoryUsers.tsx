@@ -5,11 +5,11 @@ import {
 import Button from "@/wab/client/components/widgets/Button";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import Chip from "@/wab/client/components/widgets/Chip";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { ApiEndUser } from "@/wab/shared/ApiSchema";
 import { Table } from "antd";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export default function DirectoryUsers(props: {
   teamId: string;
@@ -22,10 +22,10 @@ export default function DirectoryUsers(props: {
   const { groups } = useDirectoryGroups(appCtx, directoryId);
 
   const [selectedUser, setSelectedUser] = React.useState<ApiEndUser | null>(
-    null
+    null,
   );
   const [selectedUserGroups, setSelectedUserGroups] = React.useState<string[]>(
-    []
+    [],
   );
 
   return (
@@ -93,7 +93,7 @@ export default function DirectoryUsers(props: {
       >
         {groups.map((group) => {
           const isSelected = selectedUserGroups.some(
-            (groupId) => groupId === group.id
+            (groupId) => groupId === group.id,
           );
           return (
             <div key={group.id}>
@@ -104,7 +104,7 @@ export default function DirectoryUsers(props: {
                     setSelectedUserGroups([...selectedUserGroups, group.id]);
                   } else {
                     setSelectedUserGroups(
-                      (prev) => prev.filter((g) => g !== group.id) || []
+                      (prev) => prev.filter((g) => g !== group.id) || [],
                     );
                   }
                 }}
@@ -121,7 +121,7 @@ export default function DirectoryUsers(props: {
                 await appCtx.api.updateEndUserGroups(
                   directoryId,
                   selectedUser!.id,
-                  selectedUserGroups
+                  selectedUserGroups,
                 );
                 return await appCtx.api.listDirectoryUsers(directoryId);
               },
@@ -137,7 +137,7 @@ export default function DirectoryUsers(props: {
                   }
                   return user;
                 }),
-              }
+              },
             );
 
             setSelectedUser(null);

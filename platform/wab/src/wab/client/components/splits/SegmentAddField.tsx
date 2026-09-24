@@ -24,7 +24,7 @@ export type SegmentAddFieldProps = DefaultSegmentAddFieldProps;
 
 function SegmentAddField_(
   props: SegmentAddFieldProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicSegmentAddField to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

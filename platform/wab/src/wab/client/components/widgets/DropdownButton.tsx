@@ -10,7 +10,7 @@ import React from "react";
 export function DropdownButton(
   props: React.ComponentProps<typeof Button> & {
     menu: React.ReactNode | MenuMaker;
-  }
+  },
 ) {
   const { menu, ...rest } = props;
   return (

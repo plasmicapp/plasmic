@@ -20,11 +20,11 @@ export interface TrackSizeInputProps {
 
 function TrackSizeInput({ size, onChange }: TrackSizeInputProps) {
   const defaultText1 = showSizeCss(
-    size.type === "MinMaxSize" ? size.min : size
+    size.type === "MinMaxSize" ? size.min : size,
   );
   const defaultText2 = maybe(
     size.type === "MinMaxSize" ? size.max : undefined,
-    showSizeCss
+    showSizeCss,
   );
   const isRange = size.type === "MinMaxSize";
 
@@ -58,7 +58,7 @@ function TrackSizeInput({ size, onChange }: TrackSizeInputProps) {
             min: parseAtomicSize(effectiveText1),
             max: parseAtomicSize(effectiveText2),
           }
-        : parseAtomicSize(effectiveText1)
+        : parseAtomicSize(effectiveText1),
     );
   }
 
@@ -74,7 +74,7 @@ function TrackSizeInput({ size, onChange }: TrackSizeInputProps) {
             },
             max: size as AtomicSize,
           }
-        : (size as MinMaxSize).max
+        : (size as MinMaxSize).max,
     );
   }
 

@@ -26,7 +26,7 @@ export interface AuthTabNavigationProps extends DefaultAuthTabNavigationProps {
 
 function AuthTabNavigation_(
   props: AuthTabNavigationProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { changeTab, ...rest } = props;
 

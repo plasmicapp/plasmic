@@ -27,33 +27,29 @@ export function SimpleReorderableList(props: {
   const Container = props.as ?? "ul";
   const childrenArray = React.useMemo(
     () => React.Children.toArray(children),
-    [children]
+    [children],
   );
 
   /* In some cases, dragging item was disappearing:
    - https://github.com/atlassian/react-beautiful-dnd/issues/1003
    - https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/reparenting.md */
   const getRenderItem = React.useCallback(
-    (items) => (provided, snapshot, rubric) =>
-      (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...(customDragHandle ? {} : provided.dragHandleProps)}
-          style={axisLockedStyle(provided.draggableProps.style)}
-        >
-          {React.cloneElement(
-            items[rubric.source.index] as React.ReactElement,
-            {
-              ...(customDragHandle
-                ? { dragHandleProps: provided.dragHandleProps }
-                : {}),
-              isDragging: snapshot.isDragging,
-            }
-          )}
-        </div>
-      ),
-    [customDragHandle]
+    (items) => (provided, snapshot, rubric) => (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...(customDragHandle ? {} : provided.dragHandleProps)}
+        style={axisLockedStyle(provided.draggableProps.style)}
+      >
+        {React.cloneElement(items[rubric.source.index] as React.ReactElement, {
+          ...(customDragHandle
+            ? { dragHandleProps: provided.dragHandleProps }
+            : {}),
+          isDragging: snapshot.isDragging,
+        })}
+      </div>
+    ),
+    [customDragHandle],
   );
   const renderItem = getRenderItem(childrenArray);
   return (
@@ -100,7 +96,7 @@ export function axisLockedStyle(style?: React.CSSProperties) {
     return {
       ...style,
       transform: `translate(0px${style.transform.slice(
-        style.transform.indexOf(",")
+        style.transform.indexOf(","),
       )}`,
     };
   } else {

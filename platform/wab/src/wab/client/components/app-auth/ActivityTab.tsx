@@ -115,11 +115,11 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
             dataSource={accesses}
             onRow={(record) => {
               const role = getHighestRole(
-                record.matchedRoles.map((r) => r.role)
+                record.matchedRoles.map((r) => r.role),
               );
               const canRevokePermission =
                 record.matchedRoles.filter(
-                  (r) => r.reason === "email" || r.reason === "external-id"
+                  (r) => r.reason === "email" || r.reason === "external-id",
                 ).length > 0 || record.matchedRoles.length === 0;
               return {
                 onContextMenu: (e) => {
@@ -151,7 +151,8 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
                         onClick={async () => {
                           const isUserLosingAccess = !record.matchedRoles.some(
                             (r) =>
-                              r.reason !== "email" && r.reason !== "external-id"
+                              r.reason !== "email" &&
+                              r.reason !== "external-id",
                           );
 
                           const newRole = getHighestRole(
@@ -159,9 +160,9 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
                               .filter(
                                 (r) =>
                                   r.reason !== "email" &&
-                                  r.reason !== "external-id"
+                                  r.reason !== "external-id",
                               )
-                              .map((r) => r.role)
+                              .map((r) => r.role),
                           );
 
                           const hardConfirm = await confirm({
@@ -177,18 +178,18 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
                             const accessId = record.matchedRoles.find(
                               (r) =>
                                 r.reason === "email" ||
-                                r.reason === "external-id"
+                                r.reason === "external-id",
                             )?.accessId;
 
                             if (accessId) {
                               await appCtx.api.deleteAccessRule(
                                 projectId,
-                                accessId
+                                accessId,
                               );
 
                               await appCtx.api.deleteAppAccessRegister(
                                 projectId,
-                                record.id
+                                record.id,
                               );
 
                               await mutateDependencies();
@@ -208,7 +209,7 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
                             : "Revoke access"}
                         </Tooltip>
                       </Menu.Item>
-                    </Menu>
+                    </Menu>,
                   );
                 },
               };
@@ -241,7 +242,7 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
                 dataIndex: "matchedRoles",
                 render: (
                   matchedRoles: ApiAppAccessRegistry["matchedRoles"],
-                  record: ApiAppAccessRegistry
+                  record: ApiAppAccessRegistry,
                 ) => {
                   const role = getHighestRole(matchedRoles.map((r) => r.role));
                   const minRoleOrder =
@@ -249,9 +250,9 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
                       matchedRoles
                         .filter(
                           (r) =>
-                            r.reason !== "email" && r.reason !== "external-id"
+                            r.reason !== "email" && r.reason !== "external-id",
                         )
-                        .map((r) => r.role)
+                        .map((r) => r.role),
                     )?.order ?? 1;
 
                   return (
@@ -264,13 +265,13 @@ function ActivityTab_(props: ActivityTabProps, ref: HTMLElementRefOf<"div">) {
 
                         const personalAccessId = matchedRoles.find(
                           (r) =>
-                            r.reason === "email" || r.reason === "external-id"
+                            r.reason === "email" || r.reason === "external-id",
                         )?.accessId;
                         if (personalAccessId) {
                           await appCtx.api.updateAccessRule(
                             projectId,
                             personalAccessId,
-                            newRoleId
+                            newRoleId,
                           );
                         } else {
                           // External Id can only receive permission directly through

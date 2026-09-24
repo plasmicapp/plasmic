@@ -105,7 +105,7 @@ export const FontFamilySelector = observer(function FontFamilySelector(props: {
                     tooltip={`${token.name} (${derefToken(
                       tokens,
                       token,
-                      vsh
+                      vsh,
                     )})`}
                   >
                     {token.name}

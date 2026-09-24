@@ -9,14 +9,13 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface ThreadHistoryStatusProps
-  extends DefaultThreadHistoryStatusProps {
+export interface ThreadHistoryStatusProps extends DefaultThreadHistoryStatusProps {
   commentThread?: TplCommentThread;
 }
 
 function ThreadHistoryStatus_(
   props: ThreadHistoryStatusProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { commentThread, ...rest } = props;
 

@@ -24,7 +24,7 @@ export type ExperimentEventProps = DefaultExperimentEventProps;
 
 function ExperimentEvent_(
   props: ExperimentEventProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicExperimentEvent to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

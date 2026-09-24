@@ -45,7 +45,7 @@ function getArenaDetails(currentArena: AnyArena) {
 }
 
 export const CommentsTab = observer(function CommentsTab(
-  props: CommentsTabProps
+  props: CommentsTabProps,
 ) {
   const studioCtx = useStudioCtx();
 
@@ -63,7 +63,7 @@ export const CommentsTab = observer(function CommentsTab(
   const { current, other } = partitionThreadsForFrames(
     threads,
     currentFrames,
-    studioCtx
+    studioCtx,
   );
 
   const projectId = studioCtx.siteInfo.id;
@@ -99,14 +99,14 @@ export const CommentsTab = observer(function CommentsTab(
                               {
                                 ...commentsCtx.selfNotificationSettings(),
                                 notifyAbout: key as any,
-                              }
+                              },
                             );
                             await commentsCtx.fetchComments();
                           }}
                         >
                           {label}
                         </Menu.Item>
-                      )
+                      ),
                     )}
                   </Menu.ItemGroup>
                 </Menu>

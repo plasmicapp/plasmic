@@ -21,8 +21,10 @@ export type NewComponentInfo = {
   insertableTemplateInfo?: InsertableTemplateComponentExtraInfo;
 };
 
-interface NewComponentModalProps
-  extends Omit<DefaultNewComponentModalProps, "children"> {
+interface NewComponentModalProps extends Omit<
+  DefaultNewComponentModalProps,
+  "children"
+> {
   onSubmit: (info: NewComponentInfo) => void;
   onCancel: () => void;
   studioCtx: StudioCtx;
@@ -34,7 +36,7 @@ function NewComponentModal(props: NewComponentModalProps) {
 
   const [expanded, setExpanded] = React.useState(false);
   const [templateName, setTemplateName] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [name, setName] = React.useState("");
   const nameRef = React.useRef<TextboxRef>(null);
@@ -47,7 +49,7 @@ function NewComponentModal(props: NewComponentModalProps) {
 
   const templates = flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
-    "insertable-templates-component"
+    "insertable-templates-component",
   );
 
   return (
@@ -61,7 +63,7 @@ function NewComponentModal(props: NewComponentModalProps) {
               if (templateName) {
                 const templateItem = getInsertableTemplateComponentItem(
                   studioCtx,
-                  templateName
+                  templateName,
                 );
                 assert(templateItem, `No template found for ${templateName}`);
                 const { screenVariant } =
@@ -69,7 +71,7 @@ function NewComponentModal(props: NewComponentModalProps) {
                 const templateInfo = await buildInsertableExtraInfo(
                   studioCtx,
                   templateItem,
-                  screenVariant
+                  screenVariant,
                 );
                 onSubmit({ name, insertableTemplateInfo: templateInfo });
               } else {
@@ -117,7 +119,7 @@ function NewComponentModal(props: NewComponentModalProps) {
           title="Blank component"
           onClick={() => {
             const previousTemplate = templates.find(
-              (c) => c.templateName === templateName
+              (c) => c.templateName === templateName,
             );
             if (previousTemplate?.componentName === name) {
               setName("");
@@ -140,7 +142,7 @@ function NewComponentModal(props: NewComponentModalProps) {
                 imgUrl={template.imageUrl}
                 onClick={() => {
                   const previousTemplate = templates.find(
-                    (c) => c.templateName === templateName
+                    (c) => c.templateName === templateName,
                   );
                   if (!name || previousTemplate?.componentName === name) {
                     setName(template.componentName);

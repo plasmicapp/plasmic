@@ -79,15 +79,15 @@ const FilterEffectEditor = (props: FilterEffectPanelProps) => {
     const [X, Y, rad, color] = args;
     const parsedX = ensure(
       parseCssNumericNew(X),
-      "Unexpected undefined numeric value for X"
+      "Unexpected undefined numeric value for X",
     );
     const parsedY = ensure(
       parseCssNumericNew(Y),
-      "Unexpected undefined numeric value for Y"
+      "Unexpected undefined numeric value for Y",
     );
     const parsedRad = ensure(
       parseCssNumericNew(rad),
-      "Unexpected undefined numeric value for rad"
+      "Unexpected undefined numeric value for rad",
     );
     return (
       <>
@@ -204,7 +204,7 @@ const FilterEffectEditor = (props: FilterEffectPanelProps) => {
   } else {
     const parsed = ensure(
       parseCssNumericNew(filterEffect.args[0]),
-      "Unexpected undefined numeric value"
+      "Unexpected undefined numeric value",
     );
     return (
       <LabeledItemRow

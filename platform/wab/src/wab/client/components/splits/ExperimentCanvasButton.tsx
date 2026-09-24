@@ -6,8 +6,8 @@ import {
   PlasmicExperimentCanvasButton,
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentCanvasButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { Split, VariantGroup } from "@/wab/shared/model/classes";
 import { SplitType } from "@/wab/shared/core/splits";
+import { Split, VariantGroup } from "@/wab/shared/model/classes";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined
@@ -23,8 +23,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultExperimentCanvasButtonProps altogether and have
 // total control over the props for your component.
-export interface ExperimentCanvasButtonProps
-  extends DefaultExperimentCanvasButtonProps {
+export interface ExperimentCanvasButtonProps extends DefaultExperimentCanvasButtonProps {
   group: VariantGroup;
 }
 

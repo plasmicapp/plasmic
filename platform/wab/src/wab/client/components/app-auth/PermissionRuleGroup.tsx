@@ -24,7 +24,7 @@ export type PermissionRuleGroupProps = DefaultPermissionRuleGroupProps;
 
 function PermissionRuleGroup_(
   props: PermissionRuleGroupProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicPermissionRuleGroup to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

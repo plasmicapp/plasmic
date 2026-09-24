@@ -25,7 +25,7 @@ export type VersionsListItemProps = DefaultVersionsListItemProps & {
 
 function VersionsListItem_(
   props: VersionsListItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { onClick, itemDate, author, ...rest } = props;
   return (

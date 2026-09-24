@@ -24,7 +24,7 @@ export type CommentMarkerProps = DefaultCommentMarkerProps;
 
 function CommentMarker_(
   props: CommentMarkerProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicCommentMarker to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

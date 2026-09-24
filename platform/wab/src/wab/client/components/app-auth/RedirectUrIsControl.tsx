@@ -23,8 +23,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultRedirectUrIsControlProps altogether and have
 // total control over the props for your component.
-export interface RedirectUrIsControlProps
-  extends DefaultRedirectUrIsControlProps {
+export interface RedirectUrIsControlProps extends DefaultRedirectUrIsControlProps {
   redirectUris: string[];
   onAdd: () => void;
   onRemove: (idx: number) => void;
@@ -34,7 +33,7 @@ export interface RedirectUrIsControlProps
 
 function RedirectUrIsControl_(
   props: RedirectUrIsControlProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { redirectUris, onAdd, onRemove, onChange, onSave, ...rest } = props;
   return (

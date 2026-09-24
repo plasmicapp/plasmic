@@ -39,7 +39,7 @@ const PopoverFrameContext = React.createContext<Store | undefined>(undefined);
 function usePopoverFrameContext() {
   return ensure(
     React.useContext(PopoverFrameContext),
-    "Unexpected nullish PopoverFrameContext"
+    "Unexpected nullish PopoverFrameContext",
   );
 }
 
@@ -72,7 +72,7 @@ type Action = PushAction | PopAction | PopAllAction;
  */
 function popoverFrameReducer(
   state: PopoverFrameState,
-  action: Action
+  action: Action,
 ): PopoverFrameState {
   if (action.type === "push") {
     const existing = state.stack.find((f) => f.id === action.frame.id);
@@ -174,7 +174,7 @@ export function PopoverFrame(props: PopoverFrameProps) {
 }
 
 const PopoverFrameInternal = observer(function PopoverFrameInternal(
-  props: PopoverFrameProps & { frameId: string }
+  props: PopoverFrameProps & { frameId: string },
 ) {
   // This component doesn't render anything; it dispatches push and pop
   // actions to the PopoverFrameContext store to manage popover content.
@@ -207,8 +207,8 @@ const PopoverFrameInternal = observer(function PopoverFrameInternal(
         persistOnInteractOutside,
         valuePath,
         triggerElement,
-      } as PopoverStackFrame),
-    [frameId, onClose, element, triggerElement]
+      }) as PopoverStackFrame,
+    [frameId, onClose, element, triggerElement],
   );
 
   // We push the popover content whenever it changes
@@ -262,7 +262,7 @@ const PopoverFrameInternal = observer(function PopoverFrameInternal(
         />
       </div>
     </ModalScope>,
-    element
+    element,
   );
 });
 
@@ -281,7 +281,9 @@ function PopoverFrameShell() {
   const [popoverHeight, setPopoverHeight] = React.useState(0);
   const container = document.querySelector(containerSelector);
   const [minHeight, setMinHeight] = React.useState(
-    container ? Math.min(popoverHeight, container.clientHeight - 50) : undefined
+    container
+      ? Math.min(popoverHeight, container.clientHeight - 50)
+      : undefined,
   );
   const [contentContainer, setContentContainer] = React.useState<
     Element | undefined
@@ -302,7 +304,7 @@ function PopoverFrameShell() {
         4;
       const newMinHeight = Math.min(
         newPopoverHeight,
-        container.clientHeight - 50
+        container.clientHeight - 50,
       );
       setMinHeight(newMinHeight);
       setPopoverHeight(newPopoverHeight);
@@ -349,7 +351,7 @@ function PopoverFrameShell() {
       isDismissable: false,
       onClose: () => dispatch({ type: "pop" }),
     },
-    popupRef
+    popupRef,
   );
 
   useInteractOutsideWithCommonExceptions({
@@ -423,7 +425,7 @@ function PopoverFrameShell() {
                   // Position based on distance from current page index
                   // This creates the sliding effect as pageIndex animates
                   left: spring.pageIndex.to(
-                    (pageIdx) => `${(frameIndex - pageIdx) * 105}%`
+                    (pageIdx) => `${(frameIndex - pageIdx) * 105}%`,
                   ),
                 }}
               >
@@ -438,10 +440,10 @@ function PopoverFrameShell() {
                       if (item === lastFrame) {
                         // Check how tall the content of the popover is
                         const titleEl = elt.querySelector(
-                          "[class*='propTitle']"
+                          "[class*='propTitle']",
                         );
                         const contentEl = elt.querySelector(
-                          "[class*='contentWrap']"
+                          "[class*='contentWrap']",
                         );
                         if (titleEl && contentEl) {
                           setTitleContainer(titleEl);
@@ -457,6 +459,6 @@ function PopoverFrameShell() {
         </div>
       </div>
     </OverlayProvider>,
-    container
+    container,
   );
 }

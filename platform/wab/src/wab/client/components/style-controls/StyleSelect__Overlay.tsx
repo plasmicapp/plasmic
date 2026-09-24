@@ -9,7 +9,7 @@ type StyleSelect__OverlayProps = DefaultStyleSelect__OverlayProps;
 
 function StyleSelect__Overlay_(
   props: StyleSelect__OverlayProps,
-  ref: TriggeredOverlayRef
+  ref: TriggeredOverlayRef,
 ) {
   const { plasmicProps } = PlasmicStyleSelect__Overlay.useBehavior(props, ref);
   return (

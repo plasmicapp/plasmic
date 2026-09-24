@@ -21,7 +21,7 @@ function StyleCheckbox_(props: StyleCheckboxProps, ref: CheckboxRef) {
     combineProps(props, {
       "data-plasmic-prop": undefined,
     }),
-    ref
+    ref,
   );
 
   // Always offset StyleCheckbox by marginLeft of -8px, so that it offsets
@@ -45,7 +45,7 @@ function StyleCheckbox_(props: StyleCheckboxProps, ref: CheckboxRef) {
 }
 
 const StyleCheckbox = React.forwardRef(StyleCheckbox_) as (
-  props: StyleCheckboxProps & { ref?: CheckboxRef }
+  props: StyleCheckboxProps & { ref?: CheckboxRef },
 ) => React.ReactElement | null;
 
 export default Object.assign(StyleCheckbox, {

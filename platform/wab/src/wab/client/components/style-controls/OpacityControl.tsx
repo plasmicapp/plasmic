@@ -16,7 +16,7 @@ interface OpacityControlProps {
 }
 
 export const OpacityControl = observer(function OpacityControl(
-  props: OpacityControlProps
+  props: OpacityControlProps,
 ) {
   const { expsProvider } = props;
   const styling = useStyleComponent();

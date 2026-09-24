@@ -21,7 +21,7 @@ interface DataTokenControlProps {
 }
 
 const GeneralDataTokenControl = observer(function GeneralTokenControl(
-  props: DataTokenControlProps
+  props: DataTokenControlProps,
 ) {
   const { style, token, tokenValue, matcher, menu, onClick } = props;
 

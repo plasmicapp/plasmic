@@ -19,7 +19,7 @@ export function InvalidArgsBadge(props: {
     <div
       className={cx(
         "flex flex-vcenter gap-sm invalid-arg-warning",
-        props.className
+        props.className,
       )}
     >
       <Icon icon={WarningIcon} />

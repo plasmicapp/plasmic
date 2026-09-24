@@ -39,7 +39,7 @@ const SidebarModalContext = React.createContext<Store | undefined>(undefined);
 function useSidebarModalContext() {
   return ensure(
     React.useContext(SidebarModalContext),
-    "Unexpected nullish SidebarModalContext"
+    "Unexpected nullish SidebarModalContext",
   );
 }
 
@@ -67,7 +67,7 @@ type Action = PushAction | PopAction | PopAllAction;
 
 function sidebarModalReducer(
   state: SidebarModalContextState,
-  action: Action
+  action: Action,
 ): SidebarModalContextState {
   switch (action.type) {
     case "push": {
@@ -138,7 +138,7 @@ export function SidebarModalProvider(props: {
 export function SidebarModal(
   props: {
     show?: boolean;
-  } & Omit<React.ComponentProps<typeof SidebarModalInternal>, "frameId">
+  } & Omit<React.ComponentProps<typeof SidebarModalInternal>, "frameId">,
 ) {
   const { show, children, ...restProps } = props;
 
@@ -190,8 +190,8 @@ const SidebarModalInternal = observer(function SidebarModalInternal(props: {
         onClose,
         element,
         persistOnInteractOutside,
-      } as SidebarModalStackFrame),
-    [frameId, onClose, element, persistOnInteractOutside]
+      }) as SidebarModalStackFrame,
+    [frameId, onClose, element, persistOnInteractOutside],
   );
 
   // Use a ref to always have the latest frame
@@ -265,7 +265,7 @@ const SidebarModalInternal = observer(function SidebarModalInternal(props: {
         </div>
       </div>
     </ModalScope>,
-    element
+    element,
   );
 });
 
@@ -278,7 +278,7 @@ function SidebarModalShell() {
   const [modalHeight, setModalHeight] = React.useState(0);
   const container = document.querySelector(containerSelector);
   const [minHeight, setMinHeight] = React.useState(
-    container ? Math.min(modalHeight, container.clientHeight - 50) : undefined
+    container ? Math.min(modalHeight, container.clientHeight - 50) : undefined,
   );
   const [contentContainer, setContentContainer] = React.useState<
     Element | undefined
@@ -299,7 +299,7 @@ function SidebarModalShell() {
         4;
       const newMinHeight = Math.min(
         newModalHeight,
-        container.clientHeight - 50
+        container.clientHeight - 50,
       );
       setMinHeight(newMinHeight);
       setModalHeight(newModalHeight);
@@ -324,7 +324,7 @@ function SidebarModalShell() {
       onClose: () =>
         lastFrame && dispatch({ type: "pop", frameId: lastFrame.id }),
     },
-    popupRef
+    popupRef,
   );
 
   useInteractOutsideWithCommonExceptions({
@@ -387,7 +387,7 @@ function SidebarModalShell() {
     }
     const pane = ensure(
       document.querySelector(containerSelector),
-      "Unexpected nullish SidebarModal containerSelector"
+      "Unexpected nullish SidebarModal containerSelector",
     );
     domAlign(popup, pane, {
       points: ["tc", "tc"],
@@ -441,13 +441,13 @@ function SidebarModalShell() {
                       elt.appendChild(
                         ensure(
                           clonedModalContent.get(item.element),
-                          "Unexpected nullish element from clonedModalContent"
-                        )
+                          "Unexpected nullish element from clonedModalContent",
+                        ),
                       );
                     } else {
                       clonedModalContent.set(
                         item.element,
-                        item.element.cloneNode(true) as HTMLElement
+                        item.element.cloneNode(true) as HTMLElement,
                       );
                       if (item.element.parentElement !== elt) {
                         elt.appendChild(item.element);
@@ -459,14 +459,14 @@ function SidebarModalShell() {
                       setTitleContainer(
                         ensure(
                           elt.querySelector(".panel-popup-title"),
-                          "Unexpected nullish title container"
-                        )
+                          "Unexpected nullish title container",
+                        ),
                       );
                       setContentContainer(
                         ensure(
                           elt.querySelector(".panel-popup-content-inner"),
-                          "Unexpected nullish content container"
-                        )
+                          "Unexpected nullish content container",
+                        ),
                       );
                     }
                   }
@@ -477,7 +477,7 @@ function SidebarModalShell() {
         </div>
       </div>
     </OverlayProvider>,
-    container
+    container,
   );
 }
 

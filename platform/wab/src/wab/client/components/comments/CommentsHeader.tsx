@@ -27,7 +27,7 @@ export interface CommentsHeaderProps extends DefaultCommentsHeaderProps {
 
 function CommentsHeader_(
   props: CommentsHeaderProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicCommentsHeader to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

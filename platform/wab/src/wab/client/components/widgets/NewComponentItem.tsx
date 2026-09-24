@@ -7,8 +7,7 @@ import { Tooltip } from "antd";
 import * as React from "react";
 
 interface NewComponentItemProps
-  extends DefaultNewComponentItemProps,
-    PlasmicNewComponentItem__OverridesType {
+  extends DefaultNewComponentItemProps, PlasmicNewComponentItem__OverridesType {
   onClick: () => void;
   imgUrl?: string;
   title: React.ReactNode;

@@ -36,11 +36,11 @@ const InitialsForm = observer(function InitialsForm(props: {
     rs,
     new RuleSetHelpers(rs, "div"),
     studioCtx,
-    ["display", "flex-direction"]
+    ["display", "flex-direction"],
   );
   return providesStyleComponent(
     mkStyleComponent({ expsProvider }),
-    `${rs.uid}`
+    `${rs.uid}`,
   )(
     <>
       <SizeSection expsProvider={expsProvider} />
@@ -50,18 +50,18 @@ const InitialsForm = observer(function InitialsForm(props: {
         <LayoutSection expsProvider={expsProvider} />
       )}
       <SpacingSection expsProvider={expsProvider} />
-    </>
+    </>,
   );
 });
 
 const ThemeInitialStylesPanel = observer(
   React.forwardRef(function ThemeInitialStylesPanel_(
     props: ThemeInitialStylesPanelProps,
-    ref: HTMLElementRefOf<"div">
+    ref: HTMLElementRefOf<"div">,
   ) {
     const studioCtx = useStudioCtx();
     const [addItemKey, setAddItemKey] = React.useState<AddItemKey | undefined>(
-      undefined
+      undefined,
     );
     if (!studioCtx.site.activeTheme) {
       return null;
@@ -95,7 +95,7 @@ const ThemeInitialStylesPanel = observer(
                     studioCtx.changeUnsafe(() => {
                       const initialStyles = mapKeys(
                         getDefaultStyles(newKey as AddItemKey, undefined),
-                        (_, key) => kebabCase(key)
+                        (_, key) => kebabCase(key),
                       );
                       const initialRs = new RuleSet({
                         values: { ...initialStyles },
@@ -104,7 +104,7 @@ const ThemeInitialStylesPanel = observer(
                       });
                       studioCtx.site.activeTheme!.addItemPrefs[newKey] =
                         initialRs;
-                    })
+                    }),
                   );
                 }
               }
@@ -122,7 +122,7 @@ const ThemeInitialStylesPanel = observer(
         }
       />
     );
-  })
+  }),
 );
 
 export default ThemeInitialStylesPanel;

@@ -206,7 +206,7 @@ export const Textbox = React.forwardRef(
         }}
       />
     );
-  }
+  },
 );
 
 export default Textbox as React.FunctionComponent<

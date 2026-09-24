@@ -12,7 +12,7 @@ interface DropdownOverlayProps extends DefaultDropdownOverlayProps {
 
 const DropdownOverlay = React.forwardRef(function DropdownOverlay(
   props: DropdownOverlayProps,
-  ref: React.Ref<HTMLDivElement>
+  ref: React.Ref<HTMLDivElement>,
 ) {
   return (
     <PlasmicDropdownOverlay

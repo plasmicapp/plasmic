@@ -24,7 +24,7 @@ export type ScheduleControlsProps = DefaultScheduleControlsProps;
 
 function ScheduleControls_(
   props: ScheduleControlsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicScheduleControls to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

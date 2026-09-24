@@ -30,7 +30,7 @@ export type ThemeLayoutPanelProps = DefaultThemeLayoutPanelProps;
 
 function ThemeLayoutPanel_(
   props: ThemeLayoutPanelProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const studioCtx = useStudioCtx();
   const theme = studioCtx.site.activeTheme;
@@ -59,7 +59,7 @@ function ThemeLayoutPanel_(
           },
         }),
         studioCtx,
-        []
+        [],
       ),
     });
   }, [theme, layout, studioCtx]);
@@ -103,7 +103,7 @@ function ThemeLayoutPanel_(
           </SidebarSection>
         </>
       }
-    />
+    />,
   );
 }
 

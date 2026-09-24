@@ -68,7 +68,7 @@ const ColorStops_ = (props: ColorStopsProps) => {
       if (barRef.current) {
         const containerOffset = ensure(
           $(getHTMLElt(barRef.current)).offset(),
-          "Element must have offset"
+          "Element must have offset",
         );
         const colorStopsWidth = ensureHTMLElt(barRef.current).offsetWidth;
         const top = e.clientY - containerOffset.top;
@@ -79,13 +79,13 @@ const ColorStops_ = (props: ColorStopsProps) => {
       }
       return { top: 0, left: 0, leftFrac: 0, leftPct: 0 };
     },
-    [barRef]
+    [barRef],
   );
 
   const realStopColor = (stop: Stop) => {
     const maybeToken = tryParseTokenRef(
       stop.color,
-      siteFinalStyleTokensAllDeps(props.studioCtx.site)
+      siteFinalStyleTokensAllDeps(props.studioCtx.site),
     );
     if (maybeToken) {
       return resolver(maybeToken, props.vsh);
@@ -120,14 +120,14 @@ const ColorStops_ = (props: ColorStopsProps) => {
         realStopColor(prev),
         realStopColor(next),
         (pct - prev.dim.getNumericValue()) /
-          (next.dim.getNumericValue() - prev.dim.getNumericValue())
+          (next.dim.getNumericValue() - prev.dim.getNumericValue()),
       ).hex();
     }
     const stop = new Stop(color, new Dim(`${Math.round(pct)}`, "%"));
     // Do not insert at the exact same position as an existing Stop.
     if (
       maybe(props.stops[index - 1], (x: /*TWZ*/ Stop) =>
-        x.dim.getNumericValue()
+        x.dim.getNumericValue(),
       ) === stop.dim.getNumericValue() ||
       (props.stops[index] != null
         ? props.stops[index].dim.getNumericValue()
@@ -140,20 +140,20 @@ const ColorStops_ = (props: ColorStopsProps) => {
     check(
       L(speculatedStops)
         .sortBy((_stop) => _stop.dim.getNumericValue())
-        .isEqual(speculatedStops)
+        .isEqual(speculatedStops),
     );
     // Ensure all stops have distinct values
     check(
       new Set(
-        props.stops.map((s: /*TWZ*/ Stop | Stop) => s.dim.getNumericValue())
-      ).size === props.stops.length
+        props.stops.map((s: /*TWZ*/ Stop | Stop) => s.dim.getNumericValue()),
+      ).size === props.stops.length,
     );
     return { index, stop };
   };
 
   const stopz = tuple(
     ...props.stops,
-    maybes(ghostLeftPct)((g) => createStop(g))((x) => x.stop)()
+    maybes(ghostLeftPct)((g) => createStop(g))((x) => x.stop)(),
   );
   const stops = withoutNils(stopz);
   return (
@@ -214,10 +214,10 @@ const ColorStops_ = (props: ColorStopsProps) => {
                   onDrag={(e) => {
                     const { top, leftPct } = relOffset(e.mouseEvent);
                     const prev = maybe(props.stops[stopNum - 1], (x1) =>
-                      x1.dim.getNumericValue()
+                      x1.dim.getNumericValue(),
                     );
                     const next = maybe(props.stops[stopNum + 1], (x2) =>
-                      x2.dim.getNumericValue()
+                      x2.dim.getNumericValue(),
                     );
                     const newRemoving = top > 90 || top < -30;
                     if (removing !== newRemoving) {
@@ -226,7 +226,7 @@ const ColorStops_ = (props: ColorStopsProps) => {
                     const newVal = L.clamp(
                       Math.round(leftPct),
                       prev != null ? prev + 1 : 0,
-                      next != null ? next - 1 : 100
+                      next != null ? next - 1 : 100,
                     );
                     if (stop.dim.getNumericValue() !== newVal) {
                       return handleChange(() => {

@@ -10,13 +10,13 @@ type CheckboxProps = DefaultCheckboxProps;
 function Checkbox_(props: CheckboxProps, ref: CheckboxRef) {
   const { plasmicProps, state } = PlasmicCheckbox.useBehavior<CheckboxProps>(
     props,
-    ref
+    ref,
   );
   return <PlasmicCheckbox {...plasmicProps} />;
 }
 
 const Checkbox = React.forwardRef(Checkbox_) as (
-  props: CheckboxProps & { ref?: CheckboxRef }
+  props: CheckboxProps & { ref?: CheckboxRef },
 ) => React.ReactElement | null;
 
 export default Object.assign(Checkbox, {

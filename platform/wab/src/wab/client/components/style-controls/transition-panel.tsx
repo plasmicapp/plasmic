@@ -12,7 +12,7 @@ interface TransitionPanelProps {
 }
 
 export const TransitionPanel = observer(function TransitionPanel(
-  props: TransitionPanelProps
+  props: TransitionPanelProps,
 ) {
   const handleChange = (f: () => Transition) => {
     props.onChange(f());
@@ -50,7 +50,7 @@ export const TransitionPanel = observer(function TransitionPanel(
   ];
 
   const [styleDuration, setStyleDuration] = useState(
-    transition.transitionDuration
+    transition.transitionDuration,
   );
   const [styleDelay, setStyleDelay] = useState(transition.transitionDelay);
 

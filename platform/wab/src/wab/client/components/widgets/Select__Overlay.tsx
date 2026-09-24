@@ -9,7 +9,7 @@ type Select__OverlayProps = DefaultSelect__OverlayProps;
 
 function Select__Overlay_(
   props: Select__OverlayProps,
-  ref: TriggeredOverlayRef
+  ref: TriggeredOverlayRef,
 ) {
   const { plasmicProps } = PlasmicSelect__Overlay.useBehavior(props, ref);
   return (
