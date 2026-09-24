@@ -21,7 +21,7 @@ function suggested(names: string[], ctx: Ctx): string[] {
       paramName: ctx.paramName,
       ownerNames: ctx.ownerNames ?? [],
       searchText: "",
-    }
+    },
   ).map((r) => r.token.name);
 }
 
@@ -30,11 +30,11 @@ function suggested(names: string[], ctx: Ctx): string[] {
  */
 function search(
   names: string[],
-  ctx: Ctx & { query: string; valueMatches?: string[] }
+  ctx: Ctx & { query: string; valueMatches?: string[] },
 ): string[] {
   const valueOnly = new Set(ctx.valueMatches ?? []);
   const tokens = names.map((n) =>
-    ref(n, valueOnly.has(n) ? `"${ctx.query}"` : '""')
+    ref(n, valueOnly.has(n) ? `"${ctx.query}"` : '""'),
   );
   return getDataTokenSuggestions(tokens, {
     paramName: ctx.paramName,
@@ -105,7 +105,7 @@ describe("getDataTokenSuggestions", () => {
       // shares both owner words, "strapiHost" one, "apiHost" none.
       const strapi: Ctx = { paramName: "host", ownerNames: ["Strapi Query"] };
       expect(
-        suggested(["apiHost", "strapiHost", "strapiQueryHost"], strapi)
+        suggested(["apiHost", "strapiHost", "strapiQueryHost"], strapi),
       ).toEqual(["strapiQueryHost", "strapiHost", "apiHost"]);
     });
 
@@ -119,7 +119,7 @@ describe("getDataTokenSuggestions", () => {
 
     it("applies no owner boost when there is no owner", () => {
       expect(
-        suggested(["getUser.apiKey", "apiKey"], { paramName: "apiKey" })
+        suggested(["getUser.apiKey", "apiKey"], { paramName: "apiKey" }),
       ).toEqual(["apiKey", "getUser.apiKey"]);
     });
 
@@ -147,8 +147,8 @@ describe("getDataTokenSuggestions", () => {
           {
             paramName: "label",
             ownerNames: ["Submit", "Button", "Checkout Form"],
-          }
-        )
+          },
+        ),
       ).toEqual([
         "submitButtonLabel",
         "submitLabel",
@@ -164,17 +164,17 @@ describe("getDataTokenSuggestions", () => {
         suggested(["productCardImageGalleryItemLabel", "submitLabel"], {
           paramName: "label",
           ownerNames: ["Submit", "Product Card Image Gallery Item"],
-        })
+        }),
       ).toEqual(["submitLabel", "productCardImageGalleryItemLabel"]);
     });
 
     describe("unspaced scripts", () => {
       it("matches Chinese", () => {
         expect(
-          suggested(["品牌颜色", "主要颜色"], { paramName: "颜色" })
+          suggested(["品牌颜色", "主要颜色"], { paramName: "颜色" }),
         ).toEqual(["主要颜色", "品牌颜色"]);
         expect(
-          suggested(["品牌颜色", "主要颜色"], { paramName: "品牌" })
+          suggested(["品牌颜色", "主要颜色"], { paramName: "品牌" }),
         ).toEqual(["品牌颜色"]);
       });
 
@@ -212,8 +212,8 @@ describe("getDataTokenSuggestions", () => {
             ...ctx,
             query: "url",
             valueMatches: ["host", "strapiHost", "config", "backup"],
-          }
-        )
+          },
+        ),
       ).toEqual([
         "strapiUrlHost",
         "urlHost",
@@ -226,7 +226,7 @@ describe("getDataTokenSuggestions", () => {
 
     it("drops tokens that match neither name nor value", () => {
       expect(search(["hostUrl", "timeout"], { ...ctx, query: "host" })).toEqual(
-        ["hostUrl"]
+        ["hostUrl"],
       );
     });
 
@@ -236,7 +236,7 @@ describe("getDataTokenSuggestions", () => {
           paramName: "host",
           query: "api",
           valueMatches: ["prodHost"],
-        })
+        }),
       ).toEqual(["prodHost"]);
     });
   });

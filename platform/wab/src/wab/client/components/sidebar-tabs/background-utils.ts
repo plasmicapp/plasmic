@@ -14,7 +14,7 @@ export const resolvedBackgroundImageCss = (
   bgImg: BackgroundLayer["image"],
   clientTokenResolver: TokenValueResolver,
   site: Site,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ) => {
   let cssValue = bgImg.showCss();
 
@@ -37,7 +37,7 @@ export const resolvedBackgroundImageCss = (
     site.imageAssets,
     site.activeTheme,
     {},
-    vsh
+    vsh,
   );
   return resolver.resolveTokenRefs(cssValue);
 };

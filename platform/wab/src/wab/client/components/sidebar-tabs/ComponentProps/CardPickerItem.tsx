@@ -14,7 +14,7 @@ export interface CardPickerItemProps extends DefaultCardPickerItemProps {
 
 function CardPickerItem_(
   props: CardPickerItemProps,
-  ref: HTMLElementRefOf<"button">
+  ref: HTMLElementRefOf<"button">,
 ) {
   const { imgUrl, onClick, ...rest } = props;
 

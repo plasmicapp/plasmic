@@ -23,7 +23,7 @@ interface VersionsTabProps {
 }
 
 export const VersionsTab = observer(function VersionsTab(
-  props: VersionsTabProps
+  props: VersionsTabProps,
 ) {
   const studioCtx = useStudioCtx();
   const [query, setQuery] = React.useState("");
@@ -40,7 +40,7 @@ export const VersionsTab = observer(function VersionsTab(
       await studioCtx.publish(
         response.tags,
         response.title,
-        studioCtx.dbCtx().branchInfo?.id
+        studioCtx.dbCtx().branchInfo?.id,
       );
       setIsPublishing(false);
     }

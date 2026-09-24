@@ -76,7 +76,7 @@ export interface ActionBuilderProps extends DefaultActionBuilderProps {
 
 function ActionBuilder_(
   props: ActionBuilderProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     tpl,
@@ -96,7 +96,7 @@ function ActionBuilder_(
 
   const [hover, setHover] = React.useState(false);
   const [interactionName, setInteractionName] = React.useState(
-    interaction.interactionName
+    interaction.interactionName,
   );
   const [isEditingInteractionnName, setIsEditingInteractionName] =
     React.useState(false);
@@ -105,15 +105,15 @@ function ActionBuilder_(
   >(undefined);
   const { source: sourceMeta } = useSourceOp(
     dataSourceExpr?.sourceId,
-    dataSourceExpr?.opName
+    dataSourceExpr?.opName,
   );
   const actionMeta = getActionMeta(sc, interaction.actionName);
   const args = React.useMemo(
     () =>
       Object.fromEntries(
-        interaction.args.map(({ name, expr }) => [name, expr])
+        interaction.args.map(({ name, expr }) => [name, expr]),
       ),
-    [interaction.args]
+    [interaction.args],
   );
   const interactionsCtx = React.useMemo(
     () =>
@@ -123,22 +123,22 @@ function ActionBuilder_(
         interaction,
         eventHandlerKey,
         vc,
-        sourceMeta
+        sourceMeta,
       ),
-    [component, interaction, sourceMeta]
+    [component, interaction, sourceMeta],
   );
   const [isInteractionDefaultName, setIsInteractionDefaultName] =
     React.useState(
       () =>
         actionMeta?.getDefaultName?.(component, args, interactionsCtx) ===
-        interaction.interactionName
+        interaction.interactionName,
     );
   React.useEffect(() => {
     if (isInteractionDefaultName && actionMeta) {
       const newInteractionDefaultName = actionMeta.getDefaultName?.(
         component,
         args,
-        interactionsCtx
+        interactionsCtx,
       );
       if (
         newInteractionDefaultName &&
@@ -148,11 +148,11 @@ function ActionBuilder_(
           sc.change(() => {
             renameInteractionAndFixExprs(
               interaction,
-              newInteractionDefaultName
+              newInteractionDefaultName,
             );
             setInteractionName(interaction.interactionName);
             return ok();
-          })
+          }),
         );
       }
     }
@@ -162,7 +162,7 @@ function ActionBuilder_(
     tpl,
     undefined,
     interaction,
-    eventHandlerKey
+    eventHandlerKey,
   );
   const hasCachedStepValue = vc.studioCtx.hasCached$stepValue(interaction.uuid);
   const enabledPreviewSteps = vc.studioCtx.appCtx.appConfig.previewSteps;
@@ -185,15 +185,15 @@ function ActionBuilder_(
                     `Current value: ${(() => {
                       try {
                         return JSON.stringify(
-                          vc.studioCtx.getCached$stepValue(interaction.uuid)
+                          vc.studioCtx.getCached$stepValue(interaction.uuid),
                         );
                       } catch (e) {
                         return `(cannot display)`;
                       }
                     })()}`
                   : disabledRunInteraction
-                  ? BLOCKED_RUN_INTERACTION_MESSAGE
-                  : "Run this action"
+                    ? BLOCKED_RUN_INTERACTION_MESSAGE
+                    : "Run this action"
               }
             >
               <Comp
@@ -212,8 +212,8 @@ function ActionBuilder_(
             ? hasCachedStepValue
               ? "finished"
               : disabledRunInteraction
-              ? "unable"
-              : "notStarted"
+                ? "unable"
+                : "notStarted"
             : undefined
         }
         root={{
@@ -244,10 +244,10 @@ function ActionBuilder_(
                         const defaultArgs = makeDefaultArgs(
                           vc,
                           component,
-                          newActionMeta
+                          newActionMeta,
                         );
                         interaction.args = Object.entries(defaultArgs).map(
-                          ([name, expr]) => mkNameArg({ name, expr })
+                          ([name, expr]) => mkNameArg({ name, expr }),
                         );
                         if (isInteractionDefaultName) {
                           renameInteractionAndFixExprs(
@@ -255,13 +255,13 @@ function ActionBuilder_(
                             newActionMeta.getDefaultName?.(
                               component,
                               {},
-                              interactionsCtx
-                            ) ?? newActionMeta.displayName
+                              interactionsCtx,
+                            ) ?? newActionMeta.displayName,
                           );
                         }
 
                         return ok();
-                      })
+                      }),
                     );
                   },
                   children: [
@@ -271,7 +271,7 @@ function ActionBuilder_(
                           !meta.hidden?.({
                             siteInfo: sc.siteInfo,
                             flags: sc.appCtx.appConfig,
-                          })
+                          }),
                       )
                       .map(([aName, aMeta]) => (
                         <StyleSelect.Option key={aName} value={aName}>
@@ -296,14 +296,14 @@ function ActionBuilder_(
                           {Object.entries(globalActions).map(
                             ([globalAction, globalActionMeta]: [
                               string,
-                              any
+                              any,
                             ]) => (
                               <StyleSelect.Option
                                 value={`${meta.name}.${globalAction}`}
                               >
                                 {globalActionMeta.displayName ?? globalAction}
                               </StyleSelect.Option>
-                            )
+                            ),
                           )}
                         </StyleSelect.OptionGroup>
                       );
@@ -330,11 +330,11 @@ function ActionBuilder_(
                   const defaultInteractionName = actionMeta.getDefaultName?.(
                     component,
                     args,
-                    interactionsCtx
+                    interactionsCtx,
                   );
                   renameInteractionAndFixExprs(
                     interaction,
-                    defaultInteractionName
+                    defaultInteractionName,
                   );
                   setInteractionName(interaction.interactionName);
                   setIsInteractionDefaultName(true);
@@ -344,7 +344,7 @@ function ActionBuilder_(
                   setIsInteractionDefaultName(false);
                 }
                 return ok();
-              })
+              }),
             );
             setIsEditingInteractionName(false);
           },
@@ -404,11 +404,11 @@ function ActionBuilder_(
                     interaction.condExpr = ensureInstance(
                       val,
                       ObjectPath,
-                      CustomCode
+                      CustomCode,
                     );
                     ensureGenericFuncTypes(eventHandlerExpr, eventHandlerKey);
                     return ok();
-                  })
+                  }),
                 );
               }}
               eventHandlerKey={eventHandlerKey}
@@ -449,7 +449,7 @@ function ActionBuilder_(
               const failableType = propTypeToWabType(sc.site, parameterMeta);
               assert(
                 !failableType.isErr(),
-                `couldn't parse parameter meta: ${parameterMeta}`
+                `couldn't parse parameter meta: ${parameterMeta}`,
               );
               const type = failableType.value;
               const value = args[parameterName];
@@ -470,7 +470,7 @@ function ActionBuilder_(
                       actionMeta.resetDependentArgs?.(
                         newArgs,
                         interactionsCtx,
-                        parameterName
+                        parameterName,
                       );
                       spawn(
                         sc.change(() => {
@@ -479,10 +479,10 @@ function ActionBuilder_(
                               mkNameArg({
                                 name,
                                 expr,
-                              })
+                              }),
                           );
                           return ok();
-                        })
+                        }),
                       );
                     }}
                     onChange={(val) => {
@@ -504,7 +504,7 @@ function ActionBuilder_(
                       actionMeta.resetDependentArgs?.(
                         newArgs,
                         interactionsCtx,
-                        parameterName
+                        parameterName,
                       );
                       spawn(
                         sc.change(() => {
@@ -513,14 +513,14 @@ function ActionBuilder_(
                               mkNameArg({
                                 name,
                                 expr,
-                              })
+                              }),
                           );
                           ensureGenericFuncTypes(
                             eventHandlerExpr,
-                            eventHandlerKey
+                            eventHandlerKey,
                           );
                           return ok();
-                        })
+                        }),
                       );
                     }}
                     propType={parameterMeta}
@@ -537,7 +537,7 @@ function ActionBuilder_(
                   )}
                 </div>
               );
-            }
+            },
           )}
       </PlasmicActionBuilder>
       {highlightOnMount && !highlightOnMount.argName && (
@@ -576,7 +576,7 @@ function getActionMeta(sc: StudioCtx, actionName: string) {
 function makeDefaultArgs(
   viewCtx: ViewCtx,
   component: Component,
-  actionMeta: ActionType<any>
+  actionMeta: ActionType<any>,
 ) {
   if (actionMeta.getDefaultArgs) {
     return actionMeta.getDefaultArgs(component);
@@ -590,7 +590,7 @@ function makeDefaultArgs(
       ) {
         assert(
           propType.type !== "slot",
-          `Don't support slot content for actions`
+          `Don't support slot content for actions`,
         );
         args[name] = codeLit(propType.defaultValue);
       }

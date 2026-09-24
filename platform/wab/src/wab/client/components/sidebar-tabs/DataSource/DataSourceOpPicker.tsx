@@ -215,7 +215,7 @@ interface DataSourceOpPickerContext extends DataSourceOpPickerInputs {
 }
 
 function useDataSourceOpPicker(
-  props: DataSourceOpPickerInputs
+  props: DataSourceOpPickerInputs,
 ): DataSourceOpPickerContext {
   const [tabKey, setTabKey] = React.useState<PreviewTabKey>("data");
   return {
@@ -236,7 +236,7 @@ interface DataSourceDraftContext {
 const DataSourceDraftContext = createContext<DataSourceDraftContext>({});
 
 const LazyCodePreview = React.lazy(
-  () => import("@/wab/client/components/coding/CodePreview")
+  () => import("@/wab/client/components/coding/CodePreview"),
 );
 
 const INVALID_CURRENT_USER_OPERATION_MESSAGE = () => (
@@ -322,14 +322,14 @@ export const DataSourceOpPicker = observer((props: DataSourceOpPickerProps) => {
     "env" in props
       ? props.env
       : props.viewCtx && props.tpl
-      ? extractDataCtx(
-          props.viewCtx,
-          props.tpl,
-          undefined,
-          props.interaction,
-          props.eventHandlerKey
-        )
-      : undefined;
+        ? extractDataCtx(
+            props.viewCtx,
+            props.tpl,
+            undefined,
+            props.interaction,
+            props.eventHandlerKey,
+          )
+        : undefined;
 
   return (
     <DataSourceOpPickerProvider
@@ -389,7 +389,7 @@ export function useDataSourceOpExprBottomModals() {
         ...props
       }: {
         title?: string;
-      } & DataSourceOpExprBottomModalContentProps
+      } & DataSourceOpExprBottomModalContentProps,
     ) => {
       modalActions.open(queryKey, {
         title:
@@ -413,7 +413,7 @@ export function useDataSourceOpExprBottomModal(queryKey: string) {
     open: (
       props: {
         title?: string;
-      } & DataSourceOpExprBottomModalContentProps
+      } & DataSourceOpExprBottomModalContentProps,
     ) => {
       dataSourceModals.open(queryKey, props);
     },
@@ -482,14 +482,14 @@ const DataSourceOpExprBottomModalContent = observer(
         }
         onSave(newExpr, opExprName);
       },
-      [onSave]
+      [onSave],
     );
 
     const env = rest.env
       ? rest.env
       : viewCtx && tpl
-      ? extractDataCtx(viewCtx, tpl, undefined, interaction, eventHandlerKey)
-      : undefined;
+        ? extractDataCtx(viewCtx, tpl, undefined, interaction, eventHandlerKey)
+        : undefined;
 
     return (
       <PlasmicDataSourceContextProvider
@@ -522,7 +522,7 @@ const DataSourceOpExprBottomModalContent = observer(
         </DataSourceOpPickerProvider>
       </PlasmicDataSourceContextProvider>
     );
-  }
+  },
 );
 
 export const DataSourceOpExprSummary = observer(
@@ -544,19 +544,19 @@ export const DataSourceOpExprSummary = observer(
           : `${source.name}: ${opMeta.label ?? opMeta.name}`}
       </div>
     );
-  }
+  },
 );
 
 export async function getOpIdForDataSourceOpExpr(
   api: AppCtx["api"],
   { sourceId, templates, opName, roleId }: DataSourceOpExpr,
   exprCtx: ExprCtx,
-  projectId: string
+  projectId: string,
 ) {
   const { opId } = await api.getDataSourceOpId(projectId, sourceId, {
     name: opName,
     templates: mapValues(templates, (v) =>
-      dataSourceTemplateToString(v, exprCtx)
+      dataSourceTemplateToString(v, exprCtx),
     ),
     roleId,
   });
@@ -584,8 +584,8 @@ async function getDataSourceExprFromDraft(props: {
             value: v.value,
             bindings: v.bindings,
           }),
-          exprCtx
-        )
+          exprCtx,
+        ),
       ),
       roleId,
     });
@@ -598,7 +598,7 @@ async function getDataSourceExprFromDraft(props: {
           fieldType: v.type,
           value: v.value,
           bindings: v.bindings,
-        })
+        }),
       ),
       roleId: roleId ?? undefined,
     });
@@ -610,7 +610,7 @@ async function clearDataOpCache(
   studioCtx: StudioCtx,
   op: DataSourceOpDraftValue | undefined,
   env: Record<string, any> | undefined,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   const expr = await getDataSourceExprFromDraft({
     ...(op ?? {}),
@@ -640,14 +640,14 @@ export function useSource(studioCtx: StudioCtx, sourceId: string | undefined) {
           console.log(`Error fetching data-source ${sourceId}`, err);
           throw err;
         });
-    }
+    },
   );
 }
 
 export function useSourceSchemaData(
   studioCtx: StudioCtx,
   sourceId: string | undefined,
-  source: ApiDataSource | undefined
+  source: ApiDataSource | undefined,
 ) {
   const sourceMeta = source ? getDataSourceMeta(source.source) : undefined;
   return useSWR(
@@ -667,14 +667,14 @@ export function useSourceSchemaData(
           console.log(`Error fetching data-source schema for ${sourceId}`, err);
           throw err;
         });
-    }
+    },
   );
 }
 
 export function getMissingRequiredArgsFromDraft(
   draft: DataSourceOpDraftValue,
   sourceSchemaData: DataSourceSchema,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   return Object.entries(draft.opMeta?.args ?? {}).filter(
     ([argName, argMeta]) => {
@@ -684,7 +684,7 @@ export function getMissingRequiredArgsFromDraft(
             ? argMeta.requiredFields(
                 sourceSchemaData,
                 getSelectedTable(draft, draft.opMeta, exprCtx),
-                draft
+                draft,
               )
             : argMeta.requiredFields;
         if (!requiredFields || requiredFields.length === 0) {
@@ -696,12 +696,12 @@ export function getMissingRequiredArgsFromDraft(
         }
         assert(
           !isKnownTemplatedString(template.value),
-          "we should use bindings for json-schema arg"
+          "we should use bindings for json-schema arg",
         );
         try {
           const jsonValue = JSON.parse(template.value);
           return requiredFields.some(
-            (requiredField) => jsonValue[requiredField] == null
+            (requiredField) => jsonValue[requiredField] == null,
           );
         } catch {
           return false;
@@ -709,7 +709,7 @@ export function getMissingRequiredArgsFromDraft(
       } else {
         return argMeta.required && draft.templates?.[argName] == null;
       }
-    }
+    },
   );
 }
 
@@ -718,7 +718,7 @@ export async function mkDataSourceOpExprFromDraft(
   studioCtx: StudioCtx,
   sourceSchemaData: DataSourceSchema,
   exprCtx: ExprCtx,
-  parent?: ComponentDataQuery | TplNode
+  parent?: ComponentDataQuery | TplNode,
 ) {
   if (!draft.sourceId || !draft.opName || !draft.opMeta) {
     return undefined;
@@ -726,7 +726,7 @@ export async function mkDataSourceOpExprFromDraft(
   const missingRequiredArgs = getMissingRequiredArgsFromDraft(
     draft,
     sourceSchemaData,
-    exprCtx
+    exprCtx,
   );
   if (missingRequiredArgs.length > 0) {
     return undefined;
@@ -744,11 +744,11 @@ export async function mkDataSourceOpExprFromDraft(
             value: v.value,
             bindings: v.bindings,
           }),
-          exprCtx
-        )
+          exprCtx,
+        ),
       ),
       roleId: draft.roleId,
-    }
+    },
   );
   return new DataSourceOpExpr({
     sourceId: draft.sourceId,
@@ -759,7 +759,7 @@ export async function mkDataSourceOpExprFromDraft(
         fieldType: v.type,
         value: v.value,
         bindings: v.bindings,
-      })
+      }),
     ),
     roleId: draft.roleId,
     cacheKey: draft.opMeta.type === "read" ? draft.cacheKey : undefined,
@@ -849,7 +849,7 @@ const DataSourceOpExprFormAndPreview = observer(
                   type: getTemplateFieldType(v),
                   value: v.value,
                   bindings: v.bindings,
-                } as const)
+                }) as const,
             ),
             queryName: isKnownComponentDataQuery(parent)
               ? parent.name
@@ -866,7 +866,7 @@ const DataSourceOpExprFormAndPreview = observer(
             queryName: isKnownComponentDataQuery(parent)
               ? parent.name
               : undefined,
-          }
+          },
     );
     const [previewOperation, setPreviewOperation] = React.useState<
       DataSourceOpDraftValue | undefined
@@ -879,19 +879,19 @@ const DataSourceOpExprFormAndPreview = observer(
     const { data: sourceSchemaData } = useSourceSchemaData(
       studioCtx,
       sourceId,
-      source
+      source,
     );
     const opMeta = React.useMemo(
       () =>
         sourceMeta && opName
           ? sourceMeta.ops.find((op) => op.name === opName)
           : undefined,
-      [sourceMeta, opName]
+      [sourceMeta, opName],
     );
     const missingRequiredArgs = getMissingRequiredArgsFromDraft(
       draft,
       sourceSchemaData,
-      exprCtx
+      exprCtx,
     ).map(([argName, argMeta]) => getArgLabel(argMeta, argName));
     const [isGettingOpId, setGettingOpId] = React.useState(false);
 
@@ -902,11 +902,11 @@ const DataSourceOpExprFormAndPreview = observer(
       setGettingOpId(true);
       const pickedSourceId = ensure(
         draft.sourceId,
-        `sourceId must be set for this button to be clickable`
+        `sourceId must be set for this button to be clickable`,
       );
       const pickedOpName = ensure(
         draft.opName,
-        `opName must be set for this button to be clickable`
+        `opName must be set for this button to be clickable`,
       );
       const { opId } = await api.getDataSourceOpId(
         studioCtx.siteInfo.id,
@@ -920,11 +920,11 @@ const DataSourceOpExprFormAndPreview = observer(
                 value: v.value,
                 bindings: v.bindings,
               }),
-              exprCtx
-            )
+              exprCtx,
+            ),
           ),
           roleId: draft.roleId,
-        }
+        },
       );
       if (isMounted()) {
         if (missingRequiredArgs.length === 0) {
@@ -938,7 +938,7 @@ const DataSourceOpExprFormAndPreview = observer(
                   fieldType: v.type,
                   value: v.value,
                   bindings: v.bindings,
-                })
+                }),
               ),
               roleId: draft.roleId,
               cacheKey: opMeta?.type === "read" ? draft.cacheKey : undefined,
@@ -949,12 +949,12 @@ const DataSourceOpExprFormAndPreview = observer(
                   ? new QueryRef({ ref: parent })
                   : undefined,
             }),
-            draft.queryName
+            draft.queryName,
           );
         } else {
           notification.error({
             message: `Missing required fields: ${missingRequiredArgs.join(
-              ", "
+              ", ",
             )}`,
           });
         }
@@ -973,7 +973,7 @@ const DataSourceOpExprFormAndPreview = observer(
     >([]);
     const dataOpExecuteContextValue = React.useMemo(
       () => ({ executeQueue, setExecuteQueue }),
-      [executeQueue, setExecuteQueue]
+      [executeQueue, setExecuteQueue],
     );
 
     function refresh(newDraft: DataSourceOpDraftValue) {
@@ -984,7 +984,7 @@ const DataSourceOpExprFormAndPreview = observer(
     const schemaTunnel = React.useMemo(() => createPortalTunnel(), []);
     const dataSourceDraftContextValue = React.useMemo(
       () => ({ schemaTunnel, sourceMeta }),
-      [schemaTunnel, sourceMeta]
+      [schemaTunnel, sourceMeta],
     );
 
     const enablePreviewSteps = studioCtx.appCtx.appConfig.previewSteps;
@@ -1081,7 +1081,7 @@ const DataSourceOpExprFormAndPreview = observer(
                             code,
                             interaction,
                             exprCtx,
-                            studioCtx
+                            studioCtx,
                           )
                         ) {
                           notification.error({
@@ -1107,7 +1107,7 @@ const DataSourceOpExprFormAndPreview = observer(
                   {...(missingRequiredArgs.length > 0
                     ? {
                         tooltip: `Missing required fields: ${missingRequiredArgs.join(
-                          ", "
+                          ", ",
                         )}`,
                       }
                     : {})}
@@ -1115,8 +1115,8 @@ const DataSourceOpExprFormAndPreview = observer(
                   {opMeta?.type === "read"
                     ? "Preview"
                     : isExecuting || executeQueue.length > 0
-                    ? "Executing..."
-                    : "Execute"}
+                      ? "Executing..."
+                      : "Execute"}
                 </Button>
                 <Button onClick={onCancel}>Cancel</Button>
               </BottomModalButtons>
@@ -1144,16 +1144,16 @@ const DataSourceOpExprFormAndPreview = observer(
         {contents}
       </DataSourceDraftContext.Provider>
     );
-  }
+  },
 );
 
 const getTemplateVal = (
   draft: DataSourceOpDraftValue | undefined,
-  arg: string
+  arg: string,
 ) => {
   return maybe(
     draft?.templates?.[arg],
-    ({ value: templateVal }) => templateVal
+    ({ value: templateVal }) => templateVal,
   );
 };
 
@@ -1161,7 +1161,7 @@ const getStringTemplateVal = (
   draft: DataSourceOpDraftValue | undefined,
   arg: string,
   fieldType: ArgMeta["type"],
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) => {
   const templateVal = getTemplateVal(draft, arg);
   if (templateVal) {
@@ -1176,11 +1176,11 @@ const getStringTemplateVal = (
 const getSelectedTable = (
   draft: DataSourceOpDraftValue | undefined,
   opMeta: OperationMeta | undefined,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) => {
   if (draft && opMeta) {
     const tableArgMeta = Object.entries(opMeta.args).find(
-      ([_, argMeta]) => argMeta.type === "table"
+      ([_, argMeta]) => argMeta.type === "table",
     );
     if (tableArgMeta) {
       return getStringTemplateVal(draft, tableArgMeta[0], "table", exprCtx);
@@ -1250,7 +1250,7 @@ export function DataSourceOpDraftForm(props: {
         console.log(`Error fetching data-source ${sourceId}`, err);
         throw err;
       });
-    }
+    },
   );
   const { roles } = useAppRoles(studioCtx.appCtx, studioCtx.siteInfo.id, false);
   const sourceMeta = source ? getDataSourceMeta(source.source) : undefined;
@@ -1277,7 +1277,7 @@ export function DataSourceOpDraftForm(props: {
           console.log(`Error fetching data-source schema for ${sourceId}`, err);
           throw err;
         });
-    }
+    },
   );
   const availableDataOps = sourceMeta
     ? sourceMeta.ops.filter((op) => {
@@ -1325,7 +1325,7 @@ export function DataSourceOpDraftForm(props: {
   const getTemplateBindings = (arg: string) => {
     return maybe(
       templates[arg],
-      ({ bindings: templateBindings }) => templateBindings ?? undefined
+      ({ bindings: templateBindings }) => templateBindings ?? undefined,
     );
   };
 
@@ -1336,21 +1336,21 @@ export function DataSourceOpDraftForm(props: {
     const tableDependentArgs = new Set(
       Object.entries(opMeta.args)
         .filter(([_k, arg]) => !!arg["fields"])
-        .map(([argName]) => argName)
+        .map(([argName]) => argName),
     );
     return Object.fromEntries(
-      Object.entries(v).filter(([arg]) => !tableDependentArgs.has(arg))
+      Object.entries(v).filter(([arg]) => !tableDependentArgs.has(arg)),
     );
   };
 
   const getArgMetaRequiredFields = (
-    argMeta: JsonSchemaArgMeta | JsonSchemaArrayArgMeta
+    argMeta: JsonSchemaArgMeta | JsonSchemaArrayArgMeta,
   ) => {
     return typeof argMeta.requiredFields === "function"
       ? argMeta.requiredFields(
           sourceSchemaData,
           getSelectedTable(value, opMeta, exprCtx),
-          value
+          value,
         )
       : argMeta.requiredFields;
   };
@@ -1359,24 +1359,24 @@ export function DataSourceOpDraftForm(props: {
     arg: string,
     fieldType: ArgMeta["type"],
     newValue: any,
-    bindings?: Record<string, TemplatedString | CustomCode | ObjectPath>
+    bindings?: Record<string, TemplatedString | CustomCode | ObjectPath>,
   ) => {
     const newTemplates = {
       ...(fieldType === "table"
         ? omitTableDependentArgs(value?.templates ?? {})
-        : value?.templates ?? {}),
+        : (value?.templates ?? {})),
       [arg]: {
         type: fieldType,
         value:
           bindings !== undefined
             ? JSON.stringify(newValue)
             : isKnownTemplatedString(newValue)
-            ? newValue
-            : new TemplatedString({
-                text: isJsonType(fieldType)
-                  ? [JSON.stringify(newValue)]
-                  : [newValue.toString()],
-              }),
+              ? newValue
+              : new TemplatedString({
+                  text: isJsonType(fieldType)
+                    ? [JSON.stringify(newValue)]
+                    : [newValue.toString()],
+                }),
         bindings: bindings,
       },
     };
@@ -1393,7 +1393,7 @@ export function DataSourceOpDraftForm(props: {
   const selectedTableSchema =
     selectedTableIdentifier &&
     (sourceSchemaData as DataSourceSchema | undefined)?.tables.find(
-      (table) => table.id === selectedTableIdentifier
+      (table) => table.id === selectedTableIdentifier,
     );
 
   React.useEffect(() => {
@@ -1473,7 +1473,7 @@ export function DataSourceOpDraftForm(props: {
                 value={opName}
                 placeholder={
                   maybes(opName)((name) =>
-                    sourceMeta.ops.find((op) => op.name === name)
+                    sourceMeta.ops.find((op) => op.name === name),
                   )((opm) => opm.label ?? opm.name)() ?? "Select an operation"
                 }
                 onChange={(newOpName) => {
@@ -1503,18 +1503,18 @@ export function DataSourceOpDraftForm(props: {
                 ([_k, argMeta]) =>
                   !argMeta.hidden?.(
                     sourceSchemaData,
-                    getSelectedTable(value, opMeta, exprCtx)
+                    getSelectedTable(value, opMeta, exprCtx),
                   ) &&
                   (!(argMeta.type === "filter[]") ||
                     Object.keys(
                       argMeta.fields(
                         sourceSchemaData,
-                        getSelectedTable(value, opMeta, exprCtx)
-                      )
+                        getSelectedTable(value, opMeta, exprCtx),
+                      ),
                     ).length) &&
                   (!isRowSelector ||
                     argMeta.type === "sort[]" ||
-                    argMeta.type === "filter[]")
+                    argMeta.type === "filter[]"),
               )
               .map(([key, argMeta]) => {
                 const argLabel = getArgLabel(argMeta, key);
@@ -1529,7 +1529,7 @@ export function DataSourceOpDraftForm(props: {
                               value,
                               key,
                               argMeta.type,
-                              exprCtx
+                              exprCtx,
                             ) ??
                             ((argMeta.default
                               ? coerceArgValueToString(argMeta.default, argMeta)
@@ -1545,7 +1545,7 @@ export function DataSourceOpDraftForm(props: {
                               value,
                               key,
                               argMeta.type,
-                              exprCtx
+                              exprCtx,
                             ) !== undefined
                               ? "isSet"
                               : "isUnset"
@@ -1566,7 +1566,7 @@ export function DataSourceOpDraftForm(props: {
                             value,
                             key,
                             argMeta.type,
-                            exprCtx
+                            exprCtx,
                           )}
                           // Creating a new object here so that we don't reference the model with this value
                           exprCtx={exprCtx}
@@ -1582,14 +1582,14 @@ export function DataSourceOpDraftForm(props: {
                             value,
                             key,
                             argMeta.type,
-                            exprCtx
+                            exprCtx,
                           )}
                           onChange={(newVal) => {
                             setNewTemplate(key, argMeta.type, newVal);
                           }}
                           fields={argMeta.fields(
                             sourceSchemaData,
-                            getSelectedTable(value, opMeta, exprCtx)
+                            getSelectedTable(value, opMeta, exprCtx),
                           )}
                         />
                       );
@@ -1601,7 +1601,7 @@ export function DataSourceOpDraftForm(props: {
                             value,
                             key,
                             argMeta.type,
-                            exprCtx
+                            exprCtx,
                           )}
                           onChange={(newVal, bindings) =>
                             setNewTemplate(key, argMeta.type, newVal, bindings)
@@ -1609,7 +1609,7 @@ export function DataSourceOpDraftForm(props: {
                           fields={argMeta.fields(
                             sourceSchemaData,
                             getSelectedTable(value, opMeta, exprCtx),
-                            value
+                            value,
                           )}
                           data={data}
                           schema={schema}
@@ -1630,7 +1630,7 @@ export function DataSourceOpDraftForm(props: {
                             value,
                             key,
                             argMeta.type,
-                            exprCtx
+                            exprCtx,
                           )}
                           onChange={(newVal, bindings) =>
                             setNewTemplate(key, argMeta.type, newVal, bindings)
@@ -1638,7 +1638,7 @@ export function DataSourceOpDraftForm(props: {
                           fields={argMeta.fields(
                             sourceSchemaData,
                             getSelectedTable(value, opMeta, exprCtx),
-                            value
+                            value,
                           )}
                           data={data}
                           schema={schema}
@@ -1655,26 +1655,26 @@ export function DataSourceOpDraftForm(props: {
                           key={`${getSelectedTable(
                             value,
                             opMeta,
-                            exprCtx
+                            exprCtx,
                           )}-${key}`}
                           data={data}
                           schema={schema}
                           source={ensure(
                             source?.source,
-                            "Source must be defined to filter fields"
+                            "Source must be defined to filter fields",
                           )}
                           value={getStringTemplateVal(
                             value,
                             key,
                             argMeta.type,
-                            exprCtx
+                            exprCtx,
                           )}
                           exprCtx={exprCtx}
                           // Creating a new object here so that we don't reference the model with this value
                           bindings={{ ...getTemplateBindings(key) }}
                           fields={argMeta.fields(
                             sourceSchemaData,
-                            getSelectedTable(value, opMeta, exprCtx)
+                            getSelectedTable(value, opMeta, exprCtx),
                           )}
                           onChange={(newVal, bindings) =>
                             setNewTemplate(key, argMeta.type, newVal, bindings)
@@ -1691,7 +1691,7 @@ export function DataSourceOpDraftForm(props: {
                             value,
                             key,
                             argMeta.type,
-                            exprCtx
+                            exprCtx,
                           )}
                           exprCtx={exprCtx}
                           bindings={{ ...getTemplateBindings(key) }}
@@ -1726,8 +1726,8 @@ export function DataSourceOpDraftForm(props: {
                               value,
                               key,
                               "graphql-query",
-                              exprCtx
-                            ) ?? ""
+                              exprCtx,
+                            ) ?? "",
                           )}
                           onChange={(query, extraState) => {
                             setNewTemplate(key, argMeta.type, query);
@@ -1957,7 +1957,7 @@ export function getFieldRank(field: string, rankedFieldNames: string[]) {
     return rank;
   }
   const secondRank = rankedFieldNames.findIndex(
-    (name) => name !== "id" && field.search(new RegExp(name))
+    (name) => name !== "id" && field.search(new RegExp(name)),
   );
   if (secondRank >= 0) {
     return secondRank + rankedFieldNames.length;
@@ -1968,13 +1968,13 @@ export function getFieldRank(field: string, rankedFieldNames: string[]) {
 export function orderFieldsByRanking(
   fields: TableFieldSchema[],
   rankedFieldNames: string[],
-  excludeOthers = false
+  excludeOthers = false,
 ) {
   if (excludeOthers) {
     fields = fields.filter((f) => rankedFieldNames.includes(f.id));
   }
   return sortBy(fields, (f) =>
-    getFieldRank(simplifyName(f.label ?? f.id), rankedFieldNames)
+    getFieldRank(simplifyName(f.label ?? f.id), rankedFieldNames),
   );
 }
 
@@ -1995,7 +1995,7 @@ function DataSourceOpDataPreview(props: {
   const dataOpResults = useDataSourceOpData(
     isReadOp ? expr : undefined,
     env,
-    exprCtx
+    exprCtx,
   );
   const [mutateOpResults, setMutateOpResults] = React.useState<
     DataSourceOpResults | undefined
@@ -2019,7 +2019,7 @@ function DataSourceOpDataPreview(props: {
               ? JSON.stringify(val)
               : val;
             return mappedObject;
-          }, {})
+          }, {}),
         )
       : results?.data;
   }
@@ -2096,7 +2096,7 @@ function DataSourceOpDataPreview(props: {
       } else if (tableSchema) {
         setTabKey(preferredTab ?? "schema");
         setSchemaReference(
-          tableSchema.fields.map((f) => ({ ...f, id: f.label || f.id }))
+          tableSchema.fields.map((f) => ({ ...f, id: f.label || f.id })),
         );
       }
     }
@@ -2122,7 +2122,7 @@ function DataSourceOpDataPreview(props: {
       id="data-source-modal-preview-section"
       className={cx(
         "fill-width fill-height overflow-hidden ph-lg",
-        styles.container
+        styles.container,
       )}
     >
       {(opResults || schemaReference) && (
@@ -2153,7 +2153,7 @@ function DataSourceOpDataPreview(props: {
                     }
                     columns={orderFieldsByRanking(
                       opResults.schema!.fields,
-                      rankedFieldsForTableCols
+                      rankedFieldsForTableCols,
                     ).map((field) => ({
                       title: field.label || field.id,
                       dataIndex: field.id,
@@ -2279,8 +2279,8 @@ export function DataSourcePickerButton(props: {
       {!sourceId
         ? `Pick an ${DATA_SOURCE_LOWER}`
         : !source
-        ? "Loading..."
-        : source.name}
+          ? "Loading..."
+          : source.name}
     </Button>
   );
 }
@@ -2294,7 +2294,7 @@ export const FilterPropEditor = (props: {
   bindings?: Record<string, TemplatedString | CustomCode | ObjectPath>;
   onChange: (
     value: any,
-    binds: Record<string, TemplatedString | CustomCode | ObjectPath>
+    binds: Record<string, TemplatedString | CustomCode | ObjectPath>,
   ) => void;
   exprCtx: ExprCtx;
 }) => {
@@ -2340,7 +2340,7 @@ const PaginationEditor = observer(function PaginationEditor({
   };
   onChange: (
     value: any,
-    binds: Record<string, ObjectPath | CustomCode | TemplatedString>
+    binds: Record<string, ObjectPath | CustomCode | TemplatedString>,
   ) => void;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
@@ -2354,7 +2354,7 @@ const PaginationEditor = observer(function PaginationEditor({
     (value?.pageIndex && bindings && bindings[value.pageIndex]) || undefined;
   const fixBindingsAndChange = (
     newValue: { pageIndex?: string; pageSize?: string },
-    newBindings: { [key: string]: ObjectPath | CustomCode | TemplatedString }
+    newBindings: { [key: string]: ObjectPath | CustomCode | TemplatedString },
   ) => {
     [...Object.keys(newBindings)].forEach((key) => {
       if (newValue.pageSize !== key && newValue.pageIndex !== key) {
@@ -2365,7 +2365,7 @@ const PaginationEditor = observer(function PaginationEditor({
   };
   const changeVal = (
     prop: "pageSize" | "pageIndex",
-    templatedStr: TemplatedString
+    templatedStr: TemplatedString,
   ) => {
     if (templatedStr.text.length === 1 && templatedStr.text[0] === "") {
       const newBindings = bindings ? { ...bindings } : {};
@@ -2438,14 +2438,14 @@ export const SortEditor = observer(function SortEditor({
                   {
                     field: ensure(
                       Object.keys(fields).find(
-                        (fieldId) => sanitizeFieldId(fieldId) === v
+                        (fieldId) => sanitizeFieldId(fieldId) === v,
                       ),
-                      () => `Failed to find field ${v}`
+                      () => `Failed to find field ${v}`,
                     ),
                     order: isAscending ? "asc" : "desc",
                   },
                 ]
-              : []
+              : [],
           )
         }
         placeholder="Select a field"
@@ -2483,7 +2483,7 @@ export function clearUnusedBindings(
   bindings: React.MutableRefObject<
     Record<string, ObjectPath | CustomCode | TemplatedString>
   >,
-  newValStr: string
+  newValStr: string,
 ) {
   const keys = [...Object.keys(bindings.current)];
   for (const key of keys) {
@@ -2509,7 +2509,7 @@ const StringDictPropEditor = observer(function StringDictPropEditor({
   value?: Record<string, any>;
   onChange: (
     value: any,
-    bindings: Record<string, ObjectPath | CustomCode | TemplatedString>
+    bindings: Record<string, ObjectPath | CustomCode | TemplatedString>,
   ) => void;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
@@ -2525,7 +2525,7 @@ const StringDictPropEditor = observer(function StringDictPropEditor({
           key: k,
           value: v,
         }))
-      : [{ key: "", value: "" }]
+      : [{ key: "", value: "" }],
   );
 
   const getUsedBindings = (newValStr: string) => {
@@ -2659,7 +2659,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
   value?: Record<string, any> | string;
   onChange: (
     value: any,
-    binds: Record<string, ObjectPath | CustomCode | TemplatedString>
+    binds: Record<string, ObjectPath | CustomCode | TemplatedString>,
   ) => void;
   fields: Fields;
   data: Record<string, any> | undefined;
@@ -2685,11 +2685,11 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
     if (usedType === "code") {
       assert(
         typeof newVal === "string",
-        () => `Expected newVal to be a string`
+        () => `Expected newVal to be a string`,
       );
       assert(
         bindings.current[newVal],
-        () => `No corresponding binding for: ${newVal}`
+        () => `No corresponding binding for: ${newVal}`,
       );
       bindings.current = {
         [newVal]: bindings.current[newVal],
@@ -2749,14 +2749,14 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
             const fieldSettings = field.fieldSettings ?? {};
             const fieldType = field.type === "enum" ? "select" : field.type;
             const setValue = (
-              newVal: string | number | boolean | undefined
+              newVal: string | number | boolean | undefined,
             ) => {
               if (newVal == null) {
                 handleChange(omit(value ?? {}, fieldName), "editor");
               } else {
                 handleChange(
                   { ...(value ?? {}), [fieldName]: newVal },
-                  "editor"
+                  "editor",
                 );
               }
             };
@@ -2784,7 +2784,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                   newVal,
                   CustomCode,
                   ObjectPath,
-                  TemplatedString
+                  TemplatedString,
                 ),
               };
               setValue(binding);
@@ -2801,7 +2801,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                       }}
                     >
                       <strong>Unset</strong> {field.label ?? fieldName}
-                    </Menu.Item>
+                    </Menu.Item>,
                   );
                 });
               }
@@ -2815,7 +2815,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                   >
                     <strong>Set</strong> {field.label ?? fieldName} to{" "}
                     <code>null</code>
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               });
               return builder.build({
@@ -2883,7 +2883,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                               <DataPickerEditor
                                 value={extractValueSavedFromDataPicker(
                                   allBindings[val],
-                                  exprCtx
+                                  exprCtx,
                                 )}
                                 onChange={(v) => {
                                   const newVal =
@@ -2906,7 +2906,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                     setExprValue(
                                       new TemplatedString({
                                         text: [mkUndefinedObjectPath()],
-                                      })
+                                      }),
                                     );
                                   } else {
                                     setExprValue(mkUndefinedObjectPath());
@@ -2924,12 +2924,12 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                     },
                                     ...field.fieldSettings,
                                   } as any,
-                                  QueryBuilderConfig.ctx
+                                  QueryBuilderConfig.ctx,
                                 )}
                               </ContextMenuIndicator>
                             );
                           }
-                        })()
+                        })(),
                       )}
                       index={idx}
                       showDelete={false}
@@ -2975,7 +2975,7 @@ const JsonArrayWithSchemaEditor = observer(function JsonArrayWithSchemaEditor({
   value?: Record<string, any>[] | string;
   onChange: (
     value: any[] | string,
-    binds: Record<string, ObjectPath | CustomCode | TemplatedString>
+    binds: Record<string, ObjectPath | CustomCode | TemplatedString>,
   ) => void;
   fields: Fields;
   data: Record<string, any> | undefined;
@@ -2992,22 +2992,22 @@ const JsonArrayWithSchemaEditor = observer(function JsonArrayWithSchemaEditor({
   const inputType = typeof value === "object" ? "editor" : "code";
   const codeOnly = React.useMemo(
     () => !!initialCodeOnly && inputType === "code",
-    [initialCodeOnly, inputType]
+    [initialCodeOnly, inputType],
   );
 
   const handleChange = (
     // eslint-disable-next-line @typescript-eslint/ban-types
     newVal: Object[] | string,
-    usedType: "editor" | "code"
+    usedType: "editor" | "code",
   ) => {
     if (usedType === "code") {
       assert(
         typeof newVal === "string",
-        () => `Expected newVal to be a string`
+        () => `Expected newVal to be a string`,
       );
       assert(
         bindings.current[newVal],
-        () => `No corresponding binding for: ${newVal}`
+        () => `No corresponding binding for: ${newVal}`,
       );
       bindings.current = {
         [newVal]: bindings.current[newVal],
@@ -3151,7 +3151,7 @@ function deserializeHttpBody(val?: TemplatedString | string) {
 
 function serializeHttpBody(
   val: TemplatedString | object | undefined,
-  encoding: HttpBodyEncodingType
+  encoding: HttpBodyEncodingType,
 ): string | object | TemplatedString | undefined {
   if (isNil(val)) {
     return undefined;
@@ -3186,7 +3186,7 @@ const HttpBodyEditor = observer(function HttpBodyEditor({
   value?: TemplatedString | string;
   onChange: (
     value: any,
-    binds?: Record<string, ObjectPath | CustomCode | TemplatedString>
+    binds?: Record<string, ObjectPath | CustomCode | TemplatedString>,
   ) => void;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
@@ -3203,7 +3203,7 @@ const HttpBodyEditor = observer(function HttpBodyEditor({
   const handleChange = (
     newVal: TemplatedString | object | undefined,
     clearBindings: boolean,
-    useEncode?: HttpBodyEncodingType
+    useEncode?: HttpBodyEncodingType,
   ) => {
     const currentEncodingType = useEncode ?? encodingType;
     const encodedValue = serializeHttpBody(newVal, currentEncodingType);
@@ -3339,7 +3339,7 @@ export const DataSourceOpValuePreview = observer(
     const result = useDataSourceOpData(
       isPreviewable ? expr : undefined,
       env,
-      exprCtx
+      exprCtx,
     );
     const [showModal, setShowModal] = React.useState(false);
     if (!result) {
@@ -3374,13 +3374,13 @@ export const DataSourceOpValuePreview = observer(
     } else {
       return null;
     }
-  }
+  },
 );
 
 function useDataSourceOpData(
   expr: DataSourceOpExpr | undefined,
   env: Record<string, any> | undefined,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   const maybeEvalResult =
     (expr &&
@@ -3410,7 +3410,7 @@ export async function executeDataSourceOp(
   opts: {
     userAuthToken?: string;
     user?: StudioAppUser;
-  } = {}
+  } = {},
 ) {
   const maybeEvalResult =
     (expr &&
@@ -3423,7 +3423,7 @@ export async function executeDataSourceOp(
   try {
     result = await executePlasmicDataOp(
       maybeEvalResult?.val ?? {},
-      opts as Parameters<typeof executePlasmicDataOp>[1]
+      opts as Parameters<typeof executePlasmicDataOp>[1],
     );
   } catch (err) {
     result = { error: err };
@@ -3643,8 +3643,8 @@ function GraphqlQueryFieldInner(props: {
                     documentAST?.definitions
                       .flatMap((def) =>
                         "variableDefinitions" in def
-                          ? def.variableDefinitions ?? []
-                          : []
+                          ? (def.variableDefinitions ?? [])
+                          : [],
                       )
                       .map((varDef) => [
                         varDef.variable.name.value,
@@ -3657,10 +3657,10 @@ function GraphqlQueryFieldInner(props: {
                         type: "text",
                         label: vname,
                       },
-                    ])
+                    ]),
                   );
                   const requiredFields = variableNames.flatMap(
-                    ([vname, required]) => (required ? [vname] : [])
+                    ([vname, required]) => (required ? [vname] : []),
                   );
 
                   onChange(newValue, {
@@ -3714,7 +3714,7 @@ function GqlProvider(props: {
         showAttribution: false,
         explorerIsOpen: true,
       }),
-    []
+    [],
   );
 
   const gqlFetcher: Fetcher = useMemo(
@@ -3742,11 +3742,11 @@ function GqlProvider(props: {
           projectId: studioCtx.siteInfo.id,
         }),
         {},
-        exprCtx
+        exprCtx,
       );
       return result.data.response;
     },
-    [sourceId]
+    [sourceId],
   );
   return (
     <GraphiQLProvider fetcher={gqlFetcher} plugins={[explorer]} query={query}>

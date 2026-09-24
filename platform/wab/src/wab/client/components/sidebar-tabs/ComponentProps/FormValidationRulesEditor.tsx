@@ -185,7 +185,7 @@ interface FormValidationRulesEditorProps {
 }
 
 export function FormValidationRulesEditor(
-  props: FormValidationRulesEditorProps
+  props: FormValidationRulesEditorProps,
 ) {
   const clonedExpr = props.value ? cloneExpr(props.value) : undefined;
   const rules = clonedExpr?.exprs ?? [];
@@ -211,7 +211,7 @@ export function FormValidationRulesEditor(
               {rules.map((rule, index) => {
                 assert(
                   isKnownMapExpr(rule),
-                  "only map expr are allowed to form validation rule"
+                  "only map expr are allowed to form validation rule",
                 );
                 return (
                   <div>
@@ -223,7 +223,7 @@ export function FormValidationRulesEditor(
                           ? cloneExpr(props.value)
                           : new CollectionExpr({ exprs: [] });
                         const mapExpr = ensureKnownMapExpr(
-                          newExpr.exprs[index]
+                          newExpr.exprs[index],
                         ).mapExpr;
                         if (!argExpr) {
                           delete mapExpr[argName];
@@ -255,7 +255,7 @@ export function FormValidationRulesEditor(
                       mapExpr: {
                         ruleType: codeLit("required"),
                       },
-                    })
+                    }),
                   );
                   props.onChange(newExpr);
                 }}

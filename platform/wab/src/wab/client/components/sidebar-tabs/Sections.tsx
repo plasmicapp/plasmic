@@ -281,7 +281,7 @@ const SECTION_SETTINGS: AllSectionsPresent<SectionSetting> = {
 function getSectionSetting(section: Section) {
   return ensure(
     SECTION_SETTINGS[section],
-    `No settings configured for section ${section}`
+    `No settings configured for section ${section}`,
   );
 }
 
@@ -350,7 +350,7 @@ const htmlTagsWithAttributes = new Set([
 function getRenderBySection(
   tpl: TplNode,
   viewCtx: ViewCtx,
-  renderOpts: Map<Section, boolean>
+  renderOpts: Map<Section, boolean>,
 ) {
   const isSlot = isTplSlot(tpl);
   const isTag = isTplTag(tpl);
@@ -388,7 +388,7 @@ function getRenderBySection(
   const showStyleSections = shouldShowStyleSections(
     tpl,
     viewCtx,
-    missingPositionClass
+    missingPositionClass,
   );
 
   const expsProvider = new TplExpsProvider(viewCtx, tpl as TplNode);
@@ -946,7 +946,7 @@ function getRenderBySection(
           name === Section.MissingPositionClass ||
           name === Section.ComponentStyleProps) &&
         render(),
-    ])
+    ]),
   );
 }
 
@@ -1021,7 +1021,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
       Section.Layout,
       Section.Spacing,
       Section.Overflow,
-      Section.Background
+      Section.Background,
     );
   }
   if (isTplColumn(tpl)) {
@@ -1033,7 +1033,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
       Section.ColumnsPanel,
       Section.Spacing,
       Section.Overflow,
-      Section.Background
+      Section.Background,
     );
   }
   if (isTplVariantable(tpl) && tpl.parent && isGridTag(tpl.parent)) {
@@ -1097,7 +1097,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
         .filter((s) => !activeSections.includes(s))
         .join(", ")}, extras ${activeSections
         .filter((s) => !orderedSections.has(s))
-        .join(", ")}`
+        .join(", ")}`,
   );
   return orderedSections;
 }
@@ -1116,7 +1116,7 @@ export function getOrderedSectionRender(
   tpl: TplNode,
   viewCtx: ViewCtx,
   renderOpts: Map<Section, boolean>,
-  styleTabFilter: StyleTabFilter
+  styleTabFilter: StyleTabFilter,
 ) {
   const renderBySection = getRenderBySection(tpl, viewCtx, renderOpts);
   const orderedSections = getOrderedSections(tpl, viewCtx);
@@ -1125,13 +1125,13 @@ export function getOrderedSectionRender(
       (section) =>
         canEditSection(viewCtx.studioCtx, section) &&
         ((styleTabFilter === "style-only" && isStyleSection(section)) ||
-          (styleTabFilter === "settings-only" && isSettingsSection(section)))
+          (styleTabFilter === "settings-only" && isSettingsSection(section))),
     )
     .map((section) =>
       ensure(
         renderBySection.get(section),
-        "All sections should have a render function"
-      )
+        "All sections should have a render function",
+      ),
     );
 }
 
@@ -1164,7 +1164,7 @@ function shouldAlertMissingPositionClass(vc: ViewCtx) {
 function shouldShowStyleSections(
   tpl: TplNode,
   viewCtx: ViewCtx,
-  missingPositionClass: boolean
+  missingPositionClass: boolean,
 ) {
   if (isTplCodeComponent(tpl)) {
     if (viewCtx.getTplCodeComponentMeta(tpl)?.styleSections === true) {
@@ -1177,7 +1177,7 @@ function shouldShowStyleSections(
     if (
       !isTplCodeComponentStyleable(
         viewCtx.studioCtx.codeComponentsRegistry,
-        tpl
+        tpl,
       )
     ) {
       return false;
@@ -1187,7 +1187,7 @@ function shouldShowStyleSections(
     return shouldShowStyleSections(
       tpl.component.tplTree,
       viewCtx,
-      missingPositionClass
+      missingPositionClass,
     );
   }
   return true;
@@ -1195,7 +1195,7 @@ function shouldShowStyleSections(
 
 export function isCodeComponentMissingPositionClass(
   vc: ViewCtx,
-  val: ValComponent
+  val: ValComponent,
 ) {
   const $doms = $(asOne(vc.renderState.sel2dom(val, vc.canvasCtx)) ?? []);
   if ($doms?.length && resolvesToCodeComponent(val.tpl)) {
@@ -1242,7 +1242,7 @@ const MissingPositionClassSection = observer(
         </div>
       </SidebarSection>
     );
-  }
+  },
 );
 
 export function canEditSection(studioCtx: StudioCtx, section: Section) {
@@ -1264,7 +1264,7 @@ export function canEditSection(studioCtx: StudioCtx, section: Section) {
 
 export function canRenderMixins(
   tpl: TplNode,
-  viewCtx: ViewCtx
+  viewCtx: ViewCtx,
 ): tpl is TplNode {
   const missingPositionClass = isCodeComponentTpl(tpl)
     ? shouldAlertMissingPositionClass(viewCtx)
@@ -1272,7 +1272,7 @@ export function canRenderMixins(
   const showStyleSections = shouldShowStyleSections(
     tpl,
     viewCtx,
-    missingPositionClass
+    missingPositionClass,
   );
 
   return (
@@ -1284,7 +1284,7 @@ export function canRenderMixins(
 
 export function canRenderPrivateStyleVariants(
   tpl: TplNode,
-  viewCtx: ViewCtx
+  viewCtx: ViewCtx,
 ): tpl is TplTag {
   const ancestorSlot = getAncestorTplSlot(tpl, true);
   return (

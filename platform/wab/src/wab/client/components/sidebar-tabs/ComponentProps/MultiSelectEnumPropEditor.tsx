@@ -33,10 +33,10 @@ export function MultiSelectEnumPropEditor(props: {
     <XMultiSelect
       className={mergedClassNames}
       options={options.filter(
-        (option) => !(value ?? []).includes(option.value)
+        (option) => !(value ?? []).includes(option.value),
       )}
       selectedItems={withoutNils(
-        (value ?? []).map((val) => options.find((op) => op.value === val))
+        (value ?? []).map((val) => options.find((op) => op.value === val)),
       )}
       itemKey={(item) => (item ? JSON.stringify(item.value) : "")}
       onSelect={(item) => onChange([...(value ?? []), item.value])}
@@ -48,7 +48,7 @@ export function MultiSelectEnumPropEditor(props: {
           return _options;
         }
         return _options.filter((op) =>
-          op.label.toLowerCase().includes(input.toLowerCase())
+          op.label.toLowerCase().includes(input.toLowerCase()),
         );
       }}
       renderInput={(_options) => (

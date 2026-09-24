@@ -40,7 +40,7 @@ export const RepeatingElementSection = observer(function (props: {
   // just edits the dataRep in baseVs.
   const baseVs = ensure(
     tpl.vsettings.find((vs) => isBaseVariant(vs.variants)),
-    "All TplNodes must have a base variant setting"
+    "All TplNodes must have a base variant setting",
   );
   const dataRep = baseVs.dataRep;
 
@@ -140,8 +140,8 @@ export const RepeatingElementSection = observer(function (props: {
                       {
                         separator: "",
                         normalize: toVarName,
-                      }
-                    )
+                      },
+                    ),
                   );
                 });
               }}
@@ -163,7 +163,7 @@ export const RepeatingElementSection = observer(function (props: {
                       uniqueName([dataRep.element.name], newIndexName, {
                         separator: "",
                         normalize: toVarName,
-                      })
+                      }),
                     );
                   } else {
                     dataRep.index = null;

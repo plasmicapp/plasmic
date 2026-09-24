@@ -30,12 +30,12 @@ function OutlineTab_() {
   const studioCtx = useStudioCtx();
   const dndManager = React.useMemo(
     () => new TreeDndManager(studioCtx),
-    [studioCtx]
+    [studioCtx],
   );
 
   const outlineCtx = React.useMemo(
     () => new OutlineCtx(studioCtx, ""),
-    [studioCtx]
+    [studioCtx],
   );
   React.useEffect(() => {
     return () => {
@@ -98,7 +98,7 @@ function OutlineTab_() {
                               studioCtx.setStudioFocusOnFrame({
                                 frame: frame,
                                 autoZoom: true,
-                              })
+                              }),
                             )
                           }
                         >
@@ -137,7 +137,7 @@ function OutlineTab_() {
                     {getArenaFrameDesc(
                       arena,
                       currentArenaFrame,
-                      studioCtx.site
+                      studioCtx.site,
                     )}
                   </strong>
                 ) : (

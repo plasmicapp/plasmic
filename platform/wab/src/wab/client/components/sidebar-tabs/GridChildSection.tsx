@@ -50,12 +50,12 @@ export const GridChildSection = observer(function GridChildSection(props: {
               .targetExp()
               .set(
                 `grid-${prop}-${dir}`,
-                `${dir === "end" ? "span " : ""}${+val}`
+                `${dir === "end" ? "span " : ""}${+val}`,
               );
           }
 
           return ok();
-        })
+        }),
       );
     };
   };

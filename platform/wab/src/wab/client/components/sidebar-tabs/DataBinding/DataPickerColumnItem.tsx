@@ -22,8 +22,10 @@ import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-export interface DataPickerColumnItemProps
-  extends Omit<DefaultDataPickerColumnItemProps, "variableType"> {
+export interface DataPickerColumnItemProps extends Omit<
+  DefaultDataPickerColumnItemProps,
+  "variableType"
+> {
   onClick: () => void;
   itemName?: string;
   variableType: DataPickerSupportedVariableType;
@@ -39,7 +41,7 @@ export interface DataPickerColumnItemProps
 
 function DataPickerColumnItem_(
   props: DataPickerColumnItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     columnIndex,

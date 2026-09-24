@@ -259,7 +259,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
               "text-unset": !(isCustomCode ? evaluatedValue : stringValue),
             })}
           >
-            {isCustomCode ? evaluatedValue : stringValue ?? "unset"}
+            {isCustomCode ? evaluatedValue : (stringValue ?? "unset")}
           </span>
         </Tooltip>
       </div>
@@ -288,7 +288,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
                       if (
                         file.type.startsWith("text/") ||
                         ["css", "html", "javascript", "json"].some((str) =>
-                          file.type.includes(str)
+                          file.type.includes(str),
                         )
                       ) {
                         const contents = await readUploadedFileAsText(file);
@@ -310,7 +310,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
             <ObserverLoadable
               loader={() =>
                 import("@/wab/client/components/coding/FullCodeEditor").then(
-                  ({ FullCodeEditor }) => FullCodeEditor
+                  ({ FullCodeEditor }) => FullCodeEditor,
                 )
               }
               contents={(FullCodeEditor) => (
@@ -335,8 +335,8 @@ export const CodeEditor = observer(function CodeEditor(props: {
                     trySave(
                       ensure(
                         editor.current,
-                        "Editor must exist to save"
-                      ).getValue()
+                        "Editor must exist to save",
+                      ).getValue(),
                     )
                   ) {
                     setShow(false);

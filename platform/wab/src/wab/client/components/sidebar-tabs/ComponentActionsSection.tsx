@@ -90,14 +90,14 @@ export const ComponentActionsSection = observer(
         }
       </>
     );
-  }
+  },
 );
 
 export function useStudioOps(
   viewCtx: ViewCtx,
   node: HTMLDivElement | null,
   tplComp: TplComponent,
-  expsProvider: TplExpsProvider
+  expsProvider: TplExpsProvider,
 ): ActionProps<any>["studioOps"] {
   const canvasCtx = viewCtx.canvasCtx;
   const sub = canvasCtx.Sub;
@@ -107,7 +107,7 @@ export function useStudioOps(
   }>(null);
   const showModal = React.useCallback(
     (props) => setModalProps(props),
-    [setModalProps]
+    [setModalProps],
   );
 
   const FullScreenModal = React.useMemo(
@@ -120,7 +120,7 @@ export function useStudioOps(
         domAlign,
         popupWidth: 1024,
       }),
-    [sub]
+    [sub],
   );
 
   React.useEffect(() => {
@@ -142,7 +142,7 @@ export function useStudioOps(
           modalProps?.onClose?.();
           setModalProps(null);
         },
-      })
+      }),
     );
     if (root.current) {
       root.current.render(renderElement);
@@ -161,7 +161,7 @@ export function useStudioOps(
 
   const refreshQueryData = React.useCallback(
     () => canvasCtx.refreshFetchedDataFromPlasmicQuery(),
-    [canvasCtx]
+    [canvasCtx],
   );
 
   const appendToSlot = React.useCallback(
@@ -191,9 +191,9 @@ export function useStudioOps(
         tpl: tplComp,
         slotParam: ensure(
           getSlotParams(tplComp.component).find(
-            (p) => p.variable.name === slotName
+            (p) => p.variable.name === slotName,
           ),
-          `Component must have a param named "${slotName}"`
+          `Component must have a param named "${slotName}"`,
         ),
       });
 
@@ -202,7 +202,7 @@ export function useStudioOps(
         viewCtx.setStudioFocusByTpl(tplComp);
       });
     },
-    [viewCtx]
+    [viewCtx],
   );
 
   const removeFromSlotAt = React.useCallback(
@@ -225,7 +225,7 @@ export function useStudioOps(
         }
       });
     },
-    [viewCtx]
+    [viewCtx],
   );
 
   const updateStates = React.useCallback(
@@ -236,7 +236,7 @@ export function useStudioOps(
       Object.keys(newValues).forEach((stateName) => {
         const val = newValues[stateName];
         const state = tplComp.component.states.find(
-          (_state) => isKnownNamedState(_state) && _state.name === stateName
+          (_state) => isKnownNamedState(_state) && _state.name === stateName,
         );
         if (!state) {
           return;
@@ -247,7 +247,7 @@ export function useStudioOps(
           .currentComponent()
           .states.find(
             (_state) =>
-              _state.implicitState === state && _state.tplNode === tplComp
+              _state.implicitState === state && _state.tplNode === tplComp,
           );
         if (!implicitState) {
           return;
@@ -255,7 +255,7 @@ export function useStudioOps(
         viewCtx.setCanvasStateValue(implicitState, val);
       });
     },
-    [viewCtx, expsProvider, tplComp]
+    [viewCtx, expsProvider, tplComp],
   );
 
   const updateProps = React.useCallback(
@@ -268,7 +268,7 @@ export function useStudioOps(
         Object.keys(newValues).forEach((prop) => {
           const val = newValues[prop];
           const param = tplComp.component.params.find(
-            (_param) => _param.variable.name === prop
+            (_param) => _param.variable.name === prop,
           );
           if (!param) {
             return;
@@ -286,7 +286,7 @@ export function useStudioOps(
               param.type,
               val,
               tplComp,
-              viewCtx
+              viewCtx,
             );
 
             vtm.setArg(tplComp, param.variable, newExpr);
@@ -296,7 +296,7 @@ export function useStudioOps(
         });
       });
     },
-    [viewCtx, expsProvider, tplComp]
+    [viewCtx, expsProvider, tplComp],
   );
 
   const studioOps = React.useMemo(
@@ -315,7 +315,7 @@ export function useStudioOps(
       removeFromSlotAt,
       updateProps,
       updateStates,
-    ]
+    ],
   );
   return studioOps;
 }
@@ -342,7 +342,7 @@ function ButtonAction<P>({
     viewCtx,
     containerRef.current,
     tplComp,
-    expsProvider
+    expsProvider,
   );
   const projectData = viewCtx.studioCtx.getProjectData();
 
@@ -389,7 +389,7 @@ function CustomAction<P>({
     viewCtx,
     modalContainerRef.current,
     tplComp,
-    expsProvider
+    expsProvider,
   );
   const projectData = viewCtx.studioCtx.getProjectData();
 
@@ -412,7 +412,7 @@ function CustomAction<P>({
         studioOps: studioOps,
         projectData: projectData,
         studioDocument: window.document,
-      })
+      }),
     );
     if (actionRoot.current) {
       actionRoot.current.render(renderElement);

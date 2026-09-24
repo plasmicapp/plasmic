@@ -31,7 +31,7 @@ import React from "react";
 export function coerceLinkedPropValue(
   expr: Expr | null | undefined,
   validValues: ChoiceValue[],
-  multi: boolean
+  multi: boolean,
 ): Expr | null {
   if (!expr) {
     return null;
@@ -45,7 +45,7 @@ export function coerceLinkedPropValue(
       (typeof v === "string" ||
         typeof v === "number" ||
         typeof v === "boolean") &&
-      validValues.includes(v)
+      validValues.includes(v),
   );
   if (valid.length === 0) {
     return null;
@@ -116,16 +116,16 @@ export async function reconcileLinkedProp(opts: {
     outerParam.defaultExpr = coerceLinkedPropValue(
       outerParam.defaultExpr,
       newValues,
-      multi
+      multi,
     );
     outerParam.previewExpr = coerceLinkedPropValue(
       outerParam.previewExpr,
       newValues,
-      multi
+      multi,
     );
     for (const { tpl: instance } of findAllInstancesOfComponent(
       viewCtx.site,
-      outerComponent
+      outerComponent,
     )) {
       for (const ivs of instance.vsettings) {
         const argItem = ivs.args.find((arg) => arg.param === outerParam);
@@ -146,12 +146,12 @@ export async function reconcileLinkedProp(opts: {
 export function notifyLinkedPropDrift(
   studioCtx: StudioCtx,
   innerComponent: Component,
-  innerParam: Param
+  innerParam: Param,
 ): void {
   const issues = findLinkedPropIssuesForParam(
     studioCtx.site,
     innerComponent,
-    innerParam
+    innerParam,
   );
   if (issues.length === 0) {
     return;

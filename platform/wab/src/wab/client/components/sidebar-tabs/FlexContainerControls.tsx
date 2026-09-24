@@ -439,16 +439,16 @@ export function getFlexLabel(opts: {
           ? "Right"
           : "Left"
         : reverse
-        ? "Bottom"
-        : "Top";
+          ? "Bottom"
+          : "Top";
     case "flex-end":
       return direction === "horizontal"
         ? reverse
           ? "Left"
           : "Right"
         : reverse
-        ? "Top"
-        : "Bottom";
+          ? "Top"
+          : "Bottom";
     case "center":
       return "Center";
     case "stretch":
@@ -527,8 +527,8 @@ function Aligner(props: {
     alignmentType === "with-axis"
       ? withAxisAlignments
       : alignmentType === "cross-axis"
-      ? crossAxisAlignments
-      : wrapContentAlignments;
+        ? crossAxisAlignments
+        : wrapContentAlignments;
   const reverseLabels = shouldReverseLabels({
     alignmentType,
     isReverse,
@@ -770,8 +770,8 @@ function makeFlexAlignmentOptions(opts: {
     alignmentType === "with-axis"
       ? withAxisAlignments
       : alignmentType === "cross-axis"
-      ? crossAxisAlignments
-      : wrapContentAlignments;
+        ? crossAxisAlignments
+        : wrapContentAlignments;
 
   return values.map((value) => {
     return {
@@ -921,10 +921,10 @@ export function AlignmentGridControl(props: {
                 const gridX = ["left", "center", "right"][i % 3];
                 const gridY = ["top", "center", "bottom"][Math.floor(i / 3)];
                 const horizontalVal = (outerXOptions ?? xOptions).find(
-                  (o) => o.gridX === gridX
+                  (o) => o.gridX === gridX,
                 )!.value;
                 const verticalVal = (outerYOptions ?? yOptions).find(
-                  (o) => o.gridY === gridY
+                  (o) => o.gridY === gridY,
                 )!.value;
                 return (
                   <div

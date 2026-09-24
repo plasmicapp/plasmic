@@ -40,7 +40,7 @@ export const MixinsSection = observer(function (props: {
   const effectiveVs = vtm.effectiveVariantSetting(tpl, activeVariants);
   const targetVs = tryGetVariantSetting(tpl, targetCombo);
   const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
-    undefined
+    undefined,
   );
 
   const adoptParentContainerStyle = () => {
@@ -62,7 +62,7 @@ export const MixinsSection = observer(function (props: {
       vtm.applyMixin(
         tpl,
         ensure(editMixin, "Unexpected undefined editMixin"),
-        targetCombo
+        targetCombo,
       );
       adoptParentContainerStyle();
       setEditMixin(undefined);
@@ -77,7 +77,7 @@ export const MixinsSection = observer(function (props: {
   const mixinOptions: (Mixin | CreateOption)[] = [
     ...L.difference(
       allMixins(viewCtx.studioCtx.site, { includeDeps: "direct" }),
-      [...targetVs.rs.mixins, ...fixedMixins]
+      [...targetVs.rs.mixins, ...fixedMixins],
     ),
     { type: "create", text: "" } as CreateOption,
   ];
@@ -173,7 +173,7 @@ export const MixinsSection = observer(function (props: {
             arrayInsert(
               targetVs.rs.mixins,
               moved,
-              toIndex < fromIndex ? toIndex : toIndex
+              toIndex < fromIndex ? toIndex : toIndex,
             );
           });
         }}
@@ -188,7 +188,7 @@ export const MixinsSection = observer(function (props: {
             ...options.filter(
               (option) =>
                 isKnownMixin(option) &&
-                option.name.toLowerCase().includes(input.toLowerCase())
+                option.name.toLowerCase().includes(input.toLowerCase()),
             ),
             { type: "create", text: input },
           ];

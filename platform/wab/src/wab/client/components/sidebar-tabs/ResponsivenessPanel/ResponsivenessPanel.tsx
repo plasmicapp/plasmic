@@ -65,7 +65,7 @@ function MissingFrameWarning_({
       okText={`Add matching ${FRAME_LOWER}`}
       onConfirm={() =>
         studioCtx.changeUnsafe(() =>
-          studioCtx.siteOps().addMatchingArenaFrame(variant)
+          studioCtx.siteOps().addMatchingArenaFrame(variant),
         )
       }
     >
@@ -103,14 +103,14 @@ export function ResponsivenessPanel_() {
       matchingScreenVariant: findLast(orderedScreenVariants, (v) =>
         isMobileFirst
           ? it.width >= v.screenSpec.minWidth!
-          : it.width <= v.screenSpec.maxWidth!
+          : it.width <= v.screenSpec.maxWidth!,
       ),
     })),
-    (it) => it.matchingScreenVariant?.variant
+    (it) => it.matchingScreenVariant?.variant,
   );
 
   const setupScreenVariants = async (
-    breakpoints: { screenSizeSpec: ScreenSizeSpec; name: string }[]
+    breakpoints: { screenSizeSpec: ScreenSizeSpec; name: string }[],
   ) => {
     return studioCtx.changeUnsafe(() => {
       breakpoints.forEach((it) => {
@@ -126,7 +126,7 @@ export function ResponsivenessPanel_() {
     (
       variant: Variant,
       screenSpec: ScreenSizeSpec,
-      prop?: "minWidth" | "maxWidth"
+      prop?: "minWidth" | "maxWidth",
     ) =>
     async (e) => {
       const cleanValue = e.target.value.replace(/[^0-9.]/g, "");
@@ -157,8 +157,8 @@ export function ResponsivenessPanel_() {
         site.activeScreenVariantGroup?.variants.filter(
           (prevV) =>
             !group.variants.find((newV) =>
-              areEquivalentScreenVariants(prevV, newV)
-            )
+              areEquivalentScreenVariants(prevV, newV),
+            ),
         ) ?? [];
 
       if (
@@ -236,9 +236,9 @@ export function ResponsivenessPanel_() {
                       : `Breakpoints from "${
                           ensure(
                             studioCtx.projectDependencyManager.getOwnerDep(
-                              group
+                              group,
                             ),
-                            `Missing dependency for ${group.uuid}`
+                            `Missing dependency for ${group.uuid}`,
                           ).name
                         }"`}
                   </Select.Option>
@@ -305,7 +305,7 @@ export function ResponsivenessPanel_() {
                 onBlur: async (e) => {
                   if (e.target.value) {
                     await studioCtx.changeUnsafe(
-                      () => (variant.name = e.target.value)
+                      () => (variant.name = e.target.value),
                     );
                   }
                 },
@@ -332,7 +332,7 @@ export function ResponsivenessPanel_() {
                             onBlur={handleWidthFieldBlur(
                               variant,
                               screenSpec,
-                              "minWidth"
+                              "minWidth",
                             )}
                             onPressEnter={(e) => e.currentTarget.blur()}
                             disabled={!isActiveOwnedBySite || readOnly}
@@ -346,7 +346,7 @@ export function ResponsivenessPanel_() {
                             onBlur={handleWidthFieldBlur(
                               variant,
                               screenSpec,
-                              "maxWidth"
+                              "maxWidth",
                             )}
                             onPressEnter={(e) => e.currentTarget.blur()}
                             disabled={!isActiveOwnedBySite || readOnly}
@@ -394,7 +394,9 @@ export function ResponsivenessPanel_() {
                           onConfirm={() =>
                             studioCtx.changeUnsafe(() => {
                               spawn(
-                                studioCtx.siteOps().removeGlobalVariant(variant)
+                                studioCtx
+                                  .siteOps()
+                                  .removeGlobalVariant(variant),
                               );
                             })
                           }

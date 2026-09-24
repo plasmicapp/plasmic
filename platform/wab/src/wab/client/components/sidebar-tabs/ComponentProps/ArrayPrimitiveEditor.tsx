@@ -137,7 +137,7 @@ export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
                         arrayReplaceAt(rows, index, {
                           ...row,
                           value: parseValue(String(val ?? ""), rows),
-                        })
+                        }),
                       )
                     }
                   />
@@ -154,7 +154,7 @@ export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
                         arrayReplaceAt(rows, index, {
                           ...row,
                           label: String(val ?? ""),
-                        })
+                        }),
                       )
                     }
                   />

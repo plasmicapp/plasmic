@@ -77,7 +77,7 @@ export const PositioningPanelSection = observer(
       const isAuto = h.getIsAuto();
       const parentContainerType = h.getParentContainerType();
       const parentIsFlex = ["flex-row", "flex-column"].includes(
-        parentContainerType || ""
+        parentContainerType || "",
       );
       const parentIsFree = parentContainerType === "free";
 
@@ -215,7 +215,7 @@ export const PositioningPanelSection = observer(
         </>
       );
     }
-  }
+  },
 );
 
 function MiniLabel({
@@ -242,7 +242,7 @@ const AutoChildSettings = observer(function AutoChildSettings(props: {
   const parentExp = expsProvider.getTargetDeepLayoutParentRsh();
   const flexDir = maybe(
     parentExp,
-    (exp) => exp.get("flex-direction").split("-")[0]
+    (exp) => exp.get("flex-direction").split("-")[0],
   );
 
   const isSet = isStylePropSet(expsProvider);
@@ -269,7 +269,7 @@ const AutoChildSettings = observer(function AutoChildSettings(props: {
       )}
       {props.renderMaybeCollapsibleRows?.([
         ["flex-row", "flex-column", "content-layout"].includes(
-          parentContainerType || ""
+          parentContainerType || "",
         )
           ? {
               collapsible: !isSet("order") && !isSet("z-index"),
@@ -436,7 +436,7 @@ const GridChildSettings = observer(function GridChildSettings(props: {
   const renderPlacement = (
     label: string,
     axis: Axis,
-    startEnd: keyof TrackRange
+    startEnd: keyof TrackRange,
   ) => {
     return (
       <div className={"panel-col-3"}>
@@ -451,8 +451,8 @@ const GridChildSettings = observer(function GridChildSettings(props: {
                     area: produce(area, (draft) => {
                       draft[axis][startEnd] = val ? +val : 0;
                     }),
-                  })
-                )
+                  }),
+                ),
               )
             }
             allowedUnits={NUMBER_UNITS}
@@ -513,7 +513,7 @@ const StickyChildSettings = observer(function StickyChildSettings({
   const parentExp = expsProvider.getTargetDeepLayoutParentRsh();
   const flexDir = maybe(
     parentExp,
-    (exp) => exp.get("flex-direction").split("-")[0]
+    (exp) => exp.get("flex-direction").split("-")[0],
   );
 
   return (

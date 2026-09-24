@@ -35,7 +35,7 @@ interface VariantAnimationsProps {
 }
 
 export const VariantAnimations = observer(function VariantAnimations(
-  props: VariantAnimationsProps
+  props: VariantAnimationsProps,
 ) {
   const { variants, tpl, viewCtx, children } = props;
   const { newAnimation, onAnimationAdded } = useNewAnimationContext();

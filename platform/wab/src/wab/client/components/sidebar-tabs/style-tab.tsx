@@ -124,7 +124,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
       (mixinVisible) => setShowMixins(mixinVisible),
       {
         fireImmediately: true,
-      }
+      },
     );
     const privateStyleVariantsDisposal = mobx.reaction(
       () => {
@@ -137,7 +137,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
         setShowPrivateStyleVariants(privateStyleVariantsVisible),
       {
         fireImmediately: true,
-      }
+      },
     );
     return () => {
       mixinDisposal();
@@ -192,13 +192,13 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
             }}
           >
             Base
-          </Menu.Item>
+          </Menu.Item>,
         );
 
         // Available selectors (Hover, Pressed, etc.) - each uses a private style variant
         // Filter out "Not X" selectors as they don't make sense for animations
         for (const selector of applicableSelectors.filter(
-          (s) => !s.displayName.toLowerCase().startsWith("not ")
+          (s) => !s.displayName.toLowerCase().startsWith("not "),
         )) {
           push(
             <Menu.Item
@@ -213,7 +213,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
                     (selectors) =>
                       studioCtx
                         .tplMgr()
-                        .createPrivateStyleVariant(component, tpl, selectors)
+                        .createPrivateStyleVariant(component, tpl, selectors),
                   );
                   // Pin the variant to turn on recording for it
                   vcontroller?.onClickVariant(variant);
@@ -229,7 +229,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
               }}
             >
               {selector.displayName}
-            </Menu.Item>
+            </Menu.Item>,
           );
         }
       });
@@ -244,7 +244,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
             onClick={() => setShowPrivateStyleVariants(true)}
           >
             {PRIVATE_STYLE_VARIANTS_CAP}
-          </Menu.Item>
+          </Menu.Item>,
         );
       });
     }
@@ -255,7 +255,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
         push(
           <Menu.Item key="mixins" onClick={() => setShowMixins(true)}>
             {MIXINS_CAP}
-          </Menu.Item>
+          </Menu.Item>,
         );
       });
     }
@@ -270,7 +270,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
       [Section.Mixins, showMixins],
       [Section.PrivateStyleVariants, showPrivateStyleVariants],
     ]),
-    styleTabFilter
+    styleTabFilter,
   );
 
   const newAnimationContextValue = React.useMemo(
@@ -278,7 +278,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
       newAnimation,
       onAnimationAdded: clearNewAnimation,
     }),
-    [newAnimation, clearNewAnimation]
+    [newAnimation, clearNewAnimation],
   );
 
   return providesStyleComponent(sc)(
@@ -305,14 +305,14 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
         />
       )}
       {orderedSections.map((render) => render())}
-    </NewAnimationContext.Provider>
+    </NewAnimationContext.Provider>,
   );
 });
 
 /** Get the focused component, either from the ViewCtx (focused arena frame), or from the arena itself (so, even if you have nothing selected but are on a dedicated page/component arena. */
 export function getFocusedComponentFromViewCtxOrArena(
   studioCtx: StudioCtx,
-  viewCtx: ViewCtx | undefined
+  viewCtx: ViewCtx | undefined,
 ) {
   const arena = studioCtx.currentArena;
 
@@ -401,8 +401,8 @@ export const StyleTab = observer(function StyleTab(props: {
           },
           {
             noUndoRecord: true,
-          }
-        )
+          },
+        ),
       );
     }
   }, [tpl]);
@@ -546,7 +546,7 @@ const SlotSelectionMessage = observer(function SlotSelectionMessage(props: {
                   revertToDefaultSlotContents(
                     viewCtx.tplMgr(),
                     tplComponent,
-                    node.slotParam.variable
+                    node.slotParam.variable,
                   );
                 })
               }
@@ -573,7 +573,7 @@ const TplSlotMessage = observer(function TplSlotMessage(props: {
           value={tpl.param.variable.name}
           onChange={(val) =>
             viewCtx.change(() =>
-              viewCtx.getViewOps().tryRenameParam(val, tpl.param)
+              viewCtx.getViewOps().tryRenameParam(val, tpl.param),
             )
           }
           placeholder={`(unnamed slot)`}
@@ -637,11 +637,11 @@ const NonBaseTplSlotDescendantMessage = observer(
         />
       </SidebarSection>
     );
-  }
+  },
 );
 
 export const NonBaseVariantTransitionsMessage = observer(
-  NonBaseVariantTransitionsMessage_
+  NonBaseVariantTransitionsMessage_,
 );
 
 function NonBaseVariantTransitionsMessage_() {
@@ -701,7 +701,7 @@ function shouldShowPrivateStyleVariantsSection(tpl: TplNode, viewCtx: ViewCtx) {
   const baseVariantCombo = vtm.getCurrentSharedVariantComboForNode(tpl);
   const { definedIndicator } = vtm.getAnimationInfoForVariantCombo(
     tpl,
-    baseVariantCombo
+    baseVariantCombo,
   );
 
   return definedIndicator.source !== "none";

@@ -93,7 +93,7 @@ function TypographySection_(props: {
   const tpl =
     expsProvider instanceof TplExpsProvider ? expsProvider.tpl : undefined;
   const hasStyles = typographyCssProps.some((p) =>
-    expsProvider.maybeTargetExp()?.has(p)
+    expsProvider.maybeTargetExp()?.has(p),
   );
 
   const shouldShowSlotTypographyWarning =
@@ -142,8 +142,8 @@ function TypographySection_(props: {
                               .getViewOps()
                               .transferTextStyleToSlot(
                                 tpl as TplTag,
-                                ancestorSlot!
-                              )
+                                ancestorSlot!,
+                              ),
                           )
                         }
                       >
@@ -211,7 +211,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
   const [isDataPickerVisible, setIsDataPickerVisible] =
     React.useState<boolean>(false);
   const [editDataToken, setEditDataToken] = React.useState<DataToken | null>(
-    null
+    null,
   );
   const [showFallback, setShowFallback] = React.useState(false);
   const dataToken = viewCtx.getTriggerCreatingTextDataToken();
@@ -239,8 +239,8 @@ export const TextContentRow = observer(function TextContentRow(props: {
   const textTpl = isTplTextBlock(tpl)
     ? tpl
     : isPlainTextTplSlot(tpl) && !isCodeComponentSlot(tpl)
-    ? ensureKnownTplTag(tpl.defaultContents[0])
-    : undefined;
+      ? ensureKnownTplTag(tpl.defaultContents[0])
+      : undefined;
 
   const vtm = viewCtx.variantTplMgr();
 
@@ -320,10 +320,10 @@ export const TextContentRow = observer(function TextContentRow(props: {
                 onChange(
                   new RawText({
                     text: flattenTemplatedStringToString(
-                      text.expr as TemplatedString
+                      text.expr as TemplatedString,
                     ),
                     markers: [],
-                  })
+                  }),
                 )
               }
             >
@@ -379,7 +379,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
                       new ExprText({
                         expr: newExpr,
                         html: text.html,
-                      })
+                      }),
                     );
                   }}
                   disabled={isDisabled}
@@ -398,20 +398,20 @@ export const TextContentRow = observer(function TextContentRow(props: {
                     }
                     assert(
                       codeExpr,
-                      "Unexpected undefined value, codeExpr must be defined when data binding"
+                      "Unexpected undefined value, codeExpr must be defined when data binding",
                     );
                     const fallbackExpr = codeExpr.fallback
                       ? clone(codeExpr.fallback)
                       : undefined;
                     const newExpr = createExprForDataPickerValue(
                       val,
-                      fallbackExpr
+                      fallbackExpr,
                     );
                     onChange(
                       new ExprText({
                         expr: newExpr,
                         html: text.html,
-                      })
+                      }),
                     );
                   }}
                   onUnlink={() => {
@@ -424,7 +424,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
                       new RawText({
                         text: fallbackText,
                         markers: [],
-                      })
+                      }),
                     );
                   }}
                   visible={isDataPickerVisible}
@@ -457,7 +457,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
             const newExpr = ensureInstance(
               clone(codeExpr),
               ObjectPath,
-              CustomCode
+              CustomCode,
             );
             newExpr.fallback = undefined;
             viewCtx.change(() => {
@@ -478,7 +478,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
               const newExpr = ensureInstance(
                 clone(codeExpr),
                 ObjectPath,
-                CustomCode
+                CustomCode,
               );
               newExpr.fallback = codeLit(val);
               viewCtx.change(() => {
@@ -540,7 +540,7 @@ const TextEditor = observer(function TextEditor_(props: {
         {
           "text-set": setState === "isSet",
           "text-unset": setState === "isInherited",
-        }
+        },
       )}
       onClick={() => {
         if (!isDisabled) {

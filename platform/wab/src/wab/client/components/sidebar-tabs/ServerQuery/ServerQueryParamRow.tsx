@@ -66,11 +66,11 @@ const decomposeObjExpr = (expr: Expr | undefined): Record<string, any> => {
 export function propTypeForParam(
   param: ArgType,
   func: CustomFunction,
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ): StudioPropType<any> {
   const registeredParams = studioCtx.getRegisteredFunction(func)?.meta.params;
   const propType = normalizeCustomFunctionParams(registeredParams).find(
-    (p) => p.name === param.argName
+    (p) => p.name === param.argName,
   );
   return propType ?? wabTypeToPropType(param.type);
 }
@@ -89,7 +89,7 @@ interface ServerQueryParamRowProps {
 }
 
 export const ServerQueryParamRow = observer(function ServerQueryParamRow(
-  props: ServerQueryParamRowProps
+  props: ServerQueryParamRowProps,
 ) {
   const {
     attr,
@@ -154,7 +154,7 @@ export function getServerQueryParamRowItems(opts: {
       propType,
       propValueEditorContext.componentPropValues,
       propValueEditorContext.ccContextData,
-      mkControlExtras([param.argName])
+      mkControlExtras([param.argName]),
     )
   ) {
     return [];
@@ -173,7 +173,7 @@ export function getServerQueryParamRowItems(opts: {
     // Re-read the current arg to avoid stale closures, apply `transform` to the
     // decomposed object, then re-serialize and commit back to the param.
     const updateObj = (
-      transform: (obj: Record<string, any>) => Record<string, any>
+      transform: (obj: Record<string, any>) => Record<string, any>,
     ) => {
       const existingArg =
         param.argName in argsMap ? argsMap[param.argName][0] : undefined;
@@ -188,8 +188,8 @@ export function getServerQueryParamRowItems(opts: {
           fieldPropType,
           propValueEditorContext.componentPropValues,
           propValueEditorContext.ccContextData,
-          mkControlExtras([param.argName, fieldName])
-        )
+          mkControlExtras([param.argName, fieldName]),
+        ),
       )
       .map(([fieldName, fieldPropType]) => {
         const controlExtras = mkControlExtras([param.argName, fieldName]);
@@ -207,8 +207,8 @@ export function getServerQueryParamRowItems(opts: {
         const fieldExpr = isKnownExpr(fieldValue)
           ? fieldValue
           : fieldValue !== undefined
-          ? codeLit(fieldValue)
-          : undefined;
+            ? codeLit(fieldValue)
+            : undefined;
 
         return {
           collapsible: !!isAdvancedProp(fieldPropType, undefined),
@@ -221,7 +221,7 @@ export function getServerQueryParamRowItems(opts: {
               definedIndicator={mkFieldDefinedIndicator(
                 fieldName,
                 fieldExpr,
-                propValueEditorContext.exprCtx
+                propValueEditorContext.exprCtx,
               )}
               valueSetState={fieldValue !== undefined ? "isSet" : undefined}
               propValueEditorContext={propValueEditorContext}
@@ -235,7 +235,7 @@ export function getServerQueryParamRowItems(opts: {
                       updateObj((obj) =>
                         fieldDefault != null
                           ? { ...obj, [fieldName]: fieldDefault }
-                          : omit(obj, fieldName)
+                          : omit(obj, fieldName),
                       )
                   : undefined
               }
@@ -271,7 +271,7 @@ export function getServerQueryParamRowItems(opts: {
           definedIndicator={mkFieldDefinedIndicator(
             param.argName,
             curExpr,
-            propValueEditorContext.exprCtx
+            propValueEditorContext.exprCtx,
           )}
           valueSetState={curExpr ? "isSet" : undefined}
           propValueEditorContext={propValueEditorContext}
@@ -300,7 +300,7 @@ export function getServerQueryParamRowItems(opts: {
 function mkFieldDefinedIndicator(
   prop: string,
   fieldExpr: Expr | undefined,
-  exprCtx: ExprCtx | undefined
+  exprCtx: ExprCtx | undefined,
 ): DefinedIndicatorType {
   return fieldExpr
     ? {

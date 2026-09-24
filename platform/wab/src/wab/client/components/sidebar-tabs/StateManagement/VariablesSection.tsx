@@ -41,8 +41,8 @@ function VariablesSection_(props: VariablesSectionProps) {
   const implicitVariableGroups = Object.values(
     groupBy(
       component.states.filter((state) => state.tplNode),
-      (state) => state.tplNode?.name
-    )
+      (state) => state.tplNode?.name,
+    ),
   );
 
   // Implicit states may be collapsed, so listen for UI actions
@@ -55,7 +55,7 @@ function VariablesSection_(props: VariablesSectionProps) {
           sectionRef.current?.expand();
           setExpanded(true);
         }
-      }
+      },
     );
     return dispose;
   }, [studioCtx]);
@@ -64,7 +64,7 @@ function VariablesSection_(props: VariablesSectionProps) {
     (state) =>
       state.variableType !== "variant" &&
       !state.tplNode &&
-      state !== newVariable
+      state !== newVariable,
   );
 
   return (
@@ -88,8 +88,8 @@ function VariablesSection_(props: VariablesSectionProps) {
                       {},
                       {
                         component,
-                      }
-                    )
+                      },
+                    ),
                   );
 
                   setNewVariable(newState);
@@ -146,7 +146,7 @@ function VariablesSection_(props: VariablesSectionProps) {
                             component={component}
                             tpl={ensure(
                               states[0].tplNode,
-                              "implicit state should have a tpl"
+                              "implicit state should have a tpl",
                             )}
                             sc={studioCtx}
                             viewCtx={viewCtx}

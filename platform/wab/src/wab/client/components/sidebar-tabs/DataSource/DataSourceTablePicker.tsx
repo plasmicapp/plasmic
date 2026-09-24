@@ -70,19 +70,19 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
     size(draft?.lookupFields) > 1
       ? MULTIPLE_PRIMARY_KEY_VALUE
       : size(draft?.lookupFields) === 1
-      ? draft.lookupFields?.[0]
-      : undefined
+        ? draft.lookupFields?.[0]
+        : undefined,
   );
   const { data: source } = useSource(studioCtx, sourceId);
   const { data: sourceSchemaData } = useSourceSchemaData(
     studioCtx,
     sourceId,
-    source
+    source,
   );
 
   const sourceMeta = React.useMemo(
     () => (source ? getDataSourceMeta(source.source) : undefined),
-    [source]
+    [source],
   );
   const tableOptions = React.useMemo(() => {
     if (!sourceMeta || !sourceSchemaData) {
@@ -103,7 +103,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
       sourceSchemaData?.tables.find((t) => t.id === tableId) as
         | TableSchema
         | undefined,
-    [sourceSchemaData, tableId]
+    [sourceSchemaData, tableId],
   );
   const tableFields = React.useMemo(() => {
     if (!tableId || !sourceSchemaData || !table) {
@@ -136,12 +136,12 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
     }
     if (lookupField === MULTIPLE_PRIMARY_KEY_VALUE) {
       return Object.fromEntries(
-        table.fields.filter((f) => f.primaryKey).map((f) => [f.id, f])
+        table.fields.filter((f) => f.primaryKey).map((f) => [f.id, f]),
       );
     } else {
       const field = ensure(
         table.fields.find((f) => f.id === lookupField) as TableFieldSchema,
-        `field "${lookupField}" doesn't exist in "${table.id}"`
+        `field "${lookupField}" doesn't exist in "${table.id}"`,
       );
       return { [field.id]: field };
     }
@@ -158,7 +158,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
       setLookupField(primaryKeys[0].id);
     } else {
       setLookupField(
-        orderFieldsByRanking(table.fields, rankedFieldsForTableCols)[0].id
+        orderFieldsByRanking(table.fields, rankedFieldsForTableCols)[0].id,
       );
     }
   }, [table]);
@@ -201,7 +201,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
           requiredStandardQueries &&
           !dataSourceHasRequiredStandardQueries(
             sourceMeta,
-            requiredStandardQueries
+            requiredStandardQueries,
           )
         ) {
           return (
@@ -224,7 +224,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
                 options={tableOptions}
                 onChange={(newTable) => {
                   const selectedTable = sourceSchemaData.tables.find(
-                    (t) => t.id === newTable
+                    (t) => t.id === newTable,
                   ) as TableSchema | undefined;
                   onChange({
                     ...draft,

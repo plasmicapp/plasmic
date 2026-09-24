@@ -31,11 +31,11 @@ export type ItemFunc<Value, Return> = (
   value: Value | undefined,
   componentPropValues: any,
   ccContextData: any,
-  controlExtras: ControlExtras
+  controlExtras: ControlExtras,
 ) => Return;
 
 export const ObjectPropEditor = observer(function ObjectPropEditor<
-  Value extends object
+  Value extends object,
 >(props: {
   compositeValue: Value | undefined;
   evaluatedValue: Value | undefined;
@@ -95,7 +95,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
 
   const getFieldItemMeta = (
     fieldName: string,
-    fieldPropType: PropType<unknown>
+    fieldPropType: PropType<unknown>,
   ) => {
     const nextControlExtras: ControlExtras = {
       path: [...controlExtras.path, fieldName],
@@ -108,8 +108,8 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     const fieldValueExpr = isKnownExpr(fieldValue)
       ? fieldValue
       : getPropTypeType(fieldPropType) === "string" && isString(fieldValue)
-      ? new TemplatedString({ text: [fieldValue] })
-      : codeLit(fieldValue);
+        ? new TemplatedString({ text: [fieldValue] })
+        : codeLit(fieldValue);
 
     const definedIndicator: DefinedIndicatorType = isKnownExpr(fieldValue)
       ? {
@@ -148,7 +148,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
         fieldPropType,
         componentPropValues,
         ccContextData,
-        nextControlExtras
+        nextControlExtras,
       ),
       isCollapsible: !!isAdvancedProp(fieldPropType, undefined) && !fieldValue,
     };
@@ -160,7 +160,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     opts = {
       showConnectors: false,
       isLastItem: false,
-    }
+    },
   ) => {
     const {
       label,
@@ -234,7 +234,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
               {
                 ...controlExtras,
                 item: evaluatedValue,
-              }
+              },
             ) ?? "Configure..."}
           </Button>
           <PopoverFrame
@@ -244,7 +244,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
                 evaluatedValue,
                 componentPropValues,
                 ccContextData,
-                controlExtras
+                controlExtras,
               ) ?? "Object"
             }`}
             valuePath={controlExtras.path}
@@ -266,7 +266,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
                     Object.entries(fields).map(([fieldName, fieldPropType]) => {
                       const { isHidden, isCollapsible } = getFieldItemMeta(
                         fieldName,
-                        fieldPropType
+                        fieldPropType,
                       );
                       if (isHidden) {
                         return null;
@@ -275,7 +275,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
                         collapsible: isCollapsible,
                         content: renderItem(fieldName, fieldPropType),
                       };
-                    })
+                    }),
                   )
                 }
               </SidebarSection>
@@ -291,7 +291,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
             renderItem(fieldName, fieldPropType, {
               showConnectors: true,
               isLastItem: index === fieldEntries.length - 1,
-            })
+            }),
           )}
         </>
       );
@@ -300,7 +300,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
       return (
         <>
           {Object.entries(fields).map(([fieldName, fieldPropType]) =>
-            renderItem(fieldName, fieldPropType)
+            renderItem(fieldName, fieldPropType),
           )}
         </>
       );

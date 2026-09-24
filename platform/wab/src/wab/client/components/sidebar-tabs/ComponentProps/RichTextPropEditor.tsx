@@ -3,7 +3,7 @@ import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import useDebounce from "@/wab/commons/components/use-debounce";
 import React, { useEffect, useState } from "react";
 const LazyRichTextEditor = React.lazy(
-  () => import("@/wab/client/components/RichTextEditor")
+  () => import("@/wab/client/components/RichTextEditor"),
 );
 
 export function RichTextPropEditor({

@@ -19,9 +19,9 @@ export function useSuggestDataTokens(category: DataTokenType) {
         siteDataTokenRefsDirectDeps(
           studioCtx.site,
           studioCtx.siteInfo.id,
-          category
+          category,
         ),
-        { paramName, ownerNames: paramOwnerNames, searchText }
+        { paramName, ownerNames: paramOwnerNames, searchText },
       ),
     onSelectDataToken,
   };

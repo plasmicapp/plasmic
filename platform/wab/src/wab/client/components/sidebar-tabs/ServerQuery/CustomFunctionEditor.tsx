@@ -69,21 +69,21 @@ export const CustomFunctionEditor = observer(
         component: component ?? null,
         inStudio: true,
       }),
-      [projectFlags, component]
+      [projectFlags, component],
     );
 
     const env =
       "env" in props
         ? props.env
         : props.viewCtx && props.tpl
-        ? extractDataCtx(
-            props.viewCtx,
-            props.tpl,
-            undefined,
-            props.interaction,
-            props.eventHandlerKey
-          )
-        : undefined;
+          ? extractDataCtx(
+              props.viewCtx,
+              props.tpl,
+              undefined,
+              props.interaction,
+              props.eventHandlerKey,
+            )
+          : undefined;
     const currGlobalThis =
       "viewCtx" in props ? props.viewCtx?.canvasCtx.win() : undefined;
 
@@ -130,5 +130,5 @@ export const CustomFunctionEditor = observer(
         )}
       </div>
     );
-  }
+  },
 );

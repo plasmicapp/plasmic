@@ -16,7 +16,7 @@ export const RepeaterSection = observer(function (props: {
 
   assert(
     isKnownTplComponent(tpl.parent),
-    "RepeaterSection should only be used in children of Repeater components"
+    "RepeaterSection should only be used in children of Repeater components",
   );
 
   return (

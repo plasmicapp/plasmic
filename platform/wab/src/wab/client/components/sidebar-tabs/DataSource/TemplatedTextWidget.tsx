@@ -7,15 +7,17 @@ import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/Data
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import {
   CustomCode,
-  ensureKnownTemplatedString,
   ObjectPath,
   TemplatedString,
+  ensureKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import { TextWidgetProps } from "@react-awesome-query-builder/antd";
 import React from "react";
 
-interface TemplatedTextWidgetProps
-  extends Pick<TextWidgetProps, "value" | "readonly"> {
+interface TemplatedTextWidgetProps extends Pick<
+  TextWidgetProps,
+  "value" | "readonly"
+> {
   setValue: (expr: TemplatedString) => void;
   placeholder?: string;
   data: Record<string, any> | undefined;
@@ -43,7 +45,7 @@ export function TemplatedTextWidget(props: TemplatedTextWidgetProps) {
 }
 
 export function TemplatedTextEditorWithMenuIndicator(
-  props: TemplatedTextEditorProps
+  props: TemplatedTextEditorProps,
 ) {
   return (
     <ContextMenuIndicator

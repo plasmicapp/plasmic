@@ -42,7 +42,7 @@ export const ContentLayoutContainerControls = observer(
         />
       </>
     );
-  }
+  },
 );
 
 const xValues = ["flex-start", "center", "flex-end", "stretch"] as const;

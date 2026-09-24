@@ -70,7 +70,7 @@ const NOOP_QUERY: PlasmicQuery = {
  * once per refresh and show identical results.
  */
 export function useServerQueryOp(
-  args: ServerQueryOpArgs | undefined
+  args: ServerQueryOpArgs | undefined,
 ): ServerQueryOpResult<unknown> {
   const studioCtx = useStudioCtx();
   const wrapFetch = studioCtx.executeServerQuery;
@@ -115,7 +115,7 @@ export function useServerQueryOp(
         expr,
         env,
         exprCtx,
-        currGlobalThis
+        currGlobalThis,
       );
       return getInvalidFunctionArgs(fnArgs, expr.func, fnReg.meta.params);
     } catch {
@@ -133,7 +133,7 @@ export function useServerQueryOp(
       query = buildCustomCodePlasmicQuery(
         fnId,
         code,
-        () => envRef.current ?? {}
+        () => envRef.current ?? {},
       );
     } else if (fnReg && expr && exprCtx && !hasInvalidArgs) {
       query = {
@@ -150,7 +150,7 @@ export function useServerQueryOp(
               $state,
             },
             exprCtx!,
-            currGlobalThis
+            currGlobalThis,
           ),
       };
     } else {
@@ -209,7 +209,7 @@ export function useServerQueryOp(
         return mutate(key);
       },
     }),
-    [$query, mutate, studioCtx]
+    [$query, mutate, studioCtx],
   );
 
   return {

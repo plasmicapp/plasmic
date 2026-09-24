@@ -49,21 +49,21 @@ function OverflowSection_({ expsProvider }: { expsProvider: ExpsProvider }) {
                             .set(
                               "overflow-x",
                               currentOverflow ??
-                                getCssInitial("overflow", undefined)
+                                getCssInitial("overflow", undefined),
                             );
                           expsProvider
                             .targetExp()
                             .set(
                               "overflow-y",
                               currentOverflow ??
-                                getCssInitial("overflow", undefined)
+                                getCssInitial("overflow", undefined),
                             );
-                        })
+                        }),
                       )
                     }
                   >
                     Split overflow for X and Y
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               })
       }
@@ -79,7 +79,7 @@ function OverflowSection_({ expsProvider }: { expsProvider: ExpsProvider }) {
                   expsProvider.targetExp().clear("overflow-x");
                   expsProvider.targetExp().clear("overflow-y");
                   expsProvider.targetExp().set("overflow", val);
-                })
+                }),
               )
             }
           />
@@ -98,7 +98,7 @@ function OverflowSection_({ expsProvider }: { expsProvider: ExpsProvider }) {
                   studioCtx.changeUnsafe(() => {
                     expsProvider.targetExp().clear("overflow");
                     expsProvider.targetExp().set("overflow-x", val);
-                  })
+                  }),
                 )
               }
             />
@@ -113,7 +113,7 @@ function OverflowSection_({ expsProvider }: { expsProvider: ExpsProvider }) {
                   studioCtx.changeUnsafe(() => {
                     expsProvider.targetExp().clear("overflow");
                     expsProvider.targetExp().set("overflow-y", val);
-                  })
+                  }),
                 )
               }
             />

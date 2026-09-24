@@ -56,9 +56,9 @@ class _TransitionsPanelSection extends StyleComponent<
       return RSH(
         ensure(
           tryGetBaseVariantSetting(tpl),
-          "Unexpected undefined base variant for tpl"
+          "Unexpected undefined base variant for tpl",
         ).rs,
-        tpl
+        tpl,
       );
     } else {
       return this.props.expsProvider.mergedExp();
@@ -82,19 +82,19 @@ class _TransitionsPanelSection extends StyleComponent<
       };
       updateRule(
         "transition-property",
-        transitions.map((v) => v.transitionProperty)
+        transitions.map((v) => v.transitionProperty),
       );
       updateRule(
         "transition-timing-function",
-        transitions.map((v) => v.transitionTimingFunction)
+        transitions.map((v) => v.transitionTimingFunction),
       );
       updateRule(
         "transition-duration",
-        transitions.map((v) => v.transitionDuration)
+        transitions.map((v) => v.transitionDuration),
       );
       updateRule(
         "transition-delay",
-        transitions.map((v) => v.transitionDelay)
+        transitions.map((v) => v.transitionDelay),
       );
     });
   };
@@ -117,20 +117,20 @@ class _TransitionsPanelSection extends StyleComponent<
         transitionProps.map((prop) =>
           tuple(
             prop,
-            maybe(exp.getRaw(prop), (val) => splitCssValue(prop, val)) ?? []
-          )
-        )
+            maybe(exp.getRaw(prop), (val) => splitCssValue(prop, val)) ?? [],
+          ),
+        ),
       );
       const parsedRulesArray = Object.values(parsedRules);
       const numLayers = ensure(
         Math.max(...parsedRulesArray.map((rule) => rule?.length ?? 0)),
-        "Unexpected undefined number of layers"
+        "Unexpected undefined number of layers",
       );
       assert(
         parsedRulesArray.every(
-          (rule) => rule?.length === numLayers || rule?.length === 0
+          (rule) => rule?.length === numLayers || rule?.length === 0,
         ),
-        "Every parsed rule should have the same length or be empty"
+        "Every parsed rule should have the same length or be empty",
       );
       const getRule = (prop: string, index: number) =>
         parsedRules[prop]?.[index] || getCssInitial(prop, undefined);

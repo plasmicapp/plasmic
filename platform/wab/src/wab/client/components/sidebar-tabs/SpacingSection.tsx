@@ -35,7 +35,7 @@ export function SpacingSection({
 
     showPaddingControls = isPaddingValidForTpl(
       tpl,
-      viewCtx.studioCtx.codeComponentsRegistry
+      viewCtx.studioCtx.codeComponentsRegistry,
     );
     showMarginControls = isMarginValidForTpl(tpl);
   } else {

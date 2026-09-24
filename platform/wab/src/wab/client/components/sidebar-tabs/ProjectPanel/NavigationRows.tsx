@@ -77,7 +77,7 @@ export type ArenaPanelRow = Header | FolderElement | ArenaData | AnyData;
 
 export type OnAddArena = (
   type: ArenaType,
-  folderName?: string
+  folderName?: string,
 ) => Promise<void>;
 
 export type OnDeleteFolder = (folder: FolderElement) => Promise<void>;
@@ -219,7 +219,7 @@ export function NavigationArenaRow({
   const studioCtx = useStudioCtx();
   const { onClose } = ensure(
     React.useContext(NavigationDropdownContext),
-    "Expected NavigationDropdownContext"
+    "Expected NavigationDropdownContext",
   );
   const fullArenaName = getArenaName(arena);
   const displayName = isStandalone
@@ -285,8 +285,8 @@ export function NavigationArenaRow({
                 arena,
                 newName,
               },
-              {}
-            )
+              {},
+            ),
           );
           setRenaming(false);
         }}

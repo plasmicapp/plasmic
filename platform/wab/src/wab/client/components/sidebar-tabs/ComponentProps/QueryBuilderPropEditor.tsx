@@ -72,7 +72,7 @@ const baseConfig: Config = {
  */
 function QueryBuilderPropEditor_(
   { config, value, onChange, disabled = false }: QueryBuilderPropEditorProps,
-  outerRef: React.Ref<HTMLDivElement>
+  outerRef: React.Ref<HTMLDivElement>,
 ) {
   const finalConfig = useMemo<Config>(() => {
     const baseUserConfig = createQueryBuilderConfig(config ?? { fields: {} }, {
@@ -85,9 +85,9 @@ function QueryBuilderPropEditor_(
         const originalFactory = ensure(
           baseConfig.widgets[type]["factory"] as (
             props: WidgetProps,
-            context?: ConfigContext
+            context?: ConfigContext,
           ) => React.ReactElement,
-          () => `missing base widget: ${type}`
+          () => `missing base widget: ${type}`,
         );
         const dynamicType = toDynamicTypeName(type);
         return [
@@ -96,7 +96,7 @@ function QueryBuilderPropEditor_(
             type: dynamicType,
             factory: (
               widgetProps: WidgetProps | undefined,
-              context: ConfigContext | undefined
+              context: ConfigContext | undefined,
             ) => {
               if (!widgetProps) {
                 return <></>;
@@ -113,17 +113,17 @@ function QueryBuilderPropEditor_(
             },
           },
         ];
-      })
+      }),
     );
     const typeOverrides: Config["types"] = Object.fromEntries(
       types.map((type) => {
         const originalType = ensure(
           baseUserConfig.types[type],
-          "missing base type"
+          "missing base type",
         );
         const originalTypeWidget = ensure(
           originalType.widgets[type],
-          "missing base type widgets"
+          "missing base type widgets",
         );
         const dynamicType = toDynamicTypeName(type);
         return [
@@ -135,7 +135,7 @@ function QueryBuilderPropEditor_(
             mainWidget: dynamicType, // Default to dynamic widget
           },
         ];
-      })
+      }),
     );
 
     Object.values(baseUserConfig.fields).forEach((field) => {
@@ -195,7 +195,7 @@ function QueryBuilderPropEditor_(
             console.error(result.errors);
           } else {
             const finalResult = serCompositeExprMaybe(
-              result.logic as RulesLogic
+              result.logic as RulesLogic,
             );
             onChange(finalResult);
           }

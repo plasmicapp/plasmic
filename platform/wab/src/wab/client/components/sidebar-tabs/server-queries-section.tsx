@@ -65,7 +65,7 @@ const ServerQueryRow = observer(
         component,
         inStudio: true,
       }),
-      [projectFlags, component]
+      [projectFlags, component],
     );
     const schema = viewCtx.customFunctionsSchema();
     const tpl = viewCtx.currentCtxTplRoot();
@@ -87,7 +87,7 @@ const ServerQueryRow = observer(
 
     const handleCustomFunctionExprChange = async (
       newOp: ServerQueryOp,
-      opExprName?: string
+      opExprName?: string,
     ) => {
       await studioCtx.siteOps().updateComponentServerQuery(component, query, {
         op: newOp,
@@ -110,7 +110,7 @@ const ServerQueryRow = observer(
                     .tplMgr()
                     .duplicateComponentServerQuery(component, query);
                   return ok();
-                })
+                }),
               )
             }
           >
@@ -170,7 +170,7 @@ const ServerQueryRow = observer(
         </LabeledListItem>
       </WithContextMenu>
     );
-  }
+  },
 );
 
 function ServerQueriesSection_(props: {
@@ -193,13 +193,13 @@ function ServerQueriesSection_(props: {
 
         component.serverQueries.push(serverQuery);
         return ok();
-      })
+      }),
     );
   };
 
   const handleCopyFromQuery = (
     sourceComponent: Component,
-    sourceQuery: ComponentServerQuery
+    sourceQuery: ComponentServerQuery,
   ) => {
     spawn(
       studioCtx.change(() => {
@@ -208,7 +208,7 @@ function ServerQueriesSection_(props: {
           .copyServerQueryWithDependencies(
             component,
             sourceComponent,
-            sourceQuery
+            sourceQuery,
           );
         const names = copied.map((q) => q.name);
         const varLabels: Record<string, string> = {
@@ -219,8 +219,8 @@ function ServerQueriesSection_(props: {
         const warnings = Object.keys(componentVarRefs).map(
           (varType) =>
             `${varLabels[varType] ?? varType} (${Array.from(
-              componentVarRefs[varType]
-            ).join(", ")})`
+              componentVarRefs[varType],
+            ).join(", ")})`,
         );
         notification.success({
           message: `Copied ${
@@ -229,17 +229,17 @@ function ServerQueriesSection_(props: {
           description:
             warnings.length > 0
               ? `References component ${warnings.join(
-                  ", "
+                  ", ",
                 )} that may not exist or differ in this component.`
               : undefined,
         });
         return ok();
-      })
+      }),
     );
   };
 
   const otherComponentsWithQueries = studioCtx.site.components.filter(
-    (c) => c !== component && c.serverQueries.some(isServerQueryWithOperation)
+    (c) => c !== component && c.serverQueries.some(isServerQueryWithOperation),
   );
 
   const addMenu = (onMenuClicked: () => void) => (

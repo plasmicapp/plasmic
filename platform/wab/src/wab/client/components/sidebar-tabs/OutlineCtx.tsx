@@ -159,7 +159,10 @@ export class OutlineCtx {
 
   private disposals: (() => void)[] = [];
 
-  constructor(private studioCtx: StudioCtx, query: string) {
+  constructor(
+    private studioCtx: StudioCtx,
+    query: string,
+  ) {
     const matcher = new Matcher(query);
     this._matcher = observable.box(matcher);
     this._query.set(query);
@@ -177,7 +180,7 @@ export class OutlineCtx {
         },
         {
           name: "OutlineCtx.expandAncestorsOfFocused",
-        }
+        },
       ),
       // We track the focused element to clear the search whenever we change
       // the focus to a non-visible element
@@ -190,8 +193,8 @@ export class OutlineCtx {
         },
         {
           name: "OutlineCtx.clearQueryIfFocusedNotVisible",
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -300,17 +303,17 @@ export class OutlineCtx {
               .ancestorComponents(
                 ensure(
                   viewCtx.currentComponentCtx(),
-                  "ComponentCtx must exist"
-                ).valComponent()
+                  "ComponentCtx must exist",
+                ).valComponent(),
               )
               .map(
                 (valComponent) =>
                   tuple(
                     valComponent.tpl.component.tplTree,
-                    valComponent.tpl
-                  ) as [TplNode, TplComponent]
+                    valComponent.tpl,
+                  ) as [TplNode, TplComponent],
               )
-          : []
+          : [],
       );
 
       // TODO note this is somewhat wasteful for pages since tplSysRoot and
@@ -353,7 +356,7 @@ export class OutlineCtx {
                 : undefined;
               if (
                 Array.from(getSearchableTexts(tpl, viewCtx, vs)).some((t) =>
-                  matcher.matches(t)
+                  matcher.matches(t),
                 )
               ) {
                 yield tpl;
@@ -370,7 +373,7 @@ export class OutlineCtx {
               }
             }
           }
-        })()
+        })(),
       );
 
       for (const anchor_ of [...[...(visibleAnchors as any)]]) {
@@ -399,15 +402,15 @@ export class OutlineCtx {
                   new SlotSelection({
                     tpl: anchor,
                     slotParam: arg.param,
-                  })
-                )
+                  }),
+                ),
               );
             }
           }
           // If we are drilled into some component, make the jump up to the outer
           // component context.
           const nextAnchor = tplRootToParentTplComponent.get(
-            ensure(ancestor, "ancestor must exist here")
+            ensure(ancestor, "ancestor must exist here"),
           );
           if (!nextAnchor) {
             break;
@@ -422,7 +425,7 @@ export class OutlineCtx {
 function* getSearchableTexts(
   tpl: TplNode,
   viewCtx: ViewCtx,
-  vs?: EffectiveVariantSetting
+  vs?: EffectiveVariantSetting,
 ) {
   const commentsCtx = viewCtx.studioCtx.commentsCtx;
   if (Tpls.isTplRepeated(tpl)) {
@@ -463,7 +466,7 @@ export function getNodeSummary(node: TplNode, rsh?: ReadonlyIRuleSetHelpersX) {
 }
 
 export function makeNodeKey(
-  tpl: TplNode | SlotSelection | ArenaFrame
+  tpl: TplNode | SlotSelection | ArenaFrame,
 ): OutlineNodeKey {
   if (isKnownArenaFrame(tpl)) {
     return toOpaque(`${tpl.uid}`);
@@ -471,7 +474,7 @@ export function makeNodeKey(
     return toOpaque(
       `${
         ensure(tpl.toTplSlotSelection().tpl, "SlotSelection.tpl must exist").uid
-      }-${tpl.slotParam.uid}`
+      }-${tpl.slotParam.uid}`,
     );
   } else {
     return toOpaque(`${tpl.uid}`);
@@ -480,7 +483,7 @@ export function makeNodeKey(
 
 function getNodeKeyPath(
   vc: ViewCtx,
-  tplOrSelection: TplNode | SlotSelection | null
+  tplOrSelection: TplNode | SlotSelection | null,
 ): OutlineNodeKey[] {
   const frame = vc.arenaFrame();
 
@@ -501,7 +504,7 @@ function getNodeKeyPath(
     .componentStackFrames()
     .slice(1)
     .flatMap((f) =>
-      $$$(f.tplComponent).ancestorsWithSlotSelections().toArray()
+      $$$(f.tplComponent).ancestorsWithSlotSelections().toArray(),
     );
 
   return [...ancestors, ...curCtxAncestors, frame].map(makeNodeKey);
@@ -521,7 +524,7 @@ function makeFrameRootNode(viewCtx: ViewCtx, outlineCtx: OutlineCtx) {
     /*ancestorLocked*/ false,
     ownerTplComponent,
     /*componentFrameNum*/ 0,
-    /*parentKey*/ key
+    /*parentKey*/ key,
   );
 }
 
@@ -534,14 +537,14 @@ function makeNode(
   ancestorLocked: boolean,
   ownerTplComponent: TplComponent,
   componentFrameNum: number,
-  parentKey: OutlineNodeKey | undefined
+  parentKey: OutlineNodeKey | undefined,
 ): OutlineNode | undefined {
   const effectiveVs = computed(
     () =>
       isTplTagOrComponent(node)
         ? viewCtx.variantTplMgr().effectiveVariantSetting(node)
         : undefined,
-    { name: "TreeNode.effectiveVs" }
+    { name: "TreeNode.effectiveVs" },
   );
 
   const visibility = getTreeNodeVisibility(viewCtx, node);
@@ -557,19 +560,19 @@ function makeNode(
           projectFlags: viewCtx.projectFlags(),
           component: ownerTplComponent.component,
           inStudio: true,
-        }
+        },
       );
     },
     {
       name: "TreeNode.isHidden",
-    }
+    },
   ).get();
 
   const { children, childrenFrameNum } = getTreeNodeChildren(
     viewCtx,
     node,
     componentFrameNum,
-    ownerTplComponent
+    ownerTplComponent,
   );
 
   const self: OutlineNodeData = {
@@ -605,8 +608,8 @@ function makeNode(
         isKnownTplNode(node) && node.locked === false
           ? false
           : isKnownTplNode(node) && node.locked === true
-          ? true
-          : ancestorLocked;
+            ? true
+            : ancestorLocked;
 
       return makeNode(
         /*node*/ child,
@@ -617,9 +620,9 @@ function makeNode(
         _ancestorLocked,
         /*ownerTplComponent*/ childrenOwnerTplComponent,
         /*componentFrameNum*/ childrenFrameNum,
-        /*parentKey*/ self.key
+        /*parentKey*/ self.key,
       );
-    })
+    }),
   );
 
   return {
@@ -630,7 +633,7 @@ function makeNode(
 
 export function getTreeNodeVisibility(
   viewCtx: ViewCtx,
-  node: TplNode | SlotSelection
+  node: TplNode | SlotSelection,
 ) {
   if (node instanceof SlotSelection) {
     const tplComponent = node.getTpl();
@@ -644,8 +647,8 @@ export function getTreeNodeVisibility(
       tplSlot,
       getTplComponentActiveVariants(
         tplComponent,
-        viewCtx.variantTplMgr().getEffectiveVariantComboForNode(tplComponent)
-      )
+        viewCtx.variantTplMgr().getEffectiveVariantComboForNode(tplComponent),
+      ),
     );
   } else if (Tpls.isTplVariantable(node)) {
     return viewCtx.getViewOps().getEffectiveTplVisibility(node);
@@ -662,7 +665,7 @@ const getTreeNodeChildren = computedFn(
     viewCtx: ViewCtx,
     item: TplNode | SlotSelection,
     componentFrameNum: number,
-    ownerTplComponent: TplComponent
+    ownerTplComponent: TplComponent,
   ): { children: (TplNode | SlotSelection)[]; childrenFrameNum: number } {
     return switchType(item)
       .when(TplTag, (tpl) => {
@@ -681,7 +684,7 @@ const getTreeNodeChildren = computedFn(
 
         const visibleChildren = filterMapTruthy(
           vs.text.markers,
-          (m) => isKnownNodeMarker(m) && m.tpl
+          (m) => isKnownNodeMarker(m) && m.tpl,
         );
         return { children: visibleChildren, childrenFrameNum };
       })
@@ -704,7 +707,7 @@ const getTreeNodeChildren = computedFn(
         const plumePlugin = getPlumeEditorPlugin(tpl.component);
         if (plumePlugin && plumePlugin.shouldShowInstanceProp) {
           slotParams = slotParams.filter((p) =>
-            plumePlugin.shouldShowInstanceProp!(tpl, p)
+            plumePlugin.shouldShowInstanceProp!(tpl, p),
           );
         }
         const meta = viewCtx.studioCtx.getCodeComponentMeta(tpl.component);
@@ -734,7 +737,7 @@ const getTreeNodeChildren = computedFn(
         }
         return {
           children: slotParams.map(
-            (slotParam) => new SlotSelection({ tpl, slotParam })
+            (slotParam) => new SlotSelection({ tpl, slotParam }),
           ),
           childrenFrameNum: componentFrameNum,
         };
@@ -746,12 +749,12 @@ const getTreeNodeChildren = computedFn(
               $$$(
                 ensure(
                   ss.toTplSlotSelection().tpl,
-                  "SlotSelection is expected to have a tpl"
-                )
+                  "SlotSelection is expected to have a tpl",
+                ),
               ).getSlotArg(ss.slotParam.variable.name),
-              (arg) => ensureKnownRenderExpr(arg.expr).tpl
+              (arg) => ensureKnownRenderExpr(arg.expr).tpl,
             ),
-            []
+            [],
           ),
           childrenFrameNum: componentFrameNum,
         };
@@ -807,8 +810,8 @@ const getTreeNodeChildren = computedFn(
         const slotContents = shouldShowDefaultSlotContents
           ? slot.defaultContents
           : arg
-          ? ensureKnownRenderExpr(arg.expr).tpl
-          : [];
+            ? ensureKnownRenderExpr(arg.expr).tpl
+            : [];
 
         return {
           children:
@@ -824,7 +827,7 @@ const getTreeNodeChildren = computedFn(
       })
       .result();
   },
-  { name: "getTreeNodeChildren()" }
+  { name: "getTreeNodeChildren()" },
 );
 
 const getCachedSlotParams = computedFn(
@@ -834,5 +837,5 @@ const getCachedSlotParams = computedFn(
   {
     name: "getCachedSlotParams",
     keepAlive: true,
-  }
+  },
 );

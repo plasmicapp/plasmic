@@ -41,7 +41,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
   const variantsPanelRef = React.useRef<VariantsPanelHandle>(null);
   const [isExpanded, setExpanded] = useLocalStorage(
     "ComponentTab.isExpanded",
-    false
+    false,
   );
   const [showSettings, setShowSettings] = React.useState(false);
 
@@ -91,7 +91,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
                     value={component.name}
                     onChange={async (name) =>
                       studioCtx.changeUnsafe(() =>
-                        studioCtx.siteOps().tryRenameComponent(component, name)
+                        studioCtx.siteOps().tryRenameComponent(component, name),
                       )
                     }
                     placeholder={`(unnamed component)`}

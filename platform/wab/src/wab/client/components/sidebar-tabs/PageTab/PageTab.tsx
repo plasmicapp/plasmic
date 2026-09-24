@@ -45,7 +45,7 @@ export const PageTab = observer(function PageTab(props: {
   const [showSettings, setShowSettings] = React.useState(false);
   const [isExpanded, setExpanded] = useLocalStorage(
     "PageTab.isExpanded",
-    false
+    false,
   );
 
   const uiConfig = studioCtx.getCurrentUiConfig();
@@ -64,13 +64,13 @@ export const PageTab = observer(function PageTab(props: {
         value={page.name}
         onChange={(name) =>
           studioCtx.changeUnsafe(() =>
-            studioCtx.siteOps().tryRenameComponent(page, name)
+            studioCtx.siteOps().tryRenameComponent(page, name),
           )
         }
         placeholder={`(unnamed page)`}
       />
     ),
-    [page, page.name]
+    [page, page.name],
   );
 
   const headerControls = React.useMemo(
@@ -84,7 +84,7 @@ export const PageTab = observer(function PageTab(props: {
           <Icon icon={GearIcon} />
         </IconButton>
       ),
-    []
+    [],
   );
 
   return (

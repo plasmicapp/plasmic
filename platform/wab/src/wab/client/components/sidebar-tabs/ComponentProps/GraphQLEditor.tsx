@@ -64,7 +64,7 @@ export const GraphQLEditor = (props: {
             <ObserverLoadable
               loader={() =>
                 import("@/wab/client/data/GraphqlBuilder").then(
-                  ({ default: GraphiqlWithExplorer }) => GraphiqlWithExplorer
+                  ({ default: GraphiqlWithExplorer }) => GraphiqlWithExplorer,
                 )
               }
               contents={(GraphiqlWithExplorer) => (
@@ -73,7 +73,7 @@ export const GraphQLEditor = (props: {
                   headers={headers}
                   defaultQuery={value?.query ?? ""}
                   defaultVariables={jsonStringify(
-                    value?.variables ?? ({} as any)
+                    value?.variables ?? ({} as any),
                   )}
                   method={method}
                   onCancel={onCancel}

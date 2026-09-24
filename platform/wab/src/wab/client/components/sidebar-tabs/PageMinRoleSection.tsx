@@ -48,7 +48,7 @@ function PageMinRoleSection_({ page }: { page: Component }) {
 
   function getOperationsToBeUpdated(
     operations: DataSourceOpExpr[],
-    newRoleId: string
+    newRoleId: string,
   ) {
     return operations.filter((op) => {
       if (newRoleId === "anon") {
@@ -60,7 +60,7 @@ function PageMinRoleSection_({ page }: { page: Component }) {
   async function isAllowedToDowngrade(
     operations: DataSourceOpExpr[],
     rolesById: Dictionary<ApiAppRole>,
-    newRoleId: string
+    newRoleId: string,
   ) {
     const hasAnyDowngrade = operations.some((op) => {
       if (newRoleId === "anon") {
@@ -117,7 +117,7 @@ function PageMinRoleSection_({ page }: { page: Component }) {
               </Form.Item>
             </Form>
           </Modal>
-        )
+        ),
       );
 
       if (!answer) {
@@ -150,14 +150,14 @@ function PageMinRoleSection_({ page }: { page: Component }) {
             const allOperations = allDataOperationsInPage();
             const changingOperations = getOperationsToBeUpdated(
               allOperations,
-              newId
+              newId,
             );
             const rolesById = keyBy(roles, "id");
             // Ask only about downgrades and perform upgrades automatically
             const userAnswer = await isAllowedToDowngrade(
               changingOperations,
               rolesById,
-              newId
+              newId,
             );
 
             if (userAnswer.cancel) {
@@ -221,16 +221,16 @@ function PageMinRoleSection_({ page }: { page: Component }) {
                                   projectFlags: studioCtx.projectFlags(),
                                   component: page,
                                   inStudio: true,
-                                }
-                              )
+                                },
+                              ),
                             ),
                             roleId: rawNewId,
-                          }
+                          },
                         );
                       oldToNewOpId[op.opId] = newOpId;
-                    })
+                    }),
                   );
-                })()
+                })(),
               );
             }
 

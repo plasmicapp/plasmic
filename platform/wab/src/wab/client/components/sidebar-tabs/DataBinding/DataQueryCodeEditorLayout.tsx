@@ -17,11 +17,10 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface DataQueryCodeEditorLayoutProps
-  extends Omit<
-    DefaultDataQueryCodeEditorLayoutProps,
-    "copilot" | "codeEditor" | "env"
-  > {
+export interface DataQueryCodeEditorLayoutProps extends Omit<
+  DefaultDataQueryCodeEditorLayoutProps,
+  "copilot" | "codeEditor" | "env"
+> {
   data: Record<string, any>;
   defaultValue: string;
   onChange: (val: string) => void;
@@ -31,7 +30,7 @@ export interface DataQueryCodeEditorLayoutProps
 
 function DataQueryCodeEditorLayout_(
   props: DataQueryCodeEditorLayoutProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { data, defaultValue, onChange, schema, context, ...rest } = props;
   const studioCtx = useStudioCtx();
@@ -47,7 +46,7 @@ function DataQueryCodeEditorLayout_(
         return transformDataTokensToDisplay(
           defaultValue,
           viewCtx.site,
-          studioCtx.siteInfo.id
+          studioCtx.siteInfo.id,
         );
       } catch {
         return defaultValue;
@@ -81,12 +80,12 @@ function DataQueryCodeEditorLayout_(
       justCommitted.current = transformed;
       onChange(transformed);
     },
-    [onChange, studioCtx.siteInfo.id, viewCtx]
+    [onChange, studioCtx.siteInfo.id, viewCtx],
   );
 
   const completionData = React.useMemo(
     () => getEnvForPlasmicQueries(cleanDataForPreview(data)),
-    [data]
+    [data],
   );
 
   return (

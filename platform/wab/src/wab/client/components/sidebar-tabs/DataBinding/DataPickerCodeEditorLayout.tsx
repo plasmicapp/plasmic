@@ -19,8 +19,10 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import L from "lodash";
 import * as React from "react";
 
-export interface DataPickerCodeEditorLayoutProps
-  extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {
+export interface DataPickerCodeEditorLayoutProps extends Omit<
+  DefaultDataPickerCodeEditorLayoutProps,
+  "envPanel"
+> {
   editorRef: React.RefObject<FullCodeEditor>;
   data: object;
   /** Env for code preview, with real`$q` query results so access throws on error. */
@@ -34,7 +36,7 @@ export interface DataPickerCodeEditorLayoutProps
 
 function DataPickerCodeEditorLayout_(
   props: DataPickerCodeEditorLayoutProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     editorRef,
@@ -109,7 +111,7 @@ function DataPickerCodeEditorLayout_(
 }
 
 export function cleanDataForPreview(
-  data: Record<string, any>
+  data: Record<string, any>,
 ): Record<string, any> {
   const cache = new Map<any, any>();
 
@@ -132,7 +134,7 @@ export function cleanDataForPreview(
       });
       cache.set(x, filtered);
       Object.keys(filtered).forEach(
-        (key) => (filtered[key] = rec(filtered[key]))
+        (key) => (filtered[key] = rec(filtered[key])),
       );
       return filtered;
     }
@@ -144,6 +146,6 @@ export function cleanDataForPreview(
 export const _testonly = { cleanDataForPreview };
 
 const DataPickerCodeEditorLayout = React.forwardRef(
-  DataPickerCodeEditorLayout_
+  DataPickerCodeEditorLayout_,
 );
 export default DataPickerCodeEditorLayout;

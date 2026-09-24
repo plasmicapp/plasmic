@@ -33,8 +33,8 @@ export const ImagePropEditor = observer(function ImagePropEditor(props: {
     asset && asset.dataUri
       ? asset.dataUri
       : L.isString(value)
-      ? value
-      : undefined;
+        ? value
+        : undefined;
   const [pickingImage, setPickingImage] = React.useState(false);
 
   return (

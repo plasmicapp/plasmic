@@ -41,7 +41,7 @@ interface ArrayPropEditorProps<Value extends object> {
 }
 
 export const ArrayPropEditor = observer(function ArrayPropEditor<
-  Value extends object
+  Value extends object,
 >({
   onChange,
   compositeValue,
@@ -65,12 +65,12 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
         .filter(
           ([_, fieldPropType]) =>
             isPlainObjectPropType(fieldPropType) &&
-            "defaultValue" in fieldPropType
+            "defaultValue" in fieldPropType,
         )
         .map(([propName, fieldPropType]) => [
           propName,
           fieldPropType["defaultValue"],
-        ])
+        ]),
     );
     onChange([...(compositeValue ?? []), uncheckedCast(fromEntries)]);
     setInspect((compositeValue ?? []).length);
@@ -83,7 +83,7 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
       propType.itemType !== undefined
       ? propType.itemType
       : undefined,
-    `prop type not supported for array prop editor. Found: ${propType}`
+    `prop type not supported for array prop editor. Found: ${propType}`,
   );
   const itemTypeDefaultValue = arrayItemType
     ? getPropTypeDefaultValue(arrayItemType)
@@ -140,8 +140,8 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
                           arrayReplaceAt(
                             compositeValue,
                             index,
-                            uncheckedCast(newData)
-                          )
+                            uncheckedCast(newData),
+                          ),
                         );
                       }
                     }}
@@ -165,7 +165,7 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
                   evaluatedItem,
                   componentPropValues,
                   ccContextData,
-                  nextControlExtras
+                  nextControlExtras,
                 )
               }
               onRemove={() => {

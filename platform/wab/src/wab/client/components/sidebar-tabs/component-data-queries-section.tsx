@@ -67,7 +67,7 @@ function startQueryMigrationChat(studioCtx: StudioCtx, prompt: string) {
     studioCtx.appCtx.topFrameApi?.openCopilotChat({
       prompt,
       mode: "query-migration",
-    })
+    }),
   );
 }
 
@@ -95,7 +95,7 @@ const DataQueryRow = observer(
     } = useDataSource(showMigrateItem ? query.op?.sourceId : undefined);
     const invalidationRefCount = showMigrateItem
       ? findQueryInvalidationRefs(studioCtx.site).filter(
-          ({ ref }) => ref === query
+          ({ ref }) => ref === query,
         ).length
       : 0;
     const migration = checkLegacyQueryMigratable(
@@ -104,10 +104,10 @@ const DataQueryRow = observer(
       invalidationRefCount,
       showMigrateItem
         ? findLegacyQueriesReadByOp(query, component.dataQueries).map(
-            (q) => q.name
+            (q) => q.name,
           )
         : [],
-      dataSourceError
+      dataSourceError,
     );
     const canMigrate = !isLoadingDataSource && migration.migratable;
     const exprCtx: ExprCtx = {
@@ -118,7 +118,7 @@ const DataQueryRow = observer(
 
     const handleDataSourceOpChange = async (
       newOp: DataSourceOpExpr,
-      opExprName?: string
+      opExprName?: string,
     ) => {
       await studioCtx.change(() => {
         query.op = newOp;
@@ -161,7 +161,7 @@ const DataQueryRow = observer(
               onClick={() =>
                 startQueryMigrationChat(
                   studioCtx,
-                  makeLegacyQueryMigrationPrompt(component, query)
+                  makeLegacyQueryMigrationPrompt(component, query),
                 )
               }
             >
@@ -236,7 +236,7 @@ const DataQueryRow = observer(
         </LabeledListItem>
       </WithContextMenu>
     );
-  }
+  },
 );
 
 function ComponentQueriesSection_(props: {
@@ -262,14 +262,14 @@ function ComponentQueriesSection_(props: {
         const query = addEmptyQuery(component);
         studioCtx.newlyAddedQuery = query;
         return ok();
-      })
+      }),
     );
   };
 
   const handleMigrateAll = () =>
     startQueryMigrationChat(
       studioCtx,
-      makeAllLegacyQueriesMigrationPrompt(component, component.dataQueries)
+      makeAllLegacyQueriesMigrationPrompt(component, component.dataQueries),
     );
 
   return (
@@ -344,17 +344,17 @@ const TplFetcherRow = observer(function TplFetcherRow(props: {
   const effectiveVs = viewCtx.variantTplMgr().effectiveVariantSetting(tpl);
 
   const nameExpr = effectiveVs.args.find(
-    (arg) => arg.param.variable.name === "name"
+    (arg) => arg.param.variable.name === "name",
   )?.expr;
 
   const name = !nameExpr
     ? "Unnamed query"
     : isKnownTemplatedString(nameExpr)
-    ? asCode(nameExpr, exprCtx).code.slice(1, -1)
-    : JSON.parse(asCode(nameExpr, exprCtx).code);
+      ? asCode(nameExpr, exprCtx).code.slice(1, -1)
+      : JSON.parse(asCode(nameExpr, exprCtx).code);
 
   const dataOpExpr = effectiveVs.args.find(
-    (arg) => arg.param.variable.name === "dataOp"
+    (arg) => arg.param.variable.name === "dataOp",
   )?.expr;
 
   const env = viewCtx.getCanvasEnvForTpl(tpl);

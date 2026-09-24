@@ -45,7 +45,7 @@ type EnumWithSearchPropEditor<T extends ChoiceValue> = {
 );
 
 export function EnumWithSearchPropEditor<T extends ChoiceValue>(
-  props: EnumWithSearchPropEditor<T>
+  props: EnumWithSearchPropEditor<T>,
 ) {
   const {
     value,
@@ -60,7 +60,7 @@ export function EnumWithSearchPropEditor<T extends ChoiceValue>(
 
   const options = React.useMemo(
     () => (onDelete ? [...propOptions, UNSET_SELECT] : propOptions),
-    [propOptions, onDelete]
+    [propOptions, onDelete],
   );
   return (
     <Select
@@ -83,8 +83,8 @@ export function EnumWithSearchPropEditor<T extends ChoiceValue>(
         !value
           ? undefined
           : multiSelect
-          ? (ensureArray(value).map(stringify) as T[])
-          : (stringify(value) as T)
+            ? (ensureArray(value).map(stringify) as T[])
+            : (stringify(value) as T)
       }
       {...rest}
     >
@@ -100,7 +100,7 @@ export function EnumWithSearchPropEditor<T extends ChoiceValue>(
           >
             {option.label}
           </Select.Option>
-        )
+        ),
       )}
     </Select>
   );
@@ -119,7 +119,7 @@ type GroupLabeledValue = {
 };
 
 const isGroupLabeledValue = (
-  option: LabeledValue | GroupLabeledValue
+  option: LabeledValue | GroupLabeledValue,
 ): option is GroupLabeledValue => "values" in option;
 
 export function EnumPropEditor<T extends ChoiceValue>(props: {
@@ -157,32 +157,32 @@ export function EnumPropEditor<T extends ChoiceValue>(props: {
               isDisabled: false,
             }
           : isObject(option) && "value" in option
-          ? {
-              value: option.value,
-              label: option.label,
-              isDisabled: option.isDisabled,
-            }
-          : isObject(option) && "values" in option
-          ? {
-              label: option.label,
-              values: option.values.map((v) => ({
-                label: v.label,
-                value: v.value,
-                isDisabled: v.isDisabled,
-              })),
-            }
-          : null
+            ? {
+                value: option.value,
+                label: option.label,
+                isDisabled: option.isDisabled,
+              }
+            : isObject(option) && "values" in option
+              ? {
+                  label: option.label,
+                  values: option.values.map((v) => ({
+                    label: v.label,
+                    value: v.value,
+                    isDisabled: v.isDisabled,
+                  })),
+                }
+              : null,
       ),
       ...(onDelete ? [UNSET_SELECT] : []),
     ],
-    [propOptions, onDelete]
+    [propOptions, onDelete],
   );
 
   const placeholder = React.useMemo(() => {
     return (
       options
         .flatMap((option) =>
-          isGroupLabeledValue(option) ? option.values : [option]
+          isGroupLabeledValue(option) ? option.values : [option],
         )
         .find((option) => option.value === props.defaultValueHint)?.label ??
       props.defaultValueHint ??

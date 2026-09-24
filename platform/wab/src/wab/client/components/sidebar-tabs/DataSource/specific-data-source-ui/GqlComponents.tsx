@@ -2,11 +2,11 @@ import { usePluginContext } from "@graphiql/react";
 import React from "react";
 
 function useRenderGqlPlugin(
-  pluginTitle: "Documentation Explorer" | "GraphiQL Explorer"
+  pluginTitle: "Documentation Explorer" | "GraphiQL Explorer",
 ) {
   const pluginContext = usePluginContext();
   const PluginContent = pluginContext?.plugins.find(
-    (plugin) => plugin.title === pluginTitle
+    (plugin) => plugin.title === pluginTitle,
   )?.content;
   return <>{PluginContent ? <PluginContent /> : null}</>;
 }

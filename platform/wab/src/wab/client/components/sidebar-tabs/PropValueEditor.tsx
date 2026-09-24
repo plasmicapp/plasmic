@@ -149,7 +149,7 @@ import React from "react";
  */
 function getEvalExprCtx(
   viewCtx: ViewCtx | undefined,
-  exprCtx: ExprCtx | undefined
+  exprCtx: ExprCtx | undefined,
 ): ExprCtx {
   return viewCtx
     ? {
@@ -176,7 +176,7 @@ const PropValueEditor_ = (
     controlExtras?: ControlExtras;
     hideDefaultValueHint?: boolean;
   },
-  ref
+  ref,
 ) => {
   const {
     attr = "",
@@ -204,7 +204,7 @@ const PropValueEditor_ = (
   const studioCtx = useStudioCtx();
   const litValue = React.useMemo(
     () => (isKnownExpr(value) ? tryExtractJson(value) : value),
-    [value, env]
+    [value, env],
   );
   const [isDataPickerVisible, setIsDataPickerVisible] =
     React.useState<boolean>(false);
@@ -213,16 +213,16 @@ const PropValueEditor_ = (
     function <P>(
       contextDependentValue?:
         | P
-        | ComponentContextConfig<typeof componentPropValues, P>
+        | ComponentContextConfig<typeof componentPropValues, P>,
     ) {
       return getContextDependentValue(
         contextDependentValue,
         componentPropValues,
         ccContextData,
-        controlExtras
+        controlExtras,
       );
     },
-    [componentPropValues, ccContextData, controlExtras]
+    [componentPropValues, ccContextData, controlExtras],
   );
 
   let defaultValueHint;
@@ -258,7 +258,7 @@ const PropValueEditor_ = (
   ) {
     const plainObjectPropType = propType;
     defaultValueHint = _getContextDependentValue(
-      plainObjectPropType.defaultValueHint
+      plainObjectPropType.defaultValueHint,
     );
   }
 
@@ -356,12 +356,12 @@ const PropValueEditor_ = (
     propType.type === "interaction"
   ) {
     const highlightOnMount = _getContextDependentValue(
-      propType.highlightOnMount
+      propType.highlightOnMount,
     );
     const forceOpen = _getContextDependentValue(propType.forceOpen) ?? false;
     assert(
       isKnownTplComponent(tpl) || isKnownTplTag(tpl),
-      "interaction prop type is available only for tag and components"
+      "interaction prop type is available only for tag and components",
     );
     assert(viewCtx, "interaction prop type requires a viewCtx");
     assert(component, "interaction prop type requires a component");
@@ -369,7 +369,7 @@ const PropValueEditor_ = (
       value == null ||
         isKnownEventHandler(value) ||
         isRealCodeExprEnsuringType(value),
-      "unexpected value type for interaction"
+      "unexpected value type for interaction",
     );
     return (
       <InteractionPropEditor
@@ -394,7 +394,7 @@ const PropValueEditor_ = (
   ) {
     assert(
       isKnownTplComponent(tpl),
-      "interaction prop type is available only for tag and components"
+      "interaction prop type is available only for tag and components",
     );
     assert(viewCtx, "interaction prop type requires a viewCtx");
     assert(component, "interaction prop type requires a component");
@@ -402,7 +402,7 @@ const PropValueEditor_ = (
       value == null ||
         isKnownEventHandler(value) ||
         isRealCodeExprEnsuringType(value),
-      "unexpected value type for interaction"
+      "unexpected value type for interaction",
     );
     return (
       <InteractionPropEditor
@@ -415,7 +415,7 @@ const PropValueEditor_ = (
         forceOpen={false}
         eventHandlerKey={{
           funcType: ensureKnownFunctionType(
-            unwrap(propTypeToWabType(studioCtx.site, propType))
+            unwrap(propTypeToWabType(studioCtx.site, propType)),
           ),
         }}
         modalTitle={label}
@@ -460,11 +460,11 @@ const PropValueEditor_ = (
     assert(viewCtx, "interactionExprValue prop type requires a viewCtx");
     const currentInteraction = ensure(
       _getContextDependentValue(propType.currentInteraction),
-      "interactionExprValue prop type requires a current interaction"
+      "interactionExprValue prop type requires a current interaction",
     );
     const eventHandlerKey = ensure(
       _getContextDependentValue(propType.eventHandlerKey),
-      "interactionExprValue prop type requires an eventHandlerKey"
+      "interactionExprValue prop type requires an eventHandlerKey",
     );
     return (
       <InteractionExprEditor
@@ -502,9 +502,9 @@ const PropValueEditor_ = (
           }
           const variantGroup = ensure(
             component?.variantGroups.find(
-              (vg) => vg.param.variable.name === name
+              (vg) => vg.param.variable.name === name,
             ),
-            "Cannot find vgroup with given name"
+            "Cannot find vgroup with given name",
           );
           onChange(new VarRef({ variable: variantGroup.param.variable }));
         }}
@@ -531,7 +531,7 @@ const PropValueEditor_ = (
           }
           const variable = ensure(
             options.find((opt) => opt.name === name),
-            "Cannot find a variable with given name"
+            "Cannot find a variable with given name",
           );
           onChange(new VarRef({ variable }));
         }}
@@ -577,14 +577,14 @@ const PropValueEditor_ = (
         {functionType.params.map((p, i) => {
           assert(
             isPlainObjectPropType(propType) && propType.type === "functionArgs",
-            "unexpected: checked outside the map function"
+            "unexpected: checked outside the map function",
           );
 
           const FunctionArgClass = propType.isFunctionTypeAttachedToModel
             ? FunctionArg
             : StrongFunctionArg;
           const arg = args?.exprs.find((expr) =>
-            isKnownFunctionArg(expr) ? typesEqual(expr.argType, p) : undefined
+            isKnownFunctionArg(expr) ? typesEqual(expr.argType, p) : undefined,
           ) as FunctionArg | undefined;
           const argParameterType = parametersMeta
             ? parametersMeta[i].type
@@ -599,7 +599,7 @@ const PropValueEditor_ = (
               disableLinkToProp={true}
               viewCtx={ensure(
                 viewCtx,
-                "functionArgs prop type requires a viewCtx"
+                "functionArgs prop type requires a viewCtx",
               )}
               tpl={ensure(tpl, "functionArgs prop type requires a tpl")}
               layout={"vertical"}
@@ -633,7 +633,7 @@ const PropValueEditor_ = (
 
     const vgroupVarRef = _getContextDependentValue(propType.variantGroup);
     const vgroup = component?.variantGroups.find(
-      (vg) => vg.param.variable === vgroupVarRef?.variable
+      (vg) => vg.param.variable === vgroupVarRef?.variable,
     );
 
     let variantOptions: Variant[];
@@ -649,7 +649,7 @@ const PropValueEditor_ = (
                   isStandaloneVariantGroup(vg)) ||
                 (variantTypes.includes("single") &&
                   !vg.multi &&
-                  !isStandaloneVariantGroup(vg))
+                  !isStandaloneVariantGroup(vg)),
             )
           : component?.variantGroups) ?? [];
       variantOptions = filteredVgroups.flatMap((vg) => vg.variants);
@@ -675,8 +675,8 @@ const PropValueEditor_ = (
       const variants = names.map((name) =>
         ensure(
           variantOptions.find((v) => v.name === name),
-          "Cannot find given variant in options"
-        )
+          "Cannot find given variant in options",
+        ),
       );
       onChange(new VariantsRef({ variants }));
     };
@@ -731,7 +731,7 @@ const PropValueEditor_ = (
             tpl,
             env as CanvasEnv,
             _getContextDependentValue(propType.currentInteraction),
-            _getContextDependentValue(propType.eventHandlerKey)
+            _getContextDependentValue(propType.eventHandlerKey),
           )
         : undefined;
     return (
@@ -756,7 +756,7 @@ const PropValueEditor_ = (
       max = ensureNumberValueIsValid(_getContextDependentValue(propType.max));
       if (propType.control === "slider") {
         step = ensureNumberValueIsValid(
-          _getContextDependentValue(propType.step)
+          _getContextDependentValue(propType.step),
         );
         if (isNil(min) || isNil(max) || isNil(step) || min > max || step <= 0) {
           step = undefined;
@@ -787,7 +787,7 @@ const PropValueEditor_ = (
   ) {
     assert(
       isKnownDataSourceOpExpr(value) || value === undefined,
-      "Value is expected to be either a DataSourceOpExpr or undefined"
+      "Value is expected to be either a DataSourceOpExpr or undefined",
     );
     const allowedOps = _getContextDependentValue(propType.allowedOps);
     return (
@@ -818,7 +818,7 @@ const PropValueEditor_ = (
       isKnownCustomFunctionExpr(value) ||
         isKnownCustomCode(value) ||
         value === undefined,
-      "Value is expected to be either a CustomFunctionExpr, CustomCode, or undefined"
+      "Value is expected to be either a CustomFunctionExpr, CustomCode, or undefined",
     );
     const allowedOps = _getContextDependentValue(propType.allowedOps);
     return (
@@ -877,7 +877,7 @@ const PropValueEditor_ = (
   ) {
     assert(
       isKnownDataSourceOpExpr(value) || value === undefined,
-      "Value is expected to be either a DataSourceOpExpr or undefined"
+      "Value is expected to be either a DataSourceOpExpr or undefined",
     );
     assert(isKnownTplComponent(tpl), "tpl is expected to be a TplComponent");
     return (
@@ -930,7 +930,7 @@ const PropValueEditor_ = (
       mergeWithExternalData =
         propType.isolateEnv !== undefined
           ? !propType.isolateEnv
-          : uncheckedCast<any>(propType).mergeWithExternalData ?? true;
+          : (uncheckedCast<any>(propType).mergeWithExternalData ?? true);
     }
     const data = {
       ...propData,
@@ -965,7 +965,7 @@ const PropValueEditor_ = (
       mergeWithExternalData =
         propType.isolateEnv !== undefined
           ? !propType.isolateEnv
-          : uncheckedCast<any>(propType).mergeWithExternalData ?? true;
+          : (uncheckedCast<any>(propType).mergeWithExternalData ?? true);
     }
     const data = {
       ...propData,
@@ -998,7 +998,7 @@ const PropValueEditor_ = (
   } else if (isPlainObjectPropType(propType) && propType.type === "dynamic") {
     const control = ensure(
       _getContextDependentValue(propType.control),
-      "missing control for dynamic prop type"
+      "missing control for dynamic prop type",
     );
     const fixedValue =
       getPropTypeType(control) === "exprEditor" && !isRealCodeExpr(value)
@@ -1018,7 +1018,7 @@ const PropValueEditor_ = (
         onChange={(colorOrToken) => {
           const maybeToken = tryParseTokenRef(
             colorOrToken,
-            siteFinalStyleTokensAllDepsDict(studioCtx.site)
+            siteFinalStyleTokensAllDepsDict(studioCtx.site),
           );
           if (maybeToken) {
             onChange(new StyleTokenRef({ token: maybeToken.base }));
@@ -1030,14 +1030,14 @@ const PropValueEditor_ = (
           isKnownStyleTokenRef(value)
             ? mkTokenRef(value.token)
             : isKnownTemplatedString(value)
-            ? JSON.parse(
-                asCode(value, {
-                  projectFlags: studioCtx.projectFlags(),
-                  component: viewCtx?.currentComponent() ?? null,
-                  inStudio: true,
-                }).code
-              )
-            : (value as string) || ""
+              ? JSON.parse(
+                  asCode(value, {
+                    projectFlags: studioCtx.projectFlags(),
+                    component: viewCtx?.currentComponent() ?? null,
+                    inStudio: true,
+                  }).code,
+                )
+              : (value as string) || ""
         }
         valueSetState={valueSetState}
         hideTokenPicker={hackyCast(propType).disableTokens}
@@ -1055,7 +1055,7 @@ const PropValueEditor_ = (
     ) {
       const evalExprCtx = getEvalExprCtx(viewCtx, exprCtx);
       const userMinimalValue = _getContextDependentValue(
-        propType.unstable__minimalValue
+        propType.unstable__minimalValue,
       );
       let deseredValue = deserCompositeExprMaybe(value);
 
@@ -1069,7 +1069,7 @@ const PropValueEditor_ = (
           value,
           evalExprCtx,
           env,
-          propType.unstable__keyFunc
+          propType.unstable__keyFunc,
         );
         evaluated = userMinimalValue;
       }
@@ -1122,7 +1122,7 @@ const PropValueEditor_ = (
         isKnownExpr(value) && env
           ? tryEvalExpr(
               getRawCode(value, getEvalExprCtx(viewCtx, exprCtx)),
-              env
+              env,
             ).val
           : value;
       const compositeValue = deserCompositeExprMaybe(value);
@@ -1263,7 +1263,9 @@ const PropValueEditor_ = (
         attr={attr}
         studioCtx={sc}
         value={
-          isKnownImageAssetRef(value) ? value.asset : value ?? defaultValueHint
+          isKnownImageAssetRef(value)
+            ? value.asset
+            : (value ?? defaultValueHint)
         }
         onPicked={(picked) => {
           if (isKnownImageAsset(picked)) {
@@ -1290,8 +1292,8 @@ const PropValueEditor_ = (
             typeof value === "string"
               ? value
               : isKnownTemplatedString(value)
-              ? flattenTemplatedStringToString(value)
-              : undefined
+                ? flattenTemplatedStringToString(value)
+                : undefined
           }
           readOnly={readOnly}
           onChange={onChange as (value: string) => void}
@@ -1338,7 +1340,7 @@ export const PropValueEditor = observer(React.forwardRef(PropValueEditor_));
 
 export function shouldEditAsTemplatedString(
   propType: StudioPropType<any>,
-  disabledDynamicValue: boolean
+  disabledDynamicValue: boolean,
 ): boolean {
   return getPropTypeType(propType) === "string" && !disabledDynamicValue;
 }

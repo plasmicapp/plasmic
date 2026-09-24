@@ -21,7 +21,7 @@ export function HrefQueryPopover({
   onAdd,
 }: HrefQueryPopoverProps) {
   const [searchValue, setSearchValue] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [showing, setShowing] = React.useState(false);
   const selectRef = React.useRef<RefSelectProps>(null);
@@ -71,7 +71,7 @@ export function HrefQueryPopover({
                   <Select.Option key={query} value={query}>
                     {query}
                   </Select.Option>
-                )
+                ),
             )}
           </Select>
         </FocusScope>

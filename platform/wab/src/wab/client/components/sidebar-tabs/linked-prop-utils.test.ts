@@ -25,7 +25,7 @@ describe("coerceLinkedPropValue", () => {
     const result = coerceLinkedPropValue(
       codeLit(["a", "b"]),
       ["a", "b"],
-      false
+      false,
     );
     expect(tryExtractJson(result!)).toBe("a");
   });
@@ -36,12 +36,12 @@ describe("coerceLinkedPropValue", () => {
 
   it("keeps still-valid numeric and boolean values (not just strings)", () => {
     expect(
-      tryExtractJson(coerceLinkedPropValue(codeLit(1), [1, 2], false)!)
+      tryExtractJson(coerceLinkedPropValue(codeLit(1), [1, 2], false)!),
     ).toBe(1);
     expect(
       tryExtractJson(
-        coerceLinkedPropValue(codeLit(true), [true, false], false)!
-      )
+        coerceLinkedPropValue(codeLit(true), [true, false], false)!,
+      ),
     ).toBe(true);
     // A string "1" is not the numeric option 1.
     expect(coerceLinkedPropValue(codeLit("1"), [1, 2], false)).toBeNull();

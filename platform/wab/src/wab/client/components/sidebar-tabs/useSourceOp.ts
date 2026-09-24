@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 export function useSourceOp(
   sourceId: string | undefined,
-  opName: string | undefined
+  opName: string | undefined,
 ) {
   const api = useApi();
 
@@ -15,7 +15,7 @@ export function useSourceOp(
         console.log(`Error fetching data-source ${sourceId}`, err);
         throw err;
       });
-    }
+    },
   );
   const sourceMeta = source ? getDataSourceMeta(source.source) : undefined;
   const opMeta =

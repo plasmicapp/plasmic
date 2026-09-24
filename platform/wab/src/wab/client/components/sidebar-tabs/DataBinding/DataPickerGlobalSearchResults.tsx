@@ -25,7 +25,7 @@ export type DataPickerGlobalSearchResultsProps =
 
 function DataPickerGlobalSearchResults_(
   props: DataPickerGlobalSearchResultsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicDataPickerGlobalSearchResults to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
@@ -46,6 +46,6 @@ function DataPickerGlobalSearchResults_(
 }
 
 const DataPickerGlobalSearchResults = React.forwardRef(
-  DataPickerGlobalSearchResults_
+  DataPickerGlobalSearchResults_,
 );
 export default DataPickerGlobalSearchResults;

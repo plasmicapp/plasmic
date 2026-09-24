@@ -134,7 +134,7 @@ function mapToArenaData(
   opts: { keyPrefix: string; isStandalone?: boolean } = {
     keyPrefix: "",
     isStandalone: undefined,
-  }
+  },
 ): ArenaData {
   return switchType(arena)
     .when(Arena, (i) => ({
@@ -185,7 +185,7 @@ export function mapToArenaPanelRow({
         item: i,
         sectionType,
         actions,
-      })
+      }),
     ),
     count: item.count,
     actions,
@@ -202,13 +202,13 @@ function DataSourceTablePickerWrapper({
   onSubmit: ([lookupSpec, fields]: [LookupSpec, TableSchema]) => void;
 }) {
   const [draft, setDraft] = React.useState<LookupSpecDraft | undefined>(
-    undefined
+    undefined,
   );
   const { data: source } = useSource(studioCtx, draft?.sourceId);
   const { data: sourceSchemaData } = useSourceSchemaData(
     studioCtx,
     draft?.sourceId,
-    source
+    source,
   );
 
   const isSaveDisabled = React.useMemo(
@@ -217,7 +217,7 @@ function DataSourceTablePickerWrapper({
       draft.sourceId === undefined ||
       draft.tableId === undefined ||
       draft.lookupFields === undefined,
-    [draft]
+    [draft],
   );
 
   const onCreatePage = React.useCallback(() => {
@@ -225,7 +225,7 @@ function DataSourceTablePickerWrapper({
       return;
     }
     const table = sourceSchemaData.tables.find(
-      (t) => t.id === draft.tableId
+      (t) => t.id === draft.tableId,
     ) as TableSchema;
     if (!table) {
       return;
@@ -287,11 +287,11 @@ interface NavigationDropdownProps {
 }
 
 export const NavigationDropdown = observer(
-  React.forwardRef(NavigationDropdown_)
+  React.forwardRef(NavigationDropdown_),
 );
 
 function isArenaRow(
-  row: ArenaPanelRow
+  row: ArenaPanelRow,
 ): row is ComponentArenaData | CustomArenaData | PageArenaData {
   return (
     row.type === "custom" || row.type === "page" || row.type === "component"
@@ -300,7 +300,7 @@ function isArenaRow(
 
 function NavigationDropdown_(
   { onClose }: NavigationDropdownProps,
-  outerRef: React.Ref<HTMLDivElement>
+  outerRef: React.Ref<HTMLDivElement>,
 ) {
   const studioCtx = useStudioCtx();
   const contentEditorMode = studioCtx.contentEditorMode;
@@ -311,7 +311,7 @@ function NavigationDropdown_(
     debounce((value: string) => {
       setDebouncedQuery(value);
     }, 500),
-    [setDebouncedQuery]
+    [setDebouncedQuery],
   );
 
   const getRowKey = React.useCallback((row: ArenaPanelRow) => {
@@ -362,7 +362,7 @@ function NavigationDropdown_(
       onClose();
       await COMMANDS.navigation.switchArena.execute(studioCtx, { arena }, {});
     },
-    [onClose, studioCtx]
+    [onClose, studioCtx],
   );
 
   const onAddArena = async (arenaType: ArenaType, folderName?: string) => {
@@ -418,7 +418,7 @@ function NavigationDropdown_(
           case "template": {
             assert(
               chosenTemplate.projectId && chosenTemplate.componentName,
-              ""
+              "",
             );
 
             const { screenVariant } =
@@ -430,8 +430,8 @@ function NavigationDropdown_(
                   projectId: string;
                   componentName: string;
                 },
-                screenVariant
-              )
+                screenVariant,
+              ),
             );
 
             await mkPage();
@@ -454,9 +454,9 @@ function NavigationDropdown_(
                       studioCtx={studioCtx}
                       onSubmit={onSubmit}
                     />
-                  </Modal>
-                )
-              )
+                  </Modal>,
+                ),
+              ),
             );
             if (!dynpageResponse) {
               return;
@@ -478,7 +478,7 @@ function NavigationDropdown_(
                 // Issue a getMany query without filters. Could be slow!
                 const listRecords = ensureDataSourceStandardQuery(
                   sourceMeta,
-                  "getList"
+                  "getList",
                 )(lookupSpec.sourceId, lookupSpec.tableId);
                 const { api } = studioCtx.appCtx;
                 listRecords.opId = await getOpIdForDataSourceOpExpr(
@@ -489,7 +489,7 @@ function NavigationDropdown_(
                     component: page,
                     inStudio: true,
                   },
-                  studioCtx.siteInfo.id
+                  studioCtx.siteInfo.id,
                 );
                 const maybeEvalResult =
                   swallow(() =>
@@ -499,8 +499,8 @@ function NavigationDropdown_(
                         component: page,
                         inStudio: true,
                       }).code,
-                      {}
-                    )
+                      {},
+                    ),
                   ) ?? undefined;
                 const result = maybeEvalResult
                   ? await executePlasmicDataOp(maybeEvalResult.val)
@@ -509,14 +509,14 @@ function NavigationDropdown_(
                   lookupFields.map((field) => [
                     field,
                     result?.data[0]?.[field] ?? "value",
-                  ])
+                  ]),
                 );
 
                 // Create the lookup query that the dynamic page will use.
                 // It references $ctx.params.FIELD
                 const lookupValue = {
                   value: Object.fromEntries(
-                    lookupFields.map((field, idx) => [field, `{{${idx + 1}}}`])
+                    lookupFields.map((field, idx) => [field, `{{${idx + 1}}}`]),
                   ),
                   bindings: Object.fromEntries(
                     lookupFields.map((field, idx) => {
@@ -533,12 +533,12 @@ function NavigationDropdown_(
                           ? mkTemplatedStringOfOneDynExpr(path)
                           : path,
                       ];
-                    })
+                    }),
                   ),
                 };
                 const getOneQuery = ensureDataSourceStandardQuery(
                   sourceMeta,
-                  "getOne"
+                  "getOne",
                 )(lookupSpec.sourceId, tableSchema, lookupValue);
                 getOneQuery.opId = await getOpIdForDataSourceOpExpr(
                   studioCtx.appCtx.api,
@@ -548,7 +548,7 @@ function NavigationDropdown_(
                     component: page,
                     inStudio: true,
                   },
-                  studioCtx.siteInfo.id
+                  studioCtx.siteInfo.id,
                 );
 
                 // Update the page path info with the path URL.
@@ -561,12 +561,12 @@ function NavigationDropdown_(
                       page,
                       `/${encodeURIComponent(tableSym)}/${lookupFields
                         .map((field) => `[${field}]`)
-                        .join("/")}`
+                        .join("/")}`,
                     );
                   // Make sure to convert these to strings, since query params are always strings (not numbers etc.).
                   for (const field of lookupFields) {
                     page.pageMeta.params[field] = valueAsString(
-                      initialValues[field]
+                      initialValues[field],
                     );
                   }
 
@@ -576,7 +576,7 @@ function NavigationDropdown_(
                     const newTpl = mkTplInlinedText(
                       "Name",
                       [baseVariant],
-                      "h1"
+                      "h1",
                     );
 
                     // If there is a main slot, must insert there, or else root (assuming it's a container).
@@ -587,7 +587,7 @@ function NavigationDropdown_(
                     // Find a page section or else insert into slot/root.
                     const targetParent =
                       flattenTpls(page.tplTree).find(
-                        (tpl) => isTplTag(tpl) && tpl.tag === "section"
+                        (tpl) => isTplTag(tpl) && tpl.tag === "section",
                       ) ?? root;
                     if (!targetParent) {
                       return undefined;
@@ -599,7 +599,7 @@ function NavigationDropdown_(
                     // We're only adding this if inserting a new title.
                     // We don't try this if we found some existing h1.
                     const richDetailsComponent = getHostLessComponents(
-                      studioCtx.site
+                      studioCtx.site,
                     ).find((c) => c.name === "hostless-rich-details");
                     if (richDetailsComponent) {
                       $$$(newTpl).after(
@@ -612,7 +612,7 @@ function NavigationDropdown_(
                               fallback: codeLit(null),
                             }),
                           },
-                        })
+                        }),
                       );
                     }
                     return newTpl;
@@ -621,7 +621,7 @@ function NavigationDropdown_(
                   // Add the title as well.
                   const tplTitle =
                     flattenTpls(page.tplTree).find((tpl) =>
-                      isTplTextBlock(tpl, "h1")
+                      isTplTextBlock(tpl, "h1"),
                     ) ?? createH1();
                   if (tplTitle) {
                     // Set its dynamic value.
@@ -629,7 +629,7 @@ function NavigationDropdown_(
                       orderFieldsByRanking(
                         tableSchema.fields,
                         rankedFieldsForDisplayName,
-                        true
+                        true,
                       )[0]?.id ?? lookupFields[0];
                     tplTitle.vsettings[0].text = new ExprText({
                       expr: code(
@@ -637,7 +637,7 @@ function NavigationDropdown_(
                           "$queries.query.data[0]",
                           bestField,
                         ])})`,
-                        codeLit("Page title")
+                        codeLit("Page title"),
                       ),
                       html: false,
                     });
@@ -647,7 +647,7 @@ function NavigationDropdown_(
                   const pageQuery = addEmptyQuery(page, "query");
                   pageQuery.op = getOneQuery;
                 });
-              })()
+              })(),
             );
             break;
           }
@@ -657,7 +657,7 @@ function NavigationDropdown_(
   };
 
   const getFolderArenas = (
-    items: ArenaPanelRow[]
+    items: ArenaPanelRow[],
   ): { arenas: AnyArena[]; folders: FolderElement[] } => {
     const arenas: AnyArena[] = [];
     const folders: FolderElement[] = [];
@@ -688,14 +688,14 @@ function NavigationDropdown_(
       const confirmation = await promptDeleteFolder(
         getArenaDisplay(folder.sectionType),
         getFolderWithSlash(folder.name),
-        folder.count
+        folder.count,
       );
       if (confirmation) {
         const { arenas } = getFolderArenas([folder]);
         await deleteArenas(studioCtx, arenas);
       }
     },
-    [studioCtx]
+    [studioCtx],
   );
   const onFolderRenamed = React.useCallback(
     (folder: FolderElement, newName: string) => {
@@ -714,13 +714,13 @@ function NavigationDropdown_(
           studioCtx.change(() => {
             studioCtx.siteOps().tryRenameArenas(renameProps);
             return ok();
-          })
+          }),
         );
         const keyChanges = getFolderKeyChanges(folders, pathData);
         renameGroup(keyChanges);
       }
     },
-    [studioCtx]
+    [studioCtx],
   );
 
   const actions: ArenaFolderActions = React.useMemo(
@@ -729,7 +729,7 @@ function NavigationDropdown_(
       onDeleteFolder,
       onFolderRenamed,
     }),
-    [onAddArena, onDeleteFolder, onFolderRenamed]
+    [onAddArena, onDeleteFolder, onFolderRenamed],
   );
   const items = buildItems(studioCtx, actions);
 
@@ -888,7 +888,7 @@ const buildItems = computedFn(
     const getSection = (
       title: React.ReactNode,
       arenaSection: ArenaType,
-      items: AnyArena[]
+      items: AnyArena[],
     ): ArenaPanelRow => {
       const tree = createFolderTreeStructure(items, {
         pathPrefix: `${title}`,
@@ -926,7 +926,7 @@ const buildItems = computedFn(
                     isStandalone: true,
                   });
                 })
-                .reverse()
+                .reverse(),
             ),
           ]
         : [];
@@ -937,17 +937,17 @@ const buildItems = computedFn(
           Arenas
         </LabelWithDetailedTooltip>,
         "custom",
-        studioCtx.getSortedMixedArenas()
+        studioCtx.getSortedMixedArenas(),
       ),
       getSection("Pages", "page", studioCtx.getSortedPageArenas()),
       getSection(
         "Components",
         "component",
-        studioCtx.getSortedComponentArenas()
+        studioCtx.getSortedComponentArenas(),
       ),
     ]);
     return items;
-  }
+  },
 );
 
 function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {

@@ -66,16 +66,16 @@ describe("getSourceUiId for $state rows", () => {
 
   it("resolves a surfaced implicit state row ($state.<comp>.<member>)", () => {
     expect(
-      getSourceUiId(["$state", "myComp", "value"], site, component)
+      getSourceUiId(["$state", "myComp", "value"], site, component),
     ).toBeDefined();
   });
 
   it("does not resolve non-state child rows or deeper paths", () => {
     expect(
-      getSourceUiId(["$state", "myComp", "other"], site, component)
+      getSourceUiId(["$state", "myComp", "other"], site, component),
     ).toBeUndefined();
     expect(
-      getSourceUiId(["$state", "myComp", "value", "x"], site, component)
+      getSourceUiId(["$state", "myComp", "value", "x"], site, component),
     ).toBeUndefined();
   });
 

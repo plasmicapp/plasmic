@@ -35,7 +35,7 @@ export const MergedSlotsTextSection = observer(
     const { viewCtx, tpl, tab } = props;
 
     const slotParams = getSlotParams(tpl.component).filter(
-      (p) => p.mergeWithParent
+      (p) => p.mergeWithParent,
     );
 
     if (slotParams.length === 0) {
@@ -51,7 +51,7 @@ export const MergedSlotsTextSection = observer(
             const textExpsProvider = new TplExpsProvider(viewCtx, maybeTextTpl);
             const textStyleAncestorSlot = getAncestorTplSlot(
               maybeTextTpl,
-              false
+              false,
             );
             const childSc = mkStyleComponent({
               expsProvider: textExpsProvider,
@@ -73,14 +73,14 @@ export const MergedSlotsTextSection = observer(
                   inheritableOnly={false}
                   viewCtx={viewCtx}
                 />
-              )
+              ),
             );
           }
           return null;
         })}
       </>
     );
-  }
+  },
 );
 
 export const MergedSlotsPropsSection = observer(
@@ -105,7 +105,7 @@ export const MergedSlotsPropsSection = observer(
           hackyCast(propType).hiddenMergedProps,
           componentPropValues,
           ccContextData,
-          { path: [] }
+          { path: [] },
         );
       }
       return true;
@@ -123,7 +123,7 @@ export const MergedSlotsPropsSection = observer(
           if (maybeTplComponent) {
             const childExpsProvider = new TplExpsProvider(
               viewCtx,
-              maybeTplComponent
+              maybeTplComponent,
             );
             const childSc = mkStyleComponent({
               expsProvider: childExpsProvider,
@@ -134,19 +134,19 @@ export const MergedSlotsPropsSection = observer(
                 viewCtx={viewCtx}
                 tpl={maybeTplComponent}
                 customTitle={`${smartHumanize(
-                  param.variable.name
+                  param.variable.name,
                 )}: ${getComponentDisplayName(
-                  maybeTplComponent.component
+                  maybeTplComponent.component,
                 )} Props`}
                 expsProvider={childExpsProvider}
                 tab={tab}
                 includeVariants
-              />
+              />,
             );
           }
           return null;
         })}
       </>
     );
-  }
+  },
 );

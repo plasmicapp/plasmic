@@ -75,17 +75,17 @@ export const VariableValueEditor = observer(function VariableValueEditor({
 }: VariableValueEditorProps) {
   assert(
     !isKnownTplSlot(component.tplTree),
-    "slots can't be root of a component"
+    "slots can't be root of a component",
   );
   const [previewDraft, setPreviewDraft] = React.useState<Expr | undefined>(
-    undefined
+    undefined,
   );
   const initialValue = viewCtx.getStateCurrentInitialValue(state);
   const currentValue = viewCtx.getCanvasStateValue(state);
   const hasTempValue = initialValue !== currentValue;
   const previewExpr = previewDraft ?? codeLit(currentValue);
   const propType = wabTypeToPropType(
-    convertVariableTypeToWabType(state.variableType)
+    convertVariableTypeToWabType(state.variableType),
   );
 
   const env = viewCtx.getCanvasEnvForTpl(component.tplTree) ?? {};
@@ -108,7 +108,7 @@ export const VariableValueEditor = observer(function VariableValueEditor({
           onChange={async (expr) => {
             const invalidMessage = validateStateAccessType(
               state.accessType,
-              expr
+              expr,
             );
             if (invalidMessage) {
               notification.error({
@@ -120,7 +120,7 @@ export const VariableValueEditor = observer(function VariableValueEditor({
             await COMMANDS.component.changeStateInitialValue.execute(
               studioCtx,
               { expr },
-              { state }
+              { state },
             );
           }}
           layout={"vertical"}
@@ -199,7 +199,7 @@ const VariableEditingForm = observer(
       onConfirm,
       ...rest
     }: NewVariableProps,
-    ref: HTMLElementRefOf<"div">
+    ref: HTMLElementRefOf<"div">,
   ) {
     const StringEditor = React.useCallback(
       ({
@@ -223,7 +223,7 @@ const VariableEditingForm = observer(
           />
         </LabeledItemRow>
       ),
-      []
+      [],
     );
 
     const hasExternalAccess = state.accessType !== "private";
@@ -243,7 +243,7 @@ const VariableEditingForm = observer(
                 {
                   state,
                   component,
-                }
+                },
               )
             }
             data-plasmic-prop={"variable-name"}
@@ -262,7 +262,7 @@ const VariableEditingForm = observer(
                 },
                 {
                   state,
-                }
+                },
               ),
             children: NORMAL_STATE_VARIABLE_TYPES.map((stateType) => (
               <StyleSelect.Option value={stateType} key={stateType}>
@@ -292,8 +292,8 @@ const VariableEditingForm = observer(
                   },
                   {
                     state,
-                  }
-                )
+                  },
+                ),
               );
             },
             "data-test-id": "allow-external-access",
@@ -307,7 +307,7 @@ const VariableEditingForm = observer(
             onChange: async (val) => {
               const invalidMessage = validateStateAccessType(
                 val as StateAccessType,
-                state.param.defaultExpr
+                state.param.defaultExpr,
               );
               if (invalidMessage) {
                 notification.error({
@@ -323,7 +323,7 @@ const VariableEditingForm = observer(
                 },
                 {
                   state,
-                }
+                },
               );
             },
             children: (
@@ -362,6 +362,6 @@ const VariableEditingForm = observer(
         }}
       />
     );
-  })
+  }),
 );
 export default VariableEditingForm;

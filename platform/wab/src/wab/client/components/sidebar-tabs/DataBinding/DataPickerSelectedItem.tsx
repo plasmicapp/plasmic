@@ -5,15 +5,14 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface DataPickerSelectedItemProps
-  extends DefaultDataPickerSelectedItemProps {
+export interface DataPickerSelectedItemProps extends DefaultDataPickerSelectedItemProps {
   onClick: () => void;
   itemName?: string;
 }
 
 function DataPickerSelectedItem_(
   props: DataPickerSelectedItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicDataPickerSelectedItem root={{ ref }} {...props} />;
 }

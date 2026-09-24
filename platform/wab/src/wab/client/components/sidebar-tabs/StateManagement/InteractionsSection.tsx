@@ -55,8 +55,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 
-export interface InteractionsSectionProps
-  extends DefaultInteractionsSectionProps {
+export interface InteractionsSectionProps extends DefaultInteractionsSectionProps {
   component: Component;
   tpl: TplTag | TplComponent;
   sc: StudioCtx;
@@ -79,25 +78,25 @@ function InteractionsSection_(props: InteractionsSectionProps) {
     () => ({
       highlightRequest: highlight,
     }),
-    [highlight]
+    [highlight],
   );
 
   function handleAdd(eventHandlerKey: EventHandlerKeyType) {
     const eventHandler = getEventHandlerByEventKey(
       component,
       tpl,
-      eventHandlerKey
+      eventHandlerKey,
     );
     if (!eventHandler) {
       const newEventHandler = new EventHandler({ interactions: [] });
       newEventHandler.interactions.push(
-        mkDefaultInteraction(newEventHandler, component)
+        mkDefaultInteraction(newEventHandler, component),
       );
       spawn(
         sc.change(() => {
           setEventHandlerByEventKey(tpl, eventHandlerKey, newEventHandler);
           return ok();
-        })
+        }),
       );
     }
     sc.newlyAddedEventHandlerKey = eventHandlerKey;
@@ -127,24 +126,24 @@ function InteractionsSection_(props: InteractionsSectionProps) {
           isEventHandlerKeyForAttr(eventHandlerKey)
             ? eventHandlerKey.attr
             : isEventHandlerKeyForParam(eventHandlerKey)
-            ? eventHandlerKey.param
-            : unexpected(
-                `event handler not supported for interactions section ${eventHandlerKey}`
-              )
+              ? eventHandlerKey.param
+              : unexpected(
+                  `event handler not supported for interactions section ${eventHandlerKey}`,
+                ),
       ).map(({ eventHandlerKey, expr }) => {
         const effectiveVs = expsProvider.effectiveVs();
 
         const attrSource = isEventHandlerKeyForAttr(eventHandlerKey)
           ? effectiveVs.getAttrSource(eventHandlerKey.attr)
           : isEventHandlerKeyForParam(eventHandlerKey)
-          ? effectiveVs.getArgSource(eventHandlerKey.param)
-          : undefined;
+            ? effectiveVs.getArgSource(eventHandlerKey.param)
+            : undefined;
 
         const defined = computeDefinedIndicator(
           vc.site,
           vc.currentComponent(),
           attrSource,
-          expsProvider.targetIndicatorCombo
+          expsProvider.targetIndicatorCombo,
         );
 
         return (
@@ -164,23 +163,23 @@ function InteractionsSection_(props: InteractionsSectionProps) {
                     delete baseVs.attrs[eventHandlerKey.attr];
                   } else if (isEventHandlerKeyForParam(eventHandlerKey)) {
                     const arg = baseVs.args.find(
-                      (iarg) => iarg.param === eventHandlerKey.param
+                      (iarg) => iarg.param === eventHandlerKey.param,
                     );
                     assert(
                       arg,
                       `tpl should have an event handler named ${getDisplayNameOfEventHandlerKey(
                         eventHandlerKey,
-                        { tpl }
-                      )}`
+                        { tpl },
+                      )}`,
                     );
                     remove(baseVs.args, arg);
                   } else {
                     unexpected(
-                      `event handler not supported for interactions section ${eventHandlerKey}`
+                      `event handler not supported for interactions section ${eventHandlerKey}`,
                     );
                   }
                   return ok();
-                })
+                }),
               )
             }
             onChange={(newExpr) =>
@@ -193,14 +192,14 @@ function InteractionsSection_(props: InteractionsSectionProps) {
                     setEventHandlerByEventKey(
                       tpl,
                       eventHandlerKey,
-                      newEventHandler
+                      newEventHandler,
                     );
                   } else if (isKnownVarRef(newExpr)) {
                     const param = extractReferencedParam(component, newExpr);
                     if (!isKnownVarRef(expr)) {
                       assert(
                         param,
-                        `param not found for varRef: ${newExpr.variable.name}`
+                        `param not found for varRef: ${newExpr.variable.name}`,
                       );
                       setEventHandlerByEventKey(tpl, eventHandlerKey, newExpr);
                     } else {
@@ -210,7 +209,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
                       setEventHandlerByEventKey(
                         tpl,
                         eventHandlerKey,
-                        newEventHandler
+                        newEventHandler,
                       );
                     }
                   } else if (
@@ -222,7 +221,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
                     assert(false, "unexpected expr type for event handler");
                   }
                   return ok();
-                })
+                }),
               )
             }
             expr={expr}
@@ -253,7 +252,7 @@ const AddHandlerFunctionButton = observer(
     const { tpl, onSelect } = props;
     const options = getAllEventHandlerOptions(tpl);
     const [searchValue, setSearchValue] = React.useState<string | undefined>(
-      undefined
+      undefined,
     );
     const [showing, setShowing] = React.useState(false);
     const selectRef = React.useRef<RefSelectProps>(null);
@@ -286,9 +285,9 @@ const AddHandlerFunctionButton = observer(
               onSelect={(val) => {
                 const eventHandlerKey = ensure(
                   options.find(
-                    (opt) => val === getIdNameOfEventHandlerKey(opt)
+                    (opt) => val === getIdNameOfEventHandlerKey(opt),
                   ),
-                  "selected value should have an option with the same name"
+                  "selected value should have an option with the same name",
                 );
                 onSelect(eventHandlerKey);
                 setShowing(false);
@@ -306,7 +305,7 @@ const AddHandlerFunctionButton = observer(
               {options.map((opt) => (
                 <Select.Option
                   id={`interactions-select-opt-${getIdNameOfEventHandlerKey(
-                    opt
+                    opt,
                   )}`}
                   key={getIdNameOfEventHandlerKey(opt)}
                   value={getIdNameOfEventHandlerKey(opt)}
@@ -323,5 +322,5 @@ const AddHandlerFunctionButton = observer(
         </IconLinkButton>
       </Popover>
     );
-  }
+  },
 );

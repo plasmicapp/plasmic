@@ -72,7 +72,7 @@ const ConfirmModal = ({
 const getRevisionDiffs = async (
   revertRevisionId: string,
   latestRevisionId: string,
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ) => {
   const revertBundler = new FastBundler();
   const latestBundler = new FastBundler();
@@ -80,26 +80,26 @@ const getRevisionDiffs = async (
   const { rev: revertRev, depPkgs: revertDepPkgs } =
     await studioCtx.appCtx.api.getProjectRevision(
       studioCtx.siteInfo.id,
-      revertRevisionId
+      revertRevisionId,
     );
   const { rev: latestRev, depPkgs: latestDepPkgs } =
     await studioCtx.appCtx.api.getProjectRevision(
       studioCtx.siteInfo.id,
-      latestRevisionId
+      latestRevisionId,
     );
 
   const revertSite = unbundleProjectDependencyRevision(
     revertBundler,
     getBundle(
       revertRev,
-      parseBundle(revertRev).version ?? studioCtx.appCtx.lastBundleVersion
+      parseBundle(revertRev).version ?? studioCtx.appCtx.lastBundleVersion,
     ),
-    revertDepPkgs
+    revertDepPkgs,
   ).site;
   const latestSite = unbundleProjectDependencyRevision(
     latestBundler,
     getBundle(latestRev, studioCtx.appCtx.lastBundleVersion),
-    latestDepPkgs
+    latestDepPkgs,
   ).site;
 
   const changeLog = compareSites(revertSite, latestSite);
@@ -176,7 +176,7 @@ export const promptVersionRevert = async (
   releases: PkgVersionInfoMeta[],
   revisions: MinimalRevisionInfo[],
   studioCtx: StudioCtx,
-  user?: ApiUser | null
+  user?: ApiUser | null,
 ) => {
   // Find the latest published version to compare against
   const latestRelease = releases[0];
@@ -192,7 +192,7 @@ export const promptVersionRevert = async (
         return getRevisionDiffs(
           release.revisionId,
           latestRevisionId,
-          studioCtx
+          studioCtx,
         );
       }, [release.revisionId, latestRevisionId, studioCtx]);
 
@@ -245,7 +245,7 @@ export const promptRevisionRevert = async (
   revertRevision: MinimalRevisionInfo,
   latestRevision: MinimalRevisionInfo,
   studioCtx: StudioCtx,
-  user?: ApiUser
+  user?: ApiUser,
 ) => {
   return showTemporaryPrompt<boolean>((onSubmit, onCancel) => {
     const ModalContent = () => {
@@ -253,7 +253,7 @@ export const promptRevisionRevert = async (
         return getRevisionDiffs(
           revertRevision.id,
           latestRevision.id,
-          studioCtx
+          studioCtx,
         );
       }, [revertRevision.id, latestRevision.id, studioCtx]);
 

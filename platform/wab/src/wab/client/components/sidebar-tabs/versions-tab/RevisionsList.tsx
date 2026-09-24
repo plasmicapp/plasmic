@@ -19,7 +19,7 @@ interface RevisionsListProps {
 }
 
 export const RevisionsList = observer(function RevisionsList(
-  props: RevisionsListProps
+  props: RevisionsListProps,
 ) {
   const { studioCtx } = props;
   const dbCtx = studioCtx.dbCtx();
@@ -27,7 +27,7 @@ export const RevisionsList = observer(function RevisionsList(
   const revisions = studioCtx.revisions;
 
   const { data: userById } = useUsersMap(
-    studioCtx.revisions.map((r) => r.createdById)
+    studioCtx.revisions.map((r) => r.createdById),
   );
 
   const onSelectRevision = async (projectRevision: MinimalRevisionInfo) => {
@@ -59,7 +59,7 @@ export const RevisionsList = observer(function RevisionsList(
 
         return true;
       }),
-    [revisions.length, studioCtx.releases.length, currentBranchName]
+    [revisions.length, studioCtx.releases.length, currentBranchName],
   );
 
   const onRevert = async (revision: MinimalRevisionInfo, user?: ApiUser) => {
@@ -69,7 +69,7 @@ export const RevisionsList = observer(function RevisionsList(
       studioCtx,
       userById && revision.createdById
         ? userById[revision.createdById]
-        : undefined
+        : undefined,
     );
     if (answer) {
       await studioCtx.revertTo(revision);

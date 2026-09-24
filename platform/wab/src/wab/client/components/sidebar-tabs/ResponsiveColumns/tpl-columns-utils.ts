@@ -3,17 +3,17 @@ import {
   ensureBaseRs,
   ensureVariantRs,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { assert } from "@/wab/shared/common";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   COLUMNS_CONFIG_DEFAULTS,
   redistributeColumnsSizes,
 } from "@/wab/shared/columns-utils";
+import { assert } from "@/wab/shared/common";
+import { TplColumnsTag, TplTagType, isTplColumn } from "@/wab/shared/core/tpls";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import { ColumnsConfig, TplTag, Variant } from "@/wab/shared/model/classes";
 import { clearTplVisibility } from "@/wab/shared/visibility-utils";
-import { TplColumnsTag, TplTagType, isTplColumn } from "@/wab/shared/core/tpls";
 
 export const getScreenVariant = (viewCtx: ViewCtx): Variant | undefined => {
   const screenVariants =
@@ -32,8 +32,8 @@ export function ensureTplColumnsRs(
   isBaseColumn = false,
   styles: Record<string, string> = getSimplifiedStyles(
     AddItemKey.columns,
-    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined
-  )
+    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined,
+  ),
 ) {
   ensureBaseRs(vc, tag, {
     display: "flex",
@@ -49,7 +49,7 @@ export function ensureTplColumnsRs(
   baseTagVs.columnsConfig = new ColumnsConfig(
     isBaseColumn
       ? COLUMNS_CONFIG_DEFAULTS.mobile
-      : COLUMNS_CONFIG_DEFAULTS.desktop
+      : COLUMNS_CONFIG_DEFAULTS.desktop,
   );
 
   if (variant) {
@@ -63,7 +63,7 @@ export function ensureTplColumnsRs(
     variantTagVs.columnsConfig = new ColumnsConfig(
       !isBaseColumn
         ? COLUMNS_CONFIG_DEFAULTS.mobile
-        : COLUMNS_CONFIG_DEFAULTS.desktop
+        : COLUMNS_CONFIG_DEFAULTS.desktop,
     );
   }
 }
@@ -73,8 +73,8 @@ export function ensureTplColumnRs(
   tag: TplTag,
   styles: Record<string, string> = getSimplifiedStyles(
     AddItemKey.vstack,
-    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined
-  )
+    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined,
+  ),
 ) {
   ensureBaseRs(vc, tag, {
     display: "flex",
@@ -88,8 +88,8 @@ export function makeTplColumn(
   vc: ViewCtx,
   styles: Record<string, string> = getSimplifiedStyles(
     AddItemKey.vstack,
-    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined
-  )
+    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined,
+  ),
 ) {
   const tag = vc.variantTplMgr().mkTplTagX("div", { type: TplTagType.Column });
   ensureTplColumnRs(vc, tag, styles);
@@ -107,7 +107,7 @@ export const removeLastColumn = (tpl: TplColumnsTag, vc: ViewCtx) => {
   for (const deletedColumn of deletedColumns) {
     assert(isTplColumn(deletedColumn), "Must be a column");
     [...deletedColumn.children].forEach((child) =>
-      $$$(lastColumn).append(child)
+      $$$(lastColumn).append(child),
     );
     $$$(deletedColumn).remove({ deep: false });
   }

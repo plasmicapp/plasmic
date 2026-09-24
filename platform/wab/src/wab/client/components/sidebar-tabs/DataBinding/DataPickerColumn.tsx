@@ -63,7 +63,7 @@ function ColumnErrorNotice(props: { columnIndex: number; message: string }) {
 
 function DataPickerColumn_(
   props: DataPickerColumnProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     data,
@@ -87,14 +87,14 @@ function DataPickerColumn_(
     (key: string) => {
       return data["$steps"]?.[mkMetaName(key)]?.interaction;
     },
-    [data, studioCtx]
+    [data, studioCtx],
   );
   const wasStepExecuted = React.useCallback(
     (key: string) => {
       const interaction = getInteraction(key);
       return interaction && studioCtx.hasCached$stepValue(interaction.uuid);
     },
-    [data, studioCtx, getInteraction]
+    [data, studioCtx, getInteraction],
   );
   const isStepsColumn = React.useMemo(() => {
     const pathPrefix = columnItems.find((item) => item.pathPrefix)?.pathPrefix;
@@ -130,11 +130,11 @@ function DataPickerColumn_(
                 (!isListType(variableType)
                   ? evalExpr(
                       path,
-                      ensure(data, "Should only be called if data exists")
+                      ensure(data, "Should only be called if data exists"),
                     )
                   : variableType === "array"
-                  ? keyCount + ` item${keyCount === 1 ? "" : "s"}`
-                  : undefined);
+                    ? keyCount + ` item${keyCount === 1 ? "" : "s"}`
+                    : undefined);
               const isSelected = index === selectedItem;
               const sourceUiId = viewCtx
                 ? getSourceUiId(path, viewCtx.site, viewCtx.currentComponent())
@@ -151,7 +151,7 @@ function DataPickerColumn_(
                                 inline: "start",
                                 behavior: "smooth",
                               }),
-                            0
+                            0,
                           )
                       : undefined
                   }
@@ -188,11 +188,11 @@ function DataPickerColumn_(
       runAllSteps={{
         onClick: () => {
           const currentInteraction = ensureKnownInteraction(
-            data[mkMetaName("$steps")]?.currentInteraction
+            data[mkMetaName("$steps")]?.currentInteraction,
           );
           const previousSteps = currentInteraction.parent.interactions.slice(
             0,
-            currentInteraction.parent.interactions.indexOf(currentInteraction)
+            currentInteraction.parent.interactions.indexOf(currentInteraction),
           );
           const vc = studioCtx.focusedViewCtx();
           const tpl = vc?.focusedTpls()?.[0];

@@ -23,7 +23,7 @@ export function makeDataTokensSubMenu(opts: {
 }): JSX.Element | null {
   const localTokens = naturalSortByName(opts.site.dataTokens);
   const depGroups = walkDependencyTree(opts.site, "direct").filter(
-    (d) => d.site.dataTokens.length > 0
+    (d) => d.site.dataTokens.length > 0,
   );
 
   const hasTokens = localTokens.length > 0 || depGroups.length > 0;

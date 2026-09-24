@@ -20,7 +20,7 @@ const DateRangeStringsEditor = ({
       value[0] ? dayjs(value[0]) : undefined,
       value[1] ? dayjs(value[1]) : undefined,
     ],
-    [value]
+    [value],
   ) as [Dayjs | null, Dayjs | null];
 
   return (

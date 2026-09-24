@@ -82,7 +82,7 @@ export function _VariantsPickerPanel({ tpl }: VariantsPickerPanelProps) {
   const plugin = getPlumeEditorPlugin(component);
   if (plugin) {
     variantGroups = variantGroups.filter(
-      (g) => plugin.shouldShowInstanceProp?.(tpl, g.param) ?? true
+      (g) => plugin.shouldShowInstanceProp?.(tpl, g.param) ?? true,
     );
   }
 
@@ -129,7 +129,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
   const studioCtx = useStudioCtx();
 
   const variantsByName = new Map<string, Variant>(
-    group.variants.map((v) => [v.name, v])
+    group.variants.map((v) => [v.name, v]),
   );
 
   const [defined, maybeArg] = viewCtx
@@ -141,7 +141,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
   const [isDataPickerVisible, setIsDataPickerVisible] =
     React.useState<boolean>(false);
   const [showFallback, setShowFallback] = React.useState<boolean>(
-    currentExpr !== undefined && isFallbackSet(currentExpr)
+    currentExpr !== undefined && isFallbackSet(currentExpr),
   );
   const [newParamModalVisible, setNewParamModalVisible] =
     React.useState<boolean>(false);
@@ -176,8 +176,8 @@ export const VariantPicker = observer(function VariantPicker(props: {
     referencedParam && ownerComponent
       ? ({ valueType: "linked", ownerComponent, referencedParam } as const)
       : isDynamicValue
-      ? ({ valueType: "dynamic" } as const)
-      : ({ valueType: "literal" } as const);
+        ? ({ valueType: "dynamic" } as const)
+        : ({ valueType: "literal" } as const);
 
   const baseOptions = group.variants.map((variant) => ({
     value: variant.name,
@@ -202,10 +202,10 @@ export const VariantPicker = observer(function VariantPicker(props: {
   const newPropDefaultExpr = isStandaloneVariantGroup(group)
     ? codeLit(!!activeVariantsInVg[0])
     : group.multi
-    ? codeLit(activeVariantsInVg)
-    : activeVariantsInVg[0]
-    ? codeLit(activeVariantsInVg[0])
-    : undefined;
+      ? codeLit(activeVariantsInVg)
+      : activeVariantsInVg[0]
+        ? codeLit(activeVariantsInVg[0])
+        : undefined;
 
   const canLinkToProp =
     !isDisabled &&
@@ -227,7 +227,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
         .setArg(
           tpl,
           group.param.variable,
-          new VarRef({ variable: param.variable })
+          new VarRef({ variable: param.variable }),
         );
     });
   };
@@ -254,11 +254,11 @@ export const VariantPicker = observer(function VariantPicker(props: {
   const unlinkFromDynamicValue = () => {
     assert(
       currentExpr,
-      "Unexpected undefined value, currentExpr must be defined when data binding"
+      "Unexpected undefined value, currentExpr must be defined when data binding",
     );
     assert(
       isKnownCustomCode(currentExpr) || isKnownObjectPath(currentExpr),
-      "Unexpected currentExpr value, should be ObjectPath or CustomCode"
+      "Unexpected currentExpr value, should be ObjectPath or CustomCode",
     );
     const fallback = currentExpr.fallback;
     viewCtx.change(() => {
@@ -274,7 +274,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
   const renderValueEditor = (
     activeVariants: Variant[],
     updateActiveVariants: (newActiveVariants: Variant[]) => void,
-    valueSetState: ValueSetState | undefined
+    valueSetState: ValueSetState | undefined,
   ) => {
     const options =
       activeVariants.length > 0
@@ -294,9 +294,9 @@ export const VariantPicker = observer(function VariantPicker(props: {
             activeVariants,
             ensure(
               variantsByName.get(removedVariantName),
-              "Active variants are expected contain removedVariantName"
-            )
-          )
+              "Active variants are expected contain removedVariantName",
+            ),
+          ),
         );
       });
     };
@@ -306,15 +306,15 @@ export const VariantPicker = observer(function VariantPicker(props: {
           ...activeVariants,
           ensure(
             variantsByName.get(addVariantName),
-            "variantsByName is expected to contain addVariantName"
+            "variantsByName is expected to contain addVariantName",
           ),
-        ])
+        ]),
       );
     };
     return group.multi ? (
       <XMultiSelect
         options={L.difference(group.variants, activeVariants).map(
-          (v) => v.name
+          (v) => v.name,
         )}
         onSelect={onSelect}
         onUnselect={onUnselect}
@@ -325,7 +325,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
           !input
             ? _options
             : _options.filter((n) =>
-                n.toLowerCase().includes(input.toLowerCase())
+                n.toLowerCase().includes(input.toLowerCase()),
               )
         }
         pillClassName="white-bg"
@@ -355,11 +355,11 @@ export const VariantPicker = observer(function VariantPicker(props: {
                 ? [
                     ensure(
                       variantsByName.get(valName as string),
-                      "variantsByName is expected to contain valName"
+                      "variantsByName is expected to contain valName",
                     ),
                   ]
-                : []
-            )
+                : [],
+            ),
           )
         }
         value={activeVariants.length > 0 ? activeVariants[0].name : null}
@@ -387,7 +387,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
               key={"clear"}
               onClick={() =>
                 viewCtx.change(() =>
-                  viewCtx.variantTplMgr().delArg(tpl, group.param.variable)
+                  viewCtx.variantTplMgr().delArg(tpl, group.param.variable),
                 )
               }
             >
@@ -474,7 +474,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
                 const codeExpr = ensureInstance(
                   currentExpr,
                   CustomCode,
-                  ObjectPath
+                  ObjectPath,
                 );
                 const fallbackExpr = codeExpr.fallback
                   ? clone(codeExpr.fallback)
@@ -515,7 +515,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
                   variantTplMgr.setArg(tpl, group.param.variable, newExpr);
                 }
               },
-              getValueSetState(defined)
+              getValueSetState(defined),
             )
           )}
         </ContextMenuIndicator>
@@ -540,7 +540,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
                     codeExpr.fallback = newExpr;
                   });
                 },
-                isFallbackSet(codeExpr) ? "isSet" : "isUnset"
+                isFallbackSet(codeExpr) ? "isSet" : "isUnset",
               )}
             </FallbackEditor>
           );
@@ -564,8 +564,8 @@ export const VariantPicker = observer(function VariantPicker(props: {
                 .setArg(
                   tpl,
                   group.param.variable,
-                  new VarRef({ variable: newParam.variable })
-                )
+                  new VarRef({ variable: newParam.variable }),
+                ),
             );
           }}
         />

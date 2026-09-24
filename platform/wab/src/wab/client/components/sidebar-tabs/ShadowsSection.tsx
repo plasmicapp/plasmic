@@ -42,7 +42,7 @@ interface ShadowsPanelSectionState {
 const resolvedShadowCss = (
   shadow: BoxShadow,
   sc: StudioCtx,
-  vsh: VariantedStylesHelper
+  vsh: VariantedStylesHelper,
 ) => {
   const site = sc.site;
   const resolver = new CssVarResolver(
@@ -51,7 +51,7 @@ const resolvedShadowCss = (
     site.imageAssets,
     site.activeTheme,
     {},
-    vsh
+    vsh,
   );
   return resolver.resolveTokenRefs(shadow.showCss());
 };
@@ -173,7 +173,7 @@ class _ShadowsPanelSection extends StyleComponent<
                         boxShadows.shadows = arrayMoveIndex(
                           boxShadows.shadows,
                           from,
-                          to
+                          to,
                         );
                         this.updateBoxShadows(boxShadows);
                       },
@@ -184,11 +184,11 @@ class _ShadowsPanelSection extends StyleComponent<
                   const color = derefTokenRefs(
                     siteFinalStyleTokensAllDeps(sc.site),
                     shadow.color,
-                    vsh
+                    vsh,
                   );
                   const token = tryParseTokenRef(
                     shadow.color,
-                    siteFinalColorTokens(sc.site, { includeDeps: "all" })
+                    siteFinalColorTokens(sc.site, { includeDeps: "all" }),
                   );
                   return (
                     <ListBoxItem

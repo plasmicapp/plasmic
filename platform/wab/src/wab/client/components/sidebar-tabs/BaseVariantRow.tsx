@@ -18,7 +18,7 @@ interface BaseVariantRowProps {
 }
 
 export const BaseVariantRow = observer(function BaseVariantRow(
-  props: BaseVariantRowProps
+  props: BaseVariantRowProps,
 ) {
   const { tpl, studioCtx, viewCtx, pinState, onClick } = props;
 
@@ -53,7 +53,7 @@ export const BaseVariantRow = observer(function BaseVariantRow(
             animations.length > 0
               ? makeVariantMenu({
                   variant: getBaseVariant(
-                    viewCtx.currentTplComponent().component
+                    viewCtx.currentTplComponent().component,
                   ),
                   previewAnimation: isAnimationPlaying
                     ? {

@@ -109,7 +109,7 @@ export function HrefEditor(props: {
   const query = async (
     _qry: string,
     _cursorPosition?: number,
-    _limit?: number
+    _limit?: number,
   ): Promise<HrefItem[]> => {
     const first: HrefItem[] = curValue ? [curValue] : [];
     const pages = sc.site.components
@@ -147,7 +147,7 @@ export function HrefEditor(props: {
               param.key,
               codeLit(param.previewValue),
             ])
-          : []
+          : [],
       );
       submitVal(
         new PageHref({
@@ -156,7 +156,7 @@ export function HrefEditor(props: {
           query: {},
           fragment: null,
           encode: true,
-        })
+        }),
       );
     } else {
       submitVal(v.item);
@@ -177,10 +177,10 @@ export function HrefEditor(props: {
             item == null
               ? ""
               : isKnownComponent(item)
-              ? `${item.uid}`
-              : isDataTokenRef(item)
-              ? item.token.uuid
-              : `${item}`
+                ? `${item.uid}`
+                : isDataTokenRef(item)
+                  ? item.token.uuid
+                  : `${item}`
           }
           source={{
             query,

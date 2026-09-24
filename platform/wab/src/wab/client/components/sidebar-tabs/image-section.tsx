@@ -88,18 +88,18 @@ export const ImageSection = observer(function ImageSection(props: {
 
   const isIcon = tpl.tag === "svg";
   const attr = getTagAttrForImageAsset(
-    isIcon ? ImageAssetType.Icon : ImageAssetType.Picture
+    isIcon ? ImageAssetType.Icon : ImageAssetType.Picture,
   );
   const attrSource = effectiveVs.getAttrSource(attr);
   const definedIndicator = computeDefinedIndicator(
     viewCtx.site,
     viewCtx.currentComponent(),
     attrSource,
-    vtm.getTargetIndicatorComboForNode(tpl)
+    vtm.getTargetIndicatorComboForNode(tpl),
   );
 
   const hasTypoStyles = typographyCssProps.some((p) =>
-    expsProvider.maybeTargetExp()?.has(p)
+    expsProvider.maybeTargetExp()?.has(p),
   );
 
   const expr = effectiveVs.attrs[attr];
@@ -108,7 +108,7 @@ export const ImageSection = observer(function ImageSection(props: {
   const [isDataPickerVisible, setIsDataPickerVisible] =
     React.useState<boolean>(false);
   const [showFallback, setShowFallback] = React.useState<boolean>(
-    isFallbackSet(expr)
+    isFallbackSet(expr),
   );
 
   if (isKnownVarRef(expr)) {
@@ -119,9 +119,9 @@ export const ImageSection = observer(function ImageSection(props: {
     !variable && isKnownImageAssetRef(expr)
       ? expr.asset
       : (isKnownCustomCode(expr) || isKnownObjectPath(expr)) &&
-        isKnownImageAssetRef(expr.fallback)
-      ? expr.fallback.asset
-      : undefined;
+          isKnownImageAssetRef(expr.fallback)
+        ? expr.fallback.asset
+        : undefined;
 
   if (!targetVs) {
     return null;
@@ -251,14 +251,14 @@ export const ImageSection = observer(function ImageSection(props: {
                     const codeExpr = ensureInstance(
                       expr,
                       ObjectPath,
-                      CustomCode
+                      CustomCode,
                     );
                     const fallbackExpr = codeExpr.fallback
                       ? clone(codeExpr.fallback)
                       : undefined;
                     const newExpr = createExprForDataPickerValue(
                       val,
-                      fallbackExpr
+                      fallbackExpr,
                     );
                     viewCtx.change(() => {
                       if (targetVs) {
@@ -301,7 +301,7 @@ export const ImageSection = observer(function ImageSection(props: {
                   const newExpr = ensureInstance(
                     clonedExpr,
                     ObjectPath,
-                    CustomCode
+                    CustomCode,
                   );
                   newExpr.fallback = undefined;
                   targetVs.attrs[attr] = newExpr;
@@ -322,7 +322,7 @@ export const ImageSection = observer(function ImageSection(props: {
                     const newExpr = ensureInstance(
                       clonedExpr,
                       ObjectPath,
-                      CustomCode
+                      CustomCode,
                     );
                     if (isKnownImageAsset(picked)) {
                       newExpr.fallback = new ImageAssetRef({
@@ -396,7 +396,7 @@ export const ImageSection = observer(function ImageSection(props: {
                   <a
                     onClick={() =>
                       viewCtx.change(() =>
-                        viewCtx.setStudioFocusByTpl(ancestorSlot)
+                        viewCtx.setStudioFocusByTpl(ancestorSlot),
                       )
                     }
                   >
@@ -414,8 +414,8 @@ export const ImageSection = observer(function ImageSection(props: {
                               .getViewOps()
                               .transferTextStyleToSlot(
                                 tpl as TplTag,
-                                ancestorSlot
-                              )
+                                ancestorSlot,
+                              ),
                           )
                         }
                       >
@@ -457,8 +457,8 @@ const DefaultVariableImagePicker = observer(
     const defaultParamLit = isKnownImageAssetRef(referencedParam?.defaultExpr)
       ? referencedParam?.defaultExpr.asset
       : referencedParam?.defaultExpr
-      ? (tryExtractLit(referencedParam.defaultExpr) as ImageAsset | string)
-      : undefined;
+        ? (tryExtractLit(referencedParam.defaultExpr) as ImageAsset | string)
+        : undefined;
     return (
       <ImageAssetPreviewAndPicker
         className="flex-fill flex-col"
@@ -479,7 +479,7 @@ const DefaultVariableImagePicker = observer(
         type={ImageAssetType.Picture}
       />
     );
-  }
+  },
 );
 
 export function makeImageMenu({
@@ -532,7 +532,7 @@ export function makeImageMenu({
                 {ownerComponent.name}.{variable!.name}
               </code>
             </span>
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
       if (hasLink) {
@@ -555,7 +555,7 @@ export function makeImageMenu({
                 {ownerComponent.name}.{variable!.name}
               </code>
             </span>
-          </Menu.Item>
+          </Menu.Item>,
         );
       } else if (viewCtx.tplMgr().canLinkToProp(tpl)) {
         const updateAttr = (varRef: VarRef) => {
@@ -563,14 +563,14 @@ export function makeImageMenu({
 
           const globalVariantSettings = tpl.vsettings.filter(
             (vs) =>
-              vs.variants.every((v) => isGlobalVariant(v)) && !!vs.attrs[attr]
+              vs.variants.every((v) => isGlobalVariant(v)) && !!vs.attrs[attr],
           );
 
           const param = extractReferencedParam(ownerComponent, varRef);
           if (param && globalVariantSettings.length > 0) {
             const compInstances = getTplComponentsInSite(
               viewCtx.studioCtx.site,
-              ownerComponent
+              ownerComponent,
             );
             const vtm = viewCtx.variantTplMgr();
             compInstances.forEach((instTpl) => {
@@ -579,7 +579,7 @@ export function makeImageMenu({
                   instTpl,
                   param.variable,
                   new ImageAssetRef(vs.attrs[attr] as ImageAssetRef),
-                  ensureVariantSetting(instTpl, vs.variants)
+                  ensureVariantSetting(instTpl, vs.variants),
                 );
               });
             });
@@ -603,7 +603,7 @@ export function makeImageMenu({
                       updateAttr(
                         new VarRef({
                           variable: param.variable,
-                        })
+                        }),
                       );
                     })
                   }
@@ -615,7 +615,7 @@ export function makeImageMenu({
               onClick={async () => {
                 const paramName = await promptForParamName(
                   viewCtx.tplMgr(),
-                  ownerComponent
+                  ownerComponent,
                 );
                 if (!paramName) {
                   return;
@@ -633,7 +633,7 @@ export function makeImageMenu({
             >
               <CreateNewMenuItemContent entity="prop" />
             </Menu.Item>
-          </Menu.SubMenu>
+          </Menu.SubMenu>,
         );
       }
       if (!referencedParam && !isCustomCode && switchToDynamic) {
@@ -645,7 +645,7 @@ export function makeImageMenu({
             }}
           >
             Use dynamic value
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
 
@@ -657,7 +657,7 @@ export function makeImageMenu({
               onClick={() => fallback?.setShowFallback(true)}
             >
               Change fallback value
-            </Menu.Item>
+            </Menu.Item>,
           );
         }
         push(
@@ -679,7 +679,7 @@ export function makeImageMenu({
             }}
           >
             Remove dynamic value
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
     });
@@ -699,7 +699,7 @@ export function makeImageMenu({
           }
         >
           Unset image
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
   });
@@ -722,5 +722,5 @@ const _ImageSectionForCodeComponent = (props: {
 );
 
 export const ImageSectionForCodeComponent = observer(
-  _ImageSectionForCodeComponent
+  _ImageSectionForCodeComponent,
 );

@@ -174,8 +174,8 @@ export const EffectsPanelSection = observer(
                               studioCtx.changeUnsafe(() =>
                                 exp.set(
                                   "pointer-events",
-                                  checked ? "auto" : "none"
-                                )
+                                  checked ? "auto" : "none",
+                                ),
                               )
                             }
                           />
@@ -216,8 +216,8 @@ export const EffectsPanelSection = observer(
                               studioCtx.changeUnsafe(() =>
                                 exp.set(
                                   "isolation",
-                                  checked ? "isolate" : "auto"
-                                )
+                                  checked ? "isolate" : "auto",
+                                ),
                               )
                             }
                             tooltip="Prevents children elements with blend modes from blending with parents of this container."
@@ -260,7 +260,7 @@ export const EffectsPanelSection = observer(
                     ),
                   },
                 ],
-                { alwaysVisible: true }
+                { alwaysVisible: true },
               )}
 
             {animatableOnly && (
@@ -274,5 +274,5 @@ export const EffectsPanelSection = observer(
         )}
       </StylePanelSection>
     );
-  }
+  },
 );

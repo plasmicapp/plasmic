@@ -28,7 +28,7 @@ import React, { useState } from "react";
 const _GenericFilterEffectSection = (
   cssProp: string,
   title: string,
-  label: string
+  label: string,
 ) =>
   observer((props: { expsProvider: ExpsProvider }) => {
     const { expsProvider } = props;
@@ -39,7 +39,7 @@ const _GenericFilterEffectSection = (
 
     const rawFilters =
       maybe(exp.getRaw(cssProp), (val) =>
-        val === "none" ? [] : splitCssValue(cssProp, val)
+        val === "none" ? [] : splitCssValue(cssProp, val),
       ) ?? [];
     const filters = rawFilters.map(fromFilterStringToObj);
 
@@ -49,7 +49,7 @@ const _GenericFilterEffectSection = (
           // Use value.join() instead of showCssValue() so we don't
           // filter out the hidden# values.
           exp.set(prop, joinCssValues(prop, values));
-        })
+        }),
       );
     };
 
@@ -168,10 +168,10 @@ const _GenericFilterEffectSection = (
 export const FilterEffectSection = _GenericFilterEffectSection(
   "filter",
   "Filter",
-  "Filter Effect"
+  "Filter Effect",
 );
 export const BackdropFilterEffectSection = _GenericFilterEffectSection(
   "backdrop-filter",
   "Backdrop Filter",
-  "Backdrop Effect"
+  "Backdrop Effect",
 );

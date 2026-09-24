@@ -47,14 +47,14 @@ export interface ColumnsPanelProps {
 }
 
 export const ColumnsPanelSection = observer(function ColumnsPanelSection(
-  props: ColumnsPanelProps
+  props: ColumnsPanelProps,
 ) {
   const { tpl, expsProvider } = props;
   const childrenLength = props.tpl.children.length;
   const studioCtx = props.studioCtx;
   const viewCtx = ensure(
     studioCtx.focusedViewCtx(),
-    "must have focused viewctx"
+    "must have focused viewctx",
   );
   const effectiveVs = viewCtx.effectiveCurrentVariantSetting(tpl);
 
@@ -62,8 +62,8 @@ export const ColumnsPanelSection = observer(function ColumnsPanelSection(
     // only capture the error, but don't crash the studio because of it
     reportError(
       new NullOrUndefinedValueError(
-        "[rc] - columnsConfig expected to be truthy"
-      )
+        "[rc] - columnsConfig expected to be truthy",
+      ),
     );
   }
 
@@ -80,7 +80,7 @@ export const ColumnsPanelSection = observer(function ColumnsPanelSection(
     studioCtx.site,
     viewCtx.currentComponent(),
     effectiveVs.getColumnsConfigSource(),
-    viewCtx.variantTplMgr().getTargetIndicatorComboForNode(tpl)
+    viewCtx.variantTplMgr().getTargetIndicatorComboForNode(tpl),
   );
 
   const { isDisabled } = shouldBeDisabled({
@@ -245,7 +245,7 @@ export const ColumnsStyleOnlySection = observer(
         />
       </SidebarSection>
     );
-  }
+  },
 );
 
 export const ColumnsGapControls = observer(function ColumnsGapControls(props: {

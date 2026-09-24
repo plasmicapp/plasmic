@@ -33,7 +33,7 @@ type LayoutSectionProps = {
   allowConvert?: boolean;
 };
 export const LayoutSection = observer(function LayoutSection_(
-  props: LayoutSectionProps
+  props: LayoutSectionProps,
 ) {
   const styling = useStyleComponent();
   const hasDisplay = styling.exp().has("display");
@@ -62,7 +62,7 @@ export const LayoutSection = observer(function LayoutSection_(
                       }
                     >
                       {getContainerTypeName(type)}
-                    </Menu.Item>
+                    </Menu.Item>,
                   );
                 }
               }
@@ -79,7 +79,7 @@ export const LayoutSection = observer(function LayoutSection_(
                     }
                   >
                     {getContainerTypeName(type)}
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               }
             }
@@ -105,7 +105,7 @@ export const LayoutSection = observer(function LayoutSection_(
                 value={containerType}
                 onChange={(val) => {
                   props.expsProvider.onContainerTypeChange(
-                    ensureContainerType(val)
+                    ensureContainerType(val),
                   );
                 }}
                 styleType="right"

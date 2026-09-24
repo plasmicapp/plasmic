@@ -224,7 +224,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
 
       return false;
     },
-    { name: "isFocused" }
+    { name: "isFocused" },
   ).get();
 
   const isHovered = computed(
@@ -232,12 +232,12 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       const hoveredSelectable = viewCtx.hoveredSelectable();
       return !!hoveredSelectable && isMatchingSelectable(hoveredSelectable);
     },
-    { name: "isHovered" }
+    { name: "isHovered" },
   ).get();
 
   const parentsWithSlotSelections = computed(
     () => $$$(item).parentsWithSlotSelections().toArray(),
-    { name: "parentsWithSlotSelections" }
+    { name: "parentsWithSlotSelections" },
   );
 
   const isStrictDescendantOfFocus = computed(
@@ -266,7 +266,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         }
       });
     },
-    { name: "isStrictDescendantOfFocus" }
+    { name: "isStrictDescendantOfFocus" },
   ).get();
 
   const effectiveVs = computed(
@@ -274,7 +274,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       isTplTagOrComponent(item)
         ? viewCtx.variantTplMgr().effectiveVariantSetting(item)
         : undefined,
-    { name: "TreeNode.effectiveVs" }
+    { name: "TreeNode.effectiveVs" },
   );
 
   const indicatedVs = computed(
@@ -302,7 +302,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       }
       return undefined;
     },
-    { name: "indicatedVs" }
+    { name: "indicatedVs" },
   ).get();
 
   const itemAsTpl = () => {
@@ -310,7 +310,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     return item instanceof SlotSelection
       ? ensure(
           item.toTplSlotSelection().tpl,
-          "Slot selection in tpl tree should have a tpl"
+          "Slot selection in tpl tree should have a tpl",
         )
       : item;
   };
@@ -327,7 +327,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       }
       return viewCtx.isOutOfContext(itemAsTpl());
     },
-    { name: "isOutOfContext" }
+    { name: "isOutOfContext" },
   ).get();
 
   const isDrilled = computed(
@@ -336,23 +336,23 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         viewCtx.currentComponentCtx(),
         (ctx) =>
           ctx.valComponent() ===
-          tryGetValForTpl(viewCtx, item, componentFrameNum)
+          tryGetValForTpl(viewCtx, item, componentFrameNum),
       );
     },
-    { name: "isDrilled" }
+    { name: "isDrilled" },
   ).get();
 
   const isDrilledDescendant = computed(
     () => {
       const spotlightComponent = maybe(viewCtx.currentComponentCtx(), (ctx) =>
-        ctx.component()
+        ctx.component(),
       );
       return (
         !!spotlightComponent &&
         $$$(itemAsTpl()).tryGetOwningComponent() === spotlightComponent
       );
     },
-    { name: "isDrilledDescendant" }
+    { name: "isDrilledDescendant" },
   ).get();
 
   const hasRep = computed(
@@ -363,7 +363,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       }
       return false;
     },
-    { name: "hasRep" }
+    { name: "hasRep" },
   ).get();
 
   const hasInteraction = computed(
@@ -375,7 +375,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     },
     {
       name: "hasInteraction",
-    }
+    },
   ).get();
 
   const visibilityDataCond = effectiveVs.get()?.dataCond;
@@ -391,7 +391,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       ? `"${transformDataTokensToDisplay(
           text,
           viewCtx.site,
-          viewCtx.siteInfo.id
+          viewCtx.siteInfo.id,
         )}"`
       : undefined;
   });
@@ -516,7 +516,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
                   viewCtx.setStudioFocusBySelectable(null);
                 }
               }
-            })
+            }),
           )}
         >
           {item.locked === true ? (
@@ -572,7 +572,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       }
       return null;
     },
-    { name: "customLabel" }
+    { name: "customLabel" },
   ).get();
 
   const renderContent = () => {
@@ -580,7 +580,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       return (
         <TplTreeNodeLabel
           summary={outlineCtx.matcher.boldSnippets(
-            getSlotSelectionDisplayName(item, viewCtx)
+            getSlotSelectionDisplayName(item, viewCtx),
           )}
         />
       );
@@ -589,7 +589,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     } else if (Tpls.isTplNamable(item)) {
       const defaultEditing = computed(
         () => viewCtx.studioCtx.renamingOnPanel() && isFocused,
-        { name: "defaultEditing" }
+        { name: "defaultEditing" },
       ).get();
       const itemName = item.name || "";
       return (
@@ -612,8 +612,8 @@ const TplTreeNode = observer(function TplTreeNode(props: {
                 {
                   tpl: item,
                   viewCtx,
-                }
-              )
+                },
+              ),
             );
             viewCtx.studioCtx.endRenamingOnPanel();
           }}
@@ -624,7 +624,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
             name={outlineCtx.matcher.boldSnippets(itemName)}
             summary={Tpls.isTplTextBlock(item) ? undefined : summarizeTpl(item)}
             content={outlineCtx.matcher.boldSnippets(
-              getTextContent(item) || ""
+              getTextContent(item) || "",
             )}
             customLabel={customLabel}
           />
@@ -635,12 +635,12 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       const text =
         isPlainTextTplSlot(item) && !isCodeComponent(component)
           ? outlineCtx.matcher.boldSnippets(
-              getTextContent(item.defaultContents[0]) || ""
+              getTextContent(item.defaultContents[0]) || "",
             )
           : undefined;
       const defaultEditing = computed(
         () => viewCtx.studioCtx.renamingOnPanel() && isFocused,
-        { name: "defaultEditing" }
+        { name: "defaultEditing" },
       ).get();
       return (
         <EditableLabel
@@ -669,8 +669,8 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   const plumeDef = isKnownTplSlot(item)
     ? getPlumeSlotDef(component, item.param)
     : isKnownTplNode(item)
-    ? getPlumeElementDef(component, item)
-    : undefined;
+      ? getPlumeElementDef(component, item)
+      : undefined;
 
   const getCommentStatsForTpl = (tpl: TplNode) => {
     const commentStatsBySubject = commentsCtx
@@ -690,7 +690,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     if (viewCtx.studioCtx.focusedMode) {
       const variants = getSetOfPinnedVariantsForViewCtx(
         viewCtx,
-        viewCtx.bundler()
+        viewCtx.bundler(),
       );
       const commentStatsByVariant = commentsCtx
         .computedData()
@@ -731,7 +731,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         return node;
       }
     },
-    { name: "icon" }
+    { name: "icon" },
   ).get();
 
   const codeComponentRoot = isKnownTplNode(item) && isCodeComponentRoot(item);
@@ -746,7 +746,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         viewCtx.tryBlurEditingText();
       }
     },
-    [viewCtx]
+    [viewCtx],
   );
 
   return (
@@ -795,12 +795,12 @@ const TplTreeNode = observer(function TplTreeNode(props: {
           if (item instanceof SlotSelection) {
             const tplComponent = ensure(
               item.toTplSlotSelection().tpl,
-              "SlotSelection in tpl-tree is expected to have a tpl"
+              "SlotSelection in tpl-tree is expected to have a tpl",
             );
             const val = tryGetValForTpl(
               viewCtx,
               tplComponent,
-              componentFrameNum
+              componentFrameNum,
             );
             const valSlotPlaceholder = new SlotSelection({
               val: val ? (val as ValComponent) : undefined,
@@ -858,13 +858,13 @@ const TplTreeNode = observer(function TplTreeNode(props: {
           viewCtx.change(() =>
             viewCtx
               .getViewOps()
-              .tryHoverObj(obj, { allowLocked: true, exact: true })
+              .tryHoverObj(obj, { allowLocked: true, exact: true }),
           );
         }
       }}
       onMouseLeave={() => {
         viewCtx.change(() =>
-          viewCtx.getViewOps().tryHoverObj(undefined, { exact: true })
+          viewCtx.getViewOps().tryHoverObj(undefined, { exact: true }),
         );
       }}
     >
@@ -982,14 +982,14 @@ const DraggableTreeNode = observer(function DraggableTreeNode(props: {
         setLabelTarget(
           $(e.mouseEvent.target)
             .parents(".tpltree__draggable")
-            .get(0) as HTMLElement
+            .get(0) as HTMLElement,
         );
 
         const dragTpls = viewCtx.focusedTpls().some((tpl) => tpl === item)
           ? Tpls.prepareFocusedTpls(viewCtx.focusedTpls())
           : [item];
         const dragClips = dragTpls.map((tpl) =>
-          viewCtx.getViewOps().createTplClip(tpl, $$$(tpl).owningComponent())
+          viewCtx.getViewOps().createTplClip(tpl, $$$(tpl).owningComponent()),
         );
 
         return dndManager.onDragStart(e.mouseEvent, dragClips);
@@ -1034,8 +1034,8 @@ const DraggableTreeNode = observer(function DraggableTreeNode(props: {
               paddingLeft: indentPadding(
                 ensure(
                   insertionMarker,
-                  "Expected insertionMarker to be not null"
-                ).indent + 1
+                  "Expected insertionMarker to be not null",
+                ).indent + 1,
               ),
             }}
           >
@@ -1079,7 +1079,7 @@ function DraggedHandle({ labelTarget }: DraggedHandleProps) {
   React.useEffect(() => {
     if (labelTarget && ref.current) {
       const label = $(".tpltree__label__content", labelTarget)[0].cloneNode(
-        true
+        true,
       ) as HTMLDivElement;
       label.classList.add("tpltree__dragged__label");
       ref.current.appendChild(label);
@@ -1147,7 +1147,7 @@ export function TplNodeIconWrapper(props: {
 
 export function createNodeIcon(
   node: TplNode | SlotSelection,
-  vs?: EffectiveVariantSetting
+  vs?: EffectiveVariantSetting,
 ) {
   return <Icon icon={iconForTplType(getTplType(node, vs))} />;
 }
@@ -1155,7 +1155,7 @@ export function createNodeIcon(
 function tryGetValForTpl(
   viewCtx: ViewCtx,
   tplToSelect: TplNode | SlotSelection,
-  frameNum: number
+  frameNum: number,
 ) {
   // A Tpl can map to multiple Vals (or none).  Normally we try to
   // just select the first Val.  But we can be smarter in some
@@ -1203,7 +1203,7 @@ function tryGetValForTpl(
     frameNum,
     viewCtx.valState(),
     initialSel,
-    viewCtx.tplUserRoot()
+    viewCtx.tplUserRoot(),
   );
 }
 
@@ -1218,7 +1218,7 @@ type DragInsertion =
   | { type: "cant-insert-child"; msg: CantAddTreeChildMsg };
 
 function isCantDragInsertion(
-  ins: DragInsertion
+  ins: DragInsertion,
 ): ins is Exclude<
   DragInsertion,
   "insert-above" | "insert-below" | "insert-as-child"
@@ -1228,7 +1228,7 @@ function isCantDragInsertion(
 
 function getTargetSlivers(
   e: React.DragEvent | React.MouseEvent,
-  acceptsChildren?: boolean
+  acceptsChildren?: boolean,
 ) {
   const targetRect = e.currentTarget.getBoundingClientRect();
 
@@ -1325,7 +1325,7 @@ export class TreeDndManager {
         if (Tpls.isTplComponent(parent)) {
           const sel = ensure(
             getSlotSelectionContainingTpl(this.target.outcome.item),
-            "Child of tplComponent is expected to have a slot selection"
+            "Child of tplComponent is expected to have a slot selection",
           );
           return (
             item instanceof SlotSelection &&
@@ -1347,7 +1347,7 @@ export class TreeDndManager {
       items.some(
         (item) =>
           !(isTplTagOrComponent(item.node) || Tpls.isTplSlot(item.node)) ||
-          Tpls.isTplTextBlock(item.node.parent)
+          Tpls.isTplTextBlock(item.node.parent),
       )
     ) {
       e.preventDefault();
@@ -1376,7 +1376,7 @@ export class TreeDndManager {
     item: TplNode | SlotSelection,
     viewCtx: ViewCtx,
     childrenShowing: boolean,
-    indent: number
+    indent: number,
   ) {
     e.preventDefault();
     const insertion = this.getInsertion(e, item, childrenShowing, indent);
@@ -1436,10 +1436,10 @@ export class TreeDndManager {
       insertion === "insert-above"
         ? InsertRelLoc.before
         : insertion === "insert-below"
-        ? InsertRelLoc.after
-        : insertion === "insert-as-child"
-        ? InsertRelLoc.append
-        : unexpected();
+          ? InsertRelLoc.after
+          : insertion === "insert-as-child"
+            ? InsertRelLoc.append
+            : unexpected();
     if (relLoc === InsertRelLoc.after) {
       // Reverse items in-place to insert in the expected order.
       this.draggedItems.reverse();
@@ -1497,7 +1497,7 @@ export class TreeDndManager {
   private getDedentedInsertion(
     e: React.DragEvent | React.MouseEvent,
     item: TplNode | SlotSelection,
-    indent: number
+    indent: number,
   ): InsertionOutcome | undefined {
     const THRESHOLD = 20;
     if (item instanceof SlotSelection) {
@@ -1524,14 +1524,14 @@ export class TreeDndManager {
           return (
             L.last(parent.children) === target &&
             draggedNodes.every((dragged) =>
-              canAddSiblingsAndWhy(parent, dragged)
+              canAddSiblingsAndWhy(parent, dragged),
             )
           );
         } else if (Tpls.isTplSlot(parent)) {
           return (
             L.last(parent.defaultContents) === target &&
             draggedNodes.every((dragged) =>
-              canAddSiblingsAndWhy(parent, dragged)
+              canAddSiblingsAndWhy(parent, dragged),
             )
           );
         } else {
@@ -1542,7 +1542,7 @@ export class TreeDndManager {
       while (xDelta < -THRESHOLD && canInsertAsTargetParentSibling(newTarget)) {
         newTarget = ensure(
           newTarget.parent,
-          "Expected newTarget to have a parent"
+          "Expected newTarget to have a parent",
         );
         indent -= 1;
         xDelta += THRESHOLD;
@@ -1570,7 +1570,7 @@ export class TreeDndManager {
     e: React.DragEvent | React.MouseEvent,
     item: TplNode | SlotSelection,
     childrenShowing: boolean,
-    indent: number
+    indent: number,
   ): InsertionOutcome | undefined {
     if (!this.draggedItems.length) {
       return undefined;
@@ -1584,7 +1584,7 @@ export class TreeDndManager {
     const draggedNodes = this.draggedItems.map((dragged) => dragged.node);
     const { acceptsChildren, acceptsSibling } = this.getAcceptance(
       draggedNodes,
-      item
+      item,
     );
 
     const targetSlivers = getTargetSlivers(e, acceptsChildren === true);
@@ -1635,7 +1635,7 @@ export class TreeDndManager {
 
   private getAcceptance(
     draggedNodes: TplNode[],
-    target: TplNode | SlotSelection
+    target: TplNode | SlotSelection,
   ) {
     return {
       acceptsChildren:
@@ -1672,7 +1672,7 @@ const ArenaTreeNode = observer(function ArenaTreeNode(props: {
   const isOpen = outlineCtx.isExpanded(node.key);
   const setOpen = React.useCallback(
     (open: boolean) => outlineCtx.setExpanded(node.key, open),
-    [outlineCtx, node.key]
+    [outlineCtx, node.key],
   );
   const isDropParent = dndManager.isDropParent(node.item);
   return (
@@ -1738,7 +1738,7 @@ export const ArenaTree = observer(
       outlineCtx: OutlineCtx;
       dndManager: TreeDndManager;
     },
-    outerRef: React.Ref<ArenaTreeRef>
+    outerRef: React.Ref<ArenaTreeRef>,
   ) {
     const { studioCtx, arena, outlineCtx, dndManager } = props;
     const viewCtx = outlineCtx.viewCtx();
@@ -1749,7 +1749,7 @@ export const ArenaTree = observer(
       studioCtx,
       arena,
       outlineCtx,
-      dndManager
+      dndManager,
     );
 
     const focusedKey = outlineCtx.focusedNodeKeyPath()[0];
@@ -1766,12 +1766,12 @@ export const ArenaTree = observer(
         dndManager,
         nodes: visibleNodes,
       }),
-      [viewCtx, outlineCtx, dndManager, visibleNodes]
+      [viewCtx, outlineCtx, dndManager, visibleNodes],
     );
 
     const itemKey = React.useCallback(
       (index: number, data: TreeRowItemData) => data.nodes[index].key,
-      []
+      [],
     );
 
     // Leave room after the deepest indentation for the expander, node icons,
@@ -1822,14 +1822,14 @@ export const ArenaTree = observer(
         }
       </ListSpace>
     );
-  })
+  }),
 );
 
 function useTreeData(
   studioCtx: StudioCtx,
   arena: AnyArena | null,
   outlineCtx: OutlineCtx,
-  dndManager: TreeDndManager
+  dndManager: TreeDndManager,
 ) {
   const buildVisibleNodes = React.useMemo(
     () =>
@@ -1855,7 +1855,7 @@ function useTreeData(
         }
         return { visibleNodes, keyToIndex };
       }),
-    [studioCtx, arena, outlineCtx, dndManager]
+    [studioCtx, arena, outlineCtx, dndManager],
   );
 
   const { visibleNodes, keyToIndex } = buildVisibleNodes();
@@ -1864,7 +1864,7 @@ function useTreeData(
     (key: OutlineNodeKey) => {
       return keyToIndex[key];
     },
-    [keyToIndex]
+    [keyToIndex],
   );
 
   return {
@@ -1896,7 +1896,7 @@ function useRevealOnFocus(opts: {
         }
       }
     },
-    [listRef, getKeyIndex]
+    [listRef, getKeyIndex],
   );
 
   useChanged(focusedKey, scrollToKey);

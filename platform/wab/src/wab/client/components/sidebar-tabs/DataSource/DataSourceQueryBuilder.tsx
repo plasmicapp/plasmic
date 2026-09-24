@@ -43,7 +43,7 @@ const baseConfig: Config = {
 interface DataSourceQueryBuilderProps {
   saveTree: (
     data: Filters,
-    bindings: Record<string, TemplatedString | CustomCode | ObjectPath>
+    bindings: Record<string, TemplatedString | CustomCode | ObjectPath>,
   ) => void;
   logic?: any;
   tree: JsonTree | undefined;
@@ -57,7 +57,7 @@ interface DataSourceQueryBuilderProps {
 
 function DataSourceQueryBuilder_(
   props: DataSourceQueryBuilderProps,
-  outerRef: React.Ref<HTMLDivElement>
+  outerRef: React.Ref<HTMLDivElement>,
 ) {
   const {
     saveTree,
@@ -104,7 +104,7 @@ function DataSourceQueryBuilder_(
 
   const types = React.useMemo(
     () => ["boolean", "number", "datetime", "date", "select"],
-    []
+    [],
   );
 
   const [state, setState] = React.useState<{
@@ -154,7 +154,7 @@ function DataSourceQueryBuilder_(
                     : undefined;
 
                 const setValue = (
-                  expr: CustomCode | ObjectPath | null | undefined
+                  expr: CustomCode | ObjectPath | null | undefined,
                 ) => {
                   if (isNil(expr)) {
                     widgetProps.setValue(undefined);
@@ -180,7 +180,7 @@ function DataSourceQueryBuilder_(
                     renderOriginalWidget={() =>
                       ensure(
                         baseConfig.widgets[widgetType].factory,
-                        () => `No factory for widget: ${widgetType}`
+                        () => `No factory for widget: ${widgetType}`,
                       )(widgetPropsWithRealValue as any, context)
                     }
                     exprCtx={exprCtx}
@@ -188,7 +188,7 @@ function DataSourceQueryBuilder_(
                 );
               },
             },
-          ])
+          ]),
         ),
       },
       types: Object.fromEntries(
@@ -205,10 +205,10 @@ function DataSourceQueryBuilder_(
               config.types[type],
               "excludeOperators",
               "defaultOperator",
-              "valueSources"
+              "valueSources",
             ),
           },
-        ])
+        ]),
       ),
       fields: Object.fromEntries(
         Object.entries(config.fields)
@@ -239,7 +239,7 @@ function DataSourceQueryBuilder_(
                 },
               },
             },
-          ])
+          ]),
       ),
     };
     return {
@@ -248,12 +248,12 @@ function DataSourceQueryBuilder_(
           ? QbUtils.loadTree(tree)
           : QbUtils.loadFromJsonLogic(
               logic,
-              merge({}, config, initialWidgetsConfig)
+              merge({}, config, initialWidgetsConfig),
             )) ??
         QbUtils.loadTree(
           getEmptyTree(merge({}, config, initialWidgetsConfig), {
             appendFirstField: true,
-          })
+          }),
         ),
       config: merge({}, config, initialWidgetsConfig),
     };

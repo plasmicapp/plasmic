@@ -95,7 +95,7 @@ const COMMON_INPUT_ATTRS = [
 export function getInputTagType(tpl: TplTag) {
   const vs = ensure(
     tryGetBaseVariantSetting(tpl),
-    "Tpl should have base variant"
+    "Tpl should have base variant",
   );
   const expr = vs.attrs.type;
   return (expr && tryExtractString(expr)) || "text";
@@ -157,7 +157,7 @@ function switchableTags(tpl: TplTag): readonly string[] {
   if (tpl.tag === "input") {
     const typeExpr = ensure(
       tryGetBaseVariantSetting(tpl),
-      "Tpl should have base variant"
+      "Tpl should have base variant",
     ).attrs.type;
     const type = (typeExpr && tryExtractLit(typeExpr)) || "text";
     if (type === "text") {
@@ -197,10 +197,10 @@ function TplTagSection_(props: { tpl: TplTag; viewCtx: ViewCtx }) {
     return null;
   }
   const commonTagOptions = allTagOptions.filter((tag) =>
-    (COMMON_TAGS as readonly string[]).includes(tag)
+    (COMMON_TAGS as readonly string[]).includes(tag),
   );
   const otherTagOptions = allTagOptions.filter(
-    (tag) => !commonTagOptions.includes(tag)
+    (tag) => !commonTagOptions.includes(tag),
   );
 
   return (
@@ -307,7 +307,7 @@ export const HTMLAttributesSection = observer(
     const params = isTplTag(tpl)
       ? getEditableTagParams(viewCtx, tpl)
       : tpl.component.params.filter(
-          (p) => p.origin === ComponentPropOrigin.ReactHTMLAttributes
+          (p) => p.origin === ComponentPropOrigin.ReactHTMLAttributes,
         );
     const vtm = viewCtx.variantTplMgr();
 
@@ -346,7 +346,7 @@ export const HTMLAttributesSection = observer(
       ...addedAttrs,
       // Explicitly set
       ...Object.keys(effectiveVs.attrs).filter(
-        (attr) => !SPECIAL_ATTRS.includes(attr) && !isAttrEventHandler(attr)
+        (attr) => !SPECIAL_ATTRS.includes(attr) && !isAttrEventHandler(attr),
       ),
       // Always show by default for this tag type
       ...params.map((it) => (isKnownParam(it) ? it.variable.name : it.name)),
@@ -358,7 +358,7 @@ export const HTMLAttributesSection = observer(
         viewCtx.site,
         viewCtx.currentComponent(),
         attrSource,
-        expsProvider.targetIndicatorCombo
+        expsProvider.targetIndicatorCombo,
       );
 
       return {
@@ -370,7 +370,7 @@ export const HTMLAttributesSection = observer(
     });
 
     const ariaAttrInfos = attrInfos.filter(
-      (attr) => /aria-/i.test(attr.attr) || ["role", "id"].includes(attr.attr)
+      (attr) => /aria-/i.test(attr.attr) || ["role", "id"].includes(attr.attr),
     );
     const otherAttrInfos = attrInfos.filter((a) => !ariaAttrInfos.includes(a));
 
@@ -382,13 +382,13 @@ export const HTMLAttributesSection = observer(
         (it) => it.attr === "placeholder",
         (it) => it.attr,
       ],
-      ["desc", "desc", "desc", "asc"]
+      ["desc", "desc", "desc", "asc"],
     );
 
     const orderedAriaAttrInfos = orderBy(
       ariaAttrInfos,
       [(it) => it.attr === "id", (it) => it.attr === "role", (it) => it.attr],
-      ["desc", "desc", "asc"]
+      ["desc", "desc", "asc"],
     );
 
     const makeMaybeCollapsibleEditorRow = ({
@@ -442,7 +442,7 @@ export const HTMLAttributesSection = observer(
                 },
                 ...orderedAriaAttrInfos.map(makeMaybeCollapsibleEditorRow),
               ],
-              { alwaysVisible: true }
+              { alwaysVisible: true },
             )
           }
         </SidebarSection>
@@ -459,7 +459,7 @@ export const HTMLAttributesSection = observer(
         )}
       </>
     );
-  }
+  },
 );
 
 function AddHtmlAttrButton(props: {
@@ -472,7 +472,7 @@ function AddHtmlAttrButton(props: {
     .paramsForTag(tag)
     .filter((p) => !hiddenAttrs.includes(p.name));
   const [searchValue, setSearchValue] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [showing, setShowing] = React.useState(false);
   const selectRef = React.useRef<RefSelectProps>(null);
@@ -525,7 +525,7 @@ function AddHtmlAttrButton(props: {
                 <Select.Option key={p.name} value={p.name}>
                   {p.name}
                 </Select.Option>
-              )
+              ),
             )}
           </Select>
         </>
@@ -585,12 +585,12 @@ function InteractionModal({
               const expr = getEventHandlerByEventKey(
                 component,
                 tpl,
-                eventHandlerKey
+                eventHandlerKey,
               );
               if (isKnownVarRef(expr)) {
                 const param = ensure(
                   extractReferencedParam(component, expr),
-                  `param not found for variable ${expr.variable.name}`
+                  `param not found for variable ${expr.variable.name}`,
                 );
                 if (isAllowedDefaultExpr(newExpr)) {
                   param.defaultExpr = newExpr;
@@ -603,7 +603,7 @@ function InteractionModal({
                 setEventHandlerByEventKey(tpl, eventHandlerKey, newExpr);
               }
               return ok();
-            })
+            }),
           )
         }
       />
@@ -639,7 +639,7 @@ export const HTMLAttributePropEditor = observer(
       viewCtx.site,
       viewCtx.currentComponent(),
       attrSource,
-      expsProvider.targetIndicatorCombo
+      expsProvider.targetIndicatorCombo,
     );
 
     return (
@@ -671,7 +671,7 @@ export const HTMLAttributePropEditor = observer(
                 unsetTplVariantableAttr(tpl, attr);
                 const referencedParam = extractReferencedParam(
                   viewCtx.currentComponent(),
-                  newExpr
+                  newExpr,
                 );
                 if (
                   referencedParam &&
@@ -694,5 +694,5 @@ export const HTMLAttributePropEditor = observer(
         viewCtx={viewCtx}
       />
     );
-  }
+  },
 );

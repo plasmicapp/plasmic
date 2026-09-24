@@ -56,7 +56,7 @@ describe("mkColumnItems", () => {
     const items = mkColumnItems(
       { user: "u", [mkMetaName("user")]: { label: "Current User" } },
       [],
-      opts
+      opts,
     );
     expect(items).toEqual([
       { name: "user", label: "Current User", value: "u", pathPrefix: [] },
@@ -72,7 +72,7 @@ describe("mkColumnItems", () => {
     const data = { a: 1, b: 2, [mkMetaName("b")]: { advanced: true } };
     expect(itemNames(mkColumnItems(data, [], opts))).toEqual(["a"]);
     expect(
-      itemNames(mkColumnItems(data, [], { showAdvancedFields: true }))
+      itemNames(mkColumnItems(data, [], { showAdvancedFields: true })),
     ).toEqual(["a", "b"]);
   });
 
@@ -136,7 +136,7 @@ describe("getVariableType", () => {
   it("works for React elements", () => {
     expect(getVariableType(React.createElement("div"))).toBe("react-element");
     expect(getVariableType({ $$typeof: Symbol.for("react.element") })).toBe(
-      "react-element"
+      "react-element",
     );
   });
 });
@@ -206,7 +206,7 @@ describe("formatErrorMessage", () => {
 
   it("pretty-prints a non-Error object error", () => {
     expect(formatErrorMessage({ code: 500 })).toBe(
-      JSON.stringify({ code: 500 }, null, 2)
+      JSON.stringify({ code: 500 }, null, 2),
     );
   });
 });
@@ -219,7 +219,7 @@ describe("getDollarVarIcon", () => {
     expect(getDollarVarIcon(["$props", "myProp"])).toEqual(PropIcon);
     expect(getDollarVarIcon(["$state", "myVar"])).toEqual(StateIcon);
     expect(getDollarVarIcon(["$state", "textInput", "value"])).toEqual(
-      StateIcon
+      StateIcon,
     );
     expect(getDollarVarIcon(["$ctx", "params"])).toEqual(UrlIcon);
     expect(getDollarVarIcon(["$ctx", "query"])).toEqual(UrlIcon);

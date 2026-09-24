@@ -23,13 +23,13 @@ interface VersionsListProps {
 }
 
 export const VersionsList = observer(function VersionsList(
-  props: VersionsListProps
+  props: VersionsListProps,
 ) {
   const { studioCtx, matcher } = props;
   const dbCtx = studioCtx.dbCtx();
 
   const { data: userById } = useUsersMap(
-    studioCtx.releases.map((r) => r.createdById)
+    studioCtx.releases.map((r) => r.createdById),
   );
 
   const filteredReleases = React.useMemo(() => {
@@ -56,52 +56,51 @@ export const VersionsList = observer(function VersionsList(
   };
 
   const renderMenu =
-    (release: PkgVersionInfoMeta, user?: ApiUser | null) => () =>
-      (
-        <Menu>
-          <Menu.Item
-            key="rename"
-            onClick={async () => {
-              const tagsAndDesc = await promptTagsAndDesc(
-                release.description,
-                release.tags ?? [],
-                studioCtx
-              );
+    (release: PkgVersionInfoMeta, user?: ApiUser | null) => () => (
+      <Menu>
+        <Menu.Item
+          key="rename"
+          onClick={async () => {
+            const tagsAndDesc = await promptTagsAndDesc(
+              release.description,
+              release.tags ?? [],
+              studioCtx,
+            );
 
-              const { pkgId, version, branchId } = release;
-              const toMerge = {
-                description: tagsAndDesc?.desc,
-                tags: tagsAndDesc?.tags,
-              };
-              await studioCtx.updatePkgVersion(
-                pkgId,
-                version,
-                (branchId ?? null) as BranchId | null,
-                toMerge
-              );
-            }}
-          >
-            Edit tags and description
-          </Menu.Item>
-          <Menu.Item
-            key="revert"
-            onClick={async () => {
-              const answer = await promptVersionRevert(
-                release,
-                studioCtx.releases,
-                studioCtx.revisions,
-                studioCtx,
-                user
-              );
-              if (answer) {
-                await studioCtx.revertTo(release);
-              }
-            }}
-          >
-            Revert to this version
-          </Menu.Item>
-        </Menu>
-      );
+            const { pkgId, version, branchId } = release;
+            const toMerge = {
+              description: tagsAndDesc?.desc,
+              tags: tagsAndDesc?.tags,
+            };
+            await studioCtx.updatePkgVersion(
+              pkgId,
+              version,
+              (branchId ?? null) as BranchId | null,
+              toMerge,
+            );
+          }}
+        >
+          Edit tags and description
+        </Menu.Item>
+        <Menu.Item
+          key="revert"
+          onClick={async () => {
+            const answer = await promptVersionRevert(
+              release,
+              studioCtx.releases,
+              studioCtx.revisions,
+              studioCtx,
+              user,
+            );
+            if (answer) {
+              await studioCtx.revertTo(release);
+            }
+          }}
+        >
+          Revert to this version
+        </Menu.Item>
+      </Menu>
+    );
 
   if (filteredReleases.length === 0) {
     return (

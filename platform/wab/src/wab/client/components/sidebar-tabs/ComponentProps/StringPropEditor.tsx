@@ -49,7 +49,7 @@ export const StringPropEditor = React.forwardRef<
       isFocused: () =>
         !!ref.current && ref.current.input === document.activeElement,
     }),
-    [ref]
+    [ref],
   );
 
   const {
@@ -143,7 +143,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
         focus: () => {},
         isFocused: () => false,
       },
-    [ref.current]
+    [ref.current],
   );
 
   const studioCtx = useStudioCtx();
@@ -154,7 +154,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
   };
   const normalizedValue = React.useMemo(
     () => normalizeToTemplatedString(props.value),
-    [props.value]
+    [props.value],
   );
   const {
     value: draft,
@@ -196,8 +196,8 @@ export const TemplatedStringPropEditor = React.forwardRef<
     props.control === "multiLine"
       ? "always"
       : multiLineAllowed
-      ? "allowed"
-      : undefined;
+        ? "allowed"
+        : undefined;
 
   return (
     <TemplatedTextEditor
@@ -251,7 +251,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
 });
 
 export function isTemplatedStringEditorValue(
-  x: any
+  x: any,
 ): x is TemplatedStringPropEditorValue {
   return (
     typeof x === "string" ||
@@ -262,7 +262,7 @@ export function isTemplatedStringEditorValue(
 }
 
 function normalizeToTemplatedString(
-  value: TemplatedStringPropEditorValue | null | undefined
+  value: TemplatedStringPropEditorValue | null | undefined,
 ): TemplatedString {
   if (value == null) {
     return new TemplatedString({ text: [""] });
@@ -279,7 +279,7 @@ function normalizeToTemplatedString(
 function templatedStringsEqual(
   a: TemplatedString,
   b: TemplatedString,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): boolean {
   const codeA = asCode(a, exprCtx).code;
   const codeB = asCode(b, exprCtx).code;

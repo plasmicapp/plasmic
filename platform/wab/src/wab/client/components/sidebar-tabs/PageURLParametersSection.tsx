@@ -156,7 +156,7 @@ export const PageURLParametersSection = observer(
 
     const pageMeta = ensure(
       page.pageMeta,
-      "Page components are expected to have pageMeta"
+      "Page components are expected to have pageMeta",
     );
 
     const paramMetas = [
@@ -182,7 +182,7 @@ export const PageURLParametersSection = observer(
         const filtersBindings = query.op.templates.filters.bindings;
         const tableId = maybe(
           tryCoerceString(query.op.templates.resource.value),
-          JSON.parse
+          JSON.parse,
         );
         if (
           !(
@@ -207,15 +207,15 @@ export const PageURLParametersSection = observer(
                 isKnownObjectPath(binding)
                   ? binding
                   : isKnownTemplatedString(binding)
-                  ? getSingleDynExprFromTemplatedString(binding)
-                  : undefined
+                    ? getSingleDynExprFromTemplatedString(binding)
+                    : undefined,
               );
               return (
                 dynExpr &&
                 isKnownObjectPath(dynExpr) &&
                 isEqual(dynExpr.path, ["$ctx", "params", pathParam])
               );
-            }
+            },
           );
           if (!pathParamBinding || filters[pathParam] !== pathParamBinding) {
             return [];
@@ -229,18 +229,18 @@ export const PageURLParametersSection = observer(
           pathParams: params,
           query,
         };
-      })
+      }),
     );
 
     const { data: source } = useSource(sc, mainDetailsSpec?.sourceId);
     const sourceMeta = React.useMemo(
       () => (source ? getDataSourceMeta(source.source) : undefined),
-      [source]
+      [source],
     );
 
     const queryKey = React.useMemo(
       () => `view-record-${page.uuid}`,
-      [page.uuid]
+      [page.uuid],
     );
     const { open, close } = useDataSourceOpExprBottomModal(queryKey);
 
@@ -282,7 +282,7 @@ export const PageURLParametersSection = observer(
                       title: "View different record",
                       value: ensureDataSourceStandardQuery(
                         sourceMeta,
-                        "getList"
+                        "getList",
                       )(mainDetailsSpec.sourceId, mainDetailsSpec.tableId),
                       onSave: () => {},
                       onCancel: () => close(),
@@ -343,7 +343,7 @@ export const PageURLParametersSection = observer(
         <UiActionsOverlay uiId={mkSectionUiId("PageMetaUrlParams")} />
       </SidebarSection>
     );
-  }
+  },
 );
 
 interface AddQueryParamButtonProps {

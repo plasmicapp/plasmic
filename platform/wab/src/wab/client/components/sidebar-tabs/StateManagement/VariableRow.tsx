@@ -25,7 +25,7 @@ export interface VariableRowProps extends DefaultVariableRowProps {
 const VariableRow = observer(
   React.forwardRef(function VariableRow(
     props: VariableRowProps,
-    ref: HTMLElementRefOf<"div">
+    ref: HTMLElementRefOf<"div">,
   ) {
     const { component, state, sc, viewCtx, defaultEditing, ...rest } = props;
     const {
@@ -53,7 +53,7 @@ const VariableRow = observer(
         {modals}
       </WithContextMenu>
     );
-  })
+  }),
 );
 
 export default VariableRow;

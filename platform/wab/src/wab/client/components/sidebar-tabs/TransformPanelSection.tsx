@@ -58,7 +58,7 @@ export const TransformPanelSection = observer(
           } else {
             exp.set(prop, value);
           }
-        })
+        }),
       );
     };
 
@@ -66,7 +66,7 @@ export const TransformPanelSection = observer(
       spawn(
         studioCtx.changeUnsafe(() => {
           exp.set(prop, value.showCss());
-        })
+        }),
       );
     };
 
@@ -86,7 +86,7 @@ export const TransformPanelSection = observer(
             left: string;
             top: string;
           }
-        | undefined
+        | undefined,
     ) => {
       setProp("transform-origin", origin && `${origin.left} ${origin.top}`);
     };
@@ -97,7 +97,7 @@ export const TransformPanelSection = observer(
             left: string;
             top: string;
           }
-        | undefined
+        | undefined,
     ) => {
       setProp("perspective-origin", origin && `${origin.left} ${origin.top}`);
     };
@@ -107,7 +107,7 @@ export const TransformPanelSection = observer(
     };
 
     const updateChildPerspective = (
-      newChildPerspective: string | undefined
+      newChildPerspective: string | undefined,
     ) => {
       setProp("perspective", newChildPerspective);
     };
@@ -233,5 +233,5 @@ export const TransformPanelSection = observer(
         )}
       </StylePanelSection>
     );
-  }
+  },
 );

@@ -47,7 +47,7 @@ export const InternalDataPickerEditor = observer(
     props: DataPickerEditorProps & {
       visible: boolean;
       setVisible: (value: boolean) => void;
-    }
+    },
   ) {
     const {
       value,
@@ -84,7 +84,7 @@ export const InternalDataPickerEditor = observer(
           divElement.focus();
         }
       },
-      []
+      [],
     );
     const displayValue =
       viewCtx && typeof value === "string"
@@ -154,8 +154,8 @@ export const InternalDataPickerEditor = observer(
                           "componentData",
                           {
                             normalize: toVarName,
-                          }
-                        )
+                          },
+                        ),
                       ),
                       op: undefined,
                     });
@@ -164,7 +164,7 @@ export const InternalDataPickerEditor = observer(
                     viewCtx.studioCtx.newlyAddedQuery = newQuery;
                     setVisible(false);
                     return ok();
-                  })
+                  }),
                 );
               }
             }}
@@ -206,14 +206,14 @@ export const InternalDataPickerEditor = observer(
         </div>
       </Popover>
     );
-  }
+  },
 );
 
 export const DataPickerEditor = observer(function DataPickerEditor_(
   props: DataPickerEditorProps & {
     visible?: boolean;
     setVisible?: (value: boolean) => void;
-  }
+  },
 ) {
   const {
     visible: externalVisible,

@@ -37,7 +37,7 @@ export const CustomFunctionExprPreview = observer(
       return null;
     }
     return <CustomFunctionExprPreviewInner {...props} env={props.env} />;
-  }
+  },
 );
 
 const CustomFunctionExprPreviewInner = observer(
@@ -65,7 +65,7 @@ const CustomFunctionExprPreviewInner = observer(
       return null;
     }
     return <QueryResultPreview queryState={queryState} title={title} />;
-  }
+  },
 );
 
 /**
@@ -201,5 +201,5 @@ export const ServerQueryOpSummary = observer(
           : "Custom code"}
       </div>
     );
-  }
+  },
 );

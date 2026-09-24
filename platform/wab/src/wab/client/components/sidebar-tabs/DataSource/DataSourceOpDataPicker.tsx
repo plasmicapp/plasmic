@@ -57,7 +57,7 @@ export function DataSourceOpDataPicker({
                     }),
                     path: ["$queries", `${queryName}`],
                   })
-                : undefined
+                : undefined,
             );
           }
 

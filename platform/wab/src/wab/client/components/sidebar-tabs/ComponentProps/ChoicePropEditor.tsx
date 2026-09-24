@@ -38,7 +38,7 @@ const makeOption = (item: ChoiceValue | ChoiceObject): ChoiceObject => {
 };
 
 export function ChoicePropEditor<T extends ChoiceValue>(
-  props: ChoicePropEditorProps<T>
+  props: ChoicePropEditorProps<T>,
 ) {
   const {
     readOnly,

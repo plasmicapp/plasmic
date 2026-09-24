@@ -24,7 +24,7 @@ export interface ImplicitVariableRowProps extends DefaultVariableRowProps {
 const ImplicitVariableRow = observer(
   React.forwardRef(function (
     props: ImplicitVariableRowProps,
-    ref: HTMLElementRefOf<"div">
+    ref: HTMLElementRefOf<"div">,
   ) {
     const { component, state, sc, viewCtx, ...rest } = props;
     const {
@@ -71,6 +71,6 @@ const ImplicitVariableRow = observer(
         {modals}
       </WithContextMenu>
     );
-  })
+  }),
 );
 export default ImplicitVariableRow;

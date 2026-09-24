@@ -8,8 +8,7 @@ import {
 import * as React from "react";
 
 export interface CardPickerModalProps
-  extends DefaultCardPickerModalProps,
-    ModalProps {
+  extends DefaultCardPickerModalProps, ModalProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onCancel?: () => void;

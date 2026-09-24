@@ -47,7 +47,7 @@ export const SlotSettingsSection = observer(
                         spawn(
                           studioCtx.changeUnsafe(() => {
                             param.mergeWithParent = val;
-                          })
+                          }),
                         );
                       }}
                     >
@@ -67,5 +67,5 @@ export const SlotSettingsSection = observer(
         }
       </SidebarSection>
     );
-  }
+  },
 );

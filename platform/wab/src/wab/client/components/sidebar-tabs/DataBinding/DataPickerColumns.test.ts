@@ -78,7 +78,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$state", "foo", "bar"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["foo", "count"], selectedItem: 0 },
@@ -94,7 +94,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$state", "myComp", "value"],
       opts,
       data,
-      componentWithMyComp
+      componentWithMyComp,
     );
     expect(simplify(columns)).toEqual([
       { items: ["myComp → value", "foo"], selectedItem: 0 },
@@ -110,7 +110,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$ctx", "params", "x"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["params", "title"], selectedItem: 0 },
@@ -122,7 +122,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$props", "title"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(propsColumns)).toEqual([
       { items: ["params", "title"], selectedItem: 1 },
@@ -138,7 +138,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$q", "myQuery", "data", "rows"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["myQuery"], selectedItem: 0 },
@@ -159,7 +159,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$q", "myQuery", "data"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["myQuery"], selectedItem: 0 },
@@ -175,7 +175,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$q", "myQuery", "data"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["myQuery"], selectedItem: 0 },
@@ -192,7 +192,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$q", "myQuery"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["myQuery"], selectedItem: 0 },
@@ -209,7 +209,7 @@ describe("getInitialColumns (characterization)", () => {
       ["$q", "myQuery", "data"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     expect(simplify(columns)).toEqual([
       { items: ["myQuery"], selectedItem: 0 },
@@ -226,7 +226,7 @@ describe("getFixedInitialColumnsFor (characterization)", () => {
       ["$ctx", "params", "x"],
       opts,
       data,
-      noComponent
+      noComponent,
     );
     // Column 0 is reversed (params/title -> title/params) and its selectedItem
     // moves from index 0 to the reversed index.

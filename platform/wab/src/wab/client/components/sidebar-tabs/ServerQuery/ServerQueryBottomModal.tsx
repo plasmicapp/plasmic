@@ -24,7 +24,7 @@ import * as React from "react";
  */
 export function omitQueryFromEnv(
   env: Record<string, any>,
-  query: ComponentServerQuery | { name: string }
+  query: ComponentServerQuery | { name: string },
 ): Record<string, any> {
   if (env.$q) {
     const { $q, ...restEnv } = env;
@@ -59,7 +59,7 @@ export function useServerQueryBottomModal(queryKey: string) {
       props: {
         title?: string;
         "data-test-id"?: string;
-      } & ServerQueryOpExprBottomModalContentProps
+      } & ServerQueryOpExprBottomModalContentProps,
     ) => {
       serverQueryModals.open(queryKey, props);
     },
@@ -80,7 +80,7 @@ export function useServerQueryBottomModals() {
         ...props
       }: {
         title?: string;
-      } & ServerQueryOpExprBottomModalContentProps
+      } & ServerQueryOpExprBottomModalContentProps,
     ) => {
       modalActions.open(queryKey, {
         title: title || `Configure ${SERVER_QUERY_LOWER}`,
@@ -113,7 +113,7 @@ const ServerQueryOpExprBottomModalContent = observer(
       (newExpr: ServerQueryOp, opExprName?: string) => {
         onSave(newExpr, opExprName);
       },
-      [onSave]
+      [onSave],
     );
 
     const { env, currGlobalThis } = (() => {
@@ -126,7 +126,7 @@ const ServerQueryOpExprBottomModalContent = observer(
         tpl,
         undefined,
         interaction,
-        eventHandlerKey
+        eventHandlerKey,
       );
       // Exclude the current query from $q to avoid circular references
       if (parentQuery) {
@@ -153,5 +153,5 @@ const ServerQueryOpExprBottomModalContent = observer(
         />
       </PopoverFrameProvider>
     );
-  }
+  },
 );

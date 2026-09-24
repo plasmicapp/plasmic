@@ -14,8 +14,10 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { isArray } from "lodash";
 import * as React from "react";
 
-export interface DataPickerGlobalSearchResultsItemProps
-  extends Omit<DefaultDataPickerGlobalSearchResultsItemProps, "variableType"> {
+export interface DataPickerGlobalSearchResultsItemProps extends Omit<
+  DefaultDataPickerGlobalSearchResultsItemProps,
+  "variableType"
+> {
   itemPath: (string | number)[] | undefined;
   previewValue: string | undefined;
   variableType: DataPickerSupportedVariableType;
@@ -25,7 +27,7 @@ export interface DataPickerGlobalSearchResultsItemProps
 
 function DataPickerGlobalSearchResultsItem_(
   props: DataPickerGlobalSearchResultsItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { itemPath, previewValue, variableType, matcher, onClick } = props;
   if (!isArray(itemPath)) {
@@ -49,6 +51,6 @@ function DataPickerGlobalSearchResultsItem_(
 }
 
 const DataPickerGlobalSearchResultsItem = React.forwardRef(
-  DataPickerGlobalSearchResultsItem_
+  DataPickerGlobalSearchResultsItem_,
 );
 export default DataPickerGlobalSearchResultsItem;

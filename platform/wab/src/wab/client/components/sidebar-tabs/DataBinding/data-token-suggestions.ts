@@ -50,14 +50,14 @@ function splitWords(name: string): string[] {
         ? [...wordSegmenter.segment(word)]
             .filter((seg) => seg.isWordLike)
             .map((seg) => seg.segment)
-        : [word]
+        : [word],
     )
     .map((w) => w.toLowerCase());
 }
 
 function containsAllWords(
   tokenWords: string[],
-  requiredWords: string[]
+  requiredWords: string[],
 ): boolean {
   return requiredWords.every((word) => tokenWords.includes(word));
 }
@@ -116,7 +116,7 @@ function mkTokenScorer(query: Query) {
  */
 export function getDataTokenSuggestions(
   tokens: readonly DataTokenRef[],
-  query: Query
+  query: Query,
 ): DataTokenRef[] {
   const score = mkTokenScorer(query);
   const matcher = new Matcher(query.searchText);
@@ -131,7 +131,7 @@ export function getDataTokenSuggestions(
       valueMatches: matcher.matches(ref.token.value),
     }))
     .filter((x) =>
-      isSearch ? x.nameMatches || x.valueMatches : x.score !== null
+      isSearch ? x.nameMatches || x.valueMatches : x.score !== null,
     );
 
   const sorted = naturalSort(scored, (x) => x.ref.token.name);

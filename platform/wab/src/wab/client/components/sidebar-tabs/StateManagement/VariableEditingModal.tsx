@@ -32,7 +32,7 @@ export function VariableEditingModal({
     await COMMANDS.component.removeStateVariable.execute(
       studioCtx,
       {},
-      { state, component }
+      { state, component },
     );
     onClose();
   };

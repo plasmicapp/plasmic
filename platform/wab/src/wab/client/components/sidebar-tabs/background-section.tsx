@@ -95,7 +95,7 @@ interface BackgroundProps {
 }
 
 export const BackgroundSection = observer(function BackgroundSection(
-  props: BackgroundProps
+  props: BackgroundProps,
 ) {
   const { expsProvider, animatableOnly } = props;
   const { studioCtx } = expsProvider;
@@ -114,7 +114,7 @@ export const BackgroundSection = observer(function BackgroundSection(
   const updateLayers = () => {
     assert(
       bg.layers.every((l) => !l.preferBackgroundColorOverColorFill),
-      "No background layer can have a preferBackgroundColorOverColorFill"
+      "No background layer can have a preferBackgroundColorOverColorFill",
     );
     spawn(
       studioCtx.changeUnsafe(() => {
@@ -125,7 +125,7 @@ export const BackgroundSection = observer(function BackgroundSection(
           // or mixin.
           exp.set("background", mkEmptyLayer().showCss());
         }
-      })
+      }),
     );
   };
 
@@ -154,7 +154,7 @@ export const BackgroundSection = observer(function BackgroundSection(
               left: "50%",
             }),
           }
-        : undefined
+        : undefined,
     );
     bg.layers.unshift(layer);
     updateLayers();
@@ -250,7 +250,7 @@ export const BackgroundSection = observer(function BackgroundSection(
                       .when(ImageBackground, (img: ImageBackground) => {
                         const asset = tryParseImageAssetRef(
                           img.url,
-                          studioCtx.site.imageAssets
+                          studioCtx.site.imageAssets,
                         );
                         if (asset) {
                           return asset.name;
@@ -266,9 +266,9 @@ export const BackgroundSection = observer(function BackgroundSection(
                               fill.color,
                               siteFinalColorTokens(studioCtx.site, {
                                 includeDeps: "all",
-                              })
+                              }),
                             )?.name || "Color token"
-                          : Chroma.stringify(fill.color)
+                          : Chroma.stringify(fill.color),
                       )
                       .when(LinearGradient, () => "Linear gradient")
                       .when(RadialGradient, () => "Radial gradient")
@@ -293,7 +293,7 @@ export const BackgroundSection = observer(function BackgroundSection(
                                   layer.image,
                                   clientTokenResolver,
                                   studioCtx.site,
-                                  vsh
+                                  vsh,
                                 ),
                               }}
                             />
@@ -312,7 +312,7 @@ export const BackgroundSection = observer(function BackgroundSection(
                         gridThumbnail
                       />
                     );
-                  }
+                  },
                 )}
               </widgets.ListBox>
             </StyleWrapper>
@@ -350,7 +350,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
 
   const updateImg = (
     img: ImageBackground | ColorFill | LinearGradient | RadialGradient,
-    f: () => void
+    f: () => void,
   ) => {
     f();
     layer.image = img;
@@ -370,7 +370,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
   const imageBackgroundPanel = (img: /*TWZ*/ ImageBackground) => {
     // Can only use picture type for background-image
     const imageAssets = studioCtx.site.imageAssets.filter(
-      (x) => x.type === ImageAssetType.Picture
+      (x) => x.type === ImageAssetType.Picture,
     );
 
     return (
@@ -421,7 +421,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
               updateImg(lin, () => {
                 const { num, units } = ensure(
                   css.parseCssNumericNew(val || "0"),
-                  "Must be a valid numeric value"
+                  "Must be a valid numeric value",
                 );
                 lin.angle = num;
               });
@@ -547,14 +547,14 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
 
   const tabContent = switchType(layer.image)
     .when(ImageBackground, (model: /*TWZ*/ ImageBackground) =>
-      imageBackgroundPanel(model)
+      imageBackgroundPanel(model),
     )
     .when(ColorFill, (model: /*TWZ*/ ColorFill) => colorFillPanel(model))
     .when(LinearGradient, (model: /*TWZ*/ LinearGradient) =>
-      linearGradientPanel(model)
+      linearGradientPanel(model),
     )
     .when(RadialGradient, (model: /*TWZ*/ RadialGradient) =>
-      radialGradientPanel(model)
+      radialGradientPanel(model),
     )
     .when(NoneBackground, (model) => unexpected())
     .result();
@@ -568,9 +568,9 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
     const bgSize = () =>
       ensure(
         css.parseSize(
-          layer.size ?? css.getCssInitial("background-size", "div")
+          layer.size ?? css.getCssInitial("background-size", "div"),
         ),
-        "Background size must be a valid numeric value"
+        "Background size must be a valid numeric value",
       );
     const isCustomSize = !["cover", "contain"].includes(layer.size as string);
     return (
@@ -643,7 +643,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
                     change(() => {
                       layer.size = css.showWidthHeight(
                         val ?? "auto",
-                        bgSize()[1]
+                        bgSize()[1],
                       );
                     })
                   }
@@ -661,7 +661,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
                     change(() => {
                       layer.size = css.showWidthHeight(
                         bgSize()[0],
-                        val ?? "auto"
+                        val ?? "auto",
                       );
                     })
                   }
@@ -681,7 +681,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
 
   const positionSection = () => {
     const bgPos = css.parseBgPos(
-      layer.position ?? css.getCssInitial("background-position", "div")
+      layer.position ?? css.getCssInitial("background-position", "div"),
     );
     return (
       <SidebarSection title={"Position"}>
@@ -832,11 +832,11 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
                       defaultValuesByBgType[
                         ensure(bgType, "Must not be undefined")
                       ],
-                    { startRule: "backgroundImage" }
+                    { startRule: "backgroundImage" },
                   ),
-                  "backgroundImage shouldn't be null"
+                  "backgroundImage shouldn't be null",
                 ),
-                () => {}
+                () => {},
               );
             }}
           >

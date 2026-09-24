@@ -27,7 +27,7 @@ export function FolderContextMenu({
         "add",
         <Menu.Item key="add" onClick={onAdd}>
           <strong>Add</strong> {itemDisplay}
-        </Menu.Item>
+        </Menu.Item>,
       )}
       {menuSection(
         "rename",
@@ -39,13 +39,13 @@ export function FolderContextMenu({
           }}
         >
           <strong>Rename</strong> folder
-        </Menu.Item>
+        </Menu.Item>,
       )}
       {menuSection(
         "delete",
         <Menu.Item key="delete" onClick={onDelete}>
           <strong>Delete</strong> folder
-        </Menu.Item>
+        </Menu.Item>,
       )}
     </Menu>
   );

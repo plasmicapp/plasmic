@@ -54,8 +54,8 @@ export const CustomBehaviorsSection = observer(function (props: {
           isCodeComponent(anc.component) &&
           anc.component.codeComponentMeta.isAttachment
         ),
-      1
-    )
+      1,
+    ),
   ) as TplComponent[];
 
   const components = getAttachmentComponents(viewCtx.studioCtx);
@@ -109,10 +109,10 @@ export const CustomBehaviorsSection = observer(function (props: {
 
 export function getAttachmentComponents(studioCtx: StudioCtx) {
   const hostComponents = studioCtx.site.components.filter(
-    (comp) => isCodeComponent(comp) && comp.codeComponentMeta.isAttachment
+    (comp) => isCodeComponent(comp) && comp.codeComponentMeta.isAttachment,
   );
   const hostLessDeps = studioCtx.site.projectDependencies.filter((dep) =>
-    isHostLessPackage(dep.site)
+    isHostLessPackage(dep.site),
   );
   const hostLessComponents = hostLessDeps
     .map((dep) => dep.site.components)
@@ -128,7 +128,7 @@ export function getAttachmentComponents(studioCtx: StudioCtx) {
 export function getMenu(
   viewCtx: ViewCtx,
   components: Component[],
-  selectedTpl: TplNode
+  selectedTpl: TplNode,
 ) {
   const defaultPacksNames = [
     "react-awesome-reveal",
@@ -142,8 +142,8 @@ export function getMenu(
   const uninstalledPacks = defaultPacks?.filter((pack) => {
     const isInstalled = ensureArray(pack.projectId).every((projectId) =>
       viewCtx.studioCtx.site.projectDependencies.find(
-        (dep) => dep.projectId === projectId
-      )
+        (dep) => dep.projectId === projectId,
+      ),
     );
     return !isInstalled;
   });
@@ -160,7 +160,7 @@ export function getMenu(
           }}
         >
           {getComponentDisplayName(comp)}
-        </Menu.Item>
+        </Menu.Item>,
       );
     });
   });
@@ -178,16 +178,16 @@ export function getMenu(
             for (const id of ensureArray(pack.projectId)) {
               projectDependencies.push(
                 await viewCtx.studioCtx.projectDependencyManager.addByProjectId(
-                  id
-                )
+                  id,
+                ),
               );
             }
 
             projectDependencies.forEach((projectDependency) =>
               maybeShowGlobalContextNotification(
                 viewCtx.studioCtx,
-                projectDependency
-              )
+                projectDependency,
+              ),
             );
             // Assumes the project has only one component
             const hostLessComps = projectDependencies
@@ -195,17 +195,17 @@ export function getMenu(
               .filter(
                 (comp) =>
                   isHostLessCodeComponent(comp) &&
-                  comp.codeComponentMeta?.isAttachment
+                  comp.codeComponentMeta?.isAttachment,
               );
             assert(
               hostLessComps.length == 1,
-              "Assumes the project has only one component"
+              "Assumes the project has only one component",
             );
             attachComp(viewCtx, hostLessComps[0], selectedTpl);
           }}
         >
           {pack.name}
-        </Menu.Item>
+        </Menu.Item>,
       );
     });
     push(
@@ -219,7 +219,7 @@ export function getMenu(
             Docs on adding custom behaviors
           </a>
         </div>
-      </Menu.Item>
+      </Menu.Item>,
     );
   });
 
@@ -228,7 +228,7 @@ export function getMenu(
 export function attachComp(
   viewCtx: ViewCtx,
   comp: Component,
-  selectedTpl: TplNode
+  selectedTpl: TplNode,
 ) {
   const tplComp = viewCtx.variantTplMgr().mkTplComponentX({
     component: comp,

@@ -59,7 +59,7 @@ function InnerCustomPropEditorWithViewCtx({
     impl,
     componentPropValues,
     ccContextData,
-    propName
+    propName,
   );
 
   return (
@@ -89,7 +89,7 @@ function InnerCustomPropEditor({
     impl,
     componentPropValues,
     ccContextData,
-    propName
+    propName,
   );
 
   return <div ref={containerRef} style={{ display: "contents" }} />;
@@ -151,7 +151,7 @@ function useCustomPropEditor(
   impl: CustomControl<any>,
   componentPropValues: any,
   ccContextData: any,
-  propName: string
+  propName: string,
 ) {
   const root = React.useRef<Root | null>(null);
   const studioCtx = useStudioCtx();
@@ -167,7 +167,7 @@ function useCustomPropEditor(
         domAlign,
         popupWidth: 520,
       }),
-    [sub]
+    [sub],
   );
   const SideModal = React.useMemo(
     () =>
@@ -178,7 +178,7 @@ function useCustomPropEditor(
         studioDocument: document,
         domAlign,
       }),
-    [sub]
+    [sub],
   );
 
   React.useEffect(() => {
@@ -217,7 +217,7 @@ function useCustomPropEditor(
           projectData,
           studioDocument: window.document,
         },
-      })
+      }),
     );
     if (root.current) {
       root.current.render(renderElement);

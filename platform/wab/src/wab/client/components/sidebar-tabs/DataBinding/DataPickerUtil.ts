@@ -115,7 +115,7 @@ export function hasAdvancedFields(data: any, seen: Set<any> = new Set()) {
     } else if (isArray(data)) {
       if (
         data.some(
-          (item) => !seen.has(item) && hasAdvancedFields(item, seen.add(item))
+          (item) => !seen.has(item) && hasAdvancedFields(item, seen.add(item)),
         )
       ) {
         return true;
@@ -129,7 +129,7 @@ export function getSupportedObjectKeys(
   object: Record<string, any> | null | undefined,
   opts: DataPickerOpts,
   seen: Set<any> = new Set(),
-  pathPrefix?: (string | number)[]
+  pathPrefix?: (string | number)[],
 ): keyInfo[] {
   return object != null
     ? Object.keys(object)
@@ -148,7 +148,7 @@ export function getSupportedObjectKeys(
               object[key],
               opts,
               seen.add(object[key]),
-              pathPrefix ? [...pathPrefix, key] : [key]
+              pathPrefix ? [...pathPrefix, key] : [key],
             );
             return children.length > 0;
           }
@@ -168,7 +168,7 @@ export function getSupportedObjectKeys(
 export function mkColumnItems(
   data: Record<string, any>,
   pathPrefix: (string | number)[],
-  opts: DataPickerOpts
+  opts: DataPickerOpts,
 ): ColumnItem[] {
   return getSupportedObjectKeys(data, opts, undefined, pathPrefix).map(
     ({ key, label }) => ({
@@ -176,7 +176,7 @@ export function mkColumnItems(
       label,
       value: data[key],
       pathPrefix,
-    })
+    }),
   );
 }
 
@@ -192,7 +192,7 @@ export function getItemPath(item: ColumnItem): (string | number)[] {
  */
 export function getItemChildColumns(
   item: ColumnItem,
-  opts: DataPickerOpts
+  opts: DataPickerOpts,
 ): Column[] {
   // An errored item shows its message instead of empty fields.
   if (item.errorMessage !== undefined) {
@@ -211,7 +211,7 @@ export function getItemChildColumns(
 function mkListColumn(
   value: any,
   path: (string | number)[],
-  opts: DataPickerOpts
+  opts: DataPickerOpts,
 ): Column[] {
   if (!isListType(getVariableType(value))) {
     return [];
@@ -237,13 +237,13 @@ const dataPickerSupportedVariableTypes = {
 >;
 
 export function toDataPickerPreviewVariant(
-  variableType: DataPickerSupportedVariableType
+  variableType: DataPickerSupportedVariableType,
 ) {
   return dataPickerSupportedVariableTypes[variableType].previewVariant;
 }
 
 export function variableTypeToIcon(
-  variableType: DataPickerSupportedVariableType
+  variableType: DataPickerSupportedVariableType,
 ): SvgIcon {
   return dataPickerSupportedVariableTypes[variableType].icon;
 }
@@ -252,7 +252,7 @@ export function evalExpr(path: (string | number)[], data: Record<string, any>) {
   const expr = pathToString(path);
   const evaluatedValue = tryEvalExpr(
     expr,
-    ensure(data, "Should only be called if canvasEnv exists")
+    ensure(data, "Should only be called if canvasEnv exists"),
   ).val;
   try {
     return JSON.stringify(evaluatedValue);
@@ -271,7 +271,7 @@ export function prepareEnvForDataPicker(
      * unwrapping them to {data, error} snapshots. The copilot data-context
      * exporter uses this so it can preserve each query's isLoading state. */
     keepStatefulQueries?: boolean;
-  }
+  },
 ): Record<string, any> {
   if (!component) {
     return data;
@@ -298,7 +298,7 @@ export function prepareEnvForDataPicker(
           if (advanced || hidden) {
             for (const { obj, key } of findStateIn$State(
               state,
-              fixedData.$state
+              fixedData.$state,
             )) {
               obj[mkMetaName(key)] = { advanced, hidden };
             }
@@ -319,8 +319,8 @@ export function prepareEnvForDataPicker(
         ([name, query]: [string, StatefulQueryResult]) => [
           name,
           unwrapStatefulQueryResult(query),
-        ]
-      )
+        ],
+      ),
     );
   }
   return fixedData;
@@ -328,7 +328,7 @@ export function prepareEnvForDataPicker(
 
 export function getContextDependentValuesForImplicitState(
   viewCtx: ViewCtx,
-  state: State
+  state: State,
 ) {
   assert(state.tplNode, `Must be an implicit state`);
   const tpl = ensure(state.tplNode, `Must be an implicit state`);
@@ -354,20 +354,20 @@ export function getContextDependentValuesForImplicitState(
     stateMeta?.advanced,
     componentPropValues,
     ccContextData,
-    controlExtras
+    controlExtras,
   );
   const hidden = getContextDependentValue(
     stateMeta?.hidden,
     componentPropValues,
     ccContextData,
-    controlExtras
+    controlExtras,
   );
   return { advanced, hidden };
 }
 
 export function extractExpectedValues(
   propType: StudioPropType<any>,
-  enumValues: ChoiceValue[] | undefined
+  enumValues: ChoiceValue[] | undefined,
 ) {
   if (typeof propType === "object") {
     if ("exprHint" in propType) {
@@ -392,7 +392,7 @@ export function extractExpectedValues(
 export function getSourceUiId(
   itemPath: (string | number)[],
   site: Site,
-  component?: Component
+  component?: Component,
 ): UiId | undefined {
   if (itemPath.length < 2) {
     return undefined;
@@ -408,10 +408,10 @@ export function getSourceUiId(
       } else if (itemPath.length === 3) {
         const tokenName = itemPath[2];
         const dep = walkDependencyTree(site, "direct").find(
-          (d) => toVarName(d.name) === name
+          (d) => toVarName(d.name) === name,
         );
         const token = dep?.site.dataTokens.find(
-          (t) => toVarName(t.name) === tokenName
+          (t) => toVarName(t.name) === tokenName,
         );
         return token ? mkModelUiId(token) : undefined;
       }
@@ -434,7 +434,7 @@ export function getSourceUiId(
         return undefined;
       }
       const param = getRealParams(component).find(
-        (p) => toVarName(p.variable.name) === name
+        (p) => toVarName(p.variable.name) === name,
       );
       return param ? mkModelUiId(param) : undefined;
     }
@@ -470,7 +470,7 @@ export function getSourceUiId(
       if (itemPath.length === 3 && typeof itemPath[2] === "string") {
         const varName = `${name}.${itemPath[2]}`;
         const state = component.states.find(
-          (s) => getStateVarName(s) === varName
+          (s) => getStateVarName(s) === varName,
         );
         return state ? mkModelUiId(state.param) : undefined;
       }
@@ -486,7 +486,7 @@ export function getSourceUiId(
  * chooses the corresponding icon.
  */
 export function getDollarVarIcon(
-  itemPath: (string | number)[]
+  itemPath: (string | number)[],
 ): SvgIcon | undefined {
   const dollarVar = itemPath[0];
   switch (dollarVar) {

@@ -14,8 +14,7 @@ import * as React from "react";
 import { CSSProperties, ReactNode, useRef } from "react";
 
 interface FolderItemProps
-  extends DefaultFolderItemProps,
-    React.HTMLAttributes<HTMLLIElement> {
+  extends DefaultFolderItemProps, React.HTMLAttributes<HTMLLIElement> {
   name: ReactNode;
   pathname?: string;
   style: CSSProperties;
@@ -50,7 +49,7 @@ const FolderItem = observer(
       renamingDisabled,
       ...props
     }: FolderItemProps,
-    outerRef: React.Ref<HTMLLIElement>
+    outerRef: React.Ref<HTMLLIElement>,
   ) {
     const editableLabelRef = useRef<EditableLabelHandles>(null);
 
@@ -96,7 +95,7 @@ const FolderItem = observer(
         </EditableLabel>
       </PlasmicFolderItem>
     );
-  })
+  }),
 );
 
 export default FolderItem;

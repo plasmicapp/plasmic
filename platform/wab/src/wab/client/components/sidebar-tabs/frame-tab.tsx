@@ -40,7 +40,7 @@ export const FramePanel = observer(function FramePanel(props: FramePanelProps) {
 
   const defaultSize = getComponentDefaultSize(
     component,
-    viewCtx.variantTplMgr().getRootVariantCombo()
+    viewCtx.variantTplMgr().getRootVariantCombo(),
   );
   const isStretchable = defaultSize.width === "stretch";
   return (
@@ -57,7 +57,7 @@ export const FramePanel = observer(function FramePanel(props: FramePanelProps) {
                 onChange={async (mode) =>
                   viewCtx.studioCtx.changeFrameViewMode(
                     frame,
-                    mode as "stretch" | "centered"
+                    mode as "stretch" | "centered",
                   )
                 }
                 autoWidth
@@ -152,7 +152,7 @@ const FrameBgSection = observer(function FrameBgSection(props: {
 });
 
 const FrameSizeSection = observer(function FrameSizeSection(
-  props: FramePanelProps
+  props: FramePanelProps,
 ) {
   const { frame, viewCtx } = props;
 
@@ -202,11 +202,11 @@ const FrameSizeSection = observer(function FrameSizeSection(
                 >
                   {(() => {
                     const curSize = L.flatten(
-                      frameSizeGroups.map((g) => g.sizes)
+                      frameSizeGroups.map((g) => g.sizes),
                     ).find(
                       (size) =>
                         size.width === frame.width &&
-                        size.height === frame.height
+                        size.height === frame.height,
                     );
                     if (!curSize) {
                       return "Custom";

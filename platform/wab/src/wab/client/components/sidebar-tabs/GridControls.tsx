@@ -40,7 +40,7 @@ export const GridControls = observer(function GridControls(props: {
     siteFinalStyleTokensAllDeps(site),
     allMixins(site, { includeDeps: "all" }),
     allImageAssets(site, { includeDeps: "all" }),
-    site.activeTheme
+    site.activeTheme,
   );
 
   const spec = parseGridCssPropsToSpec(sc.exp(), resolver);
@@ -51,7 +51,7 @@ export const GridControls = observer(function GridControls(props: {
     "grid-row-gap",
     "grid-column-gap",
     "grid-auto-rows",
-    "grid-auto-columns"
+    "grid-auto-columns",
   );
 
   const { isDisabled } = shouldBeDisabled({
@@ -74,7 +74,7 @@ export const GridControls = observer(function GridControls(props: {
                   "grid-template-columns",
                   val === "filled"
                     ? "repeat(auto-fill, minmax(200px, 1fr))"
-                    : "repeat(2, minmax(0, 1fr))"
+                    : "repeat(2, minmax(0, 1fr))",
                 );
                 return ok();
               });
@@ -107,7 +107,7 @@ export const GridControls = observer(function GridControls(props: {
               await studioCtx.change(() => {
                 sc.exp().set(
                   "grid-template-columns",
-                  `repeat(auto-fill, minmax(${val}, 1fr))`
+                  `repeat(auto-fill, minmax(${val}, 1fr))`,
                 );
                 return ok();
               });
@@ -132,7 +132,7 @@ export const GridControls = observer(function GridControls(props: {
               await studioCtx.change(() => {
                 sc.exp().set(
                   "grid-template-columns",
-                  `repeat(${+(val || "1")}, minmax(0, 1fr))`
+                  `repeat(${+(val || "1")}, minmax(0, 1fr))`,
                 );
                 return ok();
               });

@@ -7,8 +7,8 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { TplNode } from "@/wab/shared/model/classes";
 import { TplColumnsTag } from "@/wab/shared/core/tpls";
+import { TplNode } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -20,7 +20,7 @@ export interface ColumnsAlignProps {
 }
 
 export const ColumnsAlignControls = observer(function ColumnsAlignControls(
-  props: ColumnsAlignProps
+  props: ColumnsAlignProps,
 ) {
   const { tpl, viewCtx, isDisabled } = props;
   const studioCtx = viewCtx.studioCtx;
@@ -43,8 +43,8 @@ export const ColumnsAlignControls = observer(function ColumnsAlignControls(
     const childrenExp = tpl.children.map((node) =>
       RSH(
         viewCtx.effectiveCurrentVariantSetting(node as TplNode).rs,
-        node as TplNode
-      )
+        node as TplNode,
+      ),
     );
     if (childrenExp.length === 0) {
       return "";
@@ -72,7 +72,7 @@ export const ColumnsAlignControls = observer(function ColumnsAlignControls(
   const isBreakpointFlexReverse = () => {
     const flexDir = RSH(
       viewCtx.effectiveCurrentVariantSetting(tpl).rs,
-      tpl
+      tpl,
     ).get("flex-direction");
     return flexDir.endsWith("-reverse");
   };
@@ -101,7 +101,7 @@ export const ColumnsAlignControls = observer(function ColumnsAlignControls(
           onChange={(val) =>
             val &&
             studioCtx.changeUnsafe(() =>
-              setAllColumnsProp("justify-content", val)
+              setAllColumnsProp("justify-content", val),
             )
           }
           value={getAllColumnsProp("justify-content") || undefined}

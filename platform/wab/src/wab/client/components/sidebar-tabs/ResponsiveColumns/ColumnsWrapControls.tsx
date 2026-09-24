@@ -48,14 +48,14 @@ export const ColumnsWrapControls = observer(
         const newColsPerRow = clamp(
           colsSizes.length + delta,
           1,
-          tpl.children.length
+          tpl.children.length,
         );
         updateCurrentTplColumns(
           tpl,
           {
             colsSizes: redistributeColumns(colsSizes, newColsPerRow),
           },
-          viewCtx.variantTplMgr()
+          viewCtx.variantTplMgr(),
         );
         return ok();
       });
@@ -75,10 +75,10 @@ export const ColumnsWrapControls = observer(
                     breakUpRows: val,
                     colsSizes: redistributeColumns(
                       colsSizes,
-                      tpl.children.length
+                      tpl.children.length,
                     ),
                   },
-                  viewCtx.variantTplMgr()
+                  viewCtx.variantTplMgr(),
                 );
                 return ok();
               });
@@ -149,5 +149,5 @@ export const ColumnsWrapControls = observer(
         )}
       </>
     );
-  }
+  },
 );

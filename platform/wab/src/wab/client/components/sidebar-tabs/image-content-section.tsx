@@ -16,7 +16,10 @@ import { ok } from "neverthrow";
 import React from "react";
 
 class ObjectPosition {
-  constructor(public xAlign: string, public yAlign: string) {}
+  constructor(
+    public xAlign: string,
+    public yAlign: string,
+  ) {}
   static parse(value: string) {
     if (value === "initial") {
       return new ObjectPosition("50%", "50%");
@@ -164,7 +167,7 @@ function _ContentPanelSection(props: ContentPanelSectionProps) {
                 pos.xAlign = ensure(v, `v should be set`);
                 rsh.set("object-position", pos.showCss());
                 return ok();
-              })
+              }),
             ),
         }}
       />
@@ -183,7 +186,7 @@ function _ContentPanelSection(props: ContentPanelSectionProps) {
                 pos.yAlign = ensure(v, `v should be set`);
                 rsh.set("object-position", pos.showCss());
                 return ok();
-              })
+              }),
             ),
         }}
       />

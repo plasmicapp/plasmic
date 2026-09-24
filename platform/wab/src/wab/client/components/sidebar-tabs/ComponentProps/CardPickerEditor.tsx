@@ -39,7 +39,8 @@ export function CardPickerEditor(props: {
         <Chip onClick={() => setShow(true)}>
           <span className="line-clamp-12">
             {value
-              ? options.find((option) => option.value === value)?.label ?? value
+              ? (options.find((option) => option.value === value)?.label ??
+                value)
               : "unset"}
           </span>
         </Chip>

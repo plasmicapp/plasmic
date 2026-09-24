@@ -81,15 +81,15 @@ export const ComponentPropsDefinitionSection = observer(
   }) {
     const { studioCtx, component, viewCtx } = props;
     const [newPropPrefix, setNewPropPrefix] = React.useState<string | null>(
-      null
+      null,
     );
     const [expandedFolders, setExpandedFolders] = React.useState(
-      new Set<string>()
+      new Set<string>(),
     );
 
     const expandAncestorsOf = (param: Param) => {
       const ancestors = getAncestorFolderPaths(
-        getParamDisplayName(component, param)
+        getParamDisplayName(component, param),
       );
       setExpandedFolders((prev) => new Set([...prev, ...ancestors]));
     };
@@ -106,7 +106,7 @@ export const ComponentPropsDefinitionSection = observer(
               expandAncestorsOf(param);
             }
           }
-        }
+        },
       );
       return dispose;
     }, [studioCtx, component]);
@@ -173,7 +173,7 @@ export const ComponentPropsDefinitionSection = observer(
         )}
       </PropsTreeCtx.Provider>
     );
-  }
+  },
 );
 
 /**
@@ -241,7 +241,7 @@ const PropsLevel = observer(function PropsLevel(props: {
             node={node}
             draggable={draggable}
           />
-        )
+        ),
       )}
     </SimpleReorderableList>
   );
@@ -279,7 +279,7 @@ const PropFolderRow = observer(function PropFolderRow(props: {
               onClick={(e) => {
                 e.stopPropagation();
                 openNewPropModal(
-                  `${parseFolderSegments(node.path).join(" / ")} / `
+                  `${parseFolderSegments(node.path).join(" / ")} / `,
                 );
               }}
               data-test-id="add-prop-to-folder-btn"
@@ -346,7 +346,7 @@ const PropRow = observer(function ParamRow(props: {
             <div>
               <EditableLabel
                 value={getFolderDisplayName(
-                  getParamDisplayName(component, param)
+                  getParamDisplayName(component, param),
                 )}
                 onEdit={(val) =>
                   spawn(
@@ -354,7 +354,7 @@ const PropRow = observer(function ParamRow(props: {
                       if (val) {
                         const newName = renameFolderLeaf(
                           getParamDisplayName(component, param),
-                          val
+                          val,
                         );
                         studioCtx
                           .tplMgr()
@@ -362,7 +362,7 @@ const PropRow = observer(function ParamRow(props: {
                         expandAncestorsOf(param);
                       }
                       return ok();
-                    })
+                    }),
                   )
                 }
                 disabled={!canRename}
@@ -399,7 +399,7 @@ function makeParamMenu(
   studioCtx: StudioCtx,
   component: Component,
   param: Param,
-  opts: { onConfigureParam: () => void }
+  opts: { onConfigureParam: () => void },
 ) {
   return (
     <Menu>

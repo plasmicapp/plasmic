@@ -27,7 +27,7 @@ export interface UseDataTokenSuggestionsMenuProps {
 }
 
 export function useDataTokenSuggestionsMenu(
-  props: UseDataTokenSuggestionsMenuProps
+  props: UseDataTokenSuggestionsMenuProps,
 ) {
   const { category, queryText, openDelayMs, onSelect } = props;
   const { suggestDataTokens, onSelectDataToken } =
@@ -129,13 +129,13 @@ export function useDataTokenSuggestionsMenu(
           })}
       </ul>
     </DropdownOverlay>,
-    document.body
+    document.body,
   );
 
   return {
     openMenu,
     getComboboxProps: (
-      options?: Omit<Parameters<typeof getComboboxProps>[0], "ref">
+      options?: Omit<Parameters<typeof getComboboxProps>[0], "ref">,
     ) => getComboboxProps({ ...options, ref: setAnchor }),
     getInputProps: (options: UseComboboxGetInputPropsOptions = {}) => {
       const { onKeyDown, onBlur, onFocus, onContextMenu, ...rest } = options;

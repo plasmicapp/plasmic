@@ -19,7 +19,7 @@ const PageParamsPanel = observer(function PageParamsPanel(props: {
 
   const pageMeta = ensure(
     page.pageMeta,
-    "Page components are expected to have pageMeta"
+    "Page components are expected to have pageMeta",
   );
   const params = extractPathParamMetas(pageMeta);
 

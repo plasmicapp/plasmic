@@ -70,7 +70,7 @@ export const PrivateStyleVariantsPanel = observer(
     // Check if any private style variant for this tpl is currently targeted
     const targetedVariants = vcontroller.getTargetedVariants();
     const hasTargetedPrivateVariant = privateStyleVariants.some((v) =>
-      targetedVariants.includes(v)
+      targetedVariants.includes(v),
     );
 
     return (
@@ -111,7 +111,7 @@ export const PrivateStyleVariantsPanel = observer(
             }
             onClick={() =>
               studioCtx.changeUnsafe(() =>
-                pinManager.removeSelectedVariants(privateStyleVariants)
+                pinManager.removeSelectedVariants(privateStyleVariants),
               )
             }
           />
@@ -156,17 +156,17 @@ export const PrivateStyleVariantsPanel = observer(
                           spawn(
                             studioCtx
                               .siteOps()
-                              .removeVariant(component, variant)
-                          )
-                        )
+                              .removeVariant(component, variant),
+                          ),
+                        ),
                       ),
                     onCopyTo: (toVariant) =>
                       spawn(
                         studioCtx.changeUnsafe(() =>
                           studioCtx
                             .tplMgr()
-                            .copyToVariant(component, variant, toVariant)
-                        )
+                            .copyToVariant(component, variant, toVariant),
+                        ),
                       ),
                     previewAnimation:
                       animations.length > 0
@@ -206,5 +206,5 @@ export const PrivateStyleVariantsPanel = observer(
         </div>
       </SidebarSection>
     );
-  }
+  },
 );

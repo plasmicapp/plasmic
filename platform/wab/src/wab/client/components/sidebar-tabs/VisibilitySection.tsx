@@ -84,7 +84,7 @@ function VisibilitySection_(props: {
   const { roles } = useAppRoles(
     viewCtx.studioCtx.appCtx,
     viewCtx.studioCtx.siteInfo.id,
-    true
+    true,
   );
 
   const vtm = viewCtx.variantTplMgr();
@@ -95,20 +95,20 @@ function VisibilitySection_(props: {
 
   const targetVisibilityCombo = vtm.getTargetVariantComboForNode(
     tpl,
-    forVisibility
+    forVisibility,
   );
   const targetVisibilityVs = tryGetVariantSetting(tpl, targetVisibilityCombo);
   const effectiveVs = expsProvider.effectiveVs();
   const sources = effectiveVs.getVisibilitySource();
 
   const hasPrivateStyleVariant = targetVisibilityCombo.some((v) =>
-    isPrivateStyleVariant(v)
+    isPrivateStyleVariant(v),
   );
   const visibilityDefinedIndicator = computeDefinedIndicator(
     viewCtx.site,
     viewCtx.currentComponent(),
     sources,
-    vtm.getTargetIndicatorComboForNode(tpl, forVisibility)
+    vtm.getTargetIndicatorComboForNode(tpl, forVisibility),
   );
 
   const vsh = makeVariantedStylesHelperFromCurrentCtx(viewCtx.studioCtx);
@@ -166,7 +166,7 @@ function VisibilitySection_(props: {
             onClick={handleUnsetVisibility}
           >
             {RESET_CAP} <strong>Visibility</strong> style
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
       push(
@@ -176,7 +176,7 @@ function VisibilitySection_(props: {
           onClick={() => _setTplVisibility(TplVisibility.NotRendered)}
         >
           {getVisibilityLabel(TplVisibility.NotRendered)}
-        </Menu.Item>
+        </Menu.Item>,
       );
     });
     builder.genSection(undefined, (push) => {
@@ -188,7 +188,7 @@ function VisibilitySection_(props: {
           }}
         >
           Use dynamic value
-        </Menu.Item>
+        </Menu.Item>,
       );
     });
 
@@ -206,12 +206,12 @@ function VisibilitySection_(props: {
                       code: "false",
                       fallback: null,
                     }),
-                  })
+                  }),
                 );
               }}
             >
               {role.name}
-            </Menu.Item>
+            </Menu.Item>,
           );
         }
       });
@@ -221,7 +221,7 @@ function VisibilitySection_(props: {
 
   const _setTplVisibility = (visibility: TplVisibility) => {
     viewCtx.change(() =>
-      viewCtx.getViewOps().setTplVisibility(tpl, visibility)
+      viewCtx.getViewOps().setTplVisibility(tpl, visibility),
     );
   };
   const _setCustomCond = (cond: CustomCode | ObjectPath) => {
@@ -342,7 +342,7 @@ function VisibilitySection_(props: {
                   : undefined;
                 const newExpr = createExprForDataPickerValue(
                   val,
-                  fallbackExpr
+                  fallbackExpr,
                 ) as CustomCode | ObjectPath;
                 _setCustomCond(newExpr);
               }}
@@ -371,7 +371,7 @@ function VisibilitySection_(props: {
               const newExpr = ensureInstance(
                 clonedExpr,
                 ObjectPath,
-                CustomCode
+                CustomCode,
               );
               newExpr.fallback = undefined;
               _setCustomCond(newExpr);
@@ -385,7 +385,7 @@ function VisibilitySection_(props: {
                   const newExpr = ensureInstance(
                     clonedExpr,
                     ObjectPath,
-                    CustomCode
+                    CustomCode,
                   );
                   newExpr.fallback = codeLit(val);
                   _setCustomCond(newExpr);

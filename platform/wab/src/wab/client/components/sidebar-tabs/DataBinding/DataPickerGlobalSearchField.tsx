@@ -12,12 +12,12 @@ export type DataPickerGlobalSearchFieldProps =
 
 function DataPickerGlobalSearchField_(
   props: DataPickerGlobalSearchFieldProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicDataPickerGlobalSearchField root={{ ref }} {...props} />;
 }
 
 const DataPickerGlobalSearchField = React.forwardRef(
-  DataPickerGlobalSearchField_
+  DataPickerGlobalSearchField_,
 );
 export default DataPickerGlobalSearchField;
